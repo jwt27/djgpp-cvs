@@ -12,7 +12,7 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
-struct qelem {
+typedef struct qelem {
   struct qelem *q_forw;
   struct qelem *q_back;
   char q_data[0];
