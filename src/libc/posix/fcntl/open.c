@@ -151,7 +151,7 @@ open(const char* filename, int oflag, ...)
        fail should never happen (and if it does we expect an error on
        the next write) this probably doesn't make much difference. */
 
-    if (_write(fd, 0, 0) < 0 && _get_dos_version(1) != 0x532)
+    if (_write(fd, 0, 0) < 0 && _os_trueversion != 0x532)
     {
       _close(fd);
       return -1;
