@@ -315,7 +315,9 @@ use_stubinfo_stack_size:
 	movw	%dx, %ss
 	andb	$0xf8, %al		/* align to 8-byte boundary */
 	movl	%eax, %esp
-	movl	%eax, ___djgpp_stack_top
+	movl	%eax, ___djgpp_stack_top	/* Top of stack */
+	subl	___djgpp_stack_limit, %eax
+	movl	%eax, __stklen		/* store the actual stack length */
 
 	xorl	%ebp, %ebp
 	pushl	$_frame_struct
