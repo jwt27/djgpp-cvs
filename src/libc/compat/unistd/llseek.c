@@ -46,16 +46,19 @@ llseek( int handle, offset_t offset, int whence )
   }
 
   has_props = __has_fd_properties(handle);
-  if (offset > 0)
+  if (!has_props ||
+      (__fd_properties[handle]->flags & FILE_DESC_DONT_FILL_EOF_GAP) == 0)
   {
-    if (!has_props)
-      has_props = (__set_fd_properties(handle, NULL, 0) == 0);
-    if (has_props)
-      __set_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
+    if (offset > 0)
+    {
+      if (!has_props)
+        has_props = (__set_fd_properties(handle, NULL, 0) == 0);
+      if (has_props)
+        __set_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
+    }
+    else if (has_props && (whence == SEEK_SET || whence == SEEK_END))
+      __clear_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
   }
-  else if (has_props && (whence == SEEK_SET || whence == SEEK_END))
-    __clear_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
-
   return( ( ( (unsigned)r.x.dx ) << 16) + r.x.ax );
 }
 
