@@ -5,3 +5,5 @@
 #
 s:-Wbad-function-cast::g
 s:-Wmissing-declarations::g
+s:-Wmissing-prototypes::g
+s:-Wstrict-prototypes::g
