@@ -13,5 +13,4 @@ include $(TOP)/../makefile.inc
 e : $(BIN)/symify.exe
 
 $(BIN)/symify.exe : $C symify.o $(LIB)/libdbg.a $L
-	ld -s -o $@ $^ -T$(LIB)/djgpp.lnk
-	$(BIN)/stubify -v $@
+	gcc -s -o $@ symify.o $(LIB)/libdbg.a 

@@ -16,5 +16,4 @@ GCC = gcc -I. -I- -I$(TOP)/../../include $(CFLAGS) -c $<
 e : $(BIN)/fsdb.exe
 
 $(BIN)/fsdb.exe : $C $(EOBJS) $(LIB)/libdbg.a $L
-	ld -o $@ $^ -T$(LIB)/djgpp.lnk
-	$(BIN)/stubify -v $@
+	gcc -s -o $@ $(EOBJS) $(LIB)/libdbg.a

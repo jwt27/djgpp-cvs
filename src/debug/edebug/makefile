@@ -11,5 +11,4 @@ include $(TOP)/../makefile.inc
 e : $(BIN)/edebug32.exe
 
 $(BIN)/edebug32.exe : $C $(EOBJS) $(LIB)/libdbg.a $L
-	ld -s -o $@ $^ -T$(LIB)/djgpp.lnk
-	$(BIN)/stubify -v $@
+	gcc -s -o $@ $(EOBJS) $(LIB)/libdbg.a
