@@ -48,6 +48,7 @@ static char *error;
 
 main
 	: expr                          { result = $1; }
+	;
 
 expr
 	: NUM				{ $$ = $1; }
