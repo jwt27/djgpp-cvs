@@ -1,3 +1,4 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 # This routine moves %ecx bytes from %ds:%esi to %es:%edi.  It clobbers
 # %eax, %ecx, %esi, %edi, and eflags.  The memory ranges must not overlap,

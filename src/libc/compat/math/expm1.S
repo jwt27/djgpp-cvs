@@ -1,3 +1,4 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 pinf:
 	.long	0x7F800000
 

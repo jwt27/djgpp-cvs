@@ -1,3 +1,4 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 ninf:
 	.long	0xFF800000
 
