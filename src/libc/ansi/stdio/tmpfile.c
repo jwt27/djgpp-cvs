@@ -53,18 +53,12 @@ tmpfile(void)
     return 0;
   }
 
-  /* This should have been fdopen(temp_fd, "wb+"), but `fdopen'
-     is non-ANSI.  So we need to dump some of its guts here.  Sigh...  */
-  f = __alloc_file();
+  f = fdopen(temp_fd, "wb+");
   if (f)
   {
-    f->_file   = temp_fd;
-    f->_cnt    = 0;
-    f->_bufsiz = 0;
-    f->_flag   = _IORMONCL | _IORW;
+    f->_flag |= _IORMONCL;
     f->_name_to_remove = n_t_r;
     strcpy(f->_name_to_remove, temp_name);
-    f->_base = f->_ptr = NULL;
   }
   else
   {
