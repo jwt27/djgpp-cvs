@@ -30,7 +30,7 @@ _put_path(const char *path)
 int
 _put_path2(const char *path, int offset)
 {
-  int o = __tb+offset;
+  size_t o = __tb+offset;
   int space = _go32_info_block.size_of_transfer_buffer - offset;
   const char *p = path;
 

@@ -38,7 +38,7 @@ __file_handle_set(int fd, int mode)
 
   /* See if we need to expand the tables.  Check this BEFORE it might fail,
      so that when we hit the count'th request, we've already up'd it. */
-  if (fd >= (count-1) && count < 255)
+  if ((size_t)fd >= (count-1) && count < 255)
   {
     int oldcount = count;
     count = 255;

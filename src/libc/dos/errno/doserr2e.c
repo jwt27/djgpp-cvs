@@ -44,7 +44,7 @@ int
 __doserr_to_errno(int doserr)
 {
   _doserrno = doserr;
-  if (doserr >= 0 && doserr < sizeof(map)/sizeof(map[0]))
+  if (doserr >= 0 && (unsigned int)doserr < sizeof(map)/sizeof(map[0]))
     return map[doserr];
   return EINVAL;
 }

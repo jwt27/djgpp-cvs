@@ -227,7 +227,7 @@ get_stacker_info(int drive_num)
      illegal address abort when we try to peek at the signature below.
      Actually, it's enough to test for (FFFFFh - 55h - drive), because
      we need to get the host drive number at that offset. */
-  if (stac_driver_ptr > 0x0000fffaa - drive_num)
+  if (stac_driver_ptr > 0x0000fffaa - (unsigned)drive_num)
     return 0;
 
   /* Stacker Anywhere returns pointer to 1 byte before the A55Ah
