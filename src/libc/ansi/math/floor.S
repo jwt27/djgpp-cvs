@@ -19,12 +19,12 @@ argok:
 	andw	$0xf3ff,%ax
 	orw	$0x0400,%ax
 	movw	%ax, 2(%esp)
-	fldcww	2(%esp)
+	fldcw	2(%esp)
 
 	fldl	8(%esp)
 	frndint
 
-	fldcww	(%esp)
+	fldcw	(%esp)
 
 cleanup:
 	addl	$4, %esp

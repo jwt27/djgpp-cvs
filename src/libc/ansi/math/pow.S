@@ -53,7 +53,7 @@ xverysmall:				/* exp = max negative */
 
 xzero:					/* x == 0; y is in st(0); test y */
 	ftst
-	fnstsww %ax
+	fnstsw	%ax
 	sahf
 	fstp	%st(0)
 	ja	zeroresult		/* x = 0 y > 0 */
@@ -135,7 +135,7 @@ xltz:
 	fxch	%st(1)
 	call	frac
 	ftst
-	fnstsww %ax
+	fnstsw	%ax
 	fstp	%st(0)
 	sahf
 	je	yisint
