@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 
 #ifndef __dj_include_stdio_h_
@@ -9,11 +10,15 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
+#include <sys/version.h>
 #include <sys/djtypes.h>
   
 #define _IOFBF    	00001
 #define _IONBF    	00002
 #define _IOLBF    	00004
+
+/* Some programs think they know better... */
+#undef NULL
 
 #define BUFSIZ		16384
 #define EOF		(-1)
@@ -46,6 +51,7 @@ typedef struct {
   int   _flag;
   int   _file;
   char *_name_to_remove;
+  int   _fillsize;
 } FILE;
 
 typedef unsigned long		fpos_t;
@@ -114,6 +120,8 @@ extern FILE __dj_stdprn, __dj_stdaux;
 #define stdprn	(&__dj_stdprn)
 #define stdaux	(&__dj_stdaux)
 
+#define P_tmpdir "c:/"
+
 void	_djstat_describe_lossage(FILE *_to_where);
 int	_doprnt(const char *_fmt, va_list _args, FILE *_f);
 int	_doscan(FILE *_f, const char *_fmt, void **_argp);
@@ -127,6 +135,9 @@ void	setbuffer(FILE *_f, void *_buf, int _size);
 void	setlinebuf(FILE *_f);
 char *	tempnam(const char *_dir, const char *_prefix);
 int	_rename(const char *_old, const char *_new);	/* Simple (no directory) */
+int	vfscanf(FILE *_stream, const char *_format, va_list _ap);
+int	vscanf(const char *_format, va_list _ap);
+int	vsscanf(const char *_s, const char *_format, va_list _ap);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
