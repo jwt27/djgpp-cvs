@@ -130,6 +130,16 @@ malloc(size_t size)
   BLOCK *rv, **prev;
   static BLOCK *expected_sbrk = 0;
 
+  /* Refuse ridiculously large requests right away.  Anything beyond
+     2GB will be treated by sbrk as a negative request, i.e. as a
+     request to _decrease_ the heap size.  */
+  if (size > 0x7fffffffU - 0x10000U) /* sbrk rounds up to 64KB */
+  {
+    if (__libc_malloc_fail_hook)
+      __libc_malloc_fail_hook(size);
+    return 0;
+  }
+
   if (size<ALIGN) size = ALIGN;
   size = (size+(ALIGN-1))&~(ALIGN-1);
 #if DEBUG

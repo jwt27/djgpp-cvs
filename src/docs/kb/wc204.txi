@@ -528,3 +528,11 @@ returns.
 @findex gettext@r{, name clash, @file{conio.h} vs @acronym{GNU} Gettext}
 A name conflict between @code{gettext} declared in @file{conio.h} and
 @code{gettext} provided by @acronym{GNU} Gettext has been resolved.
+
+@findex malloc@r{, and huge allocation requests}
+@code{malloc} now declines ridiculously large allocation requests which
+exceed 2GB - 64KB.  This is because anything larger is not supported by
+@code{sbrk} and by most DPMI hosts.  Previously, @code{malloc} would
+sometimes allocate a very small buffer due to wrap-around of large
+unsigned numbers, and the calling program would then crash when it tried
+to use that buffer.
