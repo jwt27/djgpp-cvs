@@ -34,8 +34,8 @@ Write2Vector(int MeasBit, double ArgY, double ArgX, double Exp,
 
     Arg1.value = ArgY, Arg2.value = ArgX, Expected.value = Exp;
 
-    printf("{%d, %d, 0,__LINE__, 0x%08lx, 0x%08lx, "
-		"0x%08lx, 0x%08lx, 0x%08lx, 0x%08lx,},"
+    printf("{%d, %d, 0,__LINE__, {{0x%08lx, 0x%08lx}, "
+		"{0x%08lx, 0x%08lx}, {0x%08lx, 0x%08lx}}},"
 		"\t/* %+.4E%s=F(%+8.4g,%+8.4g) */\n", MeasBit, ErrExp,
 		Expected.parts.msw, Expected.parts.lsw,
 		Arg1.parts.msw, Arg1.parts.lsw,
@@ -56,7 +56,7 @@ WriteVector(int MeasBit, double Arg, double Exp, int ErrExp)
 
     Argument.value = Arg, Expected.value = Exp;
 
-    printf("{%d, %d, 0,__LINE__, 0x%08lx, 0x%08lx, 0x%08lx, 0x%08lx, },"
+    printf("{%d, %d, 0,__LINE__, {{0x%08lx, 0x%08lx}, {0x%08lx, 0x%08lx}}},"
 		"\t/* %+.4E%s=F(%+8.4g) */\n", MeasBit, ErrExp,
 		Expected.parts.msw, Expected.parts.lsw,
 		Argument.parts.msw, Argument.parts.lsw,
