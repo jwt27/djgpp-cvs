@@ -197,7 +197,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
   base = 10;
   if (type=='o')
     base = 8;
-  else if (type=='x')
+  else if (type=='x'||type=='p')
     base = 16;
   np = numbuf;
   expseen = 0;

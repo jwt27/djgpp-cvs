@@ -462,3 +462,14 @@ Functions of the @code{scanf} family now correctly stop the scan when
 they encounter a digit larger than 7, and either the format specifies
 octal conversion, like in @code{%o}, or the format is @code{%i} and the
 leading digit is @code{0}, which implies octal conversion.
+
+@findex scanf@r{, pointer conversions}
+@findex sscanf@r{, pointer conversions}
+@findex fscanf@r{, pointer conversions}
+@findex vscanf@r{, pointer conversions}
+@findex vsscanf@r{, pointer conversions}
+@findex vfscanf@r{, pointer conversions}
+Functions of the @code{scanf} family now use 16 as the base for
+converting pointer values read with the @code{%p} format.  Thus, reading
+back a pointer written with the @code{%p} format now yields the original
+value.
