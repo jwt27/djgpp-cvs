@@ -1,29 +1,45 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+/* Modified by A.Pavenis to work also in different Unix clones */
 #include <stdio.h>
-#include <dir.h>
-#include <dos.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <utime.h>
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 static int
 dtou(char *fname)
 {
-  int sf, df, l;
+  int i, k, k2, sf, df, l, l2, err=0, isCR=0;
   char buf[16384];
-  char tfname[MAXPATH], drive[3], path[MAXPATH];
-  struct ftime ftime;
-  sf = open(fname, O_RDONLY|O_TEXT);
+  char tfname[FILENAME_MAX], *bn, *w;
+  struct stat st;
+  struct utimbuf tim1;
+  sf = open(fname, O_RDONLY|O_BINARY);
   if (sf < 1)
   {
     perror(fname);
     return 1;
   }
-  fnsplit(fname, drive, path, NULL, NULL);
-  fnmerge(tfname, drive, path, "utod", "tm$");
+  
+  fstat (sf,&st);
+  tim1.actime = st.st_atime;
+  tim1.modtime = st.st_mtime;
+
+  strcpy (tfname, fname);
+  for (bn=w=tfname; *w; w++) 
+    if (*w=='/' || *w=='\\' || *w==':') 
+      bn = w+1;  
+  if (bn) *bn=0;
+  strcat (tfname,"utod.tm$");
+  
   df = open(tfname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0644);
   if (df < 1)
   {
@@ -32,16 +48,42 @@ dtou(char *fname)
     return 1;
   }
 
+  k2=0;
   while ((l=read(sf, buf, 16384)) > 0)
-    write(df, buf, l);
+  { 
+    int CtrlZ=0;
+    for (i=k=0; i<l; i++) 
+      {
+         if (isCR && buf[i]!=0x0A) buf[k++] = 0x0D; 
+         if (buf[i]==0x0D) { isCR=1; continue; }
+         if (buf[i]==0x1A) { CtrlZ=1; break; }
+         	     else    buf[k++] = buf[i];
+         isCR = 0;
+      }
+    if (k>0) l2=write(df, buf, k);
+    if (l2<0 || CtrlZ) break;
+    if (l2!=k) { err=1; break; }
+  }
 
-  getftime(sf, &ftime);
-  setftime(df, &ftime);
+  if (l<0) perror (fname);
+  if (l2<0) perror (tfname);
+  if (err) fprintf (stderr,"Cannot process file %s\n",fname);
+
   close(sf);
   close(df);
 
-  remove(fname);
-  rename(tfname, fname);
+  if (l>=0 && l2>=0 && err==0)
+  {
+    remove(fname);
+    rename(tfname, fname);
+    utime(fname, &tim1);
+    chown(fname, st.st_uid, st.st_gid);
+    chmod(fname, st.st_mode);
+  }
+  else 
+  {
+    remove(tfname);
+  }
   return 0;
 }
 
@@ -53,3 +95,4 @@ main(int argc, char **argv)
     rv += dtou(*argv);
   return rv;
 }
+
