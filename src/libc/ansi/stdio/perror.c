@@ -6,5 +6,7 @@
 void
 perror(const char *s)
 {
-  fprintf(stderr, "%s: %s\n", s, strerror(errno));
+  if (s && *s)
+    fprintf(stderr, "%s: ", s);
+  fprintf(stderr, "%s\n", strerror(errno));
 }

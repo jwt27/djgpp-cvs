@@ -11,8 +11,10 @@ void perror(const char *string);
 @subheading Description
 
 This function formats an error message and prints it to @code{stderr}. 
-The message is the @var{string}, a colon, and a message suitable for the error
-condition indicated by @code{errno}. 
+The message is the @var{string}, a colon and a blank, and a message
+suitable for the error condition indicated by @code{errno}. 
+If @var{string} is a null pointer or points to a null string,
+the colon and blank are not printed.
 
 @subheading Return Value
 
