@@ -73,7 +73,11 @@ in a way which guarantees that no two different files will get the same
 inode number (thus it is unique).  This invented inode will also be
 different from any real cluster number of any local file.  However, only
 for local, non-empty files/directories the inode is guaranteed to be
-consistent between @code{stat} and @code{fstat} function calls.
+consistent between @code{stat} and @code{fstat} function calls.  (Note
+that two files whose names are identical but for the drive letter, will
+get the same invented inode, since each filesystem has its own
+independent inode numbering, and comparing files for identity should
+include the value of @code{st_dev}.)
 
 3. The WRITE access mode bit is set only for the user (unless the file is
 read-only, hidden or system).  EXECUTE bit is set for directories,  files

@@ -30,8 +30,7 @@ conventions through its operation, or else you risk getting different inode
 numbers for the same file.
 
 @subheading Return Value
-0 on error, otherwise the invented inode number for the file
-
+0 on error, otherwise the invented inode number for the file.
 
 @subheading Portability
 
