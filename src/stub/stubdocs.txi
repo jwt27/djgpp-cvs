@@ -2,7 +2,7 @@
 @c -----------------------------------------------------------------------------
 @node go32-v2, stubify, , Top
 @chapter @command{go32-v2}
-@pindex @command{go32-v2}
+@pindex go32-v2
 
 @command{go32-v2} is a utility which allows you to run unstubbed
 @acronym{COFF} images.
@@ -22,14 +22,14 @@ the v1.x program will load @command{go32-v2} (since it found it first on
 the @env{PATH}) which knows how to run v2 images, instead the
 original @command{go32} which cannot.
 
-@vindex @env{GO32_V2_DEBUG}
+@vindex GO32_V2_DEBUG
 If you define the environment variable @env{GO32_V2_DEBUG}, @command{go32-v2}
 will provide additional debugging output when it executes.
 
 @c -----------------------------------------------------------------------------
 @node stubify, stubedit, go32-v2, Top
 @chapter @command{stubify}
-@pindex @command{stubify}
+@pindex stubify
 
 Usage: @kbd{stubify [-v] [-g] files}
 
@@ -61,7 +61,7 @@ alias to the other program.
 @c -----------------------------------------------------------------------------
 @node stubedit, exe2coff, stubify, Top
 @chapter @command{stubedit}
-@pindex @command{stubedit}
+@pindex stubedit
 
 Usage: @kbd{stubedit [-h] [-v] file.exe [field=value . . .]}
 
@@ -125,7 +125,7 @@ finally the current default directory.
 @c -----------------------------------------------------------------------------
 @node exe2coff, coff2exe, stubedit, Top
 @chapter @command{exe2coff}
-@pindex @command{exe2coff}
+@pindex exe2coff
 
 @command{exe2coff} is a utility that strips the DOS exectuable stub loader
 from the front of @acronym{DJGPP} executable image and writes a
@@ -140,6 +140,6 @@ C:\> copy /b cwsdstub.exe+myprog mynewprog.exe
 @c -----------------------------------------------------------------------------
 @node coff2exe, , exe2coff, Top
 @chapter @command{coff2exe}
-@pindex @command{coff2exe}
+@pindex coff2exe
 
 @command{coff2exe} is an alias to the @command{stubify} utility (@pxref{stubify}).
