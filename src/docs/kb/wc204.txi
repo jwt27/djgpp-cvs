@@ -568,3 +568,25 @@ affected programs like @code{touch}, @code{dtou}, and @code{recode},
 which set time stamps of files.  In addition, @code{utime} now allows to
 set the time stamp of directories, but only on Windows 2000 or XP (other
 versions of Windows do not allow to change time stamps of directories).
+
+@findex sbrk@r{, fixed address wrap where illegal}
+@cindex @file{crt0.h}, added new flag to control wrap
+@cindex address wrap crashes on Windows NT, 2000, XP
+A fix has been applied to the memory allocation routines in @code{sbrk}
+to prevent use of memory which would require address wrap when the host
+DPMI provider does not allow 4Gb address limits.  This feature may also
+be enabled in other environments which does not require it to get better
+memory protection.  @code{_CRT0_DISABLE_SBRK_ADDRESS_WRAP} flag was added
+to @code{_crt0_startup_flags} in file @file{crt0.h}
+
+@vindex __djgpp_memory_handle_size@r{, added to library}
+@cindex @file{crt0.h}, declaration of memory size array
+@cindex array of DPMI memory block sizes
+A list of memory block sizes was added for use in core dumps of the address
+space.
+
+@findex sbrk@r{, changed allocation size algorithm}
+@cindex DPMI memory block allocation sizes dynamic
+Change the round up size for memory block allocations to increase with
+the number of handles allocated.  This helps keep the number of handles
+to the 256 allocated and reduce problems exhausting DPMI handle resources.
