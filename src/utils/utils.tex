@@ -665,6 +665,57 @@ foo.c foo.h : foo.y
         update y_tab.c foo.c
 @end example
 
+Another use of @code{update} might be to validate (and replace if
+necessary) a local copy of some master data file:
+
+@example
+foo.dat:    /master/data/foo.dat
+            [ -f $@@ ] && cmp -s $< $@@ || cp -f $< $@@ && touch $@@
+@end example
+
+@code{update} is similar to the GNU-standard shell script
+@code{move-if-change} that comes with some GNU packages
+(e.g., GCC, binutils).
+The two are @emph{not} functionally equivalent, however;
+in particular, @code{move-if-change} always @strong{removes}
+the source file in the process of updating the target,
+whereas @code{update} leaves the source file intact.
+
+If you need a portable replacement for @code{update},
+there are several options:
+
+@itemize @bullet
+
+@item
+Modify the GNU @code{move-if-change} script
+to perform a ``copy-if-change'' operation.
+
+@item
+Unconditionally copy source to target:
+
+@example
+cp -f @var{new_file} @var{copied_to} && touch @var{copied_to}
+@end example
+
+@item
+Copy source to target only if target differs from source:
+
+@example
+[ -f @var{copied_to} ] \
+  && cmp -s @var{new_file} @var{copied_to} \
+  || cp -f @var{new_file} @var{copied_to} \
+  && touch @var{copied_to}
+@end example
+
+@end itemize
+
+An important feature of @code{update} is that @var{copied_to}
+is created with the current timestamp.
+If you are certain that @code{cp} on your system is not aliased
+to @code{cp -p} or @code{cp --preserve} (to preserve timestamps),
+then you can omit the @samp{&& touch @var{copied_to}} bit in
+the above command strings.
+
 @c -----------------------------------------------------------------------------
 @node djasm, , update, Top
 @chapter djasm
