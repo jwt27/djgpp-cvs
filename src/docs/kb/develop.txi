@@ -183,6 +183,11 @@ Therefore, @samp{@@portability} and @samp{@@port-note} should only be used
 in DJGPP's C library documentation.
 
 @item
+When writing prototypes in header files remember to prefix any formal
+arguments that you use with the underscore character (@samp{_}) to avoid
+polluting the name space.
+
+@item
 Finally, for some relevant texinfo technique, look at the source
 of this page in the DJGPP sources---@file{src/docs/kb/contrib.txi}.
 @end itemize
