@@ -30,6 +30,17 @@ fflush(FILE *f)
     return 0;
   }
 
+  if (f->_flag & _IOAPPEND)
+  {
+    int save_errno = errno; /* We don't want llseek()'s setting 
+			       errno to remain. */
+    if( llseek(fileno(f), 0, SEEK_END) == -1 )
+    {
+      errno = save_errno;
+      return -1;
+    }
+  }
+
   f->_flag &= ~_IOUNGETC;
   if ((f->_flag&(_IONBF|_IOWRT))==_IOWRT
       && (base = f->_base) != NULL

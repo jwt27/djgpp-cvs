@@ -38,6 +38,16 @@ write(int handle, const void* buffer, size_t count)
   if (count == 0)
     return 0; /* POSIX.1 requires this */
 
+  if ( __has_fd_properties(handle)
+  && ( __fd_properties[handle]->flags & FILE_DESC_APPEND ) )
+  {
+    if ( llseek(handle, 0, SEEK_END) == -1 )
+    {
+      /* llseek() sets errno. */
+      return -1;
+    }
+  }
+
   if(__file_handle_modes[handle] & O_BINARY)
     return _write(handle, buf, count);
 

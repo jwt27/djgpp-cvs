@@ -25,6 +25,9 @@ extern "C" {
 /* Set when the descriptor is used for pipe emulation.  */
 #define FILE_DESC_PIPE              0x08
 
+/* Set when the descriptor is opened for append only. */
+#define FILE_DESC_APPEND            0x10
+
 typedef struct fd_properties fd_properties;
 
 struct fd_properties

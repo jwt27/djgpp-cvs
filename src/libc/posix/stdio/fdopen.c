@@ -24,7 +24,7 @@ fdopen(int fildes, const char *mode)
   switch (*mode)
   {
   case 'a':
-    oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY);
+    oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY) | O_APPEND;
     break;
   case 'r':
     oflags = rw ? O_RDWR : O_RDONLY;
@@ -47,7 +47,9 @@ fdopen(int fildes, const char *mode)
     oflags |= (_fmode & (O_TEXT|O_BINARY));
 
   if (*mode == 'a')
-    lseek(fildes, 0, SEEK_END);
+  {
+    f->_flag |= _IOAPPEND;
+  }
 
   f->_cnt = 0;
   f->_file = fildes;

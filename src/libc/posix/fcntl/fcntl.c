@@ -408,7 +408,8 @@ fcntl(int fd, int cmd, ...)
 
     case F_GETFL:
     {
-      return 0;
+      return 0; /* FIXME: should use the data in the SFT, and the
+		   FILE_DESC_APPEND flag in __fd_properties */
     }
 
 

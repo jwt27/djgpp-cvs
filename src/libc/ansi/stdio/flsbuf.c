@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 #include <go32.h>
 #include <libc/file.h>
 #include <io.h>
@@ -95,7 +96,19 @@ _flsbuf(int c, FILE *f)
     if ((f->_flag & _IOTERM) == 0
 	|| __libc_write_termios_hook == NULL
 	|| __libc_write_termios_hook(fileno(f), base, rn, &n) == 0)
+    {
+      if (f->_flag & _IOAPPEND)
+      {
+	int save_errno = errno; /* We don't want llseek()'s setting 
+				   errno to remain. */
+	if( llseek(fileno(f), 0, SEEK_END) == -1 )
+	{
+	  errno = save_errno;
+	  return EOF;
+	}
+      }
       n = _write(fileno(f), base, rn);
+    }
     if (n <= 0)
     {
       f->_flag |= _IOERR;

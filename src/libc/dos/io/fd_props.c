@@ -41,6 +41,8 @@ open_fd(fd_properties *cur_fd, int open_flags)
   cur_fd->flags = 0;
   if (cur_fd->filename && (open_flags & O_TEMPORARY))
     cur_fd->flags |= FILE_DESC_TEMPORARY;
+  if (open_flags & O_APPEND)
+    cur_fd->flags |= FILE_DESC_APPEND;
 }
 
 /* Perform file descriptor specific finalization.  */

@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <sys/types.h>
@@ -29,7 +30,7 @@ fopen(const char *file, const char *mode)
   switch (*mode)
   {
   case 'a':
-    oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY);
+    oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY) | O_APPEND;
     break;
   case 'r':
     oflags = rw ? O_RDWR : O_RDONLY;
@@ -55,9 +56,6 @@ fopen(const char *file, const char *mode)
   if (fd < 0)
     return NULL;
 
-  if (*mode == 'a')
-    lseek(fd, 0, SEEK_END);
-
   f->_cnt = 0;
   f->_file = fd;
   f->_bufsiz = 0;
@@ -67,6 +65,12 @@ fopen(const char *file, const char *mode)
     f->_flag = _IOREAD;
   else
     f->_flag = _IOWRT;
+
+  if (*mode == 'a')
+  {
+    f->_flag |= _IOAPPEND;
+    llseek(fd, 0, SEEK_END);
+  }
 
   f->_base = f->_ptr = NULL;
   return f;

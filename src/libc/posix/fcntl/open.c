@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -151,8 +152,10 @@ open(const char* filename, int oflag, ...)
   setmode(fd, bintext);
   __set_fd_properties(fd, real_name, oflag);
 
-  if(oflag & O_APPEND)
-    lseek(fd, 0, SEEK_END);
+  if ( oflag & O_APPEND )
+  {
+    llseek(fd, 0, SEEK_END);
+  }
 
   return fd;
 }
