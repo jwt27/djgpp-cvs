@@ -15,7 +15,7 @@ This function allocates a "real-mode callback".  Fill in the
 @code{pm_offset} field of @var{info} and call this function.  It will
 fill in the @code{rm_segment} and @code{rm_offset} fields.  Any time a
 real-mode program calls the real-mode address, your function gets
-called.  The registers in affect will be stored in @var{regs}, which
+called.  The registers in effect will be stored in @var{regs}, which
 should be a global, and will be passed to your function.  Any changes in
 @var{regs} will be reflected back into real mode.  A wrapper will be
 added to your function to simulate the effects of an @code{iret}
@@ -72,7 +72,7 @@ This function allocates a "real-mode callback".  Fill in the
 @code{pm_offset} field of @var{info} and call this function.  It will
 fill in the @code{rm_segment} and @code{rm_offset} fields.  Any time a
 real-mode program calls the real-mode address, your function gets
-called.  The registers in affect will be stored in @var{regs}, which
+called.  The registers in effect will be stored in @var{regs}, which
 should be a global, and will be passed to your function.  Any changes in
 @var{regs} will be reflected back into real mode.  A wrapper will be
 added to your function to simulate the effects of a far return, such
