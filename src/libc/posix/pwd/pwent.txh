@@ -19,13 +19,16 @@ struct passwd @{
   int    pw_gid;     /* getgid() */
   char * pw_dir;     /* "/" or getenv("HOME") */
   char * pw_shell;   /* "/bin/sh" or getenv("SHELL") */
+  char * pw_gecos;   /* getlogin() */
+  char * pw_passwd;  /* "" */
 @};
 @end example
 
-The @code{pw_name} member is returned as described under @code{getlogin}
-(@pxref{getlogin}).  The @code{pw_uid} member is returned as described
-under @code{getuid} (@pxref{getuid}).  @code{pw_gid} is returned as
-described under @code{getgid} (@pxref{getgid}).  The @code{pw_dir}
+The @code{pw_name} and @code{pw_gecos} members are returned as described
+under @code{getlogin} (@pxref{getlogin}).  The @code{pw_uid} member is
+returned as described under @code{getuid} (@pxref{getuid}).  @code{pw_gid}
+is returned as described under @code{getgid} (@pxref{getgid}).  The
+@code{pw_passwd} member is set to the empty string.  The @code{pw_dir}
 member is set to the value of the environment variable @code{HOME} if it
 is defined, or to @file{/} otherwise.  @code{pw_shell} is set as
 follows:
