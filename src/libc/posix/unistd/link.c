@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <sys/stat.h>		/* For stat() */
@@ -6,6 +7,7 @@
 #include <limits.h>		/* For PATH_MAX */
 #include <utime.h>		/* For utime() */
 #include <errno.h>		/* For errno */
+#include <sys/fsext.h>
 
 /* Of course, DOS can't really do a link.  We just do a copy instead,
    which is as close as DOS gets.  Alternatively, we could always fail
@@ -16,7 +18,7 @@ link(const char *path1, const char *path2)
   struct stat statbuf1, statbuf2;
   struct utimbuf times;
   char buf[16384];
-  int fd1, fd2, nbyte, status1, status2;
+  int fd1, fd2, nbyte, status1, status2,rv;
 
   /* Fail if either path is null */
   if (path1 == NULL || path2 == NULL)
@@ -29,6 +31,10 @@ link(const char *path1, const char *path2)
     errno = ENOENT;
     return -1;
   }
+
+  /* see if a file system extension implements the link */
+  if (__FSEXT_call_open_handlers(__FSEXT_link, &rv, &path1))
+    return rv;
 
   /* Fail if path1 does not exist - stat() will set errno */
   if (stat(path1, &statbuf1) < 0) return -1;

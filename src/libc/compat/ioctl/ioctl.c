@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /*
 ** File    : /djgpp/src/libc/posix/fcntl/ioctl.c
 ** Author  : Tom Demmer (demmer@lstm.ruhr-uni-bochum.de)
@@ -67,10 +69,10 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.1 1996/09/01 13:46:06 dj Exp $
+$Id: ioctl.c,v 1.2 1998/06/28 17:25:20 dj Exp $
 $Log: ioctl.c,v $
-Revision 1.1  1996/09/01 13:46:06  dj
-import djgpp 2.01
+Revision 1.2  1998/06/28 17:25:20  dj
+import djgpp 2.02
 
  * Revision 0.5  1996/07/30  09:42:23  DEMMER
  * Minor code cleanups. Final beta.
@@ -100,7 +102,7 @@ import djgpp 2.01
 #include <libc/stubs.h>
 #include <stdarg.h>
 #include <stdlib.h>
-
+#include <sys/fsext.h>
 #include <sys/ioctl.h>
 
 
@@ -273,6 +275,16 @@ int ioctl(int fd, int cmd, ...){
   va_list args;
   int argcx,argdx,argsi,argdi;
   int narg,xarg;
+  __FSEXT_Function *func = __FSEXT_get_function(fd);
+  int rv;
+
+  /**
+   ** see if this is a file system extension file
+   **
+   */
+  if (func && func(__FSEXT_ioctl, &rv, &fd))
+    return rv;
+
   va_start(args,cmd);
   
   if(__IS_UNIX_IOCTL(cmd)){
