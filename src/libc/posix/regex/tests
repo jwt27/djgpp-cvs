@@ -49,9 +49,10 @@ a\(b		bC	EPAREN
 a(b		C	EPAREN
 a(b		b	a(b	a(b
 # gag me with a right parenthesis -- 1003.2 goofed here (my fault, partly)
-a)		-	a)	a)
-)		-	)	)
+a)		C	EPAREN	a)
+)		C	EPAREN	)
 # end gagging (in a just world, those *should* give EPAREN)
+# (richdawe@bigfoot.com): They seem to give EPAREN now!
 a)		b	a)	a)
 a\)		bC	EPAREN
 \)		bC	EPAREN
