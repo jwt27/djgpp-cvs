@@ -18,10 +18,6 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
-#endif /* !_POSIX_SOURCE */
-#endif /* !__STRICT_ANSI__ */
-#endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
-
 __DJ_wint_t
 #undef __DJ_wint_t
 #define __DJ_wint_t
