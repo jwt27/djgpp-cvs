@@ -325,6 +325,7 @@ struct opcode opcodes[] = {
   {"stosd", TWOBYTE, 0x66ab},
   {"wait", ONEBYTE, 0x9b},
   {"fwait", ONEBYTE, 0x9b},
+  {"wbinvd", TWOBYTE, 0x0f09},
   {"xlat", ONEBYTE, 0xd7},
   {"xlatb", ONEBYTE, 0xd7},
 
