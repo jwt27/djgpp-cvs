@@ -1,0 +1,19 @@
+@node setenv, stdlib
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int setenv(const char *name, const char *value, int rewrite);
+@end example
+
+@subheading Description
+
+This function sets the environment variable @var{name} to @var{value}.
+If @var{rewrite} is set, then this function will replace any existing
+value.  If it is not set, it will only put the variable into the environment
+if that variable isn't already defined.
+
+@subheading Return Value
+
+Zero on success, -1 on failure.

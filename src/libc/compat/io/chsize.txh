@@ -1,0 +1,16 @@
+@node chsize, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int chsize(int handle, long size);
+@end example
+
+@subheading Description
+
+Just calls ftruncate (@pxref{ftruncate}).
+
+@subheading Return Value
+
+Zero on success, -1 on failure.
