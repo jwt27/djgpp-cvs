@@ -41,7 +41,7 @@ int abs(int value);
 
 @subheading Return Value
 
-The absolute value of @code{value} is returned.
+The absolute value of @var{value} is returned.
 
 @subheading Portability
 
