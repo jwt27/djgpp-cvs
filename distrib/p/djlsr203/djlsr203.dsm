@@ -1,0 +1,35 @@
+#
+# djlsr203.dsm
+# Constructed by Richard Dawe <richdawe@bigfoot.com> 1999-05-17
+#
+
+dsm-file-version: 1.2
+dsm-version: 0.5.1
+dsm-name: djlsr203
+
+dsm-author: Richard Dawe
+dsm-author-email: richdawe@bigfoot.com
+
+name: djlsr
+version: 2.03
+type: sources
+binaries-dsm: djdev203
+manifest: djlsr203
+
+short-description: DJGPP base library sources
+author: DJ Delorie
+author-email: dj@delorie.com
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+
+simtelnet-path: v2/
+zip: djlsr203.zip
+
+#builtin-post-install-script: echo Welcome to the world of DJGPP!
+
+replaces: djlsr < 2.03
+requires: gcc
+requires: g++
+requires: binutils
+requires: make
+requires: sed

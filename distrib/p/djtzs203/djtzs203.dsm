@@ -1,0 +1,28 @@
+#
+# djtzs203.dsm
+# Constructed by Richard Dawe <richdawe@bigfoot.com> 2000-04-02
+#
+
+dsm-file-version: 1.1
+dsm-version: 0.5.1
+dsm-name: djtzs203
+
+dsm-author: Richard Dawe
+dsm-author-email: richdawe@bigfoot.com
+dsm-author-web-site: http://www.bigfoot.com/~richdawe/
+
+name: djtzs
+version: 2.03
+type: sources
+binaries-dsm: djtzn203
+manifest: djtzs203
+
+short-description: Timezone sources and utils
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
+
+simtelnet-path: v2/
+zip: djtzs203.zip
+
+replaces: djtzs < 2.03
