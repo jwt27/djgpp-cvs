@@ -1,6 +1,6 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
- * D_WITE.C.
+ * D_WRITE.C.
  *
  * Written by Peter Sulyok 1995 <sulyok@math.klte.hu>.
  *
