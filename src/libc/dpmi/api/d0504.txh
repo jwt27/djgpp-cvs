@@ -4,7 +4,7 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_allocate_linear_memory
+int __dpmi_allocate_linear_memory(__dpmi_meminfo *_info, int _commit);
 @end example
 
 @subheading Description

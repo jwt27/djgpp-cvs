@@ -11,7 +11,11 @@ unsigned alarm(unsigned seconds);
 
 This function causes the signal SIGALRM to be raised in @var{seconds} seconds.
 A value of zero for @var{seconds} cancels any pending alarm.  If an alarm
-has previously been set, the new alarm delay will superceed the prior call.
+has previously been set, the new alarm delay will supercede the prior call.
+
+Note that signals in DJGPP are deferred when the program is inside a
+real-mode (e.g., DOS) call or isn't touching its data; see @ref{signal},
+for more details.
 
 @subheading Return Value
 

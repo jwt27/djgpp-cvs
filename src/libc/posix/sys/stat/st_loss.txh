@@ -24,19 +24,19 @@ The diagnostic messages this function prints are almost self-explanatory.
 Some explanations of terminology and abbreviations used by the printed
 messages will further clarify them.
 
-  SDA (Swappable DOS Area) -- this is an internal DOS structure.
+  SDA (@dfn{Swappable DOS Area}) -- this is an internal DOS structure.
 @code{stat()} uses it to get the full directory entry (including the
 starting cluster number) of a file.  The pointer to SDA found by
 @code{stat()} is trusted only if we find the pathname of our file at a
 specific offset in that SDA.
 
-  SFT (System File Table) -- another internal DOS structure, used in file
-operations.  @code{fstat()} uses it to get full information on a file
-given its handle.  An SFT entry which is found by @code{fstat()} is only
-trusted if it contains files size and time stamp like those returned by
-DOS functions 57h and 42h.  Novell NetWare 3.x traps DOS file operations
-in such a way they never get to SFT, so some failure messages refer
-specifically to Novell.
+  SFT (@dfn{System File Table}) -- another internal DOS structure, used
+in file operations.  @code{fstat()} uses it to get full information on a
+file given its handle.  An SFT entry which is found by @code{fstat()} is
+only trusted if it contains files size and time stamp like those
+returned by DOS functions 57h and 42h.  Novell NetWare 3.x traps DOS
+file operations in such a way they never get to SFT, so some failure
+messages refer specifically to Novell.
 
   Hashing -- the fall-back method of returning a unique inode number for
 each file.  It is used whenever the starting cluster of a file couldn't be

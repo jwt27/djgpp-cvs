@@ -674,7 +674,9 @@ int cscanf(const char *_format, ...);
 
 @subheading Description
 
-Like @code{scanf} (@pxref{scanf}), but it reads from the keyboard directly.
+Like @code{scanf} (@pxref{scanf}), but it reads from the standard input
+device directly, avoiding buffering both by DOS and by the library.
+Each character is read by @code{getche} (@pxref{getche}).
 
 @subheading Return Value
 

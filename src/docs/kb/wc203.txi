@@ -1,11 +1,80 @@
 @node Changes in 2.03, , Changes in 2.02, What Changed
 @section Changes in 2.03
 
-Here is a list of changes from DJGPP V2.01 to V2.02
+Here is a list of changes from DJGPP V2.02 to V2.03
 
-@file{src/libc/posix/signal/itimer.c} patches from Eli
-@file{tests/.../itimer.c} patches from Eli
+Bugs in the @code{ititmer} functions are fixed.  In particular:
+
+@itemize @minus{}
+@item
+@cindex profiling
+profiling (which was broken in v2.02) now works;
+
+@item
+@cindex interval timers, small intervals
+the timers are now more accurate for small (100@dmn{ms} or less)
+intervals;
+
+@item
 @findex setitimer
+large values of the @code{tv_usec} member in @code{itimerval} structure
+don't cause internal calculations in @code{setitimer} to overflow;
+
+@item
+@findex getitimer
+@code{getitimer} now returns correct info in the @code{tv_usec} member;
+
+@item
+@findex uclock
+@findex alarm
+@cindex interval timers and uclock
+the timers and the @code{alarm} function work correctly when the calling
+program invokes the @code{uclock} library function before setting a
+timer.
+@end itemize
+
+@findex mktime
+@findex localtime
+@findex ctime
+@vindex TZ
+@code{localtime}, @code{ctime} and @code{mktime} now notice changes in
+the value of the @code{TZ} environment variable during the program run,
+and adjust their computation accordingly.  They also don't fail for the
+first date after the epoch.  @code{mktime} now avoids looping for
+preposterously long time when passed very large values in the members of
+@code{struct tm}.
+
+@findex stat
+When passed an empty string as the file name, @code{stat} now fails and
+sets @code{errno} to @code{ENOENT}, instead of returning information
+about the current directory.
+
+@cindex PC98, SIGINT and SIGQUIT
+@cindex SIGINT and SIGQUIT, PC98
+The startup code now correctly sets up the keys that generate
+@code{SIGINT} and @code{SIGQUIT} signals on PC98 machines.
+
+@findex putc
+@findex fputc
+@code{putc} and @code{fputc} no longer return -1 when they write the
+value @code{(signed char)0xff} to a file.
+
+@cindex wctype.h
+The header @file{wctype.h} from v2.02 caused pre-processor errors.  This
+is now fixed.
+
+@findex doprnt
+@findex printf
+@findex sprintf
+@findex fprintf
+@findex vprintf
+@findex vfprintf
+@findex vsprintf
+@cindex unnormal numbers, printing
+Functions of the @code{printf} family no longer cause the calling
+program to crash when passed @code{long double} variables with invalid
+bit patterns (the so-called @dfn{unnormal} numbers).  Such arguments are
+now printed as @samp{Unnormal}.
 
 @code{srand} now documented as returning a void.
 @findex srand
@@ -13,15 +82,6 @@ Here is a list of changes from DJGPP V2.01 to V2.02
 @code{rand48} and friends now in libc
 @findex rand48
 @findex srand48
-
-@code{printf} handles unnormals better
-@findex printf
-@findex doprnt
-
-Time functions handle times near the Epoch better
-
-@code{stat} fails properly if "" is passed.
-@findex stat
 
 Many fixes to calls to @code{tolower}/@code{toupper} with signed chars
 
@@ -33,3 +93,4 @@ Doc fixes for ansi/posix portability.
 
 handle error considions in @file{bin2h}
 @pindex bin2h
+

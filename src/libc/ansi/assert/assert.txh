@@ -29,6 +29,8 @@ aborts.
 
 @subheading Portability
 
+@port-note ansi @code{assert} is ANSI, @code{assertval} is not.
+@port-note posix @code{assert} is Posix, @code{assertval} is not.
 @portability ansi, posix
 
 @subheading Example

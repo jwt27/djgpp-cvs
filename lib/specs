@@ -40,7 +40,7 @@
 %{funsigned-char:-D__CHAR_UNSIGNED__}
 
 *predefines:
--Dunix -Di386 -DGO32 -DMSDOS -DDJGPP=2 -DDJGPP_MINOR=2
+-Dunix -Di386 -DGO32 -DMSDOS -DDJGPP=2 -DDJGPP_MINOR=3
 
 *cross_compile:
 0

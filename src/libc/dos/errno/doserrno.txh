@@ -12,7 +12,8 @@ extern int _doserrno;
 Whenever a DOS call returns a failure indication, this variable is
 assigned the value of the error code returned by the failed DOS call.
 
-To interpret the error codes, please refer to your DOS reference.
+For a list of the error codes and their short descriptions, see
+@ref{dosexterr}.
 
 @subheading Portability
 

@@ -330,6 +330,8 @@ Returns the pointer you passed it, or NULL if there was an error.
 @portability !ansi, !posix
 
 @subheading Example
+
+@example
 typedef struct
 @{
    void* Ptr;
@@ -409,6 +411,7 @@ int my_fsext(__FSEXT_Fnumber Op, int* RV, va_list Args)
        ...
     @}
 @}
+@end example
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_get_data, file system

@@ -15,7 +15,7 @@ with @var{dir}.  For each file in the hierarchy, @code{__file_tree_walk}
 calls the user-defined function @var{func} which is passed a pointer to a
 @code{NULL}-terminated character array in @var{path} holding the full
 pathname of the file, a pointer to a @code{ffblk} structure
-(@pxref{findfirst}) @var{fff} with a DOS filesystem information about that
+(@pxref{findfirst}) @var{ff} with a DOS filesystem information about that
 file.
 
 This function always visits a directory before any of its siblings.  The

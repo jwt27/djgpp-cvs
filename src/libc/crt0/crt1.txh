@@ -42,7 +42,7 @@ can reduce the size of the program image by providing a version of
 this function that does nothing.
 
 Note that since the default @code{__crt0_setup_arguments_function} will
-@emph{not} expand wildcards inside quotes (@kbd{"} or @kbd{'}), but you
+@emph{not} expand wildcards inside quotes (@kbd{"} or @kbd{'}), you
 can quote a part of the argument that doesn't include wildcards and
 still have them expanded.  This is so you could use wildcard expansion
 with filenames which have embedded whitespace (on LFN filesystems).
@@ -66,7 +66,8 @@ void   __crt0_load_environment_file(char *_app_name);
 @subheading Description
 
 This function, provided by libc.a, does all the work required to load
-additional environment variables from the file $DJGPP.  If the
+additional environment variables from the file @file{djgpp.env} whose
+full pathname is given by the @code{DJGPP} environment variable.  If the
 application does not use environment variables, the programmer can
 reduce the size of the program image by providing a version of this
 function that does nothing.

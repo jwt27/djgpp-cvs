@@ -4,7 +4,7 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_get_and_disable_virtual_interrupt_state
+int __dpmi_get_and_disable_virtual_interrupt_state(void);
 @end example
 
 @subheading Description

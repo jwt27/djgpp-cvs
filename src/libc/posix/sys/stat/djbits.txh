@@ -9,12 +9,12 @@ extern unsigned short   _djstat_flags;
 
 This variable contains bits for some fields of struct stat which are
 expensive to compute under DOS.  Any such computation is only done by
-@ref{stat} or @ref{fstat} if the corresponding bit in
-@code{_djstat_flags} is @emph{cleared}.  By default, all the bits are
-cleared, so applications which don't care, automagically get a full
-version, possibly at a price of performance.  To get the fastest
-possible @code{f?stat()} for your application, clear only the bits
-which you need and set all the others.
+@code{stat} (@pxref{stat}) or @code{fstat} (@pxref{fstat}) if the
+corresponding bit in @code{_djstat_flags} is @emph{cleared}.  By
+default, all the bits are cleared, so applications which don't care,
+automagically get a full version, possibly at a price of performance.
+To get the fastest possible @code{f?stat()} for your application, clear
+only the bits which you need and set all the others.
 
 The following bits are currently defined:
 
@@ -32,12 +32,12 @@ Tells @code{f?stat()} to compute the execute access bit from extension.
 
 Tells @code{f?stat()} to compute the execute access bit from magic
 signature (the first two bytes of the file, see @ref{_is_executable}.
-Note that if _STAT_EXEC_MAGIC is set, but _STAT_EXEC_EXT is not, some
-files which shouldn't be flagged as executables (e.g., COFF *.o object
-files) will have their execute bit set, because they have the magic
-number signature at their beginning.  Therefore, only use the above
-combination if you want to debug the list of extensions provided in
-is_exec.c file.
+Note that if @code{_STAT_EXEC_MAGIC} is set, but @code{_STAT_EXEC_EXT}
+is not, some files which shouldn't be flagged as executables (e.g., COFF
+@file{*.o} object files) will have their execute bit set, because they
+have the magic number signature at their beginning.  Therefore, only use
+the above combination if you want to debug the list of extensions
+provided in @file{is_exec.c} file.
 
 @item _STAT_DIRSIZE
 
@@ -58,9 +58,10 @@ be a problem only under some versions of Novell Netware).
 
 @end table
 
-Note that if you set a bit, some failure bits in @ref{_djstat_fail_bits}
-might not be set, because some computations which report failures are only
-done when they are required.
+Note that if you set a bit, some failure bits in
+@code{_djstat_fail_bits} (@pxref{_djstat_fail_bits}) might not be set,
+because some computations which report failures are only done when they
+are required.
 
 @subheading Portability
 
@@ -76,15 +77,15 @@ done when they are required.
 extern unsigned short   _djstat_fail_bits;
 @end example
 
-As proper operation of @ref{stat} and @ref{fstat} depend on
-undocumented DOS features, they could fail in some incompatible
-environment or a future DOS version.  If they do, the
-@code{_djstat_fail_bits} variable will have some of its bits set.
-Each bit describes a single feature which was used and failed.  The
-function @ref{_djstat_describe_lossage} may be called to print a
-human-readable description of the bits which were set by the last call
-to @code{f?stat()}.  This should make debugging @code{f?stat()}
-failures in an unanticipated environment a lot easier.
+As proper operation of @code{stat} (@pxref{stat}) and @code{fstat}
+(@pxref{fstat}) depend on undocumented DOS features, they could fail in
+some incompatible environment or a future DOS version.  If they do, the
+@code{_djstat_fail_bits} variable will have some of its bits set.  Each
+bit describes a single feature which was used and failed.  The function
+@ref{_djstat_describe_lossage} may be called to print a human-readable
+description of the bits which were set by the last call to
+@code{f?stat}.  This should make debugging @code{f?stat} failures in
+an unanticipated environment a lot easier.
 
 The following bits are currently defined:
 
@@ -96,8 +97,8 @@ Indicates that Get SDA call failed.
 
 @item _STFAIL_OSVER
 
-Indicates an unsupported DOS version (less than 3.10 for @code{stat()} or
-less than 2.0 for @code{fstat()}).
+Indicates an unsupported DOS version (less than 3.10 for @code{stat} or
+less than 2.0 for @code{fstat}).
 
 @item _STFAIL_BADSDA
 
@@ -105,7 +106,8 @@ The pointer to SDA was found to be bogus.
 
 @item _STFAIL_TRUENAME
 
-Indicates that @ref{_truename} function call failed.
+Indicates that @code{_truename} (@pxref{_truename}) function call
+failed.
 
 @item _STFAIL_HASH
 
@@ -119,20 +121,20 @@ label was found.
 
 @item _STFAIL_DCOUNT
 
-The number of SDA reported is ridiculously large (probbaly an unsupported
+The number of SDA reported is ridiculously large (probably an unsupported
 DOS clone).
 
 @item _STFAIL_WRITEBIT
 
-@code{fstat()} was asked to get write access bit of a file, but couldn't.
+@code{fstat} was asked to get write access bit of a file, but couldn't.
 
 @item _STFAIL_DEVNO
 
-@code{fstat()} failed to get device number.
+@code{fstat} failed to get device number.
 
 @item _STFAIL_BADSFT
 
-An SFT entry for this file was found by @code{fstat()}, but its contents
+An SFT entry for this file was found by @code{fstat}, but its contents
 can't be trusted because it didn't match file size and time stamp as
 reported by DOS.
 
@@ -148,17 +150,18 @@ The file entry was not found in the SFT array.
 
 Below are some explanations of terminology and abbreviations used by the
 printed messages, which will further clarify the meaning of the above bits
-and their descriptions printed by @ref{_djstat_describe_lossage}.
+and their descriptions printed by @code{_djstat_describe_lossage}
+(@pxref{_djstat_describe_lossage}).
 
-  SDA (Swappable Data Area) -- this is an internal DOS structure.
-@code{stat()} uses it to get the full directory entry (including the
+  SDA (@dfn{Swappable Data Area}) -- this is an internal DOS structure.
+@code{stat} uses it to get the full directory entry (including the
 starting cluster number) of a file.  The pointer to SDA found by
-@code{stat()} is trusted only if we find the pathname of our file at a
+@code{stat} is trusted only if we find the pathname of our file at a
 specific offset in that SDA.
 
-  SFT (System File Table) -- another internal DOS structure, used in file
-operations.  @code{fstat()} uses it to get full information on a file
-given its handle.  An SFT entry which is found by @code{fstat()} is only
+  SFT (@dfn{System File Table}) -- another internal DOS structure, used
+in file operations.  @code{fstat} uses it to get full information on a file
+given its handle.  An SFT entry which is found by @code{fstat} is only
 trusted if it contains files size and time stamp like those returned by
 DOS functions 57h and 42h.  Novell NetWare 3.x traps DOS file operations
 in such a way they never get to SFT, so some failure messages refer

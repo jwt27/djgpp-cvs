@@ -5,7 +5,7 @@
 @example
 #include <math.h>
 
-long double modf(long double x, long double *pint);
+long double modfl(long double x, long double *pint);
 @end example
 
 @subheading Description

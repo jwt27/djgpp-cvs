@@ -4,7 +4,7 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_reset_debug_watchpoint
+int __dpmi_reset_debug_watchpoint(unsigned long _handle);
 @end example
 
 @subheading Description
@@ -15,7 +15,7 @@ information.
 
 DPMI function AX = 0x0b03
 
-Resets a watchpoint.
+Resets a watchpoint given its handle in @var{_handle}.
 
 @subheading Return Value
 

@@ -5,19 +5,12 @@
 #include <sys/dxe.h>
 
 void *_dxe_load(char *dxe_filename);
-
-  static int (*add)(int a, int b);
-
-  add = _dxe_load("add.dxe");
-  if (add == 0)
-    printf("Cannot load add.dxe\n");
-  else
-    printf("Okay, 3 + 4 = %d\n", add(3,4));
 @end example
 
 @subheading Description
 
-This function loads a dynamic executable image into memory and returns the
+This function loads a dynamic executable image, whose file name is
+pointed to by @var{dxe_filename}, into memory and returns the
 entry point for the symbol associated with the image.  The symbol may point
 to a structure or a function.
 
@@ -28,4 +21,16 @@ to a structure or a function.
 @subheading Portability
 
 @portability !ansi, !posix
+
+@subheading Example
+
+@example
+  static int (*add)(int a, int b);
+
+  add = _dxe_load("add.dxe");
+  if (add == 0)
+    printf("Cannot load add.dxe\n");
+  else
+    printf("Okay, 3 + 4 = %d\n", add(3,4));
+@end example
 

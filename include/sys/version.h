@@ -12,7 +12,7 @@
 #undef __DJGPP_MINOR
 #undef __DJGPP_MINOR__
 
-#define DJGPP_MINOR 2
-#define __DJGPP_MINOR 2
-#define __DJGPP_MINOR__ 2
+#define DJGPP_MINOR 3
+#define __DJGPP_MINOR 3
+#define __DJGPP_MINOR__ 3
 

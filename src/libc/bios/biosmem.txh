@@ -11,8 +11,9 @@ unsigned biosmemory(void);
 
 This function returns the amount of system memory in 1k blocks.
 
-Note that this function will return 65535 if the system has more than
-64M of memory.  This is a limitation of the BIOS. 
+Note that this function doesn't know about extended memory above the
+640K mark, so it will report 640K at most.  This is a limitation of the
+BIOS.
 
 @subheading Return Value
 

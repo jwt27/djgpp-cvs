@@ -10,7 +10,7 @@
                               DJ Delorie
 
 
-          This is the README.1ST file for DJGPP Version 2.02
+          This is the README.1ST file for DJGPP Version 2.03
 
 ************************************************************************
 *  This file contains information on obtaining, installing, and using  *
@@ -55,12 +55,12 @@ FAQ      A short file which points you to other documents you should
 
 v2/
 unzip386 A free program to unzip the archive (like PKUNZIP) 
-djdev202 DJGPP V2 Development Kit and Runtime
-djlsr202 DJGPP V2 Base Library Sources
-djtst202 DJGPP V2 Test Programs (for testing the C library)
-djcrx202 DJGPP V2 Cross-to-DOS Compiler Support Files (from djlsr/djdev)
-djtzn202 DJGPP V2 Timezone Files
-djtzs202 DJGPP V2 Timezone Sources
+djdev203 DJGPP V2 Development Kit and Runtime
+djlsr203 DJGPP V2 Base Library Sources
+djtst203 DJGPP V2 Test Programs (for testing the C library)
+djcrx203 DJGPP V2 Cross-to-DOS Compiler Support Files (from djlsr/djdev)
+djtzn203 DJGPP V2 Timezone Files
+djtzs203 DJGPP V2 Timezone Sources
 faq*b    The full FAQ list in various formats (Info, ASCII, HTML...)
 faq*s    The Texinfo sources of the FAQ and tools to generate all the
           different formats of the FAQ
@@ -102,7 +102,7 @@ guide to what to download.  In general, download the binary
 distributions only; most of the people don't need the source
 distributions.
 
-To build C programs, you'll need djdev202.zip, gcc*b.zip, and
+To build C programs, you'll need djdev203.zip, gcc*b.zip, and
 bnu*b.zip.  For C++, also get gpp*b.zip.
 
 To read the online manuals, get txi*b.zip and run "info".  If you don't
@@ -130,9 +130,9 @@ Installation
 2. Unzip all the zip files from that directory, preserving the
    directory structure.  For example:
 
-	pkunzip -d djdev202
+	pkunzip -d djdev203
   or
-	unzip386 djdev202
+	unzip386 djdev203
 
    On Windows 9X, use an unzip program which supports long file names.
    Latest versions of InfoZip's UnZip and PKUnZip, as well as WinZip,
@@ -150,7 +150,10 @@ Installation
 	set DJGPP=C:\DJGPP\DJGPP.ENV
 	set PATH=C:\DJGPP\BIN;%PATH%
 
-4. Run the go32-v2.exe program without arguments:
+4. Reboot.  This makes sure the two lines you added to autoexec.bat
+   will take effect.
+
+5. Run the go32-v2.exe program without arguments:
 
 	go32-v2
 
@@ -160,8 +163,8 @@ Installation
 	DPMI memory available: 8020 Kb
 	DPMI swap space available: 39413 Kb
 
-   (The actual numbers will vary according to amount of RAM installed
-   on your system, the available disk space and the DPMI server.)  If
+   The actual numbers will vary according to amount of RAM installed
+   on your system, the available disk space and the DPMI server.  If
    go32-v2 reports less than 4 MBytes of DPMI memory, read section 3.8
    of the FAQ.  (If you have more than that, but want to get the
    optimal performance from your system, read that section anyway.)
@@ -260,11 +263,11 @@ and then link with `-g' as well:
 
 	gcc -g -o myprog.exe mymain.o mysub1.o mysub2.o
 
-(Note that with v2.01 of DJGPP, it is no longer necessary to compile
-to a raw COFF output by omitting the `.exe' from the filename in order
-to debug programs.  The new v2.01 debuggers are capable of reading an
-executable as well as the raw COFF.  If you don't understand this,
-don't worry about it.)
+(Note that beginning with v2.01 of DJGPP, it is no longer necessary to
+compile to a raw COFF output by omitting the `.exe' from the filename
+in order to debug programs.  The debuggers distributed with v2.01 and
+later are capable of reading an executable as well as the raw COFF.
+If you don't understand this, don't worry about it.)
 
 Then run your program under the debugger:
 
@@ -309,16 +312,16 @@ Compatibility with V1.x
 -----------------------
 
 Existing binaries compiled under DJGPP V1.x can be used for
-applications for which there is no v2.0 version.  V1 programs cannot
+applications for which there is no v2.x version.  V1 programs cannot
 run V2 programs (but v2 programs *can* run v1 programs), so don't try,
-say, using v1.x Make to run v2.0 compiler.
+say, using v1.x Make to run v2.x compiler.
 
 
 
 
 --- COPYRIGHT ---
 
-DJGPP V2 is Copyright (C) 1989-1998 by DJ Delorie.  Some parts of
+DJGPP V2 is Copyright (C) 1989-1999 by DJ Delorie.  Some parts of
 libc.a are Copyright (C) Regents of the University of California at
 Berkeley.
 
