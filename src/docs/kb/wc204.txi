@@ -131,3 +131,9 @@ pollute the name space with the symbols @code{etext}, @code{edata} and
 @code{end}.  The profiling code was also changed to not pollute the name
 space with @code{etext}.
 
+@pindex dtou@r{, new command-line options}
+The @code{dtou} program accepts new command-line options for verbose
+operation, backup file creation, and control of file timestamp
+preservation.  Its source can now be compiled on a Unix or GNU/Linux
+system.
+

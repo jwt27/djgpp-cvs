@@ -322,10 +322,98 @@ so that they won't get mixed with the files' data.
 @node dtou, utod, djtar, Top
 @chapter dtou
 
+Usage: @code{dtou} [@code{-b}] [@code{-h}] [@code{-r}] [@code{-s}] [@code{-t}]
+[@code{-v}] [@code{-vv}] @file{files}
+
 Each file specified on the command line is converted from dos's CR/LF
 text file mode to unix's NL text file mode.
 
 All djgpp wildcards are supported.  Timestamps of the files are preserved.
+
+@code{dtou} will pass an exit status of 0 to the calling context if all the
+files have been successfully processed and an exit status greater than 0 if
+not.  In this case, the exit status is equal to the amount of unsuccessfully
+processed files.  A file has not been successfully processed if some kind of
+I/O error occurred.
+
+@strong{Options:}
+
+@table @code
+
+@item -b
+
+Creates a backup of the original file if the file has been modified.
+@file{.d2u} is used as backup suffix.  On systems with LFN support, the
+backup suffix will be appended to the file name.  If no LFN support is
+available the backup suffix will overwrite the original file suffix.
+
+@item -h
+
+Displays a help text and exits.
+
+@item -r
+
+Repair mode.  This mode transforms MSDOS-style EOL (CR/LF) into
+UNIX-style EOL (LF).  It ignores Cntl-Z thus it will not truncate the file.
+CR sequences in front of LFs are left unchanged.  This mode is intended
+for repairing files that have erroneously been transmited in text-mode
+instead of binary-mode during a FTP session or with Windows versions of
+Netscape which have the bad habit to transfer files with such extensions
+as @file{.gz}, @file{.bz2}, @file{.tgz} as text files.
+
+@item -s
+
+Strip mode.  It transforms MSDOS-style EOL (CR/LF) into UNIX-style EOL (LF)
+and strips a CR sequence of arbitrary length from a file, if the sequence
+followed by a LF.  CR sequences that are not followed by a LF are left
+unchanged.  This mode is intended to repair files that have been processed
+with buggy ports of Unix software, which always blindly add a CR to a LF,
+even if there is already a CR there.
+
+@item -t
+
+Timestamp.  With this option the timestamp of a modified file will not be
+preserved.  The timestamp of an unmodified file will always be preserved.
+
+@item -v
+
+Verbose mode.  Prints a single line showing the file name and if file
+processing has been successful or not.  The only case that a file is
+considered as unsuccessfully processed is if an I/O error has occurred.
+
+@item -vv
+
+Very verbose mode.  Prints the file name and shows the kind of modifications
+that have been done to the file.  All possible output looks like:
+
+@example
+File: foo.c
+File unchanged.
+At least one CR/LF to LF transformation occurred.
+Warning: At least one CR sequence striped from a LF.
+Warning: At least one Cntl-Z has been found. File truncated
+         at line n.
+Warning: At least one LF without a preceeding CR has been found.
+@end example
+
+Of course, not all of the above lines will appear all together.  The first
+line showing the file name will always be printed.  If the file has not been
+modified at all, then only the next line will be printed.  If the file has
+been modified an appropiate combination of the lines 3 to 6 will be printed,
+indicating what has been modified.  The above output is of some use, e.g.:
+if @code{dtou} reports a LF without a preceeding CR this will be a sure sign
+that the file is either binary or has inconsistent EOL format for some other
+reason.  If @code{dtou} reports that a Cntl-Z (software EOF) has been found,
+then the file will be truncated at that line and the rest of the file will be
+lost.
+
+@end table
+
+The program is backward compatible with previous program versions if no options
+are given at all.  In this case, an occurrence of Cntl-Z will truncate the file,
+MSDOS-style EOL (CR/LF) are transformed into UNIX-style EOL (LF) and CR sequence
+stripping will not happen at all.  Also the timestamp will not be alterated and
+no backup of the original file will be done.
 
 @c -----------------------------------------------------------------------------
 @node utod, gxx, dtou, Top
