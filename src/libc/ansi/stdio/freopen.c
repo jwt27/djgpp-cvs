@@ -52,7 +52,7 @@ freopen(const char *file, const char *mode, FILE *f)
   if (fd < 0)
     return NULL;
 
-  if(fd != fdo) {	/* This should rarely happen, but if it does for */
+  if(fd != fdo && fdo >= 0) {   /* Might rarely happen, but if it does for */
     dup2(fd, fdo);	/* stdin/stdout/stderr handles, we must fix it or */
     _close(fd);		/* child processes won't popen properly. */
     fd = fdo;
