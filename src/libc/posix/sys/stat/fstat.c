@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -97,6 +98,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <io.h>
 #include <time.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -107,6 +109,7 @@
 #include <go32.h>
 #include <libc/farptrgs.h>
 #include <libc/bss.h>
+#include <libc/symlink.h>
 #include <sys/fsext.h>
 #include "xstat.h"
 
@@ -381,6 +384,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   long           sft_fsize;
   unsigned short trusted_ftime = 0, trusted_fdate = 0;
   long           trusted_fsize = 0;
+  int            is_link = 0;
 
   if ((dev_info = _get_dev_info(fhandle)) == -1)
     return -1;	/* errno set by _get_dev_info() */
@@ -591,20 +595,38 @@ fstat_assist(int fhandle, struct stat *stat_buf)
                   *dst-- = *src--;
 
               /* Build Unix-style file permission bits. */
-              if ( !(sft_buf[fattr_ofs] & 0x07) ) /* no R, S or H bits set */
-                stat_buf->st_mode |= WRITE_ACCESS;
-
-              /* Execute permission bits.  fstat() cannot be called on
-               * directories under DOS, so only executable programs/batch
-               * files should be considered.
+              /* Check for symlink at first.  This test will fail if we 
+               * don't have read access to file.
                */
-              if (_is_executable((const char *)0, fhandle, sft_extension))
-                stat_buf->st_mode |= EXEC_ACCESS;
+              if (sft_fsize == 510)
+              {
+                 int old_errno = errno;
+		 char buf[2];
+		 int bytes_read = __internal_readlink(NULL, fhandle, buf, 1);
+		 if (bytes_read != -1)
+		 {
+		    stat_buf->st_mode = S_IFLNK;
+		    is_link = 1;
+		 }
+		 else
+ 		    errno = old_errno;
+              }
+              if (!is_link)
+              {
+                 if ( !(sft_buf[fattr_ofs] & 0x07) ) /* no R, S or H bits set */
+                   stat_buf->st_mode |= WRITE_ACCESS;
 
-              /* DOS 4.x and above seems to know about named pipes. */
-              if (dos_major > 3 && (sft_buf[6] & 0x20))
-                stat_buf->st_mode |= S_IFIFO;
+                 /* Execute permission bits.  fstat() cannot be called on
+                  * directories under DOS, so only executable programs/batch
+                  * files should be considered.
+                  */
+                 if (_is_executable((const char *)0, fhandle, sft_extension))
+                   stat_buf->st_mode |= EXEC_ACCESS;
 
+                 /* DOS 4.x and above seems to know about named pipes. */
+                 if (dos_major > 3 && (sft_buf[6] & 0x20))
+                   stat_buf->st_mode |= S_IFIFO;
+              }
               /* Device code. */
               stat_buf->st_dev = drv_no;
 #ifdef  HAVE_ST_RDEV
@@ -774,35 +796,50 @@ fstat_assist(int fhandle, struct stat *stat_buf)
               stat_buf->st_ino = _invent_inode("", dos_ftime, trusted_fsize);
             }
 
-          /* Return the minimum access bits every file has under DOS. */
-          stat_buf->st_mode |= (S_IFREG | READ_ACCESS);
-          if (_djstat_flags & _STAT_ACCESS)
-            _djstat_fail_bits |= _STFAIL_WRITEBIT;
-
-	  /* If we run on Windows 9X, and LFN is enabled, try harder.
-	     Note that we deliberately do NOT use this call when LFN is
-	     disabled, even if we are on Windows 9X, because then we
-	     open the file with function 3Ch, and such handles aren't
-	     supported by 71A6h call we use here.  */
-	  if (dos_major >= 7 && _USE_LFN)
-	    {
-	      __dpmi_regs r;
-
-	      r.x.ax = 0x71a6;	/* file info by handle */
-	      r.x.bx = fhandle;
-	      r.x.ds = __tb >> 4;
-	      r.x.dx = 0;
-	      __dpmi_int(0x21, &r);
-	      if ((r.x.flags & 1) == 0
-		  && (_farpeekl(dos_mem_base, __tb) & 0x07) == 0)
-		stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
-	    }
-
-          /* Executables are detected if they have magic numbers.  */
-          if ( (_djstat_flags & _STAT_EXEC_MAGIC) == 0 &&
-               _is_executable((const char *)0, fhandle, (const char *)0))
-            stat_buf->st_mode |= EXEC_ACCESS;
-
+          if (trusted_fsize == 510)
+          {
+             int old_errno = errno;
+             char buf[2];
+             int bytes_read = __internal_readlink(NULL, fhandle, buf, 1);
+             if (bytes_read != -1)
+             {
+                stat_buf->st_mode = S_IFLNK;
+                is_link = 1;
+             }
+             else
+                errno = old_errno;
+          }
+          if (!is_link)
+          {
+              /* Return the minimum access bits every file has under DOS. */
+              stat_buf->st_mode |= (S_IFREG | READ_ACCESS);
+              if (_djstat_flags & _STAT_ACCESS)
+                _djstat_fail_bits |= _STFAIL_WRITEBIT;
+    
+              /* If we run on Windows 9X, and LFN is enabled, try harder.
+                 Note that we deliberately do NOT use this call when LFN is
+                 disabled, even if we are on Windows 9X, because then we
+                 open the file with function 3Ch, and such handles aren't
+                 supported by 71A6h call we use here.  */
+              if (dos_major >= 7 && _USE_LFN)
+                {
+                  __dpmi_regs r;
+    
+                  r.x.ax = 0x71a6;	/* file info by handle */
+                  r.x.bx = fhandle;
+                  r.x.ds = __tb >> 4;
+                  r.x.dx = 0;
+    	          __dpmi_int(0x21, &r);
+    	          if ((r.x.flags & 1) == 0
+    		       && (_farpeekl(dos_mem_base, __tb) & 0x07) == 0)
+    		  stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
+    	        }
+    
+              /* Executables are detected if they have magic numbers.  */
+              if ( (_djstat_flags & _STAT_EXEC_MAGIC) == 0 &&
+                _is_executable((const char *)0, fhandle, (const char *)0))
+                stat_buf->st_mode |= EXEC_ACCESS;
+          }
           /* Lower 6 bits of IOCTL return value give the device number. */
           stat_buf->st_dev = dev_info & 0x3f;
 #ifdef  HAVE_ST_RDEV
@@ -933,3 +970,4 @@ int main(int argc, char *argv[])
 }
 
 #endif  /* TEST */
+

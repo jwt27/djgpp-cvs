@@ -39,10 +39,11 @@ else if (S_ISCHR(s.st_mode))
 
 @subheading Bugs
 
-If a file was open in write-only mode, its execute mode bits might be
-incorrectly reported as if the file were non-executable.  This is
-because some executables are only recognized by reading their first
-two bytes, which cannot be done for files open in write-only mode.
+If a file was open in write-only mode, its execute and symlink mode 
+bits might be incorrectly reported as if the file were non-executable
+or non-symlink.  This is because executables and symlinks are only 
+recognized by reading their first few bytes, which cannot be done for 
+files open in write-only mode.
 
 For @code{fstat} to return correct info, you should make sure that all
 the data written to the file has been delivered to the operating system,
