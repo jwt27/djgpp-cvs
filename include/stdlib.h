@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -46,7 +47,6 @@ __DJ_wchar_t
 #define _WCHAR_T
 #endif
 
-void	_Exit(int _status) __attribute__((noreturn));
 void	abort(void) __attribute__((noreturn));
 int	abs(int _i);
 int	atexit(void (*_func)(void));
@@ -72,13 +72,30 @@ int	rand(void);
 void *	realloc(void *_ptr, size_t _size);
 void	srand(unsigned _seed);
 double	strtod(const char *_s, char **_endptr);
-float	strtof(const char *_s, char **_endptr);
 long	strtol(const char *_s, char **_endptr, int _base);
-long double	strtold(const char *_s, char **_endptr);
 unsigned long	strtoul(const char *_s, char **_endptr, int _base);
 int	system(const char *_s);
 size_t	wcstombs(char *_s, const wchar_t *_wcs, size_t _n);
 int	wctomb(char *_s, wchar_t _wchar);
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+typedef struct {
+  long long int quot;
+  long long int rem;
+} lldiv_t;
+
+void		_Exit(int _status) __attribute__((noreturn));
+long long int	atoll(const char *_s);
+long long int	llabs(long long int _i);
+lldiv_t		lldiv(long long int _numer, long long int _denom);
+float		strtof(const char *_s, char **_endptr);
+long double	strtold(const char *_s, char **_endptr);
+long long int	strtoll(const char *_s, char **_endptr, int _base);
+unsigned long long int	strtoull(const char *_s, char **_endptr, int _base);
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
 #ifndef __STRICT_ANSI__
 
@@ -91,14 +108,8 @@ int	unsetenv(const char *_var);
 
 #ifndef _POSIX_SOURCE
 
-typedef struct {
-  long long int quot;
-  long long int rem;
-} lldiv_t;
-
 void *		alloca(size_t _size);
 long double	_atold(const char *_s);
-long long int	atoll(const char *_s);
 void		cfree(void *_ptr);
 double          drand48(void);
 char *		ecvtbuf(double _val, int _nd, int *_dp, int *_sn, char *_bf);
@@ -111,8 +122,6 @@ char *		getpass(const char *_prompt);
 int		getlongpass(const char *_prompt, char *_buffer, int _max_len);
 char *		itoa(int _value, char *_buffer, int _radix);
 long            jrand48(unsigned short _state[3]);
-long long int	llabs(long long int _i);
-lldiv_t		lldiv(long long int _numer, long long int _denom);
 void            lcong48(unsigned short _param[7]);
 unsigned long   lrand48(void);
 void *		memalign (size_t _amt, size_t _align);
@@ -122,8 +131,6 @@ unsigned short *seed48(unsigned short _state_seed[3]);
 void            srand48(long _seedval);
 int		stackavail(void);
 long double	_strtold(const char *_s, char **_endptr);
-long long int	strtoll(const char *_s, char **_endptr, int _base);
-unsigned long long int strtoull(const char *_s, char **_endptr, int _base);
 void		swab(const void *_from, void *_to, int _nbytes);
 void *		valloc (size_t _amt);
 
