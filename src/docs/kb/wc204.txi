@@ -791,3 +791,8 @@ The function @code{atoll} was added.
 
 @findex strtold
 The function @code{strtold} was added.
+
+@findex _doprnt@r{, and }hh@r{ conversion qualifier}
+@findex printf@r{, and }hh@r{ conversion qualifier}
+The @code{hh} conversion qualifier is now supported by @code{_doprnt}
+and the @code{printf} family of functions.
