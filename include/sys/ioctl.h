@@ -120,6 +120,7 @@ struct winsize {
 };
 
 #define TIOCGWINSZ  _IOR('t', 104, struct winsize)      /* get window size */
+#define TIOCSWINSZ  _IOW('t', 103, struct winsize)      /* set window size */
 
 #if 0
 /* Common ioctl's for all disciplines which are handled in ttiocom */
@@ -316,7 +317,6 @@ struct ttysize {
 #define TIOCMBIC    _IOW('t', 107, int)             /* bic modem bits */
 #define TIOCMGET    _IOR('t', 106, int)             /* get all modem bits */
 #define TIOCREMOTE  _IOW('t', 105, int)             /* remote input editing */
-#define TIOCSWINSZ  _IOW('t', 103, struct winsize)      /* set window size */
 #define TIOCUCNTL   _IOW('t', 102, int)         /* pty: set/clr usr cntl mode */
 #define UIOCCMD(n)  _IO('u', n)                         /* usr cntl op "n" */
 
