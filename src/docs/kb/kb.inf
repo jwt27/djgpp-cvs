@@ -1,0 +1,68 @@
+This is Info file kb.inf, produced by Makeinfo-1.63 from the input file
+kb.txi.
+
+This document is a place to store random bits of information about
+using DJGPP efficiently.
+
+Copyright (c) 1995 DJ Delorie
+
+
+File: kb,  Node: Top,  Prev: (dir),  Up: (dir)
+
+* Menu:
+
+* Introduction::
+
+* Known Bugs::		List of things that we know are broken,
+			but either we haven't fixed them yet
+			or we haven't come up with a suitable
+			solution.
+
+* Known Anti-Bugs::	Things that some people might think are
+			bugs, but are done that way on purpose.
+
+* Hidden Features::	Things that are in djgpp but aren't
+			intended for the casual user.
+
+* Index::
+
+
+File: kb,  Node: Introduction,  Next: Known Bugs,  Up: Top
+
+Introduction
+************
+
+This is the intro.
+
+
+File: kb,  Node: Known Bugs,  Next: Known Anti-Bugs,  Prev: Introduction,  Up: Top
+
+
+File: kb,  Node: Known Anti-Bugs,  Next: Hidden Features,  Prev: Known Bugs,  Up: Top
+
+
+File: kb,  Node: Hidden Features,  Prev: Known Anti-Bugs,  Up: Top
+
+
+File: kb,  Node: Index,  Up: Top
+
+* Menu:
+
+* Ctrl-M:                               Introduction.
+* Introduction:                         Introduction.
+* __dpmi_stack:                         Introduction.
+* go32.exe:                             Introduction.
+* intro():                              Introduction.
+* mode_t:                               Introduction.
+
+
+
+Tag Table:
+Node: Top205
+Node: Introduction638
+Node: Known Bugs747
+Node: Known Anti-Bugs833
+Node: Hidden Features922
+Node: Index992
+
+End Tag Table

@@ -1,0 +1,76 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename kb.inf
+@settitle DJGPP Knowledge Base
+@c %**end of header
+
+@syncodeindex fn cp
+@syncodeindex vr cp
+@syncodeindex ky cp
+@syncodeindex pg cp
+@syncodeindex tp cp
+
+@setchapternewpage odd
+@paragraphindent 0
+
+@ifinfo
+
+This document is a place to store random bits of information about
+using DJGPP efficiently.
+
+Copyright (c) 1995 DJ Delorie
+@end ifinfo
+
+@titlepage
+@sp 10
+@comment The title is printed in a large font.
+@center @titlefont{DJGPP Knowledge Base}
+
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1995 DJ Delorie
+@end titlepage
+
+@node    Top,       ,  (dir),    (dir)
+@comment node-name, next,          previous, up
+
+@menu
+* Introduction::
+
+* Known Bugs::		List of things that we know are broken,
+			but either we haven't fixed them yet
+			or we haven't come up with a suitable
+			solution.
+
+* Known Anti-Bugs::	Things that some people might think are
+			bugs, but are done that way on purpose.
+
+* Hidden Features::	Things that are in djgpp but aren't
+			intended for the casual user.
+
+* Index::
+@end menu
+
+@node    Introduction, Known Bugs, ,      Top
+@comment node-name,    next,       previous, up
+@chapter Introduction
+
+This is the intro.
+@cindex Introduction
+@findex intro()
+@vindex __dpmi_stack
+@kindex Ctrl-M
+@pindex go32.exe
+@tindex mode_t
+
+@node Known Bugs, Known Anti-Bugs, Introduction, Top
+@node Known Anti-Bugs, Hidden Features, Known Bugs, Top
+@node Hidden Features, , Known Anti-Bugs, Top
+
+@node Index,,,Top
+@printindex cp
+
+@contents
+@bye
+
