@@ -344,6 +344,49 @@ static void hook_dpmi(void)
   __djgpp_app_DS = app_ds;
 }
 
+/* The instructions in forced_test[] MUST MATCH the expansion of:
+
+   EXCEPTION_ENTRY($13)
+   EXCEPTION_ENTRY($14)
+   EXCEPTION_ENTRY($15)
+   EXCEPTION_ENTRY($16)
+   EXCEPTION_ENTRY($17)
+
+   and the first 4 lines that follow the "exception_handler:" label
+   near the beginning of src/libc/go32/exceptn.S.  Don't change
+   them unless you know what you are doing!
+
+   You ask why don't we start from exception 17 (0x11) instead of
+   13 (0x0D), and save some of the bytes in the buffer below?  Well,
+   the code that compares the bytes below with the child's code runs
+   from change_exception_handler, which is only called if the DPMI
+   function 0x203 (Set Processor Exception Handler) succeeds.  However,
+   exception 17 is Alignment Check, and any DPMI environment would be
+   crazy to support it, 'cause a typical PC code will trigger it all
+   the time.  So most DPMI servers don't support it, and our code will
+   never be called if we tie it to exception 17.  In contrast, exception
+   13 is GPF, and *any* DPMI server will support that!  */
+static unsigned char forced_test[] = {
+  0x6a,0x0d,			/* pushl $0x0d */
+  0xeb,0x10,			/* jmp relative +0x10 */
+  0x6a,0x0e,			/* pushl $0x0e */
+  0xeb,0x0c,			/* jmp relative +0x0c */
+  0x6a,0x0f,			/* pushl $0x0f */
+  0xeb,0x08,			/* jmp relative +0x08 */
+  0x6a,0x10,			/* pushl $0x10 */
+  0xeb,0x04,			/* jmp relative +0x04 */
+  0x6a,0x11,			/* pushl $0x11 */
+  0xeb,0x0,			/* jmp relative 0 */
+  0x53,				/* pushl %ebx     */
+  0x1e,				/* push %ds       */
+  0x2e,0x80,0x3d		/* (beginning of) %cs:cmpb $0,forced */
+}; /* four next bytes contain the address of the `forced' variable */
+
+static int forced_test_size = sizeof (forced_test);
+
+static int forced_address_known = 0;
+static unsigned int forced_address = 0;
+
 /* Set an exception handler */
 /* stores it into app_handler if selector is app_cs  */
 
@@ -365,6 +408,31 @@ _change_exception_handler:                                              \n\
         jne    _not_in_current_app                                      \n\
         movl  %ecx,4(%eax)                                              \n\
         movl  %edx,(%eax)                                               \n\
+        cmpb  $0x0d,%bl	                                                \n\
+        jne   _no_forced_check                                          \n\
+        cmpl  $0,_forced_address_known                                  \n\
+        jne   _no_forced_check                                          \n\
+        pushl %esi                                                      \n\
+        pushl %edi                                                      \n\
+        pushl %ecx                                                      \n\
+        pushfl                                                          \n\
+        cld                                                             \n\
+        movw  %cx,%es                                                   \n\
+        movl  %edx,%edi                                                 \n\
+        movl  $_forced_test,%esi                                        \n\
+        movl  _forced_test_size,%ecx                                    \n\
+        repe                                                            \n\
+        cmpsb                                                           \n\
+        jne   _forced_not_found                                         \n\
+        movl  $1,_forced_address_known                                  \n\
+        movl  %es:(%edi),%edi                                           \n\
+        movl  %edi,_forced_address                                      \n\
+_forced_not_found:                                                      \n\
+        popfl                                                           \n\
+        popl  %ecx                                                      \n\
+        popl  %edi                                                      \n\
+        popl  %esi                                                      \n\
+_no_forced_check:                                                       \n\
 _not_in_current_app:                                                    \n\
         subl  $_app_handler,%eax /* allways restore our handler */      \n\
         addl  $_our_handler,%eax                                         \n\
@@ -1010,6 +1078,15 @@ static void dbgsig(int sig)
   /* correct ds limit here */
   if ((ds_size==0xfff) && (signum==0xc || signum==0xd))
     {
+      /* If forced_address is known then
+	 signum contains the fake exception value (PM) */
+      if (forced_address_known)
+        {
+         movedata(app_cs,forced_address,my_ds,(int) &signum,4);
+        }
+      else
+	signum=0x1B;	/* else we default to SIGINT */
+	
       if (app_ds_index>1)
         {
           /* set the limt correctly */
@@ -1029,9 +1106,6 @@ static void dbgsig(int sig)
        load_state->__eax = 1;
        call_app_exception(__djgpp_exception_state->__signum,0);
       }
-     /* I still have no idea how to get the exception number back */
-     /* just keep the fake exception value */
-     signum=0x1B;
      __djgpp_exception_state->__signum=signum;
     }
   
@@ -1100,14 +1174,31 @@ void run_child(void)
     /* jump to tss */
     _set_break_DPMI();
     hook_dpmi();
-    if ((a_tss.tss_trap == 0xffff) &&
-     (a_tss.tss_irqn<DPMI_EXCEPTION_COUNT) &&
-     (app_handler[a_tss.tss_irqn].offset32) &&
-     (app_handler[a_tss.tss_irqn].selector) &&
-      !invalid_sel_addr(app_handler[a_tss.tss_irqn].selector,
-        app_handler[a_tss.tss_irqn].offset32,1,0))
+    if (a_tss.tss_trap == 0xffff)
       {
-       call_app_exception(a_tss.tss_irqn,1);
+	/* We were asked by the debugger to deliver exception to
+	   the child when it is resumed.  */
+	if (a_tss.tss_irqn >= DPMI_EXCEPTION_COUNT && forced_address_known)
+	  {
+	    /* This is a fake exception (SIGINT, SIGALRM, etc.).  */
+#if 0
+	    movedata(my_ds, (int)&a_tss.tss_irqn, app_cs, forced_address, 4);
+#endif
+	    a_tss.tss_irqn = 0x0d;
+	  }
+	if ((a_tss.tss_irqn < DPMI_EXCEPTION_COUNT)
+	    && (app_handler[a_tss.tss_irqn].offset32)
+	    && (app_handler[a_tss.tss_irqn].selector)
+	    && !invalid_sel_addr(app_handler[a_tss.tss_irqn].selector,
+				 app_handler[a_tss.tss_irqn].offset32,1,0))
+	  {
+	    call_app_exception(a_tss.tss_irqn, 1);
+	  }
+	else
+	  {
+	    a_tss.tss_irqn = 0;
+	    longjmp(load_state, load_state->__eax);
+	  }
       }
     else
       longjmp(load_state, load_state->__eax);
@@ -1239,6 +1330,7 @@ static void (*oldTRAP)(int);
 static void (*oldSEGV)(int);
 static void (*oldFPE)(int);
 static void (*oldINT)(int);
+static void (*oldQUIT)(int);
 static void (*oldILL)(int);
 
 void edi_init(jmp_buf start_state)
@@ -1280,6 +1372,7 @@ void edi_init(jmp_buf start_state)
   oldSEGV = signal(SIGSEGV, dbgsig);
   oldFPE = signal(SIGFPE, dbgsig);
   oldINT = signal(SIGINT, dbgsig);
+  oldQUIT = signal(SIGQUIT, dbgsig);
   oldILL = signal(SIGILL, dbgsig);
   movedata(a_tss.tss_fs,0,my_ds,(unsigned)&si,sizeof(si));
   memset(mem_handles,0,sizeof(mem_handles));
@@ -1348,6 +1441,10 @@ void cleanup_client(void)
       app_handler[i].offset32 = 0;
       app_handler[i].selector = 0;
     }
+  /* Invalidate the info about the `forced' variable.  */
+  forced_address_known = 0;
+  forced_address = 0;
+  forced_test_size = sizeof (forced_test); /* pacify the compiler */
   /* Set the flag, that the user interrupt vectors are no longer valid */
   user_int_set = 0;
 
@@ -1389,6 +1486,7 @@ void cleanup_client(void)
   signal(SIGSEGV, oldSEGV);
   signal(SIGFPE, oldFPE);
   signal(SIGINT, oldINT);
+  signal(SIGQUIT, oldQUIT);
   signal(SIGILL, oldILL);
 }
 
