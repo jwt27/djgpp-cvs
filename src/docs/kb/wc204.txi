@@ -767,3 +767,7 @@ a large magnitude.
 A bug was fixed in the function @code{findfirst}.  Previously
 unexpected behaviour may have resulted, if the attribute argument
 had a value outside the range describable by the @code{FA_*} constants.
+
+@findex realpath@r{, added to library to increase @sc{posix} compliance}
+The function @code{realpath} was added. @code{realpath} does much the same
+as @code{_fixpath}, but is @sc{posix} compliant and resolves symlinks.
