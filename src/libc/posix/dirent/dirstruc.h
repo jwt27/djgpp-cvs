@@ -7,4 +7,5 @@ struct __dj_DIR {
   int flags;
   struct ffblk ff;
   struct dirent de;
+  int need_fake_dot_dotdot; /* 0=no, 1=.., 2=. */
 };
