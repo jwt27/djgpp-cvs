@@ -22,11 +22,13 @@ __DJ_uid_t
 #endif
 
 struct passwd {
-  char *	pw_name;
-  uid_t		pw_uid;
-  gid_t		pw_gid;
-  char *	pw_dir;
-  char *	pw_shell;
+  char *	pw_name;		/* Username.  */
+  uid_t 	pw_uid;			/* User ID.  */
+  gid_t 	pw_gid;			/* Group ID.  */
+  char *	pw_dir;			/* Home directory.  */
+  char *	pw_shell;		/* Shell program.  */
+  char *	pw_gecos;		/* Real name.  */
+  char *	pw_passwd;		/* Password.  */
 };
   
 struct passwd *	getpwuid(uid_t _uid);
