@@ -4,13 +4,13 @@
 @example
 #include <stdlib.h>
 
-div_t div(int numberator, int denomonator);
+div_t div(int numerator, int denominator);
 @end example
 
 @subheading Description
 
-Returns the quotient and remainder of the division @var{numberator}
-divided by @var{denomonator}.  The return type is as follows:
+Returns the quotient and remainder of the division @var{numerator}
+divided by @var{denominator}.  The return type is as follows:
 
 @example
 typedef struct @{
