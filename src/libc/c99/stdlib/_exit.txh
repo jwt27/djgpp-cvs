@@ -21,9 +21,9 @@ This function does not return.
 
 @subheading Portability
 
-@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
-
 @port-note ansi-c99 Depending on the implementation, @code{_Exit} may do the additional processing described above.
+
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
 
 @subheading Example
 
