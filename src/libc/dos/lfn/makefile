@@ -6,5 +6,6 @@ SRC += _use_lfn.c
 SRC += fncase.c
 SRC += lfnftime.c
 SRC += lfnshort.c
+SRC += is_dos83.c
 
 include $(TOP)/../makefile.inc
