@@ -17,7 +17,7 @@ SRC += redir.c
 SRC += update.c
 SRC += utod.c
 
-EXTRA_FILES += $(INFO)/utils.inf
+EXTRA_FILES += $(INFO)/utils.info
 EXTRA_FILES += $(BIN)/rem.com
 EXTRA_FILES += phony_texi2ps
 EXTRA_FILES += phony_djtar
