@@ -1,0 +1,24 @@
+@node __dpmi_free_dos_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_free_dos_memory(int _selector);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0101
+
+This function frees the dos memory allocated by
+@ref{__dpmi_allocate_dos_memory}.  Remember to pass the selector and
+not the segment.
+
+@subheading Return Value
+
+-1 on error, else zero.

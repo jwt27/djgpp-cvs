@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node pow, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double pow(double x, double y);
+@end example
+
+@subheading Return Value
+
+@var{x} raised to the @var{y} power.

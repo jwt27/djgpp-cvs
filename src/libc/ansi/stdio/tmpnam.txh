@@ -1,0 +1,43 @@
+@node tmpnam, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+char *tmpnam(char *s);
+@end example
+
+@subheading Description
+
+This functions generates a string that is a valid file name and that
+is not the same as the name of an existing file.  A different string is
+guaranteed to be produced each time it is called, up to @code{TMP_MAX}
+times (@code{TMP_MAX} is defined on stdio.h).  If @code{tmpnam} is called
+more than TMP_MAX times, the behavior is implementation-dependent (ours
+just wraps around and tries to reuse the same file names from the
+beginning).
+
+This function examines the environment to determine the directory in which
+the temporary file will be opened.  It looks for one of the variables
+@code{"TMPDIR"}, @code{"TEMP"} and @code{"TMP"}, in that order.  The first
+one which is found in the environment will be used on the assumption that
+it points to a directory.  If neither of the above variables is defined,
+@code{tmpnam} defaults to the "c:/" directory (which under MS-DOS might
+mean that it fails to generate TMP_MAX unique names, because DOS root
+directories cannot grow beyond certain limits).
+
+@subheading Return Value
+
+If @var{s} is a null pointer, @code{tmpnam} leaves its result in an
+internal static buffer and returns a pointer to that buffer.  If @var{s}
+is not a null pointer, it is assumed to point to an array of at least
+@code{L_tmpnam} characters, and @code{tmpnam} writes its result in that
+array and returns a pointer to it as its value.
+
+@subheading Example
+
+@example
+char buf[L_tmpnam];
+char *s = tmpname(buf);
+@end example
+

@@ -1,0 +1,30 @@
+@node atoi, string
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int atoi(const char *string);
+@end example
+
+@subheading Description
+
+Convert as much of the string as possible to an equivalent integer
+value.
+
+This function is almost like @code{(int)strtol(string, NULL, 10)}
+(@pxref{strtol}).
+
+@subheading Return Value
+
+The equivalent value, or zero if the string does not represent a number. 
+
+@subheading Example
+
+@example
+main(int argc, char **argv)
+@{
+  int i = atoi(argv[1]);
+  @dots{}
+@end example
+

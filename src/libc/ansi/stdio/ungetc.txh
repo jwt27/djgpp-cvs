@@ -1,0 +1,26 @@
+@node ungetc, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int ungetc(int c, FILE *file);
+@end example
+
+@subheading Description
+
+This function pushes @var{c} back into the @var{file}.  You can only
+push back one character at a time. 
+
+@subheading Return Value
+
+The pushed-back character, or @code{EOF} on error.
+
+@subheading Example
+
+@example
+int q;
+while (q = getc(stdin) != 'q');
+ungetc(q);
+@end example
+

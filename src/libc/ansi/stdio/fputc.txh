@@ -1,0 +1,23 @@
+@node fputc, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fputc(int character, FILE *file);
+@end example
+
+@subheading Description
+
+This function writes the given @var{character} to the given @code{file}.
+
+@subheading Return Value
+
+The given character [0..255] or @code{EOF}.
+
+@subheading Example
+
+@example
+fputc('\n', stdout);
+@end example
+

@@ -1,0 +1,25 @@
+@node ntohl, cpu
+@subheading Syntax
+
+@example
+#include <netinet/in.h>
+
+unsigned long ntohl(unsigned long val);
+@end example
+
+@subheading Description
+
+This function converts from network formatted longs to host formatted
+longs.  For the i386 and higher processors, this means that the bytes
+are swapped from 1234 order to 4321 order.
+
+@subheading Return Value
+
+The host-order value.
+
+@subheading Example
+
+@example
+ip = htonl(packet.ipaddr);
+@end example
+

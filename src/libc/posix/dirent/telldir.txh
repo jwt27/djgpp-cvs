@@ -1,0 +1,28 @@
+@node telldir, file system
+@subheading Syntax
+
+@example
+#include <dirent.h>
+
+long telldir(DIR *dir);
+@end example
+
+@subheading Description
+
+This function returns a value which indicates the position of the
+pointer in the given directory.  This value is only useful as an
+argument to @code{seekdir} (@pxref{seekdir}). 
+
+@subheading Return Value
+
+The directory pointer.
+
+@subheading Example
+
+@example
+DIR *dir;
+long q = telldir(dir);
+do_something();
+seekdir(dir, q);
+@end example
+

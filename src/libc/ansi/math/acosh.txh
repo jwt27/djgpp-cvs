@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node acosh, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double acosh(double x);
+@end example
+
+@subheading Return Value
+
+The arc hyperbolic cosine of @var{x}.

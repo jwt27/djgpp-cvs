@@ -1,0 +1,33 @@
+@node setjmp, misc
+@subheading Syntax
+
+@example
+#include <setjmp.h>
+
+int setjmp(jmp_buf j);
+@end example
+
+@subheading Description
+
+This function stores the complete CPU state into @var{j}.  This
+information is complete enough that @code{longjmp} (@pxref{longjmp}) can
+return the program to that state.  It is also complete enough to
+implement coroutines.
+
+@subheading Return Value
+
+This function will return zero if it is returning from it's own call. 
+If longjmp is used to restore the state, it will return whatever value
+was passed to longjmp, except if zero is passed to longjmp it will
+return one. 
+
+@subheading Example
+
+@example
+jmp_buf j;
+if (setjmp(j))
+  return;
+do_something();
+longjmp(j);
+@end example
+

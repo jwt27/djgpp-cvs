@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node tanh, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double tanh(double x);
+@end example
+
+@subheading Return Value
+
+The hyperbolic tangent of @var{x}.

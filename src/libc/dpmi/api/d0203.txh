@@ -1,0 +1,23 @@
+@node __dpmi_set_processor_exception_handler_vector, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_processor_exception_handler_vector(int _vector, __dpmi_paddr *_address);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0203
+
+This function installs a handler for protected mode exceptions (not
+interrupts).  You must pass a selector:offset pair.
+
+@subheading Return Value
+
+-1 on error, else zero.

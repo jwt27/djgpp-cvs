@@ -1,0 +1,22 @@
+@node __dpmi_get_memory_block_size_and_base, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_memory_block_size_and_base(__dpmi_meminfo *_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x050a (DPMI 1.0 only)
+
+Pass the handle.  It fills in the address and size.
+
+@subheading Return Value
+
+-1 on error, else zero.

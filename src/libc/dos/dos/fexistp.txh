@@ -1,0 +1,31 @@
+@c ----------------------------------------------------------------------
+@node __file_exists, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int __file_exists(const char *_fn);
+@end example
+
+@subheading Description
+
+This function provides a fast way to ask if a given file exists.
+Unlike access(), this function does not cause other objects to get
+linked in with your program, so is used primarily by the startup code
+to keep minimum code size small.
+
+@subheading Return Value
+
+Zero if the file does not exist, nonzero if it does.  Note that this
+is the opposite of what access() returns.
+
+@subheading Example
+
+@example
+
+if (__file_exists(fname))
+  process_file(fname);
+
+@end example
+

@@ -1,0 +1,32 @@
+@c ----------------------------------------------------------------------
+@node _status87, cpu
+@subheading Syntax
+
+@example
+#include <float.h>
+
+unsigned int _status87(void);
+@end example
+
+@subheading Description
+
+Returns the status word of the FPU, which indicate the results of the
+most recently completed FPU operation:
+
+@example
+---- ---- ---- ---X = SW_INVALID - invalid operation
+---- ---- ---- --X- = SW_DENORMAL - denormalized operand
+---- ---- ---- -X-- = SW_ZERODIVIDE - division by zero
+---- ---- ---- X--- = SW_OVERFLOW - overflow
+---- ---- ---X ---- = SW_UNDERFLOW - underflow
+---- ---- --X- ---- = SW_INEXACT - loss of precision
+---- ---- -X-- ---- = SW_STACKFAULT - stack over/under flow
+---- ---- X--- ---- = SW_ERRORSUMMARY - set if any errors
+-X-- -XXX ---- ---- = SW_COND - condition code
+---- ---X ---- ---- = SW_C0
+---- --X- ---- ---- = SW_C1
+---- -X-- ---- ---- = SW_C2
+-X-- ---- ---- ---- = SW_C3
+--XX X--- ---- ---- = SW_TOP - top of stack (use SW_TOP_SHIFT to shift it)
+X--- ---- ---- ---- = SW_BUSY - fpu is busy
+@end example

@@ -1,0 +1,25 @@
+@node fread, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+size_t fread(void *buffer, size_t size, size_t number, FILE *file);
+@end example
+
+@subheading Description
+
+This function reads @var{size}*@var{number} characters from @var{file}
+to @var{buffer}. 
+
+@subheading Return Value
+
+The number of items of size @var{size} read, or -1 on error.
+
+@subheading Example
+
+@example
+int foo[10];
+fread(foo, sizeof(int), 10, stdin);
+@end example
+

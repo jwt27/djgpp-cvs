@@ -1,0 +1,15 @@
+@node outportl, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void outportl(unsigned short _port, unsigned long _data);
+@end example
+
+@subheading Description
+
+Write a single long to an 32-bit port.
+
+This function is provided as an inline assembler macro, and will be
+optimized down to a single opcode when you optimize your program.

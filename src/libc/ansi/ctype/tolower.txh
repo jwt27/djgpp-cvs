@@ -1,0 +1,26 @@
+@c ----------------------------------------------------------------------
+@node tolower, ctype
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int tolower(int c);
+@end example
+
+@subheading Description
+
+This function returns @var{c}, converting it to lower case if it is
+upper case.  @xref{toupper}.
+
+@subheading Return Value
+
+The lower case letter.
+
+@subheading Example
+
+@example
+for (i=0; buf[i]; i++)
+  buf[i] = tolower(buf[i]);
+@end example
+

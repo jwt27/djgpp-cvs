@@ -1,0 +1,23 @@
+@node time, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+time_t time(time_t *t);
+@end example
+
+@subheading Description
+
+If @var{t} is not @code{NULL}, the current time is stored in @code{*t}. 
+
+@subheading Return Value
+
+The current time is returned.
+
+@subheading Example
+
+@example
+printf("Time is %d\n", time(0));
+@end example
+

@@ -1,0 +1,26 @@
+@node fwrite, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+size_t fwrite(void *buffer, size_t size, size_t number, FILE *file);
+@end example
+
+@subheading Description
+
+This function writes @var{size}*@var{number} characters from @var{buffer}
+to @var{file}.
+
+@subheading Return Value
+
+The number of items of size @var{size} written, or -1 on error.
+
+@subheading Example
+
+@example
+int foo[10];
+fwrite(foo, sizeof(int), 10, stdin);
+@end example
+
+

@@ -1,0 +1,19 @@
+@node inportw, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+unsigned short inportw(unsigned short _port);
+@end example
+
+@subheading Description
+
+Read a single 16-bit I/O port.
+
+This function is provided as an inline assembler macro, and will be
+optimized down to a single opcode when you optimize your program.
+
+@subheading Return Value
+
+The value returned through the port.

@@ -1,0 +1,52 @@
+@node wait, process
+@subheading Syntax
+
+@example
+#include <sys/wait.h>
+
+pid_t pid = wait(int *status);
+@end example
+
+@subheading Description
+
+This function causes its caller to delay its execution until a signal
+is received or one of its child processes terminates.  If any child has
+terminated, return is immediate, returning the process ID and its exit
+status, if that's available.  If no children processes were called since
+the last call, then -1 is returned and @code{errno} is set.
+
+@subheading Return Value
+
+If successful, this function returns the exit status of the child.  If
+there is an error, these functions return -1 and set @code{errno} to
+indicate the error type.
+
+@subheading Bugs
+
+Currently, this function always fails.
+
+@c -----------------------------------------------------------------------
+@node waitpid, process
+@subheading Syntax
+
+@example
+#include <sys/wait.h>
+
+pid_t pid = waitpid((pid_t pid, int *status, int options);
+@end example
+
+@subheading Description
+
+Currently, this function always fails. A -1 is returned and @code{errno}
+is set to indicate there are no children.
+
+@subheading Return Value
+
+If successful, this function returns the exit status of the child.  If
+there is an error, these functions return -1 and set @code{errno} to
+indicate the error type.
+
+@subheading Bugs
+
+Currently, this function always fails.
+

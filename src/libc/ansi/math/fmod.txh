@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node fmod, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double fmod(double x, double y);
+@end example
+
+@subheading Return Value
+
+The remainder of @var{x}/@var{y}.

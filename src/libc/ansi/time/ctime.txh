@@ -1,0 +1,140 @@
+@node ctime, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+char *ctime(const time_t *cal);
+@end example
+
+@subheading Description
+
+This function returns an ASCII representation of the time in @var{cal}. 
+This is equivalent to @code{asctime(localtime(cal))}.  @xref{asctime}.
+@xref{localtime}.
+
+@subheading Return Value
+
+The ascii representation of the time.
+
+@c ----------------------------------------------------------------------
+@node asctime, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+char *asctime(const struct tm *tptr);
+@end example
+
+@subheading Description
+
+This function returns an ASCII representation of the time represented by
+@var{tptr}.  The string returned is always 26 characters and has this
+format:
+
+@example
+Sun Jan 01 12:34:56 1993\n\0
+@end example
+
+The string pointed to is in a static buffer and will be overridden with
+each call to asctime.  The data should be copied if it needs to be
+preserved. 
+
+@subheading Return Value
+
+A pointer to the string.
+
+@subheading Example
+
+@example
+time_t now;
+time(&now);
+printf("The current time is %s", asctime(localtime(&now)));
+@end example
+
+@c ----------------------------------------------------------------------
+@node gmtime, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+struct tm *gmtime(const time_t *tod);
+@end example
+
+@subheading Description
+
+Converts the time represented by @var{tod} into a structure. 
+
+The return structure has this format:
+
+@example
+struct tm @{
+  int    tm_sec;    /* seconds after the minute [0-60] */
+  int    tm_min;    /* minutes after the hour [0-59] */
+  int    tm_hour;   /* hours since midnight [0-23] */
+  int    tm_mday;   /* day of the month [1-31] */
+  int    tm_mon;    /* months since January [0-11] */
+  int    tm_year;   /* years since 1900 */
+  int    tm_wday;   /* days since Sunday [0-6] */
+  int    tm_yday;   /* days since January 1 [0-365] */
+  int    tm_isdst;  /* Daylight Savings Time flag */
+  long   tm_gmtoff; /* offset from GMT in seconds */
+  char * tm_zone;   /* timezone abbreviation */
+@};
+@end example
+
+@subheading Return Value
+
+A pointer to a static structure which is overridden with each call. 
+
+@subheading Example
+
+@example
+time_t x;
+struct tm *t;
+time(&x);
+t = gmtime(&t);
+@end example
+
+@c ----------------------------------------------------------------------
+@node localtime, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+struct tm *localtime(const time_t *tod);
+@end example
+
+@subheading Description
+
+Converts the time represented by @var{tod} into a structure, correcting
+for the local timezone.  @xref{gmtime}.
+
+@subheading Return Value
+
+A pointer to a static structure which is overridden with each call. 
+
+@c ----------------------------------------------------------------------
+@node mktime, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+time_t mktime(struct tm *tptr);
+@end example
+
+@subheading Description
+
+This function converts a time structure into the number of seconds since
+00:00:00 GMT 1/1/1970.  It also attempts to normalize the fields of
+@var{tptr}. 
+
+@subheading Return Value
+
+The resulting time, or -1 if the time in @var{tptr} cannot be described
+in that format. 
+

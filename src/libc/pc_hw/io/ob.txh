@@ -1,0 +1,15 @@
+@node outportb, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void outportb(unsigned short _port, unsigned char  _data);
+@end example
+
+@subheading Description
+
+Write a single byte to an 8-bit port.
+
+This function is provided as an inline assembler macro, and will be
+optimized down to a single opcode when you optimize your program.

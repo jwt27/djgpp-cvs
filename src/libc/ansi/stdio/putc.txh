@@ -1,0 +1,24 @@
+@node putc, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int putc(int c, FILE *file);
+@end example
+
+@subheading Description
+
+This function writes one character to the given @var{file}.
+
+@subheading Return Value
+
+The character written.
+
+@subheading Example
+
+@example
+while ((c=getc(stdin)) != EOF)
+  putc(c, stdout);
+@end example
+

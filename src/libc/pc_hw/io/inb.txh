@@ -1,0 +1,12 @@
+@node inb, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+unsigned char inb(unsigned short _port);
+@end example
+
+@subheading Description
+
+Calls @ref{inportb}. Provided only for compatibility.

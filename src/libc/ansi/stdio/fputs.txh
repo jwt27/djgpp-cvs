@@ -1,0 +1,24 @@
+@node fputs, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fputs(const char *string, FILE *file);
+@end example
+
+@subheading Description
+
+This function all the characters of @var{string} (except the trailing
+@code{NULL}) to the given @var{file}.
+
+@subheading Return Value
+
+A nonnegative number on success, @code{EOF} on error.
+
+@subheading Example
+
+@example
+fputs("Hello\n", stdout);
+@end example
+

@@ -1,0 +1,14 @@
+@c ----------------------------------------------------------------------
+@node atan2, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double atan2(double y, double x);
+@end example
+
+@subheading Return Value
+
+The arc tangent of @var{y/x}, with appropriate return values for
+@var{y}=0 or @var{x}=0.

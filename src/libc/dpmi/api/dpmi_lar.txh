@@ -1,0 +1,22 @@
+@node __dpmi_get_descriptor_access_rights, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_descriptor_access_rights(int _selector);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+This function returns the access rights byte from the @code{lar}
+opcode.
+
+@subheading Return Value
+
+The access byte.  See an Intel programming manual for the list of
+access information.

@@ -1,0 +1,9 @@
+@c ----------------------------------------------------------------------
+@node fork, unix
+
+@subheading Description
+
+This function always returns -1 and sets @code{errno} to ENOMEM, as
+MS-DOS does not support multiple processes.  It exists only to assist
+in porting Unix programs.
+

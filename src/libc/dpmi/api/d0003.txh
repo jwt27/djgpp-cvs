@@ -1,0 +1,21 @@
+@node __dpmi_get_selector_increment_value, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_selector_increment_value(void);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0003
+
+@subheading Return Value
+
+The value to return to each selector allocated by
+__dpmi_allocate_ldt_descriptors to get the next one.

@@ -1,0 +1,17 @@
+@node closedir, file system
+@subheading Syntax
+
+@example
+#include <dirent.h>
+
+int closedir(DIR *dir);
+@end example
+
+@subheading Description
+
+This function closes a directory opened by opendir (@pxref{opendir}).
+
+@subheading Return Value
+
+Zero on success, nonzero if @var{dir} is invalid.
+

@@ -1,0 +1,25 @@
+@node strlwr, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strlwr(char *string);
+@end example
+
+@subheading Description
+
+This function replaces all upper case letters in @var{string} with lower
+case letters. 
+
+@subheading Return Value
+
+The string.
+
+@subheading Example
+
+@example
+char buf[100] = "Hello";
+strlwr(buf);
+@end example
+

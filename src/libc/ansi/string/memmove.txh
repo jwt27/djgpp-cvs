@@ -1,0 +1,27 @@
+@node memmove, memory
+@subheading Syntax
+
+@example
+#include <string.h>
+
+void *memmove(void *dest, const void *source, int num);
+@end example
+
+@subheading Description
+
+This function copies @var{num} bytes from @var{source} to @var{dest}. 
+The copy is done in such a way that if the two regions overlap, the
+source is always read before that byte is changed by writing to the
+destination. 
+
+@subheading Return Value
+
+@var{dest}
+
+@subheading Example
+
+@example
+memmove(buf+1, buf, 99);
+memmove(buf, buf+1, 99);
+@end example
+

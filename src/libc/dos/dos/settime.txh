@@ -1,0 +1,26 @@
+@node settime, time
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void settime(struct time *ptr);
+@end example
+
+@subheading Description
+
+This function sets the current time.
+
+@xref{gettime}. @xref{setdate}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+struct time t;
+settime(&t);
+@end example
+

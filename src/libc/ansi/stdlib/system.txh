@@ -1,0 +1,33 @@
+@node system, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int system(const char *cmd);
+@end example
+
+@subheading Description
+
+This function runs the specified command.  When calling programs
+compiled by djgpp this function will not use command.com and so
+will not be subject to its 126 character limit on command lines.
+
+Command lines and pipes( i.e., the use of "<", ">", ">>", and "|")
+will be simulated internally in this function.
+
+Command.com will only be invoked to run commands internal to it,
+or to run batch files.  In these cases, the returned error code
+will always be zero, since command.com always exits with code 0.
+
+@subheading Return Value
+
+The return value of the child process.
+
+@subheading Example
+
+@example
+system("cc1plus.exe @@cc123456.gp");
+@end example
+
+

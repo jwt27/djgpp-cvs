@@ -1,0 +1,25 @@
+@node fclose, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fclose(FILE *file);
+@end example
+
+@subheading Description
+
+This function closes the given @var{file}.
+
+@subheading Return Value
+
+Zero on success, else @code{EOF}. 
+
+@subheading Example
+
+@example
+FILE *f = fopen("data", "r");
+fprintf(f, "Hello\n");
+fclose(f);
+@end example
+

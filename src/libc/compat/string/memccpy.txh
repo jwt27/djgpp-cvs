@@ -1,0 +1,37 @@
+@node memccpy, memory
+@subheading Syntax
+
+@example
+#include <string.h>
+
+void * memccpy(void *to, const void *from, int ch, size_t nbytes)
+@end example
+
+@subheading Description
+
+This function copies characters from memory area @var{from} into @var{to},
+stopping after the first occurrence of character @var{ch} has been copied,
+or after @var{nbytes} characters have been copied, whichever comes first.
+The buffers should not overlap.
+
+@subheading Return Value
+
+A pointer to the character after the copy of @var{ch} in @var{to},
+or a @code{NULL} pointer if @var{ch} was not found in the first
+@var{nbytes} characters of @var{from}.
+
+@subheading Example
+
+@example
+char inpbuf[256], dest[81];
+
+printf("Enter a path: ");
+fflush(stdout);
+gets(inpbuf);
+memset(dest, 0, sizeof(dest));
+if (memccpy(dest, inpbuf, '\\', 80))
+  printf("The first directory in path is %s\n", dest);
+else
+  printf("No explicit directory in path\n");
+@end example
+

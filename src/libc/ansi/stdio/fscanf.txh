@@ -1,0 +1,18 @@
+@node fscanf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fscanf(FILE *file, const char *format, @dots{});
+@end example
+
+@subheading Description
+
+This function scans formatted text from @var{file} and stores it in the
+variables pointed to by the arguments.  @xref{scanf}.
+
+@subheading Return Value
+
+The number of items successfully scanned.
+

@@ -1,0 +1,31 @@
+@node __dpmi_segment_to_descriptor, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_segment_to_descriptor
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0002
+
+This function returns a selector that maps to what the real-mode
+segment provided would have referenced.  Warning: this is a scarce
+resource.
+
+@subheading Return Value
+
+-1 on error, else the selector.
+
+@subheading Example
+
+@example
+short video = __dpmi_segment_to_descriptor(0xa000);
+@end example
+

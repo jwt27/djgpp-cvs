@@ -1,0 +1,18 @@
+@node getpid, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int getpid(void);
+@end example
+
+@subheading Description
+
+Get the process ID, which uniquely identifies each program running on
+the system. 
+
+@subheading Return Value
+
+The process ID.
+

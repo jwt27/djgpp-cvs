@@ -1,0 +1,17 @@
+@node fprintf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fprintf(FILE *file, const char *format, @dots{});
+@end example
+
+@subheading Description
+
+Prints formatted output to the named file.  @xref{printf}.
+
+@subheading Return Value
+
+The number of characters written.
+

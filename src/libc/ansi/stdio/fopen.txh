@@ -1,0 +1,72 @@
+@node fopen, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+FILE *fopen(const char *filename, const char *mode);
+@end example
+
+@subheading Description
+
+This function opens a stream corresponding to the named @var{filename}
+with the given @var{mode}.  The mode can be one of the following:
+
+@table @code
+
+@item r
+
+Open an existing file for reading.
+
+@item w
+
+Create a new file (or truncate an existing file) and open it for
+writing. 
+
+@item a
+
+Open an existing file (or create a new one) for writing.  The file
+pointer is positioned to the end of the file before every write. 
+
+@end table
+
+Followed by any of these characters:
+
+@table @code
+
+@item b
+
+Force the file to be open in binary mode instead of the default mode.
+
+@item t
+
+Force the file to be open in text mode instead of the default mode.
+
+@item +
+
+Open the file as with @code{O_RDWR} so that both reads and writes
+can be done to the same file.
+
+@end table
+
+If the file is open for both reading and writing, you must call
+@code{fflush}, @code{fseek}, or @code{rewind} before switching from read
+to write or from write to read. 
+
+The open file is set to line buffered if the underlying object is a
+device (stdin, stdout, etc), or is fully buffered if the underlying
+object is a disk file (data.c, etc).
+
+If @code{b} or @code{t} is not specified in @var{mode}, the file type is
+chosen by the value of @code{fmode} (@pxref{_fmode}). 
+
+@subheading Return Value
+
+A pointer to the @code{FILE} object, or @code{NULL} if there was an
+error. 
+
+@subheading Example
+
+@example
+FILE *f = fopen("foo", "rb+"); /* open existing file for read/write, binary mode */
+@end example
+

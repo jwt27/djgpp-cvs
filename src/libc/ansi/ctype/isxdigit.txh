@@ -1,0 +1,19 @@
+@c ----------------------------------------------------------------------
+@node isxdigit, ctype
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int isxdigit(int c);
+@end example
+
+@subheading Description
+
+Tells if @var{c} is a valid hexidecimal digit or not.  This includes
+@code{[0-9a-fA-F]}. 
+
+@subheading Return Value
+
+Nonzero if @var{c} is a hex digit, else zero.
+

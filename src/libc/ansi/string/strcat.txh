@@ -1,0 +1,24 @@
+@node strcat, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strcat(char *s1, const char *s2);
+@end example
+
+@subheading Description
+
+This function concatenates @var{s2} to the end of @var{s1}.
+
+@subheading Return Value
+
+@var{s1}
+
+@subheading Example
+
+@example
+char buf[100] = "hello";
+strcat(buf, " there");
+@end example
+

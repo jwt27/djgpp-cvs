@@ -1,0 +1,25 @@
+@node __dpmi_set_segment_limit, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_segment_limit(int _selector, unsigned _address);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0008
+
+This function sets the highest valid address in the segment referenced
+by @var{_selector}.  For example, if you pass 0xfffff, the highest
+valid address is 0xfffff.  Note: if you pass a number <= 64K, the
+segment changes to "non-big", and may cause unexpected problems.
+
+@subheading Return Value
+
+-1 on error, else zero.

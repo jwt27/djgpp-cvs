@@ -1,0 +1,24 @@
+@node getlogin, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+char *getlogin(void);
+@end example
+
+@subheading Description
+
+Get the login ID of the user.
+
+@subheading Return Value
+
+Returns the value of the @code{USER} environment variable, else the
+@code{LOGNAME} environment variable, else @code{"dosuser"}. 
+
+@subheading Example
+
+@example
+printf("I am %s\n", getlogin());
+@end example
+

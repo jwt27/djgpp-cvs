@@ -1,0 +1,379 @@
+@c ----------------------------------------------------------------------
+@node Screen Variables, conio
+@subheading Syntax
+
+@example
+#include <go32.h>
+#include <pc.h>
+
+unsigned long ScreenPrimary;
+unsigned long ScreenSecondary;
+extern unsigned char ScreenAttrib;
+
+@end example
+
+@subheading Description
+
+The first two variables (actually, they are #define'd aliases to fields in
+the @var{_go32_info_block} structure @pxref{_go32_info_block}) allow
+access to the video memory of the primary and secondary screens as if they
+were arrays.  To reference them, you must use dosmemget()/dosmemput()
+functions (@ref{dosmemget}, @ref{dosmemput}) or any one of the far
+pointer functions (@pxref{_far*}), as the video memory is @emph{not} mapped
+into your default address space.
+
+The variable ScreenAttrib holds the current attribute which is in use by
+the text screen writes.  The attribute is constructed as follows:
+
+bits 0-3  -- foreground color;
+
+bits 4-6  -- background color;
+
+bit  7    -- blink on (1) or off (0).
+
+@subheading Example
+
+_farpokew(_dos_ds, ScreenPrimary, ( ((unsigned short) attr) << 8) + char ));
+
+@example
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenMode, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+int  ScreenMode(void);
+
+
+@end example
+
+@subheading Description
+
+This function reports the current video mode as known to the system BIOS.
+It does so by accessing the byte at absolute address 40:49h.
+
+@subheading Return Value
+
+The video mode.
+
+@subheading Example
+
+@example
+video_mode = ScreenMode();
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenRows, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+int ScreenRows(void);
+
+@end example
+
+@subheading Description
+
+This function returns the number of rows of the text screen.  It does so
+by looking at the byte at the absolute address 40:84h in the BIOS area.
+This method works only for video adapters with their own BIOS extensions,
+like EGA, VGA, SVGA etc.
+
+@subheading Return Value
+
+The number of rows.
+
+@subheading Example
+
+@example
+
+int rows = ScreenRows();
+
+@end example
+
+
+@c ----------------------------------------------------------------------
+@node ScreenCols, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+int ScreenCols(void);
+
+@end example
+
+@subheading Description
+
+This function returns the number of columns of the screen.  It does so by
+looking at the byte at the absolute address 40:4Ah in the BIOS area. 
+In text modes, the meaning of number of columns is obvious; in graphics
+modes, this value is the number of columns of text available when using
+the video BIOS functions to write text.
+
+@subheading Return Value
+
+The number of columns.
+
+@subheading Example
+
+@example
+
+int available_columns = ScreenCols();
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenPutChar, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenPutChar(int ch, int attr, int col, int row);
+
+@end example
+
+@subheading Description
+
+This function writes the character whose value is specified in @var{ch}
+with an attribute @var{attr} at row given by @var{row} and column given by
+@var{col}, which are zero-based.  It does so by directly accessing the
+video memory, so it will only work when the screen is in text mode.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenPutChar('R', (BLUE << 4) | LIGHTMAGENTA, 75, 0);
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenPutString, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenPutString(const char *str, int attr, int column, int row);
+
+@end example
+
+@subheading Description
+
+Beginning at screen position given by @var{column} and @var{row}, this
+function displays the string given by @var{str}.  Each string character
+gets the attribute given by @var{attr}.  If @var{column} or @var{row} have
+values outside legal range for current video mode, nothing happens.  The
+variables @var{row} and @var{column} are zero-based (e.g., the topmost row
+is row 0).
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenPutString("Hello, world!", (BLUE << 4) | LIGHTBLUE, 20, 10);
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenSetCursor, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenSetCursor(int  row, int  column);
+
+@end example
+
+@subheading Description
+
+This function moves the cursor position on the default video page to the
+point given by (zero-based) @var{row} and @var{column}, by calling
+function 2 of interrupt 10h.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenSetCursor(0, 0);   /* home the cursor */
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenGetCursor, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenGetCursor(int *row, int *column);
+
+@end example
+
+@subheading Description
+
+This function retrieves the current cursor position of the default video
+page by calling function 3 of the interrupt 10h, and stores it in the
+variables pointed by @var{row} and @var{column}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenGetCursor(&wherex, &wherey);
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenClear, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenClear(void);
+
+@end example
+
+@subheading Description
+
+This function clears the text screen.  It overwrites it by blanks with the
+current background and foreground as specified by ScreenAttrib
+(@pxref{Screen Variables}).
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenClear();
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenUpdate, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenUpdate(void *buf);
+
+@end example
+
+@subheading Description
+
+This function writes the contents of the buffer @var{buf} to the primary
+screen.  The buffer should contain an exact replica of the video memory,
+including the characters and their attributes.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenUpdate(saved_screen);
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenUpdateLine, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenUpdateLine(void *buf, int row);
+
+@end example
+
+@subheading Description
+
+This function writes the contents of @var{buf} to the screen line number
+given in @var{row} (the topmost line is row 0), on the primary screen.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenUpdateLine(line_buf, 10);
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenRetrieve, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenRetrieve(void *buf);
+
+@end example
+
+@subheading Description
+
+This function stores a replica of the current primary screen contents in
+the buffer pointed to by @var{buf}.  It assumes without checking that
+@var{buf} has enough storage to hold the data.  The required storage can
+be computed as @code{ScreenRows()*ScreenCols()*2} (@ref{ScreenRows},
+@ref{ScreenCols}).
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+unsigned *saved_screen = (unsigned *)alloca(ScreenRows()*ScreenCols()*2;
+
+ScreenRetrieve(saved_screen);
+@end example
+
+@c ----------------------------------------------------------------------
+@node ScreenVisualBell, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenVisualBell(void);
+
+@end example
+
+@subheading Description
+
+This function flashes the screen colors to produce the effect of ``visual
+bell'.  It does so by momentarily inverting the colors of every character
+on the screen.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+ScreenVisualBell();
+@end example
+

@@ -1,0 +1,17 @@
+@node getpwnam, unix
+@subheading Syntax
+
+@example
+#include <pwd.h>
+
+struct passwd *getpwnam(const char *name);
+@end example
+
+@subheading Description
+
+This function gets the password file entry matching @var{name}.  @xref{getpwent}.
+
+@subheading Return Value
+
+The matching record, or @code{NULL} if none match.
+

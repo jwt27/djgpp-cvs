@@ -1,0 +1,22 @@
+@node __dpmi_get_and_enable_virtual_interrupt_state, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_and_enable_virtual_interrupt_state(void);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0901
+
+This function enables interrupts, and returns the previous setting.
+
+@subheading Return Value
+
+The previous setting.

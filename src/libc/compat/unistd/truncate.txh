@@ -1,0 +1,23 @@
+@node truncate, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int truncate(const char *file, off_t size);
+@end example
+
+@subheading Description
+
+This function truncates @var{file} to @var{size} bytes.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+ftruncate("/tmp/data.txt", 400);
+@end example
+

@@ -1,0 +1,12 @@
+@node outb, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void outb(unsigned short _port, unsigned char _data);
+@end example
+
+@subheading Description
+
+Calls @ref{outportb}. Provided only for compatibility.

@@ -1,0 +1,24 @@
+@node dup, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int dup(int old_handle);
+@end example
+
+@subheading Description
+
+This function duplicates the given file handle.  Both handles refer to
+the same file and file pointer. 
+
+@subheading Return Value
+
+The new file handle, or -1 if error.
+
+@subheading Example
+
+@example
+do_file(dup(fileno(stdin)));
+@end example
+

@@ -1,0 +1,27 @@
+@node filelength, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+long filelength(int fhandle);
+@end example
+
+@subheading Description
+
+This function returns the size, in bytes, of a file whose handle is
+specified in the argument @var{fhandle}.  To get the handle of a file
+opened by @ref{fopen} or @ref{freopen}, you can use @ref{fileno} macro.
+
+@subheading Return Value
+
+The size of the file in bytes, or (if any error occured) -1L and
+@var{errno} set to a value describing the cause of the failure.
+
+@subheading Example
+
+@example
+  printf("Size of file to which STDIN is redirected is %ld\n", 
+          filelength(0));
+@end example
+

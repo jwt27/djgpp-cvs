@@ -1,0 +1,26 @@
+@node __dpmi_get_real_mode_interrupt_vector, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_real_mode_interrupt_vector(int _vector, __dpmi_raddr *_address);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0200
+
+This function stores the real-mode interrupt vector address in
+@var{_address}. This is the same as the DOS get vector call, and
+returns a real-mode segment:offset pair.
+
+Bits [31:8] in the vector number are silently ignored.
+
+@subheading Return Value
+
+Zero.  This function always works.

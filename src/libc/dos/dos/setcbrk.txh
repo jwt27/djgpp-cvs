@@ -1,0 +1,18 @@
+@node setcbrk, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void setcbrk(int check);
+@end example
+
+@subheading Description
+
+Set the setting of the Ctrl-Break checking flag in MS-DOS.  If @var{check}
+is zero, checking is not done.  If nonzero, checking is done.
+
+@subheading Return Value
+
+None.
+

@@ -1,0 +1,18 @@
+@node fileno, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fileno(FILE *file);
+@end example
+
+@subheading Description
+
+This function returns the raw file descriptor number that @var{file}
+uses for I/O. 
+
+@subheading Return Value
+
+The file descriptor number.
+

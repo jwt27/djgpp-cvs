@@ -1,0 +1,62 @@
+@c ----------------------------------------------------------------------
+@node setlocale, locale
+@subheading Syntax
+
+@example
+#include <locale.h>
+
+char *setlocale(int category, const char *locale);
+@end example
+
+@subheading Description
+
+This function sets part or all of the current locale.  The
+@var{category} is one of the following:
+
+@table @code
+
+@item LC_ALL
+
+Set all parts of the locale.
+
+@item LC_COLLATE
+
+Set the collating information.
+
+@item LC_CTYPE
+
+Set the character type information.
+
+@item LC_MONETARY
+
+Set the monetary formatting information.
+
+@item LC_NUMERIC
+
+Set the numeric formatting information.
+
+@item LC_TIME
+
+Set the time formatting information.
+
+@end table
+
+The @var{locale} should be the name of the current locale.  Currently,
+only the "C" and "POSIX" locales are supported.  If the @var{locale}
+is NULL, no action is performed.  If @var{locale} is "", the locale is
+identified by environment variables (currently not supported).
+
+@xref{localeconv}.
+
+@subheading Return Value
+
+A static string naming the current locale for the given category, or
+NULL if the requested locale is not supported.
+
+@subheading Example
+
+@example
+setlocale(LC_ALL, "C");
+@end example
+
+

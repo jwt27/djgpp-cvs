@@ -1,0 +1,30 @@
+@node atol, string
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+long atol(const char *string);
+@end example
+
+@subheading Description
+
+Convert as much of the string as possible to an equivalent long integer
+value. 
+
+This function is almost like @code{strtol(string, NULL, 10)}
+(@pxref{strtol}).
+
+@subheading Return Value
+
+The equivalent value, or zero if the string does not represent a number. 
+
+@subheading Example
+
+@example
+main(int argc, char **argv)
+@{
+  long l = atol(argv[1]);
+  @dots{}
+@end example
+

@@ -1,0 +1,36 @@
+@node readdir, file system
+@subheading Syntax
+
+@example
+#include <dirent.h>
+
+struct dirent *readdir(DIR *dir);
+@end example
+
+@subheading Description
+
+This function reads entries from a directory opened by @code{opendir}
+(@pxref{opendir}).  It returns the information in a static buffer with
+this format:
+
+@example
+struct dirent @{
+  unsigned short d_namlen;  /* The length of the name (like strlen) */
+  char d_name[MAXNAMLEN+1]; /* The name */
+@};
+@end example
+
+@subheading Return Value
+
+A pointer to a static buffer that is overridden with each call.
+
+@subheading Example
+
+@example
+DIR *d = opendir(".");
+struct dirent *de;
+while (de = readdir(d))
+  puts(de->d_name);
+closedir(d);
+@end example
+

@@ -1,0 +1,20 @@
+@node abs, math
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int abs(int value);
+@end example
+
+@subheading Return Value
+
+The absolute value of @code{value} is returned.
+
+@subheading Example
+
+@example
+int sq = 7;
+sq = sq * abs(sq) + 1;
+@end example
+

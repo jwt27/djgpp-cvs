@@ -1,0 +1,30 @@
+@node perror, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+void perror(const char *string);
+@end example
+
+@subheading Description
+
+This function formats an error message and prints it to @code{stderr}. 
+The message is the @var{string}, a colon, and a message suitable for the error
+condition indicated by @code{errno}. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+int x = open("foo", O_RDONLY);
+if (x < 0)
+@{
+  perror("foo");
+  exit(1);
+@}
+@end example
+

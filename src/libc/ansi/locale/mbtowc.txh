@@ -1,0 +1,27 @@
+@c ----------------------------------------------------------------------
+@node mbtowc, locale
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int mbtowc(wchar_t *pwc, const char *s, size_t n);
+@end example
+
+@subheading Description
+
+Convert the first multibyte sequence in @var{s} to a wide character.
+At most @var{n} characters are checked.  If @var{pwc} is not
+@code{NULL}, the result is stored there.  If @var{s} is null, the
+internal shift state is reset.
+
+@subheading Return Value
+
+The number of characters used by the multibyte sequence.
+
+@subheading Example
+
+@example
+string += mbtowc(&wc, string, strlen(string));
+@end example
+

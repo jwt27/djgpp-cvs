@@ -1,0 +1,39 @@
+@node setvbuf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int setvbuf(FILE *file, char *buffer, int type, int length);
+@end example
+
+@subheading Description
+
+This function modifies the buffering characteristics of @var{file}. 
+First, if the file already has a buffer, it is freed.  If there was any
+pending data in it, it is lost, so this function should only be used
+immediately after a call to @code{fopen}.
+
+If the @var{type} is @code{_IONBF}, the @var{buffer} and @var{length}
+are ignored and the file is set to unbuffered mode. 
+
+If the @var{type} is @code{_IOLBF} or @code{_IOFBF}, then the file is
+set to line or fully buffered, respectively.  If @var{buffer} is
+@code{NULL}, a buffer of size @var{size} is created and used as the
+buffer.  If @var{buffer} is non-@code{NULL}, it must point to a buffer
+of at least size @var{size} and will be used as the buffer. 
+
+@xref{setbuf}.
+@xref{setbuffer}.
+@xref{setlinebuf}.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+setbuf(stderr, NULL, _IOLBF, 1000);
+@end example
+

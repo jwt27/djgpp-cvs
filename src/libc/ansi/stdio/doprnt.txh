@@ -1,0 +1,28 @@
+@node _doprnt, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int _doprnt(const char *format, void *params, FILE *file);
+@end example
+
+@subheading Description
+
+This is an internal function that is used by all the @code{printf} style
+functions, which simply pass their format, arguments, and stream to this
+function. 
+
+@xref{printf} for a discussion of the allowed formats and arguments. 
+
+@subheading Return Value
+
+The number of characters generated is returned.
+
+@subheading Example
+
+@example
+int args[] = @{ 1, 2, 3, 66 @};
+_doprnt("%d %d %d %c\n", args, stdout);
+@end example
+

@@ -1,0 +1,24 @@
+@node __dpmi_set_debug_watchpoint, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_debug_watchpoint(__dpmi_meminfo *_info, int _type);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0b00
+
+Set a debug breakpoint.  Type is 0 for execute, 1 for write, and 2 for
+access.  Fill in address and size (1,2,4 bytes).  Server fills in
+handle.
+
+@subheading Return Value
+
+-1 on error, else zero.

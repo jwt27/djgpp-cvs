@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node acos, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double acos(double x);
+@end example
+
+@subheading Return Value
+
+The arc cosine of @var{x}.

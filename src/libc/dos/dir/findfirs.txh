@@ -1,0 +1,87 @@
+@node findfirst, file system
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+int findfirst(const char *pathname, struct ffblk *ffblk, int attrib);
+@end example
+
+@subheading Description
+
+This function and the related @code{findnext} (@pxref{findnext}) are used
+to scan directories for the list of files therein.  The @var{pathname}
+is a wildcard that specifies the directory and files to search for (such
+as @code{subdir/*.c}), @var{ffblk} is a structure to hold the results and
+state of the search, and @var{attrib} is a combination of the following:
+
+@table @code
+
+@item FA_RDONLY
+
+Include read-only files in the search
+
+@item FA_HIDDEN
+
+Include hidden files in the search
+
+@item FA_SYSTEM
+
+Include system files in the search
+
+@item FA_LABEL
+
+Include the volume label in the search
+
+@item FA_DIREC
+
+Include subdirectories in the search
+
+@item FA_ARCH
+
+Include modified files in the search
+
+@end table
+
+Any file that doesn't have any flag bits that aren't specified is
+selected for the search.  Thus, if you specified @code{FA_DIREC} and
+@code{FA_LABEL}, you would get all subdirectories, the volume label, and
+any file that is neither read-only or modified. 
+
+The results of the search are stored in @var{ffblk}:
+
+@example
+struct ffblk @{
+  char ff_reserved[21];     /* used to hold the state of the search */
+  unsigned char ff_attrib;  /* actual attributes of the file found */
+  unsigned short ff_ftime;  /* hours:5, minutes:6, (seconds/2):5 */
+  unsigned short ff_fdate;  /* (year-1980):7, month:4, day:5 */
+  unsigned long ff_fsize;   /* size of file */
+  char ff_name[16];         /* name of file as ASCIIZ string */
+@}
+@end example
+
+@subheading Return Value
+
+Zero if a match is found, nonzero if none found.
+
+@subheading Example
+
+@example
+struct ffblk f;
+int done = findfirst("*.exe", &f, FA_ARCH|FA_RDONLY);
+while (!done)
+@{
+  printf("%10u %2u:%02u:%02u %2u/%02u/%4u %s\n",
+    f.ff_fsize,
+    (f.ff_ftime >> 11) & 0x1f,
+    (f.ff_ftime >>  5) & 0x3f,
+    (f.ff_ftime & 0x1f) * 2,
+    (f.ff_fdate >>  5) & 0x0f,
+    (f.ff_fdate & 0x1f),
+    ((f.ff_fdate >> 9) & 0x7f) + 1980,
+    f.ff_name);
+  done = findnext(&f);
+@}
+@end example
+

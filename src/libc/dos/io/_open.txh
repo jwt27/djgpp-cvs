@@ -1,0 +1,17 @@
+@node _open, file system
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int _open(const char *path, int attrib);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS open function call, int
+0x21, %ah = 0x3d.  The file is set to binary mode.
+
+@subheading Return Value
+
+The new file descriptor, else -1 on error.

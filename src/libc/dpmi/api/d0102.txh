@@ -1,0 +1,24 @@
+@node __dpmi_resize_dos_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_resize_dos_memory(int _selector, int _newpara, int *_ret_max);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0102
+
+This function resizes a dos memory block.  Remember to pass the
+selector, and not the segment.  If this call fails, @var{_ret_max}
+contains the largest number of paragraphs available.
+
+@subheading Return Value
+
+-1 on error, else zero.

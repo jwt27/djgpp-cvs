@@ -1,0 +1,79 @@
+@node spawn*, process
+@subheading Syntax
+
+@example
+#include <process.h>
+
+int spawnl(int mode, const char *path, const char *argv0, ...);
+int spawnle(int mode, const char *path, const char *argv0, ... /*, const char **envp */);
+int spawnlp(int mode, const char *path, const char *argv0, ...);
+int spawnlpe(int mode, const char *path, const char *argv0, ... /*, const char **envp */);
+
+int spawnv(int mode, const char *path, const char **argv);
+int spawnve(int mode, const char *path, const char **argv, const char **envp);
+int spawnvp(int mode, const char *path, const char **argv);
+int spawnvpe(int mode, const char *path, const char **argv, const char **envp);
+@end example
+
+@subheading Description
+
+These functions run other programs.  The @var{path} points to the
+program to run.  The extension is optional - if not given, the usual
+extensions @code{.com}, @code{.exe}, and @code{.bat} are checked.
+
+The programs are invoked with the arguments given.  The zeroth argument
+is normally not used, since MS-DOS cannot pass it separately.  There are
+two ways of passing arguments.  The @code{l} functions (like
+@code{spawnl}) take a list of arguments, with a zero at the end of the
+list.  This is useful when you know how many argument there will be
+ahead of time.  The @code{v} functions (like @code{spawnv}) take a
+pointer to a list of arguments.  This is useful when you need to compute
+the number of arguments at runtime. 
+
+In either case, you may also specify @code{e} to indicate that you will
+be giving an explicit environment, else the current environment is used. 
+You may also specify @code{p} to indicate that you would like
+@code{spawn*} to search the PATH (in either the environment you pass or
+the current environment) for the executable, else it will only check the
+explicit path given. 
+
+Note that these function understand about other djgpp programs, and will
+call them directly, so that you can pass command lines longer than 128
+characters to them without any special code. 
+
+@xref{exec*}.
+
+@subheading Return Value
+
+If successful and @code{mode} is @code{P_WAIT}, these functions return
+the exit code of the child process.  Note that if the program is run by a
+command processor (e.g., if it's a batch file), the exit code of that
+command processor will be returned.  @file{COMMAND.COM} is notorious for
+returning 0 even if it couldn't run the command.
+
+If successful and @var{mode} is @code{P_OVERLAY}, these functions will
+not return. 
+
+If there is an error, these functions return -1 and set @code{errno} to
+indicate the error. 
+
+@subheading Example
+
+@example
+
+char *environ[] = @{
+  "PATH=c:\\dos;c:\\djgpp;c:\\usr\\local\\bin",
+  "DJGPP=c:/djgpp",
+  0
+@};
+
+char *args[] = @{
+  "gcc",
+  "-v",
+  "hello.c",
+  0
+@};
+
+spawnvpe("gcc", args, environ);
+@end example
+

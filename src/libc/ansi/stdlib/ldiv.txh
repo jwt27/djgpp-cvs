@@ -1,0 +1,38 @@
+@node ldiv, math
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+ldiv_t ldiv(long numerator, long denomonator);
+@end example
+
+@subheading Description
+
+Returns the quotient and remainder of the division @var{numberator}
+divided by @var{denomonator}.  The return type is as follows:
+
+@example
+typedef struct @{
+  long quot;
+  long rem;
+@} ldiv_t;
+@end example
+
+@subheading Return Value
+
+The results of the division are returned.
+
+@subheading Example
+
+@example
+ldiv_t l = ldiv(42, 3);
+printf("42 = %ld x 3 + %ld\n", l.quot, l.rem);
+
+ldiv(+40, +3) = @{ +13, +1 @}
+ldiv(+40, -3) = @{ -13, -1 @}
+ldiv(-40, +3) = @{ -13, -1 @}
+ldiv(-40, -3) = @{ +13, -1 @}
+
+@end example
+

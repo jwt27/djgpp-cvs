@@ -1,0 +1,25 @@
+@node strcmp, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int strcmp(const char *s1, const char *s2);
+@end example
+
+@subheading Description
+
+This function compares @var{s1} and @var{s2}.
+
+@subheading Return Value
+
+Zero if the strings are equal, a positive number if @var{s1} comes after
+@var{s2} in the ASCII collating sequense, else a negative number. 
+
+@subheading Example
+
+@example
+if (strcmp(arg, "-i") == 0)
+  do_include();
+@end example
+

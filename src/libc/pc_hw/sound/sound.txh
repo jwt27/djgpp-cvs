@@ -1,0 +1,26 @@
+@node sound, sound
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void		sound(int _frequency);
+@end example
+
+@subheading Description
+
+Enables the PC speaker at the given frequency.
+
+@c ----------------------------------------------------------------------
+@node nosound, sound
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void nosound(void);
+@end example
+
+@subheading Description
+
+Disable the PC speaker.

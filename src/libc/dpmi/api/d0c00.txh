@@ -1,0 +1,22 @@
+@node __dpmi_install_resident_service_provider_callback, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_install_resident_service_provider_callback(__dpmi_callback_info *_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0c00 (DPMI 1.0 only)
+
+See the spec.
+
+@subheading Return Value
+
+-1 on error, else zero.

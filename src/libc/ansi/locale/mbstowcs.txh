@@ -1,0 +1,25 @@
+@c ----------------------------------------------------------------------
+@node mbstowcs, locale
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+size_t mbstowcs(wchar_t *wcs, const char *s, size_t n);
+@end example
+
+@subheading Description
+
+Converts a multibyte string to a wide character string.  The result
+will be no more than @var{n} wide characters.
+
+@subheading Return Value
+
+The number of wide characters stored.
+
+@subheading Example
+
+@example
+int wlen = mbtowcs(wbuf, string, sizeof(wbuf)/sizeof(wchar_t));
+@end example
+

@@ -1,0 +1,28 @@
+@node dup2, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int dup2(int existing_handle, int new_handle);
+@end example
+
+@subheading Description
+
+This call causes @var{new_handle} to refer to the same file and file
+pointer as @var{existing_handle}.  If @var{new_handle} is an open file,
+it is closed. 
+
+@subheading Return Value
+
+The new handle, or -1 on error.
+
+@subheading Example
+
+@example
+/* copy new file to stdin stream */
+close(0);
+dup2(new_stdin, 0);
+close(new_stdin);
+@end example
+

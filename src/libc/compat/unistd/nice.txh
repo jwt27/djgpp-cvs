@@ -1,0 +1,18 @@
+@c ----------------------------------------------------------------------
+@node nice, process
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int nice(int _increment);
+@end example
+
+@subheading Description
+
+Adjusts the priority of the process.  Provided for Unix compatibility
+only.
+
+@subheading Return Value
+
+The new nice value.

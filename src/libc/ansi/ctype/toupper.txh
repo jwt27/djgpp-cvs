@@ -1,0 +1,26 @@
+@c ----------------------------------------------------------------------
+@node toupper, ctype
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int toupper(int c);
+@end example
+
+@subheading Description
+
+This function returns @var{c}, converting it to upper case if it is
+lower case. @xref{tolower}.
+
+@subheading Return Value
+
+The upper case letter.
+
+@subheading Example
+
+@example
+for (i=0; buf[i]; i++)
+  buf[i] = toupper(buf[i]);
+@end example
+

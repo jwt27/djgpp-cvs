@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node cosh, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double cosh(double x);
+@end example
+
+@subheading Return Value
+
+The hyperbolic cosine of @var{x}.

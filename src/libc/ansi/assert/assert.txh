@@ -1,0 +1,37 @@
+@node assert, misc
+@subheading Syntax
+
+@example
+#define NDEBUG
+#include <assert.h>
+
+assert(expression);
+assertval(expression);
+@end example
+
+@subheading Description
+
+These macros are used to assist in debugging.  The source code includes
+references to assert and assertval, passing them expressions that should
+be true (or non-zero).  When the expression equals zero, a diagnostic
+message is printed to stderr and the program aborts.
+
+If you define the macro @code{NDEBUG} before including @file{assert.h},
+then the macros expand to nothing to reduce code size after debugging is
+done.
+
+@subheading Return Value
+
+@code{assert} returns one if it passes, else it aborts.
+
+@code{assertval} returns the value of the expression if nonzero, else it
+aborts.
+
+@subheading Example
+
+@example
+int strdup(char *s)
+@{
+  assert(s != 0);
+@end example
+

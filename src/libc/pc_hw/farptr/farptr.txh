@@ -1,0 +1,53 @@
+@c ----------------------------------------------------------------------
+@node _far*, memory
+@subheading Syntax
+
+@example
+#include <sys/farptr.h>
+
+unsigned char _farpeekb(unsigned short selector, unsigned long offset);
+unsigned short _farpeekw(unsigned short selector, unsigned long offset);
+unsigned long _farpeekl(unsigned short selector, unsigned long offset);
+
+void _farpokeb(unsigned short sel, unsigned long off, unsigned char val);
+void _farpokew(unsigned short sel, unsigned long off, unsigned short val);
+void _farpokel(unsigned short sel, unsigned long off, unsigned long val);
+
+void _farsetsel(unsigned short selector);
+
+void _farnspokeb(unsigned long offset, unsigned char value);
+void _farnspokew(unsigned long offset, unsigned short value);
+void _farnspokel(unsigned long offset, unsigned long value);
+
+unsigned char _farnspeekb(unsigned long offset);
+unsigned short _farnspeekw(unsigned long offset);
+unsigned long _farnspeekl(unsigned long offset);
+@end example
+
+@subheading Description
+
+These functions provide the equivalent functionality of "far
+pointers" to peek or poke an absolute memory addresses, even though gcc
+doesn't understand the keyword "far".  They come in handy when you need
+to access memory-mapped devices (like VGA) or some address in lower memory
+returned by a real-mode service.
+These functions are provided as inline assembler functions, so when
+you optimize your program they reduce to only a few opcodes (only one
+more than a regular memory access), resulting in very optimal code.
+
+The first two groups of functions take a @var{selector} and an @var{offset}.
+This selector is @emph{not} a dos segment.  If you want to access dos
+memory, pass _go32_info_block.selector_for_linear_memory (or just
+_dos_ds) as the selector, and seg*16+ofs as the offset.  For functions which
+poke the memory, you should also provide the @var{value} to put there.
+
+The last two groups assume that you've used @code{_farsetsel} to
+specify the selector.  You should avoid making any function calls
+between @code{_farsetsel} and using these other functions, unless
+you're absolutely sure that they won't modify that selector.  This
+allows you to optimize loops by setting the selector once outside the
+loop, and using the shorter functions within the loop.
+
+@subheading Return Value
+
+Functions which peek the address return the value at given address.

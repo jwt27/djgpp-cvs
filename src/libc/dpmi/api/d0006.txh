@@ -1,0 +1,31 @@
+@node __dpmi_get_segment_base_address, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_segment_base_address(int _selector, unsigned long *_addr);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0006
+
+The physical base address of the selector is stored in @var{*addr}.
+
+@subheading Return Value
+
+-1 on error, else zero.
+
+@subheading Example
+
+@example
+unsigned long addr;
+if (__dpmi_get_segment_base_address(selector, &addr))
+  ...
+@end example
+

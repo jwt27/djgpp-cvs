@@ -1,0 +1,24 @@
+@node __dpmi_get_and_set_virtual_interrupt_state, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_and_set_virtual_interrupt_state(int _old_state);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AH = 0x09
+
+This function restores the interrupt state from a previous call to
+@ref{__dpmi_get_and_disable_virtual_interrupt_state} or
+@ref{__dpmi_get_and_enable_virtual_interrupt_state}.
+
+@subheading Return Value
+
+The previous setting.

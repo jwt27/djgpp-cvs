@@ -1,0 +1,23 @@
+@node __dpmi_get_state_save_restore_addr, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_state_save_restore_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0305
+
+Read the spec for info.
+
+@subheading Return Value
+
+The number of bytes required to save state.
+

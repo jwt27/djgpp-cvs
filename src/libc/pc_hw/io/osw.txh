@@ -1,0 +1,12 @@
+@node outportsw, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void outportsw(unsigned short _port, unsigned short *_buf, unsigned _len);
+@end example
+
+@subheading Description
+
+Writes the @var{_len} shorts in @var{_buf} to the 16-bit @var{_port}.

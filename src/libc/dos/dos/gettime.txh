@@ -1,0 +1,35 @@
+@node gettime, time
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void gettime(struct time *);
+@end example
+
+@subheading Description
+
+This function gets the current time.  The return structure is as follows:
+
+@example
+struct time @{
+  unsigned char ti_min;
+  unsigned char ti_hour;
+  unsigned char ti_hund;
+  unsigned char ti_sec;
+@};
+@end example
+
+@xref{settime}. @xref{getdate}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+struct time t;
+gettime(&t);
+@end example
+

@@ -1,0 +1,70 @@
+@c ----------------------------------------------------------------------
+@node fnmatch, file system
+@subheading Syntax
+
+@example
+#include <fnmatch.h>
+
+int fnmatch(const char *pattern, const char *string, int flags);
+@end example
+
+@subheading Description
+
+This function indicates if @var{string} matches the @var{pattern}.  The
+pattern may include the following special characters:
+
+@table @code
+
+@item *
+
+Matches zero of more characters.
+
+@item ?
+
+Matches exactly one character
+
+@item [...]
+
+Matches one character if it's in a range of characters.  If the first
+character is @code{!}, matches if the character is not in the range. 
+Between the brackets, the range is specified by listing the characters
+that are in the range, or two characters separated by @code{-} to
+indicate all characters in that range.  For example, @code{[a-d]}
+matches @code{a}, @code{b}, @code{c}, or @code{d}. 
+
+@item \
+
+Causes the next character to not be treated as a wildcard.  For example,
+@code{\*} matches an asterisk.  This is only available if @var{flags}
+includes @code{FNM_QUOTE}. 
+
+@end table
+
+The value of @var{flags} is a combination of zero of more of the
+following:
+
+@table @code
+
+@item FNM_PATHNAME
+
+This means that the string should be treated as a pathname, in that the
+slash character @code{/} never matches any of the wildcards. 
+
+@item FNM_QUOTE
+
+This means that the backslash @code{\\} may be used for quoting special
+characters in the pattern. 
+
+@end table
+
+@subheading Return Value
+
+Zero if the string matches, FNM_NOMATCH if it does not.
+
+@subheading Example
+
+@example
+if (fnmatch("*.[ch]", filename, FNM_PATH|FNM_QUOTE))
+  do_source_file(filename);
+@end example
+

@@ -1,0 +1,24 @@
+@node clearerr, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+void clearerr(FILE *stream);
+@end example
+
+@subheading Description
+
+This function clears the EOF and error indicators for the file
+@var{stream}. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+clearerr(stdout);
+@end example
+

@@ -1,0 +1,24 @@
+@node biostime, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+long biostime(int cmd, long newtime);
+@end example
+
+@subheading Description
+
+This function reads (@var{cmd}=0) or sets (@var{cmd}=1) the internal
+tick counter, which is the number of 18.2 Hz ticks since midnight.
+
+@subheading Return Value
+
+When reading, the number of ticks since midnight.
+
+@subheading Example
+
+@example
+long ticks = biostime(0, 0);
+@end example
+

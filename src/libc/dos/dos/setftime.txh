@@ -1,0 +1,32 @@
+@node setftime, file system
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int setftime(int handle, struct ftime *ftimep);
+@end example
+
+@subheading Description
+
+This function sets the modification time of a file.  Note that since
+writing to a file, and closing a file opened for writing, also sets the
+modification time, you should only use this function on files opened for
+reading.
+
+@xref{getftime}.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+int q = open("data.txt", O_RDONLY);
+struct ftime f;
+f.ft_sec = f.ft_min = f.ft_hour = f.ft_day = f.ft_month = f.ft_year = 0;
+setftime(q, &f);
+close(q);
+@end example
+

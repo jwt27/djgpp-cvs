@@ -1,0 +1,23 @@
+@node __dpmi_get_processor_exception_handler_vector, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_processor_exception_handler_vector
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0202
+
+This function gets the current protected-mode exception handler (not
+interrupts).  It will return a selector:offset pair.
+
+@subheading Return Value
+
+-1 on error (invalid vector), else zero.

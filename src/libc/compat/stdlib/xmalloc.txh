@@ -1,0 +1,24 @@
+@node xmalloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *xmalloc(size_t size);
+@end example
+
+@subheading Description
+
+This function is just like @code{malloc} (@pxref{malloc}), except that if
+there is no more memory, it prints an error message and exits. 
+
+@subheading Return Value
+
+A pointer to the newly allocated memory.
+
+@subheading Example
+
+@example
+char *f = xmalloc(100);
+@end example
+

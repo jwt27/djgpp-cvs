@@ -1,0 +1,25 @@
+@node strpbrk, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strpbrk(const char *s1, const char *set);
+@end example
+
+@subheading Description
+
+This function finds the first character in @var{s1} that matches any
+character in @var{set}.
+
+@subheading Return Value
+
+A pointer to the first match, or @code{NULL} if none are found.
+
+@subheading Example
+
+@example
+if (strpbrk(command, "<>|"))
+  do_redirection();
+@end example
+

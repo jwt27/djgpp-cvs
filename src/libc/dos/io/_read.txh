@@ -1,0 +1,19 @@
+@node _read, file system
+@subheading Syntax
+
+@example
+#include <io.h>
+
+ssize_t _read(int fildes, void *buf, size_t nbyte);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS read function call, int
+0x21, %ah = 0x3f.  No conversion is done on the data; it is read as
+raw binary data.
+
+@subheading Return Value
+
+The number of bytes read.
+

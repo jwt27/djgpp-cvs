@@ -1,0 +1,40 @@
+@c ----------------------------------------------------------------------
+@node _control87, cpu
+@subheading Syntax
+
+@example
+#include <float.h>
+
+unsigned int _control87(unsigned int newcw, unsigned int mask);
+@end example
+
+@subheading Description
+
+Sets or resets bits in the FPU's control register.  The bits are
+defined by macros in float.h, and by this table:
+
+@example
+---- ---- --XX XXXX = MCW_EM - exception masks (1=handle exception internally, 0=fault)
+---- ---- ---- ---X = EM_INVALID - invalid operation
+---- ---- ---- --X- = EM_DENORMAL - denormal operand
+---- ---- ---- -X-- = EM_ZERODIVIDE - divide by zero
+---- ---- ---- X--- = EM_OVERFLOW - overflow
+---- ---- ---X ---- = EM_UNDERFLOW - underflow
+---- ---- --X- ---- = EM_INEXACT - rounding was required
+---- --XX ---- ---- = MCW_PC - precision control
+---- --00 ---- ---- = PC_24 - single precision
+---- --10 ---- ---- = PC_53 - double precision
+---- --11 ---- ---- = PC_64 - extended precision
+---- XX-- ---- ---- = MCW_RC - rounding control
+---- 00-- ---- ---- = RC_NEAR - round to nearest
+---- 01-- ---- ---- = RC_DOWN - round towards -Inf
+---- 10-- ---- ---- = RC_UP - round towards +Inf
+---- 11-- ---- ---- = RC_CHOP - round towards zero
+---X ---- ---- ---- = MCW_IC - infinity control (obsolete, always affine)
+---0 ---- ---- ---- = IC_AFFINE - -Inf < +Inf
+---1 ---- ---- ---- = IC_PROJECTIVE - -Inf == +Inf
+@end example
+
+@subheading Return Value
+
+The previous control word.

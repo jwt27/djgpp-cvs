@@ -1,0 +1,48 @@
+@node bsearch, misc
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *bsearch (const void *key, const void *base, size_t num, 
+  size_t size, int (*ptf)(const void *ckey, const void *celem));
+@end example
+
+@subheading Description
+
+Given an array of values, perform a binary search on the values looking
+for value that "matches" the given key.  A match is determined by
+calling the provided function @var{ptf} and passing it the key as
+@var{ckey} and a pointer to one of the elements of the array as
+@var{celem}.  This function must return a negative number if the key is
+closer than the element to the beginning of the array, positive if
+it is closer to the end, and zero if the element matches the key.
+
+The array begins at address @var{base} and contains @var{num} elements,
+each of size @var{size}. 
+
+@subheading Return Value
+
+Returns a pointer to the element that matches the key, else @var{NULL}.
+
+@subheading Example
+
+@example
+typedef struct @{
+  int a, b;
+@} q;
+
+int compare(void *key, void *elem)
+@{
+  return *(int *)key - ((q *)elem)->a;
+@}
+
+q qlist[100];
+
+@dots{}
+q *match = bsearch(4, qlist, 100, sizeof(q), compare);
+printf("4->%d=n", match->b);
+@dots{}
+
+@end example
+

@@ -1,0 +1,18 @@
+@node findnext, file system
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+int findnext(struct ffblk *ffblk);
+@end example
+
+@subheading Description
+
+This finds the next file in the search started by @code{findfirst}.
+@xref{findfirst}.
+
+@subheading Return Value
+
+Zero if there was a match, else nonzero.
+

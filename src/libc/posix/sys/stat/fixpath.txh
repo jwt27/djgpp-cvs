@@ -1,0 +1,32 @@
+@node _fixpath, file system
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+void _fixpath(const char *in_path, char *out_path);
+@end example
+
+@subheading Description
+
+This function canonacalizes the input path @var{in_path} and stores the
+result in the buffer pointed to by @var{out_path}.
+
+The path is fixed by removing consecutive and trailing slashes, making
+the path absolute if it's relative, removing "." components, collapsing
+".." components, adding a drive specifier if needed, and converting all
+slashes to '/'. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+char oldpath[100], newpath[100];
+scanf(oldpath);
+_fixpath(oldpath, newpath);
+printf("that really is %s\n", newpath);
+@end example
+

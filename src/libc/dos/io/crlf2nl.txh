@@ -1,0 +1,14 @@
+@node crlf2nl, io
+@subheading Syntax
+
+@example
+size_t crlf2nl(char *buf, ssize_t len);
+@end example
+
+@subheading Description
+
+This function removes Ctrl-M characters from the given @var{buf}. 
+
+@subheading Return Value
+
+The number of characters remaining in the buffer are returned.

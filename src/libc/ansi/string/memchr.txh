@@ -1,0 +1,25 @@
+@node memchr, memory
+@subheading Syntax
+
+@example
+#include <string.h>
+
+void *memchr(const void *string, int ch, size_t num);
+@end example
+
+@subheading Description
+
+This function searches @var{num} bytes starting at @var{string}, looking
+for the first occurence of @var{ch}. 
+
+@subheading Return Value
+
+A pointer to the first match, or @code{NULL} if it wasn't found.
+
+@subheading Example
+
+@example
+if (memchr(path, '/', strlen(path))
+  do_slash();
+@end example
+

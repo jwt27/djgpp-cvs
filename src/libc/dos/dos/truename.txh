@@ -1,0 +1,49 @@
+@node _truename, stdio
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+char * _truename(const char *path, char *true_path);
+@end example
+
+@subheading Description
+
+Given a @var{path} of a file, returns in @var{true_path} its canonicalized
+pathname, with all letters uppercased, default drive and directory made
+explicit, forward slashes converted to backslashes, asterisks converted to
+appropriate number of of question marks, file and directory names
+truncated to 8.3 if necessary, "." and ".." resolved, extra slashes (but
+the last, if present) removed, SUBSTed, JOINed and ASSIGNed drives
+resolved.  Character devices return as "X:/DEVNAME" (note the forward
+slash!), where X is the CURRENT drive and DEVNAME is the device name (e.g.
+CON).  This is exactly what DOS TRUENAME command does.  See Ralph Brown's
+Interrupt List for more details.
+
+The named @var{path} doesn't have to exist, but the drive, if given as
+part of it, should be a legal DOS drive, as this function hits the disk.
+
+The function will fail if given a @var{path} which (1) is an empty string;
+or (2) contains only the drive letter (e.g. "c:"); or (3) has leading
+whitespace.  It will also fail if it couldn't allocate memory required for
+its communication with DOS or for @var{true_path} (see below).
+
+Upon success, the function will place the result in @var{true_path},
+if that's non-NULL; the buffer should be large enough to contain the
+largest possible pathname (PATH_MAX characters).  If @var{true_path}
+is a NULL pointer, the space to hold the result will be allocated by
+calling @ref{malloc}; it is up to the caller to release the buffer by
+calling @ref{free}.
+
+@subheading Return Value
+
+The function returns the pointer to the result.  In case of any failure,
+a NULL pointer is returned, and @var{errno} is set.
+
+@subheading Example
+
+@example
+  fprintf(stderr, 
+          "True name of %s is %s\n", path, _truename(path, (char *)0));
+@end example
+

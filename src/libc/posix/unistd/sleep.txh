@@ -1,0 +1,23 @@
+@node sleep, process
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+unsigned sleep(unsigned seconds);
+@end example
+
+@subheading Description
+
+This function causes the program to pause for @var{seconds} seconds. 
+
+@subheading Return Value
+
+The number of seconds that haven't passed (i.e. always zero)
+
+@subheading Example
+
+@example
+sleep(5);
+@end example
+

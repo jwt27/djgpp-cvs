@@ -1,0 +1,31 @@
+@node enable, cpu
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int enable(void);
+@end example
+
+@subheading Description
+
+This function enables interrupts.
+
+@xref{disable}.
+
+@subheading Return Value
+
+Returns nonzero if the interrupts were already enabled, zero if they
+had been disabled before this call.
+
+@subheading Example
+
+@example
+int ints_were_enabled;
+
+ints_were_enabled = enable();
+. . . do some stuff . . .
+if (!ints_were_enabled)
+  disable();
+@end example
+

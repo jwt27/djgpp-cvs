@@ -1,0 +1,25 @@
+@node putw, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int putw(int x, FILE *file);
+@end example
+
+@subheading Description
+
+Writes a single binary word in native format to @var{file}.
+
+@subheading Return Value
+
+The value written, or @code{EOF} for end-of-file or error.  Since
+@code{EOF} is a valid integer, you should use @code{feof} or
+@code{ferror} to detect this situation. 
+
+@subheading Example
+
+@example
+putw(12, stdout);
+@end example
+

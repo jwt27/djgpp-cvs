@@ -1,0 +1,24 @@
+@node getenv, environment
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+char *getenv(const char *name);
+@end example
+
+@subheading Description
+
+Get the setting of the environment variable @var{name}.  Do not alter or
+free the returned value. 
+
+@subheading Return Value
+
+The value, or @code{NULL} if that variable does not exist.
+
+@subheading Example
+
+@example
+char *term = getenv("TERM");
+@end example
+

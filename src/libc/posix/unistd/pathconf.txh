@@ -1,0 +1,87 @@
+@c ----------------------------------------------------------------------
+@node fpathconf, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+long fpathconf(int fd, int name);
+@end example
+
+@subheading Description
+
+Returns configuration information on the filesystem that the
+open file resides on.  @xref{pathconf}.
+
+@subheading Return Value
+
+The configuration value, which are currently independent of the filesystem
+that the file is on.
+
+@c ----------------------------------------------------------------------
+@node pathconf, posix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+long pathconf(const char *filename, int name);
+@end example
+
+@subheading Description
+
+This function returns various system-dependent configuration values. 
+The @var{name} is one of the following:
+
+@table @code
+
+@item _PC_LINK_MAX
+
+The maximum number of directory entries that can refer to a single real file.
+
+@item _PC_MAX_CANON
+
+The maximum number of bytes in an editable input line.
+
+@item _PC_MAX_INPUT
+
+The maximum number of bytes in a non-editable input line.
+
+@item _PC_NAME_MAX
+
+The maximum length of an individual file name.
+
+@item _PC_PATH_MAX
+
+The maximum length of a complete path name.
+
+@item _PC_PIPE_BUF
+
+The size of a pipe's internal buffer.
+
+@item _PC_CHOWN_RESTRICTED
+
+If non-zero, only privileged user can chown() files, otherwise anyone may
+give away files.
+
+@item _PC_NO_TRUNC
+
+If false filenames longer than @code{_PC_NAME_MAX} are truncated, otherwise
+an error occurs if you use longer names.
+
+@item _PC_VDISABLE
+
+A character to use to disable tty special characters.
+
+@end table
+
+@subheading Return Value
+
+The selected configuration value is returned.
+
+@subheading Example
+
+@example
+char *buf = malloc(pathconf("c:/", _PC_MAX_PATH)+1);
+@end example
+

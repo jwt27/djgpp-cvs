@@ -1,0 +1,25 @@
+@node __dpmi_resize_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_resize_memory
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0503
+
+This function changes the size of a virtual memory block.  You must
+pass the handle and size fields.  It may change the base address also;
+beware of debugging breakpoints and locked memory.  It will return a
+new handle.
+
+@subheading Return Value
+
+-1 on error, else zero.

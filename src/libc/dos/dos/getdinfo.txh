@@ -1,0 +1,16 @@
+@node _get_dev_info, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+short _get_dev_info(int arg);
+@end example
+
+@subheading Description
+
+Given drive_number (A: = 0, B: = 1, etc.) or a file handle in @var{arg},
+this function returns the device info word which is returned by DOS IOCTL
+function 0 (Int 21h/AX=4400h).  In case of error, -1 is returned and
+@var{errno} is set.
+

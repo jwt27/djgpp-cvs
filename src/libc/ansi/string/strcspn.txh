@@ -1,0 +1,28 @@
+@node strcspn, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+size_t strcspn(const char *s1, const char *set);
+@end example
+
+@subheading Description
+
+This function finds the first character in @var{s1} that matches any
+character in @var{set}.  Note that the @code{NULL} bytes at the end of
+each string counts, so you'll at least get a pointer to the end of the
+string if nothing else. 
+
+@subheading Return Value
+
+The index of the found character.
+
+@subheading Example
+
+@example
+int i = strcspn(command, "<>|");
+if (command[i])
+  do_redirection();
+@end example
+

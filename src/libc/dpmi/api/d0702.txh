@@ -1,0 +1,23 @@
+@node __dpmi_mark_page_as_demand_paging_candidate, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_mark_page_as_demand_paging_candidate(__dpmi_meminfo *_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0702
+
+Advises the server that certain pages are unlikely to be used soon.
+Set address and size (in bytes).
+
+@subheading Return Value
+
+-1 on error, else zero.

@@ -1,0 +1,34 @@
+@node longjmp, misc
+@subheading Syntax
+
+@example
+#include <setjmp.h>
+
+void longjmp(jmp_buf env, int val);
+@end example
+
+@subheading Description
+
+This function reverts back to a CPU state that was stored in @var{env}
+by @code{setjmp} (@pxref{setjmp}).  The state includes all CPU registers,
+so any variable in a register when @code{setjmp} was called will be
+preserved, and all else will be indeterminate.
+
+The value passed as @var{val} will be the return value of @code{setjmp}
+when it resumes processing there.  If @var{val} is zero, the return
+value will be one. 
+
+@subheading Return Value
+
+This function does not return.
+
+@subheading Example
+
+@example
+jmp_buf j;
+if (setjmp(j))
+  return;
+do_something();
+longjmp(j);
+@end example
+

@@ -1,0 +1,25 @@
+@node getc, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int getc(FILE *file);
+@end example
+
+@subheading Description
+
+Get one character from @var{file}.
+
+@subheading Return Value
+
+The character ([0..255]) or @code{EOF} if eof or error.
+
+@subheading Example
+
+@example
+int c;
+while ((c=getc(stdin)) != EOF)
+  putc(c, stdout);
+@end example
+

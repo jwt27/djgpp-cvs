@@ -1,0 +1,25 @@
+@node __dpmi_simulate_real_mode_procedure_retf, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_simulate_real_mode_procedure_retf(__dpmi_regs *_regs);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0301
+
+This function switches to real mode with @emph{all} the registers set
+from the structure, including cs:ip.  The function called should
+return with a @code{retf}.  ss:sp and flags must be set to valid
+values or zero.
+
+@subheading Return Value
+
+-1 on error, else zero.

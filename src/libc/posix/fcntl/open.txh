@@ -1,0 +1,87 @@
+@node open, io
+@subheading Syntax
+
+@example
+#include <fcntl.h>
+#include <sys/stat.h> /* for mode definitions */
+
+int open(const char *file, int mode /*, int permissions */);
+@end example
+
+@subheading Description
+
+This function opens the named @var{file} in the given @var{mode}, which
+is any combination of the following:
+
+@table @code
+
+@item O_RDONLY
+
+The file is opened for reading.
+
+@item O_WRONLY
+
+The file is opened for writing.
+
+@item O_RDWR
+
+The file is opened for both reading and writing.
+
+@item O_CREAT
+
+If the file does not exist, it is created. @xref{creat}.
+
+@item O_TRUNC
+
+If the file does exist, it is truncated to zero bytes.
+
+@item O_EXCL
+
+If the file exists, and @code{O_CREAT} is also specified, the
+@code{open} call will fail. 
+
+@item O_APPEND
+
+The file pointer is positioned at the end of the file before each write. 
+
+@item O_TEXT
+
+The file is opened in text mode, meaning that Ctrl-M characters are
+stripped on reading and added on writing as needed.  The default mode is
+specified by the @code{_fmode} variable @ref{_fmode}. 
+
+@item O_BINARY
+
+The file is opened in binary mode.
+
+@end table
+
+If the file is created by this call, it will be given the read/write
+permissions specified by @var{permissions}, which may be any combination
+of these values:
+
+@table @code
+
+@item S_IRUSR
+
+The file is readable.  This is always true for MS-DOS
+
+@item S_IWUSR
+
+The file is writable.
+
+@end table
+
+Other @code{S_I*} values may be included, but they will be ignored.
+
+@subheading Return Value
+
+If successful, the file descriptor is returned.  On error, a negative
+number is returned and @code{errno} is set to indicate the error. 
+
+@subheading Example
+
+@example
+int q = open("/tmp/foo.dat", O_RDONLY|O_BINARY);
+@end example
+

@@ -1,0 +1,36 @@
+@node __dpmi_set_descriptor_access_rights, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_descriptor_access_rights(int _selector, int _rights);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0009
+
+This sets the rights of @var{_selector} to @var{_rights}.
+
+@example
+---- ---- ---- ---X = 0=not accessed, 1=accessed
+---- ---- ---- --X- = data: 0=read, 1=r/w; code: 1=readable
+---- ---- ---- -X-- = data: 0=expand-up, 1=expand-down; code: 0=non-conforming
+---- ---- ---- X--- = 0=data, 1=code
+---- ---- ---1 ---- = must be 1
+---- ---- -XX- ---- = priviledge level (must equal CPL)
+---- ---- X--- ---- = 0=absent, 1=present
+---X ---- ---- ---- = available for the user
+--0- ---- ---- ---- = must be 0
+-X-- ---- ---- ---- = 0=16-bit 1=32-bit
+X--- ---- ---- ---- = 0=byte granular (small) 1=page-granular (big)
+@end example
+
+@subheading Return Value
+
+-1 on error, else zero.

@@ -1,0 +1,32 @@
+@node putenv, environment
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int putenv(const char *env);
+@end example
+
+@subheading Description
+
+This function adds an entry to the program's environment.  The string
+passed must be of the form @code{NAME}=@code{VALUE}.  Any existing value
+for the environment variable is gone. 
+
+@code{putenv} will copy the string passed to it, and will
+automatically free any existing string already in the environment.
+Keep this in mind if you alter the environment yourself.  The string
+you pass is still your responsibility to free.  Note that most
+implementations will not let you free the string you pass, resulting
+in memory leaks.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+putenv("SHELL=ksh.exe");
+@end example
+

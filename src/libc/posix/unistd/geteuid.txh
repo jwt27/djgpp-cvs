@@ -1,0 +1,17 @@
+@node geteuid, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int geteuid(void);
+@end example
+
+@subheading Description
+
+Gets the effective UID.
+
+@subheading Return Value
+
+42
+

@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node sin, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double sin(double x);
+@end example
+
+@subheading Return Value
+
+The sine of @var{x}.

@@ -1,0 +1,38 @@
+@node div, math
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+div_t div(int numberator, int denomonator);
+@end example
+
+@subheading Description
+
+Returns the quotient and remainder of the division @var{numberator}
+divided by @var{denomonator}.  The return type is as follows:
+
+@example
+typedef struct @{
+  int quot;
+  int rem;
+@} div_t;
+@end example
+
+@subheading Return Value
+
+The results of the division are returned.
+
+@subheading Example
+
+@example
+div_t d = div(42, 3);
+printf("42 = %d x 3 + %d\n", d.quot, d.rem);
+
+div(+40, +3) = @{ +13, +1 @}
+div(+40, -3) = @{ -13, -1 @}
+div(-40, +3) = @{ -13, -1 @}
+div(-40, -3) = @{ +13, -1 @}
+
+@end example
+

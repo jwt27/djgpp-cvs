@@ -1,0 +1,32 @@
+@node _doscan, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int _doscan(FILE *file, const char *format, void **ptrs_to_args);
+@end example
+
+@subheading Description
+
+This is an internal function that is used by all the @code{scanf} style
+functions, which simply pass their format, arguments, and stream to this
+function. 
+
+@xref{scanf} for a discussion of the allowed formats and arguments. 
+
+@subheading Return Value
+
+The number of characters successfully scanned is returned, or -1 on
+error. 
+
+@subheading Example
+
+@example
+int x, y;
+int *args[2];
+args[0] = &x;
+args[1] = &y;
+_doscan(stdin, "%d %d", args);
+@end example
+

@@ -1,0 +1,24 @@
+@node putchar, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int putchar(int c);
+@end example
+
+@subheading Description
+
+This is the same as @code{fputc(c, stdout)}.  @xref{fputc}.
+
+@subheading Return Value
+
+The character written.
+
+@subheading Example
+
+@example
+while ((c = getchar()) != EOF)
+  putchar(c);
+@end example
+

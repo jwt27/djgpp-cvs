@@ -1,0 +1,27 @@
+@node fflush, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fflush(FILE *file);
+@end example
+
+@subheading Description
+
+This function causes any unwritten buffered data to be written out to
+the given @var{file}.  This is useful in cases where the output is line
+buffered and you want to write a partial line. 
+
+@subheading Return Value
+
+Zero on success, -1 on error.
+
+@subheading Example
+
+@example
+printf("Enter value : ");
+fflush(stdout);
+scanf(result);
+@end example
+

@@ -1,0 +1,24 @@
+@node strcpy, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strcpy(char *s1, const char *s2);
+@end example
+
+@subheading Description
+
+This function copies @var{s2} into @var{s1}.
+
+@subheading Return Value
+
+@var{s1}
+
+@subheading Example
+
+@example
+char buf[100];
+strcpy(buf, arg);
+@end example
+

@@ -1,0 +1,31 @@
+@node getxkey, bios
+@subheading Syntax
+
+@example
+#include <pc.h>
+#include <keys.h>
+
+int getxkey(void);
+@end example
+
+@subheading Description
+
+Waits for the user to press one key, then returns that key.  Alt-key
+combinations have 0x100 added to them, and extended keys have 0x200
+added to them. 
+
+The file @file{keys.h} has symbolic names for many of the keys.
+
+@xref{getkey}.
+
+@subheading Return Value
+
+The key pressed.
+
+@subheading Example
+
+@example
+while (getxkey() != K_EEnd)
+  do_something();
+@end example
+

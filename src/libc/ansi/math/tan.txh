@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node tan, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double tan(double x);
+@end example
+
+@subheading Return Value
+
+The tangent of @var{x}.

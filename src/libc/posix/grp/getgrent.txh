@@ -1,0 +1,142 @@
+@c ----------------------------------------------------------------------
+@node getgrent, unix
+@subheading Syntax
+
+@example
+#include <grp.h>
+
+struct group *getgrent(void);
+@end example
+
+@subheading Description
+
+This function returns the next available group entry.  Note that for
+MS-DOS, this is simulated.  If the environment variable GROUP is set,
+that is the name of the only group returned, else the only group is
+"dos".  Thus, under DOS, @code{getgrent} will always fail on the
+second and subsequent calls.
+
+The return type of this and related function is as follows:
+
+@example
+struct group @{
+  gid_t    gr_gid;    /* result of getgid() */
+  char  ** gr_mem;    /* gr_mem[0] points to
+                          getenv("USER"/"LOGNAME") or "user" */
+  char  *  gr_name;   /* getenv("GROUP") or "dos" */
+@};
+@end example
+
+@subheading Return Value
+
+The next structure, or @code{NULL} at the end of the list.
+
+@subheading Example
+
+@example
+
+struct group *g;
+setgrent();
+while ((g = getgrent()) != NULL)
+@{
+  printf("group %s gid %d\n", g->gr_name, g->gr_gid);
+@}
+endgrent();
+@end example
+
+@c ----------------------------------------------------------------------
+@node fgetgrent, unix
+@subheading Syntax
+
+@example
+#include <grp.h>
+
+struct group *fgetgrent(FILE *file);
+@end example
+
+@subheading Description
+
+This function, in MS-DOS, is exactly the same as @code{getgrent}
+(@pxref{getgrent}). 
+
+@c ----------------------------------------------------------------------
+@node setgrent, unix
+@subheading Syntax
+
+@example
+#include <grp.h>
+
+void setgrent(void);
+@end example
+
+@subheading Description
+
+This function should be called before any call to @code{getgrent},
+@code{getgrgid}, or @code{getgrnam}, to start searching the groups' list
+from the beginning.  @xref{getgrent}.
+
+@subheading Return Value
+
+None.
+
+@c ----------------------------------------------------------------------
+@node endgrent, unix
+@subheading Syntax
+
+@example
+#include <grp.h>
+
+void endgrent(void);
+@end example
+
+@subheading Description
+
+This function should be called after all calls to @code{getgrent},
+@code{getgrgid}, or @code{getgrnam}. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@xref{getgrent}.
+
+@c ----------------------------------------------------------------------
+@node getgrgid, unix
+@subheading Syntax
+
+@example
+#include <grp.h>
+
+extern struct group *getgrgid(int gid);
+@end example
+
+@subheading Description
+
+This function returns the group entry that matches @var{gid}. 
+@xref{getgrent}, for the description of @code{struct group}.
+
+@subheading Return Value
+
+The matching group, or @code{NULL} if none match.
+
+@c ----------------------------------------------------------------------
+@node getgrnam, unix
+@subheading Syntax
+
+@example
+#include <grp.h>
+
+struct group *getgrnam(char *name);
+@end example
+
+@subheading Description
+
+This function returns the group entry for the group named @var{name}. 
+@xref{getgrent} for the description of @code{struct group}.
+
+@subheading Return Value
+
+The matching group, or @code{NULL} if none match.
+

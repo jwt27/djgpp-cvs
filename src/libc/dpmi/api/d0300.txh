@@ -1,0 +1,25 @@
+@node __dpmi_simulate_real_mode_interrupt, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_simulate_real_mode_interrupt(int _vector, __dpmi_regs *_regs);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0300
+
+This function performs a software interrupt in real mode after filling
+in @emph{all} the registers from the given structure.  You @emph{must}
+set %ss, %esp, and %eflags to valid real-mode values or zero, unlike
+@ref{__dpmi_int}.
+
+@subheading Return Value
+
+-1 on error, else zero.

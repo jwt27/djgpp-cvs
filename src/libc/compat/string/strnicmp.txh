@@ -1,0 +1,53 @@
+@node strnicmp, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int strnicmp(const char *s1, const char *s2, size_t max);
+@end example
+
+@subheading Description
+
+This function compares @var{s1} and @var{s2}, ignoring case, up to a
+maximum of @var{max} characters. 
+
+@subheading Return Value
+
+Zero if the strings are equal, a positive number if @var{s1} comes after
+@var{s2} in the ASCII collating sequense, else a negative number. 
+
+@subheading Example
+
+@example
+if (strnicmp(foo, "-i", 2) == 0)
+  do_include();
+@end example
+
+@c -----------------------------------------------------------------
+@node strncase, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int strncase(const char *s1, const char *s2, size_t max);
+@end example
+
+@subheading Description
+
+This function compares @var{s1} and @var{s2}, ignoring case, up to a
+maximum of @var{max} characters. 
+
+@subheading Return Value
+
+Zero if the strings are equal, a positive number if @var{s1} comes after
+@var{s2} in the ASCII collating sequense, else a negative number. 
+
+@subheading Example
+
+@example
+if (strncase(foo, "-i", 2) == 0)
+  do_include();
+@end example
+

@@ -1,0 +1,26 @@
+@node ftruncate, stdio
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int ftruncate(int file, off_t where);
+@end example
+
+@subheading Description
+
+This function truncates @var{file} at @var{where} length.  This only
+works if the file is closed right after this call. 
+
+@subheading Return Value
+
+Zero for success, nonzero for failure.
+
+@subheading Example
+
+@example
+int x = open("data", O_WRONLY);
+ftruncate(x, 1000);
+close(x);
+@end example
+

@@ -1,0 +1,20 @@
+@node __dpmi_set_coprocessor_emulation, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_coprocessor_emulation(int _flags);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0e01 (DPMI 1.0 only)
+
+@subheading Return Value
+
+-1 on errors, else zero.

@@ -1,0 +1,22 @@
+@node __dpmi_clear_debug_watchpoint, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_clear_debug_watchpoint(unsigned long _handle);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0b01
+
+Clear a debug watchpoint.
+
+@subheading Return Value
+
+-1 on error, else zero.

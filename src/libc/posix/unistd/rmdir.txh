@@ -1,0 +1,25 @@
+@node rmdir, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int rmdir(const char *dirname);
+@end example
+
+@subheading Description
+
+This function removes directory @var{dirname}.  The directory must be
+empty. 
+
+@subheading Return Value
+
+Zero if the directory was removed, nonzero on failure.
+
+@subheading Example
+
+@example
+rmdir("/tmp/datadir");
+@end example
+
+

@@ -1,0 +1,19 @@
+@node ldexp, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double ldexp(double val, int exp);
+@end example
+
+@subheading Return Value
+
+This function returns @var{val} * 2 ** @var{exp}.
+
+@subheading Example
+
+@example
+ldexp(3.5,4) == 3.5 * 16 == 56.0
+@end example
+

@@ -1,0 +1,19 @@
+@node vprintf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+#include <stdarg.h>
+
+int vprintf(const char *format, va_list arguments);
+@end example
+
+@subheading Description
+
+Sends formatted output from the @var{arguments} to @code{stdout}. 
+@xref{printf}. @xref{vfprintf}.
+
+@subheading Return Value
+
+The number of characters written.
+

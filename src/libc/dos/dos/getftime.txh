@@ -1,0 +1,36 @@
+@node getftime, file system
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int getftime(int handle, struct ftime *ptr);
+@end example
+
+@subheading Description
+
+Get the timestamp for the given file handle.  The return structure is as
+follows:
+
+@example
+struct ftime @{
+  unsigned ft_tsec:5;	/* 0-29, double to get real seconds */
+  unsigned ft_min:6;	/* 0-59 */
+  unsigned ft_hour:5;	/* 0-23 */
+  unsigned ft_day:5;	/* 1-31 */
+  unsigned ft_month:4;	/* 1-12 */
+  unsigned ft_year:7;	/* since 1980 */
+@}
+@end example
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+struct ftime t;
+getftime(fd, &t);
+@end example
+

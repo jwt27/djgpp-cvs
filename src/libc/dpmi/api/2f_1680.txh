@@ -1,0 +1,23 @@
+@node __dpmi_yield, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_yield(void);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+INT 0x2f, AX = 0x1680
+
+This function yields the CPU to the next process.  This should be
+called in busy-wait loops.
+
+@subheading Return Value
+
+None.

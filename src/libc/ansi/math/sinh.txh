@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node sinh, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double sinh(double x);
+@end example
+
+@subheading Return Value
+
+The hyperbolic sine of @var{x}.

@@ -1,0 +1,52 @@
+@node bioskey, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+int bioskey(int command)
+@end example
+
+@subheading Description
+
+@table @asis
+
+@item @var{command} = 0
+
+Returns the next key pressed
+
+@item @var{command} = 1
+
+Checks the keyboard, returns zero if no key pressed, else the key.  Does
+not dequeue the key. 
+
+@item @var{command} = 2
+
+Returns the shift state:
+
+@example
+7654 3210  Meaning
+
+---- ---X  Right shift key down
+---- --X-  Left shift key down
+---- -X--  Ctrl key down
+---- X---  Alt key down
+---X ----  Scroll lock on
+--X- ----  Num lock on
+-X-- ----  Caps lock on
+X--- ----  Insert on
+@end example
+
+@end table
+
+@subheading Return Value
+
+Depends on @var{command}.
+
+@subheading Example
+
+@example
+while (!bioskey(1))
+  do_stuff();
+@end example
+

@@ -1,0 +1,25 @@
+@node xrealloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *xrealloc(void *ptr, size_t size);
+@end example
+
+@subheading Description
+
+This function is just like @code{realloc} (@pxref{realloc}), except that
+if there is no more memory, it prints an error message and exits.  It
+can also properly handle @var{ptr} being @code{NULL}. 
+
+@subheading Return Value
+
+A pointer to a possibly new block.
+
+@subheading Example
+
+@example
+char *buf;
+buf = (char *)xrealloc(buf, new_size);
+@end example

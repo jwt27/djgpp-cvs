@@ -1,0 +1,179 @@
+@c ----------------------------------------------------------------------
+@node errno, stdio
+@subheading Syntax
+
+@example
+#include <errno.h>
+
+extern int errno;
+@end example
+
+@subheading Description
+
+This variable is used to hold the value of the error of the last
+function call.  The value might be one of the following:
+
+
+@table @code
+
+@item 0
+
+ No Error
+
+@item 1
+
+ EDOM -- Input to function out of range
+
+@item 2
+
+ ERANGE -- Output of function out of range
+
+@item 3
+
+ E2BIG -- Argument list too long
+
+@item 4
+
+ EACCES -- Permission denied
+
+@item 5
+
+ EAGAIN -- Resource temporarily unavailable
+
+@item 6
+
+ EBADF -- Bad file descriptor
+
+@item 7
+
+ EBUSY -- Resource busy
+
+@item 8
+
+ ECHILD -- No child processes
+
+@item 9
+
+ EDEADLK -- Resource deadlock avoided
+
+@item 10
+
+ EEXIST -- File exists
+
+@item 11
+
+ EFAULT -- Bad address
+
+@item 12
+
+ EFBIG -- File too large
+
+@item 13
+
+ EINTR -- Interrupted system call
+
+@item 14
+
+ EINVAL -- Invalid argument
+
+@item 15
+
+ EIO -- Input or output
+
+@item 16
+
+ EISDIR -- Is a directory
+
+@item 17
+
+ EMFILE -- Too many open files
+
+@item 18
+
+ EMLINK -- Too many links
+
+@item 19
+
+ ENAMETOOLONG -- File name too long
+
+@item 20
+
+ ENFILE -- Too many open files in system
+
+@item 21
+
+ ENODEV -- No such device
+
+@item 22
+
+ ENOENT -- No such file or directory
+
+@item 23
+
+ ENOEXEC -- Unable to execute file
+
+@item 24
+
+ ENOLCK -- No locks available
+
+@item 25
+
+ ENOMEM -- Not enough memory
+
+@item 26
+
+ ENOSPC -- No space left on drive
+
+@item 27
+
+ ENOSYS -- Function not implemented
+
+@item 28
+
+ ENOTDIR -- Not a directory
+
+@item 29
+
+ ENOTEMPTY -- Directory not empty
+
+@item 30
+
+ ENOTTY -- Inappropriate I/O control operation
+
+@item 31
+
+ ENXIO -- No such device or address
+
+@item 32
+
+ EPERM -- Operation not permitted
+
+@item 33
+
+ EPIPE -- Broken pipe
+
+@item 34
+
+ EROFS -- Read-only file system
+
+@item 35
+
+ ESPIPE -- Invalid seek
+
+@item 36
+
+ ESRCH -- No such process
+
+@item 37
+
+ EXDEV -- Improper link
+
+@item 38
+
+ ENMFILE -- No more files
+
+@end table
+
+
+@xref{perror}.
+

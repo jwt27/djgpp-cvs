@@ -1,0 +1,24 @@
+@node rand, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int rand(void);
+@end example
+
+@subheading Description
+
+Returns a pseudo-random number from zero to @code{RAND_MAX}. 
+
+@subheading Return Value
+
+The number.
+
+@subheading Example
+
+@example
+/* random pause */
+for (i=rand(); i; i--);
+@end example
+

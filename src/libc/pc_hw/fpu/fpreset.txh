@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node _fpreset, cpu
+@subheading Syntax
+
+@example
+#include <float.h>
+
+void _fpreset(void);
+@end example
+
+@subheading Description
+
+Resets the FPU completely.

@@ -1,0 +1,18 @@
+@node sscanf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int sscanf(const char *string, const char *format, @dots{});
+@end example
+
+@subheading Description
+
+This function scans formatted text from the @var{string} and stores it
+in the variables pointed to by the arguments.  @xref{scanf}.
+
+@subheading Return Value
+
+The number of items successfully scanned.
+

@@ -1,0 +1,19 @@
+@c ----------------------------------------------------------------------
+@node modfl, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+long double modf(long double x, long double *pint);
+@end example
+
+@subheading Description
+
+@code{modfl} breaks down @var{x} into its integer portion (which it
+stores in @var{*pint}) and the remaining fractional portion, which it
+returns.
+
+@subheading Return Value
+
+The fractional portion.

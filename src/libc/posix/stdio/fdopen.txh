@@ -1,0 +1,26 @@
+@node fdopen, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+FILE *fdopen(int fd, const char *mode);
+@end example
+
+@subheading Description
+
+This function opens a stream-type file that uses the given @var{fd}
+file, which must already be open.  The file is opened with the modes
+specified by @var{mode}, which is the same as for @code{fopen}. 
+@xref{fopen}.
+
+@subheading Return Value
+
+The newly created @code{FILE *}, or @code{NULL} on error.
+
+@subheading Example
+
+@example
+FILE *stdprn = fdopen(4, "w");
+@end example
+

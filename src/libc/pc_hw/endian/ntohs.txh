@@ -1,0 +1,25 @@
+@node ntohs, cpu
+@subheading Syntax
+
+@example
+#include <netinet/in.h>
+
+unsigned short ntohs(unsigned short val);
+@end example
+
+@subheading Description
+
+This function converts from network formatted shorts to host formatted
+shorts.  For the i386 and higher processors, this means that the bytes
+are swapped from 12 order to 21 order.
+
+@subheading Return Value
+
+The host-order value.
+
+@subheading Example
+
+@example
+port = htons(tcp.port);
+@end example
+

@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node atan, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double atan(double x);
+@end example
+
+@subheading Return Value
+
+The arc tangent of @var{x}.

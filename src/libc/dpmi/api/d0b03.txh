@@ -1,0 +1,22 @@
+@node __dpmi_reset_debug_watchpoint, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_reset_debug_watchpoint
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0b03
+
+Resets a watchpoint.
+
+@subheading Return Value
+
+-1 on error, else zero.

@@ -1,0 +1,36 @@
+@node atexit, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int atexit(void (*func)(void));
+@end example
+
+@subheading Description
+
+This function places the specified function @var{func} on a list of
+functions to be called when @code{exit} is called.  These functions are
+called as if a last-in-first-out queue is used, that is, the last
+function registered with @code{atexit} will be the first function called
+by @code{exit}.
+
+At least 32 functions can be registered this way.
+
+@subheading Return Value
+
+Zero on success, non-zero on error.
+
+@subheading Example
+
+@example
+void exit_func()
+@{
+  remove("file.tmp");
+@}
+
+@dots{}
+atexit(exit_func);
+@dots{}
+@end example
+

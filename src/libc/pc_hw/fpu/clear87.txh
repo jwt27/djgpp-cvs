@@ -1,0 +1,17 @@
+@c ----------------------------------------------------------------------
+@node _clear87, cpu
+@subheading Syntax
+
+@example
+#include <float.h>
+
+unsigned int _clear87(void);
+@end example
+
+@subheading Description
+
+Clears the floating point processor's exception flags.
+
+@subheading Return Value
+
+The previous status word.

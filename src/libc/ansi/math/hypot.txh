@@ -1,0 +1,15 @@
+@c ----------------------------------------------------------------------
+@node hypot, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double hypot(double x, double y);
+@end example
+
+@subheading Return Value
+
+The length of a hypotenuse of a right triangle whose shorter sides are
+@var{x} and @var{y}.  In other words, the distance between (0,0) and
+(@var{x},@var{y}).

@@ -1,0 +1,34 @@
+@node gethostname, misc
+@subheading Syntax
+
+@example
+#include <unistd.h>
+#include <sys/param.h>
+
+int gethostname (char *buf, int size);
+@end example
+
+@subheading Description
+
+Get the name of the host the program is executing on.  This name
+is obtained from the network software, if present, otherwise from
+the @code{"HOSTNAME"} environment variable, if present, finally
+defaulting to @code{"pc"}.
+
+The call fails if more than @var{size} characters are required to
+specify the host name.  A buffer size of @code{MAXGETHOSTNAME} is
+guaranteed to be enough.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+char *buf = (char *) malloc (MAXGETHOSTNAME);
+if (buf && 0 == gethostname (buf, MAXGETHOSTNAME))
+  printf ("We're on %s\n", buf);
+if (buf) free(buf);
+@end example
+

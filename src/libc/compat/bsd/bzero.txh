@@ -1,0 +1,24 @@
+@node bzero, memory
+@subheading Syntax
+
+@example
+#include <string.h>
+
+void bzero(void *pointer, int length);
+@end example
+
+@subheading Description
+
+The data at @var{pointer} is filled with @var{length} zeros. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+char foo[100];
+bzero(foo,100);
+@end example
+

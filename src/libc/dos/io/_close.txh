@@ -1,0 +1,17 @@
+@node _close, file system
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int _close(int fd);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS close function call, int
+0x21, %ah = 0x3e.
+
+@subheading Return Value
+
+Zero if the file was closed, else nonzero. 

@@ -1,0 +1,23 @@
+@node unlink, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int unlink(const char *file);
+@end example
+
+@subheading Description
+
+This function removes a file from the file system. 
+
+@subheading Return Value
+
+Zero on success, nonzero on failure. 
+
+@subheading Example
+
+@example
+unlink("data.txt");
+@end example
+

@@ -1,0 +1,33 @@
+@node exec*, process
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int execl(const char *path, const char *argv0, ...);
+int execle(const char *path, const char *argv0, ... /*, char *const envp[] */);
+int execlp(const char *path, const char *argv0, ...);
+int execlpe(const char *path, const char *argv0, ... /*, char *const envp[] */);
+
+int execv(const char *path, char *const argv[]);
+int execve(const char *path, char *const argv[], char *const envp[]);
+int execvp(const char *path, char *const argv[]);
+int execvpe(const char *path, char *const argv[], char *const envp[]);
+@end example
+
+@subheading Description
+
+These functions operate by calling @code{spawn*} with a type of
+@code{P_OVERLAY}.  Refer to @ref{spawn*} for a full description. 
+
+@subheading Return Value
+
+If successful, these functions do not return.  If there is an error,
+these functions return -1 and set @code{errno} to indicate the error. 
+
+@subheading Example
+
+@example
+execlp("gcc", "gcc", "-v", "hello.c", 0);
+@end example
+

@@ -1,0 +1,29 @@
+@node creat, io
+@subheading Syntax
+
+@example
+#include <fcntl.h>
+#include <sys/stat.h> /* for mode definitions */
+
+int creat(const char *filename, mode_t mode);
+@end example
+
+@subheading Description
+
+This function creates the given file and opens it for writing.  If the
+file exists, it is truncated to zero size, unless it is read-only, in
+which case the function fails.  If the file does not exist, it will be
+created read-only if @var{mode} does not have @code{S_IWUSR} set. 
+
+@subheading Return Value
+
+A file descriptor >= 0, or a negative number on error. 
+
+@subheading Example
+
+@example
+int fd = creat("data", S_IRUSR|S_IWUSR);
+write(fd, buf, 1024);
+close(fd);
+@end example
+

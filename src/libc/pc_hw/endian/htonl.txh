@@ -1,0 +1,24 @@
+@node htonl, cpu
+@subheading Syntax
+
+@example
+#include <netinet/in.h>
+
+unsigned long htonl(unsigned long val);
+@end example
+
+@subheading Description
+
+This function converts from host formatted longs to network formatted
+longs.  For the i386 and higher processors, this means that the bytes
+are swapped from 1234 order to 4321 order.
+
+@subheading Return Value
+
+The network-order value.
+
+@subheading Example
+
+@example
+packet.ipaddr = htonl(ip);
+@end example

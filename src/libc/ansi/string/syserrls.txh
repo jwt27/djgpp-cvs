@@ -1,0 +1,42 @@
+@node sys_errlist, stdio
+@subheading Syntax
+
+@example
+#include <errno.h>
+
+extern char *sys_errlist[];
+@end example
+
+@subheading Description
+
+This array contains error messages, indexed by @code{errno}, that
+describe the errors. 
+
+@subheading Example
+
+@example
+printf("Error: %s\n", sys_errlist[errno]);
+@end example
+
+@c ----------------------------------------------------------------------
+@node sys_nerr, stdio
+@subheading Syntax
+
+@example
+#include <errno.h>
+
+extern int sys_nerr;
+@end example
+
+@subheading Description
+
+This variable gives the number of error messages in @code{sys_errlist}
+(@pxref{sys_errlist}). 
+
+@subheading Example
+
+@example
+if (errno < sys_nerr)
+  printf("Error: %s\n", sys_errlist[errno]);
+@end example
+

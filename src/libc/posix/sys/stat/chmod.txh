@@ -1,0 +1,39 @@
+@node chmod, file system
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int chmod(const char *path, mode_t mode);
+@end example
+
+@subheading Description
+
+This function changes the mode (writable or write-only) of the specified
+file.  The value of @var{mode} can be a combination of one or more of
+the following:
+
+@table @code
+
+@item S_IRUSR
+
+Make the file readable
+
+@item S_IWUSR
+
+Make the file writable
+
+@end table
+
+Other @code{S_I*} values could be included, but they will be ignored.
+
+@subheading Return Value
+
+Zero if the file exists and the mode was changed, else nonzero. 
+
+@subheading Example
+
+@example
+chmod("/tmp/dj.dat", S_IWUSR|S_IRUSR);
+@end example
+

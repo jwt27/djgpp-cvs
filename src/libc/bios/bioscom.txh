@@ -1,0 +1,81 @@
+@node bioscom, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+int bioscom(int cmd, char data, int port);
+@end example
+
+@subheading Description
+
+This function accesses the BIOS interrupt 0x14 function, serial
+communication services.  The valid values of cmd are:
+
+@table @asis
+@item 0 - initialize com port (@var{data} is the settings)
+@item 1 - write byte to port
+@item 2 - read byte from port
+@item 3 - get port status
+@item
+@end table
+
+For initialization, the byte is made up of the following bits:
+
+@example
+0000 0000
+7654 3210  Meaning
+
+---- --10  7 bits/character
+---- --11  8 bits/character
+---- -0--  1 stop bit
+---- -1--  2 stop bits
+---X 0---  no parity
+---0 1---  odd parity
+---1 1---  even parity
+000- ----  110 baud
+001- ----  150 baud
+010- ----  300 baud
+011- ----  600 baud
+100- ----  1200 baud
+101- ----  2400 baud
+110- ----  4800 baud
+111- ----  9600 baud
+@end example
+
+@subheading Return Value
+
+The return value is a sequence of bits that indicate the port status
+and, for cmd=0 and 3, the modem status.  For read/write operations,
+the lower eight bits are the character read.
+
+@example
+1111 1100 0000 0000
+5432 1098 7654 3210  Meaning
+
+---- ---- ---- ---1  CTS change
+---- ---- ---- --1-  DSR change
+---- ---- ---- -1--  ring change
+---- ---- ---- 1---  carrier detect change
+---- ---- ---1 ----  CTS present
+---- ---- --1- ----  DSR present
+---- ---- -1-- ----  ring present
+---- ---- 1--- ----  carrier detect
+---- ---1 ---- ----  data ready
+---- --1- ---- ----  overrun error
+---- -1-- ---- ----  parity error
+---- 1--- ---- ----  framing error
+---1 ---- ---- ----  break detected
+--1- ---- ---- ----  transmit holding register empty
+-1-- ---- ---- ----  transmit shift register empty
+1--- ---- ---- ----  time out (=1 if error present for cmd=1,2)
+@end example
+
+@subheading Example
+
+@example
+bioscom(0, 0xe3); /* 9600 baud, no parity, one stop, 8 bits */
+for (i=0; buf[i]; i++)
+  bioscom(1, buf[i]);
+@end example
+

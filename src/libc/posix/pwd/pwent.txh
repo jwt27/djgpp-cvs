@@ -1,0 +1,77 @@
+@node getpwent, unix
+@subheading Syntax
+
+@example
+#include <pwd.h>
+
+struct passwd *getpwent(void);
+@end example
+
+@subheading Description
+
+This function retrieves the next available password file entry. 
+For MS-DOS, this is simulated by providing exactly one entry:
+
+@example
+struct passwd @{
+  char * pw_name;    /* getlogin() */
+  int    pw_uid;     /* getuid() */
+  int    pw_gid;     /* getgid() */
+  char * pw_dir;     /* "/" or getenv("HOME") */
+  char * pw_shell;   /* "/bin/sh" or getenv("SHELL") */
+@};
+@end example
+
+@subheading Return Value
+
+The next passwd entry, or @code{NULL} if there are no more.
+
+@subheading Example
+
+@example
+struct passwd *p;
+setpwent();
+while ((p = getpwent()) != NULL)
+@{
+  printf("user %s name %s\n", p->pw_name, p->pw_gecos);
+@}
+endpwent();
+@end example
+
+@c ----------------------------------------------------------------------
+@node setpwent, unix
+@subheading Syntax
+
+@example
+#include <pwd.h>
+
+void setpwent(void);
+@end example
+
+@subheading Description
+
+This function reinitializes @code{getpwent} so that scanning will start
+from the start of the list.  @xref{getpwent}.
+
+@subheading Return Value
+
+None.
+
+@c ----------------------------------------------------------------------
+@node endpwent, unix
+@subheading Syntax
+
+@example
+#include <pwd.h>
+
+void endpwent(void);
+@end example
+
+@subheading Description
+
+This function should be called after the last call to getpwent (@pxref{getpwent}).
+
+@subheading Return Value
+
+None.
+

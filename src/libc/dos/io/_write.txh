@@ -1,0 +1,19 @@
+@node _write, file system
+@subheading Syntax
+
+@example
+#include <io.h>
+
+ssize_t _write(int fildes, void *buf, size_t nbyte);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS write function call, int
+0x21, %ah = 0x40.  No conversion is done on the data; it is written as
+raw binary data.
+
+@subheading Return Value
+
+The number of bytes written.
+

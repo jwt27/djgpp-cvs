@@ -1,0 +1,25 @@
+@node rawclock, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+unsigned long rawclock(void);
+@end example
+
+@subheading Description
+
+Returns the number of clock tics (18.2 per second) since midnight. 
+
+@subheading Return Value
+
+The number of tics.
+
+@subheading Example
+
+@example
+/* wait 1/4 second */
+int i = rawclock()+5;
+while (rawclock()<i);
+@end example
+

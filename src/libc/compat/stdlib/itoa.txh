@@ -1,0 +1,32 @@
+@node itoa, string
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+char * itoa(int value, char *string, int radix)
+@end example
+
+@subheading Description
+
+This function converts its argument @var{value} into a null-terminated
+character string using @var{radix} as the base of the number system.  The
+resulting string with a length of upto 33 bytes (including the optional
+sign and the terminating @code{NULL} is put into the buffer whose address
+is given by @var{string}.  For radixes other than 10, @var{value} is
+treated as an unsigned int (i.e., the sign bit is not interpreted as
+such).  The argument @var{radix} should specify the base, between 2 and
+36, in which the string reprsentation of @var{value} is requested.
+
+@subheading Return Value
+  
+A pointer to @var{string}.
+
+@subheading Example
+
+@example
+char binary_str[33];
+
+(void)itoa(num, binary_str, 2);
+@end example
+

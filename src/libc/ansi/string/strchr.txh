@@ -1,0 +1,25 @@
+@node strchr, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strchr(const char *s, int c);
+@end example
+
+@subheading Description
+
+This function returns a pointer to the first occurrence of @var{c} in
+@var{s}.  Note that if @var{c} is @code{NULL}, this will return a
+pointer to the end of the string. 
+
+@subheading Return Value
+
+A pointer to the character, or @code{NULL} if it wasn't found. 
+
+@subheading Example
+
+@example
+char *slash = strchr(filename, '/');
+@end example
+

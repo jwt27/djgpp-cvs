@@ -1,0 +1,25 @@
+@node link, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int link(const char *exists, const char *new);
+@end example
+
+@subheading Description
+
+Because of limitations of MS-DOS, this function doesn't really link two
+files together.  However, it simulates a real @code{link} by copying the
+file at @var{exists} to @var{new}. 
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+link("foo.c", "foo.bak");
+@end example
+

@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node atanh, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double atanh(double x);
+@end example
+
+@subheading Return Value
+
+The arc hyperbolic tangent of @var{x}.

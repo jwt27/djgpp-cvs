@@ -1,0 +1,41 @@
+@node __dpmi_get_descriptor, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_descriptor(int _selector, void *_buffer);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x000b
+
+This function fills a 8-byte buffer with the parameters of the
+descriptor.  The data has the following format:
+
+@example
+[0] XXXX XXXX = segment limit [7:0]
+[1] XXXX XXXX = segment limit [15:8]
+[2] XXXX XXXX = base address [7:0]
+[3] XXXX XXXX = base address [15:8]
+[4] XXXX XXXX = base address [23:16]
+[5] ---- XXXX = type
+[5] ---X ---- = 0=system, 1=application
+[5] -XX- ---- = priviledge level
+[5] X--- ---- = 0=absent, 1=present
+[6] ---- XXXX = segment limit [19:16]
+[6] ---X ---- = available for user
+[6] --0- ---- = must be zero
+[6] -X-- ---- = 0=16-bit 1=32-bit (cs only)
+[6] X--- ---- = 0=byte-granular (small) 1=page-granular (big)
+[7] XXXX XXXX = base address [31:24]
+@end example
+
+@subheading Return Value
+
+-1 on error, else zero.

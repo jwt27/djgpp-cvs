@@ -1,0 +1,12 @@
+@node outportsb, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void outportsb(unsigned short _port, unsigned char *_buf, unsigned _len);
+@end example
+
+@subheading Description
+
+Writes the @var{_len} bytes in @var{_buf} to the 8-bit @var{_port}.

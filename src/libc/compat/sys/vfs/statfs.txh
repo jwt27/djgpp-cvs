@@ -1,0 +1,42 @@
+@node statfs, file system
+@subheading Syntax
+
+@example
+#include <sys/vfs.h>
+
+int statfs(const char *filename, struct statfs *buf);
+@end example
+
+@subheading Description
+
+This function returns information about the given "filesystem".  The
+drive letter of the given @var{filename}, or the default drive if none
+is given, is used to retrieve the following structure:
+
+@example
+struct statfs
+@{
+    long	f_type;   /* 0 */
+    long	f_bsize;  /* bytes per cluster */
+    long	f_blocks; /* clusters on drive */
+    long	f_bfree;  /* available clusters */
+    long	f_bavail; /* available clusters */
+    long	f_files;  /* clusters on drive */
+    long	f_ffree;  /* available clusters */
+    fsid_t	f_fsid;   /* [0]=drive_number, [1]=MOUNT_UFS
+    long	f_magic;  /* FS_MAGIC */
+@};
+@end example
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+struct statfs fs;
+statfs("anything", &fs);
+printf("%d bytes left\n", fs.f_bfree * fs.f_bsize);
+@end example
+

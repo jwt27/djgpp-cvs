@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node cos, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double cos(double x);
+@end example
+
+@subheading Return Value
+
+The cosine of @var{x}.

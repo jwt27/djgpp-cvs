@@ -1,0 +1,23 @@
+@node __dpmi_get_vendor_specific_api_entry_point, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_vendor_specific_api_entry_point(char *_id, __dpmi_paddr *_api);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0a00
+
+Look up a vendor-specific function, given the @emph{name} of the
+function.
+
+@subheading Return Value
+
+-1 on error, else zero.

@@ -1,0 +1,163 @@
+@node strftime, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+size_t strftime(char *buf, size_t n, const char *format, const struct tm *time);
+@end example
+
+@subheading Description
+
+This function formats the given @var{time} according to the given
+@var{format} and stores it in @var{buf}, not exceeding @var{n} bytes. 
+
+The format string is like @code{printf} in that any character other than
+@code{%} is added to the output string, and for each character following
+a @code{%} a pattern is added to the string as follows, with the
+examples as if the time was Friday, October 1, 1993, at 03:30:34 PM EDT:
+
+@table @code
+
+@item %A
+
+The full weekday name (@code{Friday})
+
+@item %a
+
+The abbreviated weekday name (@code{Fri})
+
+@item %B
+
+The full month name (@code{October})
+
+@item %b
+@itemx %h
+
+The abbreviated month name (@code{Oct})
+
+@item %C
+
+Short for @code{%a %b %e %H:%M:%S %Y} (@code{Fri Oct  1 15:30:34 1993})
+
+@item %c
+
+Short for @code{%m/%d/%y %H:%M:%S} (@code{10/01/93 15:30:34})
+
+@item %e
+
+The day of the month, blank padded to two characters (@code{ 2})
+
+@item %D
+
+Short for @code{%m/%d/%y} (@code{10/01/93})
+
+@item %d
+
+The day of the month, zero padded to two characters (@code{02})
+
+@item %H
+
+The hour (0-24), zero padded to two characters (@code{15})
+
+@item %I
+
+The hour (1-12), zero padded to two characters (@code{03})
+
+@item %j
+
+The Julian day, zero padded to three characters (@code{275})
+
+@item %k
+
+The hour (0-24), space padded to two characters (@code{15})
+
+@item %l
+
+The hour (1-12), space padded to two characters(@code{ 3})
+
+@item %M
+
+The minutes, zero padded to two characters (@code{30})
+
+@item %m
+
+The month (1-12), zero padded to two characters (@code{10})
+
+@item %n
+
+A newline (@code{\n})
+
+@item %p
+
+AM or PM (@code{PM})
+
+@item %R
+
+Short for @code{%H:%M} (@code{15:30})
+
+@item %r
+
+Short for @code{%I:%M:%S %p} (@code{03:30:35 PM})
+
+@item %S
+
+The seconds, zero padded to two characters (@code{35})
+
+@item %T
+@itemx %X
+
+Short for @code{%H:%M:%S} (@code{15:30:35})
+
+@item %t
+
+A tab (@code{\t})
+
+@item %U
+
+The week of the year, with the first week defined by the first Sunday of
+the year, zero padded to two characters (@code{39})
+
+@item %W
+
+The week of the year, with the first week defined by the first Monday of
+the year, zero padded to two characters (@code{39})
+
+@item %w
+
+The day of the week (0-6) (@code{5})
+
+@item %x
+
+Short for @code{%m/%d/%y} (@code{10/01/93})
+
+@item %y
+
+The year (00-99) of the century (@code{93})
+
+@item %Y
+
+The year, zero padded to four digits (@code{1993})
+
+@item %Z
+
+The timezone abbreviation (@code{EDT})
+
+@item %%
+
+A percent symbol (@code{%})
+
+@end table
+
+@subheading Return Value
+
+The number of characters stored.
+
+@subheading Example
+
+@example
+struct tm t;
+char buf[100];
+strftime(buf, 100, "%B %d, %Y", &t);
+@end example
+

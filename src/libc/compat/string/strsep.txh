@@ -1,0 +1,39 @@
+@node strsep, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strsep(char **stringp, char *delim);
+@end example
+
+@subheading Description
+
+This function retrieves the next token from the given string, where
+@var{stringp} points to a variable holding, initially, the start of the
+string.  Tokens are delimited by a character from @var{delim}.  Each
+time the function is called, it returns a pointer to the next token, and
+sets *@var{stringp} to the next spot to check, or @code{NULL}. 
+
+@subheading Return Value
+
+The next token, or NULL.
+
+@subheading Example
+
+@example
+main()
+@{
+  char *buf = "Hello  there,stranger";
+  char **bp = &buf;
+  char *tok;
+  while (tok = strsep(bp, " ,"))
+    printf("tok = `%s'\n", tok);
+@}
+
+tok = `Hello'
+tok = `'
+tok = `there'
+tok = `stranger'
+@end example
+

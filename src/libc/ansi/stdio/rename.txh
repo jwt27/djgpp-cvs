@@ -1,0 +1,43 @@
+@node rename, file system
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int rename(const char *oldname, const char *newname);
+@end example
+
+@subheading Description
+
+This function renames an existing file or directory @var{oldname} to
+@var{newname}.  If @var{newname} exists, then it is first removed.  If
+@var{newname} is a directory, it must be empty (or else @var{errno} will
+be set to @code{ENOTEMPTY}), and must not include @var{oldname} in its
+path prefix (otherwise, @var{errno} will be set to @code{EINVAL}).  If
+@var{newname} exists, both @var{oldname} and @var{newname} must be of the
+same type (both directories or both regular files) (or else @var{errno}
+will be set to @code{ENOTDIR} or @code{EISDIR}), and must reside on the
+same logical device (otherwise, @var{errno} will be set to @code{EXDEV}). 
+Wildcards are not allowed in either @var{oldname} or @var{newname}.  DOS
+won't allow renaming a current directory even on a non-default drive (you
+will get the @code{EBUSY} or @code{EINVAL} in @var{errno}).
+@code{ENAMETOOLONG} will be returned for pathnames which are longer than
+the limit imposed by DOS.  If @var{oldname} doesn't exist, @var{errno}
+will be set to @code{ENOENT}.  For most of the other calamities, DOS will
+usually set @var{errno} to @code{EACCES}.
+
+If anything goes wrong during the operation of @code{rename()}, the
+function tries very hard to leave the things as ther were before it was
+invoked, but it might not always succeed.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+rename("c:/mydir/some.doc", "c:/yourdir/some.sav");
+rename("c:/path1/mydir", "c:/path2");
+@end example
+

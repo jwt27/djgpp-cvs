@@ -1,0 +1,48 @@
+@node fseek, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fseek(FILE *file, long offset, int mode);
+@end example
+
+@subheading Description
+
+This function moves the file pointer for @var{file} according to
+@var{mode}:
+
+@table @code
+
+@item SEEK_SET
+
+The file pointer is moved to the offset specified.
+
+@item SEEK_CUR
+
+The file pointer is moved relative to its current position.
+
+@item SEEK_END
+
+The file pointer is moved to a position @var{offset} bytes from the end
+of the file.  The offset is usually nonpositive in this case. 
+
+@end table
+
+@emph{Warning!} The ANSI standard only allows values of zero for
+@var{offset} when @var{whence} is not @code{SEEK_SET} and the file has
+been opened as a text file.  Although this restriction is not enforced,
+beware that there is not a one-to-one correspondence between file
+characters and text characters under MS-DOS, so some @code{fseek}
+operations may not do exactly what you expect. 
+
+@subheading Return Value
+
+Zero if successful, nonzero if not. 
+
+@subheading Example
+
+@example
+fseek(stdin, 12, SEEK_CUR); /* skip 12 bytes */
+@end example
+

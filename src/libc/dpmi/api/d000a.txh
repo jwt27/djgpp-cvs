@@ -1,0 +1,22 @@
+@node __dpmi_create_alias_descriptor, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_create_alias_descriptor(int _selector);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x000a
+
+Create a new selector with the same parameters as the given one.
+
+@subheading Return Value
+
+-1 on error, else the new selector.

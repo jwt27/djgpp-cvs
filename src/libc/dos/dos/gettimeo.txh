@@ -1,0 +1,34 @@
+@node gettimeofday, time
+@subheading Syntax
+
+@example
+#include <sys/time.h>
+
+int gettimeofday(struct timeval *tp, struct timezone *tzp);
+@end example
+
+@subheading Description
+
+Gets the current GMT time and the local timezone information.  The
+return structures are as follows:
+
+@example
+struct timeval @{
+  long tv_sec;  /* seconds since 00:00:00 GMT 1/1/1970 */
+  long tv_usec; /* microseconds */
+@};
+struct timezone @{
+  int tz_minuteswest; /* west of GMT */
+  int tz_dsttime;     /* set if daylight saving time in affect */
+@};
+@end example
+
+If either @var{tp} or @var{tzp} are @code{NULL}, that information is not
+provided. 
+
+@xref{settimeofday}.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+

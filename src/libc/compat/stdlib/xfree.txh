@@ -1,0 +1,22 @@
+@c ----------------------------------------------------------------------
+@node xfree, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void xfree(void *ptr);
+@end example
+
+@subheading Description
+
+Frees memory allocated by @code{xmalloc} (@pxref{xmalloc}).  This
+function guarantees that a NULL pointer is handled gracefully.
+
+@subheading Example
+
+@example
+void *f = xmalloc(100);
+xfree(f);
+@end example
+

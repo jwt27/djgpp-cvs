@@ -1,0 +1,94 @@
+@node file_tree_walk, file system
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+int __file_tree_walk(const char *dir, 
+                   int (*func)(const char *path, const struct ffblk *ff));
+@end example
+
+@subheading Description
+
+This function recursively descends the directory hierarchy which starts
+with @var{dir}.  For each file in the hierarchy, @code{__file_tree_walk}
+calls the user-defined function @var{func} which is passed a pointer to a
+@code{NULL}-terminated character array in @var{path} holding the full
+pathname of the file, a pointer to a @code{ffblk} structure
+(@pxref{findfirst}) @var{fff} with a DOS filesystem information about that
+file.
+
+This function always visits a directory before any of its siblings.  The
+argument @var{dir} must be a directory, or @code{__file_tree_walk} will fail
+and set @var{errno} to @code{ENOTDIR}.  The directory @var{dir} itself is
+never passed to @var{func}.
+
+The tree traversal continues until one of the following events:
+
+(1)  The tree is exhausted (i.e., all descendants of @var{dir} are
+processed).  In this case, @code{__file_tree_walk} returns 0, meaning a
+success.
+
+(2)  An invocation of @var{func} returns a non-zero value.  In this case,
+@code{__file_tree_walk} stops the tree traversal and returns whatever
+@var{func} returned.
+
+(3)  An error is detected within @code{__file_tree_walk}.  In that case,
+@code{ftw} returns -1 and sets @var{errno} (@pxref{errno}) to a suitable
+value.
+
+@subheading Return Value
+
+Zero in case the entire tree was successfully traversed, -1 if
+@code{__file_tree_walk} detected some error during its operation, or any
+other non-zero value which was returned by the user-defined function
+@var{func}.
+
+@subheading Example
+
+@example
+#include <stdlib.h>
+
+int
+ff_walker(const char *path, const struct ffblk *ff)
+@{
+  printf("%s:\t%lu\t", path, ff->ff_fsize);
+  if (ff->ff_attrib & 1)
+    printf("R");
+  if (ff->ff_attrib & 2)
+    printf("H");
+  if (ff->ff_attrib & 4)
+    printf("S");
+  if (ff->ff_attrib & 8)
+    printf("V");
+  if (ff->ff_attrib & 0x10)
+    printf("D");
+  if (ff->ff_attrib & 0x20)
+    printf("A");
+  printf("\n");
+
+  if (strcmp(ff->ff_name, "XXXXX") == 0)
+    return 42;
+  return 0;
+@}
+
+int
+main(int argc, char *argv[])
+@{
+  if (argc > 1)
+    @{
+      char msg[80];
+
+      sprintf(msg, "__file_tree_walk: %d",
+                   __file_tree_walk(argv[1], ff_walker));
+      if (errno)
+        perror(msg);
+      else
+        puts(msg);
+    @}
+  else
+    printf("Usage: %s dir\n", argv[0]);
+
+  return 0;
+@}
+@end example

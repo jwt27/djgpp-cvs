@@ -1,0 +1,17 @@
+@node labs, misc
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+long labs(long x);
+@end example
+
+@subheading Description
+
+This function takes the absolute value of @var{x}.  @xref{abs}.
+
+@subheading Return Value
+
+|@var{x}|
+

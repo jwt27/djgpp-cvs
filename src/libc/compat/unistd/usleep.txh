@@ -1,0 +1,24 @@
+@c ----------------------------------------------------------------------
+@node usleep, process
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+unsigned usleep(unsigned usec);
+@end example
+
+@subheading Description
+
+This function pauses the program for @var{usec} microseconds. 
+
+@subheading Return Value
+
+The number of unslept microseconds (i.e. zero).
+
+@subheading Example
+
+@example
+usleep(500000);
+@end example
+

@@ -1,0 +1,25 @@
+@node remove, file system
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int remove(const char *file);
+@end example
+
+@subheading Description
+
+This function removes the named @var{file} from the file system.  Unless
+you have an un-erase program, the file and its contents are gone for
+good. 
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+remove("/tmp/data.tmp");
+@end example
+

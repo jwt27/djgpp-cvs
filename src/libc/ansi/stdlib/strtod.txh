@@ -1,0 +1,27 @@
+@node strtod, string
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+double strtod(const char *s, char **endp);
+@end example
+
+@subheading Description
+
+This function converts as many characters of @var{s} that look like a
+floating point number into one, and sets @var{*endp} to point to the
+first unused character. 
+
+@subheading Return Value
+
+The value the string represented. 
+
+@subheading Example
+
+@example
+char *buf = "123ret";
+char *bp;
+double x = strtod(buf, &bp);
+@end example
+

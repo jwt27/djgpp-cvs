@@ -1,0 +1,41 @@
+@node lseek, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+off_t lseek(int fd, off_t offset, int whence);
+@end example
+
+@subheading Description
+
+This function moves the file pointer for @var{fd} according to
+@var{mode}:
+
+@table @code
+
+@item SEEK_SET
+
+The file pointer is moved to the offset specified.
+
+@item SEEK_CUR
+
+The file pointer is moved relative to its current position.
+
+@item SEEK_END
+
+The file pointer is moved to a position @var{offset} bytes from the end
+of the file.  The offset is usually nonpositive in this case. 
+
+@end table
+
+@subheading Return Value
+
+The new offset is returned.
+
+@subheading Example
+
+@example
+lseek(fd, 12, SEEK_CUR); /* skip 12 bytes */
+@end example
+

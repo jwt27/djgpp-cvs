@@ -1,0 +1,24 @@
+@node mkdir, file system
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int mkdir(const char *path, mode_t mode);
+@end example
+
+@subheading Description
+
+This function creates a subdirectory.  The @var{mode} field is ignored
+under MS-DOS. 
+
+@subheading Return Value
+
+Zero if the subdirectory was created, nonzero on failure.
+
+@subheading Example
+
+@example
+mkdir("/usr/tmp", S_IWUSR);
+@end example
+

@@ -1,0 +1,18 @@
+@node __dpmi_get_segment_limit, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+unsigned __dpmi_get_segment_limit(int _selector);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+@subheading Return Value
+
+The limit of the segment, as returned by the @code{lsl} opcode.

@@ -1,0 +1,25 @@
+@node clock, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+clock_t clock(void);
+@end example
+
+@subheading Description
+
+This function returns the number of clock ticks since an arbitrary time,
+actually, since the first call to @code{clock}, which itself returns
+zero.  The number of tics per second is CLOCKS_PER_SEC.
+
+@subheading Return Value
+
+The number of tics.
+
+@subheading Example
+
+@example
+printf("%d seconds have elapsed\n", clock()/CLOCKS_PER_SEC);
+@end example
+

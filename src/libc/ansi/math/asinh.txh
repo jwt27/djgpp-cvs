@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node asinh, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double asinh(double x);
+@end example
+
+@subheading Return Value
+
+The arc hyperbolic sine of @var{x}.

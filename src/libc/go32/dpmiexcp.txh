@@ -1,0 +1,43 @@
+@c ----------------------------------------------------------------------
+@node raise, signal
+@subheading Syntax
+
+@example
+#include <signal.h>
+
+int	raise(int _sig);
+@end example
+
+@subheading Description
+
+This function raises the given signal (see @code{<signal.h>} for a
+list). @xref{signal}.
+
+@subheading Return Value
+
+0 on success.
+@c ----------------------------------------------------------------------
+@node signal, signal
+@subheading Syntax
+
+@example
+#include <signal.h>
+
+void	(*signal(int _sig, void (*_func)(int)))(int);
+@end example
+
+@subheading Description
+
+This function registers signal handlers.  Signal numbers are 0..255
+for software interrupts, 256..287 for exceptions (exception number
+plus 256) or as specified in @code{<signal.h>}.
+
+You may pass SIG_DFL to reset the default handling, SIG_ERR to force
+an error when that signal happens, or SIG_IGN to ignore that signal.
+Signal handlers are regular C functions, and may call any function
+that the ANSI/POSIX specs say are valid for signal handlers.  Signal
+handlers for hardware interrupts need special handling.
+
+@subheading Return Value
+
+The previous handler.

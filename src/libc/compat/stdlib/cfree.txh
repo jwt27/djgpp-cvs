@@ -1,0 +1,25 @@
+@node cfree, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void cfree(void *pointer);
+@end example
+
+@subheading Description
+
+This function returns the memory allocated by calloc (@pxref{calloc}) to
+the heap. 
+
+@subheading Return Value
+  
+None.
+
+@subheading Example
+
+@example
+Complex *x = calloc(12, sizeof(Complex));
+cfree(x);
+@end example
+

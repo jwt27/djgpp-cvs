@@ -1,0 +1,38 @@
+@node utime, file system
+@subheading Syntax
+
+@example
+#include <utime.h>
+
+int utime(const char *file, const struct utimbuf *time);
+@end example
+
+@subheading Description
+
+This function sets the modification timestamp on the @var{file}.  The
+new time is stored in this structure:
+
+@example
+struct utimbuf
+@{
+    time_t  actime;  /* access time (unused) */
+    time_t  modtime; /* modification time */
+@};
+@end example
+
+Note that, as under DOS a file only has a single timestamp, the
+@code{actime} field of @code{struct utimbuf} is ignored by
+this function, and only @code{modtime} field is used.
+
+@subheading Return Value
+
+Zero for success, nonzero for failure.
+
+@subheading Example
+
+@example
+struct utimbuf t;
+t.modtime = time(0);
+utime("data.txt", &t);
+@end example
+

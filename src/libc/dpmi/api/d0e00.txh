@@ -1,0 +1,20 @@
+@node __dpmi_get_coprocessor_status, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_coprocessor_status(void);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0e00 (DPMI 1.0 only)
+
+@subheading Return Value
+
+-1 on error, else returns the processor status flags

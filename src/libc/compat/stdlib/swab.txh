@@ -1,0 +1,21 @@
+@node swab, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void swab(const void *from, void *to, int nbytes);
+@end example
+
+@subheading Description
+
+This function copies @var{nbytes} bytes from the address pointed to by
+@var{from} to the address pointed by @var{to}, exchanging adjacent even
+and odd bytes.  It is useful for carrying binary data between
+little-endian and big-endian machines.  The argument @var{nbytes} should
+be even, and the buffers @var{from} and @var{to} should not overlap.
+
+@subheading Return Value
+  
+None.
+

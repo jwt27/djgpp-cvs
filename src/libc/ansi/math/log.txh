@@ -1,0 +1,14 @@
+@c ----------------------------------------------------------------------
+@node log, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double log(double x);
+@end example
+
+@subheading Return Value
+
+The natural logarithm of @var{x}.
+

@@ -1,0 +1,24 @@
+@node __dpmi_get_page_attributes, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_page_attributes(__dpmi_meminfo *_info, short *_buffer);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0506 (DPMI 1.0 only)
+
+Pass the handle, offset of first page (relative to start of block) in
+.address, and number of pages in .count.  Buffer gets filled in with
+the attributes (see spec).
+
+@subheading Return Value
+
+-1 on error, else zero.

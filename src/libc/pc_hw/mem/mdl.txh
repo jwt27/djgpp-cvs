@@ -1,0 +1,13 @@
+@node movedatal, memory
+@subheading Syntax
+
+@example
+#include <sys/movedata.h>
+
+void _movedatal(unsigned, unsigned, unsigned, unsigned, size_t);
+@end example
+
+@subheading Description
+
+Just like @ref{movedata}, but all transfers are always 32-bit
+transfers, and the count is a count of transfers, not bytes.

@@ -1,0 +1,24 @@
+@node close, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int close(int fd);
+@end example
+
+@subheading Description
+
+The open file associated with @var{fd} is closed.
+
+@subheading Return Value
+
+Zero if the file was closed, nonzero if @var{fd} was invalid or already closed.
+
+@subheading Example
+
+@example
+int fd = open("data", O_RDONLY);
+close(fd);
+@end example
+

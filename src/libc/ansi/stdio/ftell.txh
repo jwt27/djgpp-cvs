@@ -1,0 +1,24 @@
+@node ftell, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+long ftell(FILE *file);
+@end example
+
+@subheading Description
+
+Returns the current file position for @code{file}.  This is suitable for
+a future call to @code{fseek}. 
+
+@subheading Return Value
+
+The file position, or -1 on error. 
+
+@subheading Example
+
+@example
+long p = ftell(stdout);
+@end example
+

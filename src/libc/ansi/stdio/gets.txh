@@ -1,0 +1,28 @@
+@node gets, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+char *gets(char *buffer);
+@end example
+
+@subheading Description
+
+Reads characters from @code{stdin}, storing them in @var{buffer}, until
+either end of file or a newline is encountered.  If any characters were
+stored, the @var{buffer} is then @code{NULL} terminated and its address
+is returned, else @code{NULL} is returned.
+
+@subheading Return Value
+
+The address of the buffer, or @code{NULL}.
+
+@subheading Example
+
+@example
+char buf[1000];
+while (gets(buf))
+  puts(buf);
+@end example
+

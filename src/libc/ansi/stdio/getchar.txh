@@ -1,0 +1,17 @@
+@node getchar, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int getchar(void);
+@end example
+
+@subheading Description
+
+The same as @code{fgetc(stdin)} (@pxref{fgetc}).
+
+@subheading Return Value
+
+The character, or @code{EOF}.
+

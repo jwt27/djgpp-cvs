@@ -1,0 +1,24 @@
+@node puts, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int puts(const char *string);
+@end example
+
+@subheading Description
+
+This function writes @var{string} to @code{stdout}, and then writes a
+newline character. 
+
+@subheading Return Value
+
+Nonnegative for success, or @code{EOF} on error.
+
+@subheading Example
+
+@example
+puts("Hello, there");
+@end example
+

@@ -1,0 +1,25 @@
+@node rewinddir, file system
+@subheading Syntax
+
+@example
+#include <dirent.h>
+
+void rewinddir(DIR *dir);
+@end example
+
+@subheading Description
+
+This function resets the position of the @var{dir} so that the next call
+to @code{readdir} (@pxref{readdir}) starts at the beginning again. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+DIR *d = opendir(".");
+rewinddir(d);
+@end example
+

@@ -1,0 +1,18 @@
+@c ----------------------------------------------------------------------
+@node isupper, ctype
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int isupper(int c);
+@end example
+
+@subheading Description
+
+Tells if @var{c} is an upper case character or not.
+
+@subheading Return Value
+
+Nonzero if @var{c} is upper case, else zero.
+

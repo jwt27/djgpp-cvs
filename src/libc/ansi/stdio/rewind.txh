@@ -1,0 +1,24 @@
+@node rewind, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+void rewind(FILE *file);
+@end example
+
+@subheading Description
+
+This function repositions the file pointer to the beginning of the file
+and clears the error indicator. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+rewind(stdin);
+@end example
+

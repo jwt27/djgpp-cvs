@@ -1,0 +1,14 @@
+@c ----------------------------------------------------------------------
+@node log10, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double log10(double x);
+@end example
+
+@subheading Return Value
+
+The logarithm base 10 of @var{x}.
+

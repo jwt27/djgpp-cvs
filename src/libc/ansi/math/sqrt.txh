@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node sqrt, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double sqrt(double x);
+@end example
+
+@subheading Return Value
+
+The square root of @var{x}.

@@ -1,0 +1,22 @@
+@node __dpmi_set_extended_exception_handler_vector_rm, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_extended_exception_handler_vector_rm(int _vector, __dpmi_paddr *_address);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0213 (DPMI 1.0 only)
+
+This function installs a handler for real-mode exceptions.
+
+@subheading Return Value
+
+-1 on error, else zero.

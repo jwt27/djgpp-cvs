@@ -1,0 +1,32 @@
+@node setlinebuf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+void setlinebuf(FILE *file);
+@end example
+
+@subheading Description
+
+This function modifies the buffering characteristics of @var{file}. 
+First, if the file already has a buffer, it is freed.  If there was any
+pending data in it, it is lost, so this function should only be used
+immediately after a call to @code{fopen}.
+
+Next, a buffer is allocated and the file is set to line buffering.
+
+@xref{setbuf}.
+@xref{setlinebuf}.
+@xref{setvbuf}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+setlinebuf(stderr);
+@end example
+

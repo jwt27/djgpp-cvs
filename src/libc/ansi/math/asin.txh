@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node asin, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double asin(double x);
+@end example
+
+@subheading Return Value
+
+The arc sine of @var{x}.

@@ -1,0 +1,163 @@
+@node _djstat_flags, stdio
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+extern unsigned short   _djstat_flags;
+@end example
+
+This variable contains bits for some fields of struct stat which are
+expensive to compute under DOS.  Any such computation is only done by
+@ref{stat} or @ref{fstat} if the corresponding bit in
+@code{_djstat_flags} is cleared.  By default, all the bits are
+cleared, so applications which don't care, automagically get a full
+version, possibly at a price of performance.  To get the fastest
+possible @code{f?stat()} for your application, clear only the bits
+which you need and set all the others.
+
+The following bits are currently defined:
+
+@table @code
+
+@item _STAT_INODE
+
+Causes @code{f?stat()} to compute the @code{st_ino} (inode number) field.
+
+@item _STAT_EXEC_EXT
+
+Tells @code{f?stat()} to compute the execute access bit from extension.
+
+@item _STAT_EXEC_MAGIC
+
+Tells @code{f?stat()} to compute the execute access bit from magic
+signature (the first two bytes of the file, see @ref{_is_executable}.
+Note that if _STAT_EXEC_MAGIC is set, but _STAT_EXEC_EXT is not, some
+files which shouldn't be flagged as executables (e.g., COFF *.o object
+files) will have their execute bit set, because they have the magic
+number signature at their beginning.  Therefore, only use the above
+combination if you want to debug the list of extensions provided in
+is_exec.c file.
+
+@item _STAT_DIRSIZE
+
+Causes @code{stat} to compute directory size by counting the number of its
+entries (unless some friendly network redirector brought a true directory
+size with it).
+
+@item _STAT_ROOT_TIME
+
+Causes @code{stat()} to try to get time stamp of root directory from its
+volume label entry, if there is one.
+
+@item _STAT_WRITEBIT
+
+Tells @code{fstat()} that file's write access bit is required (this could
+be a problem only under some versions of Novell Netware).
+
+@end table
+
+Note that if you set a bit, some failure bits in @ref{_djstat_fail_bits}
+might not be set, because some computations which report failures are only
+done when they are required.
+
+@node _djstat_fail_bits, stdio
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+extern unsigned short   _djstat_fail_bits;
+@end example
+
+As proper operation of @ref{stat} and @ref{fstat} depend on
+undocumented DOS features, they could fail in some incompatible
+environment or a future DOS version.  If they do, the
+@code{_djstat_fail_bits} variable will have some of its bits set.
+Each bit describes a single feature which was used and failed.  The
+function @ref{_djstat_describe_lossage} may be called to print a
+human-readable description of the bits which were set by the last call
+to @code{f?stat()}.  This should make debugging @code{f?stat()}
+failures in an unanticipated environment a lot easier.
+
+The following bits are currently defined:
+
+@table @code
+
+@item _STFAIL_SDA
+
+Indicates that Get SDA call failed.
+
+@item _STFAIL_OSVER
+
+Indicates an unsupported DOS version (less than 3.10 for @code{stat()} or
+less than 2.0 for @code{fstat()}).
+
+@item _STFAIL_BADSDA
+
+The pointer to SDA was found to be bogus.
+
+@item _STFAIL_TRUENAME
+
+Indicates that @ref{_truename} function call failed.
+
+@item _STFAIL_HASH
+
+Indicates that the starting cluster of the file is unavailable, and inode
+number was computed by hashing its name.
+
+@item _STFAIL_LABEL
+
+The application requested the time stamp of a root dir, but no volume
+label was found.
+
+@item _STFAIL_DCOUNT
+
+The number of SDA reported is ridiculously large (probbaly an unsupported
+DOS clone).
+
+@item _STFAIL_WRITEBIT
+
+@code{fstat()} was asked to get write access bit of a file, but couldn't.
+
+@item _STFAIL_DEVNO
+
+@code{fstat()} failed to get device number.
+
+@item _STFAIL_BADSFT
+
+An SFT entry for this file was found by @code{fstat()}, but its contents
+can't be trusted because it didn't match file size and time stamp as
+reported by DOS.
+
+@item _STFAIL_SFTIDX
+
+The SFT index in Job File Table in program's PSP is negative.
+
+@item _STFAIL_SFTNF
+
+The file entry was not found in the SFT array.
+
+@end table
+
+Below are some explanations of terminology and abbreviations used by the
+printed messages, which will further clarify the meaning of the above bits
+and their descriptions printed by @ref{_djstat_describe_lossage}.
+
+  SDA (Swappable DOS Area) -- this is an internal DOS structure.
+@code{stat()} uses it to get the full directory entry (including the
+starting cluster number) of a file.  The pointer to SDA found by
+@code{stat()} is trusted only if we find the pathname of our file at a
+specific offset in that SDA.
+
+  SFT (System File Table) -- another internal DOS structure, used in file
+operations.  @code{fstat()} uses it to get full information on a file
+given its handle.  An SFT entry which is found by @code{fstat()} is only
+trusted if it contains files size and time stamp like those returned by
+DOS functions 57h and 42h.  Novell NetWare 3.x traps DOS file operations
+in such a way they never get to SFT, so some failure messages refer
+specifically to Novell.
+
+  Hashing -- the fall-back method of returning a unique inode number for
+each file.  It is used whenever the starting cluster of a file couldn't be
+reliably determined.

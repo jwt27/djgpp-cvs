@@ -1,0 +1,23 @@
+@node memcpy, memory
+@subheading Syntax
+
+@example
+#include <string.h>
+
+void *memcpy(void *dest, const void *src, int num);
+@end example
+
+@subheading Description
+
+This function copies @var{num} bytes from @var{source} to @var{dest}. 
+
+@subheading Return Value
+
+@var{dest}
+
+@subheading Example
+
+@example
+memcpy(buffer, temp_buffer, BUF_MAX);
+@end example
+

@@ -1,0 +1,40 @@
+@node __dpmi_get_capabilities, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_capabilities(int *_flags, char *vendor_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0401 (DPMI 1.0 only)
+
+Gets the capabilities of the server.  The flags are as follows:
+
+@example
+---- ---X = 1="page accessed/dirty" supported
+---- --X- = 1="exceptions restartble" supported
+---- -X-- = 1="device mapping" supported
+---- X--- = 1="map conventional memory" supported
+---X ---- = 1="demand zero-fill" supported
+--X- ---- = 1="write-protect client" supported
+-X-- ---- = 1="write-protect host" supported
+@end example
+
+The vendor info is a 128-byte buffer:
+
+@example
+[0] host major number
+[1] host minor number
+[2..127] vendor name
+@end example
+
+@subheading Return Value
+
+!-1 on error, else zero.

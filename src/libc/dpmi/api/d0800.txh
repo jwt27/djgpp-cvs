@@ -1,0 +1,24 @@
+@node __dpmi_physical_address_mapping, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_physical_address_mapping(__dpmi_meminfo *_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0800
+
+Maps a physical device (like a graphics buffer) to linear memory.
+Fill in the physical address and size (in bytes).  On return, the
+address is the linear address to use.
+
+@subheading Return Value
+
+-1 on error, else zero.

@@ -1,0 +1,23 @@
+@node __dpmi_discard_page_contents, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_discard_page_contents(__dpmi_meminfo *_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0703
+
+Advises the server that the given pages are no longer needed and may
+be reclaimed.  Fill in address and size (in bytes).
+
+@subheading Return Value
+
+-1 on error, else zero.

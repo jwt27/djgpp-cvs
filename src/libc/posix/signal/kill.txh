@@ -1,0 +1,16 @@
+@node kill, process
+
+@example
+#include <signal.h>
+
+int	kill(pid_t _pid, int _sig);
+@end example
+
+@subheading Description
+
+If @var{_pid} is the current @code{getpid()}, the given @var{_sig} is
+raised with @ref{raise}.
+
+@subheading Return Value
+
+-1 on error, else zero.

@@ -1,0 +1,13 @@
+@c ----------------------------------------------------------------------
+@node ceil, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double ceil(double x);
+@end example
+
+@subheading Return Value
+
+The smallest integer value greater than or equal to @var{x}.

@@ -1,0 +1,71 @@
+@node qsort, misc
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void qsort(void *base, size_t numelem, size_t size,
+           int (*cmp)(const void *e1, const void *e2));
+@end example
+
+@subheading Description
+
+This function sorts the given array in place.  @var{base} is the address
+of the first of @var{numelem} array entries, each of size @var{size}
+bytes.  @code{qsort} uses the supplied function @var{cmp} to determine
+the sort order for any two elements by passing the address of the two
+elements and using the function's return address. 
+
+The return address of the function indicates the sort order:
+
+@table @asis
+
+@item Negative
+
+Element @var{e1} should come before element @var{e2} in the resulting
+array. 
+
+@item Positive
+
+Element @var{e1} should come after element @var{e2} in the resulting
+array. 
+
+@item Zero
+
+It doesn't matter which element comes first in the resulting array. 
+
+@end table
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+typedef struct @{
+  int size;
+  int sequence;
+@} Item;
+
+int qsort_helper_by_size(void *e1, void *e2)
+@{
+  return ((Item *)e2)->size - ((Item *)e1)->size;
+@}
+
+Item list[100];
+
+qsort(list, 100, sizeof(Item), qsort_helper_by_size);
+
+int qsort_stringlist(void *e1, void *e2)
+@{
+  return strcmp(*(char **)e1, *(char **)e2);
+@}
+
+char *slist[10];
+
+/* alphabetical order */
+qsort(slist, 10, sizeof(char *), qsort_stringlist);
+
+@end example
+

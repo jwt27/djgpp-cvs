@@ -1,0 +1,34 @@
+@node getdate, time
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void getdate(struct date *);
+@end example
+
+@subheading Description
+
+This function gets the current date.  The return structure is as follows:
+
+@example
+struct date @{
+  short da_year;
+  char  da_day;
+  char  da_mon;
+@};
+@end example
+
+@xref{setdate}. @xref{gettime}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+struct date d;
+getdate(&d);
+@end example
+

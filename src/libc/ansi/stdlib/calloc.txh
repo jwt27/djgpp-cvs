@@ -1,0 +1,30 @@
+@node calloc, memory
+@subheading Syntax
+
+@example
+#include <malloc.h>
+
+void *calloc(size_t num_elements, size_t size);
+@end example
+
+@subheading Description
+
+This function allocates enough memory for @var{num_elements} objects of
+size @var{size}.  The memory returned is initialized to all zeros.  The
+pointer returned should later be passed to free (@pxref{free}) so that
+the memory can be returned to the heap.
+
+You may use cfree (@pxref{xfree}) to free the pointer also; it just
+calls free.
+
+@subheading Return Value
+
+A pointer to the memory, or @code{NULL} if no more memory is available.
+
+@subheading Example
+
+@example
+Complex *x = calloc(12, sizeof(Complex));
+cfree(x);
+@end example
+

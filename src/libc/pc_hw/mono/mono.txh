@@ -1,0 +1,40 @@
+@node _mono_clear, mono
+@subheading Syntax
+
+@example
+#include <sys/mono.h>
+
+void _mono_clear(void);
+@end example
+
+@subheading Description
+
+Clears the monochrome monitor.
+
+@c ----------------------------------------------------------------------
+@node _mono_printf, mono
+@subheading Syntax
+
+@example
+#include <sys/mono.h>
+
+void _mono_printf(const char *fmt, ...);
+@end example
+
+@subheading Description
+
+Like @ref{printf}, but prints to the monochrome monitor.
+
+@c ----------------------------------------------------------------------
+@node _mono_putc, mono
+@subheading Syntax
+
+@example
+#include <mono.h>
+
+void _mono_putc(int c);
+@end example
+
+@subheading Description
+
+Prints a single character to the monochrome monitor.

@@ -1,0 +1,29 @@
+@c ----------------------------------------------------------------------
+@node mblen, locale
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int mblen(const char *s, size_t n);
+@end example
+
+@subheading Description
+
+This function returns the number of characters of string @var{s} that
+make up the next multibyte character.  No more than @var{n} characters
+are checked.
+
+If @var{s} is @code{NULL}, the internal shift state is reset.
+
+@subheading Return Value
+
+The number of characters that comprise the next multibyte character.
+
+@subheading Example
+
+@example
+int n = mblen(string, INT_MAX);
+string += n;
+@end example
+

@@ -1,0 +1,159 @@
+@node printf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int printf(const char *format, @dots{});
+@end example
+
+@subheading Description
+
+Sends formatted output from the arguments (@dots{}) to @code{stdout}.
+
+The format string contains regular characters to print, as well as
+conversion specifiers, which begin with a percent symbol.  Each
+conversion speficier contains the following fields:
+
+@itemize @bullet
+
+@item
+
+an optional flag, which may alter the conversion:
+
+@table @code
+
+@item -
+
+left-justify the field.
+
+@item +
+
+Force a @code{+} sign on positive numbers.
+
+@item space
+
+To leave a blank space where a plus or minus sign would have been. 
+
+@item #
+
+Alternate conversion - prefix octal numbers with @code{0}, hexadecimal
+numbers with @code{0x} or @code{0X}, or force a trailing decimal point
+if a floating point conversion would have omitted it. 
+
+@item 0
+
+To pad numbers with leading zeros.
+
+@end table
+
+@item
+
+A field width specifier, which specifies the minimum width of the field. 
+This may also be an asterisk (@code{*}), which means that the actual
+width will be obtained from the next argument.  If the argument is
+negative, it supplies a @code{-} flag and a positive width. 
+
+@item
+
+An optional decimal point and a precision.  This may also be an
+asterisk, but a negative argument for it indicates a precision of zero. 
+The precision specifies the minimum number of digits to print for an
+integer, the number of fraction digits for a floating point number (max
+for @code{g} or @code{G}, actual for others), or the maximum number of
+characters for a string. 
+
+@item
+
+An optional conversion qualifier, which may be @code{h} to specify
+@code{short}, @code{l} to specify long ints, or @code{L} to specify
+long doubles.
+
+@item
+
+The conversion type specifier:
+
+@table @code
+
+@item c
+
+A single character
+
+@item d
+
+A signed integer
+
+@item D
+
+A signed long integer
+
+@item e
+@itemx E
+
+A floating point number (double or long double).  The exponent case matches
+the specifier case.  The representation always has an exponent.
+
+@item f
+
+A floating point number (double or long double).  The representation
+never has an exponent. 
+
+@item g
+@itemx G
+
+A floating point number (double or long double).  The exponent case matches
+the specifier case.  The representation has an exponent if it needs one.
+
+@item i
+
+A signed integer.
+
+@item n
+
+The next argument is a pointer to an integer, and the number of
+characters generated so far is stored in that integer. 
+
+@item o
+
+A unsigned integer, printed in base 8 instead of base 10.
+
+@item p
+
+A pointer.  This is printed with an @code{x} specifier.
+
+@item s
+
+A @code{NULL}-terminated string.
+
+@item u
+
+An unsigned integer.
+
+@item U
+
+An unsigned long integer.
+
+@item x
+@itemx X
+
+An unsigned integer, printed in base 16 instead of base 10.  The case of
+the letters used matches the specifier case. 
+
+@item %
+
+A single percent symbol is printed.
+
+@end table
+
+@end itemize
+
+@subheading Return Value
+
+The number of characters written.
+
+@subheading Example
+
+@example
+printf("%-3d %10.2f%% Percent of %s\n", index, per[index], name[index]);
+@end example
+

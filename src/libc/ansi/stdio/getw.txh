@@ -1,0 +1,27 @@
+@node getw, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int getw(FILE *file);
+@end example
+
+@subheading Description
+
+Reads a single binary word in native format from @var{file}.
+
+@xref{putw}.
+
+@subheading Return Value
+
+The value read, or @code{EOF} for end-of-file or error.  Since
+@code{EOF} is a valid integer, you should use @code{feof} or
+@code{ferror} to detect this situation. 
+
+@subheading Example
+
+@example
+int i = getw(stdin);
+@end example
+

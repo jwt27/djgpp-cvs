@@ -1,0 +1,39 @@
+@node strtok, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strtok(char *s1, const char *s2);
+@end example
+
+@subheading Description
+
+This function retrieves tokens from @var{s1} which are delimited by
+characters from @var{s2}.
+
+To initiate the search, pass the string to be searched as @var{s1}.  For
+the remaining tokens, pass @code{NULL} instead. 
+
+@subheading Return Value
+
+A pointer to the token, or @code{NULL} if no more are found.
+
+@subheading Example
+
+@example
+main()
+@{
+  char *buf = "Hello there, stranger";
+  char *tok;
+  for (tok = strtok(buf, " ,");
+       tok;
+       tok=strtok(0, " ,"))
+    printf("tok = `%s'\n", tok);
+@}
+
+tok = `Hello'
+tok = `there'
+tok = `stranger'
+@end example
+

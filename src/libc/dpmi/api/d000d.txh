@@ -1,0 +1,22 @@
+@node __dpmi_allocate_specific_ldt_descriptor, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_allocate_specific_ldt_descriptor(int _selector);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x000d
+
+This allocates the specific selector given.
+
+@subheading Return Value
+
+-1 on error, else zero.

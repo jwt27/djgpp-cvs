@@ -1,0 +1,12 @@
+@node inpw, cpu
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+unsigned short inpw(unsigned short _port);
+@end example
+
+@subheading Description
+
+Calls @ref{inportw}.  Provided only for compatibility.

@@ -1,0 +1,30 @@
+@node fgets, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+char *fgets(char *buffer, int maxlength, FILE *file);
+@end example
+
+@subheading Description
+
+This function reads as much of a line from a file as possible, stopping
+when the buffer is full (@var{maxlength}-1 characters), an end-of-line
+is detected, or @code{EOF} or an error is detected.  It then stores a
+@code{NULL} to terminate the string.
+
+@subheading Return Value
+
+The address of the buffer is returned on success, if @code{EOF} is
+encountered before any characters are stored, or if an error is
+detected, @code{NULL} is returned instead. 
+
+@subheading Example
+
+@example
+char buf[100];
+while (fgets(buf, 100, stdin))
+  fputs(buf, stdout);
+@end example
+

@@ -1,0 +1,24 @@
+@node fsync, stdio
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int fsync(int file);
+@end example
+
+@subheading Description
+
+Forces all information about the file to be synchronized with the disk
+image.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure. 
+
+@subheading Example
+
+@example
+fsync(fileno(stdout));
+@end example
+

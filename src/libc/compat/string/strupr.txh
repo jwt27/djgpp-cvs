@@ -1,0 +1,25 @@
+@node strupr, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strupr(char *string);
+@end example
+
+@subheading Description
+
+This function converts all lower case characters in @var{string} to
+upper case. 
+
+@subheading Return Value
+
+@var{string}
+
+@subheading Example
+
+@example
+char buf[] = "Foo!";
+strupr(buf);
+@end example
+

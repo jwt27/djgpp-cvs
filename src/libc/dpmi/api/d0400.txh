@@ -1,0 +1,32 @@
+@node __dpmi_get_version, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_get_version(__dpmi_version_ret *_ret);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0400
+
+Fills in version information.  The flags are as follows:
+
+@example
+---- ---X = 0=16-bit host  1=32-bit host
+---- --X- = 0=V86 used for reflected ints, 1=real mode
+---- -X-- = 0=no virtual memory, 1=virtual memory supported
+@end example
+
+The cpu is 2=80286, 3=80386, 4=80486, etc.
+
+DPMI 0.9 returns major=0 and minor=0x5a.
+
+@subheading Return Value
+
+Zero.  This always works.

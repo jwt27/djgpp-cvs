@@ -1,0 +1,27 @@
+@node read, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+ssize_t read(int fd, void *buffer, size_t length);
+@end example
+
+@subheading Description
+
+This function reads at most @var{length} bytes from file @var{fd} into
+@var{buffer}.  Note that in some cases, such as end-of-file conditions
+and text files, it may read less than the requested number of bytes. 
+At end-of-file, @code{read} will read exactly zero bytes.
+
+@subheading Return Value
+
+The number of bytes read, zero meaning end-of-file, or -1 for an error. 
+
+@subheading Example
+
+@example
+char buf[10];
+int r = read(0, buf, 10);
+@end example
+

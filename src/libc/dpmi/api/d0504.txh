@@ -1,0 +1,25 @@
+@node __dpmi_allocate_linear_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_allocate_linear_memory
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0504 (DPMI 1.0 only)
+
+This allocates a block of page-aligned linear address space.  Pass a
+desired address (or zero for any) and a size.  @var{_commit} is 1 for
+committed pages, else they are uncommitted.  It returns a handle and
+the actual address.
+
+@subheading Return Value
+
+-1 on error, else zero.

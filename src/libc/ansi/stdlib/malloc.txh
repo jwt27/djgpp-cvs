@@ -1,0 +1,87 @@
+@node malloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *malloc(size_t size);
+@end example
+
+@subheading Description
+
+This function allocates a chunk of memory from the heap large enough to
+hold any object that is @var{size} bytes in length.  This memory must be
+returned to the heap with @code{free} (@pxref{free}). 
+
+@subheading Return Value
+
+A pointer to the allocated memory, or @code{NULL} if there isn't enough
+free memory to satisfy the request. 
+
+@subheading Example
+
+@example
+char *c = (char *)malloc(100);
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node free, memory
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+void free(void *ptr);
+@end example
+
+@subheading Description
+
+Returns the allocated memory to the heap (@pxref{malloc}).  If the
+@var{ptr} is @code{NULL}, it does nothing. 
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+char *q = (char *)malloc(20);
+free(q);
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node realloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *realloc(void *ptr, size_t size);
+@end example
+
+@subheading Description
+
+This function changes the size of the region pointed to by @var{ptr}. 
+If it can, it will reuse the same memory space, but it may have to
+allocate a new memory space to satisfy the request.  In either case, it
+will return the pointer that you should use to refer to the (possibly
+new) memory area.  The pointer passed may be @code{NULL}, in which case
+this function acts just like @code{malloc} (@pxref{malloc}). 
+
+@subheading Return Value
+
+A pointer to the memory you should now refer to. 
+
+@subheading Example
+
+@example
+if (now+new > max)
+@{
+  max = now+new;
+  p = realloc(p, max);
+@}
+@end example
+

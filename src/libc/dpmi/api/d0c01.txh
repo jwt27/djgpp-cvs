@@ -1,0 +1,22 @@
+@node __dpmi_terminate_and_stay_resident, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_terminate_and_stay_resident(int return_code, int paragraphs_to_keep);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0c01 (DPMI 1.0 only)
+
+See the spec.
+
+@subheading Return Value
+
+This call does not return.
