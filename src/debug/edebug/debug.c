@@ -23,60 +23,13 @@
 #include "debug.h"
 #include "unassmbl.h"
 #include <debug/syms.h>
-
-typedef struct {
-  word16 sig0;
-  word16 sig1;
-  word16 sig2;
-  word16 sig3;
-  word16 exponent:15;
-  word16 sign:1;
-} NPXREG;
-
-typedef struct {
-  word32 control;
-  word32 status;
-  word32 tag;
-  word32 eip;
-  word32 cs;
-  word32 dataptr;
-  word32 datasel;
-  NPXREG reg[8];
-} NPX;
+#include <debug/dbgcom.h>
 
 static char char32spc[] = "xxxúxxxúxxxúxxxùxxxúxxxúxxxúxxx ";
 
 static char flset[] = "VMRF  NT    OFDNIETFMIZR  AC  PE  CY";
 static char floff[] = "              UPID  PLNZ      PO  NC";
 static char fluse[] = {1,1,0,1,0,0,1,1,1,1,1,1,0,1,0,1,0,1};
-static NPX npx;
-
-static void save_npx(void)
-{
-asm(								       "\n\
-	inb	$0xa0,%al						\n\
-	testb	$0x20,%al						\n\
-	jz	1f							\n\
-	xorl	%eax,%eax						\n\
-	outb	%al,$0xf0						\n\
-	movb	$0x20,%al						\n\
-	outb	%al,$0xa0						\n\
-	outb	%al,$0x20						\n\
-1:									\n\
-	movl	$_npx, %eax						\n\
-	fnsave	(%eax)							\n\
-	fwait								"
-);
-}
-
-static void load_npx(void)
-{
-asm(								       "\n\
-	movl	$_npx, %eax						\n\
-	movb	$0,4(%eax)						\n\
-	frstor	(%eax)							"
-);
-}
 
 static void tssprint(TSS *t)
 {

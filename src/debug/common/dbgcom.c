@@ -29,6 +29,35 @@ static char *id = __libdbg_ident_string;
 long mem_handles[MEM_HANDLE_COUNT];
 unsigned short descriptors[DESCRIPTOR_COUNT];
 unsigned short dos_descriptors[DOS_DESCRIPTOR_COUNT];
+NPX npx;
+
+/* ------------------------------------------------------------------------- */
+/* Store the contents of the NPX in the global variable `npx'.  */
+
+void save_npx (void)
+{
+  asm ("inb	$0xa0, %%al
+	testb	$0x20, %%al
+	jz	1f
+	xorb	%%al, %%al
+	outb	%%al, $0xf0
+	movb	$0x20, %%al
+	outb	%%al, $0xa0
+	outb	%%al, $0x20
+1:
+	fnsave	%0
+	fwait"
+       : "=m" (npx)
+       : /* No input */
+       : "%eax");
+}
+/* ------------------------------------------------------------------------- */
+/* Reload the contents of the NPX from the global variable `npx'.  */
+
+void load_npx (void)
+{
+  asm ("frstor %0" : "=m" (npx));
+}
 
 /* ARGSUSED */
 char **
@@ -172,6 +201,7 @@ static void hook_dpmi(void)
   {
     __dpmi_set_protected_mode_interrupt_vector(0x09, &user_i9);
     __dpmi_set_protected_mode_interrupt_vector(0x08, &user_i8);
+    load_npx();
   }
 }
 
@@ -497,6 +527,7 @@ Lc21:	push	%eax							\n\
 
 static void unhook_dpmi(void)
 {
+  save_npx();
   __dpmi_set_protected_mode_interrupt_vector(0x31, &old_i31);
   __dpmi_set_protected_mode_interrupt_vector(0x21, &old_i21);
 

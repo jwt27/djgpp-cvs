@@ -23,6 +23,31 @@ typedef struct {
 
 extern ExternalDebuggerInfo edi;
 
+typedef struct {
+  unsigned short sig0;
+  unsigned short sig1;
+  unsigned short sig2;
+  unsigned short sig3;
+  unsigned short exponent:15;
+  unsigned short sign:1;
+} NPXREG;
+
+typedef struct {
+  unsigned long control;
+  unsigned long status;
+  unsigned long tag;
+  unsigned long eip;
+  unsigned long cs;
+  unsigned long dataptr;
+  unsigned long datasel;
+  NPXREG reg[8];
+} NPX;
+
+extern NPX npx;
+
+void save_npx (void); /* Save the FPU of the debugged program */
+void load_npx (void); /* Restore the FPU of the debugged program */
+
 void run_child(void);
 int read_child(unsigned child_addr, void *buf, unsigned len);
 int write_child(unsigned child_addr, void *buf, unsigned len);

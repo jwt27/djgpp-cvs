@@ -110,7 +110,6 @@ static int watch_pane_active;
 #define MAXINSTLEN 16
 static int first_step;
 static word32 main_entry;
-static NPX npx;
 static void redraw (int);
 static const char hexchars[] = "0123456789abcdef";
 static int dpmi;
@@ -387,35 +386,6 @@ strdup (const char *_s)
   return res;
 }
 #endif
-/* ------------------------------------------------------------------------- */
-/* Store the contents of the NPX in the global variable `npx'.  */
-
-static inline void
-save_npx (void)
-{
-  asm ("inb	$0xa0, %%al
-	testb	$0x20, %%al
-	jz	1f
-	xorb	%%al, %%al
-	outb	%%al, $0xf0
-	movb	$0x20, %%al
-	outb	%%al, $0xa0
-	outb	%%al, $0x20
-1:
-	fnsave	%0
-	fwait"
-       : "=m" (npx)
-       : /* No input */
-       : "%eax");
-}
-/* ------------------------------------------------------------------------- */
-/* Reload the contents of the NPX from the global variable `npx'.  */
-
-static inline void
-load_npx (void)
-{
-  asm ("frstor %0" : "=m" (npx));
-}
 /* ------------------------------------------------------------------------- */
 /* Evaluate EXPR and return the result.  Set OKP to 1 if and if only the
    expression was sucessfully evaluated.  Display an error message if not.  */
@@ -1243,7 +1213,6 @@ step (KIND_TYPE kind)
     {
       char *reason;
 
-      save_npx ();
       if ((npx.status & 0x0241) == 0x0241)
 	reason = "stack overflow";
       else if ((npx.status & 0x0241) == 0x0041)
@@ -1264,7 +1233,6 @@ step (KIND_TYPE kind)
 	reason = "?";
       message (CL_Error, "Numeric Exception (%s) at eip=0x%08lx",
 	       reason, npx.eip);
-      load_npx ();
     }
   else if (i == 8 || (i >= 10 && i <= 14) || i == 17)
     message (CL_Error, "Exception %d (0x%02x) occurred, error code=%#lx",
@@ -1597,7 +1565,6 @@ redraw (int first)
     int i, y = 1, width = cols - 19;
     static char *rtype[] = { "Near", "-Inf", "+Inf", "Zero" };
 
-    save_npx ();
     sprintf (buf,
 	     "Control: %04lx PR=%s UN=%s OV=%s ZD=%s DN=%s IV=%s Rnd=%s",
 	     npx.control & 0xffff,
@@ -1687,7 +1654,6 @@ redraw (int first)
       }
     while (y <= toplines)
       putl (1, y++, width, "");
-    load_npx ();
   }
 
   if (stack_pane_active)
@@ -3016,7 +2982,6 @@ npx_pane_command (int key)
   int reg = no - base, rotreg, tag;
   int regp = (reg >= 0);
 
-  save_npx ();
   rotreg = (reg + (npx.status >> 11)) & 7;
   tag = (npx.tag >> (rotreg * 2)) & 3;
 
@@ -3088,7 +3053,6 @@ npx_pane_command (int key)
       }
   if (regp)
     npx.tag = (npx.tag & ~(3 << (rotreg * 2))) | (tag << (rotreg * 2));
-  load_npx ();
   redraw (0);
 }
 /* ------------------------------------------------------------------------- */
