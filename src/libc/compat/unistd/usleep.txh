@@ -10,7 +10,13 @@ unsigned usleep(unsigned usec);
 
 @subheading Description
 
-This function pauses the program for @var{usec} microseconds. 
+This function pauses the program for @var{usec} microseconds.  Note
+that, since @code{usleep} calls @code{clock} internally, and the latter
+has a 55-msec granularity, any argument less than 55 msec will result in
+a pause of random length between 0 and 55 msec.  Any argument less
+than 11 msec (more precisely, less than 11264 microseconds), will always
+result in zero-length pause (because @code{clock} multiplies the timer
+count by 5).  @xref{clock}.
 
 @subheading Return Value
 
