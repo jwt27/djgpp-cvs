@@ -862,8 +862,10 @@ stat(const char *path, struct stat *statbuf)
       return -1;
     }
 
-  /* Fail if PATH includes wildcard characters supported by FindFirst.  */
-  if (memchr(path, '*', pathlen) || memchr(path, '?', pathlen))
+  /* Fail if PATH includes wildcard characters supported by FindFirst,
+     or if it is empty.  */
+  if (memchr(path, '*', pathlen) || memchr(path, '?', pathlen)
+      || path[0] == '\0')
     {
       errno = ENOENT;	/* since no such filename is possible */
       return -1;
