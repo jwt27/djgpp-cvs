@@ -497,3 +497,7 @@ instantiation in C++ programs.
 The @code{tcgetpgrp} and @code{tcsetpgrp} are now provided in the
 library.
 
+@findex realloc@r{, crashes when memory is exhausted}
+@code{realloc} no longer crashes when the avialable virtual memory is
+not enough to satisfy the reallocation request.
+
