@@ -51,11 +51,11 @@ typedef struct {
   int   _cnt;
   char *_ptr;
   char *_base;
-  int   _bufsiz;
+  size_t   _bufsiz;
   int   _flag;
   int   _file;
   char *_name_to_remove;
-  int   _fillsize;
+  size_t   _fillsize;
 } FILE;
 
 typedef unsigned long		fpos_t;

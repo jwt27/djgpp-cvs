@@ -327,7 +327,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	 */
 	char *p			/*, *memchr() */;
 
-	if ((p = memchr(t, 0, prec)))
+	if ((p = memchr(t, 0, (size_t)prec)))
 	{
 	  size = p - t;
 	  if (size > prec)

@@ -27,7 +27,8 @@
 int
 _filbuf(FILE *f)
 {
-  int size, fillsize;
+  int fillsize;
+  size_t size;
   char c;
 
   if (f->_flag & _IORW)
@@ -91,7 +92,7 @@ _filbuf(FILE *f)
     if(__is_text_file(f) && f->_cnt>0)
     {
       /* truncate text file at Ctrl-Z */
-      char *cz=memchr(f->_base, 0x1A, f->_cnt);
+      char *cz=memchr(f->_base, 0x1A, (size_t)f->_cnt);
       if(cz)
       {
 	int newcnt = cz - f->_base;

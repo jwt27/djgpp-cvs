@@ -4,8 +4,8 @@
 size_t
 mbstowcs(wchar_t *wcs, const char *s, size_t n)
 {
-  int i;
-  for (i=0; s[i] && (i<n-1); i++)
+  size_t i;
+  for (i=0; s[i] && (i+1<n); i++)
     wcs[i] = s[i];
   wcs[i] = 0;
   return i;

@@ -4,8 +4,8 @@
 size_t
 wcstombs(char *s, const wchar_t *wcs, size_t n)
 {
-  int i;
-  for (i=0; wcs[i] && (i<n-1); i++)
+  size_t i;
+  for (i=0; wcs[i] && (i+1<n); i++)
     s[i] = wcs[i];
   s[i] = 0;
   return i;

@@ -366,7 +366,8 @@ _instr(char *ptr, int type, int len, FILE *iop,
 static const char *
 _getccl(const unsigned char *s)
 {
-  register int c, t;
+  register int t;
+  size_t c;
 
   t = 0;
   if (*s == '^') {

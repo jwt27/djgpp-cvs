@@ -17,7 +17,8 @@ int
 fflush(FILE *f)
 {
   char *base;
-  int n, rn;
+  int n;
+  size_t rn;
 
   if (f == NULL)
   {
@@ -35,7 +36,7 @@ fflush(FILE *f)
   {
     int save_errno = errno; /* We don't want llseek()'s setting 
 			       errno to remain. */
-    if( llseek(fileno(f), 0, SEEK_END) == -1 )
+    if( llseek(fileno(f), 0LL, SEEK_END) == -1 )
     {
       errno = save_errno;
       return -1;
@@ -45,8 +46,9 @@ fflush(FILE *f)
   f->_flag &= ~_IOUNGETC;
   if ((f->_flag&(_IONBF|_IOWRT))==_IOWRT
       && (base = f->_base) != NULL
-      && (rn = n = f->_ptr - base) > 0)
+      && (n = f->_ptr - base) > 0)
   {
+    rn = n;
     f->_ptr = base;
     f->_cnt = (f->_flag&(_IOLBF|_IONBF)) ? 0 : f->_bufsiz;
     do {

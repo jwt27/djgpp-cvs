@@ -19,7 +19,7 @@ _flsbuf(int c, FILE *f)
   char *base;
   int n, rn;
   char c1;
-  int size;
+  size_t size;
 
   if (f->_flag & _IORW)
   {
