@@ -1,14 +1,24 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <unistd.h>
 #include <dpmi.h>
 #include <errno.h>
 #include <libc/dosio.h>
+#include <libc/fd_props.h>
 
 int
 fsync(int _fd)
 {
   int oerrno = errno;
+
+  /* Directory? If so, fail. */
+  if (__get_fd_flags(_fd) & FILE_DESC_DIRECTORY)
+  {
+    errno = EINVAL;
+    return -1;
+  }
+
   __dpmi_regs r;
   r.h.ah = 0x68;
   r.x.bx = _fd;

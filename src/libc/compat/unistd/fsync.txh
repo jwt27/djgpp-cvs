@@ -14,6 +14,8 @@ Forces all information about the file with the given descriptor to be
 synchronized with the disk image.  Works by calling DOS function 0x68.
 @emph{Warning}: External disk caches are not flushed by this function.
 
+@code{fsync} does not support directories.
+
 @subheading Return Value
 
 Zero on success, nonzero on failure. 

@@ -19,6 +19,8 @@ like @code{fwrite} and @code{fprintf}, so if @var{handle} comes from a
 @code{FILE} object, you need to call @code{fflush} before calling this
 function.
 
+@code{ftruncate} does not support directories.
+
 @subheading Return Value
 
 Zero for success, nonzero for failure.
