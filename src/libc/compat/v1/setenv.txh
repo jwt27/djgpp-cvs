@@ -16,9 +16,16 @@ if that variable isn't already defined.
 
 @subheading Return Value
 
-Zero on success, -1 on failure.
+Zero on success, -1 on failure; errno is set to the reason for failure:
+@code{EINVAL} if the @var{name} parameter is @code{NULL} or points to
+an empty string, or @code{ENOMEM} if there was insufficient memory to
+add the variable to the environment.
 
 @subheading Portability
 
-@portability !ansi, !posix
-
+@port-note posix
+This function is new to the Posix 1003.1-200x draft.
+Our implementation allows @var{name} to contain a @samp{=}, while the
+@sc{posix} spec does not; the portion of @var{name} up to but not including
+the @samp{=} will be used as the name for the environment variable.
+@portability !ansi, posix
