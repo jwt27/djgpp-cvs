@@ -59,7 +59,7 @@ static inline unsigned char
 __strnlen(const char *str, size_t max)
 {
   const char *ptr = str;
-  while (*ptr && (ptr - str) < max)
+  while (*ptr && (size_t)(ptr - str) < max)
     ++ptr;
   return ptr - str;
 }
@@ -148,7 +148,7 @@ make_proxy_buffer(const char *prog, const char *cmdline, size_t argc,
   const char *ptr, *beg, *end;
   unsigned long argv_ptr;
   unsigned long tbuf_end;
-  int i;
+  size_t i;
   size_t arg_len;
 
   tbuf_end = tbuf + tb_len;

@@ -220,7 +220,7 @@ usage(void)
 static void
 help(void)
 {
-  int i;
+  size_t i;
 
   print_usage();
   fprintf(stderr, "\nValid specifications:\n");
