@@ -862,6 +862,6 @@ The error code @code{EILSEQ} was added --- @code{errno} may be assigned it.
 an error message for @code{EILSEQ}.
 
 @pindex stubify@r{, ability to set stub parameters}
-It's possible to set stub parameters by passing @option{-stubparams=...}
-to @command{stubify}.
+It's possible to set stub parameters by passing
+@option{-stubparams=@dots{}} to @command{stubify}.
 
