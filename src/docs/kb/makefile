@@ -3,9 +3,9 @@
 TOP=..
 include $(TOP)/../makefile.inc
 
-all :: $(INFO)/kb.inf
+all :: $(INFO)/kb.info
 
 K = $(wildcard *.txi)
 
-$(INFO)/kb.inf : $K
+$(INFO)/kb.info : $K
 	makeinfo --no-split kb.txi
