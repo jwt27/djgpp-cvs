@@ -36,7 +36,7 @@ structure is defined on @file{sys/resource.h} as follows:
 
 The following resource types can be passed in @var{rltype}:
 
-@table @code{}
+@table @code
 @item RLIMIT_CPU
 CPU time in milliseconds.
 
