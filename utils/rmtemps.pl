@@ -11,9 +11,10 @@ if ($ARGV[0] eq "-rm") {
 open(F, "find . -type f -print |");
 while (<F>) {
     $t = 0;
+    s/\r//g;
 
-    $t = 1 if /~/;
-    $t = 1 if /#/;
+    $t = 1 if /\~/;
+    $t = 1 if /\#/;
     $t = 1 if /\/[a-h]{8}$/;
 
     if ($t) {
