@@ -19,20 +19,20 @@ DOS compilers treat a null pointer like an empty command line, contrary
 to ANSI C requirements.)
 
 When calling programs compiled by DJGPP this function will not use
-@file{command.com} and so will not be subject to its 126 character limit
+@file{COMMAND.COM} and so will not be subject to its 126 character limit
 on command lines.
 
-Command lines and pipes( i.e., the use of "<", ">", ">>", and "|")
-will be simulated internally in this function; this means that you can
-have both long command lines and redirection/pipes when running DJGPP
-programs with this function.
+Command lines and pipes (i.e., the use of @samp{<}, @samp{>}, @samp{>>},
+and @samp{|}) will be simulated internally in this function; this means
+that you can have both long command lines and redirection/pipes when
+running DJGPP programs with this function.
 
-By default, @file{command.com} will only be invoked to run commands
+By default, @file{COMMAND.COM} will only be invoked to run commands
 internal to it, or to run batch files (but this can be changed, see
 below).  In these cases, the returned error code will always be zero,
-since @file{command.com} always exits with code 0.
+since @file{COMMAND.COM} always exits with code 0.
 
-Certain commands internal to @file{command.com} that don't make sense or
+Certain commands internal to @file{COMMAND.COM} that don't make sense or
 cause no effect in the context of @code{system} are ignored by this
 function.  These are @code{REM}, @code{EXIT}, @code{GOTO}, @code{SHIFT};
 @code{SET}, @code{PATH} and @code{PROMPT} are ignored only if called
@@ -47,7 +47,7 @@ switched off, as explained below.
 When @code{system} is presented with an internal shell command, it
 checks the environment variables @samp{SHELL} and @samp{COMSPEC} (in
 that order) and invokes the program that they point to.  If the shell
-thus found is one of the DOS shells (@file{command.com}, @file{4DOS} or
+thus found is one of the DOS shells (@file{COMMAND.COM}, @file{4DOS} or
 @file{NDOS}), they are called with the @samp{/c} switch prepended to the
 command line.  Otherwise, @code{system} assumes that the shell is a
 Unix-style shell and passes it the entire command line via a temporary
@@ -64,7 +64,7 @@ scripts unmodified, if you have a ported shell installed on your
 system.
 
 You can customize the behavior of @code{system} using a bit-mapped
-variable @var{__system_flags}, defined on @file{<stdlib.h>}.  The
+variable @code{__system_flags}, defined on @file{<stdlib.h>}.  The
 following bits are currently defined:
 
 @table @code
@@ -162,7 +162,12 @@ emulation is always ``available''.
 Otherwise, the return value is the exit status of the child process in
 its lower 8 bits; bits 8-17 of the return value will hold @code{SIGINT}
 or @code{SIGABRT} if the child process was aborted by @kbd{Ctrl-C} or
-Critical Device Error, respectively; otherwise it will be zero.  If the
+Critical Device Error, respectively; otherwise they will be zero@footnote{
+Many DOS programs catch @kbd{Ctrl-C} keystrokes and Critical Errors, and
+handle them in customized ways.  If this handling prevents DOS from
+realizing that the program was aborted due to these reasons, bits 8-17
+of the value returned by @code{system} will most probably be zero.
+Don't count on these bits to hold the signal number!}.  If the
 child couldn't be run, @code{system} will return -1 and set @code{errno}
 to an appropriate value.  Note that if @file{COMMAND.COM} was used to
 run the child, it will always return a 0 status, even if the command
