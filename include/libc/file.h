@@ -104,6 +104,34 @@ static __inline__ int __putc(const int x,FILE *const p)
   return __putc_raw(x,p);
 }
 
+static __inline__ void __stropenw(FILE *p, char *str, int len)
+{
+  p->_flag = _IOWRT | _IOSTRG | _IONTERM;
+  p->_ptr = str;
+  p->_cnt = len;
+}
+
+static __inline__ void __strclosew(FILE *p)
+{
+  *p->_ptr = '\0';
+}
+
+static __inline__ void __stropenr(FILE *p, const char *str)
+{
+  union {
+    char *s;
+    const char *cs;
+  } u;
+
+  u.cs = str;
+  p->_flag = _IOREAD | _IOSTRG | _IONTERM;
+  p->_ptr = p->_base = u.s;
+  p->_cnt = 0;
+  while (*str++)
+    p->_cnt++;
+  p->_bufsiz = p->_cnt;
+}
+
 #undef  fileno
 #define fileno(f)	(f->_file)
 #undef  feof

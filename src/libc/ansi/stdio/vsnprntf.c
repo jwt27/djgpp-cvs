@@ -21,25 +21,18 @@ vsnprintf(char *str, size_t n, const char *fmt, va_list ap)
   }
 
   memset(&_strbuf, 0, sizeof(_strbuf));
-  _strbuf._flag = _IOWRT | _IOSTRG | _IONTERM;  
 
   /* If n == 0, just querying how much space is needed. */
   if (n > 0)
-  {
-    _strbuf._cnt = n - 1;
-    _strbuf._ptr = str;
-  }
+    __stropenw(&_strbuf, str, n - 1);
   else
-  {
-    _strbuf._cnt = 0;
-    _strbuf._ptr = NULL;
-  }
+    __stropenw(&_strbuf, NULL, 0);
 
   len = _doprnt(fmt, ap, &_strbuf);
 
   /* Ensure nul termination */
   if (n > 0)
-    *_strbuf._ptr = 0;
+    __strclosew(&_strbuf);
 
   return len;
 }

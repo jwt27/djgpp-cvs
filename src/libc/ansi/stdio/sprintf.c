@@ -13,14 +13,10 @@ sprintf(char *str, const char *fmt, ...)
   FILE _strbuf;
   int len;
 
-  _strbuf._flag = _IOWRT|_IOSTRG|_IONTERM;
-  _strbuf._ptr = str;
-  _strbuf._cnt = INT_MAX;
-
+  __stropenw(&_strbuf, str, INT_MAX);
   va_start(args, fmt);
   len = _doprnt(fmt, args, &_strbuf);
   va_end(args);
-
-  *_strbuf._ptr = 0;
+  __strclosew(&_strbuf);
   return len;
 }
