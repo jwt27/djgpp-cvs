@@ -1,21 +1,39 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
+
 TOP = ..
 
-LDFLAGS = -s
+EOBJS = \
+	djtar.o \
+	oread.o \
+	epunzip.o \
+	untar.o \
+	unzip.o \
+	unlzw.o \
+	unlzh.o \
+	unpack.o \
+	inflate.o \
+	crypt.o \
+	util.o \
+	zmethod.o \
+	$E
 
-SRC += djtar.c
 EXTRA_FILES += $(BIN)/djtarx.exe
 EXTRA_FILES += $(BIN)/djtart.exe
 
-include $(TOP)/../makefile.prg
+include $(TOP)/../makefile.inc
+XGCC = $(XLGCC)
 
-$(BIN)/djtar.exe : oread.o unzip.o unlzw.o unlzh.o unpack.o inflate.o \
-	crypt.o util.o zmethod.o
+all :: $(BIN)/djtar.exe
 
-$(BIN)/djtarx.exe : $(BIN)/stubify.exe
-	stubify -g $(BIN)/djtarx.exe
-	stubedit $(BIN)/djtarx.exe runfile=djtar
+$(BIN)/djtar.exe : $(C) $(EOBJS) $(L)
+	$(LINK)
+	$(EXE)
 
-$(BIN)/djtart.exe : $(BIN)/stubify.exe
-	stubify -g $(BIN)/djtart.exe
-	stubedit $(BIN)/djtart.exe runfile=djtar
+$(BIN)/djtarx.exe : $(HOSTBIN)/stubify.exe
+	$(HOSTBIN)/stubify.exe -g $@
+	$(HOSTBIN)/stubedit.exe $@ runfile=djtar
+
+$(BIN)/djtart.exe : $(HOSTBIN)/stubify.exe
+	$(HOSTBIN)/stubify.exe -g $@
+	$(HOSTBIN)/stubedit.exe $@ runfile=djtar
