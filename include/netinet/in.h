@@ -1,6 +1,7 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_netinet_in_h_
-#define __dj_include_in_h_
+#define __dj_include_netinet_in_h_
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,4 +44,4 @@ htons(unsigned short _val)
 }
 #endif
 
-#endif /* !__dj_include_in_h_ */
+#endif /* !__dj_include_netinet_in_h_ */

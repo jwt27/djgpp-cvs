@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_pc_h_
 #define __dj_include_pc_h_
@@ -21,9 +22,9 @@ void		inportsl (unsigned short _port, unsigned long  *_buf, unsigned _len);
 void		outportb (unsigned short _port, unsigned char  _data);
 void		outportw (unsigned short _port, unsigned short _data);
 void		outportl (unsigned short _port, unsigned long  _data);
-void		outportsb(unsigned short _port, unsigned char  *_buf, unsigned _len);
-void		outportsw(unsigned short _port, unsigned short *_buf, unsigned _len);
-void		outportsl(unsigned short _port, unsigned long  *_buf, unsigned _len);
+void		outportsb(unsigned short _port, const unsigned char  *_buf, unsigned _len);
+void		outportsw(unsigned short _port, const unsigned short *_buf, unsigned _len);
+void		outportsl(unsigned short _port, const unsigned long  *_buf, unsigned _len);
 
 unsigned char	inp(unsigned short _port);
 unsigned short	inpw(unsigned short _port);

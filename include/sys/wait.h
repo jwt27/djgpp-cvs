@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_wait_h_
 #define __dj_include_sys_wait_h_
@@ -19,7 +20,7 @@ extern "C" {
 #define WNOHANG			1
 #define WSTOPSIG(stat_val)	0
 #define WTERMSIG(stat_val)	( ((stat_val) >> 8 ) & 0x3ff)
-#define WUNTRACED
+#define WUNTRACED		0
 
 __DJ_pid_t
 #undef __DJ_pid_t

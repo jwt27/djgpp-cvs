@@ -1,5 +1,5 @@
-#ifndef __dj_include_ _h_
-#define __dj_include__h_
+#ifndef __dj_include_libc_ _h_
+#define __dj_include_libc__h_
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,4 +22,4 @@ extern "C" {
 }
 #endif
 
-#endif /* !__dj_include__h_ */
+#endif /* !__dj_include_libc__h_ */
