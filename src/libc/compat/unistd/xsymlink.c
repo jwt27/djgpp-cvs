@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
@@ -52,6 +53,7 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    }
 
    strcpy(__real_path, __symlink_path);
+      
    /* Begin by start pointing at the first character and end pointing 
       at the first path separator.  In the cases like "/foo" end will 
       point to the next path separator.  In all cases, if there are no
@@ -79,6 +81,11 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
          if (bytes_copied != -1)
          {
             done_something = 1;
+            if (link_level == MAX_SYMLINK)
+            {
+               errno = ELOOP;
+               return 0;
+            }
             link_level++;
             fn_buf[bytes_copied] = '\0';
             /* We can get /dev/env/SOMEVARIABLE as a symlink target. Do not
@@ -125,14 +132,8 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
                      ptr++;
             }
          }
-      } while ((bytes_copied != -1) && (link_level <= MAX_SYMLINK));
-      if (link_level > MAX_SYMLINK)
-      {
-         errno = ELOOP;
-         return 0;
-      }
-      else
-         errno = old_errno;
+      } while (bytes_copied != -1);
+      errno = old_errno;
       if (done_something)
       {
          /* If it wasn't the last path component resolved, save the
