@@ -1,0 +1,169 @@
+@node __crt0_glob_function, startup
+@subheading Syntax
+
+@example
+#include <crt0.h>
+
+char **__crt0_glob_function(char *_argument);
+@end example
+
+@subheading Description
+
+If the application wishes to provide a wildcard expansion function, it
+should define a __crt0_glob_function function.  It should return a
+list of the expanded values, or 0 if no expansion will occur.  The
+startup code will free the returned pointer if it is nonzero.
+
+If no expander function is provided, wildcards will be expanded in the
+POSIX.1 style.  To disable expansion, provide a __crt0_glob_function
+that always returns 0.
+
+@c ----------------------------------------------------------------------
+@node __crt0_setup_arguments, startup
+@subheading Syntax
+
+@example
+#include <crt0.h>
+
+void   __crt0_setup_arguments(void);
+@end example
+
+@subheading Description
+
+This function, provided by libc.a, does all the work required to
+provide the two arguments passed to main() (usually @code{argc} and
+@code{argv}).  If main() does not use these arguments, the programmer
+can reduce the size of the program image by providing a version of
+this function that does nothing.
+
+@xref{__crt0_load_environment_file}.
+
+@c ----------------------------------------------------------------------
+@node __crt0_load_environment_file, startup
+@subheading Syntax
+
+@example
+#include <crt0.h>
+
+void   __crt0_load_environment_file(char *_app_name);
+@end example
+
+@subheading Description
+
+This function, provided by libc.a, does all the work required to load
+additional environment variables from the file $DJGPP.  If the
+application does not use environment variables, the programmer can
+reduce the size of the program image by providing a version of this
+function that does nothing.
+
+@xref{__crt0_setup_arguments}.
+
+@c ----------------------------------------------------------------------
+@node _crt0_startup_flags, startup
+@subheading Syntax
+
+@example
+#include <crt0.h>
+
+int _crt0_startup_flags = ...;
+@end example
+
+@subheading Description
+
+This variable can be used to determine what the startup code will (or
+will not) do when the program begins.  This can be used to tailor the
+startup environment to a particular program.
+
+@table @code
+
+@item _CRT0_FLAG_PRESERVE_UPPER_CASE
+
+If set, argv[0] is left in whatever case it was.  If not set, all
+characters are mapped to lower case.  Note that if the argv0 field in
+the stubinfo structure is present, the case of that part of argv0 is not
+affected. 
+
+@item _CRT0_FLAG_USE_DOS_SLASHES
+
+If set, reverse slashes (dos-style) are preserved in argv[0].  If not
+set, all reverse slashes are replaced with unix-style slashes.
+
+@item _CRT0_FLAG_DROP_EXE_SUFFIX
+
+If set, the .EXE suffix is removed from the file name component of
+argv[0].  If not set, the suffix remains. 
+
+@item _CRT0_FLAG_DROP_DRIVE_SPECIFIER
+
+If set, the drive specifier (ex: `C:') is removed from the beginning of
+argv[0] (if present).  If not set, the drive specifier remains. 
+
+@item _CRT0_FLAG_DISALLOW_RESPONSE_FILES
+
+If set, response files (ex: @@gcc.rf) are not expanded.  If not set, the
+contents of the response files are used to create arguments.  Note that
+if the file does not exist, that argument remains unexpanded. 
+
+@item _CRT0_FLAG_FILL_SBRK_MEMORY
+
+If set, fill sbrk()'d memory with a constant value.  If not, memory
+gets whatever happens to have been in there, which breaks some
+applications.
+
+@item _CRT0_FLAG_FILL_DEADBEEF
+
+If set, fill memory (above) with 0xdeadbeef, else fill with zero.
+This is especially useful for debugging uninitialized memory problems.
+
+@item _CRT0_FLAG_NEARPTR
+
+If set, set DS limit to 4GB which allows use of near pointers to DOS
+(and other) memory.  WARNING, disables memory protection and bad
+pointers may crash the machine or wipe out your data.
+
+@item _CRT0_FLAG_NULLOK
+
+If set, disable NULL pointer protection (if it can be controlled at all).
+
+@item _CRT0_FLAG_NMI_SIGNAL
+
+If set, enabled capture of NMI in exception code.  This may cause problems
+with laptops and "green" boxes which use it to wake up.  Default is to 
+leave NMIs alone and pass through to real mode code.  You decide.
+
+@item _CRT0_FLAG_NO_LFN
+
+If set, disable usage of long file name functions even on systems
+(such as Win95) which support them.  This might be needed to work
+around program assumptions on file name format on programs written
+specifically for DOS.
+
+@item _CRT0_FLAG_NONMOVE_SBRK
+
+If set, the sbrk() algorithm used used multiple DPMI memory blocks which makes 
+sure the base of CS/DS/SS does not change.  This may cause problems with
+sbrk(0) values and programs with other assumptions about sbrk behavior.
+This flag is useful with near pointers, since a constant pointer to
+DOS/Video memory can be computed without needing to reload it after
+any routine which might call sbrk().
+
+@item _CRT0_FLAG_UNIX_SBRK
+
+If set, the sbrk() algorithm used resizes memory blocks so that the layout
+of memory is set up to be the most compatible with unix sbrk() expectations.
+This mode should not be used with hardware interrupts, near pointers, and
+may cause problems with QDPMI virtual memory.  If your program requires
+a specific sbrk() behavior, you should set one of these flags, since the
+default may change in different libc releases.
+
+@item _CRT0_FLAG_LOCK_MEMORY
+
+If set, locks all memory as it is allocated.  This effectively disables
+virtual memory, and may be useful if using extensive hardware interrupt
+codes in a relatively small image size.  The memory is locked after it
+is sbrk()ed, so the locking may fail.  This bit may be set or cleared
+during execution.  When sbrk() uses multiple memory zones, it can be
+difficult to lock all memory since the memory block size and location is
+impossible to determine.
+
+@end table
