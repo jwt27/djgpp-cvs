@@ -31,6 +31,10 @@ Other @code{S_I*} values could be included, but they will be ignored.
 
 Zero if the file exists and the mode was changed, else nonzero. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -10,3 +10,8 @@ unsigned short inpw(unsigned short _port);
 @subheading Description
 
 Calls @ref{inportw}.  Provided only for compatibility.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

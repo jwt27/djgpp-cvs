@@ -55,3 +55,7 @@ selector with @code{_farsetsel} and restore it afterwards.
 
 Functions which peek the address return the value at given address.
 @code{_fargetsel} returns the current selector.
+
+@subheading Portability
+
+@portability !ansi, !posix

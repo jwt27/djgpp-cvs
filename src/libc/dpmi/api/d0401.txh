@@ -38,3 +38,8 @@ The vendor info is a 128-byte buffer:
 @subheading Return Value
 
 !-1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

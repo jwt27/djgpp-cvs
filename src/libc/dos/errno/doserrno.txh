@@ -1,0 +1,28 @@
+@node _doserrno, dos
+@subheading Syntax
+ 
+@example
+#include <errno.h>
+ 
+extern int _doserrno;
+@end example
+ 
+@subheading Description
+
+Whenever a DOS call returns a failure indication, this variable is
+assigned the value of the error code returned by the failed DOS call.
+
+To interpret the error codes, please refer to your DOS reference.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ _doserrno = 0;
+ fprintf (stdprn, "Hello, world!\r\n\f");
+ if (_doserrno == 0x1c)
+   fprintf (stderr, "The printer is out of paper!\n");
+@end example

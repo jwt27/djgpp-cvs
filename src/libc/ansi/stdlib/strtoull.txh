@@ -16,6 +16,10 @@ is unsigned.
 
 The value.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

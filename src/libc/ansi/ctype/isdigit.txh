@@ -16,3 +16,8 @@ Tells if @var{c} is a digit.
 
 Nonzero if @var{c} is a digit, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -26,6 +26,10 @@ unbuffered.  If a non-@code{NULL} buffer is passed, it must be at least
 
 None.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

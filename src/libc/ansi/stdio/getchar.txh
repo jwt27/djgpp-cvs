@@ -15,3 +15,8 @@ The same as @code{fgetc(stdin)} (@pxref{fgetc}).
 
 The character, or @code{EOF}.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

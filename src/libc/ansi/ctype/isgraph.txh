@@ -17,3 +17,8 @@ included.
 
 Nonzero if @var{c} is a visible printing character, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

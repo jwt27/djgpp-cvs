@@ -20,3 +20,8 @@ This gets the function that handles protected mode exceptions.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

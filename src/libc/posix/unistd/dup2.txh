@@ -17,6 +17,10 @@ it is closed.
 
 The new handle, or -1 on error.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -20,6 +20,10 @@ function.
 The number of characters successfully scanned is returned, or -1 on
 error. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

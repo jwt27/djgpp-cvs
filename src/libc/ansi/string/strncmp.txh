@@ -9,12 +9,16 @@ int strncmp(const char *s1, const char *s2, size_t max);
 
 @subheading Description
 
-This function compares upto @var{max} characters of @var{s1} and @var{s2}.
+This function compares up to @var{max} characters of @var{s1} and @var{s2}.
 
 @subheading Return Value
 
 Zero if the strings are equal, a positive number if @var{s1} comes after
 @var{s2} in the ASCII collating sequense, else a negative number. 
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

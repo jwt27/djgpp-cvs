@@ -34,3 +34,8 @@ X--- ---- ---- ---- = 0=byte granular (small) 1=page-granular (big)
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

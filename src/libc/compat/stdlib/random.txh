@@ -9,13 +9,17 @@ int srandom(int seed);
 
 @subheading Description
 
-This function initialized the random number generator (@pxref{random}). 
-Passing the same @var{seed} results in @code{random} returning predictable
-sequences of numbers. 
+Initializes the random number generator (@pxref{random}). Passing the
+same @var{seed} results in @code{random} returning predictable sequences
+of numbers, unless @pxref{initstate} or @pxref{setstate} are called.
 
 @subheading Return Value
 
 Zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -40,3 +44,56 @@ Returns a random number in the range 0..MAXINT.
 @subheading Return Value
 
 0 .. MAXINT
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@c ----------------------------------------------------------------------
+@node initstate, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+char *initstate(unsigned seed, char *arg_state, int n);
+@end example
+
+@subheading Description
+
+Initializes the random number generator (@pxref{random}) with pointer
+@var{arg_state} to array of @var{n} bytes, then calls @code{srandom} with
+@var{seed}.
+
+@subheading Return Value
+
+Pointer to old state information.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@c ----------------------------------------------------------------------
+@node setstate, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+char *setstate(char *arg_state);
+@end example
+
+@subheading Description
+
+Restores the random number generator (@pxref{random}) state from pointer
+@var{arg_state} to state array.
+
+@subheading Return Value
+
+Pointer to old state information.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
+

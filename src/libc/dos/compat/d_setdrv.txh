@@ -1,5 +1,4 @@
 @node _dos_setdrive, dos
-@heading @code{_dos_setdrive}
 @subheading Syntax
 
 @example
@@ -19,6 +18,10 @@ drives and fills @var{p_drives} with it.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

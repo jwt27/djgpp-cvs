@@ -72,7 +72,7 @@ of these values:
 
 @item S_IRUSR
 
-The file is readable.  This is always true for MS-DOS
+The file is readable.  This is always true for MS-DOS.
 
 @item S_IWUSR
 
@@ -82,14 +82,89 @@ The file is writable.
 
 Other @code{S_I*} values may be included, but they will be ignored.
 
+You can specify the share flags (a DOS specific feature) in @var{mode}.
+And you can indicate default values for the share flags in
+@code{__djgpp_share_flags}. @xref{__djgpp_share_flags}.
+
 @subheading Return Value
 
 If successful, the file descriptor is returned.  On error, a negative
 number is returned and @code{errno} is set to indicate the error. 
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @subheading Example
 
 @example
 int q = open("/tmp/foo.dat", O_RDONLY|O_BINARY);
 @end example
+
+@c ---------------------------------------------------------------------------
+@node __djgpp_share_flags, io
+
+@subheading Syntax
+
+@example
+#include <fcntl.h>
+
+int __djgpp_share_flags = ...;
+@end example
+
+@subheading Description
+
+This variable controls the share flags used by @code{open} (and hence
+@code{fopen}) when opening a file.
+
+If you assign any value other than 0 to this variable libc will use
+that value for the sharing bits when if calls DOS to open the file.
+But if you specify any share flag in the @code{open} call then these
+flags will remain untouched. In this way @code{__djgpp_share_flags}
+acts just like a default and by default is 0 ensuring maximum
+compatibility with older versions of djgpp.
+
+If you don't know how the share flags act consult any DOS reference. They
+allow to share or protect a file when it's opened more than once by the
+same task or by two or more tasks. The exact behavior depends on the exact
+case. One interesting thing is that when the file is opened by two tasks
+under Windows the results are different if you use Windows 3.1 or Windows 95.
+To add even more complexity Windows 3.1 is affected by @code{SHARE.EXE}.
+
+The available flags are:
+
+@table @code
+
+@item SH_COMPAT	0x0000
+
+That's the compatible mode.
+
+@item SH_DENYRW	0x0010
+
+Deny read and deny write.
+
+@item SH_DENYWR	0x0020
+
+Deny write.
+
+@item SH_DENYRD	0x0030
+
+Deny read.
+
+@item SH_DENYNO	0x0040
+
+No deny.
+
+@end table
+
+Of course these flags are DOS specific and doesn't exist under other OSs;
+and as you can imagine @code{__djgpp_share_flags} is djgpp specific.
+
+@xref{open}.
+@xref{fopen}.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

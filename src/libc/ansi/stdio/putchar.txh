@@ -15,6 +15,10 @@ This is the same as @code{fputc(c, stdout)}.  @xref{fputc}.
 
 The character written.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

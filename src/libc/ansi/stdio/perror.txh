@@ -17,6 +17,10 @@ condition indicated by @code{errno}.
 
 None.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

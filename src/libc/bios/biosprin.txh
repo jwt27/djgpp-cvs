@@ -2,7 +2,7 @@
 @subheading Syntax
 
 @example
-#include <stdio.h>
+#include <bios.h>
 
 int biosprint(int cmd, int byte, int port)
 @end example
@@ -40,6 +40,10 @@ X--- ----  Idle
 @subheading Return Value
 
 The printer status.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

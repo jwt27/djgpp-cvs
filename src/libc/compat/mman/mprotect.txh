@@ -28,6 +28,10 @@ on V0.9 memory blocks.
 The function returns 0 if successful and the value -1 if all the pages 
 could not be set.  
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

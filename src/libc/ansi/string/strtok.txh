@@ -19,6 +19,10 @@ the remaining tokens, pass @code{NULL} instead.
 
 A pointer to the token, or @code{NULL} if no more are found.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

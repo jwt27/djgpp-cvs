@@ -30,6 +30,10 @@ modification times are set.
 
 Zero for success, nonzero for failure.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

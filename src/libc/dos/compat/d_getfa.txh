@@ -1,5 +1,4 @@
 @node _dos_getfileattr, dos
-@heading @code{_dos_getfileattr}
 @subheading Syntax
 
 @example
@@ -47,10 +46,19 @@ Archive file
 
 @xref{_dos_setfileattr}.
 
+This function does not support long filenames, even on systems where the
+LFN API (@pxref{_use_lfn, LFN}) is available.  For LFN-aware functions
+with similar functionality see @ref{_chmod}.  Also see @ref{chmod},
+@ref{access}, and @ref{stat}, which are Posix-standard.
+
 @subheading Return Value
 
 Returns with 0 if successful and DOS error value on error (and sets
 @var{errno}=ENOENT).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

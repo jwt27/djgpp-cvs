@@ -20,3 +20,8 @@ Pass the handle.  It fills in the address and size.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

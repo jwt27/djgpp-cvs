@@ -96,6 +96,10 @@ application significantly faster by setting bits in the external variable
 expensive @code{stat} features are @code{_STAT_EXEC_MAGIC} and
 @code{_STAT_DIRSIZE}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

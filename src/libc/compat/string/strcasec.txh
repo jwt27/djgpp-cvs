@@ -16,6 +16,10 @@ This function compares the two strings, disregarding case.
 Zero if they're the same, nonzero if different, the sign indicates
 "order". 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -15,6 +15,10 @@ This function returns a string that describes the @var{error}.
 
 A pointer to a static string that should not be modified or free'd. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

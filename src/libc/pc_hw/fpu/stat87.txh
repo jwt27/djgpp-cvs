@@ -30,3 +30,8 @@ most recently completed FPU operation:
 --XX X--- ---- ---- = SW_TOP - top of stack (use SW_TOP_SHIFT to shift it)
 X--- ---- ---- ---- = SW_BUSY - fpu is busy
 @end example
+
+@subheading Portability
+
+@portability !ansi, !posix
+

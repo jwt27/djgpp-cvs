@@ -21,6 +21,10 @@ The physical base address of the selector is stored in @var{*addr}.
 
 -1 on error, else zero.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

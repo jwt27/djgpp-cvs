@@ -17,6 +17,10 @@ value.
 Bit position (1..32) of the least significant set bit, or zero if the
 input value is zero.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

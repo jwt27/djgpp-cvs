@@ -59,6 +59,10 @@ It does so by accessing the byte at absolute address 40:49h.
 
 The video mode.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -86,6 +90,10 @@ like EGA, VGA, SVGA etc.
 @subheading Return Value
 
 The number of rows.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -119,6 +127,10 @@ the video BIOS functions to write text.
 
 The number of columns.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -149,6 +161,10 @@ video memory, so it will only work when the screen is in text mode.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -176,9 +192,18 @@ so it will only work when the screen is in text mode.  You can pass the value
 @code{NULL} in each of the pointers if you do not want to retrieve the 
 the corresponding information.
 
+@emph{Warning:} note that both the variables @var{ch} and @var{attr} are
+pointers to an @code{int}, not to a @code{char}!  You @strong{must} pass
+a pointer to an @code{int} there, or your program will crash or work
+erratically.
+
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -212,6 +237,10 @@ is row 0).
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -238,6 +267,10 @@ function 2 of interrupt 10h.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -266,6 +299,10 @@ variables pointed by @var{row} and @var{column}.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -292,6 +329,10 @@ current background and foreground as specified by ScreenAttrib
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -320,6 +361,10 @@ including the characters and their attributes.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -345,6 +390,10 @@ given in @var{row} (the topmost line is row 0), on the primary screen.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -375,6 +424,10 @@ be computed as @code{ScreenRows()*ScreenCols()*2} (@ref{ScreenRows},
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -403,6 +456,10 @@ on the screen.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -35,6 +35,10 @@ When successful, the function will return the previous mode of the
 given @var{file}.  In case of failure, -1 is returned and @var{errno}
 is set.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

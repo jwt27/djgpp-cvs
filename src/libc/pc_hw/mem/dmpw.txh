@@ -27,10 +27,14 @@ from.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
 unsigned short save_screen[25][80];
-dosmemputw(save_screen, 0xb8000, 80*25);
+_dosmemputw(save_screen, 0xb8000, 80*25);
 @end example
 

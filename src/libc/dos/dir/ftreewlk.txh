@@ -44,6 +44,10 @@ Zero in case the entire tree was successfully traversed, -1 if
 other non-zero value which was returned by the user-defined function
 @var{func}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

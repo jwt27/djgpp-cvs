@@ -31,6 +31,10 @@ Currently, the elapsed time of the running program is returned in the
 
 The number of elapsed tics since the program started.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

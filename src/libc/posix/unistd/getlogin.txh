@@ -16,6 +16,10 @@ Get the login ID of the user.
 Returns the value of the @code{USER} environment variable, else the
 @code{LOGNAME} environment variable, else @code{"dosuser"}. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

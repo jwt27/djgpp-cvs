@@ -11,3 +11,8 @@ double sinh(double x);
 @subheading Return Value
 
 The hyperbolic sine of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

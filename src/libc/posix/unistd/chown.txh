@@ -16,3 +16,8 @@ This function does nothing under MS-DOS
 This function always returns zero if the file exists, else it returns
 -1 and sets @var{errno} to @code{ENOENT}.
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -1,0 +1,22 @@
+@node getgroups, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int getgroups(int size, gid_t *grouplist);
+@end example
+
+@subheading Description
+
+This function always returns zero. It exists to assist porting from Unix.
+
+@subheading Return Value
+
+Zero.
+
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -62,6 +62,11 @@ Note that if you set a bit, some failure bits in @ref{_djstat_fail_bits}
 might not be set, because some computations which report failures are only
 done when they are required.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
+@c ----------------------------------------------------------------------
 @node _djstat_fail_bits, stdio
 @subheading Syntax
 
@@ -166,3 +171,8 @@ table of files seen earlier (hashing is used to speed the lookup
 process).  If found, the inode from the table is returned; this ensures
 that a given file will get the same inode number.  Otherwise a new inode
 number is invented, recorded in the table and returned to caller.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

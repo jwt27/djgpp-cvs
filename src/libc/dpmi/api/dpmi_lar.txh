@@ -20,3 +20,8 @@ opcode.
 
 The access byte.  See an Intel programming manual for the list of
 access information.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

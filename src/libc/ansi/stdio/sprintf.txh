@@ -16,3 +16,8 @@ Sends formatted output from the arguments (@dots{}) to the @var{buffer}.
 
 The number of characters written.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

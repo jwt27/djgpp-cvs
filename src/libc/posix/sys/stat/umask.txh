@@ -1,4 +1,5 @@
 @node umask, file system
+@subheading Syntax
 
 @example
 #include <sys/stat.h>
@@ -9,3 +10,8 @@ mode_t umask(mode_t cmask);
 @subheading Description
 
 This function does nothing.  It exists to assist porting.
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -16,6 +16,10 @@ and clears the error indicator.
 
 None.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

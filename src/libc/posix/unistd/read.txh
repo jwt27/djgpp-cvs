@@ -18,6 +18,10 @@ At end-of-file, @code{read} will read exactly zero bytes.
 
 The number of bytes read, zero meaning end-of-file, or -1 for an error. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

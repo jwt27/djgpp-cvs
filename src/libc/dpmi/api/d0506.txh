@@ -22,3 +22,8 @@ the attributes (see spec).
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

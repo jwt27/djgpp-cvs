@@ -113,6 +113,10 @@ indicates that no information is available.
 
 A pointer to the @code{struct lconv} structure.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -16,6 +16,10 @@ This function pauses the program for @var{usec} microseconds.
 
 The number of unslept microseconds (i.e. zero).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

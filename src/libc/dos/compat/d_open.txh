@@ -70,10 +70,20 @@ File is not inherited by child process
 @xref{_dos_creat}. @xref{_dos_creatnew}. @xref{_dos_read}.
 @xref{_dos_write}. @xref{_dos_close}
 
+This function does not support long filenames, even on systems where the
+LFN API (@pxref{_use_lfn, LFN}) is available.  For LFN-aware functions
+with similar functionality see @ref{_open}, @ref{_creat}, and
+@ref{_creatnew}.  Also see @ref{open}, and @ref{creat}, which are
+Posix-standard.
+
 @subheading Return Value
 
 Returns 0 if successful or DOS error code on error (and sets
 @var{errno} to EACCES, EINVAL, EMFILE or ENOENT).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

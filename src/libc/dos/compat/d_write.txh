@@ -24,6 +24,10 @@ bytes written into @var{result} if writing is successful.
 Returns 0 if successful or DOS error code on error (and sets @var{errno}
 to EACCES or EBADF)
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

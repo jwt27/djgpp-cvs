@@ -18,6 +18,10 @@ This function is almost like @code{_strtold(string, NULL)} (@pxref{_strtold}).
 
 The equivalent value, or zero if the string does not represent a number. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -13,6 +13,10 @@ void xfree(void *ptr);
 Frees memory allocated by @code{xmalloc} (@pxref{xmalloc}).  This
 function guarantees that a NULL pointer is handled gracefully.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

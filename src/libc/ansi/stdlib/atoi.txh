@@ -19,6 +19,10 @@ This function is almost like @code{(int)strtol(string, NULL, 10)}
 
 The equivalent value, or zero if the string does not represent a number. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

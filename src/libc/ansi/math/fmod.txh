@@ -11,3 +11,8 @@ double fmod(double x, double y);
 @subheading Return Value
 
 The remainder of @var{x}/@var{y}.
+
+@subheading Portability
+
+@portability ansi, posix
+

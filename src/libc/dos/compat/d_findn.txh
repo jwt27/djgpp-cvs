@@ -13,6 +13,16 @@ This finds the next file in the search started by @code{_dos_findfirst}.
 
 @xref{_dos_findfirst}.
 
+This function does not support long filenames, even on systems where the
+LFN API (@pxref{_use_lfn, LFN}) is available.  For LFN-aware functions
+with similar functionality see @ref{findfirst}, and @ref{findnext}.
+Also see @ref{opendir}, and @ref{readdir}, which are Posix-standard.
+
 @subheading Return Value
 
 Zero if a match is found, DOS error code if not found (and sets @var{errno}).
+
+@subheading Portability
+
+@portability !ansi, !posix
+

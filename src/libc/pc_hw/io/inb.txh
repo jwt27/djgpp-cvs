@@ -10,3 +10,8 @@ unsigned char inb(unsigned short _port);
 @subheading Description
 
 Calls @ref{inportb}. Provided only for compatibility.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -1,9 +1,14 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdarg.h>
 
 char *dj_strlwr(char *s)
 {
@@ -23,6 +28,20 @@ int count_nodes = 0;
 
 typedef void (*TFunc)(Node *);
 
+
+#define NUM_PORT_TARGETS 2
+
+#define PORT_UNKNOWN 0
+#define PORT_NO      1
+#define PORT_PARTIAL 2
+#define PORT_YES     3
+
+/* Tokens for use in .txh files */
+char *port_target[NUM_PORT_TARGETS] = { "ansi", "posix" };
+/* Strings to output in .txi files */
+char *port_target_string[NUM_PORT_TARGETS] = { "ANSI", "POSIX" };
+
+
 struct Tree {
   TreeNode *nodes;
   Tree();
@@ -37,6 +56,13 @@ struct Line {
   char *line;
 };
 
+struct PortNote {
+  struct PortNote *next;
+  int target;
+  int number;
+  char *note;
+};
+
 struct Node {
   Node *prev, *next;
   char *name;
@@ -46,8 +72,17 @@ struct Node {
   Line *lastline;
   Tree subnodes;
   char *filename;
+  int port_info[NUM_PORT_TARGETS];
+  PortNote *port_notes;
+  PortNote *last_port_note;
   Node(char *name, char *cat);
   void add(char *line);
+  void process(char *line);
+  void error(char *str, ...);
+  void extend_portability_note(char *str);
+  void read_portability_note(char *str);
+  void read_portability(char *str);
+  void write_portability();
 };
 
 struct TreeNode {
@@ -71,6 +106,9 @@ Node::Node(char *Pname, char *Pcat)
   cat = strdup(Pcat);
   lines = 0;
   lastline = 0;
+  for (int i = 0; i < NUM_PORT_TARGETS; i++) port_info[i] = PORT_UNKNOWN;
+  port_notes = NULL;
+  last_port_note = NULL;
 }
 
 void
@@ -84,6 +122,218 @@ Node::add(char *l)
   if (!lines)
     lines = lp;
   lastline = lp;
+}
+
+void
+Node::error (char *str, ...)
+{
+  va_list arg;
+  char s[1024];
+
+  va_start (arg, str);
+  vsprintf (s, str, arg);
+  va_end (arg);
+
+  fprintf (stderr, "Error (file %s, node %s): %s\n", filename, name, s);
+}
+
+void
+Node::extend_portability_note(char *str)
+{
+  int newsize = strlen (last_port_note->note) + strlen (str) + 1;
+  char *newstring = (char *) realloc (last_port_note->note, newsize);
+  strcat (newstring, str);
+  last_port_note->note = newstring;
+}
+
+void
+Node::read_portability_note(char *str)
+{
+  char *work_str = strdup (str);
+  char *s = work_str;
+  char *target;
+  int targ_num;
+
+  while (isspace(*s)) s++;
+  target = s;
+  while (*s && !isspace(*s)) s++;
+  if (*s) *s++ = 0;
+  while (isspace(*s)) s++;
+  dj_strlwr (target);
+
+  for (targ_num = 0; targ_num < NUM_PORT_TARGETS; targ_num++)
+    if (!strcmp (target, port_target[targ_num])) break;
+
+  if (targ_num == NUM_PORT_TARGETS)
+  {
+    error ("unrecognised portability note target `%s' ignored.\n", target);
+  }
+  else
+  {
+    PortNote *p = new PortNote;
+    p->next = NULL;
+    p->number = 0;
+    p->target = targ_num;
+    p->note = strdup ("");
+
+    if (port_notes)
+    {
+      last_port_note->next = p;
+    }
+    else
+    {
+      port_notes = p;
+    }
+    last_port_note = p;
+
+    if (*s) extend_portability_note (s);
+  }
+  free (work_str);
+}
+
+void
+Node::read_portability(char *str)
+{
+  char *targets = dj_strlwr (strdup (str));
+  char *x, *target = targets;
+  int type,i;
+
+  while (isspace (*target)) target++;
+  while (*target) {
+
+    type = PORT_YES;
+    if (*target == '~')
+    {
+      type = PORT_PARTIAL;
+      target++;
+    } else if (*target == '!')
+    {
+      type = PORT_NO;
+      target++;
+    }
+
+    for (x = target; *x && !isspace(*x) && (*x != ','); x++);
+    if (*x) *x++ = 0;
+
+    for (i = 0; i < NUM_PORT_TARGETS; i++)
+      if (!strcmp (target, port_target[i])) break;
+
+    if (i < NUM_PORT_TARGETS)
+      port_info[i] = type;
+    else
+      error ("unrecognised portability target `%s' ignored.\n", target);
+
+    target = x;
+    while (isspace (*target)) target++;
+  }
+
+  free (targets);
+}
+
+void
+Node::write_portability()
+{
+  char buffer[1024] = { 0 };
+  int note_number = 1;
+
+  for (int i = 0; i < NUM_PORT_TARGETS; i++)
+  {
+    switch (port_info[i])
+    {
+      case PORT_NO:
+	strcat (buffer, "not ");
+	strcat (buffer, port_target_string[i]);
+	break;
+      case PORT_YES:
+	strcat (buffer, port_target_string[i]);
+	break;
+      case PORT_PARTIAL:
+	strcat (buffer, "partially ");
+	strcat (buffer, port_target_string[i]);
+	break;
+    }
+    if (port_info[i] != PORT_UNKNOWN)
+    {
+      for (PortNote *p = port_notes; p; p = p->next)
+      {
+	if (p->target == i)
+	{
+	  char smallbuffer[20];
+	  p->number = note_number++;
+	  sprintf (smallbuffer, " (see note %d)", p->number);
+	  strcat (buffer, smallbuffer);
+	  break;
+	}
+      }
+      strcat (buffer, ", ");
+    }
+  }
+
+  {
+    char *ch = strchr (buffer, 0) - 2;
+    if (*ch == ',')
+      *ch = 0;
+    else
+      strcpy (buffer, "Unknown.");
+  }
+
+  strcat (buffer, "\n\n");
+  add(buffer);
+
+  if (note_number > 1)
+  {
+    add("@noindent\n");
+    add("Notes:\n");
+    add("\n");
+    add("@enumerate\n");
+
+    for (int i = 1; i < note_number; i++)
+    {
+      add("@item\n");
+      for (PortNote *p = port_notes; p; p = p->next)
+	if (p->number == i)
+	  add(p->note);
+    }
+
+    add("@end enumerate\n");
+  }
+
+  /* Now free the portability notes */
+  while (port_notes) {
+    PortNote *p = port_notes;
+    port_notes = p->next;
+    free (p->note);
+    delete p;
+  }
+  last_port_note = NULL;
+}
+
+void
+Node::process(char *line)
+{
+  if (line[0] == '@') {
+    if ((strncmp (line, "@portability", 12) == 0) && isspace (line[12]))
+    {
+      read_portability(line+13);
+      write_portability();
+      return;
+    }
+    else if ((strncmp (line, "@port-note", 10) == 0) && isspace (line[10]))
+    {
+      read_portability_note(line+11);
+      return;
+    }
+  }
+  
+  /* If `last_port_note' is not NULL, we're in the middle of a note */
+  if (last_port_note)
+  {
+    extend_portability_note(line);
+  }
+  else
+  {
+    add(line);
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -231,15 +481,15 @@ int is_directory(char *name)
 
       result = stat(name, &statbuf);
       if(result < 0)
-              return 0;
+	      return 0;
       if(S_ISDIR(statbuf.st_mode))
-              return 1;
+	      return 1;
       else    return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-scan_directory(char *which)
+void scan_directory(char *which)
 {
   Node *curnode;
   DIR *d = opendir(which);
@@ -250,6 +500,7 @@ scan_directory(char *which)
       continue;
     char buf[4000];
     sprintf(buf, "%s/%s", which, de->d_name);
+    int buflen = strlen(buf);
 
 #ifdef D_OK
     if (access(buf, D_OK) == 0)
@@ -263,7 +514,9 @@ scan_directory(char *which)
       scan_directory(buf);
    }
 #endif
-    else if (strstr(buf, ".txh"))
+    else if (strcmp(buf+buflen-4, ".txh") == 0
+	     && !strchr(buf, '~')
+	     && !strchr(buf, '#'))
     {
       char *filename = new char[strlen(buf)+1];
       strcpy(filename, buf);
@@ -299,7 +552,7 @@ scan_directory(char *which)
 	else
 	{
 	  if (curnode)
-	    curnode->add(buf);
+	    curnode->process(buf);
 	}
       }
       fclose(ci);

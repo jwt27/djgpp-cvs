@@ -4,7 +4,7 @@
 @example
 #include <sys/movedata.h>
 
-void _dosmemputl(const void *buffer, size_t xfers unsigned long offset);
+void _dosmemputl(const void *buffer, size_t xfers, unsigned long offset);
 @end example
 
 @subheading Description
@@ -27,10 +27,14 @@ from.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
 unsigned short save_screen[25][80];
-dosmemputl(save_screen, 0xb8000, 40*25);
+_dosmemputl(save_screen, 40*25, 0xb8000);
 @end example
 

@@ -19,6 +19,10 @@ point in the directory.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -17,6 +17,10 @@ has previously been set, the new alarm delay will superceed the prior call.
 
 The number of seconds remaining on the timer (i.e. always @var{seconds}).
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

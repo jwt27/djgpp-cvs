@@ -10,5 +10,12 @@ double atan2(double y, double x);
 
 @subheading Return Value
 
-The arc tangent of @var{y/x}, with appropriate return values for
-@var{y}=0 or @var{x}=0.
+The arc tangent, in radians, of @var{y/x}, with appropriate return
+values for positive, negative, or zero values of @var{x}.
+E.g. @code{atan2(1, 0)} returns @var{PI/2}, and @code{atan2(0, -1)}
+returns @var{PI}.
+
+@subheading Portability
+
+@portability ansi, posix
+

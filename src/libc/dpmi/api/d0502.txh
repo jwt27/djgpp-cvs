@@ -20,3 +20,8 @@ This frees a block of virtual memory.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

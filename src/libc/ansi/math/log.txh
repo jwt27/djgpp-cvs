@@ -12,3 +12,8 @@ double log(double x);
 
 The natural logarithm of @var{x}.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

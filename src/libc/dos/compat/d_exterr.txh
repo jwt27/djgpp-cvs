@@ -155,6 +155,10 @@ Values for error locus (@var{locus} field):
 
 Returns with the extended error code.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

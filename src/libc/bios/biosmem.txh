@@ -18,6 +18,10 @@ Note that this function will return 65535 if the system has more than
 
 Bytes of memory / 1024.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -1,0 +1,24 @@
+@node sigemptyset, signal
+@subheading Syntax
+
+@example
+#include <signal.h>
+
+int sigemptyset (sigset_t *set)
+@end example
+
+@subheading Description
+
+This function initializes the set of signals pointed to by @var{set} to
+exclude all signals known to the DJGPP runtime system.  Such an empty
+set, if passed to @code{sigprocmask} (@pxref{sigprocmask}), will cause
+all signals to be passed immediately to their handlers.
+
+@subheading Return Value
+
+0 upon success, -1 if @var{set} is a NULL pointer.
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -25,6 +25,10 @@ struct date @{
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

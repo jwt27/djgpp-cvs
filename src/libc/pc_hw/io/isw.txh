@@ -11,3 +11,8 @@ void inportsw(unsigned short _port, unsigned short *_buf, unsigned _len);
 
 Reads the 16-bit @var{_port} @var{_len} times, and stores the bytes in
 @var{buf}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -18,6 +18,10 @@ Sends formatted output from the @var{arguments} to the @var{file}.
 The number of characters written.
 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -63,6 +63,10 @@ Request eight returns values in buffer as follows:
 
 The value of AH returned by the BIOS.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

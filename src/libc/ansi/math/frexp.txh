@@ -18,3 +18,8 @@ also both zero.
 @subheading Return Value
 
 The mantissa.
+
+@subheading Portability
+
+@portability ansi, posix
+

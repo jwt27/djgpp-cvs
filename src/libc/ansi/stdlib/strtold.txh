@@ -17,6 +17,10 @@ first unused character.
 
 The value the string represented. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

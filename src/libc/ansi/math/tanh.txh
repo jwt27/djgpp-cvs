@@ -11,3 +11,8 @@ double tanh(double x);
 @subheading Return Value
 
 The hyperbolic tangent of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

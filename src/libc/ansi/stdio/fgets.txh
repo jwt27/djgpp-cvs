@@ -20,6 +20,10 @@ The address of the buffer is returned on success, if @code{EOF} is
 encountered before any characters are stored, or if an error is
 detected, @code{NULL} is returned instead. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -9,16 +9,65 @@ int rand(void);
 
 @subheading Description
 
-Returns a pseudo-random number from zero to @code{RAND_MAX}. 
+Returns a pseudo-random number between zero and @code{RAND_MAX} (defined
+on @file{stdlib.h}).
+
+By default, this function always generates the same sequence of numbers
+each time you run the program.  (This is usually desirable when
+debugging, or when comparing two different runs.)  If you need to
+produce a different sequence on every run, you must seed @code{rand} by
+calling @code{srand} (@pxref{srand}) before the first call to
+@code{rand}, and make sure to use a different argument to @code{srand}
+each time.  The usual technique is to get the argument to @code{srand}
+from a call to the @code{time} library function (@pxref{time}), whose
+return value changes every second.
+
+To get a random number in the range 0..N, use @code{rand()%(N+1)}.  Note
+that the low bits of the @code{rand}'s return value are not very random,
+so @code{rand()%N} for small values of @var{N} could be not enough
+random.  The alternative, but non-@sc{ansi}, function @code{random} is
+better if @var{N} is small.  @xref{random}.
 
 @subheading Return Value
 
 The number.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
 /* random pause */
+srand(time(0));
+for (i=rand(); i; i--);
+@end example
+
+@node srand, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int srand(unsigned seed);
+@end example
+
+@subheading Description
+
+Initializes the random number generator for @code{rand()}.  If you
+pass the same seed, @code{rand()} will return the same sequence of
+numbers.  You can seed from @ref{time} or @ref{rawclock}.
+
+@subheading Portability
+
+@portability ansi, posix
+
+@subheading Example
+
+@example
+/* random pause */
+srand(time(0));
 for (i=rand(); i; i--);
 @end example
 

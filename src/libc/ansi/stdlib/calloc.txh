@@ -2,7 +2,7 @@
 @subheading Syntax
 
 @example
-#include <malloc.h>
+#include <stdlib.h>
 
 void *calloc(size_t num_elements, size_t size);
 @end example
@@ -20,6 +20,10 @@ calls free.
 @subheading Return Value
 
 A pointer to the memory, or @code{NULL} if no more memory is available.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

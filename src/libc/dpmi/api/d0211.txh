@@ -20,3 +20,8 @@ This function gets the handler for real-mode exceptions.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -19,3 +19,8 @@ be even, and the buffers @var{from} and @var{to} should not overlap.
   
 None.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

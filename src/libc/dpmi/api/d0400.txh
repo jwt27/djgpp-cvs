@@ -30,3 +30,8 @@ DPMI 0.9 returns major=0 and minor=0x5a.
 @subheading Return Value
 
 Zero.  This always works.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

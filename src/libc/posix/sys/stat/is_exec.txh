@@ -39,3 +39,8 @@ to call it directly.
 
 1 for executable file, 0 otherwise (including in case of errors in
 accessing the file).
+
+@subheading Portability
+
+@portability !ansi, !posix
+

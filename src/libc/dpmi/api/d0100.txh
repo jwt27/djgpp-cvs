@@ -25,3 +25,8 @@ the segment.
 @subheading Return Value
 
 -1 on error, else the segment [0000..FFFF].
+
+@subheading Portability
+
+@portability !ansi, !posix
+

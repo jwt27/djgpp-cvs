@@ -19,3 +19,8 @@ later use by @code{fsetpos}.
 
 Zero if successful, nonzero if not.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

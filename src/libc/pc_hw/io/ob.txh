@@ -13,3 +13,8 @@ Write a single byte to an 8-bit port.
 
 This function is provided as an inline assembler macro, and will be
 optimized down to a single opcode when you optimize your program.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -25,6 +25,10 @@ These functions operate by calling @code{spawn*} with a type of
 If successful, these functions do not return.  If there is an error,
 these functions return -1 and set @code{errno} to indicate the error. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -4,13 +4,13 @@
 @example
 #include <stdlib.h>
 
-lldiv_t lldiv(long long numerator, long long denomonator);
+lldiv_t lldiv(long long numerator, long long denominator);
 @end example
 
 @subheading Description
 
-Returns the quotient and remainder of the division @var{numberator}
-divided by @var{denomonator}.  The return type is as follows:
+Returns the quotient and remainder of the division @var{numerator}
+divided by @var{denominator}.  The return type is as follows:
 
 @example
 typedef struct @{
@@ -22,6 +22,10 @@ typedef struct @{
 @subheading Return Value
 
 The results of the division are returned.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -17,6 +17,10 @@ This function sets the current disk (0=A).
 
 The total number of possible drives.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

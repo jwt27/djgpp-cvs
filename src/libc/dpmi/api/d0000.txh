@@ -23,6 +23,10 @@ Allocates @var{count} descriptors.
 @ref{__dpmi_get_selector_increment_value} to figure out the remaining
 selectors.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

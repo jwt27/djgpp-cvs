@@ -20,3 +20,8 @@ Read the spec for more info.
 @subheading Return Value
 
 Zero.  This always works.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -17,6 +17,10 @@ argument to @code{seekdir} (@pxref{seekdir}).
 
 The directory pointer.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

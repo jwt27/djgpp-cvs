@@ -26,11 +26,15 @@ The @var{count} is the number of long-words to transfer, and
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
 unsigned long shift_state;
-dosmemgetl(0x417, 1, &shift_state);
+_dosmemgetl(0x417, 1, &shift_state);
 if (shift_state & 0x0004)
   /* Ctrl key pressed */;
 @end example

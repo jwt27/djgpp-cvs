@@ -11,3 +11,8 @@ double asinh(double x);
 @subheading Return Value
 
 The arc hyperbolic sine of @var{x}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

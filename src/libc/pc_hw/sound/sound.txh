@@ -11,6 +11,10 @@ void		sound(int _frequency);
 
 Enables the PC speaker at the given frequency.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node nosound, sound
 @subheading Syntax
@@ -24,3 +28,8 @@ void nosound(void);
 @subheading Description
 
 Disable the PC speaker.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

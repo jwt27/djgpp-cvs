@@ -19,3 +19,8 @@ transforms of @code{s1} and @code{s2}.
 
 The actual number of bytes required to transform @var{s2}, including the
 @code{NULL}. 
+
+@subheading Portability
+
+@portability ansi, posix
+

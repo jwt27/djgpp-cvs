@@ -16,6 +16,10 @@ end of @var{s1}.
 
 @var{s1}
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

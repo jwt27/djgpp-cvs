@@ -16,3 +16,8 @@ Tells if @var{c} is a control character.
 
 Nonzero if @var{c} is a control character, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

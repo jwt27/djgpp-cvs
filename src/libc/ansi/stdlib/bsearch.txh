@@ -25,6 +25,10 @@ each of size @var{size}.
 
 Returns a pointer to the element that matches the key, else @var{NULL}.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -46,6 +46,10 @@ reliably determined.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

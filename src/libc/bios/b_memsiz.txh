@@ -16,6 +16,10 @@ This function returns the amount of system memory in 1K blocks (up to
 
 Size of memory (in K).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

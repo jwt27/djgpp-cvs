@@ -16,3 +16,8 @@ in the variables pointed to by the arguments.  @xref{scanf}.
 
 The number of items successfully scanned.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

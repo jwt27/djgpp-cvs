@@ -10,12 +10,15 @@ int bioscom(int cmd, char data, int port);
 @subheading Description
 
 This function accesses the BIOS interrupt 0x14 function, serial
-communication services.  The valid values of cmd are:
+communication services.  @code{port} should be the COM port (0=COM1,
+1=COM2, etc).
+
+The valid values of cmd are:
 
 @table @asis
 @item 0 - initialize com port (@var{data} is the settings)
 @item 1 - write byte to port
-@item 2 - read byte from port
+@item 2 - read byte from port (@var{data} is ignored)
 @item 3 - get port status
 @item
 @end table
@@ -42,6 +45,16 @@ For initialization, the byte is made up of the following bits:
 110- ----  4800 baud
 111- ----  9600 baud
 @end example
+
+For writing a character out to the port, the return value's lower
+8 bits contain the same byte as passed as the @var{data} argument.
+
+For reading a character from the port, the value of @var{data} is
+ignored, and the lower 8 bits of the return value contain the byte
+read.  Also, the "timeout" bit in the upper 8 bits is used as an error
+indicator in this case (0=success, 1=error).  If it indicates an
+error, you should call the "get port status" variant to get the
+detailed error bits.
 
 @subheading Return Value
 
@@ -71,11 +84,15 @@ the lower eight bits are the character read.
 1--- ---- ---- ----  time out (=1 if error present for cmd=1,2)
 @end example
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
-bioscom(0, 0xe3); /* 9600 baud, no parity, one stop, 8 bits */
+bioscom(0, 0xe3, 0); /* 9600 baud, no parity, one stop, 8 bits */
 for (i=0; buf[i]; i++)
-  bioscom(1, buf[i]);
+  bioscom(1, buf[i], 0);
 @end example
 

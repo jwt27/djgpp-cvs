@@ -16,6 +16,10 @@ free the returned value.
 
 The value, or @code{NULL} if that variable does not exist.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -18,6 +18,10 @@ This is useful to, for example, associate @code{stdout} with a new file.
 
 The new file, or @code{NULL} on error. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

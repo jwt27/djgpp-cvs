@@ -20,6 +20,10 @@ to keep minimum code size small.
 Zero if the file does not exist, nonzero if it does.  Note that this
 is the opposite of what access() returns.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

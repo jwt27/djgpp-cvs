@@ -11,3 +11,8 @@ double floor(double x);
 @subheading Return Value
 
 The largest integer value less than or equal to @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

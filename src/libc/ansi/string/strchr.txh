@@ -17,6 +17,10 @@ pointer to the end of the string.
 
 A pointer to the character, or @code{NULL} if it wasn't found. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

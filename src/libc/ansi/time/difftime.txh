@@ -16,6 +16,10 @@ to @var{t1}.
 
 The number of seconds.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -18,3 +18,8 @@ termios emulation handles console only.
 The output line speed on success, (speed_t) -1 for error.
 
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

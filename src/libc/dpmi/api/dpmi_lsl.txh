@@ -16,3 +16,8 @@ information.
 @subheading Return Value
 
 The limit of the segment, as returned by the @code{lsl} opcode.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -10,3 +10,8 @@ int setpgid(pid_t _pid, pid_t _pgid);
 @subheading Return Value
 
 -1 (EPERM) if _pgid is not your current pid, else zero.
+
+@subheading Portability
+
+@portability !ansi, posix
+

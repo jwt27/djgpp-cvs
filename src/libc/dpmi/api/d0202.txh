@@ -21,3 +21,8 @@ interrupts).  It will return a selector:offset pair.
 @subheading Return Value
 
 -1 on error (invalid vector), else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

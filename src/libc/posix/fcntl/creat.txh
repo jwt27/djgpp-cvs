@@ -19,6 +19,10 @@ created read-only if @var{mode} does not have @code{S_IWUSR} set.
 
 A file descriptor >= 0, or a negative number on error. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

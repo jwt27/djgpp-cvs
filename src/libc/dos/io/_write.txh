@@ -11,9 +11,16 @@ ssize_t _write(int fildes, void *buf, size_t nbyte);
 
 This is a direct connection to the MS-DOS write function call, int
 0x21, %ah = 0x40.  No conversion is done on the data; it is written as
-raw binary data.
+raw binary data. This function can be hooked by the
+@xref{File System Extensions}. If you don't want this, you should use
+@xref{_dos_write}.
 
 @subheading Return Value
 
 The number of bytes written.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

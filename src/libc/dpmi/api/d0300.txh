@@ -23,3 +23,8 @@ set %ss, %esp, and %eflags to valid real-mode values or zero, unlike
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

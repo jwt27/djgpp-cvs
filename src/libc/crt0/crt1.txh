@@ -19,6 +19,10 @@ POSIX.1 style by the default @code{__crt0_glob_function} from the C
 library.  To disable expansion, provide a @code{__crt0_glob_function}
 that always returns 0.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node __crt0_setup_arguments, startup
 @subheading Syntax
@@ -45,6 +49,10 @@ with filenames which have embedded whitespace (on LFN filesystems).
 
 @xref{__crt0_load_environment_file}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node __crt0_load_environment_file, startup
 @subheading Syntax
@@ -64,6 +72,10 @@ reduce the size of the program image by providing a version of this
 function that does nothing.
 
 @xref{__crt0_setup_arguments}.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node _crt0_startup_flags, startup
@@ -85,52 +97,64 @@ startup environment to a particular program.
 
 @item _CRT0_FLAG_PRESERVE_UPPER_CASE
 
-If set, argv[0] is left in whatever case it was.  If not set, all
-characters are mapped to lower case.  Note that if the argv0 field in
-the stubinfo structure is present, the case of that part of argv0 is not
-affected. 
+If set, @code{argv[0]} is left in whatever case it was.  If not set, all
+characters are mapped to lower case.  Note that if the @code{argv0}
+field in the @dfn{stubinfo} structure is present, the case of that part
+of @code{argv[0]} is not affected. 
 
 @item _CRT0_FLAG_USE_DOS_SLASHES
 
-If set, reverse slashes (dos-style) are preserved in argv[0].  If not
-set, all reverse slashes are replaced with unix-style slashes.
+If set, reverse slashes (dos-style) are preserved in @code{argv[0]}.  If
+not set, all reverse slashes are replaced with unix-style slashes.
 
 @item _CRT0_FLAG_DROP_EXE_SUFFIX
 
-If set, the .EXE suffix is removed from the file name component of
-argv[0].  If not set, the suffix remains. 
+If set, the @file{.exe} suffix is removed from the file name component
+of @code{argv[0]}.  If not set, the suffix remains. 
 
 @item _CRT0_FLAG_DROP_DRIVE_SPECIFIER
 
-If set, the drive specifier (ex: `C:') is removed from the beginning of
-argv[0] (if present).  If not set, the drive specifier remains. 
+If set, the drive specifier (e.g. @file{C:}) is removed from the
+beginning of @code{argv[0]} (if present).  If not set, the drive
+specifier remains.
 
 @item _CRT0_FLAG_DISALLOW_RESPONSE_FILES
 
-If set, response files (ex: @@gcc.rf) are not expanded.  If not set, the
-contents of the response files are used to create arguments.  Note that
-if the file does not exist, that argument remains unexpanded. 
+If set, response files (e.g. @file{@@gcc.rf}) are not expanded.  If not
+set, the contents of the response files are used to create arguments.
+Note that if the file does not exist, that argument remains unexpanded. 
+
+@item _CRT0_FLAG_KEEP_QUOTES
+
+If set, the quote characters @samp{'}, @samp{"}, and @samp{\} will be
+retained in @code{argv[]} elements when processing command lines passed
+by DOS and via @code{system}.  This is used by the @code{redir} program,
+and should only be needed if you want to get the original command line
+exactly as it was passed by the caller.
 
 @item _CRT0_FLAG_FILL_SBRK_MEMORY
 
-If set, fill sbrk()'d memory with a constant value.  If not, memory
+If set, fill @code{sbrk}'d memory with a constant value.  If not, memory
 gets whatever happens to have been in there, which breaks some
 applications.
 
 @item _CRT0_FLAG_FILL_DEADBEEF
 
-If set, fill memory (above) with 0xdeadbeef, else fill with zero.
+If set, fill memory (above) with @code{0xdeadbeef}, else fill with zero.
 This is especially useful for debugging uninitialized memory problems.
 
 @item _CRT0_FLAG_NEARPTR
 
 If set, set DS limit to 4GB which allows use of near pointers to DOS
 (and other) memory.  WARNING, disables memory protection and bad
-pointers may crash the machine or wipe out your data.
+pointers may crash the machine or wipe out your data.  This flag is
+silently ignored on NT and DOSEmu, which disallow such huge selector
+limits.
 
 @item _CRT0_FLAG_NULLOK
 
-If set, disable NULL pointer protection (if it can be controlled at all).
+If set, disable @sc{null} pointer protection (if it can be controlled at
+all).
 
 @item _CRT0_FLAG_NMI_SIGNAL
 
@@ -140,37 +164,40 @@ leave NMIs alone and pass through to real mode code.  You decide.
 
 @item _CRT0_FLAG_NO_LFN
 
-If set, disable usage of long file name functions even on systems
-(such as Win95) which support them.  This might be needed to work
-around program assumptions on file name format on programs written
-specifically for DOS.  Note that this flag overrides the value of the
-environment variable @samp{LFN}.
+If set, disable usage of long file name functions even on systems (such
+as Windows 9X) which support them.  This might be needed to work around
+program assumptions on file name format on programs written specifically
+for DOS.  Note that this flag overrides the value of the environment
+variable @code{LFN}.
 
 @item _CRT0_FLAG_NONMOVE_SBRK
 
-If set, the sbrk() algorithm used used multiple DPMI memory blocks which makes 
-sure the base of CS/DS/SS does not change.  This may cause problems with
-sbrk(0) values and programs with other assumptions about sbrk behavior.
-This flag is useful with near pointers, since a constant pointer to
-DOS/Video memory can be computed without needing to reload it after
-any routine which might call sbrk().
+If set, the @code{sbrk} algorithm uses multiple DPMI memory blocks which
+makes sure the base of CS/DS/SS does not change.  This may cause
+problems with @code{sbrk(0)} values and programs with other assumptions
+about @code{sbrk} behavior.  This flag is useful with near pointers,
+since a constant pointer to DOS/Video memory can be computed without
+needing to reload it after any routine which might call @code{sbrk}.
 
 @item _CRT0_FLAG_UNIX_SBRK
 
-If set, the sbrk() algorithm used resizes memory blocks so that the layout
-of memory is set up to be the most compatible with unix sbrk() expectations.
-This mode should not be used with hardware interrupts, near pointers, and
-may cause problems with QDPMI virtual memory.  If your program requires
-a specific sbrk() behavior, you should set one of these flags, since the
-default may change in different libc releases.
+If set, the @code{sbrk} algorithm resizes memory blocks so that the
+layout of memory is set up to be the most compatible with Unix
+@code{sbrk} expectations.  This mode should not be used with hardware
+interrupts, near pointers, and may cause problems with QDPMI virtual
+memory.  On NT, this is the recommended algorithm.
+
+If your program requires a specific @code{sbrk} behavior, you
+should set either this or the previous flag, since the default may
+change in different libc releases.
 
 @item _CRT0_FLAG_LOCK_MEMORY
 
 If set, locks all memory as it is allocated.  This effectively disables
 virtual memory, and may be useful if using extensive hardware interrupt
 codes in a relatively small image size.  The memory is locked after it
-is sbrk()ed, so the locking may fail.  This bit may be set or cleared
-during execution.  When sbrk() uses multiple memory zones, it can be
+is @code{sbrk}'ed, so the locking may fail.  This bit may be set or cleared
+during execution.  When @code{sbrk} uses multiple memory zones, it can be
 difficult to lock all memory since the memory block size and location is
 impossible to determine.
 
@@ -190,3 +217,8 @@ This flag overrides the value of the environment variable @samp{FNCASE},
 @xref{_preserve_fncase}.
 
 @end table
+
+@subheading Portability
+
+@portability !ansi, !posix
+

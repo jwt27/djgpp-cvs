@@ -17,6 +17,10 @@ Compare memory pointed to by @var{ptr1} and @var{ptr2} for at most
 The number of bytes remaining when the first mismatch occurred, or zero
 if all bytes were equal. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -15,6 +15,10 @@ If @var{t} is not @code{NULL}, the current time is stored in @code{*t}.
 
 The current time is returned.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

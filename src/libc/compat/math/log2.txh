@@ -12,3 +12,8 @@ double log2(double x);
 
 The logarithm base 2 of @var{x}.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

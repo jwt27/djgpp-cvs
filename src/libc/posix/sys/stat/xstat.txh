@@ -1,0 +1,38 @@
+@node _invent_inode, file system
+@subheading Syntax
+@example
+ino_t
+_invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
+@end example
+
+@subheading Description
+This invents an inode number for those files which don't have valid DOS
+cluster number.  These could be:
+@itemize @bullet
+@item
+ devices like @file{/dev/null} or file system extensions
+ (@pxref{File System Extensions})
+
+@item
+ empty files which were not allocated disk space yet
+
+@item
+ or files on networked drives, for which the redirector doesn't bring the
+ cluster number.
+@end itemize
+
+To ensure proper operation of this function, you must call it with a filename
+in some canonical form.  E.g., with a name returned by @code{truename()}
+(@pxref{_truename}), or that returned by @code{_fixpath()} (@pxref{_fixpath}).
+The point here is that the entire program @emph{must} abide by these
+conventions through its operation, or else you risk getting different inode
+numbers for the same file.
+
+@subheading Return Value
+0 on error, otherwise the invented inode number for the file
+
+
+@subheading Portability
+
+@portability !ansi, !posix
+

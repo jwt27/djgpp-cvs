@@ -23,3 +23,8 @@ compatible with Borland C++ function of the same name.
 @subheading Return Value
 Zero if successful, nonzero if not.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -17,3 +17,8 @@ optimized down to a single opcode when you optimize your program.
 @subheading Return Value
 
 The value returned from the port.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

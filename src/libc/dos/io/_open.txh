@@ -9,9 +9,19 @@ int _open(const char *path, int attrib);
 
 @subheading Description
 
-This is a direct connection to the MS-DOS open function call, int
-0x21, %ah = 0x3d.  The file is set to binary mode.
+This is a direct connection to the MS-DOS open function call, int 0x21,
+%ah = 0x3d.  (When long file names are supported, @code{_open} calls
+function 0x716c of Int 0x21.)  The file is set to binary mode.
+
+This function can be hooked by the @xref{File System Extensions}.  If
+you don't want this you should use @xref{_dos_open} (but note that the
+latter doesn't support long file names).
 
 @subheading Return Value
 
 The new file descriptor, else -1 on error.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

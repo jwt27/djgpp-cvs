@@ -4,9 +4,14 @@
 @example
 #include <pc.h>
 
-void outportsw(unsigned short _port, unsigned short *_buf, unsigned _len);
+void outportsw(unsigned short _port, const unsigned short *_buf, unsigned _len);
 @end example
 
 @subheading Description
 
 Writes the @var{_len} shorts in @var{_buf} to the 16-bit @var{_port}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

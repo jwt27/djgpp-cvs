@@ -17,3 +17,8 @@ if that variable isn't already defined.
 @subheading Return Value
 
 Zero on success, -1 on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

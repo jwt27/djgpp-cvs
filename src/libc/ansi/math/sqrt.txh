@@ -11,3 +11,8 @@ double sqrt(double x);
 @subheading Return Value
 
 The square root of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

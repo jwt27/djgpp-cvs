@@ -15,9 +15,13 @@ This function truncates @var{file} to @var{size} bytes.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
-ftruncate("/tmp/data.txt", 400);
+truncate("/tmp/data.txt", 400);
 @end example
 

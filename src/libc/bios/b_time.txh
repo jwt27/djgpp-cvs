@@ -21,6 +21,10 @@ value if midnight was passed since last read, or zero if midnight
 was not passed. If the argument is _TIME_SETCLOCK, the return
 value is undefined.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

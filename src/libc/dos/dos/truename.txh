@@ -40,6 +40,10 @@ calling @ref{free}.
 The function returns the pointer to the result.  In case of any failure,
 a NULL pointer is returned, and @var{errno} is set.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

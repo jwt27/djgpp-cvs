@@ -11,6 +11,10 @@ double ldexp(double val, int exp);
 
 This function returns @var{val} * 2 ** @var{exp}.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

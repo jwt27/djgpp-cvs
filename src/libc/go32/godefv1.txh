@@ -33,6 +33,10 @@ The only field that is guaranteed to have useful data is
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -66,13 +70,17 @@ with a far return.  The registers are set up from @var{regs}, including
 registers the function modifies are reflected in @var{regs} on return.
 
 If @code{SS} and @code{SP} are both zero, a small temporary stack is
-used when in real mode.  If not, they are used AS IS.  It's a good
+used when in real mode.  If not, they are used @emph{as is}.  It's a good
 idea to use @code{memset} to initialize the register structure before
 using it.
 
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -107,13 +115,17 @@ address of the call.  Any registers the function modifies are reflected
 in @var{regs} on return. 
 
 If @code{SS} and @code{SP} are both zero, a small temporary stack is
-used when in real mode.  If not, they are used AS IS.  It's a good
+used when in real mode.  If not, they are used @emph{as is}.  It's a good
 idea to use @code{memset} to initialize the register structure before
 using it.
 
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -147,13 +159,17 @@ address of the call.  Any registers the function modifies are reflected
 in @var{regs} on return. 
 
 If @code{SS} and @code{SP} are both zero, a small temporary stack is
-used when in real mode.  If not, they are used AS IS.  It's a good
+used when in real mode.  If not, they are used @emph{as is}.  It's a good
 idea to use @code{memset} to initialize the register structure before
 using it.
 
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -187,6 +203,10 @@ vectors and such.
 
 @code{CS}
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _go32_my_ds, go32
 @subheading Syntax
@@ -206,6 +226,10 @@ and such.
 
 @code{DS}
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _go32_my_ss, go32
 @subheading Syntax
@@ -224,6 +248,10 @@ and such.
 @subheading Return Value
 
 @code{SS}
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node _go32_conventional_mem_selector, go32
@@ -245,6 +273,10 @@ manipulate memory in the conventional address space.
 @subheading Return Value
 
 The selector.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

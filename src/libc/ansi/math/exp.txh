@@ -11,3 +11,8 @@ double exp(double x);
 @subheading Return Value
 
 @b{e} to the @var{x} power.
+
+@subheading Portability
+
+@portability ansi, posix
+

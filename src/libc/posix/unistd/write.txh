@@ -24,6 +24,10 @@ Use _write if you want to actually ask dos to write zero bytes.
 
 The number of bytes written, zero at EOF, or -1 on error.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

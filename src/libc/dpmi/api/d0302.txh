@@ -13,7 +13,7 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0303
+DPMI function AX = 0x0302
 
 This function switches to real mode, filling in @emph{all} the
 registers from the structure.  ss:sp and flags must be valid or zero.
@@ -22,3 +22,8 @@ The called function must return with an @code{iret}.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -14,3 +14,8 @@ Like @code{strcpy} (@pxref{strcpy}), but return value different.
 @subheading Return Value
 
 Returns a pointer to the trailing NUL in @var{dest}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

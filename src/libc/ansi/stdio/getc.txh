@@ -15,6 +15,10 @@ Get one character from @var{file}.
 
 The character ([0..255]) or @code{EOF} if eof or error.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -17,6 +17,10 @@ are swapped from 12 order to 21 order.
 
 The network-order value.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -1,0 +1,39 @@
+
+@c ----------------------------------------------------------------------
+
+@node dirname, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+char * dirname (const char *fname);
+@end example
+
+@subheading Description
+
+This function returns the directory part of the argument @var{fname}
+copied to a buffer allocated by calling @code{malloc}.  The directory
+part is everything up to but not including the rightmost slash (either
+forward- or backslash) in @var{fname}.  If @var{fname} includes a drive
+letter but no slashes, the function will return @code{@var{x}:.} where
+@var{x} is the drive letter.  If @var{fname} includes neither the drive
+letter nor any slashes, @code{"."} will be returned.  Trailing slashes
+are removed from the result, unless it is a root directory, with or
+without a drive letter.
+
+@subheading Return value
+
+The directory part in malloc'ed storage, or a NULL pointer of either
+there's not enough free memory, or @var{fname} is a NULL pointer.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ printf ("The parent of current directory is %s\n", 
+         dirname (getcwd (0, PATH_MAX)));
+@end example

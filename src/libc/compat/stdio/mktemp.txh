@@ -22,6 +22,10 @@ have two additional characters before the @code{X}'s.
 
 The resulting filename.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

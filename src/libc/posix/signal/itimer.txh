@@ -17,6 +17,10 @@ the value of ITIMER_REAL or ITIMER_PROF. @xref{setitimer}.
 
 Returns 0 on success, -1 on failure (and sets errno).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node setitimer, process
 @subheading Syntax
@@ -49,6 +53,18 @@ it specifies the value to reload into it_value on timer expiration.  Setting
 it_value to zero disables a timer.  Setting it_interval to zero causes the
 timer to only happen once instead of repeating.
 
+Although times can be given with microsecond resolution, the granularity is
+determined by the timer interrupt frequency.
+
+This version uses @ref{uclock} to determine the time of expiration. Under
+Windows 95, this fails because the OS reprograms the timer. Also, most debuggers
+cannot cope with hardware interrupts and report SIGSEGV, or SIGABRT.
+
 @subheading Return Value
 
 Returns 0 on success, -1 on failure (and sets errno).
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -1,5 +1,4 @@
 @node _dos_getdiskfree, dos
-@heading @code{_dos_getdiskfree}
 @subheading Syntax
 
 @example
@@ -16,6 +15,10 @@ This function determines the free space on @var{drive} drive
 @subheading Return Value
 
 Returns with 0 if successful and non-zero on error (sets @var{errno}=EINVAL).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -2,6 +2,8 @@
 @subheading Syntax
 
 @example
+#include <dos.h>
+
 void delay(unsigned msec);
 @end example
 
@@ -14,6 +16,10 @@ programs that might need it.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

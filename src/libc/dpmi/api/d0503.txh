@@ -4,7 +4,7 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_resize_memory
+int __dpmi_resize_memory(__dpmi_meminfo *_info);
 @end example
 
 @subheading Description
@@ -23,3 +23,8 @@ new handle.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

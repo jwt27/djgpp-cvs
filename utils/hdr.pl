@@ -1,7 +1,14 @@
 #!/bin/perl
 # -*- perl -*-
 
-$inc = "d:/v2/include";
+if ( $ENV{'DJDIR'} ) {
+    $inc = $ENV{'DJDIR'} . "/include";
+} elsif ( -d "c:/djgpp" ) {
+    $inc = "c:/djgpp/include";
+} else {
+    print "Don't know where DJGPP is\n";
+    exit 0;
+}
 
 
 $pattern = shift;
@@ -34,7 +41,7 @@ for $dir (@subs) {
 
 sub scan_file {
     local($file) = @_;
-    open(F, "$inc/$file");
+    open(F, "$inc/$file") || return;
     $tag = '?';
     while (<F>) {
 	if (/$pattern/io) {

@@ -11,9 +11,16 @@ ssize_t _read(int fildes, void *buf, size_t nbyte);
 
 This is a direct connection to the MS-DOS read function call, int
 0x21, %ah = 0x3f.  No conversion is done on the data; it is read as
-raw binary data.
+raw binary data. This function can be hooked by the
+@xref{File System Extensions}. If you don't want this, you should
+use @xref{_dos_read}.
 
 @subheading Return Value
 
 The number of bytes read.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

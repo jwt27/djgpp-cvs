@@ -18,6 +18,10 @@ opened by @ref{fopen} or @ref{freopen}, you can use @ref{fileno} macro.
 The size of the file in bytes, or (if any error occured) -1L and
 @var{errno} set to a value describing the cause of the failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

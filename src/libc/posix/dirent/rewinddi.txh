@@ -16,6 +16,10 @@ to @code{readdir} (@pxref{readdir}) starts at the beginning again.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

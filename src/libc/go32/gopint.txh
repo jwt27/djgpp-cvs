@@ -26,6 +26,10 @@ of the wrapper function, which you pass to both
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -63,6 +67,10 @@ the next handler.  Your function need not perform any special handling.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_set_protected_mode_interrupt_vector}
@@ -89,6 +97,10 @@ that is still in use.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_allocate_iret_wrapper}
@@ -106,6 +118,10 @@ extern unsigned long _go32_interrupt_stack_size;
 
 The default size of the interrupt handler's stack.  Defaults to 32k.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_lock_code, go32
 @subheading Syntax
@@ -121,6 +137,14 @@ int _go32_dpmi_lock_code( void *lockaddr, unsigned long locksize);
 Locks the given region of code, starting at @var{lockaddr} for
 @var{locksize} bytes.  @var{lockaddr} is a regular pointer in
 your program, such as the address of a function.
+
+@subheading Return Value
+
+0 if success, -1 if failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -148,9 +172,17 @@ int _go32_dpmi_lock_data( void *lockaddr, unsigned long locksize);
 
 @subheading Description
 
-Locks the given region of code, starting at @var{lockaddr} for
+Locks the given region of data, starting at @var{lockaddr} for
 @var{locksize} bytes.  @var{lockaddr} is a regular pointer in
 your program, such as the address of a variable.
+
+@subheading Return Value
+
+0 if success, -1 if failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

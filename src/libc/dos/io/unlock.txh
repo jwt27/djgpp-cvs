@@ -15,3 +15,8 @@ Unlocks a region previously locked by @code{lock}.
 @subheading Return Value
 Zero if successful, nonzero if not.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

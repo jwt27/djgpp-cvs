@@ -23,6 +23,10 @@ typedef struct @{
 
 The results of the division are returned.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

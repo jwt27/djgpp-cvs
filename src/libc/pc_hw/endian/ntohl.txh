@@ -17,9 +17,13 @@ are swapped from 1234 order to 4321 order.
 
 The host-order value.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
-ip = htonl(packet.ipaddr);
+ip = ntohl(packet.ipaddr);
 @end example
 

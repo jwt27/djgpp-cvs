@@ -50,6 +50,10 @@ Bit     Meaning if True
 7       Printer not busy
 @end example
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -4,20 +4,27 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_yield(void);
+void __dpmi_yield(void);
 @end example
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
-information.
+@code{__dpmi_yield} calls function 1680h of the interrupt 2Fh, which
+tells the task manager in a multitasking environment that the calling
+program doesn't need the rest of its time slice.  The task manager will
+then preempt the calling program and switch to another task that is
+ready to run.
 
-INT 0x2f, AX = 0x1680
-
-This function yields the CPU to the next process.  This should be
-called in busy-wait loops.
+This function should be called in busy-wait loops, like when a program
+waits for user input via keyboard, after it finds the keyboard buffer
+empty, to enhance overall performance in a multitasking environment.
 
 @subheading Return Value
 
-None.
+None.  If the call isn't supported by the environment, like when running
+on plain DOS, @code{errno} is set to @code{ENOSYS}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

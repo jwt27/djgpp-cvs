@@ -30,3 +30,8 @@ s1 < s2
 
 @end table
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -10,3 +10,8 @@ int	sigsetjmp(sigjmp_buf env, int savemask);
 @subheading Description
 
 @xref{setjmp}.
+
+@subheading Portability
+
+@portability !ansi, posix
+

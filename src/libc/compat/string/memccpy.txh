@@ -20,6 +20,10 @@ A pointer to the character after the copy of @var{ch} in @var{to},
 or a @code{NULL} pointer if @var{ch} was not found in the first
 @var{nbytes} characters of @var{from}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -18,6 +18,10 @@ is returned, else @code{NULL} is returned.
 
 The address of the buffer, or @code{NULL}.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

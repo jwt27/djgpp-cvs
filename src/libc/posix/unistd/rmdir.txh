@@ -16,6 +16,10 @@ empty.
 
 Zero if the directory was removed, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

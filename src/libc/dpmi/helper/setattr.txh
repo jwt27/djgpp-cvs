@@ -29,6 +29,10 @@ Even on failure, this routine may affect a subset of the pages specified.
 @code{EINVAL} for illegal input parameters, or @code{EACCES} if the
 DPMI server rejected the attribute setting.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

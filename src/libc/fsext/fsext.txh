@@ -42,6 +42,7 @@ A read handler.  Called when data should be read from a ``file''.
 @item __FSEXT_write
 
 A write handler.  Called to write data to a ``file''.
+On ``text'' files it receives the ORIGINAL (unconverted) buffer.
 
 @item __FSEXT_read
 
@@ -71,6 +72,43 @@ The ``file'' has an error condition set.
 
 A close handler.  Called when the ``file'' should be closed.
 
+@item __FSEXT_fcntl
+
+A file fcntl handler.
+
+@item __FSEXT_ioctl
+
+A file ioctl handler.
+
+@item __FSEXT_lseek
+
+A file lseek handler (@pxref{lseek}).
+
+@item __FSEXT_link
+
+A file link handler (@pxref{link}).  This is most relevant to file
+system extensions that emulate a directory structure.
+
+@item __FSEXT_unlink
+
+A file unlink handler (@pxref{unlink}).  This is most relevant to file
+system extensions that emulate a directory structure.
+
+@item __FSEXT_dup
+
+A file dup handler (@pxref{dup}).  This is called when a new
+descriptor is needed to refer to an existing descriptor.
+
+@item __FSEXT_dup2
+
+A file dup2 handler (@pxref{dup2}).  This is called when two different
+file descriptors are used to refer to the same open file.
+
+@item __FSEXT_fstat
+
+A file fstat handler (@pxref{fstat}).  The extension should fill in
+various status information about the emulated file.
+
 @end table
 
 
@@ -91,7 +129,7 @@ A normal extension would provide these parts:
 
 Some function to create a connection to the extension.  This may be a
 custom function (such as @code{socket} for networking) or an extension
-to open (such as for @code{/dev/null} emulation).
+to open (such as @code{/dev/ttyS0} to access the serial port).
 
 @item
 
@@ -109,6 +147,11 @@ The core functionality of the extension, if any.
 
 @end itemize
 
+Please note that the special Unix filenames @file{/dev/null} and
+@file{/dev/tty} are already mapped to the appropriate DOS names
+@file{NUL} and @file{CON}, respectively, so you don't need to write
+extensions for these.
+
 @c ----------------------------------------------------------------------
 @node __FSEXT_alloc_fd, file system
 @subheading Syntax
@@ -123,13 +166,22 @@ int __FSEXT_alloc_fd(__FSEXT_Function *_function);
 
 This function is part of the @ref{File System Extensions}.  It is used
 by extensions that fully emulate the I/O functions, and thus don't
-have a corresponding DOS file handle.  This function opens DOS's
-@samp{NUL} device, so as to allocate a handle that DOS won't then reuse.
-It also assigns the handler function for that descriptor.
+have a corresponding DOS file handle.  Upon the first call, this
+function opens DOS's @samp{NUL} device, so as to allocate a handle that
+DOS won't then reuse.  Upon subsequent calls, that handle is duplicated
+by calling the DOS @code{dup} function; this makes all of the handles
+use a single entry in the System File Table, and thus be independent of
+what the @samp{FILES=} parameter of @file{CONFIG.SYS} says.
+@code{__FSEXT_alloc_fd} also assigns the handler function for the handle
+it returns.
 
 The module is responsible for calling @code{_close} on the descriptor
 after setting the handler function to zero in the extended close
 handler.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -166,6 +218,10 @@ redirect it to another device.
 
 Zero in case of success, non-zero in case of failure (like if @var{_fd}
 is negative).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -221,6 +277,10 @@ This function is part of the @ref{File System Extensions}.  It is used
 internal to libc.a to redirect I/O requests to the appropriate
 extensions.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -236,3 +296,145 @@ _read(int fd, void *buf, int len)
   /* rest of read() */
 @}
 @end example
+
+@c ----------------------------------------------------------------------
+@node __FSEXT_set_data, file system
+@subheading Syntax
+
+@example
+#include <sys/fsext.h>
+
+int __FSEXT_set_data(int _fd, void *_data);
+@end example
+
+@subheading Description
+
+This function is part of the @ref{File System Extensions}.  It is used
+to store a descriptor-specific pointer that can later be retrieved by
+@code{__FSEXT_get_data} (@pxref{__FSEXT_get_data}).  The pointer is not
+otherwise used.
+
+This is useful when writing an extension that may be handling several
+open pseudo-files.  @code{__FSEXT_set_data} can be used when creating or
+opening the file to store a pointer to data about the specific file.  Later,
+when specific operation needs to be done (e.g. read, write, etc.) a
+pointer to pseudo-file associated with the file descriptor can  be fetched
+with @code{__FSEXT_get_data}.
+
+@subheading Return Value
+
+Returns the pointer you passed it, or NULL if there was an error.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+typedef struct
+@{
+   void* Ptr;
+   off_t Current_Ofs;
+   size_t Size;
+@} _mem_file_t;
+
+int my_fsext(__FSEXT_Fnumber Op, int* RV, va_list Args)
+@{
+   const char* Path;
+   void* Buffer;
+   size_t Size;
+   int fd;
+   _mem_file_t* MPtr;
+
+   switch (Op)
+   @{
+      case __FSEXT_creat:
+       /* Create a new memory file */
+
+       Path = va_list(Args, const char*);
+
+       /* Check to see if we should create a new file */
+       if (strnicmp("/tmp/", Path, 5) != 0) return 0;
+
+       /* Allocate some memory to keep info on our fake file */
+       MPtr = malloc(sizeof(_mem_file_t));
+       if (!MPtr) return 0;
+
+       memset(MPtr, 0, sizeof(_mem_file_t));
+
+       /* Get a file descriptor we can use */
+       fd = __FSEXT_alloc_fd(my_fsext);
+       if (fd < 0)
+       @{
+          free(MPtr);
+          return 0;
+       @}
+
+       /* Now store our note about this file descriptor so we can lookup it
+          up quickly later. */
+       __FSEXT_set_data(fd, MPtr);
+
+       /* Return the file descriptor
+       *RV = fd;
+       return 1;
+
+      case __FSEXT_read:
+       /* Read from our memory file. */
+       fd = va_list(Args, int);
+       Buffer = va_list(Args, void*);
+       Size = va_list(Args, size_t);
+
+       /* Look up the information about this file */
+       MPtr = __FSEXT_get_data(fd);
+       if (!MPtr)
+       @{
+           *RV = -1;
+           return 1;
+       @}
+
+       if (MPtr->Current_Ofs >= MPtr->Size)
+       @{
+           *RV = 0;
+           return 1;
+       @}
+
+       if (Size > (MPtr->Size - MPtr->Current_Ofs))
+        Size = MPtr->Size - MPtr->Current_Ofs;
+
+       memcpy(Buffer, (char*) MPtr->Ptr+MPtr->Current_Ofs, Size);
+       MPtr->Current_Ofs += Size;
+
+       *RV = Size;
+       return 1;
+       
+       ...
+    @}
+@}
+
+@c ----------------------------------------------------------------------
+@node __FSEXT_get_data, file system
+@subheading Syntax
+
+@example
+#include <sys/fsext.h>
+
+void *__FSEXT_get_data(int _fd);
+@end example
+
+@subheading Description
+
+This function is part of the @ref{File System Extensions}.  It is used
+to retrieve a descriptor-specific pointer that was previously stored
+by @code{__FSEXT_set_data} (@pxref{__FSEXT_set_data}).  The pointer is not
+otherwise used.
+
+@xref{__FSEXT_set_data}, for an example of how this may be used.
+
+@subheading Return Value
+
+Returns the stored pointer, or NULL if there was an error (or no
+pointer had been stored).
+
+@subheading Portability
+
+@portability !ansi, !posix
+

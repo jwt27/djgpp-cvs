@@ -16,6 +16,10 @@ This function clears the EOF and error indicators for the file
 
 None.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

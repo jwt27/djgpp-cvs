@@ -21,3 +21,8 @@ Read the spec for info.
 
 The number of bytes required to save state.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

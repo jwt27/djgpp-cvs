@@ -27,6 +27,10 @@ done.
 @code{assertval} returns the value of the expression if nonzero, else it
 aborts.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

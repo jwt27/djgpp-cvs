@@ -15,6 +15,10 @@ This function causes the program to pause for @var{seconds} seconds.
 
 The number of seconds that haven't passed (i.e. always zero)
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

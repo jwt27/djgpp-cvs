@@ -19,6 +19,10 @@ function.
 
 The number of characters generated is returned.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

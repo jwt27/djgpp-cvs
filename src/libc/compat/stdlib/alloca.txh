@@ -17,6 +17,10 @@ built-in function and not a library call.
 
 A pointer to the memory, else NULL.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

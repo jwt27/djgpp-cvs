@@ -15,6 +15,10 @@ This function finds the first occurrence of @var{s2} in @var{s1}.
 
 A pointer within @var{s1}, or @code{NULL} if @var{s2} wasn't found.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -19,6 +19,10 @@ When successfull, the function returns a pointer to a static buffer
 where the full pathname of the found file is stored.  Otherwise, it
 returns NULL.
  
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
  
 @example

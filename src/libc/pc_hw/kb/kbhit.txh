@@ -23,6 +23,10 @@ cause trouble in multitasking environments like DESQview/X.
 
 Nonzero if a key has been hit, else zero.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

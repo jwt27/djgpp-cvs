@@ -1,0 +1,30 @@
+@node memicmp, memory
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int memicmp(const void *s1, const void *s2, size_t num);
+@end example
+
+@subheading Description
+
+This function compares two regions of memory, at @var{s1} and @var{s2},
+for @var{num} bytes, disregarding case.
+
+@subheading Return Value
+
+Zero if they're the same, nonzero if different, the sign indicates
+"order". 
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+if (memicmp(arg, "-i", 2) == 0)   /* '-I' or '-include' etc. */
+  do_include();
+@end example
+

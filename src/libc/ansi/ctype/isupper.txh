@@ -16,3 +16,8 @@ Tells if @var{c} is an upper case character or not.
 
 Nonzero if @var{c} is upper case, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

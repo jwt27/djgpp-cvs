@@ -16,6 +16,10 @@ Clear to end of line.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node clrscr, conio
 @subheading Syntax
@@ -29,6 +33,10 @@ void clrscr(void);
 @subheading Description
 
 Clear the entire screen.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node gotoxy, conio
@@ -45,6 +53,10 @@ void gotoxy(int x, int y);
 Move the cursor to row y, column x.  The upper left corner of the
 current window is (1,1).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node wherex, conio
 @subheading Syntax
@@ -59,6 +71,10 @@ int wherex(void);
 
 The column the cursor is on.  The leftmost column is 1.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node wherey, conio
 @subheading Syntax
@@ -72,6 +88,10 @@ int     wherey(void);
 @subheading Return Value
 
 The row the cursor is on.  The topmost row is 1.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node putch, conio
@@ -94,6 +114,10 @@ cursor position is updated.
 
 The character is returned.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node getch, conio
 @subheading Syntax
@@ -114,6 +138,10 @@ the screen.
 @subheading Return Value
 
 The character.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node getche, conio
@@ -136,6 +164,10 @@ the screen.
 
 The character.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node ungetch, conio
 @subheading Syntax
@@ -154,6 +186,10 @@ actually reading the console.
 @subheading Return Value
 
 The charater is returned.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node _conio_kbhit, conio
@@ -176,6 +212,10 @@ redefined to be this function instead.
 
 Nonzero if a key is waiting, else zero.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node delline, conio
 @subheading Syntax
@@ -189,6 +229,10 @@ void    delline(void);
 @subheading Description
 
 The line the cursor is on is deleted; lines below it scroll up.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node gettext, conio
@@ -207,6 +251,10 @@ Retrieve a block of screen characters into a buffer.
 @subheading Return Value
 
 1
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node gettextinfo, conio
@@ -241,6 +289,10 @@ struct text_info @{
 
 The @code{normattr} field is the text attribute which was in effect
 before the program started.
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node highvideo, conio
 @subheading Syntax
@@ -254,6 +306,10 @@ void highvideo(void);
 @subheading Description
 
 Causes any new characters put on the screen to be bright.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node insline, conio
@@ -270,6 +326,10 @@ void insline(void);
 A blank line is inserted at the current cursor position.  The previous
 line and lines below it scroll down.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node lowvideo, conio
 @subheading Syntax
@@ -283,6 +343,10 @@ void    lowvideo(void);
 @subheading Description
 
 Causes any new characters put on the screen to be dim.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node movetext, conio
@@ -303,6 +367,10 @@ Moves a block of text on the screen.
 
 1 on success, zero on error.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node normvideo, conio
 @subheading Syntax
@@ -316,6 +384,10 @@ void normvideo(void);
 @subheading Description
 
 Resets the text attribute to what it was before the program started.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node puttext, conio
@@ -334,6 +406,10 @@ The opposite of @ref{gettext}.
 @subheading Return Value
 
 1 on success, zero on error.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node textattr, conio
@@ -355,6 +431,21 @@ Sets the attribute used for future writes to the screen:
 X--- ---- = 1=blink 0=steady
 @end example
 
+The include file <conio.h> contains an enum COLORS that define the
+various values that can be used for these bitfields; light colors can
+only be used for the foreground.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+/* blinking white on blue */
+textattr(BLINK | (BLUE << 4) | WHITE);
+@end example
+
 @c ----------------------------------------------------------------------
 @node textbackground, conio
 @subheading Syntax
@@ -369,6 +460,10 @@ void textbackground(int _color);
 
 Sets just the background of the text attribute. @xref{textattr}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node textcolor, conio
 @subheading Syntax
@@ -382,6 +477,10 @@ void textcolor(int _color);
 @subheading Description
 
 Sets just the foreground of the text attribute. @xref{textattr}.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node textmode, conio
@@ -433,6 +532,10 @@ The monochrome monitor
 
 @xref{_set_screen_lines}, for a more versatile method of setting
 text screen dimensions.
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node window, conio
 @subheading Syntax
@@ -447,6 +550,10 @@ void    window(int _left, int _top, int _right, int _bottom);
 
 Specifies the window on the screen to be used for future output
 requests.  The upper left corner of the physical screen is (1,1).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node _setcursortype, conio
@@ -478,6 +585,10 @@ An underline cursor is displayed.
 
 @end table
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node cgets, conio
 @subheading Syntax
@@ -500,6 +611,10 @@ read.  The third character is the first character read.
 
 A pointer to the first character read.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node cprintf, conio
 @subheading Syntax
@@ -521,6 +636,10 @@ call.
 
 The number of characters written.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node cputs, conio
 @subheading Syntax
@@ -537,7 +656,11 @@ Puts the string onto the console.  The cursor position is updated.
 
 @subheading Return Value
 
-zero on success.
+Zero on success.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node cscanf, conio
@@ -557,6 +680,10 @@ Like @code{scanf} (@pxref{scanf}), but it reads from the keyboard directly.
 
 The number of fields stored.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node gppconio_init, conio
 @subheading Syntax
@@ -573,14 +700,23 @@ Initialize the screen.  This is called automatically at program start-up
 if you use any of the @code{conio} functions, but there may be
 times when you need to call it again, typically after calling some video
 BIOS function which affects screen parameters.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _set_screen_lines, conio
 @subheading Syntax
+
 @example
 #include <conio.h>
+
 void _set_screen_lines(int nlines);
 @end example
+
 @subheading Description
+
 This function sets the text screen width to 80 and its height to the
 value given by @var{nlines}, which can be one of the following: 25, 28,
 35, 40, 43 or 50.  On a CGA, only 25-line screen is supported.  On an
@@ -596,6 +732,11 @@ the desired height.
 This function has a side effect of erasing the screen contents, so
 application programs which use it should make their own arrangements to
 redisplay it.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node blinkvideo, conio
 
@@ -603,6 +744,7 @@ redisplay it.
 
 @example
 #include <conio.h>
+
 void blinkvideo(void);
 @end example
 
@@ -621,6 +763,11 @@ Note that there is no BIOS function to get the current status of this
 bit, but bit 5 of the byte at @code{0040h:0065h} in the BIOS area
 indicates the current state: if it's 1 (the default), blinking
 characters will be displayed.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node intensevideo, conio
 
@@ -628,6 +775,7 @@ characters will be displayed.
 
 @example
 #include <conio.h>
+
 void intensevideo(void);
 @end example
 
@@ -646,3 +794,8 @@ Note that there is no BIOS function to get the current status of this
 bit, but bit 5 of the byte at @code{0040h:0065h} in the BIOS area
 indicates the current state: if it's 1 (the default), blinking
 characters will be displayed.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

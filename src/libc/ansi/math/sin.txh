@@ -11,3 +11,8 @@ double sin(double x);
 @subheading Return Value
 
 The sine of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

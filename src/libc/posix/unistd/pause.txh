@@ -15,3 +15,8 @@ to give up a slice of the CPU.
 @subheading Return Value
 
 Zero.
+
+@subheading Portability
+
+@portability !ansi, posix
+

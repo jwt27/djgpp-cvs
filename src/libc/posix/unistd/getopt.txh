@@ -2,6 +2,8 @@
 @subheading Syntax
 
 @example
+#include <unistd.h>
+
 int getopt(int argc, char * const *argv, const char *options);
 extern char *optarg;
 extern int optind, opterr;
@@ -28,6 +30,10 @@ the command line, and cause @code{getopt} to stop looking.
 @subheading Return Value
 
 The option found, or -1 if no more options.
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @subheading Example
 

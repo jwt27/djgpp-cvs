@@ -21,6 +21,10 @@ At least 32 functions can be registered this way.
 
 Zero on success, non-zero on error.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

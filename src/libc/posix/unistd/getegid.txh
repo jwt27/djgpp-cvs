@@ -15,3 +15,8 @@ Get the effective group id.
 
 42
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

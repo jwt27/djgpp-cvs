@@ -15,6 +15,10 @@ Get the maximum number of open file descriptors the system supports.
 
 255
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node getpagesize, misc
 @subheading Syntax
@@ -32,4 +36,9 @@ Return the size of the native virtual memory page size.
 @subheading Return Value
 
 4096 for the i386 and higher processors.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

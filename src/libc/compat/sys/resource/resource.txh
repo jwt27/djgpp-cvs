@@ -3,7 +3,7 @@
 
 @example
 #include <sys/time.h>
-#include <sys/resource.h
+#include <sys/resource.h>
 
 int getrusage(int who, struct rusage *rusage);
 @end example
@@ -27,6 +27,10 @@ The @var{who} parameter must be @code{RUSAGE_SELF} or
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

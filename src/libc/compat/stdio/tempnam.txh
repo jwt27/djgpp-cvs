@@ -1,0 +1,67 @@
+@c ----------------------------------------------------------------------
+
+@node tempnam, file system
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+char * tempnam(const char *tmpdir, const char *prefix);
+@end example
+
+@subheading Description
+
+This function generates a file name which can be used for a temporary
+file, and makes sure that no other file by that name exists.
+
+The caller has control on the choice of the temporary file's directory,
+and the initial letters of the file's basename.  If the argument
+@var{tmpdir} points to the name of the directory in which the temporary
+file will be created, @code{tempnam} will ensure that the generate name
+is unique @strong{in that directory}.  If the argument @var{prefix}
+points to a string, then that string will be used as the first few
+characters of the file's basename.  Due to limitations of the DOS 8.3
+file namespace, only up to two first characters in @var{prefix} will be
+used.
+
+If @var{tmpdir} is @code{NULL}, or empty, or points to a non-existent
+directory, @code{tempnam} will use a default directory.  The default
+directory is determined by testing, in sequence, the directories
+defined by the values of environment variables @code{TMPDIR},
+@code{TEMP} and @code{TMP}.  The first variable that is found to point
+to an existing directory will be used.  If none of these variables
+specify a valid directory, @code{tempnam} will use the static default
+path prefix defined by @code{P_tmpdir} on @file{<stdio.h>}, or
+@code{"c:/"}, in that order.
+
+If @var{prefix} is @code{NULL} or empty, @code{tempnam} will supply its
+own default prefix @code{"tm"}.
+
+@code{tempnam} puts the generated name into space allocated by
+@code{malloc}.  It is up to the caller to free that space when it is no
+longer needed.
+
+Note that @code{tempnam} does not actually create the file, nor does it
+ensure in any way that the file will be automatically deleted when it's
+no longer used.  It is the user's responsibility to do that.
+
+@subheading Return Value
+
+On success, @code{tempnam} returns a pointer to space (allocated with a
+call to @code{malloc}) where the file name is constructed.  If
+@code{malloc} failed to provide sufficient memory buffer, or if no valid
+directory to hold the file was found, @code{tempnam} returns a
+@code{NULL} pointer.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  #include <stdio.h>
+
+    tempnam ("c:/tmp/", "foo");
+
+@end example

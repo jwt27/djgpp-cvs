@@ -17,6 +17,10 @@ maximum of @var{max} characters.
 Zero if the strings are equal, a positive number if @var{s1} comes after
 @var{s2} in the ASCII collating sequense, else a negative number. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -27,6 +27,10 @@ struct dosdate_t @{
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -11,3 +11,8 @@ double cos(double x);
 @subheading Return Value
 
 The cosine of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

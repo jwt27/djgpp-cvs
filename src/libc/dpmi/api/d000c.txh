@@ -20,3 +20,8 @@ This function sets the selector's parameters.  @xref{__dpmi_get_descriptor}.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -25,6 +25,10 @@ indicate the error type.
 
 Currently, this function always fails.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @c -----------------------------------------------------------------------
 @node waitpid, process
 @subheading Syntax
@@ -49,4 +53,9 @@ indicate the error type.
 @subheading Bugs
 
 Currently, this function always fails.
+
+
+@subheading Portability
+
+@portability !ansi, posix
 

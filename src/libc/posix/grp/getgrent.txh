@@ -31,6 +31,10 @@ struct group @{
 
 The next structure, or @code{NULL} at the end of the list.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -59,6 +63,10 @@ struct group *fgetgrent(FILE *file);
 This function, in MS-DOS, is exactly the same as @code{getgrent}
 (@pxref{getgrent}). 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node setgrent, unix
 @subheading Syntax
@@ -79,6 +87,10 @@ from the beginning.  @xref{getgrent}.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node endgrent, unix
 @subheading Syntax
@@ -97,6 +109,10 @@ This function should be called after all calls to @code{getgrent},
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -121,6 +137,10 @@ This function returns the group entry that matches @var{gid}.
 
 The matching group, or @code{NULL} if none match.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @c ----------------------------------------------------------------------
 @node getgrnam, unix
 @subheading Syntax
@@ -139,4 +159,9 @@ This function returns the group entry for the group named @var{name}.
 @subheading Return Value
 
 The matching group, or @code{NULL} if none match.
+
+
+@subheading Portability
+
+@portability !ansi, posix
 

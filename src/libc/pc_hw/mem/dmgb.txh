@@ -26,11 +26,15 @@ obtained from @code{malloc}) where the data will go.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
 unsigned short shift_state;
-dosmemgetb(0x417, 2, &shift_state);
+_dosmemgetb(0x417, 2, &shift_state);
 if (shift_state & 0x0004)
   /* Ctrl key pressed */;
 @end example

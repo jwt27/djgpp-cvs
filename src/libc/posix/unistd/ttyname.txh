@@ -15,6 +15,10 @@ Gives the name of the terminal associated with @var{file}.
 
 Returns "con" if @var{file} is a device, else @code{NULL}.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

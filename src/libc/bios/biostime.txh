@@ -16,6 +16,10 @@ tick counter, which is the number of 18.2 Hz ticks since midnight.
 
 When reading, the number of ticks since midnight.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -17,6 +17,10 @@ This is equivalent to @code{asctime(localtime(cal))}.  @xref{asctime}.
 
 The ascii representation of the time.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @c ----------------------------------------------------------------------
 @node asctime, time
 @subheading Syntax
@@ -37,13 +41,17 @@ format:
 Sun Jan 01 12:34:56 1993\n\0
 @end example
 
-The string pointed to is in a static buffer and will be overridden with
+The string pointed to is in a static buffer and will be overwritten with
 each call to asctime.  The data should be copied if it needs to be
 preserved. 
 
 @subheading Return Value
 
 A pointer to the string.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 
@@ -87,7 +95,11 @@ struct tm @{
 
 @subheading Return Value
 
-A pointer to a static structure which is overridden with each call. 
+A pointer to a static structure which is overwritten with each call. 
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 
@@ -115,7 +127,11 @@ for the local timezone.  @xref{gmtime}.
 
 @subheading Return Value
 
-A pointer to a static structure which is overridden with each call. 
+A pointer to a static structure which is overwritten with each call. 
+
+@subheading Portability
+
+@portability ansi, posix
 
 @c ----------------------------------------------------------------------
 @node mktime, time
@@ -137,4 +153,32 @@ This function converts a time structure into the number of seconds since
 
 The resulting time, or -1 if the time in @var{tptr} cannot be described
 in that format. 
+
+@subheading Portability
+
+@portability ansi, posix
+
+@c ----------------------------------------------------------------------
+@node tzset, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+void tzset(void);
+@end example
+
+@subheading Description
+
+This function initializes @code{tzname} according to environment variable
+TZ.
+
+@subheading Return Value
+
+None.
+
+
+@subheading Portability
+
+@portability !ansi, posix
 

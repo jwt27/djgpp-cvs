@@ -32,6 +32,10 @@ struct statfs
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -15,3 +15,8 @@ Clears the floating point processor's exception flags.
 @subheading Return Value
 
 The previous status word.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -16,6 +16,10 @@ This function flushes DOS internal file buffers to disk.
 
 Returns 0 if successful or DOS error code on error (and sets @var{errno}).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

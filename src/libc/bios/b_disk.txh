@@ -115,6 +115,10 @@ Return value of AX register. The meaning of high-order byte (AH):
 0xFF  Sense operation failed
 @end example
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

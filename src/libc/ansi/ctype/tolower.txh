@@ -17,6 +17,10 @@ upper case.  @xref{toupper}.
 
 The lower case letter.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

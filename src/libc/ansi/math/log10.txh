@@ -12,3 +12,8 @@ double log10(double x);
 
 The logarithm base 10 of @var{x}.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

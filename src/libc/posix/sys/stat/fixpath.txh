@@ -13,7 +13,8 @@ This function canonicalizes the input path @var{in_path} and stores the
 result in the buffer pointed to by @var{out_path}.
 
 The path is fixed by removing consecutive and trailing slashes, making
-the path absolute if it's relative, removing "." components, collapsing
+the path absolute if it's relative by prepending the current drive
+letter and working directory, removing "." components, collapsing
 ".." components, adding a drive specifier if needed, and converting all
 slashes to '/'.  DOS-style 8+3 names of directories which are part of
 the pathname, as well as its final filename part, are returned
@@ -21,14 +22,24 @@ lower-cased in @var{out_path}, but long filenames are left intact.
 @xref{_preserve_fncase}, for more details on letter-case conversions in
 filenames.
 
+Since the returned path name can be longer than the original one, the
+caller should ensure there is enough space in the buffer pointed to by
+@var{out_path}.  Using ANSI-standard constant @code{FILENAME_MAX}
+(defined on @file{stdio.h}) or Posix-standard constant @code{PATH_MAX}
+(defined on @file{limits.h}) is recommended.
+
 @subheading Return Value
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
-char oldpath[100], newpath[100];
+char oldpath[100], newpath[FILENAME_MAX];
 scanf(oldpath);
 _fixpath(oldpath, newpath);
 printf("that really is %s\n", newpath);

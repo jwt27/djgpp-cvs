@@ -16,3 +16,8 @@ the system.
 
 The process ID.
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -13,10 +13,18 @@ This function allocates a chunk of memory from the heap large enough to
 hold any object that is @var{size} bytes in length.  This memory must be
 returned to the heap with @code{free} (@pxref{free}). 
 
+Note: this version of malloc is designed to reduce memory usage.  A
+faster but less efficient version is available in the libc sources
+(djlsr*.zip) in src/libc/ansi/stdlib/fmalloc.c
+
 @subheading Return Value
 
 A pointer to the allocated memory, or @code{NULL} if there isn't enough
 free memory to satisfy the request. 
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 
@@ -30,7 +38,7 @@ char *c = (char *)malloc(100);
 @subheading Syntax
 
 @example
-#include <stdio.h>
+#include <stdlib.h>
 
 void free(void *ptr);
 @end example
@@ -43,6 +51,10 @@ Returns the allocated memory to the heap (@pxref{malloc}).  If the
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 
@@ -74,6 +86,10 @@ this function acts just like @code{malloc} (@pxref{malloc}).
 @subheading Return Value
 
 A pointer to the memory you should now refer to. 
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

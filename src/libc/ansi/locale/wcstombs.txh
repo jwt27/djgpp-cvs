@@ -17,6 +17,10 @@ Converts a wide character string to a multibyte string.  At most
 
 The number of characters stored.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

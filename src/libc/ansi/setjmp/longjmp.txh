@@ -22,6 +22,10 @@ value will be one.
 
 This function does not return.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
@@ -29,6 +33,6 @@ jmp_buf j;
 if (setjmp(j))
   return;
 do_something();
-longjmp(j);
+longjmp(j, 1);
 @end example
 

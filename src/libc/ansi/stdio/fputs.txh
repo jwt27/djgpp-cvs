@@ -16,6 +16,10 @@ This function all the characters of @var{string} (except the trailing
 
 A nonnegative number on success, @code{EOF} on error.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

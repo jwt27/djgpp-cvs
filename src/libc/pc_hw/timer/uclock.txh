@@ -33,6 +33,10 @@ strange things happening with the clock (losing time) after using
 
 The number of tics.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

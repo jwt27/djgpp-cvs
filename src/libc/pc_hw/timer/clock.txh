@@ -17,6 +17,10 @@ zero.  The number of tics per second is CLOCKS_PER_SEC.
 
 The number of tics.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

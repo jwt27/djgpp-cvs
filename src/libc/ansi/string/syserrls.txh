@@ -12,6 +12,10 @@ extern char *sys_errlist[];
 This array contains error messages, indexed by @code{errno}, that
 describe the errors. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -32,6 +36,10 @@ extern int sys_nerr;
 
 This variable gives the number of error messages in @code{sys_errlist}
 (@pxref{sys_errlist}). 
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

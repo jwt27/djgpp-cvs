@@ -53,6 +53,10 @@ identified by environment variables (currently not supported).
 A static string naming the current locale for the given category, or
 NULL if the requested locale is not supported.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -16,3 +16,8 @@ It is just a convenient way to process the __djgpp_memory_handle_list.
 @subheading Return Value
 
 A pointer to the __djgpp_sbrk_handle associated with a particular address.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

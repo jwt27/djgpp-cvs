@@ -1,0 +1,22 @@
+@node vfscanf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int vfscanf(FILE *file, const char *format, va_list arguments);
+@end example
+
+@subheading Description
+
+This function scans formatted text from @var{file} and stores it in the
+variables pointed to by the @var{arguments}.  @xref{scanf}.
+
+@subheading Return Value
+
+The number of items successfully scanned.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

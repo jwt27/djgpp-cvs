@@ -50,3 +50,8 @@ here.
 @subheading Return Value
 
 Zero on success, else nonzero.
+
+@subheading Portability
+
+@portability !ansi, posix
+

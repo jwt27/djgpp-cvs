@@ -88,6 +88,10 @@ With the ???_READ and ???_READY arguments, the _bios_keybrd function
 returns -1 if CTRL+BREAK has been pressed and is the next keystroke
 to be read.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

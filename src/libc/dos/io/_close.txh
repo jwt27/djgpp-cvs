@@ -10,8 +10,15 @@ int _close(int fd);
 @subheading Description
 
 This is a direct connection to the MS-DOS close function call, int
-0x21, %ah = 0x3e.
+0x21, %ah = 0x3e. This function can be hooked by the
+@xref{File System Extensions}. If you don't want this, you should
+use @xref{_dos_close}.
 
 @subheading Return Value
 
 Zero if the file was closed, else nonzero. 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -10,3 +10,8 @@ int	siglongjmp(sigjmp_buf env, int val);
 @subheading Description
 
 @xref{longjmp}.
+
+@subheading Portability
+
+@portability !ansi, posix
+

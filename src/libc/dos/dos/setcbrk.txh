@@ -16,3 +16,8 @@ is zero, checking is not done.  If nonzero, checking is done.
 
 None.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -11,3 +11,8 @@ double pow(double x, double y);
 @subheading Return Value
 
 @var{x} raised to the @var{y} power.
+
+@subheading Portability
+
+@portability ansi, posix
+

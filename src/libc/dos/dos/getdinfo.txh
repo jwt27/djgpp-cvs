@@ -14,3 +14,8 @@ this function returns the device info word which is returned by DOS IOCTL
 function 0 (Int 21h/AX=4400h).  In case of error, -1 is returned and
 @var{errno} is set.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

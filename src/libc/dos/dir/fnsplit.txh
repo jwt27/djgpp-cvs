@@ -24,6 +24,10 @@ any of these isn't present, @code{fnmerge} will add them.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -45,7 +49,9 @@ int fnsplit (const char *path, char *drive, char *dir,
 @subheading Description
 
 This function decomposes a @var{path} into its components.  It is smart
-enough to know that @code{.} and @code{..} are directories.
+enough to know that @code{.} and @code{..} are directories, and that
+file names with a leading dot, like @file{.emacs}, are not all extensions.
+
 The @var{drive}, @var{dir}, @var{name} and @var{ext} arguments should
 all be passed, but some or even all of them might be @code{NULL} pointers.
 Those of them which are non-@code{NULL} should point to buffers which have
@@ -82,6 +88,10 @@ An extension was found.
 The path included @code{*} or @code{?}.
 
 @end table
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -17,6 +17,10 @@ value.
 
 @var{buffer}
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

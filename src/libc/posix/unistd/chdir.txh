@@ -18,6 +18,10 @@ directory for the current drive is changed.
 
 Zero if the new directory exists, else nonzero and @var{errno} set if error.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

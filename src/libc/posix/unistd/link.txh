@@ -17,6 +17,10 @@ file at @var{exists} to @var{new}.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

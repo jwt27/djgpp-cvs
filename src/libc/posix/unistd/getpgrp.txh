@@ -14,3 +14,8 @@ Gets the process group, which is currently the same as the pid.
 @subheading Return Value
 
 The process group.
+
+@subheading Portability
+
+@portability !ansi, posix
+

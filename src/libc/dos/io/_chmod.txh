@@ -29,9 +29,18 @@ The attribute bits are defined as follows:
 ..1.....    Archive
 xx......    Reserved (used by some network redirectors)
 @end example
+
+On platforms where the LFN API (@pxref{_use_lfn, LFN}) is available,
+@code{_chmod} calls function 0x7143 of Interrupt 21h, to support long
+file names.
  
 @subheading Return Value
  
 If the file exists, @code{_chmod()} returns its attribute byte in case
 it succeded, or -1 in case of failure.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

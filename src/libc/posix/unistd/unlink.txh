@@ -15,6 +15,10 @@ This function removes a file from the file system.
 
 Zero on success, nonzero on failure. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

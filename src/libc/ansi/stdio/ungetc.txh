@@ -16,6 +16,10 @@ push back one character at a time.
 
 The pushed-back character, or @code{EOF} on error.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

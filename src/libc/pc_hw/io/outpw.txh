@@ -10,3 +10,8 @@ void outpw(unsigned short _port, unsigned short _data);
 @subheading Description
 
 Calls @ref{outportw}. Provided only for compatibility.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

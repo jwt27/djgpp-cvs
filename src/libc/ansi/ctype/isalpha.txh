@@ -16,3 +16,8 @@ Tells if @var{c} is a letter.
 
 Nonzero if @var{c} is a letter, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

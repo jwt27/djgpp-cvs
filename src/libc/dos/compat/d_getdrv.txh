@@ -1,5 +1,4 @@
 @node _dos_getdrive, dos
-@heading @code{_dos_getdrive}
 @subheading Syntax
 
 @example
@@ -18,6 +17,10 @@ into @var{p_drive} (1=A:, 2=B:, etc.).
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

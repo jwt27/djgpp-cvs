@@ -35,8 +35,9 @@ characters to use in the conversion.
 @item
 
 An optional conversion qualifier, which may be @code{h} to specify
-@code{short}, @code{l} to specify long ints, or @code{L} to specify
-long doubles. Long long type can be specified by @code{L} or @code{ll}.
+@code{short}, @code{l} to specify doubles or long ints or, or @code{L}
+to specify long doubles. Long long type can be specified by @code{L}
+or @code{ll}.
 
 @item
 
@@ -119,6 +120,10 @@ the actual conversions.
 
 The number of items successfully matched and assigned. If input ends
 before first item is assigned, EOF is returned.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

@@ -14,7 +14,12 @@ to @var{buffer}.
 
 @subheading Return Value
 
-The number of items of size @var{size} read, or -1 on error.
+The number of items of size @var{size} read, or less if there was an
+error.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

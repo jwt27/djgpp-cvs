@@ -11,3 +11,8 @@ double ceil(double x);
 @subheading Return Value
 
 The smallest integer value greater than or equal to @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

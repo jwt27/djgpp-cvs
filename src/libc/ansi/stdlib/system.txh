@@ -9,8 +9,16 @@ int system(const char *cmd);
 
 @subheading Description
 
-This function runs the command or program specified by @var{cmd}.  When
-calling programs compiled by DJGPP this function will not use
+This function runs the command or program specified by @var{cmd}.  If
+@var{cmd} is a null pointer, @code{system} returns non-zero only if a
+shell is available.  If @var{cmd} is an empty string, the command
+processor pointed to by @samp{SHELL} or @samp{COMSPEC} variables in the
+environment will be invoked interactively; type @kbd{exit @key{RET}} to
+return to the program which called @code{system}.  (Note that some other
+DOS compilers treat a null pointer like an empty command line, contrary
+to ANSI C requirements.)
+
+When calling programs compiled by DJGPP this function will not use
 @file{command.com} and so will not be subject to its 126 character limit
 on command lines.
 
@@ -42,9 +50,9 @@ that order) and invokes the program that they point to.  If the shell
 thus found is one of the DOS shells (@file{command.com}, @file{4DOS} or
 @file{NDOS}), they are called with the @samp{/c} switch prepended to the
 command line.  Otherwise, @code{system} assumes that the shell is a
-Unix-style shell and invokes it with a @samp{-c} switch, passing the
-entire command line via a response file (this should work with any shell
-compiled with DJGPP, and with the @code{ms_sh} shell).
+Unix-style shell and passes it the entire command line via a temporary
+file, invoking the shell with a single argument which is the name of
+that file.
 
 Shell scripts and batch files are invoked by calling either the program
 whose name appears on the first line (like in @w{@samp{#! /bin/sh}}), or
@@ -143,15 +151,27 @@ specified when the program was compiled.
 
 @subheading Return Value
 
-The exit status of the child process in the lower 8 bits of the return
-value; bits 8-17 of the return value will hold @code{SIGINT} or
-@code{SIGABRT} if the child process was aborted by @kbd{Ctrl-C} or
+If @var{cmd} is a null pointer, @code{system} returns non-zero if a
+shell is available.  The actual test for the existence of an executable
+file pointed to by @samp{SHELL} or @samp{COMSPEC} is only performed if
+the shell is to be invoked to process the entire command line; if most
+of the work is to be done by @code{system} itself, passing a null
+pointer always yields a non-zero return value, since the internal
+emulation is always ``available''.
+
+Otherwise, the return value is the exit status of the child process in
+its lower 8 bits; bits 8-17 of the return value will hold @code{SIGINT}
+or @code{SIGABRT} if the child process was aborted by @kbd{Ctrl-C} or
 Critical Device Error, respectively; otherwise it will be zero.  If the
 child couldn't be run, @code{system} will return -1 and set @code{errno}
 to an appropriate value.  Note that if @file{COMMAND.COM} was used to
 run the child, it will always return a 0 status, even if the command
 didn't run successfully.  However, @code{system} only calls
 @file{COMMAND.COM} when it needs to run commands internal to it.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

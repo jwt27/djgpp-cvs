@@ -18,6 +18,10 @@ Gets the current disk (0=A).
 
 The current disk number.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -15,3 +15,8 @@ This function takes the absolute value of @var{x}.  @xref{abs}.
 
 |@var{x}|
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -11,3 +11,8 @@ double cosh(double x);
 @subheading Return Value
 
 The hyperbolic cosine of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

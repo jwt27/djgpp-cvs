@@ -16,5 +16,9 @@ Tells if @var{c} is any letter or digit.
 
 Nonzero if @var{c} is a letter or digit, else zero.
 
-@subheading Example
+
+
+@subheading Portability
+
+@portability ansi, posix
 

@@ -19,6 +19,10 @@ internal shift state is reset.
 
 The number of characters used by the multibyte sequence.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -21,3 +21,8 @@ This function gets the address of the current protected mode interrupt
 @subheading Return Value
 
 Zero.  This always works.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

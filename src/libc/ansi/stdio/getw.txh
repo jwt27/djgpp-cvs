@@ -19,6 +19,10 @@ The value read, or @code{EOF} for end-of-file or error.  Since
 @code{EOF} is a valid integer, you should use @code{feof} or
 @code{ferror} to detect this situation. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

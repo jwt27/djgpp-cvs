@@ -16,3 +16,8 @@ uses for I/O.
 
 The file descriptor number.
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

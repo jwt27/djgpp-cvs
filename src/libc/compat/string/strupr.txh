@@ -16,6 +16,10 @@ upper case.
 
 @var{string}
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -18,3 +18,8 @@ DPMI function AX = 0x0902
 @subheading Return Value
 
 This function returns the current interrupt flag (1=enabled).
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -16,3 +16,8 @@ This finds the next file in the search started by @code{findfirst}.
 
 Zero if there was a match, else nonzero.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

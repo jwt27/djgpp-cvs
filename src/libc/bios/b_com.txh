@@ -102,6 +102,10 @@ Bit     Meaning if Set
 0       Change in clear-to-send status
 @end example
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

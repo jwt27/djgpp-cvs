@@ -15,6 +15,10 @@ Tells if the file descriptor refers to a terminal device or not.
 
 Nonzero if @var{fd} is a terminal device, zero  otherwise.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -151,6 +151,10 @@ A single percent symbol is printed.
 
 The number of characters written.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

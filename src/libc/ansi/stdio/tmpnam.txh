@@ -34,10 +34,14 @@ is not a null pointer, it is assumed to point to an array of at least
 @code{L_tmpnam} characters, and @code{tmpnam} writes its result in that
 array and returns a pointer to it as its value.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
 char buf[L_tmpnam];
-char *s = tmpname(buf);
+char *s = tmpnam(buf);
 @end example
 

@@ -177,3 +177,8 @@ function call.  The value might be one of the following:
 
 @xref{perror}.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -153,6 +153,10 @@ A percent symbol (@code{%})
 
 The number of characters stored.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

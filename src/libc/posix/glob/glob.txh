@@ -172,6 +172,10 @@ the @code{_CRT0_FLAG_PRESERVE_FILENAME_CASE} bit in the
 suppresses any letter-case conversions in filenames and forces
 case-sensitive filename matching.  @xref{_preserve_fncase}.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

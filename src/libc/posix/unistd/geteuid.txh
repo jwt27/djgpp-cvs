@@ -15,3 +15,8 @@ Gets the effective UID.
 
 42
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -16,6 +16,10 @@ includes the drive specifier.
 
 @var{buffer} is returned.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

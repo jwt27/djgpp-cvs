@@ -21,6 +21,10 @@ A pointer to a static buffer which holds the user's response.  The buffer
 will be overwritten by each new call.  In case of any error in the lower
 I/O routines, a NULL pointer will be returned.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -235,7 +235,15 @@ select(int nfds,
       gettimeofday (&now, 0);
       if (now.tv_sec > then.tv_sec
 	  || (now.tv_sec == then.tv_sec && now.tv_usec >= then.tv_usec))
+      {
+	if (readfds)
+	  FD_ZERO (readfds);
+	if (writefds)
+	  FD_ZERO (writefds);
+	if (exceptfds)
+	  FD_ZERO (exceptfds);
 	return 0;
+      }
     }
 
     /* We are busy-waiting, so give other processes a chance to run.  */

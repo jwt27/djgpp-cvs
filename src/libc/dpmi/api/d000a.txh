@@ -20,3 +20,8 @@ Create a new selector with the same parameters as the given one.
 @subheading Return Value
 
 -1 on error, else the new selector.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

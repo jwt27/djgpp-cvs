@@ -16,3 +16,8 @@ Tells if @var{c} is an ASCII character (0x00 to 0x7f).
 
 Nonzero if @var{c} is ASCII, else zero.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -21,6 +21,10 @@ If longjmp is used to restore the state, it will return whatever value
 was passed to longjmp, except if zero is passed to longjmp it will
 return one. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
@@ -28,6 +32,6 @@ jmp_buf j;
 if (setjmp(j))
   return;
 do_something();
-longjmp(j);
+longjmp(j, 1);
 @end example
 

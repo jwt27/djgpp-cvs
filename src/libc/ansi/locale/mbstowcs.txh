@@ -17,6 +17,10 @@ will be no more than @var{n} wide characters.
 
 The number of wide characters stored.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

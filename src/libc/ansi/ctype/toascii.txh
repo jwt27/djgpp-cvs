@@ -17,6 +17,10 @@ ASCII character.
 
 The ASCII character.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -19,7 +19,7 @@ protected mode selectors that can be obtained by the @code{_my_ds} and
 @code{_dos_ds}) functions (@ref{_my_ds}, @ref{_go32_info_block}).
 The offsets are linear offsets.  If the selector is for the program's
 data area, this offset corresponds to the address of a buffer (like
-@code{(int)&something}).  If the selector is for the conventional
+@code{(unsigned)&something}).  If the selector is for the conventional
 memory area, the offset is the physical address of the memory, which
 can be computed from a traditional segment/offset pair as
 @code{segment}*16+@code{offset}.  For example, the color text screen
@@ -28,6 +28,10 @@ buffer is at offset 0xb8000.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -38,7 +42,7 @@ movedata(_dos_ds, 0xb8000 + ScreenCols()*2,
          _dos_ds, 0xb8000,
          ScreenCols() * (ScreenRows()-1) * 2);
 /* fill last row */
-movedata(_my_ds(), (int)blank_row_buf,
+movedata(_my_ds(), (unsigned)blank_row_buf,
          _dos_ds, 0xb8000 + ScreenCols()*(ScreenRows()-1)*2,
           ScreenCols() * 2);
 @end example

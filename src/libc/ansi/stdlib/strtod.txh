@@ -9,13 +9,23 @@ double strtod(const char *s, char **endp);
 
 @subheading Description
 
-This function converts as many characters of @var{s} that look like a
-floating point number into one, and sets @var{*endp} to point to the
-first unused character. 
+This function converts as many characters of @var{s} as look like a
+floating point number into that number.  If @var{endp} is not a null
+pointer, @code{*endp} is set to point to the first unconverted
+character.
 
 @subheading Return Value
 
-The value the string represented. 
+The value the represented by @var{s}.
+
+If a number represented by @var{s} doesn't fit into the range of values
+representable by the type @code{double}, the function returns either
+@code{-HUGE_VAL} (if @var{s} begins with the character @code{-}) or
+@code{+HUGE_VAL}, and sets @code{errno} to @code{ERANGE}.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

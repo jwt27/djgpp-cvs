@@ -21,3 +21,8 @@ This function sets the base address of the @var{_selector} to
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

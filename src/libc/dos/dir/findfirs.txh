@@ -19,7 +19,7 @@ state of the search, and @var{attrib} is a combination of the following:
 
 @item FA_RDONLY
 
-Include read-only files in the search
+Include read-only files in the search (Ignored.)
 
 @item FA_HIDDEN
 
@@ -39,25 +39,42 @@ Include subdirectories in the search
 
 @item FA_ARCH
 
-Include modified files in the search
+Include modified files in the search (Ignored.)
 
 @end table
 
-Any file that doesn't have any flag bits that aren't specified is
-selected for the search.  Thus, if you specified @code{FA_DIREC} and
-@code{FA_LABEL}, you would get all subdirectories, the volume label, and
-any file that is neither read-only or modified. 
+If a file has flag bits that are not specified in the @var{attrib}
+parameter, the file will be excluded from the results.  Thus, if you
+specified @code{FA_DIREC} and @code{FA_LABEL}, subdirectories and the
+volume label will be included in the results.  Hidden and system files
+will be excluded.
 
-The results of the search are stored in @var{ffblk}:
+Since @code{findfirst} calls DOS function 4eh, it is not possible to
+exclude read-only files or archive files from the results.  Even if
+the FA_ARCH and FA_RDONLY bits are not specified in the attrib
+parameter, the results will include any read-only and archive files in
+the directory searched.   
+
+This function supports long file names.
+
+The results of the search are stored in @var{ffblk}, which is extended
+when the LFN API (@pxref{_use_lfn, LFN}) is supported.  Fields marked
+LFN are only valid if the @code{lfn_magic} member is set to "LFN32".
 
 @example
 struct ffblk @{
-  char ff_reserved[21];     /* used to hold the state of the search */
+  char lfn_magic[6];	    /* LFN: the magic "LFN32" signature */
+  short lfn_handle;	    /* LFN: the handle used by findfirst/findnext */
+  unsigned short lfn_ctime; /* LFN: file creation time */
+  unsigned short lfn_cdate; /* LFN: file creation date */
+  unsigned short lfn_atime; /* LFN: file last access time (usually 0) */
+  unsigned short lfn_adate; /* LFN: file last access date */
+  char ff_reserved[5];      /* used to hold the state of the search */
   unsigned char ff_attrib;  /* actual attributes of the file found */
   unsigned short ff_ftime;  /* hours:5, minutes:6, (seconds/2):5 */
   unsigned short ff_fdate;  /* (year-1980):7, month:4, day:5 */
   unsigned long ff_fsize;   /* size of file */
-  char ff_name[16];         /* name of file as ASCIIZ string */
+  char ff_name[260];        /* name of file as ASCIIZ string */
 @}
 @end example
 
@@ -65,11 +82,15 @@ struct ffblk @{
 
 Zero if a match is found, nonzero if none found.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
 struct ffblk f;
-int done = findfirst("*.exe", &f, FA_ARCH|FA_RDONLY);
+int done = findfirst("*.exe", &f, FA_HIDDEN | FA_SYSTEM);
 while (!done)
 @{
   printf("%10u %2u:%02u:%02u %2u/%02u/%4u %s\n",

@@ -16,6 +16,10 @@ a future call to @code{fseek}.
 
 The file position, or -1 on error. 
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

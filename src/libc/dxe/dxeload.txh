@@ -24,3 +24,8 @@ to a structure or a function.
 @subheading Return Value
 
 0 on failure, the address of the loaded symbol on success.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

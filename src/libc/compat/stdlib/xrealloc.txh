@@ -17,6 +17,10 @@ can also properly handle @var{ptr} being @code{NULL}.
 
 A pointer to a possibly new block.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

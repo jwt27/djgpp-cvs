@@ -99,6 +99,10 @@ the listed values.  If the program is running with an extender that
 provides some other mode (say, a newly released extender) then the
 program should be able to handle that case gracefully. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

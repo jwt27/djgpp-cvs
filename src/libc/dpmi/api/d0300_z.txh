@@ -37,3 +37,8 @@ These hold the values stored in the appropriate field in the
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

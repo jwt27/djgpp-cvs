@@ -16,3 +16,8 @@ only.
 @subheading Return Value
 
 The new nice value.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

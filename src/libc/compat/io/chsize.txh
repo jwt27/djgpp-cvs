@@ -14,3 +14,8 @@ Just calls ftruncate (@pxref{ftruncate}).
 @subheading Return Value
 
 Zero on success, -1 on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -19,3 +19,8 @@ only.
 Zero on success, nonzero on failure.
 
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

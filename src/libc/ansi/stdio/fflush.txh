@@ -9,13 +9,30 @@ int fflush(FILE *file);
 
 @subheading Description
 
-This function causes any unwritten buffered data to be written out to
-the given @var{file}.  This is useful in cases where the output is line
-buffered and you want to write a partial line. 
+If @var{file} is not a @code{NULL} pointer, this function causes any
+unwritten buffered data to be written out to the given @var{file}.  This
+is useful in cases where the output is line buffered and you want to
+write a partial line.
+
+If @var{file} is a @code{NULL} pointer, @code{fflush} writes any
+buffered output to all files opened for output.
+
+Note that @code{fflush} has no effect for streams opened for reading
+only.  Also note that the operating system can further buffer/cache
+writes to disk files; a call to @code{fsync} (@pxref{fsync}) or
+@code{sync} (@pxref{sync}) is typically required to actually deliver
+data to the file(s).
 
 @subheading Return Value
 
-Zero on success, -1 on error.
+Zero on success, -1 on error.  When called with a @code{NULL} pointer,
+-1 will be returned if an error happened while flushing some of the
+streams (but @code{fflush} will still try to flush all the rest before
+it returns).
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

@@ -15,6 +15,10 @@ The open file associated with @var{fd} is closed.
 
 Zero if the file was closed, nonzero if @var{fd} was invalid or already closed.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

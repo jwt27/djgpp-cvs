@@ -16,6 +16,10 @@ stores it in the buffer pointed to by @var{rlimitp}.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

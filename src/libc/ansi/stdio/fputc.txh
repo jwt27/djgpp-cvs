@@ -15,6 +15,10 @@ This function writes the given @var{character} to the given @code{file}.
 
 The given character [0..255] or @code{EOF}.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

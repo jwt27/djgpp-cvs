@@ -26,10 +26,14 @@ memory obtained from @code{malloc}) where the data will come from.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
 unsigned short save_screen[25][80];
-dosmemputb(save_screen, 0xb8000, 80*2*25);
+_dosmemputb(save_screen, 0xb8000, 80*2*25);
 @end example
 

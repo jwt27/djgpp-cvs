@@ -49,16 +49,27 @@ Archive file
 
 @xref{_dos_findnext}.
 
+This function does not support long filenames, even on systems where the
+LFN API (@pxref{_use_lfn, LFN}) is available.  For LFN-aware functions
+with similar functionality see @ref{findfirst}, and @ref{findnext}.
+Also see @ref{opendir}, and @ref{readdir}, which are Posix-standard.
+
 @subheading Return Value
 
 Zero if a match is found, DOS error code if not found (and sets @var{errno}).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
+#include <dos.h>
+
 struct find_t f;
 
-if ( !_dos_findfirst("*.DAT", &result, _A_ARCH | _A_RDONLY) )
+if ( !_dos_findfirst("*.DAT", &f, _A_ARCH | _A_RDONLY) )
 @{
   do
   @{
@@ -70,7 +81,7 @@ if ( !_dos_findfirst("*.DAT", &result, _A_ARCH | _A_RDONLY) )
            (f.wr_time & 0x1f) * 2,
            (f.wr_date >>  5) & 0x0f,
            (f.wr_date & 0x1f),
-           ((f.wr_date >> 9) & 0x7f) + 1980,
+           ((f.wr_date >> 9) & 0x7f) + 1980);
   @} while( !_dos_findnext(&f) );
 @}
 @end example

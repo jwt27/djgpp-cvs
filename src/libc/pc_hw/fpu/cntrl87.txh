@@ -10,8 +10,13 @@ unsigned int _control87(unsigned int newcw, unsigned int mask);
 
 @subheading Description
 
-Sets or resets bits in the FPU's control register.  The bits are
-defined by macros in float.h, and by this table:
+This function sets and retrieves the FPU's @dfn{control word}.
+
+The control word is a special 16-bit register maintained by the math
+coprocessor.  By setting and clearing bit fields in the control word,
+you can exercise control of certain aspects of coprocessor operation.
+The individual bits of the x87 control word are defined by macros in
+float.h, and shown in this table:
 
 @example
 ---- ---- --XX XXXX = MCW_EM - exception masks (1=handle exception internally, 0=fault)
@@ -35,6 +40,65 @@ defined by macros in float.h, and by this table:
 ---1 ---- ---- ---- = IC_PROJECTIVE - -Inf == +Inf
 @end example
 
+@code{_control87} uses the value of @var{newcw} and @var{mask} variables
+together to determine which bits of the FPU's control word should be
+set, and to what values.  For each bit in @var{mask} that is set (equals
+to 1), the corresponding bit in @var{newcw} specifies the new value of
+the same bit in the FPU's control word, which @code{_control87} should
+set.  Bits which correspond to reset (zero) bits in @var{mask} are not
+changed in the FPU's control word.  Thus, using a zero value for
+@var{mask} retrieves the current value of the control word without
+changing it.
+
+The exception bits @code{MCW_EM} (the low-order 6 bits) of the control
+word define the exception @emph{mask}.  That is, if a certain bit is
+set, the corresponding exception will be masked, i.e., it will not
+generate an FP exception (which normally causes signal @code{SIGFPE} to
+be delivered).  A masked exception will be handled internally by the
+coprocessor.  In general, that means that it will generate special
+results, such as @dfn{NaN}, Not-a-Number (e.g., when you attempt to
+compute a square root of a negative number), denormalized result (in
+case of underflow), or infinity (e.g., in the case of division by zero,
+or when the result overflows).
+
+By default, DJGPP startup code masks all FP exceptions.
+
+The precision-control field @code{MCW_PC} (bits 8 and 9) controls the
+internal precision of the coprocessor by selecting the number of
+precision bits in the mantissa of the FP numbers.  The values
+@code{PC_24}, @code{PC_53}, and @code{PC_64} set the precision to 24,
+53, and 64-bit mantissa, respectively.  This feature of the coprocessor
+is for compatibility with the @dfn{IEEE 745 standard} and only affect
+the @code{FADD}, @code{FSUB} @code{FSUBR}, @code{FMUL}, @code{FDIV},
+@code{FDIVR}, and @code{FSQRT} instructions.  Lowering the precision
+will @strong{not} decrease the execution time of FP instructions.
+
+The @code{MCW_PC} field is set to use the full-precision 64-bit
+mantissa by the DJGPP startup code.
+
+The rounding-control field @code{MCW_RC} (bits 10 and 11) controls the
+type (round or chop) and direction (-Inf or +Inf) of the rounding.  It
+only affects arithmetic instructions.  Set to round-to-nearest state by
+the DJGPP startup code.
+
+The infinity-control bit @code{MCW_IC} has no effect on 80387 and later
+coprocessors.
+
 @subheading Return Value
 
 The previous control word.
+
+(Note that this is different from what @code{_control87} from the
+Borland C library which returns the @emph{new} control word.)
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  /* mask all exceptions, except invalid operation */
+  _control87 (0x033e, 0xffff);
+@end example
+

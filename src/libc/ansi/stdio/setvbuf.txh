@@ -31,9 +31,13 @@ of at least size @var{size} and will be used as the buffer.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
-setbuf(stderr, NULL, _IOLBF, 1000);
+setvbuf(stderr, NULL, _IOLBF, 1000);
 @end example
 

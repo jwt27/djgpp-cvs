@@ -1,0 +1,136 @@
+@c ----------------------------------------------------------------------
+@node libm, math
+@subheading Syntax
+
+@example
+#include <libm/math.h>
+
+enum fdversion @{fdlibm_ieee = -1, fdlibm_svid, fdlibm_xopen, fdlibm_posix@};
+
+#define _LIB_VERSION_TYPE enum fdversion
+#define _LIB_VERSION _fdlib_version  
+
+extern  _LIB_VERSION_TYPE  _LIB_VERSION;
+
+#define _IEEE_  fdlibm_ieee
+#define _SVID_  fdlibm_svid
+#define _XOPEN_ fdlibm_xopen
+#define _POSIX_ fdlibm_posix
+
+_LIB_VERSION_TYPE _LIB_VERSION = _IEEE_;
+@end example
+
+@subheading Description
+
+The alternate math library, @file{libm.a}, provides more accurate
+versions of mathematical functions than those included in the default
+@file{libc.a} library.  It also allows to create programs with
+well-defined and standard-compliant behavior when numerical errors
+occur.  In contrast, the functions in the default @file{libc.a} will
+not set @code{errno} in such cases, and will not call @code{matherr}.
+
+To use the alternate math library with your program, you need to do the
+following:
+
+@itemize @bullet
+
+@item
+Include the header @code{<libm/math.h>}.  Alternatively, you can include
+@code{<math.h>} as usual and compile with @samp{-D_USE_LIBM_MATH_H}
+option to @code{gcc}, which will cause it to use @file{libm/math.h}
+instead of the default @file{math.h}.  (The second possibility leaves
+the source ANSI-compliant.)
+
+@item
+Set the global variable @code{_fdlib_version} to a value other than the
+default @code{_IEEE_}.  The possible values are listed and explained
+below.
+
+@item
+At the beginning of your @code{main} function, set the FPU to a
+predictable state by calling @code{_clear87} (@pxref{_clear87}) and
+@code{_fpreset} (@pxref{_fpreset}) library functions.  (Another
+possibility is to make these calls in a function declared with
+@code{__attribute__((constructor))}, so it will be called before
+@code{main}.)
+
+@item
+Link your program with the @file{libm.a} library, e.g. by specifying
+@samp{-lm} on the link command line.
+
+@end itemize
+
+The functions in @file{libm.a} can emulate different standards.  You can
+select to which standard your program will comply by setting the global
+variable @code{_fdlib_version} (or the macro @code{_LIB_VERSION} which
+evaluates to it) to one of the values below.  This will only effect the
+behavior of the math functions when an error is signalled by the FPU.
+
+@table @code
+
+@item _IEEE_
+The default value, specifies IEEE-compliant operation.  In case of an
+error, this version will immediately return whatever result is computed
+by the FPU, and will @strong{not} set @code{errno}.  This gives the
+fastest code.
+
+@item _POSIX_
+In case of an error, this version will set @code{errno} to the
+appropriate value (@code{EDOM} or @code{ERANGE}) and return to the
+caller, without calling the @code{matherr} function (@pxref{matherr}).
+This version should be used for maximum POSIX- and ANSI-compliance.
+
+@item _SVID_
+This version is compliant with the @dfn{System V Interface Definition}.
+This is the slowest version.  In case of an error, it calls the
+@code{matherr} function (@pxref{matherr}), which can be customized to
+the specific application needs.  If @code{matherr} returns zero, a
+message is printed to the standard error stream which states the name of
+the function that generated the error and the error type, and
+@code{errno} is set.  If @code{matherr} returns non-zero, there will be
+no message and @code{errno} will be left unaltered.
+
+@item _XOPEN_
+Complies to the X/Open specifications.  It behaves exactly like
+@code{_SVID_}, but it never prints an error message, even if
+@code{matherr} returns zero.
+
+@end table
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+
+/*  Testing errno == EDOM after sqrt(-1).
+
+    !!!  MUST compile with -lm  !!!  */
+
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <libm/math.h>	/* or #define _USE_LIBM_MATH_H and #include <math.h> */
+#include <float.h>
+
+/* Setting _LIB_VERSION to anything but _IEEE_ will turn on errno handling. */
+_LIB_VERSION_TYPE _LIB_VERSION = _POSIX_;
+
+int main (void)
+@{
+  /* Reset the FPU (possible previous FP problems).  */
+  _clear87 ();
+  _fpreset ();
+
+  /* Run the test.  */
+  errno = 0;
+  assert(errno == 0);
+  sqrt(-1.0);
+  assert(errno == EDOM); /* this line should NOT cause the assertion to fail */
+
+  return(0);
+@}
+
+@end example

@@ -1,0 +1,23 @@
+@node sigdelset, signal
+@subheading Syntax
+
+@example
+#include <signal.h>
+
+int sigdelset (sigset_t *set, int signo)
+@end example
+
+@subheading Description
+
+This function removess the individual signal specified by @var{signo}
+from the set of signals pointed to by @var{set}.
+
+@subheading Return Value
+
+0 upon success, -1 if @var{set} is a NULL pointer, or if @var{signo} is
+specifies an unknown signal.
+
+@subheading Portability
+
+@portability !ansi, posix
+

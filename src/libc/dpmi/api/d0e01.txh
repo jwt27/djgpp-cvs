@@ -18,3 +18,8 @@ DPMI function AX = 0x0e01 (DPMI 1.0 only)
 @subheading Return Value
 
 -1 on errors, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

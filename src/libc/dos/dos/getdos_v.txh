@@ -36,6 +36,10 @@ if @var{true_version} is non-zero) as a 16-bit number: the major part of
 the version in the upper 8 bits, the minor part in the lower 8 bits.  For
 instance, DOS version 6.20 will be returned as 0x0614.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

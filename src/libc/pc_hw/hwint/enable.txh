@@ -18,6 +18,10 @@ This function enables interrupts.
 Returns nonzero if the interrupts were already enabled, zero if they
 had been disabled before this call.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

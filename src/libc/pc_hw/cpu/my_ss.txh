@@ -16,3 +16,8 @@ vectors and such.
 
 @code{SS}
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -19,6 +19,10 @@ address in the @code{rm_segment} and @code{rm_offset} fields in
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_allocate_real_mode_callback_iret}
@@ -44,6 +48,10 @@ the address in the @code{rm_segment} and @code{rm_offset} fields in
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_allocate_real_mode_callback_iret}

@@ -19,6 +19,10 @@ sets *@var{stringp} to the next spot to check, or @code{NULL}.
 
 The next token, or NULL.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

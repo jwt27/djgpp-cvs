@@ -15,6 +15,10 @@ Returns the number of clock tics (18.2 per second) since midnight.
 
 The number of tics.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

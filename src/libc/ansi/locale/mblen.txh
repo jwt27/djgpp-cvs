@@ -20,6 +20,10 @@ If @var{s} is @code{NULL}, the internal shift state is reset.
 
 The number of characters that comprise the next multibyte character.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

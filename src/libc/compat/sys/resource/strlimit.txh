@@ -10,11 +10,16 @@ int setrlimit (int rltype, const struct rlimit *rlimitp);
 @subheading Description
 
 This function sets new limit pointed to by @var{rlimitp} on the
-resourece limit specified by @var{rltype}.  Note that currently it
-always fail.
+resource limit specified by @var{rltype}.  Note that currently it
+always fails.
 
 @subheading Return Value
 
 Zero on success, nonzero on failure.
 
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

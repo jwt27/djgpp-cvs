@@ -17,6 +17,10 @@ must be at least @code{MB_LEN_MAX} bytes long.
 
 The number of characters stored.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

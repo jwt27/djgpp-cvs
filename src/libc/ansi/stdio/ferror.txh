@@ -16,6 +16,10 @@ encountered an error or not.  @xref{clearerr}.
 
 Nonzero for an error, zero otherwize.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

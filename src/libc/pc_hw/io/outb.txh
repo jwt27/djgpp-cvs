@@ -10,3 +10,8 @@ void outb(unsigned short _port, unsigned char _data);
 @subheading Description
 
 Calls @ref{outportb}. Provided only for compatibility.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -16,6 +16,10 @@ system.
 
 The amount in bytes.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_remaining_virtual_memory, dpmi
 @subheading Syntax
@@ -34,4 +38,9 @@ system.
 @subheading Return Value
 
 The amount in bytes.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

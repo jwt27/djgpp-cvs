@@ -36,9 +36,13 @@ Bits  Meaning
 
 The equipment word.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
-if ( _bios_equip() & 0xc000 )
+if ( _bios_equiplist() & 0xc000 )
   do_printing();
 @end example

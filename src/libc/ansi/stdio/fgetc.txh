@@ -15,6 +15,10 @@ Returns the next character in the given @var{file} as an unsigned char.
 
 The given char (value 0..255) or @code{EOF} at end-of-file.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

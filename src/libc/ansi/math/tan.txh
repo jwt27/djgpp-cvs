@@ -11,3 +11,8 @@ double tan(double x);
 @subheading Return Value
 
 The tangent of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

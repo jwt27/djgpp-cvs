@@ -20,3 +20,8 @@ The fractional portion.
 
 
 
+
+@subheading Portability
+
+@portability ansi, posix
+

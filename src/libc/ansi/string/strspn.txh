@@ -18,10 +18,14 @@ string if nothing else.
 
 The index of the found character.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
-int i = strcspn(entry, " \t\b");
+int i = strspn(entry, " \t\b");
 if (entry[i])
   do_something();
 @end example

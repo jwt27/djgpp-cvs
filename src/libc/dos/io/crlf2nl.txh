@@ -2,6 +2,8 @@
 @subheading Syntax
 
 @example
+#include <io.h>
+
 size_t crlf2nl(char *buf, ssize_t len);
 @end example
 
@@ -12,3 +14,8 @@ This function removes Ctrl-M characters from the given @var{buf}.
 @subheading Return Value
 
 The number of characters remaining in the buffer are returned.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

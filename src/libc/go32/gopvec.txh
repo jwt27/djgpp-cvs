@@ -21,6 +21,10 @@ a vector.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_set_protected_mode_interrupt_vector}
@@ -72,6 +76,10 @@ You must set the pm_selector field of @var{info}.  Use
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -17,6 +17,10 @@ Note that the @code{NULL} character counts, so if you pass zero as
 
 A pointer to the character, or @code{NULL} if it wasn't found.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

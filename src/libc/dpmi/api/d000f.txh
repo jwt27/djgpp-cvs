@@ -22,3 +22,8 @@ everything before calling.
 @subheading Return Value
 
 Returns _count if successful, the negative of # descriptors set if failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

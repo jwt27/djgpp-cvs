@@ -18,6 +18,10 @@ string if nothing else.
 
 The index of the found character.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

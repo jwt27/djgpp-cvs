@@ -1,7 +1,31 @@
 @node sync, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int sync(void);
+@end example
 
 @subheading Description
 
-This function is provided only to assist in porting from Unix.  It
-always returns zero.
+Intended to assist porting Unix programs.  Under Unix, @code{sync}
+flushes all caches of previously written data.  In this implementation,
+@code{sync} calls @code{fsync} on every open file.  @xref{fsync}  It
+also calls @xref{_flush_disk_cache} to try to force cached data to the
+disk.
+
+@subheading Return Value
+
+Always returns 0.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+sync();
+@end example
 

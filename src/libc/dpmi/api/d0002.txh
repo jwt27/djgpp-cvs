@@ -4,7 +4,7 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_segment_to_descriptor
+int __dpmi_segment_to_descriptor(int _segment);
 @end example
 
 @subheading Description
@@ -22,6 +22,10 @@ resource.
 @subheading Return Value
 
 -1 on error, else the selector.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

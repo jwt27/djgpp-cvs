@@ -29,3 +29,8 @@ with selector values, and will contain the parameters on return:
 @subheading Return Value
 
 Returns _count if successful, the negative of # descriptors copied if failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

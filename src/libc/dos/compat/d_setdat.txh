@@ -29,6 +29,10 @@ struct dosdate_t @{
 
 Returns 0 if successful and non-zero on error (and sets @var{errno}=EINVAL).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

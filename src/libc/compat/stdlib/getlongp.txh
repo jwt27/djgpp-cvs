@@ -18,8 +18,12 @@ cause the calling program to @code{exit(1)}.
 
 @subheading Return Value
   
-Zero if successfull, -1 on error (and @var{errno} is set to and
-appropriate value.
+Zero if successful, -1 on error (and @var{errno} is set to an
+appropriate value).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -13,3 +13,8 @@ double hypot(double x, double y);
 The length of a hypotenuse of a right triangle whose shorter sides are
 @var{x} and @var{y}.  In other words, the distance between (0,0) and
 (@var{x},@var{y}).
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -16,6 +16,10 @@ newline character.
 
 Nonnegative for success, or @code{EOF} on error.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

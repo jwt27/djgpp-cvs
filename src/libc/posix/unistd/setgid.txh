@@ -1,0 +1,23 @@
+@node setgid, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int setgid(gid_t gid);
+@end example
+
+@subheading Description
+
+This function is simulated, since MS-DOS does not support group IDs.
+
+@subheading Return Value
+
+If @var{gid} is equal to that returned by @pxref{getgid}, returns zero.
+Otherwise, returns -1 and sets @code{errno} to EPERM.
+
+
+@subheading Portability
+
+@portability !ansi, posix
+

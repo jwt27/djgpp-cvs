@@ -26,6 +26,10 @@ interrupts (like 0x1b - @kbd{Ctrl-Break} hit).
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -33,7 +37,7 @@ _go32_dpmi_registers regs;
 
 my_handler(_go32_dpmi_registers *r)
 @{
-  r.d.eax = 4;
+  r->d.eax = 4;
 @}
 
 setup()
@@ -78,6 +82,10 @@ as the callback for the packet driver receiver.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_allocate_real_mode_callback_iret}
@@ -104,6 +112,10 @@ This function frees the real-mode callbacks and wrappers allocated by
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @xref{_go32_dpmi_allocate_real_mode_callback_iret}
@@ -121,3 +133,8 @@ extern unsigned long _go32_rmcb_stack_size;
 @subheading Description
 
 The default size of the real mode callback handler's stack.  Defaults to 32k.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

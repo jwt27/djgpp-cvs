@@ -15,6 +15,10 @@ This function sets the timestamp of the file to @code{tvp[1].tv_sec}.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

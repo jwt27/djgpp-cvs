@@ -43,6 +43,10 @@ X--- ----  Insert on
 
 Depends on @var{command}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

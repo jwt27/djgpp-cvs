@@ -16,6 +16,10 @@ character in @var{set}.
 
 A pointer to the first match, or @code{NULL} if none are found.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -22,6 +22,10 @@ one of many.
 
 -1 on error, else zero.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -16,6 +16,10 @@ works if the file is closed right after this call.
 
 Zero for success, nonzero for failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -16,3 +16,8 @@ disk.
 
 Zero on success, -1 on failure.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -17,3 +17,8 @@ indicated by @code{isalnum}.
 
 Nonzero if @var{c} is punctuation, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -26,6 +26,10 @@ struct timeb @{
 
 Zero on success, nonzero on error.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -12,3 +12,8 @@ double fabs(double x);
 
 @var{x} if @var{x} is positive, else -@var{x}.  Note that in this
 context, +0.0 is positive and -0.0 is negative.
+
+@subheading Portability
+
+@portability ansi, posix
+

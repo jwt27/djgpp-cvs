@@ -19,6 +19,10 @@ characters are required to specify the current directory.
 The buffer, either @var{buffer} or a newly-allocated buffer, or
 @code{NULL} on error.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -17,6 +17,10 @@ calling process.  Before exiting, all open files are closed and all
 
 This function does not return.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

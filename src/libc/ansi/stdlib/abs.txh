@@ -11,6 +11,10 @@ int abs(int value);
 
 The absolute value of @code{value} is returned.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

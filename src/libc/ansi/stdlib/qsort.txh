@@ -40,6 +40,10 @@ It doesn't matter which element comes first in the resulting array.
 
 None.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
@@ -48,16 +52,16 @@ typedef struct @{
   int sequence;
 @} Item;
 
-int qsort_helper_by_size(void *e1, void *e2)
+int qsort_helper_by_size(const void *e1, const void *e2)
 @{
-  return ((Item *)e2)->size - ((Item *)e1)->size;
+  return ((const Item *)e2)->size - ((const Item *)e1)->size;
 @}
 
 Item list[100];
 
 qsort(list, 100, sizeof(Item), qsort_helper_by_size);
 
-int qsort_stringlist(void *e1, void *e2)
+int qsort_stringlist(const void *e1, const void *e2)
 @{
   return strcmp(*(char **)e1, *(char **)e2);
 @}

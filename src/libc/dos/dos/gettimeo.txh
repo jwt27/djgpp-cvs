@@ -26,9 +26,20 @@ struct timezone @{
 If either @var{tp} or @var{tzp} are @code{NULL}, that information is not
 provided. 
 
+Note that although this function returns microseconds for compatibility
+reasons, the values are precise to less than 1/20 of a second only.
+The underlying DOS function has 1/20 second granularity, as it is
+calculated from the 55 ms timer tick count, so you won't get better than
+that with gettimeofday().
+
 @xref{settimeofday}.
 
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

@@ -11,6 +11,10 @@ void _mono_clear(void);
 
 Clears the monochrome monitor.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _mono_printf, mono
 @subheading Syntax
@@ -25,12 +29,16 @@ void _mono_printf(const char *fmt, ...);
 
 Like @ref{printf}, but prints to the monochrome monitor.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _mono_putc, mono
 @subheading Syntax
 
 @example
-#include <mono.h>
+#include <sys/mono.h>
 
 void _mono_putc(int c);
 @end example
@@ -38,3 +46,8 @@ void _mono_putc(int c);
 @subheading Description
 
 Prints a single character to the monochrome monitor.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

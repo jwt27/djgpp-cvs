@@ -10,4 +10,9 @@ double acos(double x);
 
 @subheading Return Value
 
-The arc cosine of @var{x}.
+The arc cosine, in radians, of @var{x}.
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -16,6 +16,10 @@ the end-of-file or not.
 
 Nonzero at end-of-file, zero otherwise.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

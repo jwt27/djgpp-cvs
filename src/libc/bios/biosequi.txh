@@ -35,6 +35,10 @@ XX-- ---- ---- ----  number of printers installed (00=0 01=1 10=2 11=3)
 
 The equipment word.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

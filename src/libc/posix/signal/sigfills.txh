@@ -1,0 +1,37 @@
+@node sigfillset, signal
+@subheading Syntax
+
+@example
+#include <signal.h>
+
+int sigfillset (sigset_t *set)
+@end example
+
+@subheading Description
+
+This function initializes the set of signals pointed to by @var{set} to
+include all signals known to the DJGPP runtime system.  Such a full
+set, if set by @code{sigprocmask} (@pxref{sigprocmask}), will cause
+all signals to be blocked from delivery to their handlers.  Note that
+the set returned by this function only includes signals in the range
+@code{SIGABRT..SIGTRAP}; software interrupts and/or user-defined signals
+aren't included.
+
+@subheading Return Value
+
+0 upon success, -1 if @var{set} is a NULL pointer.
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+
+  sigset_t full_set, prev_set;
+
+  sigfillset (&full_set);
+  sigprocmask (SIG_UNBLOCK, &full_set, &prev_set);
+
+@end example

@@ -1,0 +1,50 @@
+@node _detect_80387, cpu
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int _detect_80387(void);
+@end example
+
+@subheading Description
+
+Detects whether a numeric coprocessor is present.  Note that
+floating-point will work even without a coprocessor, due to the
+existence of emulation.
+
+@subheading Return Value
+
+1 if a coprocessor is present, 0 if not.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+if (_detect_80387())
+  printf("You have a coprocessor\n");
+@end example
+
+@c ----------------------------------------------------------------------
+@node _8087, cpu
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+extern int _8087;
+@end example
+
+@subheading Description
+
+Contains @code{3} if a numeric coprocessor is installed, otherwise
+@code{0}.  Provided for compatibility with other DOS compilers.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@c ----------------------------------------------------------------------

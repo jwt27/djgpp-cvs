@@ -1,7 +1,19 @@
 @node mknod, unix
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int mknod(const char *path, mode_t mode, dev_t dev);
+@end example
 
 @subheading Description
 
 This function is provided only to assist in porting from Unix.  It
 always returns an error condition. 
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

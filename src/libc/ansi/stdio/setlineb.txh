@@ -24,6 +24,10 @@ Next, a buffer is allocated and the file is set to line buffering.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

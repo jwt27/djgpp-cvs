@@ -17,3 +17,8 @@ feed, tab, vertical tab, or space.
 
 Nonzero if @var{c} is whitespace, else zero.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -15,3 +15,8 @@ This function closes a directory opened by opendir (@pxref{opendir}).
 
 Zero on success, nonzero if @var{dir} is invalid.
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

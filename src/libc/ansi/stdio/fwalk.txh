@@ -2,17 +2,23 @@
 @subheading Syntax
 
 @example
+#include <libc/file.h>
+
 void _fwalk(void (*function)(FILE *file));
 @end example
 
 @subheading Description
 
 For each open file in the system, the given @var{function} is called,
-passing the file pointer as it's only argument
+passing the file pointer as its only argument.
 
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

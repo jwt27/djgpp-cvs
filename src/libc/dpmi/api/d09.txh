@@ -22,3 +22,8 @@ This function restores the interrupt state from a previous call to
 @subheading Return Value
 
 The previous setting.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

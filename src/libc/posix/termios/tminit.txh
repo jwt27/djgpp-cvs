@@ -15,3 +15,8 @@ the emulation is resolved by only internal(static) parameters.  Note
 that this function is called by tcXXX function automatically.
 
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

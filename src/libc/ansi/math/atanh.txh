@@ -11,3 +11,8 @@ double atanh(double x);
 @subheading Return Value
 
 The arc hyperbolic tangent of @var{x}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

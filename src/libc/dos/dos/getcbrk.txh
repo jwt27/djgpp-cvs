@@ -17,3 +17,8 @@ Get the setting of the Ctrl-C checking flag in MS-DOS.
 
 0 if not checking, 1 if checking.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -19,3 +19,8 @@ DPMI function AX = 0x0003
 
 The value to return to each selector allocated by
 __dpmi_allocate_ldt_descriptors to get the next one.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -15,3 +15,8 @@ Returns the user ID.
 
 42
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -24,3 +24,8 @@ Bits [31:8] in the vector number are silently ignored.
 @subheading Return Value
 
 Zero.  This function always works.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -15,6 +15,10 @@ The data at @var{pointer} is filled with @var{length} zeros.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

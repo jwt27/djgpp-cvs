@@ -11,3 +11,8 @@ double acosh(double x);
 @subheading Return Value
 
 The arc hyperbolic cosine of @var{x}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

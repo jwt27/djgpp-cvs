@@ -15,3 +15,8 @@ This function gets the password file entry matching @var{name}.  @xref{getpwent}
 
 The matching record, or @code{NULL} if none match.
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -22,6 +22,10 @@ The file @file{keys.h} has symbolic names for many of the keys.
 
 The key pressed.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

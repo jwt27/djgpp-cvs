@@ -4,7 +4,7 @@
 @example
 #include <search.h>
 
-void putenv(struct qelem *elem);
+void remque(struct qelem *elem);
 @end example
 
 @subheading Description
@@ -26,4 +26,9 @@ This function removes the entry @var{elem} from a queue.
 @subheading Return Value
 
 None.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
 

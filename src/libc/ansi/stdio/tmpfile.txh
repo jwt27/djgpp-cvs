@@ -18,6 +18,10 @@ tmpnam() (@pxref{tmpnam}).
 
 A newly opened file.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-cd d:/posix/include
+cd ${DJDIR}/include
 
 if [ x"$1" = x"" ]
 then

@@ -27,3 +27,8 @@ This function inserts @var{elem} in a queue immediately after @var{pred}.
 @subheading Return Value
 
 None.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

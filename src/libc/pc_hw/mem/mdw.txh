@@ -11,3 +11,8 @@ void _movedataw(unsigned, unsigned, unsigned, unsigned, size_t);
 
 Just like @ref{movedata}, but all transfers are always 16-bit
 transfers, and the count is a count of transfers, not bytes.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

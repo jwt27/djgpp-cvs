@@ -20,3 +20,8 @@ If invalid @var{cmd} or @var{fd} was passed, it returns -1.
 In case F_DUPFD, it returns new descriptor or -1 for error.
 
 
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -29,6 +29,10 @@ If there isn't enough memory in the system, the @code{size} field of
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -60,6 +64,10 @@ same structure as was used to allocate it.
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -93,6 +101,10 @@ fails.
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

@@ -16,6 +16,10 @@ case letters.
 
 The string.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

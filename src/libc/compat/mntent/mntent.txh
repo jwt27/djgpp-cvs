@@ -23,6 +23,10 @@ although not always, listed in the header @code{<mntent.h>}.)
 The FILE* pointer is returned.  For MS-DOS, this FILE* is not a real
 pointer and may only be used by @code{getmntent}.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -146,6 +150,10 @@ were NOT in effect.
 This function returns a pointer to an @code{struct} @code{mntent}, or
 NULL if there are no more drives to report on. 
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -176,6 +184,10 @@ ports.  @xref{getmntent}.
 
 This function always returns nonzero to signify an error.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node hasmntopt, unix
 @subheading Syntax
@@ -197,6 +209,10 @@ structure @var{mnt} for a substring that matches @var{opt}.
 This function returns the address of the substring if a match is found,
 or @code{NULL} otherwise.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node endmntent, unix
 @subheading Syntax
@@ -214,3 +230,8 @@ This function should be called after the last call to getmntent (@pxref{getmnten
 @subheading Return Value
 
 This function always returns one.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

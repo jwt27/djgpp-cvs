@@ -2,7 +2,7 @@
 @subheading Syntax
 
 @example
-#include <stdlib.h>
+#include <unistd.h>
 
 int brk(void *ptr);
 @end example
@@ -16,8 +16,12 @@ Normally, this is done transparently through the @code{malloc} function.
 
 @subheading Return Value
 
-zero if the break was changed, -1 if not.  @var{errno} is set to the
+Zero if the break was changed, -1 if not.  @var{errno} is set to the
 error. 
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -44,7 +48,7 @@ causing a violation.  Since the heap is the region under the break, you
 can expand the heap (where @code{malloc} gets memory from) by increasing
 the break. 
 
-This function is normally accessed only bu @code{malloc} (@pxref{malloc}).
+This function is normally accessed only by @code{malloc} (@pxref{malloc}).
 
 @subheading Return Value
 
@@ -52,6 +56,10 @@ The address of the first byte outside of the previous valid address
 range, or -1 if no more memory could be accessed.  In other words, a
 pointer to the chunk of heap you just allocated, if you had passed a
 positive number.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -73,6 +81,10 @@ extern int _stklen;
 This variable sets the minimum stack length that the program requires. 
 Note that the stack may be much larger than this.  This value should be
 set statically, as it is only used at startup. 
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -97,12 +109,16 @@ allocated by sbrk() in addition to the handle allocated by the stub.  These
 values are normally not needed unless you are doing low-level DPMI page 
 protection or memory mapping.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node _exit, process
 @subheading Syntax
 
 @example
-#include <stdlib.h>
+#include <unistd.h>
 
 void _exit(int exit_code);
 @end example
@@ -121,12 +137,16 @@ handlers are unhooked, to prevent system crashes e.g. after a call to
 
 This function does not return.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @c ----------------------------------------------------------------------
 @node __exit, process
 @subheading Syntax
 
 @example
-#include <stdlib.h>
+#include <unistd.h>
 
 void __exit(int exit_code);
 @end example
@@ -143,3 +163,8 @@ exits. This function is normally called only by @code{_exit}; do
 @subheading Return Value
 
 This function does not return.
+
+@subheading Portability
+
+@portability !ansi, posix
+

@@ -4,9 +4,14 @@
 @example
 #include <pc.h>
 
-void outportsl(unsigned short _port, unsigned long *_buf, unsigned _len);
+void outportsl(unsigned short _port, const unsigned long *_buf, unsigned _len);
 @end example
 
 @subheading Description
 
 Writes the @var{_len} longs in @var{_buf} to the 32-bit @var{_port}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

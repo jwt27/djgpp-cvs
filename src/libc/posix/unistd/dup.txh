@@ -16,6 +16,10 @@ the same file and file pointer.
 
 The new file handle, or -1 if error.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -17,3 +17,8 @@ Sends formatted output from the @var{arguments} to @code{stdout}.
 
 The number of characters written.
 
+
+@subheading Portability
+
+@portability ansi, posix
+

@@ -22,3 +22,8 @@ update descriptors.  It returns a new handle and base address.
 @subheading Return Value
 
 -1 on error, else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

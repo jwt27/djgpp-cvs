@@ -16,6 +16,10 @@ regions are handled properly, although this behavior is not portable.
 
 No value is returned.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -26,6 +26,10 @@ obtained from @code{malloc}) where the data will come from.
 
 None.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -45,6 +45,10 @@ RISK!
 
 Returns 0 if near pointers are not available, or nonzero if they are.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node __djgpp_nearptr_disable, memory
 @subheading Syntax
@@ -59,3 +63,8 @@ void __djgpp_nearptr_disable(void);
 
 This function disables near pointers, and re-enables protection.
 @xref{__djgpp_nearptr_enable}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

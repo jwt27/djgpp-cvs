@@ -23,6 +23,10 @@ default base is 10 if none of those prefixes are found.
 
 The value.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

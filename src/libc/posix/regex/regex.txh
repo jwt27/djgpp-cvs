@@ -10,14 +10,14 @@ int regcomp(regex_t *preg, const char *pattern, int cflags);
 
 @subheading Description
 
-This function is part of the implementation of POSIX 1003.2 regular
+This function is part of the implementation of @sc{posix 1003.2} regular
 expressions (@dfn{RE}s).
 
 @code{regcomp} compiles the regular expression contained in the
 @var{pattern} string, subject to the flags in @var{cflags}, and places
 the results in the @code{regex_t} structure pointed to by @var{preg}.
-(The regular expression syntax, as defined by POSIX 1003.2, is described
-below.)
+(The regular expression syntax, as defined by @sc{posix 1003.2}, is
+described below.)
 
 The parameter @var{cflags} is the bitwise OR of zero or more of the
 following flags:
@@ -33,15 +33,18 @@ Compile modern (@dfn{extended}) REs, rather than the obsolete
 
 This is a synonym for 0, provided as a counterpart to
 @code{REG_EXTENDED} to improve readability.
+This is an extension, compatible with but not specified by
+@sc{posix 1003.2}, and should be used with caution in software
+intended to be portable to other systems.
 
 @item REG_NOSPEC
 
 Compile with recognition of all special characters turned off.  All
 characters are thus considered ordinary, so the RE in @var{pattern} is a
 literal string.  This is an extension, compatible with but not specified
-by POSIX 1003.2, and should be used with caution in software intended to
-be portable to other systems.  @code{REG_EXTENDED} and @code{REG_NOSPEC}
-may not be used in the same call to @code{regcomp}.
+by @sc{posix 1003.2}, and should be used with caution in software
+intended to be portable to other systems.  @code{REG_EXTENDED} and
+@code{REG_NOSPEC} may not be used in the same call to @code{regcomp}.
 
 @item REG_ICASE
 
@@ -69,10 +72,10 @@ in addition to its normal function.
 The regular expression ends, not at the first NUL, but just before the
 character pointed to by the @code{re_endp} member of the structure
 pointed to by @var{preg}.  The @code{re_endp} member is of type
-@samp{const char *}.  This flag permits inclusion of NULs in the RE;
+@code{const char *}.  This flag permits inclusion of NULs in the RE;
 they are considered ordinary characters.  This is an extension,
-compatible with but not specified by POSIX 1003.2, and should be used
-with caution in software intended to be portable to other systems.
+compatible with but not specified by @sc{posix 1003.2}, and should be
+used with caution in software intended to be portable to other systems.
 
 @end table
 
@@ -161,9 +164,9 @@ invalid argument (e.g. a negative-length string)
 
 @subheading Regular Expressions' Syntax
 
-Regular expressions (@dfn{RE}s), as defined in POSIX 1003.2, come in two
-forms: modern REs (roughly those of @code{egrep}; 1003.2 calls these
-@emph{extended} REs) and obsolete REs (roughly those of @code{ed};
+Regular expressions (@dfn{RE}s), as defined in @sc{posix 1003.2}, come
+in two forms: modern REs (roughly those of @code{egrep}; 1003.2 calls
+these @emph{extended} REs) and obsolete REs (roughly those of @code{ed};
 1003.2 @emph{basic} REs).  Obsolete REs mostly exist for backward
 compatibility in some old programs; they will be discussed at the end.
 1003.2 leaves some aspects of RE syntax and semantics open; `(*)' marks
@@ -176,78 +179,81 @@ by @samp{|}.  It matches anything that matches one of the branches.
 A branch is one(*) or more @emph{pieces}, concatenated.  It matches a
 match for the first, followed by a match for the second, etc.
 
-A piece is an @emph{atom} possibly followed by a single(*) `*', `+',
-`?', or @emph{bound}.
-An atom followed by `*' matches a sequence of 0 or more matches of the atom.
-An atom followed by `+' matches a sequence of 1 or more matches of the atom.
-An atom followed by `?' matches a sequence of 0 or 1 matches of the atom.
+A piece is an @emph{atom} possibly followed by a single(*) @samp{*},
+@samp{+}, @samp{?}, or @emph{bound}.  An atom followed by @samp{*}
+matches a sequence of 0 or more matches of the atom.  An atom followed
+by @samp{+} matches a sequence of 1 or more matches of the atom.  An
+atom followed by @samp{?} matches a sequence of 0 or 1 matches of the
+atom.
 
-A @emph{bound} is `@{' followed by an unsigned decimal integer, possibly
-followed by `,' possibly followed by another unsigned decimal integer,
-always followed by `@}'.  The integers must lie between 0 and
-@code{RE_DUP_MAX} (255(*)) inclusive, and if there are two of them, the
-first may not exceed the second.  An atom followed by a bound containing
-one integer @samp{i} and no comma matches a sequence of exactly @samp{i}
-matches of the atom.  An atom followed by a bound containing one integer
-@samp{i} and a comma matches a sequence of @samp{i} or more matches of
-the atom.  An atom followed by a bound containing two integers @samp{i}
-and @samp{j} matches a sequence of @samp{i} through @samp{j} (inclusive)
-matches of the atom.
+A @emph{bound} is @samp{@{} followed by an unsigned decimal integer,
+possibly followed by @samp{,} possibly followed by another unsigned
+decimal integer, always followed by @samp{@}}.  The integers must lie
+between 0 and @code{RE_DUP_MAX} (255(*)) inclusive, and if there are two
+of them, the first may not exceed the second.  An atom followed by a
+bound containing one integer @samp{i} and no comma matches a sequence of
+exactly @samp{i} matches of the atom.  An atom followed by a bound
+containing one integer @samp{i} and a comma matches a sequence of
+@samp{i} or more matches of the atom.  An atom followed by a bound
+containing two integers @samp{i} and @samp{j} matches a sequence of
+@samp{i} through @samp{j} (inclusive) matches of the atom.
 
-An atom is a regular expression enclosed in `()' (matching a match for the
-regular expression), an empty set of `()' (matching the null string(*)),
-a @emph{bracket expression} (see below), `.' (matching any single
-character), `^' (matching the null string at the beginning of a line),
-`$' (matching the null string at the end of a line), a `\\' followed by
-one of the characters `^.[$()|*+?@{\\' (matching that character taken as
-an ordinary character), a `\\' followed by any other character(*)
-(matching that character taken as an ordinary character, as if the `\\'
-had not been present(*)), or a single character with no other
-significance (matching that character).  A `@{' followed by a character
-other than a digit is an ordinary character, not the beginning of a
-bound(*).  It is illegal to end an RE with `\\'.
+An atom is a regular expression enclosed in @samp{()} (matching a match
+for the regular expression), an empty set of @samp{()} (matching the
+null string(*)), a @emph{bracket expression} (see below), @samp{.}
+(matching any single character), @samp{^} (matching the null string at
+the beginning of a line), @samp{$} (matching the null string at the end
+of a line), a @samp{\} followed by one of the characters
+@samp{^.[$()|*+?@{\\} (matching that character taken as an ordinary
+character), a @samp{\} followed by any other character(*) (matching
+that character taken as an ordinary character, as if the @samp{\} had
+not been present(*)), or a single character with no other significance
+(matching that character).  A @samp{@{} followed by a character other
+than a digit is an ordinary character, not the beginning of a bound(*).
+It is illegal to end an RE with @samp{\}.
 
-A @emph{bracket expression} is a list of characters enclosed in `[]'.
-It normally matches any single character from the list (but see below).
-If the list begins with `^', it matches any single character (but see
-below) @emph{not} from the rest of the list.  If two characters in the
-list are separated by `-', this is shorthand for the full @emph{range}
-of characters between those two (inclusive) in the collating sequence,
-e.g. `[0-9]' in ASCII matches any decimal digit.  It is illegal(*) for
-two ranges to share an endpoint, e.g. `a-c-e'.  Ranges are very
-collating-sequence-dependent, and portable programs should avoid relying
-on them.
+A @emph{bracket expression} is a list of characters enclosed in
+@samp{[]}.  It normally matches any single character from the list (but
+see below).  If the list begins with @samp{^}, it matches any single
+character (but see below) @emph{not} from the rest of the list.  If two
+characters in the list are separated by @samp{-}, this is shorthand for
+the full @emph{range} of characters between those two (inclusive) in the
+collating sequence, e.g. @samp{[0-9]} in ASCII matches any decimal
+digit.  It is illegal(*) for two ranges to share an endpoint,
+e.g. @samp{a-c-e}.  Ranges are very collating-sequence-dependent, and
+portable programs should avoid relying on them.
 
-To include a literal `]' in the list, make it the first character
-(following a possible `^').  To include a literal `-', make it the
-first or last character, or the second endpoint of a range.  To use a
-literal `-' as the first endpoint of a range, enclose it in `[.' and
-`.]' to make it a collating element (see below).  With the exception of
-these and some combinations using `[' (see next paragraphs), all other
-special characters, including `\\', lose their special significance
-within a bracket expression.
+To include a literal @samp{]} in the list, make it the first character
+(following a possible @samp{^}).  To include a literal @samp{-}, make it
+the first or last character, or the second endpoint of a range.  To use
+a literal @samp{-} as the first endpoint of a range, enclose it in
+@samp{[.} and @samp{.]} to make it a collating element (see below).
+With the exception of these and some combinations using @samp{[} (see
+next paragraphs), all other special characters, including @samp{\},
+lose their special significance within a bracket expression.
 
 Within a bracket expression, a collating element (a character, a
 multi-character sequence that collates as if it were a single character,
-or a collating-sequence name for either) enclosed in `[.' and `.]'
-stands for the sequence of characters of that collating element.  The
-sequence is a single element of the bracket expression's list.  A
-bracket expression containing a multi-character collating element can
-thus match more than one character, e.g. if the collating sequence
-includes a `ch' collating element, then the RE @samp{[[.ch.]]*c} matches
-the first five characters of ``chchcc''.
+or a collating-sequence name for either) enclosed in @samp{[.} and
+@samp{.]}  stands for the sequence of characters of that collating
+element.  The sequence is a single element of the bracket expression's
+list.  A bracket expression containing a multi-character collating
+element can thus match more than one character, e.g. if the collating
+sequence includes a @samp{ch} collating element, then the RE
+@samp{[[.ch.]]*c} matches the first five characters of ``chchcc''.
 
-Within a bracket expression, a collating element enclosed in `[=' and
-`=]' is an equivalence class, standing for the sequences of characters
-of all collating elements equivalent to that one, including itself.
-(If there are no other equivalent collating elements, the treatment is
-as if the enclosing delimiters were `[.' and `.]'.)  For example, if o
-and \o'o^' are the members of an equivalence class, then `[[=o=]]',
-`[[=\o'o^'=]]', and `[o\o'o^']' are all synonymous.  An equivalence
-class may not\(dg be an endpoint of a range.
+Within a bracket expression, a collating element enclosed in @samp{[=}
+and @samp{=]} is an equivalence class, standing for the sequences of
+characters of all collating elements equivalent to that one, including
+itself.  (If there are no other equivalent collating elements, the
+treatment is as if the enclosing delimiters were @samp{[.} and
+@samp{.]}.)  For example, if @samp{o} and @samp{^} are the members of an
+equivalence class, then @samp{[[=o=]]}, @samp{[[=^=]]}, and @samp{[o^]}
+are all synonymous.  An equivalence class may @emph{not} be an endpoint
+of a range.
 
 Within a bracket expression, the name of a @emph{character class}
-enclosed in `[:' and `:]' stands for the list of all characters
+enclosed in @samp{[:} and @samp{:]} stands for the list of all characters
 belonging to that class.
 Standard character class names are:
 
@@ -269,14 +275,14 @@ respectively.  A locale may provide others.  A character class may not
 be used as an endpoint of a range.
 
 There are two special cases(*) of bracket expressions: the bracket
-expressions `[[:<:]]' and `[[:>:]]' match the null string at the
+expressions @samp{[[:<:]]} and @samp{[[:>:]]} match the null string at the
 beginning and end of a word respectively.  A word is defined as a
 sequence of word characters which is neither preceded nor followed by
 word characters.  A word character is an @code{alnum} character (as
 defined by @code{isalnum} library function) or an underscore.  This is
-an extension, compatible with but not specified by POSIX 1003.2, and
-should be used with caution in software intended to be portable to other
-systems.
+an extension, compatible with but not specified by @sc{posix 1003.2},
+and should be used with caution in software intended to be portable to
+other systems.
 
 In the event that an RE could match more than one substring of a given
 string, the RE matches the one starting earliest in the string.  If the
@@ -289,44 +295,81 @@ take priority over their lower-level component subexpressions.
 
 Match lengths are measured in characters, not collating elements.  A
 null string is considered longer than no match at all.  For example,
-@samp{bb*} matches the three middle characters of @samp{abbbc}, 
+@samp{bb*} matches the three middle characters of ``abbbc'', 
 @samp{(wee|week)(knights|nights)} matches all ten characters of
-@samp{weeknights}, when @samp{(.*).*} is matched against @samp{abc} the
+``weeknights'', when @samp{(.*).*} is matched against ``abc'' the
 parenthesized subexpression matches all three characters, and when
-@samp{(a*)*} is matched against `bc' both the whole RE and the
+@samp{(a*)*} is matched against ``bc'' both the whole RE and the
 parenthesized subexpression match the null string.
 
 If case-independent matching is specified, the effect is much as if all
 case distinctions had vanished from the alphabet.  When an alphabetic
 that exists in multiple cases appears as an ordinary character outside a
 bracket expression, it is effectively transformed into a bracket
-expression containing both cases, e.g. `x' becomes `[xX]'.  When it
-appears inside a bracket expression, all case counterparts of it are
-added to the bracket expression, so that (e.g.) `[x]' becomes `[xX]' and
-`[^x]' becomes `[^xX]'.
+expression containing both cases, e.g. @samp{x} becomes @samp{[xX]}.
+When it appears inside a bracket expression, all case counterparts of it
+are added to the bracket expression, so that (e.g.) @samp{[x]} becomes
+@samp{[xX]} and @samp{[^x]} becomes @samp{[^xX]}.
 
 No particular limit is imposed on the length of REs(*).  Programs
 intended to be portable should not employ REs longer than 256 bytes,
 as an implementation can refuse to accept such REs and remain
-POSIX-compliant.
+@sc{posix}-compliant.
 
 Obsolete (@emph{basic}) regular expressions differ in several respects.
-`|', `+', and `?' are ordinary characters and there is no equivalent
-for their functionality.  The delimiters for bounds are `\\@{' and
-`\\@}', with `@{' and `@}' by themselves ordinary characters.  The
-parentheses for nested subexpressions are `\(' and `\)', with `(' and
-`)' by themselves ordinary characters.  `^' is an ordinary character
-except at the beginning of the RE or(*) the beginning of a parenthesized
-subexpression, `$' is an ordinary character except at the end of the RE
-or(*) the end of a parenthesized subexpression, and `*' is an ordinary
-character if it appears at the beginning of the RE or the beginning of a
-parenthesized subexpression (after a possible leading `^').
-Finally, there is one new type of atom, a @emph{back reference}:
-`\\' followed by a non-zero decimal digit @emph{d} matches the same
-sequence of characters matched by the @emph{d}th parenthesized
-subexpression (numbering subexpressions by the positions of their
-opening parentheses, left to right), so that (e.g.) @samp{\\([bc]\\)\\1}
-matches `bb' or `cc' but not `bc'.
+@samp{|}, @samp{+}, and @samp{?} are ordinary characters and there is no
+equivalent for their functionality.  The delimiters for bounds are
+@samp{\@{} and @samp{\@}}, with @samp{@{} and @samp{@}} by themselves
+ordinary characters.  The parentheses for nested subexpressions are
+@samp{\(} and @samp{\)}, with @samp{(} and @samp{)} by themselves
+ordinary characters.  @samp{^} is an ordinary character except at the
+beginning of the RE or(*) the beginning of a parenthesized
+subexpression, @samp{$} is an ordinary character except at the end of
+the RE or(*) the end of a parenthesized subexpression, and @samp{*} is
+an ordinary character if it appears at the beginning of the RE or the
+beginning of a parenthesized subexpression (after a possible leading
+@samp{^}).  Finally, there is one new type of atom, a @emph{back
+reference}: @samp{\} followed by a non-zero decimal digit @emph{d}
+matches the same sequence of characters matched by the @emph{d}th
+parenthesized subexpression (numbering subexpressions by the positions
+of their opening parentheses, left to right), so that (e.g.)
+@samp{\([bc]\)\1} matches ``bb'' or ``cc'' but not ``bc''.
+
+@subheading History
+
+This implementation of the @sc{posix} regexp functionality was written
+by @email{henry@@zoo.toronto.edu, Henry Spencer}.
+
+@subheading Bugs
+
+The locale is always assumed to be the default one of 1003.2, and only
+the collating elements etc. of that locale are available.
+
+@code{regcomp} implements bounded repetitions by macro expansion,
+which is costly in time and space if counts are large or bounded
+repetitions are nested.
+
+An RE like, say,
+@samp{((((a@{1,100@})@{1,100@})@{1,100@})@{1,100@})@{1,100@}},
+will (eventually) run almost any existing machine out of swap space.
+
+There are suspected problems with response to obscure error conditions.
+Notably, certain kinds of internal overflow, produced only by truly
+enormous REs or by multiply nested bounded repetitions, are probably not
+handled well.
+
+Due to a mistake in 1003.2, things like @samp{a)b} are legal REs because
+@samp{)} is a special character only in the presence of a previous
+unmatched @samp{(}.  This can't be fixed until the spec is fixed.
+
+The standard's definition of back references is vague.  For example,
+does @samp{a\e(\e(b\e)*\e2\e)*d} match ``abbbd''?  Until the standard
+is clarified, behavior in such cases should not be relied on.
+
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @c -------------------------------------------------------------------------
 
@@ -353,8 +396,9 @@ RE must have been compiled by a previous invocation of @code{regcomp}
 multiple threads.
 
 By default, the NUL-terminated string pointed to by @var{string} is
-considered to be the text of an entire line, minus any terminating
-newline.
+considered to be the text of an entire line, with the NUL indicating the
+end of the line.  (That is, any other end-of-line marker is considered
+to have been removed and replaced by the NUL.)
 
 The @var{eflags} argument is the bitwise OR of zero or more of the
 following flags:
@@ -364,13 +408,13 @@ following flags:
 @item REG_NOTBOL
 
 The first character of the string is not the beginning of a line, so the
-`^' anchor should not match before it.  This does not affect the
+@samp{^} anchor should not match before it.  This does not affect the
 behavior of newlines under @code{REG_NEWLINE} (REG_NEWLINE,
 @pxref{regcomp}).
 
 @item REG_NOTEOL
 
-The NUL terminating the string does not end a line, so the `$' anchor
+The NUL terminating the string does not end a line, so the @samp{$} anchor
 should not match before it.  This does not affect the behavior of
 newlines under @code{REG_NEWLINE} (REG_NEWLINE, @pxref{regcomp}).
 
@@ -381,9 +425,9 @@ and to have a terminating @code{NUL} located at
 @var{@w{string + pmatch[0].rm_eo}} (there need not actually be a
 @code{NUL} at that location), regardless of the value of @var{nmatch}.
 See below for the definition of @var{pmatch} and @var{nmatch}.  This is
-an extension, compatible with but not specified by POSIX 1003.2, and
-should be used with caution in software intended to be portable to other
-systems.  Note that a non-zero @code{rm_so} does not imply
+an extension, compatible with but not specified by @sc{posix 1003.2},
+and should be used with caution in software intended to be portable to
+other systems.  Note that a non-zero @code{rm_so} does not imply
 @code{REG_NOTBOL}; @code{REG_STARTEND} affects only the location of the
 string, not how it is matched.
 
@@ -431,9 +475,9 @@ exist in the RE (that is, @code{@w{i > preg->re_nsub}}---have both
 @code{rm_so} and @code{rm_eo} set to @code{-1}.  If a subexpression
 participated in the match several times, the reported substring is the
 last one it matched.  (Note, as an example in particular, that when the
-RE @samp{(b*)+} matches @samp{bbb}, the parenthesized subexpression
-matches each of the three `b's and then an infinite number of empty
-strings following the last `b', so the reported substring is one of the
+RE @samp{(b*)+} matches ``bbb'', the parenthesized subexpression
+matches the three @samp{b}s and then an infinite number of empty
+strings following the last @samp{b}, so the reported substring is one of the
 empties.)
 
 If @code{REG_STARTEND} is specified in @var{eflags}, @var{pmatch} must
@@ -444,9 +488,6 @@ REG_NOSUB, @pxref{regcomp}), to hold the input offsets for
 @var{nmatch}; if @var{nmatch} is 0 or @code{REG_NOSUB} was specified,
 the value of @code{pmatch[0]} will not be changed by a successful
 @code{regexec}.
-
-@var{nmatch} exceeding 0 is expensive; @var{nmatch} exceeding 1 is
-worse.  Back references are massively expensive.
 
 @subheading Return Value
 
@@ -472,6 +513,28 @@ invalid argument(s) (e.g., @var{@w{string + pmatch[0].rm_eo}} is less
 than @var{@w{string + pmatch[0].rm_so}})
 
 @end table
+
+@subheading History
+
+This implementation of the @sc{posix} regexp functionality was written
+by @email{henry@@zoo.toronto.edu, Henry Spencer}.
+
+@subheading Bugs
+
+@code{regexec} performance is poor.  @var{nmatch} exceeding 0 is
+expensive; @var{nmatch} exceeding 1 is worse.  @code{regexec} is largely
+insensitive to RE complexity @emph{except} that back references are
+massively expensive.  RE length does matter; in particular, there is a
+strong speed bonus for keeping RE length under about 30 characters, with
+most special characters counting roughly double.
+
+The implementation of word-boundary matching is a bit of a kludge, and
+bugs may lurk in combinations of word-boundary matching and anchoring.
+
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @c ----------------------------------------------------------------------
 
@@ -519,15 +582,19 @@ must point to the printable name of an error code
 decimal representation of the numeric value of the error code (0 if the
 name is not recognized).  @code{REG_ITOA} and @code{REG_ATOI} are
 intended primarily as debugging facilities; they are extensions,
-compatible with but not specified by POSIX 1003.2, and should be used
-with caution in software intended to be portable to other systems.  Be
-warned also that they are considered experimental and changes are
+compatible with but not specified by @sc{posix 1003.2}, and should be
+used with caution in software intended to be portable to other systems.
+Be warned also that they are considered experimental and changes are
 possible.
 
 @subheading Return Value
 
 The size of buffer needed to hold the message (including terminating
 @code{NUL}) is always returned, even if @var{errbuf_size} is zero.
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @c --------------------------------------------------------------------------
 
@@ -549,3 +616,8 @@ void regfree(regex_t *preg);
 the compiled RE pointed to by @var{preg}.  The remaining @code{regex_t}
 is no longer a valid compiled RE and the effect of supplying it to
 @code{regexec} or @code{regerror} is undefined.
+
+@subheading Portability
+
+@portability !ansi, posix
+

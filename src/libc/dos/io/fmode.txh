@@ -15,6 +15,10 @@ did not specify.  @xref{open}. @xref{fopen}.
 
 The default value is @code{O_TEXT}.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

@@ -20,3 +20,8 @@ Fills in the page size.
 @subheading Return Value
 
 -1 on error (16-bit host), else zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -16,3 +16,8 @@ accepted.  @xref{gettimeofday} for information on the structure types.
 
 Zero if the time was set, nonzero on error.
 
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -3,6 +3,7 @@
 
 @example
 #include <stdio.h>
+
 FILE *fopen(const char *filename, const char *mode);
 @end example
 
@@ -67,10 +68,17 @@ object is a disk file (data.c, etc).
 If @code{b} or @code{t} is not specified in @var{mode}, the file type is
 chosen by the value of @code{fmode} (@pxref{_fmode}). 
 
+If you need to specify the DOS share flags use the @code{__djgpp_share_flags}.
+@xref{__djgpp_share_flags}.
+
 @subheading Return Value
 
 A pointer to the @code{FILE} object, or @code{NULL} if there was an
 error. 
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

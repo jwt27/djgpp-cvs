@@ -16,6 +16,10 @@ there is no more memory, it prints an error message and exits.
 
 A pointer to the newly allocated memory.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

@@ -1,0 +1,24 @@
+@node ctermid, posix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+char *ctermid(char *s);
+@end example
+
+@subheading Description
+
+This function returns the name of the current terminal device. Under MS-DOS,
+this is always "con".
+
+@subheading Return Value
+
+If @var{s} is null, returns pointer to internal static string "con".
+Otherwise, copies "con" to buffer pointed by @var{s}.
+
+
+@subheading Portability
+
+@portability !ansi, posix
+

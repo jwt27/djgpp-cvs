@@ -61,6 +61,10 @@ characters in the pattern.
 
 Zero if the string matches, FNM_NOMATCH if it does not.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

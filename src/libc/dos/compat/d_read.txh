@@ -23,6 +23,10 @@ number of bytes read into @var{result} if reading is successful.
 Returns 0 if successful or DOS error code on error (and sets @var{errno}
 to EACCES or EBADF)
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example

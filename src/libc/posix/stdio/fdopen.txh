@@ -18,6 +18,10 @@ specified by @var{mode}, which is the same as for @code{fopen}.
 
 The newly created @code{FILE *}, or @code{NULL} on error.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

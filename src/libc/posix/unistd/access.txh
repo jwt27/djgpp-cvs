@@ -42,6 +42,10 @@ Request if the file is really a directory.
 
 Zero if the requested access mode is allowed, nonzero if not. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example

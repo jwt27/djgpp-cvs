@@ -30,6 +30,10 @@ The @var{mode} is the same as for @code{fopen} (@pxref{fopen}).
 An open file which can be used to read the program's output or write to
 the program's input. 
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example
@@ -58,6 +62,10 @@ writing.
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @subheading Example
 

@@ -15,6 +15,10 @@ This function copies @var{s2} into @var{s1}.
 
 @var{s1}
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example

@@ -10,3 +10,8 @@ void globfree(glob_t *_pglob);
 @subheading Description
 
 Frees the memory associated with @code{_pglob}.
+
+@subheading Portability
+
+@portability !ansi, posix
+

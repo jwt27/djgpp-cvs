@@ -33,6 +33,10 @@ of the file.  The offset is usually nonpositive in this case.
 
 The new offset is returned.
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example
