@@ -1,3 +1,5 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -14,16 +16,115 @@
 #include <sys/vfs.h>
 #include <libc/dosio.h>
 
-#if 0
-#include <stdio.h>
-#endif
+/* Returns: 1 == OK, successful setting of variables. 
+            0 == no cdrom found, variables unchanged. */
+static int 
+use_AX0x1510( int drive_number, long *blocks, long *free, long *bsize )
+{
+  __dpmi_regs regs;
+
+  /* For a CD-ROM drive, Int 21h/AX=3600h gives incorrect info.
+     Use CD-ROM-specific calls if they are available.
+     
+     Int 2Fh/AX=1510h gives us a way of doing IOCTL with the
+     CD-ROM device driver without knowing the name of the
+     device (which is defined by the CONFIG.SYS line that
+     installs the driver and can therefore be arbitrary).  */
+  
+  regs.x.ax = 0x150b; /* is this drive supported by CD-ROM driver? */
+  regs.x.cx = drive_number;
+  __dpmi_int(0x2f, &regs);
+  if ((regs.x.flags & 1) == 0 && regs.x.bx == 0xadad && regs.x.ax != 0)
+  {
+    unsigned char request_header[0x14];
+    int status, i = 2;
+
+    /* Construct the request header for the CD-ROM device driver.  */
+    memset (request_header, 0, sizeof request_header);
+    request_header[0] = sizeof request_header;
+    request_header[2] = 3; /* IOCTL READ command */
+    *(unsigned short *)&request_header[0xe]  = __tb_offset;
+    *(unsigned short *)&request_header[0x10] = __tb_segment;
+    request_header[0x12] = 4; /* number of bytes to transfer */
+
+    /* When the disk was just changed, we need to try twice.  */
+    do {
+      /* Put control block into the transfer buffer.  */
+      _farpokeb (_dos_ds, __tb, 7); /* read sector size */
+      _farpokeb (_dos_ds, __tb + 1, 0); /* cooked mode */
+      _farpokew (_dos_ds, __tb + 2, 0); /* zero out the result field */
+
+      /* Put request header into the transfer buffer and call the driver.  */
+      dosmemput (request_header, sizeof (request_header), __tb + 4);
+      regs.x.ax = 0x1510;
+      regs.x.cx = drive_number;
+      regs.x.es = __tb_segment;
+      regs.x.bx = __tb_offset + 4;
+      __dpmi_int (0x2f, &regs);
+      status = _farpeekw (_dos_ds, __tb + 7);
+      *bsize  = _farpeekw (_dos_ds, __tb + 2);
+    } while (--i && (status & 0x800f) == 0x800f); /* disk changed */
+
+    if (status == 0x100 && _farpeekw (_dos_ds, __tb + 4 + 0x12) == 4)
+    {
+      request_header[0x12] = 5; /* number of bytes to transfer */
+      /* Put control block into the transfer buffer.  */
+      _farpokeb (_dos_ds, __tb, 8); /* read volume size */
+      _farpokel (_dos_ds, __tb + 1, 0); /* zero out the result field */
+
+      /* Put request header into the transfer buffer and call the driver.  */
+      dosmemput (request_header, sizeof (request_header), __tb + 5);
+      regs.x.ax = 0x1510;
+      regs.x.cx = drive_number;
+      regs.x.es = __tb_segment;
+      regs.x.bx = __tb_offset + 5;
+      __dpmi_int (0x2f, &regs);
+      if (_farpeekw (_dos_ds, __tb + 8) == 0x100
+       && _farpeekw (_dos_ds, __tb + 5 + 0x12) == 5)
+      {
+	/* bsize has been set some lines above. */
+	*free = 0;  /* no free space: cannot add data to CD-ROM */
+	*blocks = _farpeekl (_dos_ds, __tb + 1);
+	return 1;
+      }
+    }
+  }
+
+  return 0;
+}
+
+/* Returns: 0 == OK, successful setting of variables.
+            -1 == call failed, errno set. */
+static int
+use_AH0x36( int drive_number, long *blocks, long *free, long *bsize )
+{
+  __dpmi_regs regs;
+
+  /* Get free space info from DOS.  */
+  regs.h.ah = 0x36;  /* DOS Get Free Disk Space call */
+  regs.h.dl = drive_number + 1;
+  __dpmi_int(0x21, &regs);
+  
+  /* Check for errors */
+  if ((regs.x.ax & 0xffff) == 0xffff)
+  {
+    errno = ENODEV;
+    return -1;
+  }
+  *bsize = regs.x.cx * regs.x.ax;
+  *free = regs.x.bx;
+  *blocks = regs.x.dx;
+
+  return 0;
+}
+
 
 int
 statfs(const char *path, struct statfs *buf)
 {
   __dpmi_regs regs;
-  int drive_number;
   int cdrom_calls_used = 0;
+  int drive_number;
   long blocks = 0;
   long free = 0;
   long bsize = 0;
@@ -39,143 +140,113 @@ statfs(const char *path, struct statfs *buf)
     drive_number = regs.h.al;
   }
 
-  /* For a CD-ROM drive, 213600 gives incorrect info.
-     Use CD-ROM-specific calls if they are available.
+  /* Try cdrom call first. */
+  cdrom_calls_used = use_AX0x1510( drive_number, &blocks, &free, &bsize );
 
-     Int 2Fh/AX=1510h gives us a way of doing IOCTL with the
-     CD-ROM device driver without knowing the name of the
-     device (which is defined by the CONFIG.SYS line that
-     installs the driver and can therefore be arbitrary).  */
-
-  regs.x.ax = 0x150b;	/* is this drive supported by CD-ROM driver? */
-  regs.x.cx = drive_number;
-  __dpmi_int(0x2f, &regs);
-  if ((regs.x.flags & 1) == 0 && regs.x.bx == 0xadad && regs.x.ax != 0)
+  if( 7 <= _osmajor && _osmajor < 10 ) /* Are INT21 AX=7303 and/or 
+					  INT21 AX=7302 supported? */
   {
-    unsigned char request_header[0x14];
-    int status, i = 2;
-
-    /* Construct the request header for the CD-ROM device driver.  */
-    memset (request_header, 0, sizeof request_header);
-    request_header[0] = sizeof request_header;
-    request_header[2] = 3;	/* IOCTL READ command */
-    *(unsigned short *)&request_header[0xe]  = __tb_offset;
-    *(unsigned short *)&request_header[0x10] = __tb_segment;
-    request_header[0x12] = 4;	/* number of bytes to transfer */
-
-    /* When the disk was just changed, we need to try twice.  */
-    do {
-      /* Put control block into the transfer buffer.  */
-      _farpokeb (_dos_ds, __tb, 7);	/* read sector size */
-      _farpokeb (_dos_ds, __tb + 1, 0);	/* cooked mode */
-      _farpokew (_dos_ds, __tb + 2, 0);	/* zero out the result field */
-
-      /* Put request header into the transfer buffer and call the driver.  */
-      dosmemput (request_header, sizeof (request_header), __tb + 4);
-      regs.x.ax = 0x1510;
-      regs.x.cx = drive_number;
-      regs.x.es = __tb_segment;
-      regs.x.bx = __tb_offset + 4;
-      __dpmi_int (0x2f, &regs);
-      status = _farpeekw (_dos_ds, __tb + 7);
-      bsize  = _farpeekw (_dos_ds, __tb + 2);
-    } while (--i && (status & 0x800f) == 0x800f); /* disk changed */
-
-    if (status == 0x100 && _farpeekw (_dos_ds, __tb + 4 + 0x12) == 4)
+    /* INT21 AX=7303 - Win9x - Get Extended Free Drive Space:
+       INT21 AX=7302, Extended Drive Paramenter Block, seems to 
+       report the largest block of free clusters when running under 
+       Windows (this info is not confirmed), so I'm using this 
+       service here. It expects a path on DS:DX and it should not 
+       be an empty string or the sevice call will fail */
+    if( path && !*path )
     {
-      request_header[0x12] = 5;	/* number of bytes to transfer */
-      /* Put control block into the transfer buffer.  */
-      _farpokeb (_dos_ds, __tb, 8);	/* read volume size */
-      _farpokel (_dos_ds, __tb + 1, 0);	/* zero out the result field */
-
-      /* Put request header into the transfer buffer and call the driver.  */
-      dosmemput (request_header, sizeof (request_header), __tb + 5);
-      regs.x.ax = 0x1510;
-      regs.x.cx = drive_number;
-      regs.x.es = __tb_segment;
-      regs.x.bx = __tb_offset + 5;
-      __dpmi_int (0x2f, &regs);
-      if (_farpeekw (_dos_ds, __tb + 8) == 0x100
-	  && _farpeekw (_dos_ds, __tb + 5 + 0x12) == 5)
-      {
-	/* bsize has been set some lines above. */
-	free = 0;		/* no free space: cannot add data to CD-ROM */
-	blocks  = _farpeekl (_dos_ds, __tb + 1);
-	cdrom_calls_used = 1;
-      }
+      _put_path2( "/", 0x100 );
     }
-  }
-
-  if (!cdrom_calls_used)
-  {
-    /* Get free space info from DOS.  */
-    regs.h.ah = 0x36;		/* DOS Get Free Disk Space call */
-    regs.h.dl = drive_number + 1;
-    __dpmi_int(0x21, &regs);
-
-    /* Check for errors */
-    if ((regs.x.ax & 0xffff) == 0xffff)
+    else
     {
-      errno = ENODEV;
-      return -1;
+      _put_path2( path, 0x100 );
     }
-    bsize = regs.x.cx * regs.x.ax;
-    free = regs.x.bx;
-    blocks = regs.x.dx;
-#if 0
-    printf("First: bsize = %ld, free = %ld, blocks = %ld.\n"
-	 , bsize
-	 , free
-         , blocks
-	   );
-#endif
 
-    if( 7 <= (_get_dos_version(1) >> 8) /* Is FAT32 supported? */
-     && _is_fat32(drive_number + 1) /* Is it a FAT32 drive? */
-       )
+    /* The word at offset 0x2 (structure version) needs to be
+       zeroed. */
+    _farpokew( _dos_ds, __tb_offset + 0x2, 0 );
+
+    regs.x.ax = 0x7303;
+    regs.x.ds = regs.x.es = __tb_segment;
+    regs.x.dx = __tb_offset + 0x100;
+    regs.x.di = __tb_offset;
+    regs.x.cx = 0x100; /* Buffer length. Actually ~70 bytes would be enough */
+    __dpmi_int( 0x21, &regs );
+
+    /* In case INT21 AX=7303 fails we try INT21 AX=7302 (the best we
+       can do). */
+    if( regs.x.flags & 1 )
     {
       /* Get free space info from Extended Drive Parameter Block. */
       regs.x.ax = 0x7302;
       regs.h.dl = drive_number + 1;
       regs.x.es = __tb_segment;
       regs.x.di = __tb_offset;
-      regs.x.cx = 0x100; /* 256 bytes should be enough (RBIL says 0x3f). */
-      __dpmi_int(0x21, &regs);
-      
+      regs.x.cx = 0x100; /* 256 bytes should be enough (RBIL says
+			    0x3f). */
+      __dpmi_int( 0x21, &regs );
+
       /* Errors? */
       if( regs.x.flags & 1 )
       {
-	errno = ENODEV;
-	return( -1 );
-      }
+	/* If INT21 AX=7302 fails too, we revert to the old code. */
 
-      /* We trust previous int21 call more if free hasn't maxed out. */
-      if( free < blocks )
-      {
-	/* Previous bsize is a multiple of this bsize, so the multiplication
-	   and division here is really a rescaling of the previous free
-	   value. */
-	free *= bsize;
-	bsize = _farpeekw (_dos_ds, __tb + 0x2 + 0x2) *
-	  ( _farpeekb (_dos_ds, __tb + 0x2 + 0x4) + 1 );
-	free /= bsize;
+	if( ! cdrom_calls_used )
+	{
+	  /* If the earlier call to useAX0x1510() failed we must use INT21
+	     AH=63. */
+	  if( use_AH0x36( drive_number, &blocks, &free, &bsize ) == -1 )
+	  {
+	    /* use_AH0x36() sets errno on failure. */
+	    return -1;
+	  }
+	}
+	else
+	{
+	  /* Values untouched since the call to useAX0x1510(). */
+	}
       }
       else
       {
-	free = _farpeekw (_dos_ds, __tb + 0x2 + 0x1f) +
-	  65536 * _farpeekw (_dos_ds, __tb + 0x2 + 0x21);
-	bsize = _farpeekw (_dos_ds, __tb + 0x2 + 0x2) *
-	  ( _farpeekb (_dos_ds, __tb + 0x2 + 0x4) + 1 );
+        free = _farpeekl (_dos_ds, __tb + 0x2 + 0x1f);
+        bsize = _farpeekw (_dos_ds, __tb + 0x2 + 0x2) *
+          ( _farpeekb (_dos_ds, __tb + 0x2 + 0x4) + 1 );
+
+        /* -1, because this function was reporting 1 more cluster than
+           CHKDSK. */
+        blocks = _farpeekl( _dos_ds, __tb + 0x2 + 0x2d) - 1;
       }
-      
-      blocks = _farpeekl( _dos_ds, __tb + 0x2 + 0x2d);
-#if 0
-      printf("Second: bsize = %ld, free = %ld, blocks = %ld.\n"
-	   , bsize
-	   , free
-          , blocks
-	     );
-#endif
+    }
+    else /* Use information from service AX=0x7303. */
+    {
+      /* Save block size value from INT21 AH=0x1510 call. */
+      long cd_bsize = bsize;
+
+      free   = _farpeekl (_dos_ds, __tb + 0x0c);
+      bsize  = _farpeekl (_dos_ds, __tb + 0x08)
+	* _farpeekl (_dos_ds, __tb + 0x04);
+      blocks = _farpeekl (_dos_ds, __tb + 0x10);
+      if( cdrom_calls_used && 2048 < bsize )
+      {
+	/* useAX0x1510() was successful, but the total and free size
+	   is more correct from INT21 AX=7303 (from the point of
+	   WINDOZE). However we should use the block size from
+	   useAX0x1510() if it's not 2048. */
+	blocks *= bsize/cd_bsize;
+	free *= bsize/cd_bsize;
+	bsize = cd_bsize;
+      }
+    }
+  }
+  else
+  {
+    /* DOZE version earlier than 7.0. Use old method. */
+    if( ! cdrom_calls_used )
+    {
+      if( use_AH0x36( drive_number, &blocks, &free, &bsize ) == -1 )
+      {
+	/* use_AH0x36() sets errno on failure. */
+	return -1;
+      }
     }
   }
 
@@ -210,7 +281,7 @@ int main (int argc, char *argv[])
 
   if (statfs (path, &fsbuf) == 0)
     printf ("Results for `%s\':\n\nTotal blocks: %ld\nAvailable blocks: %ld\nBlock size: %ld\n",
-	    path, fsbuf.f_blocks, fsbuf.f_bfree, fsbuf.f_bsize);
+     path, fsbuf.f_blocks, fsbuf.f_bfree, fsbuf.f_bsize);
   if (errno)
     perror (path);
   return 0;
