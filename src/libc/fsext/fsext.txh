@@ -167,6 +167,20 @@ symlinks in other than DJGPP symlink file format.
 
 The source and destination file names are passed to the handler unchanged.
 
+@item __FSEXT_chmod
+
+A file chmod handler (@pxref{chmod}).  This is called when
+the permissions are to be changed for a file.
+
+The file name passed to the handler will have all its symlinks resolved.
+
+@item __FSEXT_chown
+
+A file chown handler (@pxref{chown}).  This is called when
+the ownership is to be changed for a file.
+
+The file name passed to the handler will have all its symlinks resolved.
+
 @item __FSEXT_fchown
 
 A file fchown handler (@pxref{fchown}).  This is called when
