@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -139,9 +140,6 @@
  * came with ``Undocumented DOS'', 1st edition.
  */
 
-/* Selectors for conventional memory and our program's memory.  */
-static unsigned short dos_mem_base, our_mem_base;
-
 /* Array of SFT entry sizes as function of DOS version. */
 static size_t sft_size_list[] = {0, 0x28, 0x35, 0x3b};
 
@@ -186,10 +184,6 @@ fstat_init(void)
   __dpmi_regs    regs;
   int            sft_ptr_addr;
   unsigned short true_dos_version;
-
-  /* Selectors for _farXXX() functions.  */
-  dos_mem_base = _dos_ds;
-  our_mem_base = _my_ds();
 
   /* Each DOS program has a table of file handles which are used by
    * DOS open() call.  This table holds, for each handle which is in
@@ -236,8 +230,8 @@ fstat_init(void)
     }
 
   /* Segment and offset of start of SFT list.  */
-  sft_start_off = _farpeekw(dos_mem_base, sft_ptr_addr);
-  sft_start_seg = _farpeekw(dos_mem_base, sft_ptr_addr + 2);
+  sft_start_off = _farpeekw(_dos_ds, sft_ptr_addr);
+  sft_start_seg = _farpeekw(_dos_ds, sft_ptr_addr + 2);
 
   return 1;
 }
@@ -254,8 +248,9 @@ get_sft_entry(int fhandle)
   unsigned short sft_off;
   unsigned long  htbl_addr;
   short          sft_idx, retval;
-  __dpmi_regs	 regs;
+  unsigned short _my_ds_base = _my_ds();
 
+  __dpmi_regs	 regs;
   _djstat_fail_bits = fstat_init_bits;
 
   /* Force initialization if we were restarted (emacs).  */
@@ -284,15 +279,15 @@ get_sft_entry(int fhandle)
   if (fhandle < 0
       || fhandle >= (_osmajor < 3 ?
 		     20
-		     : _farpeekw(dos_mem_base, psp_addr + 0x32)))
+		     : _farpeekw(_dos_ds, psp_addr + 0x32)))
     return -1;
 
   /* Linear address of the handle table. */
-  htbl_addr = MK_FOFF(_farpeekw(dos_mem_base, htbl_ptr_addr + 2),
-                      _farpeekw(dos_mem_base, htbl_ptr_addr));
+  htbl_addr = MK_FOFF(_farpeekw(_dos_ds, htbl_ptr_addr + 2),
+                      _farpeekw(_dos_ds, htbl_ptr_addr));
 
   /* Index of the entry for our file handle in the SFT array.  */
-  retval = sft_idx = _farpeekb(dos_mem_base, htbl_addr + fhandle);
+  retval = sft_idx = _farpeekb(_dos_ds, htbl_addr + fhandle);
 
   if (sft_idx < 0)      /* invalid file handle or bad handle table */
     {
@@ -316,15 +311,15 @@ get_sft_entry(int fhandle)
   while (sft_off != 0xFFFF)
     {
       unsigned long entry_addr   = sft_seg + sft_off;
-      short         subtable_len = _farpeekw(dos_mem_base, entry_addr + 4);
+      short         subtable_len = _farpeekw(_dos_ds, entry_addr + 4);
 
       if (sft_idx < subtable_len)
         { /* Our target is in this sub-table.  Pull in the entire
            * SFT entry for use by fstat_assist().
            */
-          movedata(dos_mem_base,
+	  movedata(_dos_ds,
                    entry_addr + 6 + sft_idx * sft_size,
-                   our_mem_base, (unsigned int)sft_buf, sft_size);
+		   _my_ds_base, (unsigned int)sft_buf, sft_size);
           return retval;
         }
       /* Our target not in this subtable.
@@ -332,8 +327,8 @@ get_sft_entry(int fhandle)
        * index of our entry, and proceed to next sub-table.
        */
       sft_idx -= subtable_len;
-      sft_off  = _farpeekw(dos_mem_base, entry_addr);
-      sft_seg  = MK_FOFF(_farpeekw(dos_mem_base, entry_addr + 2), 0);
+      sft_off  = _farpeekw(_dos_ds, entry_addr);
+      sft_seg  = MK_FOFF(_farpeekw(_dos_ds, entry_addr + 2), 0);
     }
 
   /* Get here only by error, which probably means unsupported DOS version. */
@@ -816,12 +811,12 @@ fstat_assist(int fhandle, struct stat *stat_buf)
               if (_djstat_flags & _STAT_ACCESS)
                 _djstat_fail_bits |= _STFAIL_WRITEBIT;
     
-              /* If we run on Windows 9X, and LFN is enabled, try harder.
-                 Note that we deliberately do NOT use this call when LFN is
-                 disabled, even if we are on Windows 9X, because then we
-                 open the file with function 3Ch, and such handles aren't
-                 supported by 71A6h call we use here.  */
-              if (dos_major >= 7 && _USE_LFN)
+	      /* If we are runing on Windows 9X, NT 4.0 with LFN or 2000 or XP
+		 with LFN is enabled, try harder. Note that we deliberately do
+		 NOT use this call when LFN is disabled, even if we are on
+		 Windows, because then we open the file with function 3Ch, and
+		 such handles aren't supported by 71A6h call we use here.  */
+	      if  (_USE_LFN)
                 {
                   __dpmi_regs r;
     
@@ -831,8 +826,8 @@ fstat_assist(int fhandle, struct stat *stat_buf)
                   r.x.dx = 0;
     	          __dpmi_int(0x21, &r);
     	          if ((r.x.flags & 1) == 0
-    		       && (_farpeekl(dos_mem_base, __tb) & 0x07) == 0)
-    		  stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
+		      && (_farpeekl(_dos_ds, __tb) & 0x07) == 0)
+		    stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
     	        }
     
               /* Executables are detected if they have magic numbers.  */

@@ -597,3 +597,13 @@ The functions @code{dup} and @code{dup2} now copy to the new handle any
 Filesystem Extensions which hooked the original handle.  Thus, the
 duplicate handle now behaves exactly like the original one, in that it
 is also hooked by the extension.
+
+@findex fstat@r{, and Windows 2000/XP}
+@findex link@r{, and Windows 2000/XP}
+@pindex cp@r{, and Windows 2000/XP}
+The function @code{fstat} now work arounds incompatibilities in DOS
+IOCTL interface on Windows 2000 and Windows XP, and as a result returns
+correct read/write permissions in @code{st_mode} and correct device code
+in @code{st_dev} members of @code{struct stat}.  This was known to fail
+functions like @code{link} and programs like GNU @code{cp} which tested
+files for being on the same filesystem by calling @code{fstat}.
