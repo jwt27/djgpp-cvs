@@ -1654,10 +1654,6 @@ int is_structure(Symbol *s)
 
 int set_structure_symbols(Symbol *ele, Symbol *struc, int tp, int base, int type)
 {
-  if (tp!='s') {
-    djerror("must use `.struct' to emit structures or unions");
-    return 0;
-  }
   if (!struc->defined) {
     djerror("undefined symbol used in struct");
     return 0;
