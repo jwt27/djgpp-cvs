@@ -23,7 +23,7 @@ of the wrapper function, which you pass to both
 @code{longjmp} out of an interrupt handler or perform any system calls
 (such as @code{printf}) from within an interrupt handler.
 
-Do not enable interrupts with @code{enable()} or "sti" in your function.
+Do not enable interrupts with @code{enable()} or @code{asm("sti")} in your function.
 
 See also @ref{_go32_dpmi_set_protected_mode_interrupt_vector},
 and @ref{_go32_dpmi_free_iret_wrapper}.
@@ -71,7 +71,7 @@ the next handler.  Your function need not perform any special handling.
 @code{longjmp} out of an interrupt handler or perform any system calls
 (such as @code{printf}) from within an interrupt handler.
 
-Do not enable interrupts with @code{enable()} or "sti" in your function.
+Do not enable interrupts with @code{enable()} or @code{asm("sti")} in your function.
 
 @subheading Return Value
 
