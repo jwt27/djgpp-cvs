@@ -71,6 +71,7 @@ static int isspeciall(long double d, char *bufp);
 #endif
 
 static char NULL_REP[] = "(null)";
+static char UNNORMAL_REP[] = "Unnormal";
 
 int
 _doprnt(const char *fmt0, va_list argp, FILE *fp)
@@ -549,8 +550,11 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   /*
    * get integer portion of number; put into the end of the buffer; the
    * .01 is added for modf(356.0 / 10, &integer) returning .59999999...
+   * The test p >= startp is due to paranoia: buffer length is guaranteed
+   * to be large enough, but if tmp is somehow a NaN, this loop could
+   * eventually blow away the stack.
    */
-  for (; integer; ++expcnt)
+  for (; integer && p >= startp; ++expcnt)
   {
     tmp = modfl(integer * 0.1L , &integer);
     *p-- = tochar((int)((tmp + .01L) * 10));
@@ -863,6 +867,16 @@ isspeciall(long double d, char *bufp)
   } *ip = (struct IEEExp *)&d;
 
   nan = 0;  /* don't assume the static is 0 (emacs) */
+
+  /* Unnormals: the MSB of mantissa is non-zero, but the exponent is
+     not zero either.  */
+  if ((ip->manh & 0x80000000U) == 0 && ip->exp != 0)
+  {
+    if (ip->sign)
+      *bufp++ = '-';
+    strcpy(bufp, UNNORMAL_REP);
+    return strlen(bufp) + ip->sign;
+  }
   if (ip->exp != 0x7fff)
     return(0);
   if ((ip->manh & 0x7fffffff) || ip->manl)
