@@ -67,6 +67,6 @@ while (<FIND>) {
 	rename "$file.ctmp", $file;
 
 	chmod $mode, $file;
-	utime $atime, $mtime, $file;
+	#utime $atime, $mtime, $file;
     }
 }
