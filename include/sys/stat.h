@@ -34,9 +34,10 @@ extern "C" {
 
 #include <sys/types.h>
 #include <sys/djtypes.h>
+#ifndef _TIME_T
 __DJ_time_t
-#undef __DJ_time_t
-#define __DJ_time_t
+#define _TIME_T
+#endif
 
 struct stat {
   time_t	st_atime;

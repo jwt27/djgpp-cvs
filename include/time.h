@@ -21,15 +21,18 @@ extern "C" {
 #undef NULL
 
 #define NULL 0
+#ifndef _CLOCK_T
 __DJ_clock_t
-#undef __DJ_clock_t
-#define __DJ_clock_t
+#define _CLOCK_T
+#endif
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
+#ifndef _TIME_T
 __DJ_time_t
-#undef __DJ_time_t
-#define __DJ_time_t
+#define _TIME_T
+#endif
 
 struct tm {
   int tm_sec;

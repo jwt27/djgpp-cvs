@@ -12,9 +12,10 @@ extern "C" {
 
 #include <sys/djtypes.h>
 
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
   
 typedef struct {
   size_t gl_pathc;

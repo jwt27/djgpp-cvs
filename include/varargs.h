@@ -15,9 +15,10 @@ extern "C" {
 
 #include <sys/djtypes.h>
 
+#ifndef _VA_LIST
 __DJ_va_list
-#undef __DJ_va_list
-#define __DJ_va_list
+#define _VA_LIST
+#endif
 
 /* For GCC 2.96 or later we use its builtin va_list */
 #if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)

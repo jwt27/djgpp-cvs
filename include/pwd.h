@@ -12,12 +12,14 @@ extern "C" {
 
 #include <sys/djtypes.h>
 
+#ifndef _GID_T
 __DJ_gid_t
-#undef __DJ_gid_t
-#define __DJ_gid_t
+#define _GID_T
+#endif
+#ifndef _UID_T
 __DJ_uid_t
-#undef __DJ_uid_t
-#define __DJ_uid_t
+#define _UID_T
+#endif
 
 struct passwd {
   char *	pw_name;

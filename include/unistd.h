@@ -60,13 +60,15 @@ extern "C" {
 #define _SC_STREAM_MAX		8
 #define _SC_TZNAME_MAX		9
 #define _SC_VERSION		10
- 
+
+#ifndef _SIZE_T 
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
+#ifndef _SSIZE_T
 __DJ_ssize_t
-#undef __DJ_ssize_t
-#define __DJ_ssize_t
+#define _SSIZE_T
+#endif
 
 extern char *optarg;
 extern int optind, opterr, optopt;

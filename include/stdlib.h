@@ -33,12 +33,15 @@ typedef struct {
   long rem;
 } ldiv_t;
 
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
+
+#ifndef _WCHAR_T
 __DJ_wchar_t
-#undef __DJ_wchar_t
-#define __DJ_wchar_t
+#define _WCHAR_T
+#endif
 
 void	abort(void) __attribute__((noreturn));
 int	abs(int _i);

@@ -22,9 +22,10 @@ extern "C" {
 #define WTERMSIG(stat_val)	( ((stat_val) >> 8 ) & 0x3ff)
 #define WUNTRACED		0
 
+#ifndef _PID_T
 __DJ_pid_t
-#undef __DJ_pid_t
-#define __DJ_pid_t
+#define _PID_T
+#endif
 
 pid_t wait(int *stat_loc);
 pid_t waitpid(pid_t pid, int *stat_loc, int options);

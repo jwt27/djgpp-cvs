@@ -15,9 +15,10 @@ extern "C" {
 
 #include <sys/djtypes.h>
 
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
 
 /* This header is intended to be included only by other
    headers, like <go32.h> and <string.h>.  You may

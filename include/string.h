@@ -16,9 +16,11 @@ extern "C" {
 #undef NULL
 
 #define NULL 0
+
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
 
 void *	memchr(const void *_s, int _c, size_t _n);
 int	memcmp(const void *_s1, const void *_s2, size_t _n);

@@ -19,27 +19,34 @@ typedef int		ino_t;
 typedef int		mode_t;
 typedef int		nlink_t;
 
+#ifndef _GID_T
 __DJ_gid_t
-#undef __DJ_gid_t
-#define __DJ_gid_t
+#define _GID_T
+#endif
+#ifndef _OFF_T
 __DJ_off_t
-#undef __DJ_off_t
-#define __DJ_off_t
+#define _OFF_T
+#endif
+#ifndef _OFFSET_T
 __DJ_offset_t
-#undef __DJ_offset_t
-#define __DJ_offset_t
+#define _OFFSET_T
+#endif
+#ifndef _PID_T
 __DJ_pid_t
-#undef __DJ_pid_t
-#define __DJ_pid_t
+#define _PID_T
+#endif
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
+#ifndef _SSIZE_T
 __DJ_ssize_t
-#undef __DJ_ssize_t
-#define __DJ_ssize_t
+#define _SSIZE_T
+#endif
+#ifndef _UID_T
+#define _UID_T
 __DJ_uid_t
-#undef __DJ_uid_t
-#define __DJ_uid_t
+#endif
 
 #ifndef _POSIX_SOURCE
 
@@ -57,9 +64,10 @@ typedef struct fd_set {
 #define FD_ISSET(n, p)	((p)->fd_bits[(n) / 8] & (1 << ((n) & 7)))
 #define FD_ZERO(p)	memset ((void *)(p), 0, sizeof (*(p)))
 
+#ifndef _TIME_T
 __DJ_time_t
-#undef __DJ_time_t
-#define __DJ_time_t
+#define _TIME_T
+#endif
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

@@ -32,12 +32,15 @@ extern "C" {
 #define SEEK_CUR	1
 #define SEEK_END	2
 
+#ifndef _VA_LIST
 __DJ_va_list
-#undef __DJ_va_list
-#define __DJ_va_list
+#define _VA_LIST
+#endif
+
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
 
 /* Note that the definitions of these fields are NOT guaranteed!  They
    may change with any release without notice!  The fact that they

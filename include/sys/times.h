@@ -11,9 +11,11 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #include <sys/djtypes.h>
+
+#ifndef _CLOCK_T
 __DJ_clock_t
-#undef __DJ_clock_t
-#define __DJ_clock_t
+#define _CLOCK_T
+#endif
 
 struct tms {
   clock_t tms_utime;

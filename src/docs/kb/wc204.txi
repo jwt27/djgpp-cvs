@@ -1,36 +1,36 @@
 @node Changes in 2.04, , Changes in 2.03, What Changed
 @section Changes in 2.04
 
-Here is a list of changes from DJGPP V2.03 to V2.04.  
+Here is a list of changes from DJGPP V2.03 to V2.04.
 
 @findex uname@r{, CPU type detection}
-Ability to report the exact CPU type in @code{uname}.  
+Ability to report the exact CPU type in @code{uname}.
 
 @findex _creat@r{, and FAT32}
 @findex _creatnew@r{, and FAT32}
 @findex _open@r{, and FAT32}
 The functions @code{_creat}, @code{_creatnew} and @code{_open} now set
 extended size flag in DOS calls to be able to create files with size up
-to 2^32-1, supported on FAT32 volumes.  
+to 2^32-1, supported on FAT32 volumes.
 
 @findex llseek@r{, and FAT32}
 The function @code{llseek} added with type @code{offset_t} to support
-file seeks up to 2^32-2.  
+file seeks up to 2^32-2.
 
 @findex statfs@r{, and FAT32}
 The function @code{statfs} have been made to report correct values >
-2^31 on FAT32 partitions.  
+2^31 on FAT32 partitions.
 
 @findex _invent_inode@r{, and FAT32}
 The function @code{_invent_inode} has been changed to start numbering
-invented inodes from @code{USHRT_MAX+1} to @code{2^28+1}.  
+invented inodes from @code{USHRT_MAX+1} to @code{2^28+1}.
 
 @findex _is_cdrom_drive
 @findex _is_ram_drive
 @findex _media_type
 Functions @code{_is_cdrom_drive}, @code{_is_ram_drive} and
 @code{_media_type} has been taken out of @file{mntent.c} and made
-externally callable.   
+externally callable.
 
 @findex _get_fat_size
 @findex _get_fs_type
@@ -80,7 +80,7 @@ the caller's stack.
 determine the user's name, in addition to @code{USER} and @code{LOGNAME}.
 
 @findex stpncpy@r{, added to the library}
-New function @code{stpncpy} has been added, thanks to 
+New function @code{stpncpy} has been added, thanks to
 @email{restone@@skypoint.com, Richard E. Stone}.
 
 @findex setitimer@r{, and zero @code{it_interval.tv_usec}}
@@ -98,15 +98,15 @@ granularity (55@dmn{msec} by default).
 @findex readlink@r{, added to the library}
 @findex S_ISLNK@r{, added to the library}
 @findex S_IFLNK@r{, added to the library}
-UNIX-style symbolic links are fully emulated by library.  As a part of 
-this, new functions @code{__internal_readlink}, @code{__solve_symlinks}, 
-@code{__solve_dir_symlinks}, @code{lchown}, @code{lstat} and @code{readlink}; 
+UNIX-style symbolic links are fully emulated by library.  As a part of
+this, new functions @code{__internal_readlink}, @code{__solve_symlinks},
+@code{__solve_dir_symlinks}, @code{lchown}, @code{lstat} and @code{readlink};
 new macros @code{S_ISLNK} and @code{S_IFLNK} have been added to library.
 
 @findex O_NOLINK@r{, new flag accepted by @code{open}}
 @findex O_NOFOLLOW@r{, new flag accepted by @code{open}}
 @findex open@r{, supports symlinks}
-@code{open} now follows symlinks when opening file.  Also, it honors two new 
+@code{open} now follows symlinks when opening file.  Also, it honors two new
 mode flags: @code{O_NOLINK} and @code{O_NOFOLLOW}.
 
 @findex symlink@r{, supports symlinks}
@@ -137,3 +137,7 @@ operation, backup file creation, and control of file timestamp
 preservation.  Its source can now be compiled on a Unix or GNU/Linux
 system.
 
+@cindex header files and GCC
+The protection against multiple redefinitions of various
+types like @code{size_t} has been rewriten to make DJGPP
+header files compatible with GCC provided ones.

@@ -14,9 +14,10 @@ extern "C" {
 
 #include <sys/djtypes.h>
 
+#ifndef _TIME_T
 __DJ_time_t
-#undef __DJ_time_t
-#define __DJ_time_t
+#define _TIME_T
+#endif
 
 struct timeb
 {

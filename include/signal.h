@@ -24,9 +24,10 @@ extern "C" {
 #define SIG_ERR	((void (*)(int))(1))
 #define SIG_IGN	((void (*)(int))(-1))
 
+#ifndef _PID_T
 __DJ_pid_t
-#undef __DJ_pid_t
-#define __DJ_pid_t
+#define _PID_T
+#endif
 
 typedef int sig_atomic_t;
 

@@ -16,9 +16,10 @@ extern "C" {
 #include <sys/version.h>
 #include <sys/djtypes.h>
 
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
 
 typedef struct {
   unsigned long  size_of_this_structure_in_bytes;

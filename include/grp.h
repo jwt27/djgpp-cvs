@@ -11,9 +11,11 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #include <sys/djtypes.h>
+
+#ifndef _GID_T
 __DJ_gid_t
-#undef __DJ_gid_t
-#define __DJ_gid_t
+#define _GID_T
+#endif
 
 struct group {
   gid_t		gr_gid;

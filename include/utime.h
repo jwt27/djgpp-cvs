@@ -11,9 +11,11 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #include <sys/djtypes.h>
+
+#ifndef _TIME_T
 __DJ_time_t
-#undef __DJ_time_t
-#define __DJ_time_t
+#define _TIME_T
+#endif
 
 struct utimbuf {
   time_t actime;

@@ -10,14 +10,21 @@ extern "C" {
   
 #define NULL 0
 #define offsetof(s_type, mbr) ((size_t) &((s_type *)0)->mbr)
-typedef int ptrdiff_t;
 
+#ifndef _PTRDIFF_T
+typedef int ptrdiff_t;
+#define _PTRDIFF_T
+#endif
+
+#ifndef _SIZE_T
 __DJ_size_t
-#undef __DJ_size_t
-#define __DJ_size_t
+#define _SIZE_T
+#endif
+
+#ifndef _WCHAR_T
 __DJ_wchar_t
-#undef __DJ_wchar_t
-#define __DJ_wchar_t
+#define _WCHAR_T
+#endif
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
