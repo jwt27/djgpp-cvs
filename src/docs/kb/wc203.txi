@@ -372,3 +372,11 @@ subtraction, addition, and comparison instructions, whereby the results
 produced for some rare pairs of numbers with the same exponent but
 different mantissa were grossly incorrect.  This is now fixed.
 
+@pindex libemu.a@r{, missing} npxsetup.o
+The FP emulation library @file{libemu.a} omitted the specially-compiled
+FPU setup module @file{npxsetup.o} which arranges for floating-point
+instructions to call functions from @file{libemu.a}.  This caused
+programs linked with @samp{-lemu} to require the dynamically-loaded
+emulator, @file{emu387.dxe}, even though the emulation code was linked
+into the program.  This bug is now fixed.
+
