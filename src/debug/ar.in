@@ -1,7 +1,0 @@
-create ./../../lib/libdbg.a 
-addmod 
-addmod common/dbgcom.o common/syms.o common/v2load.o common/wild.o
-addmod 
-addmod 
-save 
-end 
