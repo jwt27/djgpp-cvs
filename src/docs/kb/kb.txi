@@ -1,6 +1,6 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
-@setfilename ../../../info/kb.inf
+@setfilename ../../../info/kb.info
 @settitle DJGPP Knowledge Base
 @c %**end of header
 
