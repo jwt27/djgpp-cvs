@@ -9,8 +9,8 @@ FILE *setmntent(char *filename, const char *mode);
 
 @subheading Description
 
-This function returns an open FILE* pointer which can be used by
-getmntent (@pxref{getmntent}).  The arguments @var{filename} and
+This function returns an open @code{FILE*} pointer which can be used by
+@code{getmntent} (@pxref{getmntent}).  The arguments @var{filename} and
 @var{mode} are always ignored under MS-DOS, but for portability should
 be set, accordingly, to the name of the file which describes the mounted
 filesystems and the open mode of that file (like the @var{mode} argument
@@ -62,6 +62,9 @@ returned if there is an MS-DOS formatted disk in the drive; empty drives
 are skipped.  For systems with a single floppy drive, it is returned as
 if it were mounted on @file{A:/} or @file{B:/}, depending on how it was
 last referenced (and if there is a disk in the drive).
+
+The argument @var{filep} should be a @code{FILE*} pointer returned by
+@code{setmntent} (@pxref{setmntent}).
 
 For each drive scanned, a pointer to a static structure of the following
 type is returned:
