@@ -248,7 +248,7 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
   if (usecs_min < 0)
     usecs_min = DEFAULT_CLOCK_TICK_INTERVAL;
   usecs = value->it_interval.tv_usec;
-  if (value->it_interval.tv_sec == 0 && usecs < usecs_min)
+  if (value->it_interval.tv_sec == 0 && usecs && usecs < usecs_min)
     usecs = usecs_min;
 
   /* This doesn't overflow and doesn't cause any rounding errors,

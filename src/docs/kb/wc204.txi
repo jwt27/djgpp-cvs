@@ -79,9 +79,16 @@ the caller's stack.
 @code{getlogin} now examines the environment variable @code{USERNAME} to
 determine the user's name, in addition to @code{USER} and @code{LOGNAME}.
 
-@findex stpncpy
+@findex stpncpy@r{, added to the library}
 New function @code{stpncpy} has been added, thanks to 
 @email{restone@@skypoint.com, Richard E. Stone}.
 
-@findex lchown
+@findex lchown@r{, added to the library}
 New function @code{lchown} has been added for UNIX compatibility.
+
+@findex setitimer@r{, and zero @code{it_interval.tv_usec}}
+Calling the @code{setitimer} function with both
+@code{it_interval.tv_sec} and @code{it_interval.tv_usec} members of
+@code{struct itimerval} set to zero no longer causes the timer to behave
+as if @code{it_interval.tv_usec} were set to the system clock
+granularity (55@dmn{msec} by default).
