@@ -1,7 +1,8 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-SRC += djmd.s
+SRC += djmd.S
+SRC += djmdr.S
 SRC += dmg.c
 SRC += dmgb.c
 SRC += dmgl.c
