@@ -1,14 +1,38 @@
-OBJS :=
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 
 LIB = $(TOP)/../../lib
 
+all ::
+	../makemake.exe
+	$(MAKE) -f makefile.sub
+	../makemake.exe -2
+	$(MAKE) $(LIB)/lib$(LIBNAME).a
+
+MAKEFILE_LIB = 1
+include $(TOP)/../makefile.inc
+
+OBJS :=
+
+ifneq ($(wildcard makefile.oi),)
 include makefile.oi
+endif
 
 $(LIB)/lib$(LIBNAME).a : $(OBJS) makefile.rf $(TOP)/../ident.c
-	gcc -c -DLIB=lib$(LIBNAME) $(TOP)/../ident.c -o id_$(LIBNAME).o
-	@-rm -f $@
-	ar q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
-	ar s $(LIB)/lib$(LIBNAME).a
+	$(CROSS_GCC) -c -DLIB=lib$(LIBNAME) $(TOP)/../ident.c -o id_$(LIBNAME).o
+	@-$(MISC) rm $@
+ifeq ($(CROSS_BUILD),0)
+	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
+else
+	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a `cat makefile.rf` id_$(LIBNAME).o
+endif
+	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
 
-clean :
-	@-rm -f $(LIB)/lib$(LIBNAME).a makefile.oi makefile.rf
+newlib:
+	$(MISC) rm $(LIB)/lib$(LIBNAME).a
+	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
+	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
+
+clean ::
+	$(TOP)/../makemake.exe
+	$(MAKE) -f makefile.sub SUBARGS=clean
+	@-$(MISC) rm makefile.oi makefile.rf

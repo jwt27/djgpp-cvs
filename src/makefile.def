@@ -1,0 +1,61 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
+# -*- makefile -*-
+
+#  These define the cross-to-djgpp and native programs.
+
+ifneq ($(COMSPEC),)
+CROSS_BUILD = 0
+else
+CROSS_BUILD = 1
+endif
+
+# OK, pay attention: The CROSS_* programs are used to build objects
+# and executables that become part of djgpp itself (like libc.a and
+# stubedit.exe) and the not-CROSS_* programs are used to build
+# programs that are used as part of the build.  When you're building
+# *with* djgpp, they should be the same program, but when you're
+# building under unix (IRIX, Linux, etc), it makes a difference
+# because we often have to build programs twice - once for our use
+# (runs under unix) and once for the distribution (runs under dos).
+
+ifeq ($(CROSS_BUILD),0)
+
+# These programs shouldn't need to be changed; they're used
+# when building djgpp *with* djgpp.
+
+# For building distributed (djgpp) libraries and programs
+CROSS_GCC = gcc
+CROSS_AR = ar
+CROSS_LD = ld
+CROSS_BISON = bison
+
+# For building native programs (hostbin/*); assumes GNU versions
+GCC = gcc -g
+AR = ar
+LD = ld
+BISON = bison
+
+else
+
+# These may need to be changed based on where/how you installed
+# your native gcc and your cross compiler.
+
+# For building distributed (djgpp) libraries and programs
+
+CROSS_GCC = i586-pc-msdosdjgpp-gcc -pipe
+CROSS_AR = i586-pc-msdosdjgpp-ar
+CROSS_LD = i586-pc-msdosdjgpp-ld
+CROSS_BISON = bison
+
+# For building programs that *run* during the build (hostbin/*);
+# assumes GNU versions
+
+GCC = gcc -g -O2 -pipe
+AR = ar
+LD = ld
+BISON = bison
+
+# You may need to replace coff-go32 with coff-i386 in lib/djgpp.djl or
+# edit your cross_ld to replace coff-i386 with coff-go32 (as I did)
+
+endif
