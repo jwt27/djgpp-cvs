@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* This is file STAT.C */
@@ -107,11 +109,12 @@
 #include <sys/stat.h>
 #include <dos.h>
 #include <dir.h>
-
+#include <sys/fsext.h>
 #include <dpmi.h>
 #include <go32.h>
 #include <libc/farptrgs.h>
 #include <libc/bss.h>
+#include <libc/dosio.h>
 
 #include "xstat.h"
 
@@ -316,15 +319,15 @@ init_dirent_table (void)
    Should be called immediately after calling DOS FindFirst function,
    before the info is overwritten by somebody who calls it again.  */
 static unsigned int
-get_inode_from_sda(const char *basename)
+get_inode_from_sda(const char *mybasename)
 {
   int            count          = dirent_count;
   unsigned int * dirent_p       = dirent_table;
   unsigned short dos_mem_base   = _dos_ds;
   unsigned short our_mem_base   = _my_ds();
-  char  * dot                   = strchr(basename, '.');
-  size_t  total_len             = strlen(basename);
-  int     name_len              = dot ? dot - basename : total_len;
+  char  * dot                   = strchr(mybasename, '.');
+  size_t  total_len             = strlen(mybasename);
+  int     name_len              = dot ? dot - mybasename : total_len;
   int     ext_len               = dot ? total_len - name_len - 1 : 0;
   int     cluster_offset        = offsetof(struct full_dirent, fcluster);
 
@@ -360,7 +363,7 @@ get_inode_from_sda(const char *basename)
      For other DOS versions it is executed exactly once.  */
   while (count--)
     {
-      unsigned int  src_address = *dirent_p & 0x000fffff;
+      unsigned int  src_address = *dirent_p;
       char          cmp_buf[sizeof(struct full_dirent)];
 
       /* Copy the directory entry from the SDA to local storage.
@@ -371,7 +374,7 @@ get_inode_from_sda(const char *basename)
 
       /* If this is the filename we are looking for, return
          its starting cluster. */
-      if (!strncmp(cmp_buf, basename, name_len) &&
+      if (!strncmp(cmp_buf, mybasename, name_len) &&
           (ext_len == 0 || !strncmp(cmp_buf + 8, dot + 1, ext_len)))
         return (unsigned int)_farnspeekw(*dirent_p + cluster_offset);
 
@@ -384,6 +387,38 @@ get_inode_from_sda(const char *basename)
   return 0;
 }
 
+int _ioctl_get_first_cluster(const char *);
+
+/* Get the number of the first cluster of PATHNAME using
+   the IOCTL call Int 21h/AX=440Dh/CX=0871h, if that call
+   is supported by the OS.  Return the cluster number, or
+   a negative number if this service isn't supported.  */
+
+int
+_ioctl_get_first_cluster(const char *pathname)
+{
+  __dpmi_regs r;
+
+  /* See if the IOCTL GetFirstCluster call is supported.  */
+  r.x.ax = 0x4411;	       /* query generic IOCTL capability by drive */
+  r.h.bl = pathname[0] & 0x1f; /* drive number (1=A:) */
+  r.x.cx = 0x871;
+  __dpmi_int(0x21, &r);
+  if ((r.x.flags & 1) == 0 && r.x.ax == 0)
+    {
+      r.x.ax = 0x440d;	       /* Generic IOCTL */
+      r.x.cx = 0x0871;	       /* category code 08h, minor code 71h */
+      r.x.bx = 1;	       /* pathname uses current OEM character set */
+      r.x.ds = __tb >> 4;
+      r.x.dx = __tb & 0x0f;
+      _put_path(pathname);
+      __dpmi_int(0x21, &r);
+      if ((r.x.flags & 1) == 0)
+	return ( ((int)r.x.dx << 16) + r.x.ax );
+    }
+  return -1;
+}
+
 static char blanks_8[] = "        ";
 
 static int
@@ -391,6 +426,7 @@ stat_assist(const char *path, struct stat *statbuf)
 {
   struct   ffblk ff_blk;
   char     canon_path[MAX_TRUE_NAME];
+  char     pathname[MAX_TRUE_NAME];
   short    drv_no;
   unsigned dos_ftime;
 
@@ -407,14 +443,21 @@ stat_assist(const char *path, struct stat *statbuf)
   statbuf->st_blksize = _go32_info_block.size_of_transfer_buffer;
 #endif
 
+  /* Make the path explicit.  This makes the rest of our job much
+     easier by getting rid of some constructs which, if present,
+     confuse `_truename' and/or `findfirst'.  In particular, it
+     deletes trailing slashes, makes "d:" explicit, and allows us
+     to make an illusion of having a ".." entry in root directories.  */
+  _fixpath (path, pathname);
+
   /* Get the drive number.  It is always explicit, since we
      called `_fixpath' on the original pathname.  */
-  drv_no = toupper(*path) - 'A';
+  drv_no = toupper(pathname[0]) - 'A';
 
   /* Produce canonical pathname, with all the defaults resolved and
      all redundant parts removed.  This calls undocumented DOS
      function 60h.  */
-  if (_truename(path, canon_path))
+  if (_truename(path, canon_path) || _truename(pathname, canon_path))
     {
       /* Detect character device names which must be treated specially.
          We could simply call FindFirst and test the 6th bit, but some
@@ -431,6 +474,7 @@ stat_assist(const char *path, struct stat *statbuf)
          invented inode and one which belongs to a real file.  This is
          also compatible with what our fstat() does.
       */
+    char_dev:
       if (canon_path[2] == '/')
         {
           char dev_name[9];     /* devices are at most 8 characters long */
@@ -485,7 +529,7 @@ stat_assist(const char *path, struct stat *statbuf)
       /* _truename() failed.  (This really shouldn't happen, but who knows?)
          At least uppercase all letters, convert forward slashes to backward
          ones, and pray... */
-      register const char *src = path;
+      register const char *src = pathname;
       register       char *dst = canon_path;
 
       while ( (*dst = (*src > 'a' && *src < 'z'
@@ -501,14 +545,16 @@ stat_assist(const char *path, struct stat *statbuf)
     }
 
   /* Call DOS FindFirst function, which will bring us most of the info.  */
-  if (!__findfirst(path, &ff_blk, ALL_FILES))
+  if (!__findfirst(pathname, &ff_blk, ALL_FILES))
     {
       /* Time fields. */
       dos_ftime =
         ( (unsigned short)ff_blk.ff_fdate << 16 ) +
           (unsigned short)ff_blk.ff_ftime;
 
-      if ( (_djstat_flags & _STAT_INODE) == 0 )
+      /* If the IOCTL GetFirstCluster call is available, try it first.  */
+      if ( (_djstat_flags & _STAT_INODE) == 0
+	   && (statbuf->st_ino = _ioctl_get_first_cluster(pathname)) <= 0)
         {
 
           /* For networked drives, don't believe the starting cluster
@@ -525,14 +571,15 @@ stat_assist(const char *path, struct stat *statbuf)
              is_remote_drive() fails is that some network redirector takes
              over IOCTL functions in an incompatible way, which means the
              drive is remote.  QED.  */
-          if (_is_remote_drive(drv_no) ||
-              (statbuf->st_ino = get_inode_from_sda(ff_blk.ff_name)) == 0)
+          if (statbuf->st_ino == 0  /* don't try SDA if IOCTL call succeeded */
+	      || _is_remote_drive(drv_no)
+              || (statbuf->st_ino = get_inode_from_sda(ff_blk.ff_name)) == 0)
             {
               _djstat_fail_bits |= _STFAIL_HASH;
               statbuf->st_ino =
                 _invent_inode(canon_path, dos_ftime, ff_blk.ff_fsize);
             }
-	  else if (toupper (canon_path[0]) != toupper (path[0])
+	  else if (toupper (canon_path[0]) != toupper (pathname[0])
 		   && canon_path[1] == ':'
 		   && canon_path[2] == '\\'
 		   && canon_path[3] == '\0')
@@ -550,6 +597,27 @@ stat_assist(const char *path, struct stat *statbuf)
       statbuf->st_mode |= READ_ACCESS;
       if ( !(ff_blk.ff_attrib & 0x07) )  /* no R, H or S bits set */
         statbuf->st_mode |= WRITE_ACCESS;
+
+      /* Sometimes `_truename' doesn't return X:/FOO for character
+	 devices.  However, FindFirst returns attribute 40h for them.  */
+      if (ff_blk.ff_attrib == 0x40)
+	{
+	  size_t cplen = strlen (canon_path);
+	  char *pslash = canon_path + cplen - 1;
+
+	  while (pslash > canon_path + 2 && *pslash != '\\')
+	    pslash--;
+
+	  /* Force it into X:/FOO form.  */
+	  if (canon_path[1] == ':')
+	    {
+	      if (pslash > canon_path + 2)
+		memmove (canon_path + 2, pslash,
+			 cplen - (pslash - canon_path) + 1);
+	      canon_path[2] = '/';
+	      goto char_dev;
+	    }
+	}
 
       /* Directories should have Execute bits set. */
       if (ff_blk.ff_attrib & 0x10)
@@ -569,7 +637,7 @@ stat_assist(const char *path, struct stat *statbuf)
                  first 2 bytes. */
               if (extension)
                 extension++;    /* get past the dot */
-              if (_is_executable(path, -1, extension))
+              if (_is_executable(pathname, -1, extension))
                 statbuf->st_mode |= EXEC_ACCESS;
             }
         }
@@ -582,13 +650,13 @@ stat_assist(const char *path, struct stat *statbuf)
 	errno = ENODEV;
       return -1;
     }
-  else if (path[3] == '\0')
+  else if (pathname[3] == '\0')
     {
       /* Detect root directories.  These are special because, unlike
-	 subdirectories, FindFirst fails for them.  We look at PATH
+	 subdirectories, FindFirst fails for them.  We look at PATHNAME
 	 because a network redirector could tweak what `_truename'
-	 returns to be utterly unrecognizable as root directory.
-	 PATH always begins with "d:/", so it is root if PATH[3] = 0.  */
+	 returns to be utterly unrecognizable as root directory.  PATHNAME
+	 always begins with "d:/", so it is root if PATHNAME[3] = 0.  */
 
       /* Mode bits. */
       statbuf->st_mode |= (S_IFDIR|READ_ACCESS|WRITE_ACCESS|EXEC_ACCESS);
@@ -610,7 +678,7 @@ stat_assist(const char *path, struct stat *statbuf)
 	{
 	  char buf[7];
 
-	  strcpy(buf, path);
+	  strcpy(buf, pathname);
 	  strcat(buf, "*.*");
 	  if (!__findfirst(buf, &ff_blk, FA_LABEL))
 	    dos_ftime = ( (unsigned)ff_blk.ff_fdate << 16 ) + ff_blk.ff_ftime;
@@ -620,30 +688,31 @@ stat_assist(const char *path, struct stat *statbuf)
     }
   else
     {
+      int e = errno;	/* errno value from original FindFirst on PATHNAME */
       int i = 0;
-      int j = strlen (path) - 1;
+      int j = strlen (pathname) - 1;
 
       /* Check for volume labels.  We did not mix FA_LABEL with
 	 other attributes in the call to `__findfirst' above,
 	 because some environments will return bogus info in
 	 that case.  For instance, Win95 and WinNT seem to
-	 ignore `path' and return the volume label even if it
-	 doesn't fit the name in `path'.  This fools us to
+	 ignore `pathname' and return the volume label even if it
+	 doesn't fit the name in `pathname'.  This fools us to
 	 think that a non-existent file exists and is a volume
-	 label.  Hence we test the returned name to be PATH.  */
-      if (!__findfirst(path, &ff_blk, FA_LABEL))
+	 label.  Hence we test the returned name to be PATHNAME.  */
+      if (!__findfirst(pathname, &ff_blk, FA_LABEL))
 	{
 	  i = strlen (ff_blk.ff_name) - 1;
 
 	  if (j >= i)
 	    {
 	      for ( ; i >= 0 && j >= 0; i--, j--)
-		if (toupper (ff_blk.ff_name[i]) != toupper (path[j]))
+		if (toupper (ff_blk.ff_name[i]) != toupper (pathname[j]))
 		  break;
 	    }
 	}
 
-      if (i < 0 && path[j] == '/')
+      if (i < 0 && pathname[j] == '/')
 	{
 	  /* Indeed a label.  */
 	  statbuf->st_mode = READ_ACCESS;
@@ -656,7 +725,9 @@ stat_assist(const char *path, struct stat *statbuf)
 	}
       else
 	{
-	  /* FindFirst might set errno to ENMFILE; correct that.  */
+	  /* FindFirst on volume labels might set errno to ENMFILE or even
+	     to something more strange like EINVAl; correct that.  */
+	  errno = e;	/* restore errno from the original FindFirst */
 	  if (errno == ENMFILE)
 	    errno = ENOENT;
 	  return -1;
@@ -712,14 +783,14 @@ stat_assist(const char *path, struct stat *statbuf)
          even at performance cost, because it's more robust for
          networked drives.  */
 
-      size_t pathlen = strlen (path);
-      char   lastc   = path[pathlen - 1];
+      size_t pathlen = strlen (pathname);
+      char   lastc   = pathname[pathlen - 1];
       char  *search_spec = (char *)alloca (pathlen + 10); /* need only +5 */
       int nfiles = 0, nsubdirs = 0, done;
       size_t extra = 0;
       int add_extra = 0;
 
-      strcpy(search_spec, path);
+      strcpy(search_spec, pathname);
       if (lastc == '/')
         strcat(search_spec, "*.*");
       else
@@ -731,7 +802,7 @@ stat_assist(const char *path, struct stat *statbuf)
 	     store the long filenames.  */
 	  char fstype[40];
 
-	  if ((_get_volume_info(path, 0, 0, fstype) & _FILESYS_LFN_SUPPORTED)
+	  if ((_get_volume_info(pathname,0,0,fstype) & _FILESYS_LFN_SUPPORTED)
 	      && strncmp(fstype, "FAT", 4) == 0)
 	    add_extra = 1;
 	}
@@ -777,8 +848,7 @@ int
 stat(const char *path, struct stat *statbuf)
 {
   int  e = errno;
-  char pathname[MAX_TRUE_NAME];
-  int  pathlen;
+  int  pathlen, ret;
 
   if (!path || !statbuf)
     {
@@ -799,14 +869,10 @@ stat(const char *path, struct stat *statbuf)
       return -1;
     }
 
-  /* Make the path explicit.  This makes the rest of our job much
-     easier by getting rid of some constructs which, if present,
-     confuse `_truename' and/or `findfirst'.  In particular, it
-     deletes trailing slashes, makes "d:" explicit, and allows us
-     to make an illusion of having a ".." entry in root directories.  */
-  _fixpath (path, pathname);
+  if (__FSEXT_call_open_handlers(__FSEXT_stat, &ret, &path))
+   return ret;
 
-  if (stat_assist(pathname, statbuf) == -1)
+  if (stat_assist(path, statbuf) == -1)
     {
       return -1;      /* errno set by stat_assist() */
     }
