@@ -1,0 +1,45 @@
+@ignore
+ * File fpclassl.txh.
+ *
+ * Copyright (C) 2003 Martin Str@"omberg <ams@ludd.luth.se>.
+ *
+ * This software may be used freely so long as this copyright notice is
+ * left intact. There is no warranty on this software.
+ *
+@end ignore
+
+@node __fpclassifyld, math
+@findex __fpclassifyld
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int __fpclassifyld(long double);
+@end example
+
+@subheading Description
+
+Returns the kind of the floating point value supplied. You should use
+the type generic macro @code{fpclassify} (@pxref{fpclassify}) instead
+of this function.
+
+@subheading Return Value
+
+@code{FP_INFINITE}, @code{FP_NAN}, @code{FP_NORMAL},
+@code{FP_SUBNORMAL}, @code{FP_ZERO} or @code{FP_UNNORMAL}.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+if( __fpclassifyld(0.0L) != FP_ZERO )
+@{
+  printf("Something is wrong with the implementation!\n");
+@}
+
+@end example
+

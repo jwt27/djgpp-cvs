@@ -1,0 +1,54 @@
+@ignore
+ * File fpclass.txh.
+ *
+ * Copyright (C) 2003 Martin Str@"omberg <ams@ludd.luth.se>.
+ *
+ * This software may be used freely so long as this copyright notice is
+ * left intact. There is no warranty on this software.
+ *
+@end ignore
+
+@node fpclassify, math
+@findex fpclassify
+@subheading Syntax
+
+@example
+#include <math.h>
+@end example
+
+@subheading Description
+
+The macro @code{fpclassify} returns the kind of the floating point
+value supplied.
+
+@subheading Return Value
+
+@code{FP_INFINITE}, @code{FP_NAN}, @code{FP_NORMAL},
+@code{FP_SUBNORMAL}, @code{FP_ZERO} or @code{FP_UNNORMAL}.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = 1;
+double d = INFINITY;
+long double ld = NAN;
+
+if( fpclassify(f) != FP_NORMAL )
+@{
+  printf("Something is wrong with the implementation!\n");
+@}
+if( fpclassify(d) != FP_INFINITE )
+@{
+  printf("Something is wrong with the implementation!\n");
+@}
+if( fpclassify(ld) != FP_NAN )
+@{
+  printf("Something is wrong with the implementation!\n");
+@}
+
+@end example
+

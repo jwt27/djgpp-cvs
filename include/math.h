@@ -56,6 +56,29 @@ extern long double __dj_huge_vall;
 extern float       __dj_nan;
 #define NAN        __dj_nan
 
+#define FP_INFINITE	0
+#define FP_NAN		1
+#define FP_NORMAL	2
+#define FP_SUBNORMAL	3
+#define FP_ZERO		4
+/* Extended with Unnormals (for long doubles). */
+#define FP_UNNORMAL	1024
+
+#define fpclassify(x) ((sizeof(x)==sizeof(float))? __fpclassifyf(x) : \
+		       (sizeof(x)==sizeof(double))? __fpclassifyd(x) : \
+		       __fpclassifyld(x))
+
+#define isfinite(x)	(fpclassify(x)==FP_NORMAL || \
+			 fpclassify(x)==FP_SUBNORMAL || \
+			 fpclassify(x)==FP_ZERO)
+#define isinf(x)	(fpclassify(x)==FP_INFINITE)
+#define isnan(x)	(fpclassify(x)==FP_NAN)
+#define isnormal(x)	(fpclassify(x)==FP_NORMAL)
+
+int __fpclassifyf(float) __attribute__((const));
+int __fpclassifyd(double) __attribute__((const));
+int __fpclassifyld(long double) __attribute__((const));
+
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
   
 #ifndef __STRICT_ANSI__
@@ -111,8 +134,6 @@ struct exception {
 extern double erf(double);
 extern double erfc(double);
 extern double gamma(double);
-extern int isinf(double);
-extern int isnan(double);
 extern int finite(double);
 extern double j0(double);
 extern double j1(double);

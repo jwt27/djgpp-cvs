@@ -1000,3 +1000,11 @@ when comparing the truenames of existing and non-existing files.
 Fix a bug in moving directories into themselves.   Previously
 @code{rename} failed to detect that a subdirectory was being moved
 into itself, when the current directory was a short filename.
+
+@findex fpclassify@r{ added}
+@findex __fpclassifyf@r{ added}
+@findex __fpclassifyd@r{ added}
+@findex __fpclassifyld@r{ added}
+The C99 macro @code{fpclassify} and the supporting functions
+@code{__fpclassifyf}, @code{__fpclassifyd} and @code{__fpclassifyld}
+were added.
