@@ -1,0 +1,61 @@
+@node _rdtsc, time
+@findex _rdtsc
+@subheading Syntax
+
+@example
+#include <time.h>
+
+unsigned long long _rdtsc(void);
+@end example
+
+@subheading Description
+
+This function invokes the hardware instruction @code{rdtsc} which is
+only supported on some processors.  It is incremented once per clock
+cycle on the main processor.  It is a high precision timer which is
+useful for timing code for optimization.  You should not use this 
+function in distributed programs without protecting for processors 
+which do not support the instruction.  For a general purpose high
+precision timer see @code{uclock} (@pxref{uclock}).
+
+@subheading Return Value
+
+The number of processor cycles.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <stdio.h>
+#include <time.h>
+#include <signal.h>
+#include <setjmp.h>
+#include <sys/exceptn.h>
+
+/* Catch rdtsc exception and always return 0LL */
+void catch_rdtsc(int val)
+@{
+  short *eip = (short *)__djgpp_exception_state->__eip;
+  if(*eip == 0x310f) @{
+    __djgpp_exception_state->__eip += 2;
+    __djgpp_exception_state->__edx = 0;
+    longjmp(__djgpp_exception_state, 0);
+  @}
+  return;
+@}
+
+int main(void)
+@{
+  unsigned long long t;
+  
+  signal(SIGILL, catch_rdtsc);
+  t = _rdtsc();
+  printf("Timer value: %llu\n",t);
+  
+  return 0;
+@}
+@end example
+
