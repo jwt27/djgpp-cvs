@@ -610,22 +610,23 @@ get_windows_version(void)
 }
 
 /* A work-around for a bug in W2K's NTVDM, suggested by
-   <theowl@freemail.c3.hu>, who wishes to remain anonymous.
+   The Owl <theowl@freemail.c3.hu>.
 
-   When a DPMI program exits, NTVDM resets its notion of the current
-   program's PSP selector to 0.  If that DPMI program was spawned by
-   another DPMI program, and the parent program exits while the PSP
-   selector recorded by NTVDM is still 0, NTVDM will think that DOSX,
-   the NT DOS extender, is itself exiting, i.e. that the DOS box is
-   being closed.  It will then free up all the memory blocks owned by
-   DOSX, and that memory includes the locked PM stack used for
-   processing hardware interrupts reflected into protected mode.
-   Thereafter, any hardware interrupt (a timer tick, a keyboard
-   keypress, anything) will crash NTVDM because NTVDM will try to use
-   a stack which was freed.
+   When a DPMI program exits, NTVDM frees up all memory blocks allocated
+   by the program and then it resets its notion of the current program's
+   PSP selector to 0.  If that DPMI program was spawned by another DPMI
+   program, and the parent program exits while the PSP selector recorded
+   by NTVDM is still 0, NTVDM will free up all memory blocks allocated
+   by DOSX, the NT DOS extender.  That memory includes the locked PM
+   stack used for processing hardware interrupts reflected into protected
+   mode.  Thereafter, any hardware interrupt (a timer tick, a keyboard
+   keypress, anything) will crash NTVDM because NTVDM will try to use a
+   stack which was freed.
 
    The bug which causes this is that NTVDM resets the PSP to 0,
-   instead of setting it to the PSP of the parent program.
+   instead of setting it to the PSP of the parent program.  (Ironically,
+   DOSX does pass the parent PSP selector to NTVDM when it notifies it
+   about a DPMI program exit, but NTVDM does not use this information.)
 
    To work around that, we force NTVDM to record a valid PSP before we
    exit.  We do that by invoking a PM Int 21h, function 50h, passing
