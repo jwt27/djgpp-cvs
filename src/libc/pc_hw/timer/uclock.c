@@ -1,9 +1,11 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <time.h>
+#include <errno.h>
 #include <pc.h>
 #include <libc/farptrgs.h>
 #include <go32.h>
+#include <dpmi.h>
 #include <libc/bss.h>
 
 static int uclock_bss = -1;
@@ -26,6 +28,8 @@ uclock(void)
 
   if (uclock_bss != __bss_count)
   {
+    int e = errno;
+
     /* switch the timer to mode 2 (rate generator) */
     /* rather than mode 3 (square wave), which doesn't count linearly. */
 
@@ -36,6 +40,21 @@ uclock(void)
     base = 0;
     last_tics = 0;
     uclock_bss = __bss_count;
+
+    /* It seems like Windows 9X virtualization of the timer device
+       delays the actual execution of the above command until the
+       next timer tick.  Or maybe it only consults the actual device
+       once per tick.  In any case, the values returned during the
+       first 55 msec after the timer was reprogrammed still look as
+       if the timer worked in mode 3.  So we simply wait for one clock
+       tick when we run on Windows.  */
+    _farsetsel(_dos_ds);
+    otics = _farnspeekl(0x46c);
+    do {
+      errno = 0;
+      __dpmi_yield();	/* will set errno to ENOSYS on plain DOS */
+    } while (errno == 0 && _farnspeekl(0x46c) == otics);
+    errno = e;
   }
 
   /* Make sure the numbers we get are consistent */

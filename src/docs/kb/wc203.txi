@@ -281,3 +281,12 @@ and then restart, to use stale @code{FILE} objects created before they
 were dumped.  This caused warning messages to be issued by GDB near the
 end of debugging session.  This bug is now fixed.
 
+@findex uclock@r{, on Windows}
+Due to a peculiarity of the timer device virtualization, the values
+returned by @code{uclock} on Windows during the first 54.9@dmn{msec}
+after the first call (which reprograms the timer chip) were erratic,
+some of them negative, some positive.  To work around this, the first
+call to @code{uclock} on Windows now waits until the next timer tick
+before returning, to ensure that all the values returned hence are
+monotonously increasing.
+
