@@ -186,11 +186,20 @@ If set, the @code{sbrk} algorithm resizes memory blocks so that the
 layout of memory is set up to be the most compatible with Unix
 @code{sbrk} expectations.  This mode should not be used with hardware
 interrupts, near pointers, and may cause problems with QDPMI virtual
-memory.  On NT, this is the recommended algorithm.
+memory.
 
 If your program requires a specific @code{sbrk} behavior, you
 should set either this or the previous flag, since the default may
 change in different libc releases.
+
+@item _CRT0_DISABLE_SBRK_ADDRESS_WRAP
+
+If set, non-move @code{sbrk} should discard (ignore) memory blocks which are
+returned by DPMI which would require address wrap to access (at addresses
+below the CS/DS base address).  This bit is automatically set on Windows NT
+systems which require it.  It may be manually set on other systems which 
+don't require it to retain a more normal memory space layout and better
+memory protection.  This bit can be set but should never be cleared.
 
 @item _CRT0_FLAG_LOCK_MEMORY
 
