@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
    This is popen() and pclose() for MSDOS.  They were developed using
@@ -127,13 +128,11 @@ popen (const char *cm, const char *md) /* program name, pipe mode */
 	  l1->fp = NULL;
       /* reopen real stdout */
       if (dup2 (l1->fd, fileno (stdout)) == EOF)
-      {
 	l1->fp = NULL;
-	close(l1->fd);
-      }
       else
 	/* open file for reader */
 	l1->fp = fopen (l1->temp_name, l1->mode);
+      close(l1->fd);
     }
     else
       /* if caller wants to write */
@@ -200,8 +199,8 @@ pclose (FILE *pp)
             /* reopen stdin */
 	    if (dup2 (l1->fd, fileno (stdin)) == EOF)
 	      retval = -1;
-	    close(l1->fd);
 	  }
+      close(l1->fd);
     }
     else
       /* if pipe was opened to read */
