@@ -12,6 +12,21 @@
  *   5. Open a symlink with O_NOLINK but with symlinks in leading dirs.
  *   6. Open a symlink file in a simple subdir. Check if we really have opened
  *        the referred file. 
+ *   7. Open and close a file with O_TEMPORARY. Verify the file is deleted.
+ *   8. Open a file with O_TEMPORARY. Duplicate the file handle. Close both
+        handles. Verify the file is deleted at the correct time.
+     9. Open a file with O_TEMPORARY. Duplicate the file handle to an
+        unused file handle. Close both handles. Verify the file is deleted
+        at the correct time.
+     10. Open a file with O_TEMPORARY. Open the same file without O_TEMPORARY.
+         Close both handles. Verify the file is deleted at the correct time.
+     11. Open a file without O_TEMPORARY. Open the same file with O_TEMPORARY.
+         Duplicate the handle opened without O_TEMPORARY on to the handle
+         opened with O_TEMPORARY. Close both handles. Verify the file is
+         deleted at the correct time.
+     12. Open a file with O_TEMPORARY. Open it again with O_TEMPORARY.
+         Duplicate one handle on to the other. Close both handles. Verify the
+         file is deleted at the correct time.
  */
 #include <errno.h>
 #include <fcntl.h>
@@ -19,9 +34,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
-static void test_success(int testnum, const char * fn, int flags,
+static void test_success(const char * fn, int flags,
                          const char * data);
+void test_o_temporary(void);
+
+static int testnum;
 
 int main(void)
 {
@@ -32,9 +51,10 @@ int main(void)
       fprintf(stderr, "Required data file is missing\n");
       exit(1);
    }
-   test_success(1, "test1", O_RDONLY, "file1");
-   test_success(2, "test1", O_RDONLY | O_NOLINK, "!<symlink>");
-   test_success(3, "test2/file1", O_RDONLY | O_NOFOLLOW, "file1");
+   test_success("test1", O_RDONLY, "file1");
+   test_success("test1", O_RDONLY | O_NOLINK, "!<symlink>");
+   test_success("test2/file1", O_RDONLY | O_NOFOLLOW, "file1");
+   ++testnum;
    fd = open("test2/test1", O_RDONLY | O_NOFOLLOW);
    if (fd != -1)
    {
@@ -47,12 +67,13 @@ int main(void)
       exit(1);
    }
    printf("Test 4 passed\n");
-   test_success(5, "test2/test1", O_RDONLY | O_NOLINK, "!<symlink>");
-   test_success(6, "dir/test2", O_RDONLY, "tstlink2");
+   test_success("test2/test1", O_RDONLY | O_NOLINK, "!<symlink>");
+   test_success("dir/test2", O_RDONLY, "tstlink2");
+   test_o_temporary();
    return 0;
 } 
 
-static void test_success(int testnum, const char * fn, int flags, 
+static void test_success(const char * fn, int flags,
                          const char * data)
 {
    char err_buf[50];
@@ -60,6 +81,8 @@ static void test_success(int testnum, const char * fn, int flags,
    char buffer[100];
    int fd = open(fn, flags);
    int data_size = strlen(data);
+
+   ++testnum;
    if (fd == -1)
    {            
       sprintf(err_buf, "Test %d failed - unexpected open() failure ", testnum);
@@ -93,3 +116,96 @@ static void test_success(int testnum, const char * fn, int flags,
    close(fd);
    printf("Test %d passed\n", testnum);
 }
+
+const char temp_test_file[]="otemp";
+
+int open_temp_test_file(int flags)
+{
+  char err_buf[64];
+  int fd = open(temp_test_file, flags, S_IWUSR);
+
+  if (fd == -1)
+  {
+    sprintf(err_buf, "Test %d failed - unexpected open() failure ", testnum);
+    perror(err_buf);
+    exit(1);
+  }
+  return fd;
+}
+
+void start_temp_test(void)
+{
+  int fd;
+
+  ++testnum;
+  fd = open_temp_test_file(O_WRONLY | O_CREAT | O_TRUNC);
+  write(fd, temp_test_file, sizeof(temp_test_file) - 1);
+  close(fd);
+}
+
+#define FILE_SHOULD_NOT_EXIST   0
+#define FILE_SHOULD_STILL_EXIST 1
+
+void close_temp_test_file(int fd, int should_exist)
+{
+  const char *msg[]={"File was not deleted.",
+                     "File was deleted too soon."};
+  int exists;
+
+  close(fd);
+  exists = __file_exists(temp_test_file) ? 1 : 0;
+  if (exists ^ should_exist)
+  {
+    fprintf(stderr, "Test %d failed - %s\n", testnum, msg[should_exist]);
+    exit(1);
+  }
+}
+
+void test_o_temporary(void)
+{
+  int fd1, fd2;
+  
+  start_temp_test();
+  fd1 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  close_temp_test_file(fd1, FILE_SHOULD_NOT_EXIST);
+  printf("Test %d passed\n", testnum);
+
+  start_temp_test();
+  fd1 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  fd2 = dup(fd1);
+  close_temp_test_file(fd1, FILE_SHOULD_STILL_EXIST);
+  close_temp_test_file(fd2, FILE_SHOULD_NOT_EXIST);
+  printf("Test %d passed\n", testnum);
+
+  start_temp_test();
+  fd1 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  fd2 = 128;
+  dup2(fd1, fd2);
+  close_temp_test_file(fd1, FILE_SHOULD_STILL_EXIST);
+  close_temp_test_file(fd2, FILE_SHOULD_NOT_EXIST);
+  printf("Test %d passed\n", testnum);
+
+  start_temp_test();
+  fd1 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  fd2 = open_temp_test_file(O_RDONLY);
+  close_temp_test_file(fd1, FILE_SHOULD_STILL_EXIST);
+  close_temp_test_file(fd2, FILE_SHOULD_NOT_EXIST);
+  printf("Test %d passed\n", testnum);
+
+  start_temp_test();
+  fd1 = open_temp_test_file(O_RDONLY);
+  fd2 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  dup2(fd1, fd2);
+  close_temp_test_file(fd1, FILE_SHOULD_STILL_EXIST);
+  close_temp_test_file(fd2, FILE_SHOULD_NOT_EXIST);
+  printf("Test %d passed\n", testnum);
+
+  start_temp_test();
+  fd1 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  fd2 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
+  dup2(fd1, fd2);
+  close_temp_test_file(fd1, FILE_SHOULD_STILL_EXIST);
+  close_temp_test_file(fd2, FILE_SHOULD_NOT_EXIST);
+  printf("Test %d passed\n", testnum);
+}
+
