@@ -57,9 +57,9 @@ void mcount(int _to)
 {
   MTAB *m;
   int i;
-  int to;
+  unsigned int to;
   int ebp;
-  int from;
+  unsigned int from;
   int mtabi;
   MTABE **cache;
 
