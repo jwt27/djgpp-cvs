@@ -228,7 +228,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
       base = 16;
       continue;
     }
-    if (c != EOF && isdigit(c & 0xff)
+    if ((c != EOF && isdigit(c & 0xff))
 	|| (base==16 && (('a'<=c && c<='f') || ('A'<=c && c<='F')))) {
       ndigit++;
       if (base==8)
