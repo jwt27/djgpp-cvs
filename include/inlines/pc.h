@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_Inline_pc_h_
 #define __dj_include_Inline_pc_h_
@@ -12,7 +13,7 @@ inportb (unsigned short _port)
   unsigned char rv;
   __asm__ __volatile__ ("inb %1, %0"
 	  : "=a" (rv)
-	  : "d" (_port));
+	  : "dN" (_port));
   return rv;
 }
 
@@ -22,7 +23,7 @@ inportw (unsigned short _port)
   unsigned short rv;
   __asm__ __volatile__ ("inw %1, %0"
 	  : "=a" (rv)
-	  : "d" (_port));
+	  : "dN" (_port));
   return rv;
 }
 
@@ -32,7 +33,7 @@ inportl (unsigned short _port)
   unsigned long rv;
   __asm__ __volatile__ ("inl %1, %0"
 	  : "=a" (rv)
-	  : "d" (_port));
+	  : "dN" (_port));
   return rv;
 }
 
@@ -41,7 +42,7 @@ outportb (unsigned short _port, unsigned char _data)
 {
   __asm__ __volatile__ ("outb %1, %0"
 	  :
-	  : "d" (_port),
+	  : "dN" (_port),
 	    "a" (_data));
 }
 
@@ -50,7 +51,7 @@ outportw (unsigned short _port, unsigned short _data)
 {
   __asm__ __volatile__ ("outw %1, %0"
 	  :
-	  : "d" (_port),
+	  : "dN" (_port),
 	    "a" (_data));
 }
 
@@ -59,7 +60,7 @@ outportl (unsigned short _port, unsigned long _data)
 {
   __asm__ __volatile__ ("outl %1, %0"
 	  :
-	  : "d" (_port),
+	  : "dN" (_port),
 	    "a" (_data));
 }
 
