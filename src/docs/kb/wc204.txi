@@ -524,3 +524,7 @@ Similarly, @code{struct passwd} has two new fields, @code{pw_gecos} and
 The function @code{uname} supports the new Pentium 4 CPU's by returning
 @code{"i786"} in the @code{machine} member of @code{struct utsname} it
 returns.
+
+@findex gettext@r{, name clash, @file{conio.h} vs @acronym{GNU} Gettext}
+A name conflict between @code{gettext} declared in @file{conio.h} and
+@code{gettext} provided by @acronym{GNU} Gettext has been resolved.

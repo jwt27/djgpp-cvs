@@ -90,7 +90,7 @@ puttext(int c, int r, int c2, int r2, void *buf)
 }
 
 int
-gettext(int c, int r, int c2, int r2, void *buf)
+_conio_gettext(int c, int r, int c2, int r2, void *buf)
 {
   short *cbuf = (short *)buf;
   /* we should check for valid parameters, and maybe return 0 */
@@ -731,7 +731,7 @@ movetext(int left, int top, int right, int bottom, int dleft, int dtop)
 {
   char    *buf = alloca((right - left + 1) * (bottom - top + 1) * 2);
   
-  gettext(left, top, right, bottom, buf);
+  _conio_gettext(left, top, right, bottom, buf);
   puttext(dleft, dtop, dleft + right - left, dtop + bottom - top, buf);
   return 1;
 }
