@@ -74,7 +74,8 @@ symlink (const char *source, const char *dest)
   dest_base = tail (dest_abs);
 
   /* DJGPP symlinks must be in the same directory.  */
-  if (strnicmp (src_abs, dest_abs, src_base - src_abs))
+  if (src_base - src_abs != dest_base - dest_abs
+      || strnicmp (src_abs, dest_abs, src_base - src_abs))
     {
       errno = EXDEV;
       return -1;
