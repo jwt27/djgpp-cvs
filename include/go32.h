@@ -62,6 +62,7 @@ extern __Go32_Info_Block _go32_info_block;
 #define _dos_ds _go32_info_block.selector_for_linear_memory
 
 #define __tb _go32_info_block.linear_address_of_transfer_buffer
+#define __tb_size _go32_info_block.size_of_transfer_buffer
 
 /* returns number of times hit since last call. (zero first time) */
 unsigned _go32_was_ctrl_break_hit(void);
