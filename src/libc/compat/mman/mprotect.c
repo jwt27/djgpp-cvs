@@ -1,7 +1,6 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <sys/types.h>
 #include <sys/mman.h>
-#include <stubinfo.h>
 #include <dpmi.h>
 #include <crt0.h>
 #include <errno.h>
