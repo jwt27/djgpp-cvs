@@ -11,3 +11,5 @@
 /makefile.sub/ d
 /src\/libm\/.*\.def$/ d
 /\/CVS\// d
+/src\/debug\/ar\.in/ d
+/src\/libc\/dpmi\/api\/_dpmi/ d

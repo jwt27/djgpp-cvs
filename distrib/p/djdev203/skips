@@ -2,3 +2,5 @@
 /flexlexe.h/ d
 s/sys\/sysmacro.h/sys\/sysmacros.h/
 /\/CVS\// d
+/\/_ansi/ d
+/\/_inline/ d
