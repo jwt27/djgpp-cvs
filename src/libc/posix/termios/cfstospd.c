@@ -1,0 +1,19 @@
+#include <errno.h>
+#include <stddef.h>
+#include <termios.h>
+
+int
+cfsetospeed (struct termios *termiosp, speed_t speed)
+{
+  /* check arguments */
+  if (termiosp == NULL)
+    {
+      errno = EINVAL;
+      return -1;
+    }
+
+  /* set output speed */
+  termiosp->c_ospeed = speed;
+
+  return 0;
+}

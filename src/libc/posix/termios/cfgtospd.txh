@@ -1,0 +1,20 @@
+@node cfgetospeed, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+speed_t cfgetospeed (const struct termios *termiosp);
+@end example
+
+@subheading Description
+
+This function gets the output line speed stored in the structure
+@var{termiosp}.  It is provided for compatibility only.  Note that the
+termios emulation handles console only.
+
+@subheading Return Value
+
+The output line speed on success, (speed_t) -1 for error.
+
+

@@ -1,0 +1,26 @@
+@node tcsetattr, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+int tcsetattr (int fd, int action, const struct termios *termiosp);
+@end example
+
+@subheading Description
+
+This function sets termios structure for device @var{fd} from the
+structure @var{termiosp}.  Note that the termios emulation handles
+console only.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+tcsetattr (0, TCSANOW, &termiosbuf);
+@end example
+
+

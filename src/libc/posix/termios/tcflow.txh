@@ -1,0 +1,20 @@
+@node tcflow, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+int tcflow (int fd, int action);
+@end example
+
+@subheading Description
+
+This function performs flow control specified by @var{action} on
+@var{fd}.  It is provided for compatibility only.  Note that the
+termios emulation handles console only.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+

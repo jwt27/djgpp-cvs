@@ -1,0 +1,20 @@
+@node tcflush, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+int tcflush (int fd, int which);
+@end example
+
+@subheading Description
+
+This function clears the input and/or output queues on @var{fd}. It is
+provided for compatibility only.  Note that the termios emulation
+handles console only.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+

@@ -1,0 +1,20 @@
+@node tcsendbreak, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+int tcsendbreak (int fd, int duration);
+@end example
+
+@subheading Description
+
+This function generates a break condition. It is provided for
+compatibility only.  Note that the termios emulation handles console
+only.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+

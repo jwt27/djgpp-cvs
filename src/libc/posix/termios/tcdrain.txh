@@ -1,0 +1,20 @@
+@node tcdrain, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+int tcdrain (int fd);
+@end example
+
+@subheading Description
+
+This function waits finishing writing queued buffer to @var{fd}. It is
+provided for compatibility only.  Note that the termios emulation
+handles console only.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+
