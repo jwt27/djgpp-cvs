@@ -6,5 +6,6 @@ SRC += gcwd.c
 SRC += getpid.c
 SRC += sleep.c
 SRC += tread.c
+SRC += write.c
 
 include $(TOP)/../makefile.inc
