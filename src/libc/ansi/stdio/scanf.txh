@@ -267,6 +267,6 @@ scanf("%d %d %s", &x, &y, buf);
 /* read to end-of-line */
 scanf("%d %[^\n]\n", &x, buf);
 /* read letters only */
-scanf("[a-zA-Z]", buf);
+scanf("%[a-zA-Z]", buf);
 @end example
 
