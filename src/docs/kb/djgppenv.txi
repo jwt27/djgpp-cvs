@@ -45,3 +45,12 @@ environment, unless the first character of the variable name is `+',
 in which case the DOS environment overrides the file (the `+' is
 removed from the name), as in `+USER=dosuser'.
 
+If you need a literal `%', write two percent signs in a row, like so:
+
+@example
+LESSBINFMT=*k<%%X>
+@end example
+
+This will produce a value of @samp{*k<%X>} for the variable
+@code{LESSBINFMT}.
+
