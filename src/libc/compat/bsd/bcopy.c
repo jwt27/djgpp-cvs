@@ -1,10 +1,11 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <string.h>
 
 #undef bcopy
 
-void *
+void
 bcopy(const void *a, void *b, size_t len)
 {
-  return memmove(b, a, len);
+  memmove(b, a, len);
 }
