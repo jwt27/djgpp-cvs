@@ -1,0 +1,181 @@
+@node dosexterr, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int dosexterr(struct DOSERROR *p_error);
+@end example
+
+@subheading Description
+
+This function reads extended error information from DOS and fills
+@var{p_error} structure.
+
+@example
+struct _DOSERROR @{
+  int  exterror;
+  char class;
+  char action;
+  char locus;
+@};
+@end example
+
+Values for extended error code (@var{exterror} field):
+@example
+00h (0)   no error
+01h (1)   function number invalid
+02h (2)   file not found
+03h (3)   path not found
+04h (4)   too many open files (no handles available)
+05h (5)   access denied
+06h (6)   invalid handle
+07h (7)   memory control block destroyed
+08h (8)   insufficient memory
+09h (9)   memory block address invalid
+0Ah (10)  environment invalid (usually >32K in length)
+0Bh (11)  format invalid
+0Ch (12)  access code invalid
+0Dh (13)  data invalid
+0Eh (14)  reserved
+0Fh (15)  invalid drive
+10h (16)  attempted to remove current directory
+11h (17)  not same device
+12h (18)  no more files
+13h (19)  disk write-protected
+14h (20)  unknown unit
+15h (21)  drive not ready
+16h (22)  unknown command
+17h (23)  data error (CRC)
+18h (24)  bad request structure length
+19h (25)  seek error
+1Ah (26)  unknown media type (non-DOS disk)
+1Bh (27)  sector not found
+1Ch (28)  printer out of paper
+1Dh (29)  write fault
+1Eh (30)  read fault
+1Fh (31)  general failure
+20h (32)  sharing violation
+21h (33)  lock violation
+22h (34)  disk change invalid (ES:DI -> media ID structure)(see below)
+23h (35)  FCB unavailable
+24h (36)  sharing buffer overflow
+25h (37)  (DOS 4+) code page mismatch
+26h (38)  (DOS 4+) cannot complete file operation (out of input)
+27h (39)  (DOS 4+) insufficient disk space
+28h-31h   reserved
+32h (50)  network request not supported
+33h (51)  remote computer not listening
+34h (52)  duplicate name on network
+35h (53)  network name not found
+36h (54)  network busy
+37h (55)  network device no longer exists
+38h (56)  network BIOS command limit exceeded
+39h (57)  network adapter hardware error
+3Ah (58)  incorrect response from network
+3Bh (59)  unexpected network error
+3Ch (60)  incompatible remote adapter
+3Dh (61)  print queue full
+3Eh (62)  queue not full
+3Fh (63)  not enough space to print file
+40h (64)  network name was deleted
+41h (65)  network: Access denied
+42h (66)  network device type incorrect
+43h (67)  network name not found
+44h (68)  network name limit exceeded
+45h (69)  network BIOS session limit exceeded
+46h (70)  temporarily paused
+47h (71)  network request not accepted
+48h (72)  network print/disk redirection paused
+49h (73)  network software not installed
+          (LANtastic) invalid network version
+4Ah (74)  unexpected adapter close
+          (LANtastic) account expired
+4Bh (75)  (LANtastic) password expired
+4Ch (76)  (LANtastic) login attempt invalid at this time
+4Dh (77)  (LANtastic v3+) disk limit exceeded on network node
+4Eh (78)  (LANtastic v3+) not logged in to network node
+4Fh (79)  reserved
+50h (80)  file exists
+51h (81)  reserved
+52h (82)  cannot make directory
+53h (83)  fail on INT 24h
+54h (84)  (DOS 3.3+) too many redirections
+55h (85)  (DOS 3.3+) duplicate redirection
+56h (86)  (DOS 3.3+) invalid password
+57h (87)  (DOS 3.3+) invalid parameter
+58h (88)  (DOS 3.3+) network write fault
+59h (89)  (DOS 4+) function not supported on network
+5Ah (90)  (DOS 4+) required system component not installed
+64h (100) (MSCDEX) unknown error
+65h (101) (MSCDEX) not ready
+66h (102) (MSCDEX) EMS memory no longer valid
+67h (103) (MSCDEX) not High Sierra or ISO-9660 format
+68h (104) (MSCDEX) door open
+@end example
+
+Values for error class (@var{class} field):
+@example
+01h  out of resource (storage space or I/O channels)
+02h  temporary situation (file or record lock)
+03h  authorization (denied access)
+04h  internal (system software bug)
+05h  hardware failure
+06h  system failure (configuration file missing or incorrect)
+07h  application program error
+08h  not found
+09h  bad format
+0Ah  locked
+0Bh  media error
+0Ch  already exists
+0Dh  unknown
+@end example
+
+Values for suggested action (@var{action} field):
+@example
+01h  retry
+02h  delayed retry
+03h  prompt user to reenter input
+04h  abort after cleanup
+05h  immediate abort
+06h  ignore
+07h  retry after user intervention
+@end example
+
+Values for error locus (@var{locus} field):
+@example
+01h  unknown or not appropriate
+02h  block device (disk error)
+03h  network related
+04h  serial device (timeout)
+05h  memory related
+@end example
+
+@subheading Return Value
+
+Returns with the extended error code.
+
+@subheading Example
+
+@example
+#include <stdio.h>
+#include <dos.h>
+
+void main(void)
+@{
+  FILE *fp;
+  struct _DOSERROR de;
+
+  fp = fopen("EXAMPLE.DAT","r");
+  if ( fp == NULL )
+  @{
+    puts("Unable to open file for reading.");
+    _dosexterr(&de);
+    printf("Extended DOS error information:\n");
+    printf("Extended error: %i\n",de.exterror);
+    printf("Class:          %x\n",de.class);
+    printf("Action:         %x\n",de.action);
+    printf("Error Locus:    %x\n",de.locus);
+  @}
+@}
+@end example

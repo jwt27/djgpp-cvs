@@ -1,0 +1,43 @@
+@node _dos_setdate, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_setdate(struct dosdate_t *date);
+@end example
+
+@subheading Description
+
+This function sets the current date. The @var{dosdate_t} structure
+is as follows:
+
+@example
+struct dosdate_t @{
+  unsigned char  day;       /* 1-31          */
+  unsigned char  month;     /* 1-12          */
+  unsigned short year;      /* 1980-2099     */
+  unsigned char  dayofweek; /* 0-6, 0=Sunday */
+@};
+@end example
+
+@var{dayofweek} field has no effect at this function call.
+
+@xref{_dos_getdate}. @xref{_dos_gettime}. @xref{_dos_settime}.
+
+@subheading Return Value
+
+Returns 0 if successful and non-zero on error (and sets @var{errno}=EINVAL).
+
+@subheading Example
+
+@example
+struct dosdate_t date;
+
+date->year  = 1999;
+date->month = 12;
+date->day   = 31;
+if ( !_dos_setdate(&date) )
+  puts("It was a valid date.");
+@end example
+

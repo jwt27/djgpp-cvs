@@ -1,0 +1,35 @@
+@node _dos_getdiskfree, dos
+@heading @code{_dos_getdiskfree}
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_getdiskfree(unsigned int drive, struct diskfree_t *diskspace);
+@end example
+
+@subheading Description
+
+This function determines the free space on @var{drive} drive
+(0=default, 1=A:, 2=B:, etc.) and fills @var{diskspace} structure.
+
+@subheading Return Value
+
+Returns with 0 if successful and non-zero on error (sets @var{errno}=EINVAL).
+
+@subheading Example
+
+@example
+struct diskfree_t df;
+unsigned long freebytes;
+
+if ( !_dos_getdiskfree(0, &df) )
+@{
+  freebytes = (unsigned long)df.avail_clusters *
+              (unsigned long)df.bytes_per_sector *
+              (unsigned long)df.sectors_per_cluster;
+  printf("There is %lu free bytes on the current drive.\n", freebytes);
+@}
+else
+  printf("Unable to get free disk space.\n");
+@end example

@@ -1,0 +1,36 @@
+@node _dos_getdate, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void _dos_getdate(struct dosdate_t *date);
+@end example
+
+@subheading Description
+
+This function gets the current date and fills the @var{date} structure
+with these values.
+
+@example
+struct dosdate_t @{
+  unsigned char  day;       /* 1-31          */
+  unsigned char  month;     /* 1-12          */
+  unsigned short year;      /* 1980-2099     */
+  unsigned char  dayofweek; /* 0-6, 0=Sunday */
+@};
+@end example
+
+@xref{_dos_setdate}. @xref{_dos_gettime}. @xref{_dos_settime}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+struct dosdate_t date;
+
+_dos_getdate(&date);
+@end example

@@ -1,0 +1,48 @@
+@node _dos_read, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned int *result);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS read function call (%ah = 0x3F).
+No conversion is done on the data; it is read as raw binary data. This
+function reads from @var{handle} into @var{buffer} @var{count} bytes.
+@var{count} value may be arbitrary size (for example > 64KB). It puts
+number of bytes read into @var{result} if reading is successful.
+
+@xref{_dos_open}. @xref{_dos_creat}. @xref{_dos_creatnew}.
+@xref{_dos_write}. @xref{_dos_close}
+
+@subheading Return Value
+
+Returns 0 if successful or DOS error code on error (and sets @var{errno}
+to EACCES or EBADF)
+
+@subheading Example
+
+@example
+int handle;
+unsigned int result;
+char *filebuffer;
+
+if ( !_dos_open("FOO.DAT", O_RDONLY, &handle) )
+@{
+   puts("FOO.DAT openning was successful.");
+   if ( (filebuffer = malloc(130000)) != NULL )
+   @{
+     if ( !_dos_read(handle, buffer, 130000, &result) )
+       printf("%u bytes read from FOO.DAT.\n", result);
+     else
+       puts("Reading error.");
+     ...
+     /* Do something with filebuffer. */
+     ...
+   @}
+   _dos_close(handle);
+@}
+@end example

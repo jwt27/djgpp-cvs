@@ -1,0 +1,96 @@
+@node _bios_keybrd, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+unsigned _bios_keybrd(unsigned cmd);
+@end example
+
+@subheading Description
+
+The _bios_keybrd routine uses INT 0x16 to access the keyboard
+services. The @var{cmd} argument can be any of the following
+manifest constants:
+
+@table @code
+
+@item _KEYBRD_READ
+
+Read the next key pressed
+
+@item _NKEYBRD_READ
+
+Read the next extended key pressed
+
+@item _KEYBRD_READY
+
+Check if the next key in the keyboard buffer
+
+@item _NKEYBRD_READY
+
+Check if the next extended key in the keyboard buffer
+
+@item _KEYBRD_SHIFTSTATUS
+
+Read keyboard shift state (0x0040:0x0017 byte):
+
+@example
+7654 3210  Meaning
+---- ---X  Right SHIFT is pressed
+---- --X-  Left SHIFT is pressed
+---- -X--  CTRL is pressed
+---- X---  ALT is pressed
+---X ----  Scroll Lock locked
+--X- ----  Num Lock locked
+-X-- ----  Caps Lock locked
+X--- ----  Insert locked
+@end example
+
+@item _NKEYBRD_SHIFTSTATUS
+
+Read keyboard shift and extended shift state (0x0040:0x0017 word):
+
+@example
+FEDC BA98  7654 3210  Meaning
+---- ----  ---- ---X  Right SHIFT is pressed
+---- ----  ---- --X-  Left SHIFT is pressed
+---- ----  ---- -X--  CTRL is pressed
+---- ----  ---- X---  ALT is pressed
+---- ----  ---X ----  Scroll Lock locked
+---- ----  --X- ----  Num Lock locked
+---- ----  -X-- ----  Caps Lock locked
+---- ----  X--- ----  Insert locked
+
+---- ---X  ---- ----  Left CTRL is pressed
+---- --X-  ---- ----  Left ALT is pressed
+---- -X--  ---- ----  Right CTRL is pressed
+---- X---  ---- ----  Right ALT is pressed
+---X ----  ---- ----  Scroll Lock is pressed
+--X- ----  ---- ----  Num Lock is pressed
+-X-- ----  ---- ----  Caps Lock is pressed
+X--- ----  ---- ----  SysReq is pressed
+@end example
+
+@end table
+
+Return Value
+
+With the ???_READ and ???_SHIFTSTATUS arguments, the _bios_keybrd
+function returns the contents of the AX register after the BIOS
+call.
+
+With the ???_READY argument, _bios_keybrd returns 0 if there is no
+key. If there is a key, _bios_keybrd returns the key waiting to be
+read (that is, the same value as _KEYBRD_READ).
+
+With the ???_READ and ???_READY arguments, the _bios_keybrd function
+returns -1 if CTRL+BREAK has been pressed and is the next keystroke
+to be read.
+
+@subheading Example
+
+@example
+while( !_bios_keybrd(_KEYBRD_READY) )
+  try_to_do_something();
+@end example

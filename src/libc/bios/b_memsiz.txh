@@ -1,0 +1,23 @@
+@node _bios_memsize, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+unsigned _bios_memsize(void);
+@end example
+
+@subheading Description
+
+This function returns the amount of system memory in 1K blocks (up to
+640K).
+
+@subheading Return Value
+
+Size of memory (in K).
+
+@subheading Example
+
+@example
+printf("This system has %d bytes of memory\n", _bios_memsize() * 1024);
+@end example

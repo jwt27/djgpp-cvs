@@ -1,0 +1,44 @@
+@node _bios_equiplist, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+unsigned _bios_equiplist(void)
+@end example
+
+@subheading Description
+
+This function returns the equipment word from BIOS request 0x11.  The
+bits correspond to the following values:
+
+@example
+Bits  Meaning
+0     True (1) if disk drive(s) installed
+1     True (1) if math coprocessor installed
+2-3   System RAM in 16K blocks (16-64K)
+4-5   Initial video mode:
+           00 = Reserved
+           01 = 40 x 25 color
+           10 = 80 x 25 color
+           11 = 80 x 25 monochrome
+6-7   Number of floppy-disk drives installed
+      (00 = 1, 01 = 2, etc.)
+8     False (0) if and only if a Direct Memory Access (DMA)
+      chip is installed
+9-11  Number of RS232 serial ports installed
+12    True (1) if and only if a game adapter is installed
+13    True (1) if and only if an internal modem is installed
+14-15 Number of printers installed
+@end example
+
+@subheading Return Value
+
+The equipment word.
+
+@subheading Example
+
+@example
+if ( _bios_equip() & 0xc000 )
+  do_printing();
+@end example

@@ -1,0 +1,112 @@
+@node _bios_serialcom, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+unsigned _bios_serialcom(unsigned cmd, unsingned serialport, unsigned data);
+@end example
+
+@subheading Description
+
+The _bios_serialcom routine uses INT 0x14 to provide serial
+communications services. The @var{serialport} argument is set to 0
+for COM1, to 1 for COM2, and so on. The @var{cmd} argument can be
+set to one of the following manifest constants:
+
+@table @code
+
+@item _COM_INIT
+
+Initialize com port (@var{data} is the settings)
+
+@item _COM_RECEIVE
+
+Read a byte from port
+
+@item _COM_SEND
+
+Write a byte to port
+
+@item _COM_STATUS
+
+Get the port status
+
+@end table
+
+The @var{data} argument is ignored if @var{cmd} is set to
+_COM_RECEIVE or _COM_STATUS. The @var{data} argument for
+_COM_INIT is created by combining one or more of the following
+constants (with the OR operator):
+
+@example
+_COM_CHR7         7 bits/character
+_COM_CHR8         8 bits/character
+_COM_STOP1        1 stop bit
+_COM_STOP2        2 stop bits
+_COM_NOPARITY     no parity
+_COM_EVENPARITY   even parity
+_COM_ODDPARITY    odd parity
+_COM_110          110 baud
+_COM_150          150 baud
+_COM_300          300 baud
+_COM_600          600 baud
+_COM_1200         1200 baud
+_COM_2400         2400 baud
+_COM_4800         4800 baud
+_COM_9600         9600 baud
+@end example
+
+The default value of @var{data} is 1 stop bit, no parity, and 110
+baud.
+
+@subheading Return Value
+
+The function returns a 16-bit integer whose high-order byte
+contains status bits. The meaning of the low-order byte varies,
+depending on the @var{cmd} value. The high-order bits are as
+follows:
+
+@example
+Bit     Meaning if Set
+
+15      Timed out
+14      Transmission-shift register empty
+13      Transmission-hold register empty
+12      Break detected
+11      Framing error
+10      Parity error
+ 9      Overrun error
+ 8      Data ready
+@end example
+
+When service is _COM_SEND, bit 15 is set if data cannot be sent.
+
+When service is _COM_RECEIVE, the byte read is returned in the
+low-order bits if the call is successful. If an error occurs, any
+of the bits 9, 10, 11, or 15 is set.
+
+When service is _COM_INIT or _COM_STATUS, the low-order bits are
+defined as follows:
+
+@example
+Bit     Meaning if Set
+
+7       Receive-line signal detected
+6       Ring indicator
+5       Data-set-ready
+4       Clear-to-send
+3       Change in receive-line signal detected
+2       Trailing-edge ring indicator
+1       Change in data-set-ready status
+0       Change in clear-to-send status
+@end example
+
+@subheading Example
+
+@example
+/* 9600 baud, no parity, one stop, 8 bits */
+_bios_serialcom(_COM_INIT, 0, _COM_9600|_COM_NOPARITY|_COM_STOP1|_COM_CHR8);
+for(i=0; buf[i]; i++)
+  _bios_serialcom(_COM_SEND, 0, buf[i]);
+@end example

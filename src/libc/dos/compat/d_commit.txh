@@ -1,0 +1,25 @@
+@node _dos_commit, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_commit(int handle);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS commit function call (%ah = 0x68).
+This function flushes DOS internal file buffers to disk.
+
+@subheading Return Value
+
+Returns 0 if successful or DOS error code on error (and sets @var{errno}).
+
+@subheading Example
+
+@example
+_dos_write(handle, buffer, 1000, &result);
+_dos_commit(handle);
+_dos_close(handle);
+@end example

@@ -1,0 +1,31 @@
+@node _dos_setdrive, dos
+@heading @code{_dos_setdrive}
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void _dos_setdrive(unsigned int drive, unsigned int *p_drives);
+@end example
+
+@subheading Description
+
+This function set the current default drive based on @var{drive}
+(1=A:, 2=B:, etc.) and determines the number of available logical
+drives and fills @var{p_drives} with it.
+
+@xref{_dos_getdrive}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+unsigned int available_drives;
+
+/* The current drive will be A: */
+_dos_setdrive(1, &available_drives);
+printf("Number of available logical drives %u.\n", available_drives);
+@end example

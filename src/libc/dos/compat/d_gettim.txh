@@ -1,0 +1,36 @@
+@node _dos_gettime, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void _dos_gettime(struct dostime_t *time);
+@end example
+
+@subheading Description
+
+This function gets the current time and fills the @var{time} structure
+with these values.
+
+@example
+struct dostime_t @{
+  unsigned char hour;     /* 0-23 */
+  unsigned char minute;   /* 0-59 */
+  unsigned char second;   /* 0-59 */
+  unsigned char hsecond;  /* 0-99 */
+@};
+@end example
+
+@xref{_dos_settime}. @xref{_dos_getdate}. @xref{_dos_setdate}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+struct dostime_t time;
+
+_dos_gettime(&time);
+@end example

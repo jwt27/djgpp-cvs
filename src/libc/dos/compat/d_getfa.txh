@@ -1,0 +1,72 @@
+@node _dos_getfileattr, dos
+@heading @code{_dos_getfileattr}
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_getfileattr(const char *filename, unsigned int *p_attr);
+@end example
+
+@subheading Description
+
+This function determines the attributes of given file and fills @var{attr}
+with it. Use the following constans (in DOS.H) to check this value.
+
+@table @code
+
+@item _A_NORMAL (0x00)
+
+Normal file (no read/write restrictions)
+
+@item _A_RDONLY (0x01)
+
+Read only file
+
+@item _A_HIDDEN (0x02)
+
+Hidden file
+
+@item _A_SYSTEM (0x04)
+
+System file
+
+@item _A_VOLID (0x08)
+
+Volume ID file
+
+@item _A_SUBDIR (0x10)
+
+Subdirectory
+
+@item _A_ARCH (0x20)
+
+Archive file
+
+@end table
+
+@xref{_dos_setfileattr}.
+
+@subheading Return Value
+
+Returns with 0 if successful and DOS error value on error (and sets
+@var{errno}=ENOENT).
+
+@subheading Example
+
+@example
+unsigned int attr;
+
+if ( !_dos_getfileattr("FOO.DAT", &attr) )
+@{
+  puts("FOO.DAT attributes are:");
+  if ( attr & _A_ARCH )   puts("Archive");
+  if ( attr & _A_RDONLY ) puts("Read only");
+  if ( attr & _A_HIDDEN ) puts("Hidden");
+  if ( attr & _A_SYSTEM ) puts("Is it part of DOS ?");
+  if ( attr & _A_VOLID )  puts("Volume ID");
+  if ( attr & _A_SUBDIR ) puts("Directory");
+@}
+else
+  puts("Unable to get FOO.DAT attributes.");
+@end example

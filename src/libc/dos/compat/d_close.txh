@@ -1,0 +1,30 @@
+@node _dos_close, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_close(int handle);
+@end example
+
+@subheading Description
+
+This is a direct connection to the MS-DOS close function call (%ah = 0x3E).
+This function closes the specified file.
+
+@xref{_dos_open}. @xref{_dos_creat}. @xref{_dos_creatnew}.
+@xref{_dos_read}. @xref{_dos_write}.
+
+@subheading Return Value
+
+Returns 0 if successful or DOS error code on error (and sets @var{errno}).
+
+@subheading Example
+
+@example
+int handle;
+
+_dos_creat("FOO.DAT", _A_ARCH, &handle);
+...
+_dos_close(handle);
+@end example

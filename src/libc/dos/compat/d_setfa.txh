@@ -1,0 +1,60 @@
+@node _dos_setfileattr, dos
+@heading @code{_dos_setfileattr}
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_setfileattr(const char *filename, unsigned int attr);
+@end example
+
+@subheading Description
+
+This function sets the attributes of given file. Use the following
+constans in DOS.H to create @var{attr} parameter:
+
+@table @code
+
+@item _A_NORMAL (0x00)
+
+Normal file (no read/write restrictions)
+
+@item _A_RDONLY (0x01)
+
+Read only file
+
+@item _A_HIDDEN (0x02)
+
+Hidden file
+
+@item _A_SYSTEM (0x04)
+
+System file
+
+@item _A_VOLID (0x08)
+
+Volume ID file
+
+@item _A_SUBDIR (0x10)
+
+Subdirectory
+
+@item _A_ARCH (0x20)
+
+Archive file
+
+@end table
+
+@xref{_dos_getfileattr}.
+
+@subheading Return Value
+
+Returns with 0 if successful and DOS error value on error (and sets
+@var{errno} to ENOENT or EACCES).
+
+@subheading Example
+
+@example
+if ( !_dos_setfileattr("FOO.DAT", _A_RDONLY | _A_HIDDEN) )
+   puts("FOO.DAT is hidden now.");
+@end example

@@ -1,0 +1,29 @@
+@node _dos_getdrive, dos
+@heading @code{_dos_getdrive}
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+void _dos_getdrive(unsigned int *p_drive);
+@end example
+
+@subheading Description
+
+This function determine the current default drive and writes this value
+into @var{p_drive} (1=A:, 2=B:, etc.).
+
+@xref{_dos_setdrive}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+unsigned int drive;
+
+_dos_getdrive(&drive);
+printf("The current drive is %c:.\n", 'A' - 1 + drive);
+@end example

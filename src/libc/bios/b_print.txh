@@ -1,0 +1,58 @@
+@node _bios_printer, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+unsigned _bios_printer(unsigned cmd, unsigned printer, unsigned data);
+@end example
+
+@subheading Description
+The _bios_printer routine uses INT 0x17 to perform printer output
+services for parallel printers. The @var{printer} argument specifies
+the affected printer, where 0 is LPT1, 1 is LPT2, and so on.
+The @var{cmd} argument can be any of the following manifest
+constants:
+
+@table @code
+
+@item _PRINTER_INIT
+
+@item Reset and initialize the specified printer port
+
+@item _PRINTER_STATUS
+
+Return the status of the specified printer port
+
+@item _PRINTER_WRITE
+
+Print the @var{data} argument to the specified printer port
+
+@end table
+
+@subheading Return Value
+
+The _bios_printer function returns the value in the AX register
+after the BIOS interrupt. The high-order byte (AH) of the return
+value indicates the printer status after the operation, as defined
+below:
+
+@example
+Bit     Meaning if True
+
+0       Printer timed out
+1       Not used
+2       Not used
+3       I/O error
+4       Printer selected
+5       Out of paper
+6       Acknowledge
+7       Printer not busy
+@end example
+
+@subheading Example
+
+@example
+while (*c)
+  _bios_printer(_PRINTER_WRITE, *c++, 0);
+@end example

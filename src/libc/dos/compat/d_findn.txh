@@ -1,0 +1,18 @@
+@node _dos_findnext, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+unsigned int _dos_findnext(struct _find_t *result);
+@end example
+
+@subheading Description
+
+This finds the next file in the search started by @code{_dos_findfirst}.
+
+@xref{_dos_findfirst}.
+
+@subheading Return Value
+
+Zero if a match is found, DOS error code if not found (and sets @var{errno}).
