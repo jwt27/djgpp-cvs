@@ -788,3 +788,6 @@ The function @code{_Exit} was added.
 
 @findex atoll
 The function @code{atoll} was added.
+
+@findex strtold
+The function @code{strtold} was added.
