@@ -81,12 +81,19 @@ If it can, it will reuse the same memory space, but it may have to
 allocate a new memory space to satisfy the request.  In either case, it
 will return the pointer that you should use to refer to the (possibly
 new) memory area.  The pointer passed may be @code{NULL}, in which case
-this function acts just like @code{malloc} (@pxref{malloc}). 
+this function acts just like @code{malloc} (@pxref{malloc}).
+
+An application that wants to be robust in the face of a possible failure
+of @code{realloc} to enlarge a buffer should save a copy of the old
+pointer in a local variable, to be able to use the original buffer in
+case @code{realloc} returns @code{NULL}.  See the example below for
+details.
 
 @subheading Return Value
 
 On success, a pointer is returned to the memory you should now refer
-to.  On failure, @code{NULL} is returned and @var{ptr} is not freed.
+to.  On failure, @code{NULL} is returned and the memory pointed to by
+@var{ptr} prior to the call is not freed.
 
 @subheading Portability
 
@@ -97,8 +104,12 @@ to.  On failure, @code{NULL} is returned and @var{ptr} is not freed.
 @example
 if (now+new > max)
 @{
+  char *old = p;
+
   max = now+new;
   p = realloc(p, max);
+  if (p == NULL)
+    p = old;  /* retain the old pointer */
 @}
 @end example
 
