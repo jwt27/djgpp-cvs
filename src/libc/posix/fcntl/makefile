@@ -5,4 +5,6 @@ SRC += creat.c
 SRC += fcntl.c
 SRC += open.c
 
+fcntl.o:	CFLAGS += -Wno-error
+
 include $(TOP)/../makefile.inc
