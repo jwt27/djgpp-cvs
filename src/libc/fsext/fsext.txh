@@ -133,8 +133,8 @@ symlinks in other than DJGPP symlink file format.
 
 @item __FSEXT_fchown
 
-A file fchown handler (@pxref{fchown}).  This is called when file
-attributes are changed for an open file.
+A file fchown handler (@pxref{fchown}).  This is called when
+the ownership is to be changed for an open file.
 
 @end table
 
