@@ -611,6 +611,16 @@ stat_assist(const char *path, struct stat *statbuf)
       if ( !(ff_blk.ff_attrib & 0x07) )  /* no R, H or S bits set */
         statbuf->st_mode |= WRITE_ACCESS;
 
+      /* Windows 2000 and XP - device attributes not set correctly */
+      if( _os_trueversion == 0x532 && !ff_blk.ff_fsize &&
+          (_djstat_fail_bits & _STFAIL_TRUENAME) &&
+          !ff_blk.ff_ftime && (ff_blk.ff_fdate == 33) &&
+          !ff_blk.lfn_ctime && (ff_blk.lfn_cdate == 33) &&
+          !ff_blk.lfn_atime && (ff_blk.lfn_adate == 33) &&
+          !strcmp(ff_blk.lfn_magic,"LFN32") &&
+          /* strlen(ff_blk.ff_name) == 3 && */ ff_blk.ff_attrib == 0x20)
+        ff_blk.ff_attrib = 0x40;  
+
       /* Sometimes `_truename' doesn't return X:/FOO for character
 	 devices.  However, FindFirst returns attribute 40h for them.  */
       if (ff_blk.ff_attrib == 0x40)
