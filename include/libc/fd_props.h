@@ -13,7 +13,14 @@ extern "C" {
 #ifndef _POSIX_SOURCE
 
 /* Delete file when the last descriptor referencing it is closed.  */
-#define FILE_DESC_TEMPORARY 0x01
+#define FILE_DESC_TEMPORARY         0x01
+
+/* Tell write and _write to test for file offset greater than EOF.  If so,
+   they will fill the gap with zeroes.  */
+#define FILE_DESC_ZERO_FILL_EOF_GAP 0x02
+
+/* Set when there can't be an EOF gap or it should be left alone.  */
+#define FILE_DESC_DONT_FILL_EOF_GAP 0x04
 
 typedef struct fd_properties fd_properties;
 
@@ -34,7 +41,17 @@ int __clear_fd_properties(int _fd);
 
 static __inline__ int __has_fd_properties(int _fd)
 {
-  return __fd_properties && __fd_properties[_fd];
+  return _fd >= 0 && __fd_properties && __fd_properties[_fd];
+}
+
+static __inline__ void __set_fd_flags(int _fd, unsigned long _flags)
+{
+  __fd_properties[_fd]->flags |= _flags;  
+}
+
+static __inline__ void __clear_fd_flags(int _fd, unsigned long _flags)
+{
+  __fd_properties[_fd]->flags &= ~_flags;
 }
 
 #endif /* !_POSIX_SOURCE */
