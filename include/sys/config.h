@@ -213,6 +213,10 @@ extern "C" {
 #undef  HAVE_UTIME_H
 #define HAVE_UTIME_H    1
 
+/* Define if you have the values.h header file.  */
+#undef  HAVE_VALUES_H
+#define HAVE_VALUES_H 1
+
 /* Define if you have the <varargs.h> header file.  */
 #undef  HAVE_VARARGS_H
 #define HAVE_VARARGS_H  1
@@ -225,6 +229,10 @@ extern "C" {
 #undef  HAVE_SYS_FILE_H
 #define HAVE_SYS_FILE_H     1
 
+/* Define if you have the <sys/ioctl.h> header file.  */
+#undef  HAVE_SYS_IOCTL_H
+#define HAVE_SYS_IOCTL_H 1
+
 /* Define if you have the <sys/param.h> header file.  */
 #undef  HAVE_SYS_PARAM_H
 #define HAVE_SYS_PARAM_H    1
@@ -236,6 +244,10 @@ extern "C" {
 /* Define if you have the <sys/stat.h> header file.  */
 #undef  HAVE_SYS_STAT_H
 #define HAVE_SYS_STAT_H 1
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef  HAVE_SYS_TIME_H
+#define HAVE_SYS_TIME_H 1
 
 /* Define if you have the <sys/timeb.h> header file.  */
 #undef  HAVE_SYS_TIMEB_H
@@ -283,6 +295,14 @@ extern "C" {
 #undef  HAVE_DUP2
 #define HAVE_DUP2       1
 
+/* Define if you have the endgrent function.  */
+#undef  HAVE_ENDGRENT
+#define HAVE_ENDGRENT 1
+
+/* Define if you have the endpwent function.  */
+#undef  HAVE_ENDPWENT
+#define HAVE_ENDPWENT 1
+
 /* Define if you have fnmatch() function in your library.  */
 #undef  HAVE_FNMATCH
 #define HAVE_FNMATCH    1
@@ -310,6 +330,10 @@ extern "C" {
 /* Define if you have getdtablesize() function in your library.  */
 #undef  HAVE_GETDTABLESIZE
 #define HAVE_GETDTABLESIZE  1
+
+/* Define if you have the getgroups function.  */
+#undef  HAVE_GETGROUPS
+#define HAVE_GETGROUPS
 
 /* Define if you have gethostname() function in your library.  */
 #undef  HAVE_GETHOSTNAME
@@ -340,17 +364,37 @@ extern "C" {
 #undef  HAVE_GLOB
 #define HAVE_GLOB   1
 
+/* Define if you have the isascii function.  */
+#undef  HAVE_ISASCII
+#define HAVE_ISASCII 1
+
 /* Define if you have memchr() in your library.  */
 #undef  HAVE_MEMCHR
 #define HAVE_MEMCHR 1
+
+/* Define if you have the memcpy function.  */
+#undef  HAVE_MEMCPY
+#define HAVE_MEMCPY 1
 
 /* Define if you have mkdir() function in your library.  */
 #undef  HAVE_MKDIR
 #define HAVE_MKDIR  1
 
+/* Define if you have the mkfifo function.  */
+#undef  HAVE_MKFIFO
+#define HAVE_MKFIFO 1
+
 /* Define if you have mktime() function in your library.  */
 #undef  HAVE_MKTIME
 #define HAVE_MKTIME 1
+
+/* Define if you have the pow function.  */
+#undef  HAVE_POW
+#define HAVE_POW 1
+
+/* Define if you have the putenv function.  */
+#undef  HAVE_PUTENV
+#define HAVE_PUTENV 1
 
 /* Define if you have random() function in your library.  */
 #undef  HAVE_RANDOM
@@ -364,9 +408,17 @@ extern "C" {
 #undef  HAVE_RMDIR
 #define HAVE_RMDIR  1
 
+/* Define if you have the setenv function.  */
+#undef  HAVE_SETENV
+#define HAVE_SETENV 1
+
 /* Define if you have setlinebuf() function in your library.  */
 #undef  HAVE_SETLINEBUF
 #define HAVE_SETLINEBUF 1
+
+/* Define if you have the setlocale function.  */
+#undef  HAVE_SETLOCALE
+#define HAVE_SETLOCALE 1
 
 /* Define if you have sigaction() function in your library.  */
 #undef  HAVE_SIGACTION
@@ -376,6 +428,10 @@ extern "C" {
    struct statfs has f_bsize field.  */
 #undef  STAT_STATFS2_BSIZE
 #define STAT_STATFS2_BSIZE  1
+
+/* Define if you have the stpcpy function.  */
+#undef  HAVE_STPCPY
+#define HAVE_STPCPY 1
 
 /* Define if you have strcasecmp() function in your library.  */
 #undef	HAVE_STRCASECMP
@@ -435,6 +491,10 @@ extern "C" {
 /* Define if your struct stat has st_rdev member.  */
 #undef  HAVE_ST_RDEV
 #define HAVE_ST_RDEV    1
+
+/* Define if you have `struct utimbuf' declared in <utime.h>.  */
+#undef  HAVE_STRUCT_UTIMBUF
+#define HAVE_STRUCT_UTIMBUF 1
 
 /* Define if you have struct timeval defined in your <time.h> header file.  */
 #undef  HAVE_TIMEVAL
@@ -527,7 +587,7 @@ extern "C" {
 */
 #undef  _LIBC
 #undef  __GNU_LIBRARY__
-#define _LIBC           1
+/* #define _LIBC           1 */
 /* #define __GNU_LIBRARY__ 1 */
 
 

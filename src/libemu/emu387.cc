@@ -1853,14 +1853,20 @@ static void fpatan()
     return;
   if (is_zero(st()))
   {
+    // Propagate sign of numerator
+    char num_sign = st(1).sign;
     st(1) = CONST_PI2;
+    st(1).sign = num_sign;
     st().tag = TW_E;
     top++;
     return;
   }
+
   if (is_zero(st(1)))
   {
-    st(1) = CONST_Z;
+    // Check for sign of denominator
+    // st(1) = CONST_Z;
+    st(1) = (st(0).sign == SIGN_NEG) ? CONST_PI : CONST_Z;
     st().tag = TW_E;
     top++;
     return;
