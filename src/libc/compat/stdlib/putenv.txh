@@ -4,7 +4,7 @@
 @example
 #include <stdlib.h>
 
-int putenv(const char *env);
+int putenv(char *env);
 @end example
 
 @subheading Description
@@ -22,11 +22,14 @@ in memory leaks.
 
 @subheading Return Value
 
-Zero on success, nonzero on failure.
+Zero on success, nonzero on failure;  @code{errno} will be set to the
+relevant error code: currently only @code{ENOMEM} (insufficient memory)
+is possible.
 
 @subheading Portability
 
-@portability !ansi, !posix
+@port-note posix This function is new to the Posix 1003.1-200x draft
+@portability !ansi, posix
 
 @subheading Example
 
