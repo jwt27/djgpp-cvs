@@ -397,7 +397,7 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
 
     case 'H':  /* CUP, HVP: Cursor to row and column.  */
     case 'f':
-      set_cursor(GET_ARG(0, 1) - 1, GET_ARG(1, 1) - 1);
+      set_cursor(GET_ARG(1, 1) - 1, GET_ARG(0, 1) - 1);
       break;
 
     case 'd':  /* VPA: Cursor to row.  */
@@ -437,6 +437,7 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
                                            __tty_screen.max_row);
           break;
       }
+      break;
 
     case 'K':  /* EL: Edit in Line */
       switch (GET_ARG(0, 0))
@@ -456,6 +457,7 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
           __tty_screen_intface->clear(0, row, __tty_screen.max_col, row);
           break;
       }
+      break;
 
     case 'L':   /* IL: Insert Line */
       get_cursor(&col, &row);
@@ -624,6 +626,7 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
       /* Construct the text attribute and set it.  */
       __tty_screen.attrib = (bg << 4) | fg;
     }
+    break;
 
     /* Unrecognized command. Do nothing.  */
     default:
