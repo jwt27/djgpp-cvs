@@ -1,9 +1,13 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <io.h>
 #include <fcntl.h>
+
+#ifdef __DJGPP__
+#include <io.h>
+#endif
 
 #include "../../include/stubinfo.h"
 
@@ -25,11 +29,11 @@ void find_info(char *filename)
     exit(1);
   }
 
-  fseek(f, 512L, 0);
-  fread(test_magic, 16, 1, f);
-  if (memcmp(test_magic, "go32stub", 8) != 0)
+  if (fseek(f, 512L, 0) != 0 ||
+      fread(test_magic, 1, 16, f) != 16 ||
+      memcmp(test_magic, "go32stub", 8) != 0)
   {
-    printf("Error: %s is not a go32 v2.0 or higher stub\n");
+    printf("Error: %s is not a go32 v2.0 or higher stub\n", filename);
     exit(1);
   }
 
