@@ -40,8 +40,8 @@ int __djgpp_spawn(int _mode, const char *_path, char *const _argv[], char *const
 #define P_NOWAIT	2	/* always generates error */
 #define P_OVERLAY	3
 
-#define SPAWN_EXTENSION_SRCH   1
-#define SPAWN_INTERP_ONLY_SRCH 2
+#define SPAWN_EXTENSION_SRCH    1
+#define SPAWN_NO_EXTENSION_SRCH 2
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
