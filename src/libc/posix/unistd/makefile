@@ -44,7 +44,6 @@ SRC += setpgid.c
 SRC += setsid.c
 SRC += setuid.c
 SRC += sleep.c
-SRC += symlink.c
 SRC += sysconf.c
 SRC += ttyname.c
 SRC += unlink.s

@@ -95,7 +95,14 @@ Calling the @code{setitimer} function with both
 as if @code{it_interval.tv_usec} were set to the system clock
 granularity (55@dmn{msec} by default).
 
+@findex __solve_symlinks@r{, and symlink support}
+@findex __solve_symlinks@r{, added to the library}
 @findex readlink@r{, and symlink support}
 @findex readlink@r{, added to the library}
 UNIX-style symbolic links are fully emulated by library. As a part of this,
-new function @code{readlink} has been added to library.
+new functions @code{__solve_symlinks} and @code{readlink} have been 
+added to library.
+
+@findex symlink@r{, and symlink support}
+As a part of symlink emulation, @code{symlink} no longer emulates symlinks
+to executables by creating stubs. It creates symlinks to all files instead.

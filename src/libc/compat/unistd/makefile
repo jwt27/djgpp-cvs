@@ -14,9 +14,11 @@ SRC += lchown.c
 SRC += llseek.c
 SRC += nice.c
 SRC += readlink.c
+SRC += symlink.c
 SRC += sync.c
 SRC += truncate.c
 SRC += usleep.c
 SRC += vfork.c
+SRC += xsymlink.c
 
 include $(TOP)/../makefile.inc
