@@ -1239,6 +1239,8 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
   if (!hasdot || _use_lfn(program))
     for (i=0; interpreters[i].extension; i++)
     {
+      if (interpreters[i].flags & INTERP_FLAG_SKIP_SEARCH)
+        continue;
       strcpy(rp, interpreters[i].extension);
       if (access(buf, 0) == 0 && access(buf, D_OK))
       {
@@ -1351,9 +1353,6 @@ find_extension (const char *path, char *ext)
 
 #define SPAWN_SEARCH_FLAGS \
   (SPAWN_EXTENSION_SRCH | SPAWN_INTERP_ONLY_SRCH)
-
-int __djgpp_spawn(int mode, const char *path, char *const argv[],
-                  char *const envp[], unsigned long flags);
 
 int __spawnve(int mode, const char *path, char *const argv[],
               char *const envp[])
