@@ -45,7 +45,7 @@ libtst2x.a: test2x.dxe
 	$(DXE3GEN) -I $@ $<
 
 libtst3p.a: test3p.dxe
-	$(DXE3GEN) -I $@ $<
+	$(DXE3GEN) -Y $@ $<
 
 test1.dxe: test1.o
 	$(DXE3GEN) -o $@ $^ -lc -E _my_
