@@ -212,6 +212,10 @@ simply converts up to 12 characters of @var{long_fname} to upper-case
 and returns that.  It will do the same if @var{long_fname} includes any
 characters illegal in a filename.
 
+This function returns incorrect results on Windows 2000 and Windows XP
+due to bugs in the implementation of the DPMI call on those platforms.
+Do not use this function in those environments.
+
 You might need to call this function if you want to know whether a given
 filename is valid on MSDOS: if a case-sensitive string comparison
 function such as @code{strcmp} (@pxref{strcmp}) returns a 0 when it
@@ -332,3 +336,47 @@ If the underlying system calls fail, the function will return 0 and set
 @example
  unsigned file_stamp = _lfn_get_ftime (handle, _LFN_CTIME);
 @end example
+
+@c -----------------------------------------------------------------------
+
+@node _is_DOS83, file system
+@subheading Syntax
+ 
+@example
+#include <fcntl.h>
+
+int _is_DOS83 (const char *fname);
+@end example
+
+@subheading Description
+
+This function checks the filename pointed to by @var{fname} to 
+determine if it is a standard short (8+3) form file name.  The 
+filename should only include the name part of the file.  It is
+expected the filename will contain a valid long or short file
+name (no validation is done to exclude path characters or 
+characters always illegal in any file name).  Note: If the filename
+contains lower case characters the name is considered to be a
+long name and not a standard short name (and the function will
+return 0).
+
+The function will return 0 (failure) if there are more than 8 
+characters before a period, more than 3 characters after a period, 
+more than one period, starts with a period, any lower case characters, 
+or any of the special characters @samp{+} @samp{,} @samp{;} @samp{=} @samp{[} @samp{]}, or a space.  The 
+special names @file{.} and @file{..} are exceptions and will return success.
+
+This function could be called to determine if a filename is valid on 
+DOS before long file name support.  If this function returns 1 the 
+filename probably does not have a long name entry on a FAT file 
+system.  The library internally calls this function to determine
+if a file should have it's name lower cased when @pxref{_preserve_fncase} is
+false.
+
+@subheading Return value
+
+The function returns an integer 0 (not DOS 8.3) or 1 (DOS 8.3)
+
+@subheading Portability
+
+@portability !ansi, !posix
