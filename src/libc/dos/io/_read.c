@@ -18,7 +18,6 @@ _read(int handle, void* buffer, size_t count)
 {
   size_t j, k;
   int ngot;
-  unsigned long tbsize;
   __dpmi_regs r;
 
   __FSEXT_Function *func = __FSEXT_get_function(handle);
@@ -29,10 +28,9 @@ _read(int handle, void* buffer, size_t count)
       return rv;
   }
 
-  tbsize = _go32_info_block.size_of_transfer_buffer;
   ngot = 0;
   do {
-    j = (count <= tbsize) ? count : tbsize;
+    j = (count <= __tb_size) ? count : __tb_size;
     r.x.ax = 0x3f00;
     r.x.bx = handle;
     r.x.cx = j;

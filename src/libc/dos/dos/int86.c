@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -7,8 +8,6 @@
 #include <dpmi.h>
 
 int _int86(int ivec, union REGS *in, union REGS *out);
-
-#define tbsize _go32_info_block.size_of_transfer_buffer
 
 int int86(int ivec, union REGS *in, union REGS *out)
 {
@@ -65,7 +64,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
         unsigned total = 0;
         regs.x.dx = 0;
         while(count) {
-          regs.x.cx = (count <= tbsize) ? count : tbsize;
+          regs.x.cx = (count <= __tb_size) ? count : __tb_size;
           __dpmi_int(0x21, &regs);
           if(regs.x.flags & 1)
             goto doexit;
@@ -89,7 +88,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
         unsigned total = 0;
         regs.x.dx = 0;
         do {
-          regs.x.cx = (count <= tbsize) ? count : tbsize;
+          regs.x.cx = (count <= __tb_size) ? count : __tb_size;
           dosmemput(ptr, regs.x.cx, __tb);
           __dpmi_int(0x21, &regs);
           if(regs.x.flags & 1)

@@ -45,7 +45,7 @@ int
 _write_fill_seek_gap(int fd)
 {
   offset_t eof_off, cur_off, fill_count;
-  unsigned long tbsize, buf_size;
+  unsigned long buf_size;
   unsigned long i;
   short fd_info;
   
@@ -87,10 +87,9 @@ _write_fill_seek_gap(int fd)
   __clear_fd_flags(fd, FILE_DESC_ZERO_FILL_EOF_GAP);
   
   /* Fill the transfer buffer with zeros.  */
-  tbsize = _go32_info_block.size_of_transfer_buffer;
   fill_count = cur_off - eof_off;
 
-  buf_size = (fill_count > tbsize) ? tbsize : fill_count;
+  buf_size = (fill_count > __tb_size) ? __tb_size : fill_count;
 
   i = 0;
   _farsetsel(_dos_ds);
@@ -115,14 +114,13 @@ _write_fill_seek_gap(int fd)
 int
 _write_int(int fd, const char *buffer, unsigned long long write_count)
 {
-  unsigned long buf_size, tb_size;
+  unsigned long buf_size;
   unsigned long chunk_count;
   int total_written;
   unsigned short bytes_written;
   __dpmi_regs r;
 
-  tb_size = _go32_info_block.size_of_transfer_buffer;
-  buf_size = (write_count <= tb_size) ? write_count : tb_size;
+  buf_size = (write_count <= __tb_size) ? write_count : __tb_size;
   
   total_written = 0;
   do
