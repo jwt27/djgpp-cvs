@@ -549,3 +549,9 @@ whether a search for executable extensions is performed.
 The function @code{glob} and its helper functions have been changed to prevent
 an internal buffer from being overrun when the pattern to be expanded has more
 than 2000 characters.
+
+@cindex nested DJGPP program on Windows 2000
+There's now a work-around for the bug in NTVDM, the DOS emulator, which
+ships with Windows 2000: nested DJGPP programs no longer cause NTVDM to
+crash.  This allows to use GCC, Make, RHIDE, Bash, and other programs
+which routinely invoke child programs.

@@ -131,6 +131,7 @@ extern "C" {
 #endif
 
 extern unsigned short   _osmajor, _osminor;
+extern unsigned short   _windows_major, _windows_minor;
 extern const    char  * _os_flavor;
 extern int		_doserrno;
 
@@ -173,6 +174,8 @@ void getdfree(unsigned char _drive, struct dfree *_ptr);
 void delay(unsigned _msec);
 /* int _get_default_drive(void);
 void _fixpath(const char *, char *); */
+
+void __maybe_fix_w2k_ntvdm_bug(void);
 
 
 /*
