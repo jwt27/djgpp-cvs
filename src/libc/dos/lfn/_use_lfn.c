@@ -101,8 +101,18 @@ _get_volume_info (const char *path, int *maxfile, int *maxpath, char *fsystype)
   }
   else
   {
-    errno = ENOSYS;
-    retval = 0;	/* meaning none of the features supported */
+    if (r.h.ah == 0x71)
+    {
+      errno = ENOSYS;
+      retval = 0;	/* meaning none of the features supported */
+    }
+    else
+    {
+      /* If the call failed, but not because the OS doesn't support
+	 the function (e.g., invalid drive), don't disable LFN.  */
+      errno = __doserr_to_errno(r.x.ax);
+      retval = _FILESYS_UNKNOWN;
+    }
     if (maxfile)
       *maxfile = 13;
     if (maxpath)
@@ -118,6 +128,7 @@ char
 _use_lfn (const char *path)
 {
   int same_drive_as_last_time;
+  char old_lfn_flag = _lfnenv;
 
   if (_crt0_startup_flags & _CRT0_FLAG_NO_LFN)
   {
@@ -179,6 +190,15 @@ _use_lfn (const char *path)
 
   if (!same_drive_as_last_time || filesystem_flags == _FILESYS_UNKNOWN)
     filesystem_flags = _get_volume_info (path, 0, 0, 0);
+
+  /* If _get_volume_info failed (e.g., an invalid drive letter),
+     leave the previous LFN setting alone.  */
+  if (filesystem_flags == _FILESYS_UNKNOWN)
+  {
+    _lfnenv = old_lfn_flag;
+    last_drive = 0;
+    return _lfnenv != 'n';
+  }
 
           /* Does the filesystem LFN support ? */
   return ((filesystem_flags & _FILESYS_LFN_SUPPORTED) != 0 &&

@@ -95,12 +95,12 @@ This function returns filesystem information about the volume where
 @var{path} resides.  Only the root directory name part is actually used;
 if @var{path} does not specify the drive explicitly, or is a @code{NULL}
 pointer, the current drive is used.  Upon return, the variable pointed
-to by @var{*max_file_len} contains the maximum length of a filename
+to by @var{max_file_len} contains the maximum length of a filename
 (including the terminating zero), the variable pointed to by
-@var{*max_path_len} contains the maximum length of a pathname (including
+@var{max_path_len} contains the maximum length of a pathname (including
 the terminating zero), and a string that identifies the filesystem type
 (e.g., ``FAT'', ``NTFS'' etc.) is placed into the buffer pointed to by
-@var{*fsystype}, which should be long enough (32 bytes are usually
+@var{fsystype}, which should be long enough (32 bytes are usually
 enough).  If any of these pointers is a @code{NULL} pointer, it will be
 ignored.  The function returns various flags that describe features
 supported by the given filesystem as a bit-mapped number.  The following
@@ -121,6 +121,11 @@ Filesystem supports the @dfn{Long File Name} (LFN) API.
 
 @item _FILESYS_VOL_COMPRESSED
 This volume is compressed.
+
+@item _FILESYS_UNKNOWN
+The underlying system call failed.  This usually means that the drive
+letter is invalid, like when a floppy drive is empty or a drive with
+that letter doesn't exist.
 @end table
 
 
@@ -128,7 +133,9 @@ This volume is compressed.
 
 A combination of the above bits if the LFN API is supported, or 0 (and
 @code{errno} set to @code{ENOSYS}) if the LFN API is not supported by the
-OS.
+OS.  If the drive letter is invalid, the function returns
+@code{_FILESYS_UNKNOWN} and sets @code{errno} to either @code{ENODEV} or
+@code{ENXIO}.
 
 @subheading Portability
 

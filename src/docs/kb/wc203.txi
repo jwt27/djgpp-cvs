@@ -706,3 +706,13 @@ The @code{wchar_t} data type is changed so that DJGPP now supports
 16-bit wide characters.  This is required for @sc{rsxntdj} programs to
 be compatible with Windows implementation of Unicode.
 
+@findex _use_lfn@r{, and invalid drives}
+@findex _USE_LFN@r{, and invalid drives}
+@findex _get_volume_info@r{, adn invalid drives}
+@cindex LFN support and invalid drives
+The long file-name (LFN) support is no longer disabled after
+@code{_use_lfn} (or some other library functions that call it) were
+called with a file name which refers to an invalid drive or a drive
+whose media has been removed (e.g. an empty floppy drive).
+@code{_get_volume_info} now returns @code{_FILESYS_UNKNOWN} for such
+drives.
