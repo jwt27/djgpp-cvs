@@ -1,9 +1,14 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <io.h>
+#include <dos.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
@@ -78,6 +83,16 @@ int _rename(const char *old, const char *new)
   {
     if(use_lfn)
       r.x.ax = 0x7156;
+    else if ((_osmajor > 7 && _osmajor < 10) /* OS/2 returns v10 and above */
+	     || (_osmajor == 7 && _osminor >= 20))
+    {
+      /* DOS 7.20 (Windows 98) and later supports a new function with
+	 a maximum path length of 128 characters instead of 67.  This
+	 is important for deeply-nested directories.  */
+      r.x.ax = 0x43ff;
+      r.x.bp = 0x5053;
+      r.h.cl = 0x56;
+    }
     else
       r.h.ah = 0x56;
     _put_path2(new, olen);
@@ -85,7 +100,8 @@ int _rename(const char *old, const char *new)
     __dpmi_int(0x21, &r);
     if(r.x.flags & 1)
     {
-      if (r.x.ax == 5 && i == 0) /* access denied */
+      if (i == 0
+	  && (r.x.ax == 5 || (r.x.ax == 2 && __file_exists(old))))
 	remove(new);		 /* and try again */
       else
       {

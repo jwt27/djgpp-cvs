@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -23,6 +24,8 @@ int setvbuf(FILE *f, char *buf, int type, size_t len)
 	return -1;
       mine = 1;
     }
+    f->_fillsize = len;	/* make it read in `len'-byte chunks */
+    /* FALLTHROUGH */
   case _IONBF:
     if (f->_base != NULL && f->_flag & _IOMYBUF)
       free(f->_base);

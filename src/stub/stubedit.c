@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -13,6 +15,8 @@
 
 unsigned long size_of_stubinfo = 0;
 char *client_stub_info;
+static unsigned long exe_start = 0;
+static unsigned char buf[4];
 
 void find_info(char *filename)
 {  
@@ -29,7 +33,16 @@ void find_info(char *filename)
     exit(1);
   }
 
-  if (fseek(f, 512L, 0) != 0 ||
+  if (fseek(f, 8L, 0) != 0 ||
+      fread(&buf, 1, 2, f) != 2)
+  {
+    printf("Error: %s could not read\n", filename);
+    exit(1);
+  }
+
+  exe_start = buf[0]*16 + buf[1]*16*256;
+
+  if (fseek(f, exe_start, 0) != 0 ||
       fread(test_magic, 1, 16, f) != 16 ||
       memcmp(test_magic, "go32stub", 8) != 0)
   {
@@ -41,7 +54,7 @@ void find_info(char *filename)
   size_of_stubinfo = (header[0]) | (header[1]<<8)
                    | (header[2])<<16 | (header[3]<<24);
 
-  fseek(f, 512L, 0);
+  fseek(f, exe_start, 0);
   client_stub_info = (char *)malloc(size_of_stubinfo);
   fread(client_stub_info, size_of_stubinfo, 1, f);
 
@@ -60,7 +73,7 @@ void store_info(char *filename)
     perror(buf);
     exit(1);
   }
-  fseek(f, 512L, 0);
+  fseek(f, exe_start, 0);
   fwrite(client_stub_info, 1, size_of_stubinfo, f);
   fclose(f);
 }
@@ -76,7 +89,7 @@ char *pose_question(char *question, char *default_answer)
   return response;
 }
 
-typedef void (*PerFunc)(void *address_of_field, char *buffer);
+typedef void (*PerFunc)(void *address_of_field, char *buffer, ...);
 
 void str_v2s(void *addr, char *buf, int len)
 {
@@ -122,15 +135,17 @@ void str_s2v16(void *addr, char *buf)
 
 void num_v2s(void *addr, char *buf)
 {
-  unsigned long v = *(unsigned long *)addr;
-  sprintf(buf, "%#lx (%dk)", v, v / 1024L);
+  unsigned char *c = (unsigned char *)addr;
+  unsigned long v = c[0] + (c[1]<<8) + (c[2]<<16) + (c[3]<<24);
+  sprintf(buf, "%#lx (%ldk)", v, v / 1024L);
 }
 
-void num_s2v(void *addr, char *buf)
+void num_s2v(void *addr, char *buf, int max)
 {
+  unsigned char *c = (unsigned char *)addr;
   unsigned long r = 0;
   char s = 0;
-  sscanf(buf, "%i%c", &r, &s);
+  sscanf(buf, "%li%c", &r, &s);
   switch (s)
   {
     case 'k':
@@ -142,7 +157,14 @@ void num_s2v(void *addr, char *buf)
       r *= 1048576L;
       break;
   }
-  *(unsigned long *)addr = r;
+  if (max && r > max) {
+    printf("Warning: %ld reduced to %d\n", r, max);
+    r = max;
+  }
+  c[0] = r;
+  c[1] = r>>8;
+  c[2] = r>>16;
+  c[3] = r>>24;
 }
 
 struct {
@@ -151,36 +173,37 @@ struct {
   int offset_of_field;
   PerFunc val2string;
   PerFunc string2val;
+  int max;
 } per_field[] = {
   {
     "minstack",
     "Minimum amount of stack space (bytes/K/M)",
     STUBINFO_MINSTACK,
-    num_v2s, num_s2v
+    (PerFunc)num_v2s, (PerFunc)num_s2v, 0
   },
   {
     "bufsize",
     "Size of real-memory transfer buffer (bytes/K/M)",
     STUBINFO_MINKEEP,
-    num_v2s, num_s2v
+    (PerFunc)num_v2s, (PerFunc)num_s2v, 0xfe00
   },
   {
     "runfile",
     "Base name of file to actually run (max 8 chars, \"\"=self)",
     STUBINFO_BASENAME,
-    str_v2s8, str_s2v8
+    (PerFunc)str_v2s8, (PerFunc)str_s2v8, 0
   },
   {
     "argv0",
     "Value to pass as file component of argv[0] (max 16 chars, \"\"=default)",
     STUBINFO_ARGV0,
-    str_v2s16, str_s2v16
+    (PerFunc)str_v2s16, (PerFunc)str_s2v16, 0
   },
   {
     "dpmi",
     "Program to load to provide DPMI services (if needed)",
     STUBINFO_DPMI_SERVER,
-    str_v2s16, str_s2v16
+    (PerFunc)str_v2s16, (PerFunc)str_s2v16, 0
   }
 };
 
@@ -200,7 +223,7 @@ void give_help(void)
   exit(1);
 }
 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   int view_only = 0;
   int i;
@@ -254,7 +277,7 @@ main(int argc, char **argv)
           got_any = 1;
           if (per_field[i].offset_of_field < size_of_stubinfo)
           {
-            per_field[f].string2val(client_stub_info + per_field[f].offset_of_field, fval);
+            per_field[f].string2val(client_stub_info + per_field[f].offset_of_field, fval, per_field[f].max);
           }
           else
             fprintf(stderr, "Warning: This stub does not support field %s\n", fname);
@@ -280,7 +303,7 @@ main(int argc, char **argv)
       per_field[i].val2string(client_stub_info + per_field[i].offset_of_field, buf);
       if ((resp = pose_question(per_field[i].long_name, buf)) != 0)
       {
-        per_field[i].string2val(client_stub_info + per_field[i].offset_of_field, resp);
+        per_field[i].string2val(client_stub_info + per_field[i].offset_of_field, resp, per_field[i].max);
         need_to_save = 1;
       }
     }
