@@ -514,7 +514,7 @@ __djgpp_exception_setup(void)
   __dpmi_meminfo lockmem;
   int i;
 
-  if (ScreenPrimary != 0xa000)
+  if (ScreenPrimary != 0xa0000)
     {
       __djgpp_set_sigint_key(DEFAULT_SIGINT);
       __djgpp_set_sigquit_key(DEFAULT_SIGQUIT);
