@@ -36,9 +36,10 @@ int		kbhit(void);
 #endif
 int		getkey(void);	/* ALT's have 0x100 set */
 int		getxkey(void);	/* ALT's have 0x100 set, 0xe0 sets 0x200 */
-
+const unsigned char * __get_extended_key_string(int _xkey_code);
 void		sound(int _frequency);
 #define		nosound() sound(0)
+
 
 extern unsigned char ScreenAttrib;
 
