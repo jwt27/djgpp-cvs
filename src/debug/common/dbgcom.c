@@ -1,21 +1,9 @@
-/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
-/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* exception handling support by Pierre Muller */
-
-#if    (GAS_MAJOR == 2) \
-    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
-#define LJMP(there) "ljmp    " #there
-#define LCALL(there) "lcall  " #there
-#else
-#define LJMP(there) "ljmp    *" #there
-#define LCALL(there) "lcall   *" #there
-#endif
-
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,19 +99,18 @@ void save_npx (void)
   int i;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
-  asm volatile
-      ("movb	$0x0b, %%al					\n\
-	outb	%%al, $0xa0					\n\
-	inb	$0xa0, %%al					\n\
-	testb	$0x20, %%al					\n\
-	jz	1f						\n\
-	xorb	%%al, %%al					\n\
-	outb	%%al, $0xf0					\n\
-	movb	$0x20, %%al					\n\
-	outb	%%al, $0xa0					\n\
-	outb	%%al, $0x20					\n\
-1:								\n\
-	fnsave	%0						\n\
+  asm ("movb	$0x0b, %%al
+	outb	%%al, $0xa0
+	inb	$0xa0, %%al
+	testb	$0x20, %%al
+	jz	1f
+	xorb	%%al, %%al
+	outb	%%al, $0xf0
+	movb	$0x20, %%al
+	outb	%%al, $0xa0
+	outb	%%al, $0x20
+1:
+	fnsave	%0
 	fwait"
        : "=m" (npx)
        : /* No input */
@@ -160,7 +147,7 @@ void save_npx (void)
     npx.mmx[i]= * (long double *) &(npx.reg[i]);
    }
  /* Restore debugger's FPU state.  */
- asm volatile ("frstor %0" : :"m" (debugger_npx));
+ asm("frstor %0" : :"m" (debugger_npx));
 #endif
 }
 /* ------------------------------------------------------------------------- */
@@ -171,7 +158,7 @@ void load_npx (void)
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
   /* Save debugger's FPU state.  */
-  asm volatile ("fnsave %0" : :"m" (debugger_npx));
+  asm ("fnsave %0" : :"m" (debugger_npx));
 #if 0
   /* This code is disabled because npx.mmx[] and npx.st[] are supposed
      to be read-only, they exist to make it easier for a debugger to
@@ -205,35 +192,65 @@ void load_npx (void)
       }
    }
 #endif
-  asm volatile ("frstor %0" : "=m" (npx));
+  asm ("frstor %0" : "=m" (npx));
+}
+
+static int _DPMIsetBreak(unsigned short sizetype, unsigned vaddr)
+{
+	int handle;
+
+	asm volatile(						       "\n\
+	    movw   %1,%%dx						\n\
+	    movl   %2,%%ecx						\n\
+	    movl   %%ecx,%%ebx						\n\
+	    shrl   $16,%%ebx						\n\
+	    movw   $0x0b00,%%ax						\n\
+	    int    $0x31						\n\
+	    jnc    3f							\n\
+	    xorl   %%ebx,%%ebx						\n\
+	    decl   %%ebx						\n\
+	    jmp    1f							\n\
+3:          movzwl %%bx,%%ebx						\n\
+1:	    movl   %%ebx,%0						\n\
+	    "
+	    : "=g" (handle)			/* outputs */
+	    : "g" (sizetype), "g"  (vaddr)	/* inputs */
+	    : "ax", "bx", "cx", "dx"		/* regs used */
+	);
+	return handle;
 }
 
 static int _DPMIcancelBreak(int handle)
 {
-  int rv, state;
+	unsigned state;
 
-  rv = __dpmi_get_state_of_debug_watchpoint(handle, &state);
-  if(rv == -1) {
-    printf("DPMI get watchpoint state failed for handle 0x%x\n",handle);
-    state = 0;
-  }
-  rv = __dpmi_clear_debug_watchpoint(handle);
-  if(rv == -1)
-    printf("DPMI release watchpoint failed for handle 0x%x\n",handle);
-
-  /* printf("CancelBreak han=0x%x returns state=0x%x\n",handle,state); */
-  return (state & 1);
+	asm volatile(						       "\n\
+	    movl   %1,%%ebx						\n\
+	    movw   $0x0b02,%%ax						\n\
+	    int    $0x31						\n\
+	    jnc    2f							\n\
+	    xorl   %%eax,%%eax                                          \n\
+2:	    andl   $1,%%eax						\n\
+	    pushl  %%eax						\n\
+	    movw   $0x0b01,%%ax						\n\
+	    int    $0x31						\n\
+	    popl   %0							\n\
+	    "
+	    : "=g" (state)			/* outputs */
+	    : "g"  (handle)			/* inputs */
+	    : "ax", "bx"			/* regs used */
+	);
+	return state;
 }
 
 /* Can't be static because called in asm below; -O3 inlines if static */
 void _set_break_DPMI(void);
 void _set_break_DPMI(void)
 {
-  int i, rv;
+  int i;
   unsigned extract;
-  unsigned char brtype;
+  unsigned short sizetype;
   unsigned long vbase;
-  __dpmi_meminfo bpinfo;
   
   if(__dpmi_get_segment_base_address(app_ds, &vbase) == -1)
     return;
@@ -243,20 +260,16 @@ void _set_break_DPMI(void)
 
   for(i=0;i<4;i++)
     if( (edi.dr[7] >> (i*2))&3 ) {		/* enabled? */
-      brtype = (extract >> (i*4)) & 3;	/* extract the type */
-      if(brtype == 3) brtype = 2;	/* convert for DPMI brain damage */
-      bpinfo.size = ((extract >> (i*4+2)) & 3) + 1;	/* size */
-      bpinfo.address = edi.dr[i]+vbase;
-      rv = __dpmi_set_debug_watchpoint(&bpinfo, brtype);
-      if(rv != -1) {
-        breakhandle[i] = bpinfo.handle;
-        /* printf("SetBreak typ=%d siz=%d at 0x%x returns han=%d\n",brtype,(int)bpinfo.size,(unsigned)bpinfo.address,breakhandle[i]); */
-        if(breakhandle[i] == (bpinfo.address >> 16) )	/* Win 2K bug */
+      sizetype = (extract >> (i*4)) & 3;    /* extract the type */
+      if(sizetype == 3) sizetype = 2;       /* convert for DPMI brain damage */
+      sizetype = (sizetype << 8) + ((extract >> (i*4+2)) & 3) + 1; /* & size */
+      breakhandle[i] = _DPMIsetBreak(sizetype, edi.dr[i]+vbase);
+      if(breakhandle[i] == -1)
+        printf("Error allocating DPMI breakpoint at address 0x%08lx\n",edi.dr[i]);
+      else {
+        if(breakhandle[i] == ((edi.dr[i]+vbase) >> 16))	/* Win 2K bug */
           breakhandle[i] = nset;
         nset++;
-      } else {
-        printf("Error allocating DPMI breakpoint type %d of size %d at address 0x%08lx\n",brtype,(int)bpinfo.size,edi.dr[i]);
-        breakhandle[i] = -1;
       }
     } else
       breakhandle[i] = -1;
@@ -307,7 +320,7 @@ static void hook_dpmi(void)
       __dpmi_get_processor_exception_handler_vector(i,&our_handler[i]);
     }
 
-  asm volatile ("mov %%cs,%0" : "=g" (new_int.selector) );
+  asm("mov %%cs,%0" : "=g" (new_int.selector) );
   new_int.offset32 = (unsigned long)i21_hook;
   __dpmi_set_protected_mode_interrupt_vector(0x21, &new_int);
   new_int.offset32 = (unsigned long)i31_hook;
@@ -449,7 +462,7 @@ _get_exception_handler:                                                 \n\
         pushl   %eax                                                    \n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
         popl   %eax                                                     \n\
 	jc	Lc31_set_flags_and_iret					\n\
         pushl   %eax                                                    \n\
@@ -478,13 +491,13 @@ _app_exception_not_set:                                                 \n\
         pop   %es                                                       \n\
         popl  %eax                                                      \n\
         .byte 0x2e                                                      \n\
-        " LJMP(_old_i31) "                                              \n\
+        ljmp _old_i31                                                   \n\
         ret                                                             \n"
 ); 
 
 /* Change a handle in the list: EAX is the old handle, EDX is the new */
 /* for changing a value, we need our ds, because cs has no write access */
-asm(								       "\n\
+asm(						       			"\n\
 	.text								\n\
 	.balign  16,,7							\n\
 _change_handle:								\n\
@@ -553,7 +566,7 @@ _add_descriptors:							\n\
 	movw	$0x0003,%ax						\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	movw	%ax,%bx							\n\
 	popl	%eax							\n\
 	pushl	%eax							\n\
@@ -682,7 +695,7 @@ _i31_hook:								\n\
 	je	Lc31_resize_mem						\n\
 L_jmp_to_old_i31:                                                       \n\
         .byte	0x2e							\n\
-	" LJMP(_old_i31) "						\n\
+	ljmp	_old_i31						\n\
 Lc31_set_flags_and_iret:                                                \n\
         pushl	%eax				                        \n\
 	pushf								\n\
@@ -723,7 +736,7 @@ Lc31_set_selector_base_address:                                         \n\
 	jne	L_jmp_to_old_i31					\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	call	___djgpp_save_interrupt_regs				\n\
 	call	__clear_break_DPMI					\n\
 	call	__set_break_DPMI					\n\
@@ -744,7 +757,7 @@ Lc31_set_protected_mode_interrupt:                                      \n\
 Lc31_alloc_mem:								\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	pushf								\n\
 	pushl	%edx							\n\
@@ -762,7 +775,7 @@ Lc31_free_mem:								\n\
 	pushw	%di							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	jc	Lc31_resize_mem_error					\n\
 	popl	%eax							\n\
 	push	%edx							\n\
@@ -776,7 +789,7 @@ Lc31_resize_mem:							\n\
 	pushw	%di							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	jnc	Lc31_resize_mem_ok					\n\
 Lc31_resize_mem_error:							\n\
 	addl	$4,%esp							\n\
@@ -794,7 +807,7 @@ Lc31_alloc_descriptors:							\n\
 	pushl	%ecx							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	popl	%ecx							\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	call	_add_descriptors					\n\
@@ -804,7 +817,7 @@ Lc31_free_descriptor:							\n\
 	pushl	%ebx							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	popl	%eax							\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	push	%edx							\n\
@@ -816,7 +829,7 @@ Lc31_free_descriptor:							\n\
 Lc31_create_alias_descriptor:						\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	pushl	%eax							\n\
 	push	%edx							\n\
@@ -830,7 +843,7 @@ Lc31_create_alias_descriptor:						\n\
 Lc31_allocate_dos_memory:						\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	pushl	%eax							\n\
 	xorl	%eax,%eax						\n\
@@ -842,7 +855,7 @@ Lc31_free_dos_memory:							\n\
 	pushl	%edx							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	" LCALL(_old_i31) "						\n\
+	lcall	_old_i31						\n\
 	popl	%eax							\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	xorw	%dx,%dx							\n\
@@ -856,7 +869,7 @@ Lc31_set_exception_handler:                                             \n\
         pushl  %edx                                                     \n\
         pushf                                                           \n\
         .byte  0x2e                                                     \n\
-        " LCALL(_old_i31) "                                             \n\
+        lcall   _old_i31                                                \n\
         popl   %edx                                                     \n\
         popl   %ecx                                                     \n\
         popl   %ebx                                                     \n\
@@ -865,7 +878,7 @@ Lc31_set_exception_handler:                                             \n\
         call   _change_exception_handler                                \n\
         pushf                                                           \n\
         .byte  0x2e                                                     \n\
-        " LCALL(_old_i31) "                                             \n\
+        lcall   _old_i31                                                \n\
         jmp Lc31_set_flags_and_iret                                     \n\
 	.balign  16,,7							\n\
         .globl  _dbgcom_hook_i21                                        \n\
@@ -875,7 +888,7 @@ _i21_hook:								\n\
 	je	Lc21							\n\
 Lc21_jmp_to_old:                                                        \n\
         .byte	0x2e							\n\
-	" LJMP(_old_i21) "						\n\
+	ljmp	_old_i21						\n\
 Lc21:	push	%eax							\n\
 	movl	8(%esp),%eax						\n\
 	cs								\n\
@@ -902,79 +915,79 @@ Lc21_exit:                                                              \n\
 	);
 
 /* complete code to return from an exception */
-asm ( ".text								\n\
-       .balign 16,,7							\n\
-       .globl    _dbgcom_exception_return_to_debuggee			\n\
-_dbgcom_exception_return_to_debuggee:       /* remove errorcode from stack */\n\
-       /* we must also switch stack back !! */				\n\
-       /* relative to ebp */						\n\
-       /* 0 previous ebp */						\n\
-       /* 4 exception number */						\n\
-       /* 8 return eip */						\n\
-       /* 12 return cs */						\n\
-       /* 16 return eflags */						\n\
-       /* 20 return esp  */						\n\
-       /* 24 return ss  */						\n\
-       /* -4 stored ds */						\n\
-       /* -8 stored eax */						\n\
-       /* -12 stored esi */						\n\
-       pushl  %ebp							\n\
-       movl   %esp,%ebp							\n\
-       pushl  %ds							\n\
-       pushl  %eax							\n\
-       pushl  %esi							\n\
-       movl   %cs:___djgpp_our_DS,%eax					\n\
-       movw   %ax,%ds							\n\
-       addl   $32,_cur_pos						\n\
-       decl    _child_exception_level					\n\
-       movl   24(%ebp),%eax						\n\
-       movw   %ax,%ds							\n\
-       movl   20(%ebp),%esi						\n\
-       /* ds:esi points now to app stack */				\n\
-       subl  $28,%esi							\n\
-       movl  %esi,20(%ebp)						\n\
-       /* eflags on app stack */					\n\
-       movl  16(%ebp),%eax						\n\
-       movl  %eax,%ds:24(%esi)						\n\
-       /* cs on app stack */						\n\
-       movl  12(%ebp),%eax						\n\
-       movl  %eax,%ds:20(%esi)						\n\
-       /* eip on app stack */						\n\
-       movl  8(%ebp),%eax						\n\
-       movl  %eax,%ds:16(%esi)						\n\
-       /* esi on app stack */						\n\
-       movl  -12(%ebp),%eax						\n\
-       movl  %eax,%ds:12(%esi)						\n\
-       /* eax on app stack */						\n\
-       movl  -8(%ebp),%eax						\n\
-       movl  %eax,%ds:8(%esi)						\n\
-       /* ds on app_stack */						\n\
-       movl  -4(%ebp),%eax						\n\
-       movl  %eax,%ds:4(%esi)						\n\
-       /* ebp on app_stack */						\n\
-       movl  (%ebp),%eax						\n\
-       movl  %eax,%ds:(%esi)						\n\
-       /* switch stack */						\n\
-       movl  24(%ebp),%eax						\n\
-       movw  %ax,%ss							\n\
-       movl  %esi,%esp							\n\
-       /* now on app stack */						\n\
-       popl  %ebp							\n\
-       popl  %eax							\n\
-       movw  %ax,%ds							\n\
-       popl  %eax							\n\
-       popl  %esi							\n\
-       iret								\n\
+asm (  ".text
+       .balign 16,,7
+       .globl    _dbgcom_exception_return_to_debuggee
+_dbgcom_exception_return_to_debuggee:       /* remove errorcode from stack */
+       /* we must also switch stack back !! */
+       /* relative to ebp */
+       /* 0 previous ebp */
+       /* 4 exception number */
+       /* 8 return eip */
+       /* 12 return cs */
+       /* 16 return eflags */
+       /* 20 return esp  */
+       /* 24 return ss  */
+       /* -4 stored ds */
+       /* -8 stored eax */
+       /* -12 stored esi */
+       pushl  %ebp
+       movl   %esp,%ebp
+       pushl  %ds
+       pushl  %eax
+       pushl  %esi
+       movl   %cs:___djgpp_our_DS,%eax
+       movw   %ax,%ds
+       addl   $32,_cur_pos
+       decl    _child_exception_level
+       movl   24(%ebp),%eax
+       movw   %ax,%ds
+       movl   20(%ebp),%esi
+       /* ds:esi points now to app stack */
+       subl  $28,%esi
+       movl  %esi,20(%ebp)
+       /* eflags on app stack */
+       movl  16(%ebp),%eax
+       movl  %eax,%ds:24(%esi)
+       /* cs on app stack */
+       movl  12(%ebp),%eax
+       movl  %eax,%ds:20(%esi)
+       /* eip on app stack */
+       movl  8(%ebp),%eax
+       movl  %eax,%ds:16(%esi)
+       /* esi on app stack */
+       movl  -12(%ebp),%eax
+       movl  %eax,%ds:12(%esi)
+       /* eax on app stack */
+       movl  -8(%ebp),%eax
+       movl  %eax,%ds:8(%esi)
+       /* ds on app_stack */
+       movl  -4(%ebp),%eax
+       movl  %eax,%ds:4(%esi)
+       /* ebp on app_stack */
+       movl  (%ebp),%eax
+       movl  %eax,%ds:(%esi)
+       /* switch stack */
+       movl  24(%ebp),%eax
+       movw  %ax,%ss
+       movl  %esi,%esp
+       /* now on app stack */
+       popl  %ebp
+       popl  %eax
+       movw  %ax,%ds
+       popl  %eax
+       popl  %esi
+       iret
     ");
 
 static jmp_buf here;
 
 /* simple code to return from an exception */
 /* don't forget to increment cur_pos       */
-asm ( ".text								\n\
-       .balign 16,,7							\n\
-       .globl    _dbgcom_exception_return_to_here			\n\
-_dbgcom_exception_return_to_here:       /* remove errorcode from stack */\n\
+asm (  ".text
+       .balign 16,,7
+       .globl    _dbgcom_exception_return_to_here
+_dbgcom_exception_return_to_here:       /* remove errorcode from stack */
         movl    %cs:___djgpp_our_DS,%eax                                \n\
         movw    %ax,%ds                                                 \n\
         movw    %ax,%es                                                 \n\
@@ -990,10 +1003,10 @@ _dbgcom_exception_return_to_here:       /* remove errorcode from stack */\n\
 	movw	$0x7021,0xb0f00						\n\ */
 
 /* do not set limit of ds selector two times */
-asm (".text								\n\
-        .global ___dbgcom_kbd_hdlr					\n\
-___dbgcom_kbd_hdlr:							\n\
-        " LJMP(%cs:___djgpp_old_kbd) "");
+asm (".text
+        .global ___dbgcom_kbd_hdlr
+___dbgcom_kbd_hdlr:
+        ljmp    %cs:___djgpp_old_kbd");
         
     
     
@@ -1028,8 +1041,8 @@ static void unhook_dpmi(void)
         __dpmi_set_processor_exception_handler_vector(i,&our_handler[i]);
     }
 
-  asm volatile ("sti");   /* This improve stability under Win9X after SIGINT */
-			  /* Why? (AP) */
+  asm ("sti");   /* This improve stability under Win9X after SIGINT */
+		 /* Why? (AP) */
 }
 
 #define RETURN_TO_HERE 0
@@ -1087,9 +1100,8 @@ static void dbgsig(int sig)
 {
   unsigned int ds_size;
   int signum =  __djgpp_exception_state->__signum;
-  asm volatile
-      ("movl _app_ds,%%eax					\n\
-        lsl  %%eax,%%eax					\n\
+  asm ("movl _app_ds,%%eax
+        lsl  %%eax,%%eax
         movl %%eax,%0"
         : "=g" (ds_size) );
 
@@ -1305,16 +1317,15 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
   char read_allowed = 0;
   char write_allowed = 0;
   
-  asm volatile
-    ("										\n\
-      movw  %2,%%ax								\n\
-      verr  %%ax								\n\
-      jnz   .Ldoes_not_has_read_right						\n\
-      movb  $1,%0								\n\
-.Ldoes_not_has_read_right:							\n\
-      verw  %%ax								\n\
-      jnz   .Ldoes_not_has_write_right						\n\
-      movb  $1,%1								\n\
+  asm("
+      movw  %2,%%ax
+      verr  %%ax
+      jnz   .Ldoes_not_has_read_right
+      movb  $1,%0
+.Ldoes_not_has_read_right:
+      verw  %%ax
+      jnz   .Ldoes_not_has_write_right
+      movb  $1,%1
 .Ldoes_not_has_write_right: "
      : "=g" (read_allowed), "=g" (write_allowed)
      : "g" (sel)
@@ -1366,15 +1377,13 @@ static void (*oldINT)(int);
 static void (*oldQUIT)(int);
 static void (*oldILL)(int);
 
-int cmd_selector;	/* set by v2loadimage */
-
 void edi_init(jmp_buf start_state)
 {
   int i;
   my_ds = 0;
-  asm volatile ("mov %%ds,%0" : "=g" (my_ds) );
+  asm("mov %%ds,%0" : "=g" (my_ds) );
   my_cs = 0;
-  asm volatile ("mov %%cs,%0" : "=g" (my_cs) );
+  asm("mov %%cs,%0" : "=g" (my_cs) );
 
   for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
     {
@@ -1398,7 +1407,7 @@ void edi_init(jmp_buf start_state)
   if (__dpmi_get_segment_base_address(app_ds, &edi.app_base) == -1)
     abort ();
   /* Save debugger's FPU state.  */
-  asm volatile ("fnsave %0" : :"m" (debugger_npx));
+  asm ("fnsave %0" : :"m" (debugger_npx));
   /* Fill the debuggee's FPU state with the default values, taken from
      the equivalent of FNINIT performed by FNSAVE above.  */
   memset(&npx,0,sizeof(npx));
@@ -1421,9 +1430,7 @@ void edi_init(jmp_buf start_state)
   app_exit_cs=si.cs_selector;
   memset(dos_descriptors,0,sizeof(dos_descriptors));
   dos_descriptors[0] = _farpeekw(si.psp_selector,0x2c);
-  dos_descriptors[1] = si.psp_selector;
-  if (cmd_selector)
-    dos_descriptors[2] = cmd_selector;
+  dos_descriptors[1] = si.psp_selector; 
   /* set initial value of cur_pos */
   cur_pos = &excep_stack[1000-40];
   /* pattern fill exception stack for debugging */
