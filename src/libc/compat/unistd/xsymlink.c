@@ -20,6 +20,8 @@
  */
 #define MAX_SYMLINK 8
 
+static void advance(char ** s, char ** e);
+
 int __solve_symlinks(const char * __symlink_path, char * __real_path)
 {
    int    bytes_copied;
@@ -98,7 +100,7 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
                      ptr++;
             }
          }
-      } while ((bytes_copied != -1) && (link_level <= _POSIX_LINK_MAX));
+      } while ((bytes_copied != -1) && (link_level <= MAX_SYMLINK));
       if (link_level > MAX_SYMLINK)
       {
          errno = ELOOP;
@@ -144,14 +146,16 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
             /* dir.  */
             end = strpbrk(start + 1, "/\\");
          }
+         else
+         {
+             /* Resolve next component */
+             advance(&start, &end);
+         }
       }
       else
       {
           /* Resolve next component */
-          start = end;
-          if ((*start == '/') || (*start == '\\'))
-             ++start;
-          end = strpbrk(end + 1, "/\\");
+          advance(&start, &end);
       }
       if (!end)
           end = __real_path + strlen(__real_path);
@@ -159,3 +163,10 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    return 1;
 }
 
+static void advance(char ** s, char ** e)
+{
+   *s = strpbrk(*s + 1, "/\\");
+   if (*s)
+     (*s)++;
+   *e = strpbrk(*e + 1, "/\\");
+}
