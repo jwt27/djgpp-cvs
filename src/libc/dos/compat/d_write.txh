@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_write(int handle, const void *buffer, unsigned int count,
+unsigned int _dos_write(int handle,
+                        const void *buffer, unsigned int count,
                         unsigned int *result);
 @end example
 

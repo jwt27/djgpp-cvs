@@ -37,6 +37,7 @@ could not be set.
 @example
 mprotect(readonly_buffer,8192,PROT_READ);
 mprotect(guard_area,4096,PROT_NONE);
-mprotect(NULL,4096,PROT_WRITE);	/* Let NULL pointers not generate exceptions */
+mprotect(NULL,4096,PROT_WRITE); /* Let NULL pointers not generate
+                                 * exceptions */
 @end example
 

@@ -4,7 +4,9 @@
 @example
 #include <dpmi.h>
 
-int _go32_dpmi_get_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+int _go32_dpmi_get_protected_mode_interrupt_vector(
+        int vector, _go32_dpmi_seginfo *info
+);
 @end example
 
 @subheading Description
@@ -37,7 +39,9 @@ usage.
 @example
 #include <dpmi.h>
 
-int _go32_dpmi_set_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+int _go32_dpmi_set_protected_mode_interrupt_vector(
+        int vector, _go32_dpmi_seginfo *info
+);
 @end example
 
 @subheading Description

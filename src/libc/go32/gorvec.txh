@@ -4,7 +4,9 @@
 @example
 #include <dpmi.h>
 
-int _go32_dpmi_get_real_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+int _go32_dpmi_get_real_mode_interrupt_vector(
+        int vector, _go32_dpmi_seginfo *info
+);
 @end example
 
 @subheading Description
@@ -35,7 +37,9 @@ usage.
 @example
 #include <dpmi.h>
 
-int _go32_dpmi_set_real_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+int _go32_dpmi_set_real_mode_interrupt_vector(
+        int vector, _go32_dpmi_seginfo *info
+);
 @end example
 
 @subheading Description

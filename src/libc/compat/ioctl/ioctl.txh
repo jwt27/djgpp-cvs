@@ -1,5 +1,5 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.2 1998/06/28 23:12:40 dj Exp $
+@c $Id: ioctl.txh,v 1.3 2000/10/06 16:55:35 dj Exp $
 @node ioctl (General description), io
 @code{ioctl} performs low level calls to communicate with device drivers. As
 there are lots of different device drivers, no really general description is
@@ -119,7 +119,8 @@ Set the sharing retry count. The first extra parameter specifies the pause
 between retries, the second number of retries.  An example:
 
 @example
- int ret_val = ioctl (fd, DOS_SETRETRY, pause_between_retries, max_retries);
+ int ret_val = ioctl (fd, DOS_SETRETRY, pause_between_retries,
+                      max_retries);
 @end example
 
 @item DOS_GENCHARREQ
@@ -127,7 +128,8 @@ Generic character device request.  Example:
 
 @example
  int ret_val = ioctl (fd, DOS_GENCHARREQ, category_and_function,
-                      &param_block, si_value, di_value, param_block_size);
+                      &param_block, si_value, di_value,
+                      param_block_size);
 @end example
 
 Refer to Ralf Brown's Interrupt List for the details about each function
@@ -138,7 +140,8 @@ Generic block device request.  Example of the call:
 
 @example
  int ret_val = ioctl (drive_no, DOS_GENBLKREQ, category_and_function,
-                      &param_block, si_value, di_value, param_block_size);
+                      &param_block, si_value, di_value,
+                      param_block_size);
 @end example
 
 Note that instead of the handle, the first argument is the disk drive

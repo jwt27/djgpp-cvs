@@ -6,7 +6,8 @@
 #include <share.h>
 #include <dos.h>
 
-unsigned int _dos_open(const char *filename, unsigned short mode, int *handle);
+unsigned int _dos_open(const char *filename, unsigned short mode,
+                       int *handle);
 @end example
 
 @subheading Description

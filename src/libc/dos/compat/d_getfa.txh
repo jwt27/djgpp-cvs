@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_getfileattr(const char *filename, unsigned int *p_attr);
+unsigned int _dos_getfileattr(const char *filename,
+                              unsigned int *p_attr);
 @end example
 
 @subheading Description

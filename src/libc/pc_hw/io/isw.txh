@@ -4,7 +4,8 @@
 @example
 #include <pc.h>
 
-void inportsw(unsigned short _port, unsigned short *_buf, unsigned _len);
+void inportsw(unsigned short _port,
+              unsigned short *_buf, unsigned _len);
 @end example
 
 @subheading Description

@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_setftime(int handle, unsigned int date, unsigned time);
+unsigned int _dos_setftime(int handle,
+                           unsigned int date, unsigned time);
 @end example
 
 @subheading Description

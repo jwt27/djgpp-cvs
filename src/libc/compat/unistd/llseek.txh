@@ -58,7 +58,8 @@ underlying DOS implementation the offset wraps around to 0 at offset
 @example
 long long ret;
 
-ret = llseek(fd, (1<<32), SEEK_SET); /* Now ret equals 0 (unfortunately). */
+ret = llseek(fd, (1<<32), SEEK_SET); /* Now ret equals 0
+                                      * (unfortunately). */
 ret = llseek(fd, -1, SEEK_CUR); /* Now ret equals 2^32-1 (good!). */
 ret = llseek(fd, 0, SEEK_SET); /* Now ret equals 0 (good!). */
 ret = llseek(fd, -1, SEEK_CUR); /* Now ret equals 2^32-1 (bad). */

@@ -48,7 +48,9 @@ _go32_dpmi_free_iret_wrapper(&info);
 @example
 #include <dpmi.h>
 
-int _go32_dpmi_chain_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+int _go32_dpmi_chain_protected_mode_interrupt_vector(
+        int vector, _go32_dpmi_seginfo *info
+);
 @end example
 
 @subheading Description
@@ -156,7 +158,8 @@ void my_handler()
 
 void lock_my_handler()
 @{
-  _go32_dpmi_lock_code(my_handler, (unsigned long)(lock_my_handler - my_handler));
+  _go32_dpmi_lock_code(my_handler,
+                       (unsigned long)(lock_my_handler - my_handler));
 @}
 @end example
 

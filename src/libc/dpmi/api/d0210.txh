@@ -4,8 +4,9 @@
 @smallexample
 #include <dpmi.h>
 
-int __dpmi_get_extended_exception_handler_vector_pm(int vector, 
-                                                    __dpmi_paddr *address);
+int __dpmi_get_extended_exception_handler_vector_pm(
+        int vector, __dpmi_paddr *address
+);
 @end smallexample
 
 @subheading Description

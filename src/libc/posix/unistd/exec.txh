@@ -5,9 +5,11 @@
 #include <unistd.h>
 
 int execl(const char *path, const char *argv0, ...);
-int execle(const char *path, const char *argv0, ... /*, char *const envp[] */);
+int execle(const char *path, const char *argv0, ...
+           /*, char *const envp[] */);
 int execlp(const char *path, const char *argv0, ...);
-int execlpe(const char *path, const char *argv0, ... /*, char *const envp[] */);
+int execlpe(const char *path, const char *argv0, ...
+            /*, char *const envp[] */);
 
 int execv(const char *path, char *const argv[]);
 int execve(const char *path, char *const argv[], char *const envp[]);

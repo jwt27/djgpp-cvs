@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_get_vendor_specific_api_entry_point(char *_id, __dpmi_paddr *_api);
+int __dpmi_get_vendor_specific_api_entry_point(char *_id,
+                                               __dpmi_paddr *_api);
 @end example
 
 @subheading Description

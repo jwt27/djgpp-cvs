@@ -41,6 +41,7 @@ DPMI server rejected the mapping request.
 @subheading Example
 
 @example
-if (__djgpp_map_physical_memory (my_page_aligned_memory, 16384, 0x40000000))
+if (__djgpp_map_physical_memory (my_page_aligned_memory, 16384,
+                                 0x40000000))
   printf ("Failed to map physical addresses!\n");
 @end example

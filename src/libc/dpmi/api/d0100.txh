@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_allocate_dos_memory(int _paragraphs, int *_ret_selector_or_max);
+int __dpmi_allocate_dos_memory(int _paragraphs,
+                               int *_ret_selector_or_max);
 @end example
 
 @subheading Description

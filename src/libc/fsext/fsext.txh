@@ -398,8 +398,8 @@ int my_fsext(__FSEXT_Fnumber Op, int* RV, va_list Args)
           return 0;
        @}
 
-       /* Now store our note about this file descriptor so we can lookup it
-          up quickly later. */
+       /* Now store our note about this file descriptor so we can
+        * look it up quickly later. */
        __FSEXT_set_data(fd, MPtr);
 
        /* Return the file descriptor

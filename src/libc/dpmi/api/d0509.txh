@@ -4,8 +4,9 @@
 @smallexample
 #include <dpmi.h>
 
-int __dpmi_map_conventional_memory_in_memory_block(__dpmi_meminfo *info, 
-                                                   unsigned long physaddr);
+int __dpmi_map_conventional_memory_in_memory_block(
+        __dpmi_meminfo *info, unsigned long physaddr
+);
 @end smallexample
 
 @subheading Description

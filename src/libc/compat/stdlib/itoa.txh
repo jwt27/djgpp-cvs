@@ -42,7 +42,8 @@ char binary_str[33];
 @example
 #include <stdlib.h>
 
-char * ecvtbuf (double value, int ndigits, int *decpt, int *sign, char *buf)
+char * ecvtbuf (double value, int ndigits, int *decpt, int *sign,
+                char *buf)
 @end example
 
 @subheading Description
@@ -128,7 +129,8 @@ A pointer to the generated string.
 @example
 #include <stdlib.h>
 
-char * fcvtbuf (double value, int ndigits, int *decpt, int *sign, char *buf)
+char * fcvtbuf (double value, int ndigits, int *decpt, int *sign,
+                char *buf)
 @end example
 
 @subheading Description

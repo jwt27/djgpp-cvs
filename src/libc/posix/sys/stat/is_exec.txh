@@ -4,7 +4,8 @@
 @example
 #include <sys/stat.h>
 
-int _is_executable(const char *path, int fhandle, const char *extension);
+int _is_executable(const char *path, int fhandle,
+                   const char *extension);
 @end example
 
 @subheading Description

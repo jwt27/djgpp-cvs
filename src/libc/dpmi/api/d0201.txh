@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_set_real_mode_interrupt_vector(int _vector, __dpmi_raddr *_address);
+int __dpmi_set_real_mode_interrupt_vector(int _vector,
+                                          __dpmi_raddr *_address);
 @end example
 
 @subheading Description

@@ -4,8 +4,9 @@
 @smallexample
 #include <dpmi.h>
 
-int 
-__dpmi_install_resident_service_provider_callback(__dpmi_callback_info *info);
+int __dpmi_install_resident_service_provider_callback(
+        __dpmi_callback_info *info
+);
 @end smallexample
 
 @subheading Description

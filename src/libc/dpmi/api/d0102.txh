@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_resize_dos_memory(int _selector, int _newpara, int *_ret_max);
+int __dpmi_resize_dos_memory(int _selector, int _newpara,
+                             int *_ret_max);
 @end example
 
 @subheading Description

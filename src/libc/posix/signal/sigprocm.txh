@@ -144,8 +144,12 @@ individual signals are pending.
       sigset_t new_set, old_set;
       sigemptyset (&new_set);
       sigaddset (&new_set, SIGINT);
-      sigprocmask (SIG_UNBLOCK, &new_set, &old_set);  /* will raise SIGINT */
-      sigprocmask (SIG_SETMASK, &old_set, &new_set);  /* restore mask */
+
+      /* This sigprocmask() call will raise SIGINT. */
+      sigprocmask (SIG_UNBLOCK, &new_set, &old_set);
+
+      /* Restore mask */
+      sigprocmask (SIG_SETMASK, &old_set, &new_set);
     @}
 
 @end example

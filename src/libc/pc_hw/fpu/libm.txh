@@ -5,7 +5,8 @@
 @example
 #include <libm/math.h>
 
-enum fdversion @{fdlibm_ieee = -1, fdlibm_svid, fdlibm_xopen, fdlibm_posix@};
+enum fdversion @{fdlibm_ieee = -1, fdlibm_svid, fdlibm_xopen,
+                fdlibm_posix@};
 
 #define _LIB_VERSION_TYPE enum fdversion
 #define _LIB_VERSION _fdlib_version  
@@ -144,10 +145,12 @@ overflows.
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
-#include <libm/math.h>	/* or #define _USE_LIBM_MATH_H and #include <math.h> */
+#include <libm/math.h> /* or #define _USE_LIBM_MATH_H
+                        * and #include <math.h> */
 #include <float.h>
 
-/* Setting _LIB_VERSION to anything but _IEEE_ will turn on errno handling. */
+/* Setting _LIB_VERSION to anything but _IEEE_ will turn on
+ * errno handling. */
 _LIB_VERSION_TYPE _LIB_VERSION = _POSIX_;
 
 int main (void)
@@ -160,7 +163,8 @@ int main (void)
   errno = 0;
   assert(errno == 0);
   sqrt(-1.0);
-  assert(errno == EDOM); /* this line should NOT cause the assertion to fail */
+  assert(errno == EDOM); /* this line should NOT cause
+                          * the assertion to fail */
 
   return(0);
 @}

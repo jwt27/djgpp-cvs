@@ -51,7 +51,8 @@ struct itimerval @{
   struct timeval it_value;       /* current value */
 @};
 
-int setitimer(int which, struct itimerval *value, struct itimerval *ovalue);
+int setitimer(int which, struct itimerval *value,
+              struct itimerval *ovalue);
 @end example
 
 @subheading Description

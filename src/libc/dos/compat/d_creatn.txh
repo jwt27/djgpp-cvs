@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_creatnew(const char *filename, unsigned short attr, int *handle);
+unsigned int _dos_creatnew(const char *filename, unsigned short attr,
+                           int *handle);
 @end example
 
 @subheading Description

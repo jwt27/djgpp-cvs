@@ -4,7 +4,8 @@
 @example
 #include <sys/movedata.h>
 
-void _dosmemputl(const void *buffer, size_t xfers, unsigned long offset);
+void _dosmemputl(const void *buffer, size_t xfers,
+                 unsigned long offset);
 @end example
 
 @subheading Description

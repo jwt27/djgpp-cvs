@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_get_state_save_restore_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);
+int __dpmi_get_state_save_restore_addr(__dpmi_raddr *_rm,
+                                       __dpmi_paddr *_pm);
 @end example
 
 @subheading Description

@@ -83,6 +83,7 @@ error.
 @subheading Example
 
 @example
-FILE *f = fopen("foo", "rb+"); /* open existing file for read/write, binary mode */
+FILE *f = fopen("foo", "rb+"); /* open existing file for read/write,
+                                * binary mode */
 @end example
 

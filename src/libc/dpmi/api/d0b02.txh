@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_get_state_of_debug_watchpoint(unsigned long _handle, int *_status);
+int __dpmi_get_state_of_debug_watchpoint(unsigned long _handle,
+                                         int *_status);
 @end example
 
 @subheading Description

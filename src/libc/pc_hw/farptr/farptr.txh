@@ -9,9 +9,12 @@ unsigned char _farpeekb(unsigned short selector, unsigned long offset);
 unsigned short _farpeekw(unsigned short selector, unsigned long offset);
 unsigned long _farpeekl(unsigned short selector, unsigned long offset);
 
-void _farpokeb(unsigned short sel, unsigned long off, unsigned char val);
-void _farpokew(unsigned short sel, unsigned long off, unsigned short val);
-void _farpokel(unsigned short sel, unsigned long off, unsigned long val);
+void _farpokeb(unsigned short sel, unsigned long off,
+               unsigned char val);
+void _farpokew(unsigned short sel, unsigned long off,
+               unsigned short val);
+void _farpokel(unsigned short sel, unsigned long off,
+               unsigned long val);
 
 void _farsetsel(unsigned short selector);
 unsigned short _fargetsel(void);

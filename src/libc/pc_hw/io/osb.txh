@@ -4,7 +4,8 @@
 @example
 #include <pc.h>
 
-void outportsb(unsigned short _port, const unsigned char *_buf, unsigned _len);
+void outportsb(unsigned short _port,
+               const unsigned char *_buf, unsigned _len);
 @end example
 
 @subheading Description

@@ -4,7 +4,8 @@
 @example
 #include <libc/symlink.h>
 
-int __internal_readlink(const char * path, int fhandle, char * buf, size_t max)
+int __internal_readlink(const char * path, int fhandle,
+                        char * buf, size_t max)
 @end example
 
 @subheading Description
@@ -31,7 +32,8 @@ copy whole name.  So increase @var{size} and try again.
 
 @example
 char buf[FILENAME_MAX + 1];
-if (__internal_readlink(0, "/dev/env/DJDIR/bin/sh.exe", buf, FILENAME_MAX) == -1)
+if (__internal_readlink(0, "/dev/env/DJDIR/bin/sh.exe",
+                        buf, FILENAME_MAX) == -1)
    if (errno == EINVAL)
       puts("/dev/env/DJDIR/bin/sh.exe is not a symbolic link.");
 @end example

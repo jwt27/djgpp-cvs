@@ -261,7 +261,8 @@ The returned value of @code{EAX}.
 @example
 #include <dos.h>
 
-int int86x(int ivec, union REGS *in, union REGS *out, struct SREGS *seg);
+int int86x(int ivec, union REGS *in, union REGS *out,
+           struct SREGS *seg);
 @end example
 
 @subheading Description
@@ -299,7 +300,8 @@ int86x(0x21, &r, &r, &s);
 @example
 #include <dos.h>
 
-int int386x(int ivec, union REGS *in, union REGS *out, struct SREGS *seg);
+int int386x(int ivec, union REGS *in, union REGS *out,
+            struct SREGS *seg);
 @end example
 
 @subheading Description

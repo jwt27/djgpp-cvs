@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned int *result);
+unsigned int _dos_read(int handle, void *buffer, unsigned int count,
+                       unsigned int *result);
 @end example
 
 @subheading Description

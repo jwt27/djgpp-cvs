@@ -4,7 +4,8 @@
 @example
 #include <bios.h>
 
-unsigned _bios_serialcom(unsigned cmd, unsingned serialport, unsigned data);
+unsigned _bios_serialcom(unsigned cmd, unsingned serialport,
+                         unsigned data);
 @end example
 
 @subheading Description
@@ -110,7 +111,8 @@ Bit     Meaning if Set
 
 @example
 /* 9600 baud, no parity, one stop, 8 bits */
-_bios_serialcom(_COM_INIT, 0, _COM_9600|_COM_NOPARITY|_COM_STOP1|_COM_CHR8);
+_bios_serialcom(_COM_INIT, 0,
+                _COM_9600|_COM_NOPARITY|_COM_STOP1|_COM_CHR8);
 for(i=0; buf[i]; i++)
   _bios_serialcom(_COM_SEND, 0, buf[i]);
 @end example

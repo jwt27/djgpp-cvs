@@ -27,7 +27,8 @@ most recently completed FPU operation:
 ---- --X- ---- ---- = SW_C1
 ---- -X-- ---- ---- = SW_C2
 -X-- ---- ---- ---- = SW_C3
---XX X--- ---- ---- = SW_TOP - top of stack (use SW_TOP_SHIFT to shift it)
+--XX X--- ---- ---- = SW_TOP - top of stack (use SW_TOP_SHIFT
+                                             to shift it)
 X--- ---- ---- ---- = SW_BUSY - fpu is busy
 @end example
 

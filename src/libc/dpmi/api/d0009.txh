@@ -23,7 +23,8 @@ below.  For more details, please refer to @ref{__dpmi_get_descriptor}.
 @example
 ---- ---- ---- ---X = 0=not accessed, 1=accessed
 ---- ---- ---- --X- = data: 0=read, 1=r/w; code: 1=readable
----- ---- ---- -X-- = data: 0=expand-up, 1=expand-down; code: 0=non-conforming
+---- ---- ---- -X-- = data: 0=expand-up, 1=expand-down; 
+                      code: 0=non-conforming
 ---- ---- ---- X--- = 0=data, 1=code
 ---- ---- ---1 ---- = must be 1
 ---- ---- -XX- ---- = priviledge level (must equal CPL)

@@ -38,6 +38,7 @@ The number of elapsed tics since the program started.
 @subheading Example
 
 @example
-printf("We used %d seconds of elapsed time\n", times(&buf)/CLOCKS_PER_SEC);
+printf("We used %d seconds of elapsed time\n",
+       times(&buf)/CLOCKS_PER_SEC);
 @end example
 

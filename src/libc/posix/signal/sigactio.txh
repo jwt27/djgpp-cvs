@@ -4,7 +4,8 @@
 @example
 #include <signal.h>
 
-int sigaction (int sig, const struct sigaction *act, struct sigaction *oact);
+int sigaction (int sig, const struct sigaction *act,
+               struct sigaction *oact);
 @end example
 
 @subheading Description
@@ -15,7 +16,8 @@ the header file @file{signal.h}, is declared as follows:
 
 @example
  struct sigaction @{
-   int sa_flags;             /* flags for the action; currently ignored */
+   int sa_flags;             /* flags for the action;
+                              * currently ignored */
    void (*sa_handler)(int);  /* the handler for the signal */
    sigset_t sa_mask;         /* additional signals to be blocked */
  @};

@@ -18,7 +18,8 @@ bits correspond to the following values:
 
 ---- ---- ---- ---X  1 = disk drive(s) installed
 ---- ---- ---- --X-  1 = math coprocessor installed
----- ---- ---- XX--  System memory 00=16k 01=32k 10=48k 11=64k (non PS/2)
+---- ---- ---- XX--  System memory: 00=16k, 01=32k, 10=48k,
+                                    11=64k (non PS/2)
 ---- ---- ---- -X--  1 = pointing device installed (PS/2)
 ---- ---- ---- X---  not used on PS/2
 ---- ---- --XX ----  initial video mode: 01=CO40 10=CO80 11=MONO

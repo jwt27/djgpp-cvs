@@ -4,7 +4,10 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_words_to_copy, const void *stack_data);
+int __dpmi_simulate_real_mode_procedure_retf_stack(
+        __dpmi_regs *_regs,
+        int stack_words_to_copy, const void *stack_data
+);
 @end example
 
 @subheading Description

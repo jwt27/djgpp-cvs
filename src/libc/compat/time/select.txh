@@ -123,7 +123,8 @@ value, and leaves the descriptor sets unchanged.
         @}
       else
         fprintf(stderr,
-                "%d: %s ready for input\n", i, select_result ? "" : "NOT");
+                "%d: %s ready for input\n", i,
+                select_result ? "" : "NOT");
       FD_ZERO (&write_fds);
       FD_SET (i, &write_fds);
       select_result = select (i + 1, 0, &write_fds, 0, &timeout);
@@ -134,7 +135,8 @@ value, and leaves the descriptor sets unchanged.
         @}
       else
         fprintf(stderr,
-                "%d: %s ready for output\n", i, select_result ? "" : "NOT");
+                "%d: %s ready for output\n", i,
+                select_result ? "" : "NOT");
     @}
 @end example
 

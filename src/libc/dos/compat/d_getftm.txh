@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_getftime(int handle, unsigned int *p_date, unsigned *p_time);
+unsigned int _dos_getftime(int handle,
+                           unsigned int *p_date, unsigned *p_time);
 @end example
 
 @subheading Description

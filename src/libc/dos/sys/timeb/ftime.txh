@@ -17,7 +17,8 @@ format of @code{struct timeb} is:
 struct timeb @{
   time_t         time;     /* seconds since 00:00:00 GMT 1/1/1970 */
   unsigned short millitm;  /* milliseconds */
-  short          timezone; /* difference between GMT and local, minutes */
+  short          timezone; /* difference between GMT and local,
+                            * minutes */
   short          dstflag;  /* set if daylight savings time in affect */
 @};
 @end example

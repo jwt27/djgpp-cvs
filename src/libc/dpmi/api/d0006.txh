@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_get_segment_base_address(int _selector, unsigned long *_addr);
+int __dpmi_get_segment_base_address(int _selector,
+                                    unsigned long *_addr);
 @end example
 
 @subheading Description

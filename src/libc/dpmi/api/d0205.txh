@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_set_protected_mode_interrupt_vector(int _vector, __dpmi_paddr *_address);
+int __dpmi_set_protected_mode_interrupt_vector(int _vector,
+                                               __dpmi_paddr *_address);
 @end example
 
 @subheading Description

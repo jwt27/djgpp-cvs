@@ -110,7 +110,8 @@ error message is printed and @code{errno} is left unchanged.
           return 1; /* be silent: no message, don't set errno */
         @} /* FALL THROUGH */
       case SING:
-        /* all other domain or sing exceptions, print message and abort */
+        /* all other domain or sing exceptions,
+         * print message and abort */
         fprintf(stderr, "domain exception in %s\n", x->name);
         abort();
         break;

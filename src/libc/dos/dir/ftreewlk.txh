@@ -5,7 +5,8 @@
 #include <dir.h>
 
 int __file_tree_walk(const char *dir, 
-                   int (*func)(const char *path, const struct ffblk *ff));
+                     int (*func)(const char *path,
+                                 const struct ffblk *ff));
 @end example
 
 @subheading Description

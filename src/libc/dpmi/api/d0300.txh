@@ -4,7 +4,8 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_simulate_real_mode_interrupt(int _vector, __dpmi_regs *_regs);
+int __dpmi_simulate_real_mode_interrupt(int _vector,
+                                        __dpmi_regs *_regs);
 @end example
 
 @subheading Description

@@ -106,6 +106,7 @@ program should be able to handle that case gracefully.
 @subheading Example
 
 @example
-dosmemget(_go32_info_block.linear_address_of_primary_screen, 80*25*2, buf);
+dosmemget(_go32_info_block.linear_address_of_primary_screen,
+          80*25*2, buf);
 @end example
 

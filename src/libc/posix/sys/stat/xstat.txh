@@ -2,7 +2,8 @@
 @subheading Syntax
 @example
 ino_t
-_invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
+_invent_inode(const char *name, unsigned time_stamp,
+              unsigned long fsize)
 @end example
 
 @subheading Description

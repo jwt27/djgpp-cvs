@@ -338,7 +338,8 @@ the limits of the debuggee's code segment.
 @example
 #include <debug/dbgcom.h>
 
-void read_sel_addr (unsigned offset, void *buf, unsigned len, unsigned sel);
+void read_sel_addr (unsigned offset, void *buf, unsigned len,
+                    unsigned sel);
 @end example
 
 @subheading Description
@@ -366,7 +367,8 @@ the limits of the segment whose selector is @var{sel}).
 @example
 #include <debug/dbgcom.h>
 
-void write_sel_addr (unsigned sel, unsigned offset, void *buf, unsigned len);
+void write_sel_addr (unsigned sel, unsigned offset,
+                     void *buf, unsigned len);
 @end example
 
 @subheading Description
@@ -414,7 +416,8 @@ debugger's original signal handlers.
 @example
 #include <debug/v2load.h>
 
-int v2loadimage (const char *program, const char *cmdline, jmp_buf load_state);
+int v2loadimage (const char *program, const char *cmdline,
+                 jmp_buf load_state);
 @end example
 
 @subheading Description
@@ -573,7 +576,8 @@ The @code{cmdline_t} structure is declared in the header
 struct dbg_redirect @{
   int inf_handle;   /* debuggee's handle */
   int our_handle;   /* debugger's handle */
-  char *file_name;  /* file name where debuggee's handle is redirected */
+  char *file_name;  /* file name where debuggee's handle is
+                     * redirected */
   int mode;         /* mode used to open() the above file */
   off_t filepos;    /* file position of debuggee's handle; unused */
 @};
@@ -1034,7 +1038,8 @@ The name of the source file which corresponds to @var{addr}, or
   char *file_name;
   syms_init ("foo.exe");
   file_name = syms_val2line (0x1c12, &lineno);
-  printf ("The address %x is on %s, line %d\n", 0x1c12, file_name, line);
+  printf ("The address %x is on %s, line %d\n",
+          0x1c12, file_name, line);
 @end example
 
 @c ----------------------------------------------------------------------

@@ -251,7 +251,8 @@ The line the cursor is on is deleted; lines below it scroll up.
 @example
 #include <conio.h>
 
-int     gettext(int _left, int _top, int _right, int _bottom, void *_destin);
+int     gettext(int _left, int _top, int _right, int _bottom,
+                void *_destin);
 @end example
 
 @subheading Description
@@ -406,7 +407,8 @@ Resets the text attribute to what it was before the program started.
 @example
 #include <conio.h>
 
-int puttext(int _left, int _top, int _right, int _bottom, void *_source);
+int puttext(int _left, int _top, int _right, int _bottom,
+            void *_source);
 @end example
 
 @subheading Description
