@@ -893,20 +893,24 @@ static int script_exec(const char *program, char **argv, char **envp)
    possible extension of an executable file.  It only mentions
    those extensions that can be *omitted* when you invoke the
    executable from one of the shells used on MSDOS.  */
+
+#define INTERP_FLAG_SKIP_SEARCH 1
+
 static struct {
   const char *extension;
   int (*interp)(const char *, char **, char **);
+  unsigned char flags;
 } interpreters[] = {
-  { ".com", direct_exec },
-  { ".exe", go32_exec },
-  { ".bat", __dosexec_command_exec },
-  { ".btm", __dosexec_command_exec },
-  { ".sh",  script_exec },  /* for compatibility with ms_sh */
-  { ".ksh", script_exec },
-  { ".pl", script_exec },   /* Perl */
-  { ".sed", script_exec },
-  { "",     go32_exec },
-  { 0,      script_exec },  /* every extension not mentioned above calls it */
+  { ".com", direct_exec, 0 },
+  { ".exe", go32_exec, 0 },
+  { ".bat", __dosexec_command_exec, 0 },
+  { ".btm", __dosexec_command_exec, 0 },
+  { ".sh",  script_exec, INTERP_FLAG_SKIP_SEARCH },  /* Bash */
+  { ".ksh", script_exec, INTERP_FLAG_SKIP_SEARCH },
+  { ".pl", script_exec, INTERP_FLAG_SKIP_SEARCH },   /* Perl */
+  { ".sed", script_exec, INTERP_FLAG_SKIP_SEARCH }, /* Sed */
+  { "",     go32_exec, 0 },
+  { 0,      script_exec, 0 },  /* every extension not mentioned above calls it */
   { 0,      0 },
 };
 
@@ -1061,15 +1065,19 @@ int __spawnve(int mode, const char *path, char *const argv[], char *const envp[]
   {
     for (i=0; interpreters[i].extension; i++)
     {
-      strcpy(rp, interpreters[i].extension);
-      if (access(rpath, F_OK) == 0 && !(is_dir = (access(rpath, D_OK) == 0)))
+      if ((interpreters[i].flags & INTERP_FLAG_SKIP_SEARCH) == 0)
       {
-	found = 1;
-	break;
+        strcpy(rp, interpreters[i].extension);
+        if (access(rpath, F_OK) == 0 && !(is_dir = (access(rpath, D_OK) == 0)))
+        {
+	  found = 1;
+	  break;
+        }
       }
     }
   }
-
+  *rp = 0;
+  
   if (!found)
   {
     const char *rpath_ext;
