@@ -801,10 +801,9 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	case DPMI_SET_PAGE_ATTRIBUTES - 0x0500:  /* 1.0 */
 	case DPMI_MAP_DEVICE - 0x0500:  /* 1.0 optional */
 	case DPMI_MAP_1MB - 0x0500:  /* 1.0 optional */
-	case DPMI_GET_MEMORY_BLOCK_INFO - 0x0500:  /* 1.0 */
 	  ERROR (DPMI_ERROR_UNSUPPORTED);
 
-	case DPMI_GET_MEMORY_INFO - 0x0500:  /* 1.0 */
+	case DPMI_GET_MEMORY_BLOCK_INFO - 0x0500:  /* 1.0 */
 	  {
 	    word32 handle = (SI << 16) | DI;
 	    word32 size, linear;
@@ -818,6 +817,9 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    BARRIER ();
 	    return;
 	  }
+
+	case DPMI_GET_MEMORY_INFO - 0x0500:  /* 1.0 */
+	  ERROR (DPMI_ERROR_UNSUPPORTED);
 
 	default: goto bad_function;
 	}
