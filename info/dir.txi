@@ -1,0 +1,87 @@
+@c -*-texinfo-*-  not \input texinfo.tex, as this is not to be TeX'ed
+@setfilename dir
+@node Top, (dir), (dir), (dir)
+@ifinfo
+
+Welcome to the GNU standalone Info program.  The documentation presented
+here is part of the djgpp development package. 
+
+To view a topic, use the arrow keys to position the cursor on one of the
+lines beginning with a '*' and press 'm' and then 'Enter'. 
+
+This (the Directory node) gives a menu of major topics.  Typing "d"
+returns here, "q" exits, "?" lists all INFO commands, "h" gives a primer
+for first-timers, "mTexinfo<Return>" visits Texinfo topic, etc.  To edit
+this dir-file, edit 'dir.txi', and pass it through 'makeinfo'
+
+--- PLEASE ADD DOCUMENTATION TO THIS TREE. (See INFO topic first.) ---
+@end ifinfo
+@menu
+
+* as: (as.inf).
+	The GNU assembler
+
+* Binutils: (binutils).
+	The GNU binary utilities "ar", "objcopy",
+	"objdump", "nm", "size", "strip", and "ranlib".
+
+* Bison: (bison).
+	The GNU yacc-like parser generator
+
+* CPP: (cpp.inf).
+	The GNU C-Preprocessor
+
+* diff: (diff.inf).
+        GNU diff, cmp, and patch
+
+* Flex: (flex).
+        A fast scanner generator.
+
+* gasp: (gasp.inf).
+        GNU assembler's macro preprocessor
+
+* GCC: (gcc.inf).
+	The GNU C, C++, and Objective-C Compiler
+
+* GDB: (gdb.inf).
+        The GNU Debugger (gdb and gdb-dpmi).
+
+* GZip: (gzip.inf).
+	The GNU compression filter
+
+* iostream: (iostream.inf).
+	The C++ input/output facility. (in libiostream.a *and* libgpp.a)
+
+* Info: (info.inf).
+	Documentation browsing system.  This topic teaches you about
+	how to use the online help information.
+
+* Info-Standalone: (info-stn.inf).
+	This topic helps you use the standalone Info-Program (info.exe)
+
+* ld: (ld.inf).
+        The GNU linker
+
+* libc.a: (libc.inf).
+	The Standard C Library Reference
+
+* libgpp.a: (libgplus.inf).
+	The g++ class library.
+
+* make: (make.inf).
+	Automatically build programs from Makefiles.
+
+* Make-Info: (makeinfo.inf).
+	Convert a .texinfo file (.txi) to an info file (.inf) suitable
+	for the info reader or Emacs.
+
+* Texinfo: (texi.inf).
+	With one source file, make either a printed manual
+	(through TeX) or an Info file (through texinfo).
+	Full documentation in this menu item.
+
+* Utilities: (utils.inf).
+        Miscellaneous utilities that come with DJGPP.
+
+@end menu
+
