@@ -29,9 +29,10 @@ This allows to describe an input field that is to be skipped.
 @item A width specifier, which specifies the maximum number of input
 characters to use in the conversion. 
 
-@item An optional conversion qualifier, which may be @samp{h} to specify
-@code{short}, @samp{l} to specify doubles or long ints, or @samp{L} or
-@samp{ll} (two lower-case ell letters) to specify long doubles and the
+@item An optional conversion qualifier, which may be @samp{hh}
+to specify @code{char}, @samp{h} to specify @code{short}, @samp{l}
+to specify doubles or long ints, or @samp{L} or @samp{ll}
+(two lower-case ell letters) to specify long doubles and the
 long long type.  If the @samp{h} qualifier appears before a specifier
 that implies conversion to a @code{long} or @code{float} or
 @code{double}, like in @samp{%hD} or @samp{%hf}, it is generally
@@ -56,6 +57,10 @@ of one is implied.
 
 Convert the input to a signed @code{int} using 10 as the base of the
 number representation.
+
+@item hhd
+
+Convert the input to a signed @code{char} using 10 as the base.
 
 @item hd
 
@@ -108,60 +113,72 @@ Convert the input to a @code{long double}.
 @item i
 
 Convert the input, determining base automatically by the presence of
-@code{0x} or @code{0} prefixes, and store in an @code{int}.
+@code{0x} or @code{0} prefixes, and store in a signed @code{int}.
 @xref{strtol}.
+
+@item hhi
+
+Like @samp{i}, but stores the result in a signed @code{char}.
 
 @item hi
 
-Like @samp{i}, but stores the result in a @code{short}.
+Like @samp{i}, but stores the result in a signed @code{short}.
 
 @item li
 @itemx I
 
-Like @samp{i}, but stores the result in a @code{long}.
+Like @samp{i}, but stores the result in a signed @code{long}.
 
 @item Li
 @itemx lli
 @itemx lI
 
-Like @samp{i}, but stores the result in a @code{long long}.
+Like @samp{i}, but stores the result in a signed @code{long long}.
 
 @item n
 
 Store the number of characters scanned so far into the @code{int}
 pointed to by the argument.
 
+@item hhn
+
+Like @samp{n}, but the argument should point to a signed @code{char}.
+
 @item hn
 
-Like @samp{n}, but the argument should point to a @code{short}.
+Like @samp{n}, but the argument should point to a signed @code{short}.
 
 @item ln
 
-Like @samp{n}, but the argument should point to a @code{long}.
+Like @samp{n}, but the argument should point to a signed @code{long}.
 
 @item Ln
 @itemx lln
 
-Like @samp{n}, but the argument should point to a @code{long long}.
+Like @samp{n}, but the argument should point to a signed @code{long long}.
 
 @item o
 
-Convert the input to a signed @code{int}, using base 8.
+Convert the input to an unsigned @code{int}, using base 8.
+
+@item hho
+
+Convert the input to an unsigned @code{char}, using base 8.
 
 @item ho
 
-Convert the input to a signed @code{short}, using base 8.
+Convert the input to an unsigned @code{short}, using base 8.
 
 @item lo
 @itemx O
 
-Convert the input to a signed @code{long}, using base 8.
+Convert the input to an unsigned @code{long}, using base 8.
 
 @item Lo
 @itemx llo
 @itemx lO
 
-Convert the input to a signed @code{long long}, using base 8.
+Convert the input to an unsigned @code{long long}, using base 8.
 
 @item p
 
@@ -176,6 +193,10 @@ stored is then terminated with a null character.
 @item u
 
 Convert the input to an unsigned @code{int} using 10 as the base.
+
+@item hhu
+
+Convert the input to an unsigned @code{char} using 10 as the base.
 
 @item hu
 
@@ -196,6 +217,11 @@ Convert the input to an unsigned @code{long long} using 10 as the base.
 @itemx X
 
 Convert the input to an unsigned @code{int}, using base 16.
+
+@item hhx
+@itemx hhX
+
+Convert the input to an unsigned @code{char}, using base 16.
 
 @item hx
 @itemx hX
