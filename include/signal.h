@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_signal_h_
 #define __dj_include_signal_h_
@@ -77,6 +78,14 @@ int	sigsuspend(const sigset_t *_set);
 #define SIGTIMR 303	/* Internal for setitimer (SIGALRM, SIGPROF) */
 #define SIGPROF 304
 #define SIGMAX 320
+
+void	__djgpp_traceback_exit(int _sig);
+
+#define NSIG SIGMAX
+
+extern char *sys_siglist[];
+
+void	psignal(int _sig, const char *_msg);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
