@@ -1,0 +1,18 @@
+/* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <unistd.h>
+#include <stdlib.h>
+
+static char default_login[] = "user";
+
+char *
+getlogin(void)
+{
+  char *p;
+
+  p = getenv("USER");
+  if (!p)
+    p = getenv("LOGNAME");
+  if (!p)
+    p = default_login;
+  return p;
+}
