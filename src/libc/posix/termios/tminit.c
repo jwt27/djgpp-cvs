@@ -21,6 +21,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <sys/exceptn.h>
+#include <ctype.h>
 #include <libc/bss.h>
 #include <libc/file.h>
 #include <libc/dosio.h>
@@ -33,6 +34,8 @@
 #define SENSE_NO_KEY	0
 #define SENSE_REG_KEY	1
 #define SENSE_EXT_KEY	2
+
+#define NARGS 16
 
 /* tty buffers */
 unsigned char __libc_tty_queue_buffer[_TTY_QUEUE_SIZE];
@@ -49,6 +52,14 @@ static unsigned ah_key_get;
 static unsigned ah_ctrl_sense;
 
 static const unsigned char *ext_key_string;
+
+/* Console command parser */
+
+enum cmd_parser_states { need_esc = 0, have_esc, have_lbracket,
+                         have_arg, have_cmd};
+
+static enum cmd_parser_states cmd_state;
+
 
 /* static functions */
 static void __libc_termios_fflushall (void);
@@ -69,6 +80,8 @@ static void __libc_termios_clear_queue (void);
 static int __libc_termios_get_queue (void);
 static int __libc_termios_put_queue (unsigned char ch);
 static void __libc_termios_fill_queue (void);
+static size_t parse_console_command(const unsigned char *buf, size_t count);
+static void execute_console_command(const unsigned char cmd, unsigned char argc, unsigned int args[NARGS]);
 
 /* direct I/O functions */
 static inline int __direct_keysense (void);
@@ -420,10 +433,25 @@ __libc_termios_write_cooked_tty (int handle, const void *buffer, size_t count)
 
       rp = buffer;
       n = count;
-      while (--n >= 0)
+      while (n > 0)
 	{
 	  /* get character */
-	  ch = *rp++;
+          ch = *rp;
+
+          /* Handle console commands */
+	  if (ch == '\e' || cmd_state != need_esc)
+          {
+            size_t delta;
+            delta = parse_console_command(rp, n);
+
+            /* Skip past what was parsed.  */
+            n -= delta;
+            rp += delta;
+            continue;
+          }
+
+	  ++rp;
+          --n;
 
 	  /* NOTE: multibyte character don't contain control character */
 	  /* map NL to CRNL */
@@ -472,11 +500,30 @@ __libc_termios_write_raw_tty (int handle, const void *buffer, size_t count)
 {
   const unsigned char *rp;
   ssize_t n;
+  unsigned char ch;
 
   rp = buffer;
   n = count;
-  while (--n >= 0)
-    __direct_output (*rp++);
+  while (n > 0)
+  {
+    ch = *rp;
+
+    /* Handle console commands */
+    if (ch == '\e' || cmd_state != need_esc)
+    {
+      size_t delta;
+      delta = parse_console_command(rp, n);
+
+      /* Skip past what was parsed.  */
+      n -= delta;
+      rp += delta;
+      continue;
+    }
+
+    ++rp;
+    --n;
+    __direct_output(ch);
+  }
 
   return count;
 }
@@ -963,3 +1010,218 @@ proc_skip:
 
 /******************************************************************************/
 
+static size_t
+parse_console_command(const unsigned char *buf, size_t count)
+{
+  static unsigned int args[NARGS];
+  static unsigned char arg_count;
+
+  const unsigned char *ptr = buf;
+  const unsigned char *ptr_end = buf + count;
+
+  while (ptr < ptr_end)
+  {
+    switch (cmd_state)
+    {
+      case need_esc:
+        /* Find an escape or bail out.  */
+        if (*ptr != '\e')
+          return (ptr - buf);
+        ++ptr;
+        cmd_state = have_esc;
+        if (ptr >= ptr_end)
+          break;
+
+      case have_esc:
+        /* Find a left bracket or bail out.  */
+        if (*ptr != '[')
+          return (ptr - buf);
+
+        cmd_state = have_lbracket;
+        ++ptr;
+        if (ptr == ptr_end)
+          break;
+
+      case have_lbracket:
+        /* After the left bracket, either an argument
+           or the command follows.  */
+        arg_count = NARGS;
+        arg_count = 0;
+        args[0] = 0;
+        if (isdigit(*ptr))
+        {
+          cmd_state = have_arg;
+        }
+        else
+        {
+          cmd_state = have_cmd;
+          break;
+        }
+
+      case have_arg:
+      {
+        /* Parse the argument.  Quit when there are no more digits.  */
+        if (isdigit(*ptr))
+        {
+          do
+          {
+            args[arg_count] *= 10;
+            args[arg_count] += *ptr - '0';
+            ++ptr;
+          } while (ptr < ptr_end && isdigit(*ptr));
+          break;
+        }
+        else if (*ptr == ';')
+        {
+          /* Argument separator.  */
+          ++arg_count;
+          if (arg_count < NARGS)
+            args[arg_count] = 0;
+          ++ptr;
+          break;
+        }
+        else
+        {
+          /* End of the current argument.
+             Assume the command has been reached.  */
+          cmd_state = have_cmd;
+          ++arg_count;
+        }
+      }
+      case have_cmd:
+      {
+        /* Execute the command.  */
+        execute_console_command(*ptr, arg_count, args);
+        /* Reset the parse state.  */
+        cmd_state = need_esc;
+        ++ptr;
+        return ptr - buf;
+      }
+    }
+  }
+  return ptr - buf;
+}
+
+static inline void
+get_cursor(unsigned char *col, unsigned char *row)
+{
+  unsigned char cur_page;
+  unsigned short rowcol;
+
+  cur_page = _farnspeekb(0x462);
+
+  rowcol = _farnspeekw(0x450 + cur_page);
+  *row = rowcol >> 8;
+  *col = rowcol & 0xff;
+}
+
+
+static void
+move_cursor(int x_delta, int y_delta)
+{
+  unsigned char row, col;
+  unsigned char max_row, max_col;
+  unsigned char cur_page;
+  unsigned short rowcol;
+  __dpmi_regs r;
+
+  _farsetsel(_dos_ds);
+  cur_page = _farnspeekb(0x462);
+
+  rowcol = _farnspeekw(0x450 + cur_page);
+  row = rowcol >> 8;
+  col = rowcol & 0xff;
+
+  max_row = _farnspeekb(0x484) + 1;
+  max_col = _farnspeekb(0x44a);
+
+  if ((int)row + y_delta < 0)
+    row = 0;
+  else if (row + y_delta > max_row)
+    row = max_row;
+
+  if ((int)col + x_delta < 0)
+    col = 0;
+  else if (col + x_delta > max_row)
+    col = max_col;
+
+  r.h.ah = 2;
+  r.h.bh = cur_page;
+  r.h.dh = row + y_delta;
+  r.h.dl = col + x_delta;
+  __dpmi_int(0x10, &r);
+}
+
+static void
+set_cursor(unsigned char col, unsigned char row)
+{
+  unsigned char max_row, max_col;
+  unsigned char cur_page;
+  __dpmi_regs r;
+
+  _farsetsel(_dos_ds);
+  cur_page = _farnspeekb(0x462);
+
+  max_row = _farnspeekb(0x484) + 1;
+  max_col = _farnspeekb(0x44a);
+
+  if (row > max_row)
+    row = max_row;
+
+  if (col > max_row)
+    col = max_col;
+
+  r.h.ah = 2;
+  r.h.bh = cur_page;
+  r.h.dh = row;
+  r.h.dl = col;
+  __dpmi_int(0x10, &r);
+}
+
+#define GET_ARG(I, DEFVAL) ((argc > I) ? (args[I]) : (DEFVAL))
+
+static void
+execute_console_command(const unsigned char cmd, unsigned char argc,
+                        unsigned int args[NARGS])
+{
+  unsigned char row, col;
+
+  switch (cmd)
+  {
+    /* Move up.  */
+    case 'A':
+      move_cursor(0, -GET_ARG(0, 1));
+      break;
+
+    /* Move down.  */
+    case 'B':
+      move_cursor(0, -GET_ARG(0, 1));
+      break;
+
+    /* Move left.  */
+    case 'C':
+      move_cursor(-GET_ARG(0, 1), 0);
+      break;
+
+    /* Move right.  */
+    case 'D':
+      move_cursor(GET_ARG(0, 1), 0);
+      break;
+
+    /* Go to column.  */
+    case 'G':
+      get_cursor(&row, &col);
+      set_cursor(GET_ARG(0, 1) - 1, row);
+      break;
+
+    /* Go to row and column.  */
+    case 'H':
+      set_cursor(GET_ARG(0, 1) - 1, GET_ARG(1, 1) - 1);
+      break;
+
+    /* Go to row.  */
+    case 'd':
+      get_cursor(&row, &col);
+      set_cursor(row, GET_ARG(0, 1) - 1);
+  }
+}
