@@ -904,3 +904,6 @@ to @code{EBADF}.
 @findex perror
 The function @code{perror} no longer prints a colon and blank if called
 with a null pointer or a pointer to a null string.
+
+@findex fchmod
+The function @code{fchmod} was added.
