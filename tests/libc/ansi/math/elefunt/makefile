@@ -72,7 +72,7 @@ else  # no borland compiler, we use gcc
   LD = gcc
   LIBRARY_PATH := ../../../../../lib
   export LIBRARY_PATH
-  RUN =    # how to run the executables
+  RUN = redir -eo   # how to run the executables
 ifdef DEBUG
     # don't use -O!!
     CFLAGS = -g -Wall -fno-builtin $(INCLUDE) $(DEFINES)
