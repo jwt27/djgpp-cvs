@@ -106,14 +106,14 @@ bnu*b.zip.  For C++, also get gpp*b.zip.
 
 To read the online manuals, get txi*b.zip and run "info".  If you don't
 have a DPMI server installed, you'll need csdpmi*b.zip.  (Windows, QDPMI,
-386Max, NWDOS, OpenDOS, OS/2, Win/NT and Linux DOSEmu all provide DPMI
-services, so you don't need CWSDPMI in those environments.)  For more
-details, download faq*b.zip (the full FAQ list) and read Chapter 4,
-"Where and What to Download".
+386Max, NWDOS, OpenDOS, OS/2, Windows NT, Windows 2000, Windows XP
+and Linux DOSEmu all provide DPMI services, so you don't need CWSDPMI
+in those environments.)  For more details, download faq*b.zip
+(the full FAQ list) and read Chapter 4, "Where and What to Download".
 
-If you have Windows ME, 2000 or XP, images dated before December 2001
-may not work properly, so make sure you get new distributions where
-possible if you are using a newer Windows release.
+If you have Windows ME, 2000 or XP, DJGPP executables dated before
+December 2001 may not work properly, so make sure you get new
+distributions where possible if you are using a newer Windows release.
 
 
 Installation
@@ -162,7 +162,7 @@ invalid in short file names (not including the quotes: "+,;=[]").
    the directory structure.  If you use WinZip, you MUST check the box
    "Use folder names".  If you use pkunzip, you must use the -d switch.
 
-   On Windows/NT (NT version 4 and below, not W2K!) use an unzip
+   On Windows NT (NT version 4 and below, not 2000 or XP!) use an unzip
    program which does NOT support long file names if you not plan on
    using the LFN TSR, as DJGPP programs cannot access long file names
    on NT4 without the TSR.  Again, unzip32.exe will do The Right Thing
