@@ -1,0 +1,37 @@
+@node getrusage, unix
+@subheading Syntax
+
+@example
+#include <sys/time.h>
+#include <sys/resource.h
+
+int getrusage(int who, struct rusage *rusage);
+@end example
+
+@subheading Description
+
+This function returns information about the running process.  Currently,
+the only field that is computed is this:
+
+@example
+struct rusage @{
+  struct timeval ru_utime;  /* total time used by process */
+@};
+@end example
+
+The remainder of the fields are set to zero.
+
+The @var{who} parameter must be @code{RUSAGE_SELF} or
+@code{RUSAGE_CHILDREN}. 
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+struct rusage r;
+getrusage(RUSAGE_SELF, &r);
+@end example
+

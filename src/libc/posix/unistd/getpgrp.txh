@@ -1,0 +1,16 @@
+@node getpgrp, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int getpgrp(void);
+@end example
+
+@subheading Description
+
+Gets the process group, which is currently the same as the pid.
+
+@subheading Return Value
+
+The process group.

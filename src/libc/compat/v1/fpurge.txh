@@ -1,0 +1,18 @@
+@node fpurge, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fpurge(FILE *file);
+@end example
+
+@subheading Description
+
+This function purges the buffer for @var{file} without writing it to
+disk. 
+
+@subheading Return Value
+
+Zero on success, -1 on failure.
+

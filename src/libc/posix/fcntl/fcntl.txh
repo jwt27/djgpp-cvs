@@ -1,0 +1,17 @@
+@node fcntl, io
+@subheading Syntax
+
+@example
+#include <fcntl.h>
+
+int fcntl(int fd, int cmd, ...);
+@end example
+
+@subheading Description
+
+This function   currently only  supports @var{cmd}  of @code{F_DUPFD},
+which acts like @code{dup(fd)} (@pxref{dup}).
+
+@subheading Return Value
+
+Varies.
