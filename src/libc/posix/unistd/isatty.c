@@ -12,8 +12,9 @@ isatty(int fd)
 {
   const int dev_info = _get_dev_info(fd);
 
+  /* Pass on errno from _get_dev_info. */
   if (dev_info == -1)
-    return -1;
+    return 0;
 
   if ((dev_info & ISATTY_BITS) == ISATTY_BITS)
     return 1;
