@@ -230,7 +230,7 @@ void write_MODEND(FILE *outfile, int main_obj, int start_ptr);
 %token <i> ARITH2 ARITH2B ARITH2D ARITH2W
 %token <i> LXS MOVSZX MOVSZXB MOVSZXW
 %token <i> JCC JCCL JCXZ LOOP SETCC
-%token <i> SHIFT
+%token <i> SHIFT SHIFTB SHIFTD SHIFTW
 %token <i> ONEBYTE TWOBYTE ASCADJ
 %token <i> BITTEST GROUP3 GROUP3B GROUP3D GROUP3W GROUP6 GROUP7 STRUCT
 %token ALIGN ARPL
@@ -522,14 +522,29 @@ struct opcode opcodes[] = {
   {"pushw", PUSHW, NO_ATTR},
   {"pushd", PUSHD, NO_ATTR},
   {"rcl", SHIFT, 2},
+  {"rclb", SHIFTB, 2},
+  {"rcld", SHIFTD, 2},
+  {"rclw", SHIFTW, 2},
   {"rcr", SHIFT, 3},
+  {"rcrb", SHIFTB, 3},
+  {"rcrd", SHIFTD, 3},
+  {"rcrw", SHIFTW, 3},
   {"ret", RET, NO_ATTR},
   {"retd", RETD, NO_ATTR},
   {"retf", RETF, NO_ATTR},
   {"retfd", RETFD, NO_ATTR},
   {"rol", SHIFT, 0},
+  {"rolb", SHIFTB, 0},
+  {"rold", SHIFTD, 0},
+  {"rolw", SHIFTW, 0},
   {"ror", SHIFT, 1},
+  {"rorb", SHIFTB, 1},
+  {"rord", SHIFTD, 1},
+  {"rorw", SHIFTW, 1},
   {"sar", SHIFT, 7},
+  {"sarb", SHIFTB, 7},
+  {"sard", SHIFTD, 7},
+  {"sarw", SHIFTW, 7},
   {"sbb", ARITH2, 3},
   {"sbbb", ARITH2B, 3},
   {"sbbd", ARITH2D, 3},
@@ -570,8 +585,17 @@ struct opcode opcodes[] = {
   {"sidt", GROUP7, 1},
   {"sldt", GROUP6, 0},
   {"sal", SHIFT, 4},
+  {"salb", SHIFTB, 4},
+  {"sald", SHIFTD, 4},
+  {"salw", SHIFTW, 4},
   {"shl", SHIFT, 4},
+  {"shlb", SHIFTB, 4},
+  {"shld", SHIFTD, 4},
+  {"shlw", SHIFTW, 4},
   {"shr", SHIFT, 5},
+  {"shrb", SHIFTB, 5},
+  {"shrd", SHIFTD, 5},
+  {"shrw", SHIFTW, 5},
   {"smsw", GROUP7, 4},
   {"str", GROUP6, 1},
   {"sub", ARITH2, 5},
@@ -1009,10 +1033,16 @@ line
 
 	| SHIFT REG8 ',' const		{ emitb($4 == 1 ? 0xd0 : 0xc0); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG8 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd2); modrm(3, $1, $2); }
+	| SHIFTB regmem ',' const	{ emitb($4 == 1 ? 0xd0 : 0xc0); reg($1); if ($4 != 1) emitb($4); }
+	| SHIFTB regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd2); reg($1); }
 	| SHIFT REG16 ',' const       	{ emitb($4 == 1 ? 0xd1 : 0xc1); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG16 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd3); modrm(3, $1, $2); }
+	| SHIFTW regmem ',' const	{ emitb($4 == 1 ? 0xd1 : 0xc1); reg($1); if ($4 != 1) emitb($4); }
+	| SHIFTW regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd3); reg($1); }
 	| SHIFT REG32 ',' const       	{ emitb(0x66); emitb($4 == 1 ? 0xd1 : 0xc1); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG32 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); modrm(3, $1, $2); }
+	| SHIFTD regmem ',' const	{ emitb(0x66); emitb($4 == 1 ? 0xd1 : 0xc1); reg($1); if ($4 != 1) emitb($4); }
+	| SHIFTD regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); reg($1); }
 
 	| STACK				{ stack_ptr = pc; }
 	| START				{ start_ptr = pc; main_obj=1; }
