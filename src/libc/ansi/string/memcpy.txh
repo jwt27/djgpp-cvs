@@ -11,8 +11,8 @@ void *memcpy(void *dest, const void *src, int num);
 
 This function copies @var{num} bytes from @var{source} to @var{dest}.
 It assumes that the source and destination regions don't overlap; if you
-need to copy overlapping regions, use @code{memove} instead.
-@xref{memove}.
+need to copy overlapping regions, use @code{memmove} instead.
+@xref{memmove}.
 
 @subheading Return Value
 
