@@ -12,6 +12,7 @@
 #include <go32.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <errno.h>
 #include <crt0.h>
 #include <pc.h>
 #include <sys/exceptn.h>
@@ -138,10 +139,33 @@ static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
 #define EXCEPTION_COUNT (sizeof(exception_names)/sizeof(exception_names[0]))
 
 static void
+dump_selector(const char *name, int sel)
+{
+  unsigned long base;
+  unsigned limit;
+  write(STDERR_FILENO, name, 2);
+  err(": sel="); itox(sel, 4);
+  if (sel) {
+    if (__dpmi_get_segment_base_address(sel, &base))
+    {
+      err("  invalid");
+    }
+    else
+    {
+      err("  base="); itox(base, 8);
+      limit = __dpmi_get_segment_limit(sel);
+      err("  limit="); itox(limit, 8);
+    }
+  }
+  err("\r\n");
+}
+
+static void
 do_faulting_finish_message(void)
 {
   const char *en;
   unsigned long signum = __djgpp_exception_state->__signum;
+  int i;
   
   /* check video mode for original here and reset (not if PC98) */
   if(ScreenPrimary != 0xa0000 && _farpeekb(_dos_ds, 0x449) != old_video_mode) {
@@ -169,7 +193,10 @@ do_faulting_finish_message(void)
     itox(__djgpp_exception_state->__eip, 8);
   }
   if (signum == 0x79)
+  {
+    err("\r\n");
     exit(-1);
+  }
   if (signum <= EXCEPTION_COUNT && has_error[signum])
   {
     unsigned int errorcode = __djgpp_exception_state->__sigmask & 0xffff;
@@ -186,14 +213,19 @@ do_faulting_finish_message(void)
   err(" edi="); itox(__djgpp_exception_state->__edi, 8);
   err("\r\nebp="); itox(__djgpp_exception_state->__ebp, 8);
   err(" esp="); itox(__djgpp_exception_state->__esp, 8);
-  err(" cs="); itox(__djgpp_exception_state->__cs, 4);
-  err(" ds="); itox(__djgpp_exception_state->__ds, 4);
-  err(" es="); itox(__djgpp_exception_state->__es, 4);
-  err(" fs="); itox(__djgpp_exception_state->__fs, 4);
-  err(" gs="); itox(__djgpp_exception_state->__gs, 4);
-  err(" ss="); itox(__djgpp_exception_state->__ss, 4);
+  err(" program=");
+  for (i=0; __dos_argv0[i]; i++);
+  write(STDERR_FILENO, __dos_argv0, i);
   err("\r\n");
-  show_call_frame();
+  dump_selector("cs", __djgpp_exception_state->__cs);
+  dump_selector("ds", __djgpp_exception_state->__ds);
+  dump_selector("es", __djgpp_exception_state->__es);
+  dump_selector("fs", __djgpp_exception_state->__fs);
+  dump_selector("gs", __djgpp_exception_state->__gs);
+  dump_selector("ss", __djgpp_exception_state->__ss);
+  err("\r\n");
+  if (__djgpp_exception_state->__cs == _my_cs())
+    show_call_frame();
   exit(-1);
 }
 
@@ -205,10 +237,11 @@ SignalHandler
 signal(int sig, SignalHandler func)
 {
   SignalHandler temp;
-  if(sig <= 0)
+  if(sig <= 0 || sig > SIGMAX || sig == SIGKILL)
+  {
+    errno = EINVAL;
     return SIG_ERR;
-  if(sig > SIGMAX)
-    return SIG_ERR;
+  }
   temp = signal_list[sig - 1];
   signal_list[sig - 1] = func;
   return temp;
@@ -318,7 +351,6 @@ __djgpp_exception_setup(void)
   __dpmi_paddr except;
   __dpmi_meminfo lockmem;
   int i;
-  static int veryfirst = 1;
 
   for (i = 0; i < SIGMAX; i++)
     signal_list[i] = (SignalHandler)SIG_DFL;
@@ -358,10 +390,6 @@ __djgpp_exception_setup(void)
   __dpmi_get_protected_mode_interrupt_vector(9, &__djgpp_old_kbd);
   __djgpp_exception_toggle();	/* Set new values & save old values */
 
-  if (veryfirst) {
-    veryfirst = 0;
-    atexit(__djgpp_exception_toggle); /* Toggle at exit */
-  }
   /* get original video mode and save */
   old_video_mode = _farpeekb(_dos_ds, 0x449);
 }
@@ -375,4 +403,17 @@ __djgpp_set_ctrl_c(int enable)
   else
     __djgpp_hwint_flags |= 1;
   return oldenable;
+}
+
+void __attribute__((noreturn))
+_exit(int status)
+{
+  /* We need to restore hardware interrupt handlers even if somebody calls
+     `_exit' directly, or else we crash the machine in nested programs.
+     We only toggle the handlers if the original keyboard handler is intact
+     (otherwise, they might have already toggled them).  */
+  if (__djgpp_old_kbd.offset32 == kbd_ori.offset32
+      && __djgpp_old_kbd.selector == kbd_ori.selector)
+    __djgpp_exception_toggle ();
+  __exit (status);
 }

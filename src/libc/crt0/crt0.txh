@@ -31,7 +31,7 @@ if (brk(old_brk+1000))
 @subheading Syntax
 
 @example
-#include <osfcn.h>
+#include <unistd.h>
 
 void *sbrk(int delta)
 @end example
@@ -77,7 +77,7 @@ set statically, as it is only used at startup.
 @subheading Example
 
 @example
-extern int _stklen = 256000;
+int _stklen = 256000;
 @end example
 
 @c ----------------------------------------------------------------------
@@ -110,10 +110,35 @@ void _exit(int exit_code);
 @subheading Description
 
 This function exits the program, returning @var{exit_code} to the
-calling process.  No additional processing is done, and any
-@code{atexit} functions are not called.  This function is normally
-called only by @code{exit}.  Since this does not unhook hardware 
-interrupts, this can cause crashes after the program exits.
+calling process.  No additional processing (such as closing file
+descriptors or calls to the static destructor functions) is done, and
+any @code{atexit} functions are not called; only the hardware interrupt
+handlers are unhooked, to prevent system crashes e.g. after a call to
+@code{abort}.  This function is normally called only by @code{exit} and
+@code{abort}.
+
+@subheading Return Value
+
+This function does not return.
+
+@c ----------------------------------------------------------------------
+@node __exit, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void __exit(int exit_code);
+@end example
+
+@subheading Description
+
+This is an internal library function which exits the program, returning
+@var{exit_code} to the calling process.  No additional processing is
+done, and any @code{atexit} functions are not called.  Since hardware
+interrupts are not unhooked, this can cause crashes after the program
+exits. This function is normally called only by @code{_exit}; do
+@emph{not} call it directly.
 
 @subheading Return Value
 

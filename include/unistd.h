@@ -66,6 +66,7 @@ __DJ_ssize_t
 extern char *optarg;
 extern int optind, opterr, optopt;
 
+void		__exit(int _status) __attribute__((noreturn));
 void		_exit(int _status) __attribute__((noreturn));
 int		access(const char *_path, int _amode);
 unsigned int	alarm(unsigned int _seconds);
@@ -129,6 +130,7 @@ int		getpagesize(void);
 char *		getwd(char *__buffer);
 int		nice(int _increment);
 void *		sbrk(int _delta);
+int		symlink (const char *, const char *);
 int		sync(void);
 int		truncate(const char*, off_t);
 unsigned int	usleep(unsigned int _useconds);
