@@ -825,13 +825,13 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
     case 0x06: /* Paging control group.  */
       switch (AL)
 	{
-	case DPMI_LOCK_LINEAR - 0x0700:  /* 0.9 */
-	case DPMI_UNLOCK_LINEAR - 0x0700:  /* 0.9 */
-	case DPMI_MARK_1MB_PAGEABLE - 0x0700:  /* 0.9 */
-	case DPMI_RELOCK_1MB - 0x0700:  /* 0.9 */
+	case DPMI_LOCK_LINEAR - 0x0600:  /* 0.9 */
+	case DPMI_UNLOCK_LINEAR - 0x0600:  /* 0.9 */
+	case DPMI_MARK_1MB_PAGEABLE - 0x0600:  /* 0.9 */
+	case DPMI_RELOCK_1MB - 0x0600:  /* 0.9 */
 	  ERROR (DPMI_ERROR_UNSUPPORTED);
 
-	case DPMI_GET_PAGE_SIZE:  /* 0.9 */
+	case DPMI_GET_PAGE_SIZE - 0x0600:  /* 0.9 */
 	  BX = PAGE_SIZE >> 16;
 	  CX = PAGE_SIZE;
 	  BARRIER ();
