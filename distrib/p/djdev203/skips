@@ -1,6 +1,6 @@
 /zoneinfo\/src/ d
 /flexlexe.h/ d
 s/sys\/sysmacro.h/sys\/sysmacros.h/
-/\/CVS\// d
+/\/[Cc][Vv][Ss]\// d
 /\/_ansi/ d
 /\/_inline/ d
