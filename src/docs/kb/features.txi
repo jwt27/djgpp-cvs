@@ -259,8 +259,9 @@ by DOS.
 The @sc{djgpp} library features transparent and automatic support for
 long file names on Windows 9X@footnote{Windows NT does not include this
 API, therefore @sc{djgpp} programs cannot access long file names on NT
-systems.  However, a beta version of a free LFN driver for NT is
-available.}.  The @sc{djgpp} startup code queries the system for the
+systems.  However, a free LFN driver for NT is available from
+the @file{v2misc/} directory of the DJGPP archive on Simtel.NET.}
+The @sc{djgpp} startup code queries the system for the
 availability of the LFN API, and if it's available, all low-level
 file-oriented primitives are automatically switched to using the special
 LFN-aware functions.  This run-time detection of the LFN support means
