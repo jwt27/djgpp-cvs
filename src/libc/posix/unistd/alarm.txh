@@ -1,0 +1,26 @@
+@node alarm, process
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+unsigned alarm(unsigned seconds);
+@end example
+
+@subheading Description
+
+This function causes the signal SIGALRM to be raised in @var{seconds} seconds.
+A value of zero for @var{seconds} cancels any pending alarm.  If an alarm
+has previously been set, the new alarm delay will superceed the prior call.
+
+@subheading Return Value
+
+The number of seconds remaining on the timer (i.e. always @var{seconds}).
+
+@subheading Example
+
+@example
+signal(SIGALRM,my_alarm_routine);
+alarm(5);
+@end example
+

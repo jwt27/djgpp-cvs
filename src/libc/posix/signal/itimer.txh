@@ -1,0 +1,54 @@
+@node getitimer, process
+@subheading Syntax
+
+@example
+#include <sys/time.h>
+
+int getitimer(int which, struct itimerval *value);
+@end example
+
+@subheading Description
+
+This function gets the current value of the interval timer specified by
+@var{which} into structure @var{value}.  Variable @var{which} can have
+the value of ITIMER_REAL or ITIMER_PROF. @xref{setitimer}.
+
+@subheading Return Value
+
+Returns 0 on success, -1 on failure (and sets errno).
+
+@c ----------------------------------------------------------------------
+@node setitimer, process
+@subheading Syntax
+
+@example
+#include <sys/time.h>
+
+struct itimerval @{
+  struct timeval it_interval;    /* timer interval */
+  struct timeval it_value;       /* current value */
+@};
+
+int setitimer(int which, struct itimerval *value, struct itimerval *ovalue);
+@end example
+
+@subheading Description
+
+Each process has two interval timers, ITIMER_REAL and ITIMER_PROF, which
+signal SIGALRM and SIGPROF respectively.  These are typically used to
+provide alarm() and profiling capabilities.
+
+This function changes the current value of the interval timer specified by
+@var{which} to the values in structure @var{value}.  The previous value
+of the timer is returned if @var{ovalue} is not NULL.  When the timer
+expires the appropriate signal is raised.
+
+A timer is defined by the itimerval structure.  If it_value is non-zero it
+specifies the time to the next timer expiration.  If it_interval is non-zero
+it specifies the value to reload into it_value on timer expiration.  Setting
+it_value to zero disables a timer.  Setting it_interval to zero causes the
+timer to only happen once instead of repeating.
+
+@subheading Return Value
+
+Returns 0 on success, -1 on failure (and sets errno).
