@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -99,7 +100,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       ch += 'a' - 'A';
       if (size==LONG)
         size = LONGDOUBLE;
-      else
+      else if (size != LONGDOUBLE)
         size = LONG;
     }
     if (ch == '\0')
@@ -168,7 +169,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
 {
   register char *np;
   char numbuf[64];
-  register c, base;
+  register int c, base;
   int expseen, scale, negflg, c1, ndigit;
   long long lcval;
   int cpos;
@@ -301,7 +302,7 @@ static int
 _instr(char *ptr, int type, int len, FILE *iop,
        int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), int *eofptr)
 {
-  register ch;
+  register int ch;
   register char *optr;
   int ignstp;
 
@@ -352,7 +353,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
 static const char *
 _getccl(const unsigned char *s)
 {
-  register c, t;
+  register int c, t;
 
   t = 0;
   if (*s == '^') {

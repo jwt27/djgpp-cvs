@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -28,7 +29,7 @@ static word8 buf[20];
 static word32 vaddr;
 static int bufp, bufe;
 static char ubuf[4000], *ubufp;
-static col;
+static int col;
 
 static void ua_str(const char *s);
 
@@ -127,7 +128,7 @@ const char *opmap1[] = {
   "mov al,%Ob", "mov %eax,%Ov", "mov %Ob,al", "mov %Ov,%eax",
   "movsb %Xb,%Yb", "movs%ew %Xv,%Yv", "cmpsb %Xb,%Yb", "cmps%ew %Xv,%Yv",
   "test al,%Ibb", "test %eax,%Ivv", "stosb %Yb,al", "stos%ew %Yv,%eax",
-  "lodsb al,%Xb", "lods%ew %eax,%Xv", "scasb al,%Xb", "scas%ew %eax,%Xv",
+  "lodsb al,%Xb", "lods%ew %eax,%Xv", "scasb al,%Yb", "scas%ew %eax,%Yv",
 /* b */
   "mov al,%Ibb", "mov cl,%Ibb", "mov dl,%Ibb", "mov bl,%Ibb",
   "mov ah,%Ibb", "mov ch,%Ibb", "mov dh,%Ibb", "mov bh,%Ibb",
@@ -309,11 +310,11 @@ static word8 getbyte(void)
 
 static int default_pick_sign;
 
-static prefix;
-static modrmv;
-static sibv;
-static opsize;
-static addrsize;
+static int prefix;
+static int modrmv;
+static int sibv;
+static int opsize;
+static int addrsize;
 
 static int modrm(void)
 {
@@ -875,7 +876,7 @@ typedef struct {
 } line_info;
 
 static line_info *files;
-static last_file = 0;
+static int last_file = 0;
 
 /*
 ** add_file -- add a file to the source line database
