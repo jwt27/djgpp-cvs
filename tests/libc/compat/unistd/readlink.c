@@ -101,7 +101,7 @@ int main(void)
    return 0;
 }
 
-void failure_test(int testno, const char * linkname, char * buf,
+static void failure_test(int testno, const char * linkname, char * buf,
                   int expect_errno, const char * errmsg1, const char * errmsg2)
 {
    int bytes_read;
