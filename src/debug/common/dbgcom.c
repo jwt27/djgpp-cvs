@@ -1237,11 +1237,6 @@ void run_child(void)
 	    a_tss.tss_irqn = 0;
 	    longjmp(load_state, load_state->__eax);
 	  }
-	else
-	  {
-	    a_tss.tss_irqn = 0;
-	    longjmp(load_state, load_state->__eax);
-	  }
       }
     else
       longjmp(load_state, load_state->__eax);
