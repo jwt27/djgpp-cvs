@@ -1,39 +1,3 @@
-.\" Copyright (c) 1991 The Regents of the University of California.
-.\" All rights reserved.
-.\"
-.\" This code is derived from software contributed to Berkeley by
-.\" Arthur David Olson of the National Cancer Institute.
-.\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in the
-.\"    documentation and/or other materials provided with the distribution.
-.\" 3. All advertising materials mentioning features or use of this software
-.\"    must display the following acknowledgement:
-.\"	This product includes software developed by the University of
-.\"	California, Berkeley and its contributors.
-.\" 4. Neither the name of the University nor the names of its contributors
-.\"    may be used to endorse or promote products derived from this software
-.\"    without specific prior written permission.
-.\"
-.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\"	@(#)zic.8	5.2 (Berkeley) 4/20/91
-.\"
 .TH ZIC 8
 .SH NAME
 zic \- time zone compiler
@@ -55,6 +19,9 @@ zic \- time zone compiler
 .I leapsecondfilename
 ] [
 .B \-s
+] [
+.B \-y
+.I command
 ] [
 .I filename
 \&... ]
@@ -113,7 +80,14 @@ values.
 Limit time values stored in output files to values that are the same
 whether they're taken to be signed or unsigned.
 You can use this option to generate SVVS-compatible files.
-.sp
+.TP
+.BI "\-y " command
+Use the given
+.I command
+rather than
+.B yearistype
+when checking year types (see below).
+.PP
 Input lines are made up of fields.
 Fields are separated from one another by any number of white space characters.
 Leading and trailing white space on input lines is ignored.
@@ -127,7 +101,6 @@ rule lines, zone lines, and link lines.
 .PP
 A rule line has the form
 .nf
-.B
 .ti +.5i
 .ta \w'Rule\0\0'u +\w'NAME\0\0'u +\w'FROM\0\0'u +\w'1973\0\0'u +\w'TYPE\0\0'u +\w'Apr\0\0'u +\w'lastSun\0\0'u +\w'2:00\0\0'u +\w'SAVE\0\0'u
 .sp
@@ -136,7 +109,7 @@ Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
 For example:
 .ti +.5i
 .sp
-Rule	USA	1969	1973	\-	Apr	lastSun	2:00	1:00	D
+Rule	US	1967	1973	\-	Apr	lastSun	2:00	1:00	D
 .sp
 .fi
 The fields that make up a rule line are:
@@ -146,12 +119,16 @@ Gives the (arbitrary) name of the set of rules this rule is part of.
 .TP
 .B FROM
 Gives the first year in which the rule applies.
+Any integer year can be supplied; the Gregorian calendar is assumed.
 The word
 .B minimum
-(or an abbreviation) means the minimum year with a representable time value.
+(or an abbreviation) means the minimum year representable as an integer.
 The word
 .B maximum
-(or an abbreviation) means the maximum year with a representable time value.
+(or an abbreviation) means the maximum year representable as an integer.
+Rules can describe times that are not representable as time values,
+with the unrepresentable times ignored; this allows rules to be portable
+among hosts with differing time value types.
 .TP
 .B TO
 Gives the final year in which the rule applies.
@@ -177,17 +154,7 @@ then the rule applies in all years between
 .B FROM
 and
 .B TO
-inclusive;
-if
-.B TYPE
-is
-.BR uspres ,
-the rule applies in U.S. Presidential election years;
-if
-.B TYPE
-is
-.BR nonpres ,
-the rule applies in years other than U.S. Presidential election years.
+inclusive.
 If
 .B TYPE
 is something else, then
@@ -242,14 +209,18 @@ Any of these forms may be followed by the letter
 .B w
 if the given time is local
 .q "wall clock"
-time or
+time,
 .B s
 if the given time is local
 .q standard
-time; in the absence of
-.B w
+time, or
+.B u
+(or
+.B g
 or
-.BR s ,
+.BR z )
+if the given time is universal time;
+in the absence of an indicator,
 wall clock time is assumed.
 .TP
 .B SAVE
@@ -284,13 +255,13 @@ A zone line has the form
 .sp
 .nf
 .ti +.5i
-.ta \w'Zone\0\0'u +\w'Australia/South\-west\0\0'u +\w'GMTOFF\0\0'u +\w'RULES/SAVE\0\0'u +\w'FORMAT\0\0'u
+.ta \w'Zone\0\0'u +\w'Australia/Adelaide\0\0'u +\w'GMTOFF\0\0'u +\w'RULES/SAVE\0\0'u +\w'FORMAT\0\0'u
 Zone	NAME	GMTOFF	RULES/SAVE	FORMAT	[UNTIL]
 .sp
 For example:
 .sp
 .ti +.5i
-Zone	Australia/South\-west	9:30	Aus	CST	1987 Mar 15 2:00
+Zone	Australia/Adelaide	9:30	Aus	CST	1971 Oct 31 2:00
 .sp
 .fi
 The fields that make up a zone line are:
@@ -323,6 +294,9 @@ The pair of characters
 is used to show where the
 .q "variable part"
 of the time zone abbreviation goes.
+Alternately,
+a slash (/)
+separates standard and daylight abbreviations.
 .TP
 .B UNTIL
 The time at which the GMT offset or the rule(s) change for a location.
@@ -349,14 +323,13 @@ A link line has the form
 .sp
 .nf
 .ti +.5i
-.if t .ta \w'Link\0\0'u +\w'LINK-FROM\0\0'u
-.if n .ta \w'Link\0\0'u +\w'US/Eastern\0\0'u
+.ta \w'Link\0\0'u +\w'Europe/Istanbul\0\0'u
 Link	LINK-FROM	LINK-TO
 .sp
 For example:
 .sp
 .ti +.5i
-Link	US/Eastern	EST5EDT
+Link	Europe/Istanbul	Asia/Istanbul
 .sp
 .fi
 The
@@ -373,9 +346,9 @@ lines may appear in any order in the input.
 .PP
 Lines in the file that describes leap seconds have the following form:
 .nf
-.B
 .ti +.5i
 .ta \w'Leap\0\0'u +\w'YEAR\0\0'u +\w'MONTH\0\0'u +\w'DAY\0\0'u +\w'HH:MM:SS\0\0'u +\w'CORR\0\0'u
+.sp
 Leap	YEAR	MONTH	DAY	HH:MM:SS	CORR	R/S
 .sp
 For example:
@@ -384,7 +357,7 @@ For example:
 Leap	1974	Dec	31	23:59:60	+	S
 .sp
 .fi
-The 
+The
 .BR YEAR ,
 .BR MONTH ,
 .BR DAY ,
@@ -397,9 +370,20 @@ field
 should be
 .q +
 if a second was added
-or 
+or
 .q -
 if a second was skipped.
+.\" There's no need to document the following, since it's impossible for more
+.\" than one leap second to be inserted or deleted at a time.
+.\" The C Standard is in error in suggesting the possibility.
+.\" See Terry J Quinn, The BIPM and the accurate measure of time,
+.\" Proc IEEE 79, 7 (July 1991), 894-905.
+.\"	or
+.\"	.q ++
+.\"	if two seconds were added
+.\"	or
+.\"	.q --
+.\"	if two seconds were skipped.
 The
 .B R/S
 field
@@ -418,7 +402,7 @@ you may need to use local standard time in the
 field of the earliest transition time's rule to ensure that
 the earliest transition time recorded in the compiled file is correct.
 .SH FILE
-/etc/zoneinfo	standard directory used for created files
+/usr/local/etc/zoneinfo	standard directory used for created files
 .SH "SEE ALSO"
 newctime(3), tzfile(5), zdump(8)
-.. @(#)zic.8	4.4
+.\" @(#)zic.8	7.12
