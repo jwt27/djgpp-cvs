@@ -123,6 +123,7 @@ show_call_frame(void)
   vbp = (unsigned *)__djgpp_exception_state->__ebp;
   err("Call frame traceback EIPs:\r\n  0x");
   itox(__djgpp_exception_state->__eip, 8);
+  max--;
   while (((unsigned)vbp >= __djgpp_exception_state->__esp) && (vbp >= &end) && (vbp < tos))
   {
     vbp_new = (unsigned *)*vbp;
