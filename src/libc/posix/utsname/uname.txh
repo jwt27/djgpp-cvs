@@ -4,12 +4,12 @@
 @example
 #include <sys/utsname.h>
 
-#int uname(struct utsname *u);
+int uname(struct utsname *u);
 @end example
 
 @subheading Description
 
-Fills in the structure with information about the system.
+Fills in the structure with information about the system.  
 
 @example
 struct utsname @{
@@ -25,31 +25,31 @@ struct utsname @{
 
 @item machine
 
-"pc"
+The CPU family type: "i386", "i486", "i586" or "i686".  
 
 @item nodename
 
-The name of your PC (if networking is installed), else "pc".
+The name of your PC (if networking is installed), else "pc".  
 
 @item release
 
 The minor release of dos.  For example, dos 1.23 would return "23"
-here.
+here.  
 
 @item sysname
 
-The flavor of the OS.
+The flavor of the OS.  
 
 @item version
 
 The major release of dos.  For example, dos 1.23 would return "1"
-here.
+here.  
 
 @end table
 
 @subheading Return Value
 
-Zero on success, else nonzero.
+Zero on success, else nonzero.  
 
 @subheading Portability
 
