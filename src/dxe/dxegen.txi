@@ -45,6 +45,7 @@ Usage: @kbd{dxe3gen [-o output.dxe] [options] [object-files] [ld-options]}
 -o output.dxe	Define the name of output DXE file
 -P module.dxe	Specify dependency module (cumulative)
 -I import.a	Create an import library for given DXE file
+-Y import.a	Create an autoresolved import library for given DXE file
 -D description	Set module description string
 -E prefix	Export only symbols that start with <prefix> (cumulative)
 -X prefix	Exclude symbols that start with <prefix> (cumulative)
@@ -311,13 +312,13 @@ this you should specify a special option to the linker: @kbd{--whole-archive}
 @command{dxe3gen}):
 
 @example
-	dxe3gen -o z.dxe -I libz_i.a --whole-archive -U libz.a \
+	dxe3gen -o z.dxe -Y libz_i.a --whole-archive -U libz.a \
 	  -D "Zlib compression library"
 
-	dxe3gen -o png.dxe -I libpng_i.a --whole-archive -U libpng.a \
+	dxe3gen -o png.dxe -Y libpng_i.a --whole-archive -U libpng.a \
 	  -D "Portable Network Graphics (PNG) Reference Library"
 
-	dxe3gen -o jpeg.dxe -I libjpeg_i.a --whole-archive -U libjpeg.a \
+	dxe3gen -o jpeg.dxe -Y libjpeg_i.a --whole-archive -U libjpeg.a \
 	  -D "The Independent JPEG Group's JPEG software"
 @end example
 
@@ -339,20 +340,25 @@ inside the dynamic module, and the last call is restarted.
 As you may understand (and mentioned above), this approach does not
 work with variables.  This is one of the drawbacks of this method.
 
-To build a import library you should use the @kbd{-I} switch on the @command{dxe3gen}
+To build a import library you should use the @kbd{-Y} switch on the @command{dxe3gen}
 command line.  The import library can be built from a ready @acronym{DXE} module as well
 as `on-the-fly' during @acronym{DXE} generation process.  For example, you can do:
 
 @example
-	dxe3gen -I libmy.a -o my.dxe one.o two.o three.o
+	dxe3gen -Y libmy.a -o my.dxe one.o two.o three.o
+@end example
 
 as well as
 
+@example
 	dxe3gen -o my.dxe one.o two.o three.o
-	dxe3gen -I libmy.a my.dxe
+	dxe3gen -Y libmy.a my.dxe
 @end example
 
-Both above sequences are equivalent.
+Both above sequences are equivalent.  The @kbd{-I} switch does the same 
+thing as the @kbd{-Y} option and is used if you do not want to have symbols
+automatically resolved (when they are provided by another @acronym{DXE}, 
+for example).  
 
 @section Contacts
 
