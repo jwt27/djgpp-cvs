@@ -616,8 +616,6 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
         int n_abs_relocs = 0, n_rel_relocs = 0;
 
         /* unresolved symbol */
-        dh.n_unres_syms++;
-
         /* count the amount of relocations pointing to this symbol */
         for (j = 0; j < sc.s_nreloc; j++) {
             if (relocs[j].r_symndx == i) {
@@ -633,6 +631,8 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
         if (n_rel_relocs == 0 && n_abs_relocs == 0) {
            continue;
         }
+
+        dh.n_unres_syms++;
 
         if (!opt.unresolved) {
            fprintf(stderr, "%s: unresolved symbol `%s'\n", progname, name);
