@@ -331,10 +331,11 @@ main(int argc, char **argv)
   _control87(0x033f, 0xffff);	/* mask all numeric exceptions */
   __djgpp_exception_toggle();
   rv = run_program(ac, av, ac - argc + 1);
-  gettimeofday(&endt, NULL);
+  __djgpp_exception_toggle();
+  _control87(0x033f, 0xffff);	/* in case the child unmasked some */
   _clear87();			/* clean up after the child, just in case */
   _fpreset();
-  __djgpp_exception_toggle();
+  gettimeofday(&endt, NULL);
 
   if (rv < 0)
     fatal("Error attempting to run program %s", argv[1]);
