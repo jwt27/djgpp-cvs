@@ -17,7 +17,7 @@
    I think I'm the first to give it away for free (no points?!).
 
    The functions simulate popen() and pclose() by redirecting stdin or
-   stdout, then spawning a child processes via system().
+   stdout, then spawning a child process via system().
 
    If you popen() for read, the stdout is redirected to a temporary
    file, and the child is spawned.  The stdout is reopened via dup2(), the
@@ -48,9 +48,6 @@
    Where command is a character string equivilant to a MSDOS command
    line, mode is "r" for read or "w" for write, and pp is a pointer to a
    file opened through popen().
-
-   A main() function has been included for testing purposes, to compile
-   it define the preprocessor token TEST at compile time.
  */
 
 #include <libc/stubs.h>
@@ -62,160 +59,188 @@
 #include <unistd.h>
 #include <libc/file.h>
 
-/* hold file pointer, descriptor, command, mode, temporary file name,
-   and the status of the command  */
+/* hold file pointer, command, mode, and the status of the command */
 struct pipe_list {
   FILE *fp;
-  int fd;
   int exit_status;
-  char *command, mode[10], temp_name[L_tmpnam];
+  char *command, mode[10];
   struct pipe_list *next;
 };
 
 /* static, global list pointer */
 static struct pipe_list *pl = NULL;
 
-FILE *
-popen (const char *cm, const char *md) /* program name, pipe mode */
+FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
 {
   struct pipe_list *l1;
+  char *temp_name;
 
   /* make new node */
-  if ((l1 = (struct pipe_list *) malloc (sizeof (struct pipe_list))) == NULL)
+  if ((l1 = malloc(sizeof(*l1))) == NULL)
     return NULL;
-
-  /* zero out elements to we'll get here */
-  l1->fd = 0;
-  l1->fp = NULL;
-  l1->next = NULL;
 
   /* if empty list - just grab new node */
   l1->next = pl;
   pl = l1;
 
   /* stick in elements we know already */
-  l1->exit_status = -1;
-  strcpy (l1->mode, md);
-  if (tmpnam (l1->temp_name) == NULL)
+  if ((temp_name = malloc(L_tmpnam)) == NULL)
+    goto error;
+
+  if (tmpnam(temp_name) == NULL)
+    goto error;
+
+  strcpy(l1->mode, md);
+
+  if (l1->mode[0] == 'r')
+  /* caller wants to read */
   {
-    pl = l1->next;
-    free (l1);
-    return NULL;
+    int fd;
+
+    /* dup stdout */
+    if ((fd = dup(fileno(stdout))) == -1)
+      goto error;
+
+    /* redirect stdout */
+    if (!(l1->fp = freopen(temp_name, "wb", stdout)))
+      goto error;
+
+    /* make sure file is removed on abnormal exit */
+    l1->fp->_flag |= _IORMONCL;
+    l1->fp->_name_to_remove = temp_name;
+
+    /* execute command */
+    l1->exit_status = system(cm);
+
+    /* don't remove file while closing */
+    l1->fp->_flag &= ~_IORMONCL;
+    l1->fp->_name_to_remove = NULL;
+
+    /* close file */
+    fclose(l1->fp);
+
+    /* reopen real stdout */
+    if (dup2(fd, fileno(stdout)) == -1)
+      goto error;
+
+    /* close duplicate stdout */
+    close(fd);
+
+    /* if cmd couldn't be run, make sure we return NULL */
+    if (l1->exit_status == -1)
+      goto error;
   }
-
-  /* if can save the program name, build temp file */
-  if ((l1->command = malloc(strlen(cm)+1)))
+  else if (l1->mode[0] == 'w')
+  /* caller wants to write */
   {
-    strcpy(l1->command, cm);
-    /* if caller wants to read */
-    if (l1->mode[0] == 'r')
-    {
-      /* dup stdout */
-      if ((l1->fd = dup (fileno (stdout))) == EOF)
-	l1->fp = NULL;
-      else if (!(l1->fp = freopen (l1->temp_name, "wb", stdout)))
-	l1->fp = NULL;
-      else
-	/* exec cmd */
-	if ((l1->exit_status = system (cm)) == EOF)
-	  l1->fp = NULL;
-      /* reopen real stdout */
-      if (dup2 (l1->fd, fileno (stdout)) == EOF)
-	l1->fp = NULL;
-      /* if cmd couldn't be run, make sure we return NULL */
-      else if (l1->exit_status != EOF)
-	/* open file for reader */
-	l1->fp = fopen (l1->temp_name, l1->mode);
-      close(l1->fd);
-    }
-    else
-      /* if caller wants to write */
-      if (l1->mode[0] == 'w')
-        /* open temp file */
-        l1->fp = fopen (l1->temp_name, l1->mode);
-      else
-        /* unknown mode */
-        l1->fp = NULL;
+    /* if can save the program name, build temp file */
+    if (!(l1->command = malloc(strlen(cm) + 1)))
+      goto error;
 
-    return l1->fp;
+    strcpy(l1->command, cm);
   }
   else
-  {
-    pl = l1->next;
-    free (l1);
-    return NULL;
-  }
+    /* unknown mode */
+    goto error;
+
+  /* open file for caller */
+  l1->fp = fopen(temp_name, l1->mode);
+
+  /* make sure file is removed on abnormal exit */
+  l1->fp->_flag |= _IORMONCL;
+  l1->fp->_name_to_remove = temp_name;
+
+  return l1->fp;
+
+ error:
+
+  if (l1->command)
+    free(l1->command);
+
+  if (temp_name)
+    free(temp_name);
+
+  pl = l1->next;
+  free(l1);
+
+  return NULL;
 }
 
-int
-pclose (FILE *pp)
+int pclose(FILE *pp)
 {
-  struct pipe_list *l1, *l2;    /* list pointers */
-  int retval=0;			/* function return value */
+  struct pipe_list *l1, **l2;	/* list pointers */
+  char *temp_name;		/* file name */
+  int retval = -1;		/* function return value */
 
-  if (!pl)
+  for (l2 = &pl; *l2; l2 = &(*l2)->next)
+    if ((*l2)->fp == pp)
+      break;
+
+  if (!*l2)
     return -1;
 
-  /* if pointer is first node */
-  if (pl->fp == pp)
-  {
-    /* save node and take it out the list */
-    l1 = pl;
-    pl = l1->next;
-  }
+  l1 = *l2;
+  *l2 = l1->next;
+
+  if (!(l1->fp->_flag & _IORMONCL))
+    /* file wasn't popen()ed */
+    return -1;
   else
-    /* if more than one node in list */
-    if (pl->next)
-    {
-      /* find right node */
-      for (l2 = pl, l1 = pl->next; l1; l2 = l1, l1 = l2->next)
-        if (l1->fp == pp)
-          break;
+    temp_name = l1->fp->_name_to_remove;
 
-      /* take node out of list */
-      l2->next = l1->next;
-    }
-    else
-      return -1;
-
-  /* if FILE not in list - return error */
-  if (l1->fp == pp)
+  /* if pipe was opened to write */
+  if (l1->mode[0] == 'w')
   {
+    int fd;
+
+    /* don't remove file while closing */
+    l1->fp->_flag &= ~_IORMONCL;
+    l1->fp->_name_to_remove = NULL;
+
     /* close the (hopefully) popen()ed file */
-    fclose (l1->fp);
+    fclose(l1->fp);
 
-    /* if pipe was opened to write */
-    if (l1->mode[0] == 'w')
+    /* dup stdin */
+    if ((fd = dup(fileno(stdin))) == -1)
+      goto exit;
+
+    /* redirect stdin */
+    if (!(l1->fp = freopen(temp_name, "rb", stdin)))
+      goto exit;
+
+    /* make sure file is removed on abnormal exit */
+    l1->fp->_flag |= _IORMONCL;
+    l1->fp->_name_to_remove = temp_name;
+
+    /* execute command */
+    retval = system(l1->command);
+
+    /* reopen stdin */
+    if (dup2(fd, fileno(stdin)) == -1)
     {
-      /* dup stdin */
-      if ((l1->fd = dup (fileno (stdin))) == EOF)
-	retval = -1;
-      else
-	/* open temp stdin */
-	if (!(l1->fp = freopen (l1->temp_name, "rb", stdin)))
-	  retval = -1;
-	else
-	  /* exec cmd */
-          if ((retval = system (l1->command)) != EOF)
-	  {
-            /* reopen stdin */
-	    if (dup2 (l1->fd, fileno (stdin)) == EOF)
-	      retval = -1;
-	  }
-      close(l1->fd);
+      retval = -1;
+      goto exit;
     }
-    else
-      /* if pipe was opened to read, return the exit status we saved */
-      if (l1->mode[0] == 'r')
-        retval = l1->exit_status;
-      else
-        /* invalid mode */
-        retval = -1;
-  }
-  remove (l1->temp_name);       /* remove temporary file */
-  free (l1->command);           /* dealloc memory */
-  free (l1);                    /* dealloc memory */
-  l1 = NULL;                    /* make pointer bogus */
 
-  return retval;              /* retval==0 ? OK : ERROR */
+    /* close duplicate stdin */
+    close(fd);
+  }
+  /* if pipe was opened to read, return the exit status we saved */
+  else if (l1->mode[0] == 'r')
+    retval = l1->exit_status;
+  else
+    /* invalid mode */
+    retval = -1;
+
+ exit:
+
+  /* close and remove file */
+  fclose(l1->fp);
+
+  if (l1->command)
+    free(l1->command);
+
+  free(l1);
+
+  return retval;
 }
