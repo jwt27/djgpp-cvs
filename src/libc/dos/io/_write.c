@@ -1,6 +1,8 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
@@ -8,12 +10,11 @@
 #include <dpmi.h>
 #include <io.h>
 #include <sys/fsext.h>
-
+#include <libc/fsexthlp.h>
 #include <libc/dosio.h>
 #include <libc/fd_props.h>
 #include <libc/farptrgs.h>
 #include <libc/getdinfo.h>
-
 
 int
 _write(int handle, const void* buffer, size_t count)
@@ -22,7 +23,7 @@ _write(int handle, const void* buffer, size_t count)
   if (func)
   {
     int rv;
-    if (func(__FSEXT_write, &rv, &handle))
+    if (__FSEXT_func_wrapper(func, __FSEXT_write, &rv, handle, buffer, count))
       return rv;
   }
 

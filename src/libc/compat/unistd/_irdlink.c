@@ -1,13 +1,16 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
 #include <libc/stubs.h>
 #include <libc/symlink.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include <dir.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <io.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -37,7 +40,8 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
    if (__path)
    {
       struct ffblk  file_info;
-      if (__FSEXT_call_open_handlers(__FSEXT_readlink, &ret, &__path))
+      if (__FSEXT_call_open_handlers_wrapper(__FSEXT_readlink, &ret,
+					     __path, __buf, __max))
          return ret;
       /* We will check if file exists by the way */
       if (findfirst(__path, &file_info, 0))
@@ -53,7 +57,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
       if (func)
       {
          int rv;
-         if (func(__FSEXT_readlink, &rv, &__path))
+         if (__FSEXT_func_wrapper(func, __FSEXT_readlink, &rv, __path))
             return rv;
       }
       file_size = filelength(__fhandle);

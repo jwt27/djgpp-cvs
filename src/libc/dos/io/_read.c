@@ -1,5 +1,7 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
@@ -7,7 +9,7 @@
 #include <dpmi.h>
 #include <io.h>
 #include <sys/fsext.h>
-
+#include <libc/fsexthlp.h>
 #include <libc/dosio.h>
 
 int
@@ -22,7 +24,7 @@ _read(int handle, void* buffer, size_t count)
   if (func)
   {
     int rv;
-    if (func(__FSEXT_read, &rv, &handle))
+    if (__FSEXT_func_wrapper(func, __FSEXT_read, &rv, handle, buffer, count))
       return rv;
   }
 

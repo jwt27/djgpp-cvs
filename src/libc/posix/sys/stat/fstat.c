@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -95,6 +96,7 @@
  */
 
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -115,6 +117,7 @@
 #include <libc/bss.h>
 #include <libc/symlink.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include "xstat.h"
 
 /* Should we bother about executables at all? */
@@ -900,7 +903,7 @@ fstat(int handle, struct stat *statbuf)
 
   /* see if this is file system extension file */
   func = __FSEXT_get_function(handle);
-  if (func && func(__FSEXT_fstat, &rv, &handle))
+  if (func && __FSEXT_func_wrapper(func, __FSEXT_fstat, &rv, handle, statbuf))
     {
        return rv;
     }

@@ -1,6 +1,8 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <sys/stat.h>		/* For stat() */
 #include <fcntl.h>		/* For O_RDONLY, etc. */
 #include <unistd.h>		/* For read(), write(), etc. */
@@ -8,6 +10,7 @@
 #include <utime.h>		/* For utime() */
 #include <errno.h>		/* For errno */
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 
 /* Of course, DOS can't really do a link.  We just do a copy instead,
    which is as close as DOS gets.  Alternatively, we could always fail
@@ -33,7 +36,7 @@ link(const char *path1, const char *path2)
   }
 
   /* see if a file system extension implements the link */
-  if (__FSEXT_call_open_handlers(__FSEXT_link, &rv, &path1))
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_link, &rv, path1, path2))
     return rv;
 
   /* Fail if path1 does not exist - stat() will set errno */

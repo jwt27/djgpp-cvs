@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -114,6 +115,7 @@
 #include <dos.h>
 #include <dir.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include <dpmi.h>
 #include <go32.h>
 #include <libc/farptrgs.h>
@@ -889,16 +891,6 @@ stat_assist(const char *path, struct stat *statbuf)
   return 0;
 }
 
-/* A wrapper around __FSEXT_call_open_handlers(), to provide its
- * arguments properly.
- */
-static int fsext_wrapper(int * ret, const char * path, 
-                         struct stat * statbuf __attribute__((unused)))
-{
-   return __FSEXT_call_open_handlers(__FSEXT_stat, ret, &path);
-}
-
-
 /* Main entry point.  This is library lstat() function.
  */
 
@@ -934,7 +926,8 @@ lstat(const char *path, struct stat *statbuf)
       return -1;
     }
 
-  if (fsext_wrapper(&ret, real_path, statbuf))
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_stat, &ret,
+					 real_path, statbuf))
     return ret;
 
   if (stat_assist(real_path, statbuf) == -1)

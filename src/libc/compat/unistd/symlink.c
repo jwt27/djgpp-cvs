@@ -1,9 +1,12 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <libc/symlink.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
+#include <stdarg.h>
 #include <errno.h>
 #include <unistd.h>
 #include <io.h>
@@ -33,7 +36,7 @@ int symlink(const char *source, const char *dest)
    }
 
    /* Provide ability to hook symlink support */
-   if (__FSEXT_call_open_handlers(__FSEXT_symlink, &ret, &source))
+   if (__FSEXT_call_open_handlers_wrapper(__FSEXT_symlink, &ret, source, dest))
       return ret;
 
 

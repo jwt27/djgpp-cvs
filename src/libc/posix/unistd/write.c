@@ -1,8 +1,10 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <go32.h>
@@ -11,11 +13,13 @@
 #include <errno.h>
 #include <libc/farptrgs.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
 #include <libc/fd_props.h>
 
 #define tblen _go32_info_block.size_of_transfer_buffer
+
 
 int (*__libc_write_termios_hook)(int handle, const void *buffer, size_t count,
 				 ssize_t *rv) = NULL;
@@ -52,9 +56,10 @@ write(int handle, const void* buffer, size_t count)
     return _write(handle, buf, count);
 
   /* Let's handle FSEXT_write ! */
-  if(func &&				/* if handler is installed, ...*/
-     func(__FSEXT_write, &rv, &handle)) /* ... call extension ... */
-      return rv;			/* ... and exit if handled. */
+  /* if handler is installed, call extension and exit if handled. */
+  if(func &&				
+     __FSEXT_func_wrapper(func, __FSEXT_write, &rv, handle, buffer, count))
+      return rv;
 
   if (__has_fd_properties(handle)
       && (__fd_properties[handle]->flags & FILE_DESC_ZERO_FILL_EOF_GAP))

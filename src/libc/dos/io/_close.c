@@ -1,12 +1,14 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <stdarg.h>
 #include <unistd.h>
 #include <errno.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <io.h>
 #include <sys/fsext.h>
-
+#include <libc/fsexthlp.h>
 #include <libc/dosio.h>
 #include <libc/fd_props.h>
 
@@ -19,7 +21,7 @@ _close(int handle)
   if (func)
   {
     int rv;
-    if (func(__FSEXT_close, &rv, &handle))
+    if (__FSEXT_func_wrapper(func, __FSEXT_close, &rv, handle))
     {
       /* So that we don't try to use it later!
 	 The extension *should* do this itself! */

@@ -1,9 +1,11 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <libc/symlink.h>
+#include <stdarg.h>
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -12,6 +14,7 @@
 #include <go32.h>
 #include <libc/dosio.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 
 int
 remove(const char *fn)
@@ -24,7 +27,7 @@ remove(const char *fn)
   int rv;
 
   /* see if a file system extension wants to handle this */
-  if (__FSEXT_call_open_handlers(__FSEXT_unlink, &rv, &fn))
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_unlink, &rv, fn))
     return rv;
 
   /* Handle symlinks */

@@ -1,7 +1,9 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -11,6 +13,7 @@
 #include <dos.h>
 #include <libc/dosio.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 
 int
 _open(const char* filename, int oflag)
@@ -25,7 +28,7 @@ _open(const char* filename, int oflag)
     return -1;
   }
 
-  if (__FSEXT_call_open_handlers(__FSEXT_open, &rv, &filename))
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_open, &rv, filename, oflag))
     return rv;
 
   if(use_lfn && _os_trueversion == 0x532) {

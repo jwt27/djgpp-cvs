@@ -1,7 +1,9 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <go32.h>
@@ -11,6 +13,7 @@
 #include <unistd.h>
 #include <libc/dosio.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 
 int
 _creat(const char* filename, int attrib)
@@ -25,7 +28,7 @@ _creat(const char* filename, int attrib)
     return -1;
   }
 
-  if (__FSEXT_call_open_handlers(__FSEXT_creat, &rv, &filename))
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_creat, &rv, filename, attrib))
     return rv;
 
   if(use_lfn) {

@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -25,6 +26,7 @@
 #include <libc/getdinfo.h>
 #include <libc/ttyprvt.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 
 inline static int
 fp_output_ready(FILE *fp)
@@ -165,7 +167,7 @@ select(int nfds,
       int fsext_ready = -1;
 
       if (func)
-	func(__FSEXT_ready, &fsext_ready, &i);
+	__FSEXT_func_wrapper(func, __FSEXT_ready, &fsext_ready, i);
 
       if (readfds && FD_ISSET (i, readfds))
       {
