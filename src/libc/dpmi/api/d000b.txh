@@ -15,8 +15,9 @@ information.
 
 DPMI function AX = 0x000b
 
-This function fills a 8-byte buffer with the parameters of the
-descriptor.  The data has the following format:
+This function fills the 8-byte buffer pointed to by @var{_buffer} with
+the parameters of the descriptor whose selector is passed in
+@var{_selector}.  The data has the following format:
 
 @example
 [0] XXXX XXXX = segment limit [7:0]
@@ -24,17 +25,116 @@ descriptor.  The data has the following format:
 [2] XXXX XXXX = base address [7:0]
 [3] XXXX XXXX = base address [15:8]
 [4] XXXX XXXX = base address [23:16]
-[5] ---- XXXX = type
-[5] ---X ---- = 0=system, 1=application
-[5] -XX- ---- = priviledge level
-[5] X--- ---- = 0=absent, 1=present
+[5] ---- XXXX = type; see details below
+[5] ---X ---- = 0=system, 1=application (must be 1)
+[5] -XX- ---- = privilege level, usually 3 (binary 11)
+[5] X--- ---- = 0=absent, 1=present; usually 1
 [6] ---- XXXX = segment limit [19:16]
-[6] ---X ---- = available for user
+[6] ---X ---- = available for user; see details below
 [6] --0- ---- = must be zero
-[6] -X-- ---- = 0=16-bit 1=32-bit (cs only)
+[6] -X-- ---- = 0=16-bit 1=32-bit; usually 1
 [6] X--- ---- = 0=byte-granular (small) 1=page-granular (big)
 [7] XXXX XXXX = base address [31:24]
 @end example
+
+Here's an alternative view of the layout that treats the buffer as an
+array of 4 16-bit words (i.e., @code{unsigned short}s):
+
+@example
+[0] XXXX XXXX XXXX XXXX = segment limit [15:0]
+[1] XXXX XXXX XXXX XXXX = base address  [15:0]
+[2] ---- ---- XXXX XXXX = base address [23:16]
+[2] ---- XXXX ---- ---- = type; see details below
+[2] ---1 ---- ---- ---- = 0=system, 1=application; must be 1
+[2] -XX- ---- ---- ---- = privilege level, usually 3 (binary 11)
+[2] X--- ---- ---- ---- = 0=absent, 1=present; usually 1
+[3] ---- ---- ---- XXXX = segment limit [19:16]
+[3] ---- ---- ---X ---- = available for user; see details below
+[3] ---- ---- --0- ---- = must be zero
+[3] ---- ---- -X-- ---- = 0=16-bit 1=32-bit; usually 1
+[3] ---- ---- X--- ---- = 0=byte-granular (small) 1=page-granular (big)
+[3] XXXX XXXX ---- ---- = base address [31:24]
+@end example
+
+Special considerations apply to some of the fields:
+
+@table @asis
+@item Segment Limit fields
+
+The segment limit is specified as a 20-bit number.  This number is
+interpreted as a number of bytes if the granularity bit (bit 7 of byte
+6) is not set, and as a number of 4KB pages if the granularity bit is
+set.  Offsets larger than the limit will generate a @dfn{GPF}, the
+General Protection Fault exception.
+
+For expand-down data segments (see below), the segment limit is the
+@emph{lower} limit of the segment; the upper limit is either 0xffffffff
+or 0xffff, depending on whether the size bit is set (32-bit default
+size) or not (16-bit default size).  For expand-down segments, values of
+offset @emph{less} than the segment limit result in a GPF.
+
+@item Base Address fields
+
+Segment base address should generally be 16-byte aligned.  This is not
+required, but it maximizes performance by aligning code and data on
+16-byte boundaries.
+
+@item Type field
+
+This field has different meanings depending on whether the descriptor is
+for code or data segment.  For code segments, the meaning is as follows:
+
+@example
+---X = 0=not accessed, 1=accessed
+--1- = 0=execute only, 1=execute/read; must be 1
+-0-- = 0=non-conforming, 1=conforming; must be 0
+1--- = 0=data segment, 1=code segment
+@end example
+
+The accessed/not accessed bit indicates whether the segment has been
+accessed since the last time the bit was cleared.  This bit is set
+whenever the segment selector is loaded into a segment register, and the
+bit then remains set until explicitly cleared.  This bit can be used for
+debugging purposes.
+
+The read bit must be set to allow reading data from the code segment,
+which is done in several cases by the library.  The DPMI spec
+(@pxref{DPMI Specification}) requires this bit to be 1 for code
+segments.
+
+The conforming bit must be cleared so that transfer of execution into
+this segment from a less-privileged segment will result in a GPF.  The
+DPMI spec (@pxref{DPMI Specification}) requires this bit to be 0 for
+code segments.
+
+For data segments, the meaning of the @code{type} field is as follows:
+
+@example
+---X = 0=not accessed, 1=accessed
+--X- = 0=read-only, 1=read/write
+-X-- = 0=expand-up, 1=expand-down; usually 0
+0--- = 0=data segment, 1=code segment
+@end example
+
+The accessed/not accessed bit has the same meaning as for code segments.
+The expand up/down bit is meant to be 1 for stack segments whose size
+should be changed dynamically, whereby changing the limit adds the
+additional space to the bottom of the stack; for data segments and
+statically-sized stack segments, this bit is usually zero.
+
+@item Present bit
+
+If this bit is clear, a segment-not-present exception will be generated
+when the selector is loaded into a segment register, and all the fields
+of the descriptor except the privilege level and the system/application
+bit are available for CPU/OS to store their own data.  Don't clear this
+bit unless you know what you are doing.
+
+@item Available bit
+
+This bit is left for the application's use.  It is neither set nor
+cleared by the DPMI server.
+@end table
 
 @subheading Return Value
 

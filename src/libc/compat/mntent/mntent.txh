@@ -14,14 +14,14 @@ getmntent (@pxref{getmntent}).  The arguments @var{filename} and
 @var{mode} are always ignored under MS-DOS, but for portability should
 be set, accordingly, to the name of the file which describes the mounted
 filesystems and the open mode of that file (like the @var{mode} argument
-to @code{fopen}, @xref{fopen}).  (There is no single standard for the
+to @code{fopen}, @pxref{fopen}).  (There is no single standard for the
 name of the file that keeps the mounted filesystems, but it is usually,
 although not always, listed in the header @code{<mntent.h>}.)
 
 @subheading Return Value
 
-The FILE* pointer is returned.  For MS-DOS, this FILE* is not a real
-pointer and may only be used by @code{getmntent}.
+The @code{FILE*} pointer is returned.  For MS-DOS, this @code{FILE*} is
+not a real pointer and may only be used by @code{getmntent}.
 
 @subheading Portability
 
@@ -55,13 +55,13 @@ struct mntent *getmntent(FILE *filep);
 @subheading Description
 
 This function returns information about the various drives that are
-available to your program.  Beginning with drive @code{A:}, information
+available to your program.  Beginning with drive @file{A:}, information
 is retrieved for successive drives with successive calls to
-@code{getmntent}.  Note that drives @code{A:} and @code{B:} will only be
+@code{getmntent}.  Note that drives @file{A:} and @file{B:} will only be
 returned if there is an MS-DOS formatted disk in the drive; empty drives
 are skipped.  For systems with a single floppy drive, it is returned as
-if it were mounted on A:/ or B:/, depending on how it was last referenced
-(and if there is a disk in the drive).
+if it were mounted on @file{A:/} or @file{B:/}, depending on how it was
+last referenced (and if there is a disk in the drive).
 
 For each drive scanned, a pointer to a static structure of the following
 type is returned:
@@ -86,37 +86,41 @@ DJGPP implementation returns the following in the first 4 fields of
 
 @item mnt_fsname
 
-For networked and CD-ROM drives, the name of root directory in the
-form "\\HOST\PATH" (this is called a UNC name).
+For networked and CD-ROM drives, this is the name of root directory in
+the form @file{\\HOST\PATH} (this is called a @dfn{UNC name}).
 
-For drives compressed with DoubleSpace, the string "X:\DBLSPACE.NNN",
-where ``X'' is the drive letter of the host drive and ``NNN'' is the
-sequence number of the Compressed Volume File.
+For drives compressed with DoubleSpace, @code{mnt_fsname} is the string
+@file{@var{X}:\DBLSPACE.@var{NNN}}, where @var{X} is the drive letter of
+the host drive and @var{NNN} is the sequence number of the Compressed
+Volume File.
 
-For drives compressed with Stacker, the string "X:\STACVOL.NNN", where
-``X'' and ``NNN'' are as for DoubleSpace drives.
+For drives compressed with Stacker, @code{mnt_fsname} is the string
+@file{@var{X}:\STACVOL.@var{NNN}}, where @var{X} and @var{NNN} are as
+for DoubleSpace drives.
 
 For drives compressed with Jam (a shareware disk compression software),
-the full name of the Jam archive file.
+@code{mnt_fsname} is the full name of the Jam archive file.
 
-For SUBSTed drives, the actual directory name that that was SUBSTed to
-emulate a drive.
+For SUBSTed drives, @code{mnt_fsname} is the actual directory name that
+that was SUBSTed to emulate a drive.
 
-JOINed drives get their name as if they were NOT JOINed (i.e., either
-the label name or the default "Drive X:").
+JOINed drives get their @code{mnt_fsname} as if they were NOT JOINed
+(i.e., either the label name or the default @samp{Drive @var{X}:}).
 
-For drives with a volume label, the name of the label; otherwise the
-string "Drive X:", where ``X'' is the drive letter.
+For drives with a volume label, @code{mnt_fsname} is the name of the
+label; otherwise the string @samp{Drive @var{X}:}, where @var{X} is the
+drive letter.
 
 @item mnt_dir
 
-For most drives, the name of its root directory "X:/" (where ``X'' is
-the drive letter), except that JOINed drives get this as the name of
-the directory to which they were JOINed.
+For most drives, this is the name of its root directory @file{@var{X}:/}
+(where @var{X} is the drive letter), except that JOINed drives get
+@code{mnt_dir} as the name of the directory to which they were JOINed.
 
 For systems with a single floppy drive (which can be referenced as either
-"a:/" or "b:/"), the mount directory will be returned as one of these,
-depending on which drive letter was last used to reference that drive.
+@file{a:/} or @file{b:/}), the mount directory will be returned as one
+of these, depending on which drive letter was last used to reference
+that drive.
 
 @item mnt_type
 
@@ -135,20 +139,21 @@ depending on which drive letter was last used to reference that drive.
 
 @item mnt_opts
 
-The string "ro,dev=XX" for CD-ROM drives, "rw,dev=XX" for all the others,
-where ``XX'' is the hexadecimal drive number of the REAL drive on which
-this filesystem resides.  That is, if you call @code{stat} on @var{mnt_fsname},
-you will get the numeric equivalent of XX in @code{st_dev} field of
-@code{struct stat}.  E.g., for drive C: you will get "rw,dev=02".  Note
-that SUBSTed and JOINed drives get the drive numbers as if SUBST and JOIN
-were NOT in effect.
+The string @samp{ro,dev=@var{XX}} for CD-ROM drives,
+@samp{rw,dev=@var{XX}} for all the others, where @var{XX} is the
+hexadecimal drive number of the REAL drive on which this filesystem
+resides.  That is, if you call @code{stat} on @var{mnt_fsname}, you will
+get the numeric equivalent of @var{XX} in @code{st_dev} member of
+@code{struct stat}.  E.g., for drive @file{C:} you will get
+@samp{rw,dev=02}.  Note that SUBSTed and JOINed drives get the drive
+numbers as if SUBST and JOIN were @strong{not} in effect.
 
 @end table
 
 @subheading Return Value
 
-This function returns a pointer to an @code{struct} @code{mntent}, or
-NULL if there are no more drives to report on. 
+This function returns a pointer to a @code{struct mntent}, or
+@code{NULL} if there are no more drives to report on.
 
 @subheading Portability
 
@@ -201,8 +206,8 @@ char *hasmntopt(const struct mntent *mnt, const char *opt);
 @subheading Description
 
 This function scans the @code{mnt_opts} field of the @code{mntent}
-structure @var{mnt} for a substring that matches @var{opt}. 
-@xref{getmntent}.
+structure pointed to by @var{mnt} for a substring that matches
+@var{opt}.  @xref{getmntent}.
 
 @subheading Return Value
 
@@ -225,7 +230,8 @@ int endmntent(FILE *filep);
 
 @subheading Description
 
-This function should be called after the last call to getmntent (@pxref{getmntent}).
+This function should be called after the last call to @code{getmntent}
+(@pxref{getmntent}).
 
 @subheading Return Value
 

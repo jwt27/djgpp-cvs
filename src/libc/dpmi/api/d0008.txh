@@ -18,7 +18,8 @@ DPMI function AX = 0x0008
 This function sets the highest valid address in the segment referenced
 by @var{_selector}.  For example, if you pass 0xfffff, the highest
 valid address is 0xfffff.  Note: if you pass a number <= 64K, the
-segment changes to "non-big", and may cause unexpected problems.
+segment changes to "non-big", and may cause unexpected problems.  Limits
+for segments larger than 1MB must have their low 12 bits set.
 
 @subheading Return Value
 

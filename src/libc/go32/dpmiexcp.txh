@@ -213,7 +213,7 @@ instruction is encountered when no co-processor is installed (Int 07h).
 @item SIGTIMR
 
 The Timer signal.  Used by the @code{setitimer} and @code{alarm} functions
-(@xref{setitimer}, @xref{alarm}).
+(@xref{setitimer}, and @pxref{alarm}).
 
 @item SIGPROF
 

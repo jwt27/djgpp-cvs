@@ -11,9 +11,9 @@ int sync(void);
 
 Intended to assist porting Unix programs.  Under Unix, @code{sync}
 flushes all caches of previously written data.  In this implementation,
-@code{sync} calls @code{fsync} on every open file.  @xref{fsync}  It
-also calls @xref{_flush_disk_cache} to try to force cached data to the
-disk.
+@code{sync} calls @code{fsync} on every open file.  @xref{fsync}.  It
+also calls @code{_flush_disk_cache} (@pxref{_flush_disk_cache}) to try
+to force cached data to the disk.
 
 @subheading Return Value
 

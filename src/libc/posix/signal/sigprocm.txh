@@ -18,7 +18,7 @@ about functions to manipulate the signal masks.)  When a blocked signal
 happens, it is not delivered to the program until such time as that
 signal is unblocked by another call to @code{sigprocmask}.  Thus
 blocking a signal is an alternative to ignoring it (by setting its
-handler to @code{SIG_IGN}, @xref{signal}), but has an advantage of not
+handler to @code{SIG_IGN}, @pxref{signal}), but has an advantage of not
 missing the signal entirely.
 
 The value of the argument @var{how} determines the operation: if it is

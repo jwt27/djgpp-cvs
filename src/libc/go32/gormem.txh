@@ -9,7 +9,7 @@ int _go32_dpmi_allocate_dos_memory(_go32_dpmi_seginfo *info);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 Allocate a part of the conventional memory area (the first 640K).  Set
 the @code{size} field of @var{info} to the number of paragraphs
@@ -23,7 +23,7 @@ must be freed with @code{_go32_dpmi_free_dos_memory}.
 If there isn't enough memory in the system, the @code{size} field of
 @var{info} has the largest available size, and an error is returned. 
 
-@xref{dosmemput} @xref{dosmemget}
+See also @ref{dosmemput}, and @ref{dosmemget}.
 
 @subheading Return Value
 
@@ -55,7 +55,7 @@ int _go32_dpmi_free_dos_memory(_go32_dpmi_seginfo *info);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function frees the conventional memory allocated by
 @code{_go32_dpmi_allocate_real_mode_memory}.  You should pass it the
@@ -90,7 +90,7 @@ int _go32_dpmi_resize_dos_memory(_go32_dpmi_seginfo *info);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 The @var{info} structure is the same one used to allocate the memory. 
 Fill in a new value for @code{size} and call this function.  If there is

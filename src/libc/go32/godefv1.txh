@@ -62,7 +62,7 @@ int _go32_dpmi_simulate_fcall(_go32_dpmi_registers *regs);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function simulates a real-mode far call to a function that returns
 with a far return.  The registers are set up from @var{regs}, including
@@ -106,7 +106,7 @@ int _go32_dpmi_simulate_fcall_iret(_go32_dpmi_registers *regs);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function simulates a real-mode far call to a function that returns
 with an @code{iret} instruction.  The registers are set up from
@@ -151,7 +151,7 @@ int _go32_dpmi_simulate_int(int vector, _go32_dpmi_registers *regs);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function simulates a real-mode interrup.  The registers are set up from
 @var{regs}, including @code{CS} and @code{IP}, which indicate the

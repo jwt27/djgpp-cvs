@@ -13,7 +13,7 @@ This is an internal function that is used by all the @code{scanf} style
 functions, which simply pass their format, arguments, and stream to this
 function. 
 
-@xref{scanf} for a discussion of the allowed formats and arguments. 
+@xref{scanf}, for a discussion of the allowed formats and arguments. 
 
 @subheading Return Value
 

@@ -57,7 +57,7 @@ in the low (below 1 Meg mark) memory.
 
 Currently, some of the functions which take a pointer to a buffer in
 @code{DX} are @emph{NOT} supported (notably, most of the FCB-based
-functions).  @xref{int86} for the list of supported functions.
+functions).  @xref{int86}, for the list of supported functions.
 
 @subheading Return Value
 
@@ -137,7 +137,7 @@ When the interrupt is invoked, the CPU registers are copied from
 This function is just like @code{int86x} (@pxref{int86x}) except that
 suitable default values are used for the segment registers.
 
-@xref{int86x}. @xref{intdos}. @xref{bdos}.
+See also @ref{int86x}, @ref{intdos}, and @ref{bdos}.
 
 @subheading Return Value
 
@@ -169,7 +169,7 @@ int int386(int ivec, union REGS *in, union REGS *out);
 @subheading Description
 
 This function is equal to @code{int86} function.
-See @xref{int86} for further description.
+See @ref{int86}, for further description.
 
 @subheading Return Value
 
@@ -195,7 +195,7 @@ This function is just like @code{int86} (@pxref{int86}) except that
 values you pass in @var{SREGS} are used for the segment registers instead
 of the defaults.
 
-@xref{int86}. @xref{intdos}. @xref{bdos}.
+See also @ref{int86}, @ref{intdos}, and @ref{bdos}.
 
 @subheading Return Value
 
@@ -230,7 +230,7 @@ int int386x(int ivec, union REGS *in, union REGS *out, struct SREGS *seg);
 @subheading Description
 
 This function is equal to @code{int86x}.
-See @xref{int86} for further description.
+See @ref{int86}, for further description.
 
 @subheading Return Value
 

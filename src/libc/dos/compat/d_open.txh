@@ -67,8 +67,8 @@ File is not inherited by child process
 
 @end table
 
-@xref{_dos_creat}. @xref{_dos_creatnew}. @xref{_dos_read}.
-@xref{_dos_write}. @xref{_dos_close}
+See also @ref{_dos_creat}, @ref{_dos_creatnew}, @ref{_dos_read},
+@ref{_dos_write}, and @ref{_dos_close}.
 
 This function does not support long filenames, even on systems where the
 LFN API (@pxref{_use_lfn, LFN}) is available.  For LFN-aware functions

@@ -18,8 +18,9 @@ opcode.
 
 @subheading Return Value
 
-The access byte.  See an Intel programming manual for the list of
-access information.
+The access byte.  @xref{__dpmi_set_descriptor_access_rights}, for the
+details about the access information returned.  Also see
+@ref{__dpmi_get_descriptor}.
 
 @subheading Portability
 

@@ -9,7 +9,7 @@ int _go32_dpmi_get_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginf
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function puts the selector and offset of the specified interrupt
 vector into the @code{pm_selector} and @code{pm_offset} fields of
@@ -27,7 +27,8 @@ Zero on success, nonzero on failure.
 
 @subheading Example
 
-@xref{_go32_dpmi_set_protected_mode_interrupt_vector}
+@xref{_go32_dpmi_set_protected_mode_interrupt_vector}, for an example of
+usage.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_set_protected_mode_interrupt_vector, dpmi
@@ -41,7 +42,7 @@ int _go32_dpmi_set_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginf
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function sets the protected mode interrupt vector specified to
 point to the given function.  The @code{pm_offset} and

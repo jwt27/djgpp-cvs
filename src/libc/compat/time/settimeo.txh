@@ -10,7 +10,7 @@ int settimeofday(struct timeval *tp, ...);
 @subheading Description
 
 Sets the current GMT time.  For compatibility, a second argument is
-accepted.  @xref{gettimeofday} for information on the structure types.
+accepted.  @xref{gettimeofday}, for information on the structure types.
 
 @subheading Return Value
 

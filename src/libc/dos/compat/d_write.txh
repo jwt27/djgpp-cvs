@@ -11,13 +11,13 @@ unsigned int _dos_write(int handle, const void *buffer, unsigned int count,
 @subheading Description
 
 This is a direct connection to the MS-DOS write function call (%ah = 0x40).
-No conversion is done on the data; it is written as raw binary data. This
+No conversion is done on the data; it is written as raw binary data.  This
 function writes @var{count} bytes from @var{buffer} to @var{handle}.
-@var{count} value may be arbitrary size (e.g. > 64KB). It puts number of
-bytes written into @var{result} if writing is successful.
+@var{count} value may be arbitrary size (e.g. > 64KB).  It puts the
+number of bytes written into @var{result} if writing is successful.
 
-@xref{_dos_open}. @xref{_dos_creat}. @xref{_dos_creatnew}.
-@xref{_dos_read}. @xref{_dos_close}
+See also @ref{_dos_open}, @ref{_dos_creat}, @ref{_dos_creatnew},
+@ref{_dos_read}, and @ref{_dos_close}.
 
 @subheading Return Value
 

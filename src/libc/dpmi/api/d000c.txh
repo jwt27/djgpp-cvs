@@ -15,7 +15,11 @@ information.
 
 DPMI function AX = 0x000c
 
-This function sets the selector's parameters.  @xref{__dpmi_get_descriptor}.
+This function sets the parameters of the selector @var{_selector} by
+copying the contents of the 8-byte buffer pointed to by @var{_buffer}
+into the LDT entry of the selector's descriptor.
+@xref{__dpmi_get_descriptor}, for the description of the contents of the
+8-byte buffer.
 
 @subheading Return Value
 

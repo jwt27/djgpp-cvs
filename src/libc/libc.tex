@@ -51,27 +51,28 @@ variables found in @file{libc.a}.
 
 For each function or variable that the library provides, the definition
 of that symbol will include information on which header files to include
-in your source to obtain prototypes and type definitions relevent to the
+in your source to obtain prototypes and type definitions relevant to the
 use of that symbol. 
 
 Note that many of the functions in @file{libm.a} (the math library) are
 defined in @file{math.h} but are not present in libc.a.  Some are, which
-may get confusing, but the rule of thumb is this - the C library
+may get confusing, but the rule of thumb is this---the C library
 contains those functions that ANSI dictates must exist, so that you
-don't need the @code{-lm} if you only use ANSI functions.  These
-functions are, however, vastly simplified compared to the ANSI spec and
-the functions in @file{libm.a}, which includes replacements.  For
-example, @code{libc.a}'s @code{ldexp()} doesn't set @code{errno} on
-error, but @code{libm.a}'s @code{ldexp()} does.
+don't need the @code{-lm} if you only use ANSI functions.  In contrast,
+@file{libm.a} contains more functions and supports additional
+functionality such as the @code{matherr} call-back and compliance to
+several alternative standards of behavior in case of FP errors.
+@xref{libm}, for more details.
 
-Debugging support functions are in the library @file{libdbg.a}.
+Debugging support functions are in the library @file{libdbg.a}; link
+your program with @samp{-ldbg} to use them.
 
 @include libc2.tex
 
 @node Master Index,,,Top
 @printindex cp
 
-@xref{Alphabetical List}
+@xref{Alphabetical List}.
 
 @contents
 @bye

@@ -154,7 +154,7 @@ struct group *getgrnam(char *name);
 @subheading Description
 
 This function returns the group entry for the group named @var{name}. 
-@xref{getgrent} for the description of @code{struct group}.
+@xref{getgrent}, for the description of @code{struct group}.
 
 @subheading Return Value
 

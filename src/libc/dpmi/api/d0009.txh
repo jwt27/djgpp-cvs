@@ -15,7 +15,10 @@ information.
 
 DPMI function AX = 0x0009
 
-This sets the rights of @var{_selector} to @var{_rights}.
+This sets the access rights of @var{_selector} to @var{_rights}.
+
+The meaning of the individual bit fields of @var{_rights} is described
+below.  For more details, please refer to @ref{__dpmi_get_descriptor}.
 
 @example
 ---- ---- ---- ---X = 0=not accessed, 1=accessed

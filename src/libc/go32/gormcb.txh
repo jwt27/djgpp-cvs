@@ -9,7 +9,7 @@ int _go32_dpmi_allocate_real_mode_callback_iret(_go32_dpmi_seginfo *info, _go32_
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function allocates a "real-mode callback".  Fill in the
 @code{pm_offset} field of @var{info} and call this function.  It will
@@ -20,7 +20,7 @@ should be a global, and will be passed to your function.  Any changes in
 @var{regs} will be reflected back into real mode.  A wrapper will be
 added to your function to simulate the effects of an @code{iret}
 instruction, so this function is useful for trapping real-mode software
-interrupts (like 0x1b - @kbd{Ctrl-Break} hit). 
+interrupts (like 0x1b - @kbd{Ctrl-@key{Break}} hit). 
 
 @subheading Return Value
 
@@ -66,7 +66,7 @@ int _go32_dpmi_allocate_real_mode_callback_retf(_go32_dpmi_seginfo *info, _go32_
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function allocates a "real-mode callback".  Fill in the
 @code{pm_offset} field of @var{info} and call this function.  It will
@@ -88,7 +88,8 @@ Zero on success, nonzero on failure.
 
 @subheading Example
 
-@xref{_go32_dpmi_allocate_real_mode_callback_iret}
+@xref{_go32_dpmi_allocate_real_mode_callback_iret}, for an example of
+usage.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_free_real_mode_callback, dpmi
@@ -102,7 +103,7 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info);
 
 @subheading Description
 
-@xref{DPMI Overview}
+@xref{DPMI Overview}.
 
 This function frees the real-mode callbacks and wrappers allocated by
 @code{_go32_dpmi_allocate_real_mode_callback_iret} and
@@ -118,7 +119,8 @@ Zero on success, nonzero on failure.
 
 @subheading Example
 
-@xref{_go32_dpmi_allocate_real_mode_callback_iret}
+@xref{_go32_dpmi_allocate_real_mode_callback_iret}, for an example of
+usage.
 
 @c ----------------------------------------------------------------------
 @node _go32_rmcb_stack_size, go32

@@ -9,10 +9,11 @@ int _creat(const char *path, int attrib);
 
 @subheading Description
 
-This is a direct connection to the MS-DOS creat function call, int
-0x21, %ah = 0x3c.  The file is set to binary mode. This function can
-be hooked by the @xref{File System Extensions}. If you don't want this
-you should use @xref{_dos_creat} or @xref{_dos_creatnew}.
+This is a direct connection to the MS-DOS creat function call, int 0x21,
+%ah = 0x3c.  The file is set to binary mode.  This function can be
+hooked by the @dfn{File System Extensions}, see @ref{File System
+Extensions}.  If you don't want this, you should use @code{_dos_creat}
+(@pxref{_dos_creat}) or @code{_dos_creatnew} (@pxref{_dos_creatnew}).
 
 On platforms where the LFN API (@pxref{_use_lfn, LFN}) is available,
 @code{_creat} calls function 0x716C of Interrupt 21h, to support long

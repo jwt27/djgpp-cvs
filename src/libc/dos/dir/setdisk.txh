@@ -11,11 +11,11 @@ int setdisk(int drive);
 
 This function sets the current disk (0=A).
 
-@xref{getdisk}
+See also @ref{getdisk}.
 
 @subheading Return Value
 
-The total number of possible drives.
+The highest drive actually present that the system can reference.
 
 @subheading Portability
 
