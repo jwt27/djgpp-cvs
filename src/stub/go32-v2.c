@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* GO32V2 - A quick hack for loading non-stubbed images for V2.0
@@ -347,7 +349,7 @@ run_v2_coff(int argc, char **argv)
     return -1;
   }
 
-  rm_la   = (tbuf << 4) & 0xfffff;
+  rm_la   = (unsigned long)(unsigned short)tbuf << 4;
   q	  = rm_la + (argc + 1) * sizeof (short);
   rm_argv = (short *)alloca ((argc + 1) * sizeof (short));
   for (i = 0; i < argc; i++)
@@ -373,7 +375,23 @@ run_v2_coff(int argc, char **argv)
   }
   argv[0] = argv0;
 
+#if 1
+  {
+    extern __dpmi_paddr __djgpp_old_kbd;
+    __dpmi_paddr except;
+
+    /* restore old handlers */
+    __dpmi_get_protected_mode_interrupt_vector(9, &except);
+    if (__djgpp_old_kbd.offset32 != except.offset32
+	|| __djgpp_old_kbd.selector != except.selector)
+      __djgpp_exception_toggle ();
+  }
+#endif
   longjmp(start_state, 0);
+#if 1
+  /* reset new handlers */
+  __djgpp_exception_toggle ();
+#endif
   return 0;
 }
 

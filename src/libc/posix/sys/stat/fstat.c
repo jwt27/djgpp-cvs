@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* This is file FSTAT.C */
@@ -105,7 +107,7 @@
 #include <go32.h>
 #include <libc/farptrgs.h>
 #include <libc/bss.h>
-
+#include <sys/fsext.h>
 #include "xstat.h"
 
 #define _STAT_INODE         1   /* should we bother getting inode numbers? */
@@ -168,6 +170,9 @@ static unsigned short fstat_init_bits;
    restarted programs (emacs).  */
 static int fstat_count = -1;
 
+/* The address of the PSP of the caller.  */
+static unsigned long  psp_addr;
+
 /* Initialization routine, called once per program run.
  * Finds DOS version, SFT entry size and addresses of
  * program handle table and first SFT sub-table.
@@ -197,8 +202,7 @@ fstat_init(void)
    * calling INT 21h/AX=67h to enlarge the maximum number of file
    * handles.
    */
-  htbl_ptr_addr = (_go32_info_block.linear_address_of_original_psp & 0xfffff)
-                  + 0x34;
+  htbl_ptr_addr = psp_addr + 0x34;
 
   /*
    * Find the pointer to the first subtable in the list of SFT's.
@@ -247,6 +251,7 @@ get_sft_entry(int fhandle)
   unsigned short sft_off;
   unsigned long  htbl_addr;
   short          sft_idx, retval;
+  __dpmi_regs	 regs;
 
   _djstat_fail_bits = fstat_init_bits;
 
@@ -256,6 +261,11 @@ get_sft_entry(int fhandle)
       fstat_count = __bss_count;
       dos_major = 0;
     }
+
+  /* Find the PSP address of the current process.  */
+  regs.h.ah = 0x62;	/* Get PSP address */
+  __dpmi_int(0x21, &regs);
+  psp_addr = (unsigned long)regs.x.bx << 4;
 
   /* If first time called, initialize.  */
   if (!dos_major && !fstat_init())
@@ -268,14 +278,11 @@ get_sft_entry(int fhandle)
    * For DOS 3.x and later, the number of possible file handles
    * is at offset 32h in the PSP; for prior versions, it is 20.
    */
-  if (fhandle < 0 ||
-      fhandle >=
-        (_osmajor < 3 ?
-         20 :
-         _farpeekw(dos_mem_base,
-                   (_go32_info_block.linear_address_of_original_psp & 0xfffff)
-                   + 0x32)))
-      return -1;
+  if (fhandle < 0
+      || fhandle >= (_osmajor < 3 ?
+		     20
+		     : _farpeekw(dos_mem_base, psp_addr + 0x32)))
+    return -1;
 
   /* Linear address of the handle table. */
   htbl_addr = MK_FOFF(_farpeekw(dos_mem_base, htbl_ptr_addr + 2),
@@ -313,7 +320,7 @@ get_sft_entry(int fhandle)
            * SFT entry for use by fstat_assist().
            */
           movedata(dos_mem_base,
-                   (entry_addr + 6 + sft_idx * sft_size) & 0x000fffff,
+                   entry_addr + 6 + sft_idx * sft_size,
                    our_mem_base, (unsigned int)sft_buf, sft_size);
           return retval;
         }
@@ -366,6 +373,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   short          have_trusted_values = 1;
   unsigned int   dos_ftime;
   char           drv_no;
+  short          dev_info;
   unsigned char  is_dev;
   unsigned char  is_remote;
   short          sft_idx = -1;
@@ -373,6 +381,9 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   long           sft_fsize;
   unsigned short trusted_ftime = 0, trusted_fdate = 0;
   long           trusted_fsize = 0;
+
+  if ((dev_info = _get_dev_info(fhandle)) == -1)
+    return -1;	/* errno set by _get_dev_info() */
 
   _djstat_fail_bits = 0;
 
@@ -401,6 +412,20 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   else
     have_trusted_values = 0;
 
+  if (dev_info & 0x0080)
+    {
+      is_dev = 1;
+      is_remote = 0;	/* device can't be remote */
+    }
+  else
+    {
+      is_dev = 0;
+      if (dev_info & 0x8000)
+	is_remote = 1;
+      else
+	is_remote = 0;
+    }
+
   /* First, fill the fields which are constant under DOS. */
   stat_buf->st_uid = getuid();
   stat_buf->st_gid = getgid();
@@ -421,7 +446,6 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           case 2:
               fattr_ofs  = 2;
               drv_no     = sft_buf[3] - 1;      /* 1 = 'A' etc. */
-              is_dev     = drv_no < 0;          /* sft_buf[3] = 0 */
               name_ofs   = 4;
               ext_ofs    = 0x0b;
               fsize_ofs  = 0x13;
@@ -434,8 +458,6 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           case 3:
               fattr_ofs  = 4;
               drv_no     = sft_buf[5] & 0x3f;
-              is_dev     = sft_buf[5] & 0x80;
-              is_remote  = sft_buf[6] & 0x80;
               if (dos_minor == 0)
                 {
                   name_ofs = 0x21;
@@ -455,8 +477,6 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           default:      /* DOS 4 and up */
               fattr_ofs  = 4;
               drv_no     = sft_buf[5] & 0x3f;
-              is_dev     = sft_buf[5] & 0x80;
-              is_remote  = sft_buf[6] & 0x80;
               clust_ofs  = 0x0b;
               ftime_ofs  = 0x0d;
               fdate_ofs  = 0x0f;
@@ -519,6 +539,8 @@ fstat_assist(int fhandle, struct stat *stat_buf)
        */
       else if (have_trusted_values)
         {
+	  unsigned char *pname = sft_buf + name_ofs;
+
           /* This is a regular, existing file.  It cannot be a
            * directory, because DOS won't let us open() a directory.
            * Each file under MS-DOS is always readable by everyone.
@@ -532,7 +554,20 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           sft_fdate = *((unsigned short *)(sft_buf + fdate_ofs));
           sft_ftime = *((unsigned short *)(sft_buf + ftime_ofs));
           sft_fsize = *((long *)(sft_buf + fsize_ofs));
-          if (sft_ftime == trusted_ftime &&
+
+	  /* In addition, it seems that 32-bit File Access, at least
+	   * in Windows 95, creates fake SFT entries for some files,
+	   * which have bogus cluster numbers and all-blank file name
+	   * and extension.  (It is unclear to me when exactly are
+	   * these fake SFT entries created.)
+	   * So, in addition, we check the file's name in the SFT to
+	   * be non-blank, since file names in the FCB format cannot
+	   * be all-blank, even on Windows 95.  */
+	  while (pname < sft_buf + name_ofs + 8 + 3 && *pname == ' ')
+	    pname++;
+
+          if (pname < sft_buf + name_ofs + 8 + 3 &&
+	      sft_ftime == trusted_ftime &&
               sft_fdate == trusted_fdate &&
               sft_fsize == trusted_fsize)
             { /* Now we are ready to get the SFT info. */
@@ -684,11 +719,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
    */
   if (have_trusted_values)
     {
-      short dev_info = _get_dev_info(fhandle);   /* IOCTL Function 0 */
-      if (dev_info == -1)
-        return -1;    /* errno set by get_dev_info() */
-
-      if (dev_info & 0x80)      /* it's a device */
+      if (is_dev)
         {
           if (_djstat_flags & _STAT_INODE)
             {
@@ -748,8 +779,27 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           if (_djstat_flags & _STAT_ACCESS)
             _djstat_fail_bits |= _STFAIL_WRITEBIT;
 
+	  /* If we run on Windows 9X, and LFN is enabled, try harder.
+	     Note that we deliberately do NOT use this call when LFN is
+	     disabled, even if we are on Windows 9X, because then we
+	     open the file with function 3Ch, and such handles aren't
+	     supported by 71A6h call we use here.  */
+	  if (dos_major >= 7 && _USE_LFN)
+	    {
+	      __dpmi_regs r;
+
+	      r.x.ax = 0x71a6;	/* file info by handle */
+	      r.x.bx = fhandle;
+	      r.x.ds = __tb >> 4;
+	      r.x.dx = 0;
+	      __dpmi_int(0x21, &r);
+	      if ((r.x.flags & 1) == 0
+		  && (_farpeekl(dos_mem_base, __tb) & 0x07) == 0)
+		stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
+	    }
+
           /* Executables are detected if they have magic numbers.  */
-          if ( (_djstat_flags & _STAT_EXECBIT) &&
+          if ( (_djstat_flags & _STAT_EXEC_MAGIC) == 0 &&
                _is_executable((const char *)0, fhandle, (const char *)0))
             stat_buf->st_mode |= EXEC_ACCESS;
 
@@ -759,19 +809,11 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           stat_buf->st_rdev = dev_info & 0x3f;
 #endif
 
-          /* Novell Netware returns 0 drive number in the lower
-           * 6 bits of dev_info.  If this is what we get, return -2
-           * as drive number (it will be converted to '?' if added to 'A').
+          /* Novell Netware does not return the drive number in the
+           * lower 6 bits of dev_info.  But we cannot do anything with
+           * that, since any value in these 6 bits could be correct...
+           * In particular, 0 there means the A: drive.
            */
-          if (stat_buf->st_dev == 0)
-            {
-              stat_buf->st_dev = -2;
-#ifdef  HAVE_ST_RDEV
-              stat_buf->st_rdev = -2;
-#endif
-              _djstat_fail_bits |= _STFAIL_DEVNO;
-            }
-
           stat_buf->st_size  = trusted_fsize;
           stat_buf->st_atime = stat_buf->st_ctime = stat_buf->st_mtime =
             _file_time_stamp(dos_ftime);
@@ -798,11 +840,20 @@ int
 fstat(int handle, struct stat *statbuf)
 {
   int            e = errno;     /* save previous value of errno */
+  __FSEXT_Function* func;
+  int rv;
 
   if (!statbuf)
     {
       errno = EFAULT;
       return -1;
+    }
+
+  /* see if this is file system extension file */
+  func = __FSEXT_get_function(handle);
+  if (func && func(__FSEXT_fstat, &rv, &handle))
+    {
+       return rv;
     }
 
   if (fstat_assist(handle, statbuf) == -1)

@@ -1,8 +1,10 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <dpmi.h>
 #include <go32.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/exceptn.h>
 
 /* This code really can't be nested since the RMCB structure isn't copied,

@@ -1,9 +1,10 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <dpmi.h>
 #include <crt0.h>
 #include <errno.h>
 #include <stddef.h>
-
+#include <stdlib.h>
 
 /* Sets the DPMI page attributes for all pages in the given range.
  * See the DPMI 1.0 documentation for function 0x507 (0507H) for a

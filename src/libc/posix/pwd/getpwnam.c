@@ -1,7 +1,9 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <pwd.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 static char slash[] = "/";
 static char shell[] = "sh";

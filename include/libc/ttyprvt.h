@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_libc_ttyprvt_h__
 #define __dj_include_libc_ttyprvt_h__
 
@@ -119,10 +120,10 @@ extern struct tty *__libc_tty_p;
 extern struct tty_editline __libc_tty_editline;
 
 /* termios hooks */
-extern int (*__libc_read_termios_hook)(int handle, void *buffer, size_t count,
-				       ssize_t *rv);
-extern int (*__libc_write_termios_hook)(int handle, const void *buffer, size_t count,
-					ssize_t *rv);
+extern ssize_t (*__libc_read_termios_hook)(int handle, void *buffer, size_t count,
+	   			           ssize_t *rv);
+extern ssize_t (*__libc_write_termios_hook)(int handle, const void *buffer, size_t count,
+					    ssize_t *rv);
 extern int __libc_termios_hook_common_count;
 
 /* functions */

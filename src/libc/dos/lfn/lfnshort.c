@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <ctype.h>
 #include <string.h>
@@ -16,7 +18,7 @@ char *
 _lfn_gen_short_fname (const char *long_fname, char *short_fname)
 {
   __dpmi_regs r;
-  unsigned long tbuf = __tb & 0xfffff;
+  unsigned long tbuf = __tb;
 
   r.x.ax = 0x7100;
   if (_USE_LFN)
@@ -41,12 +43,24 @@ _lfn_gen_short_fname (const char *long_fname, char *short_fname)
 	 Convert to 8.3 filename.  */
       while (s - buf < 8 && *s && *s != ' ')
 	*d++ = *s++;
+#if 0
       while (*s && *s == ' ')
+#else
+      while (s - buf < 8 && *s && *s == ' ')
+#endif
 	s++;
+#if 0
       if (*s)
+#else
+      if (*s != ' ')
+#endif
 	{
 	  *d++ = '.';
+#if 0
 	  while (*s && *s != ' ')
+#else
+	  while (s - buf < 11 && *s && *s != ' ')
+#endif
 	    *d++ = *s++;
 	}
       *d = '\0';
