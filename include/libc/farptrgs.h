@@ -1,6 +1,6 @@
-/* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* special version for libc - uses %gs instead of %fs.  Ignore comments */
 
+/* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (c) 1995 DJ Delorie.  Permission granted to use for any
    purpose, provided this copyright remains attached and unmodified.
 
@@ -34,7 +34,9 @@ what's in the %gs register.  The invariant ones don't take a selector,
 they only take an offset.  These are used inside loops and in
 time-critical accesses where the selector doesn't change.  To specify
 the selector, use the farsetsel() function.  That selector is used for
-all farns*() functions until changed. 
+all farns*() functions until changed.  You can use _fargetsel() if you
+want to temporary change the selector with _farsetsel() and restore
+it afterwards.
 
 The farpoke* and farpeek* take selectors.
 
@@ -69,6 +71,7 @@ unsigned char _farpeekb(unsigned short, unsigned long);
 unsigned short _farpeekw(unsigned short, unsigned long);
 unsigned long _farpeekl(unsigned short, unsigned long);
 void _farsetsel(unsigned short);
+unsigned short _fargetsel(void);
 void _farnspokeb(unsigned long, unsigned char);
 void _farnspokew(unsigned long, unsigned short);
 void _farnspokel(unsigned long, unsigned long);
@@ -85,7 +88,7 @@ _farpokeb(unsigned short selector,
       "	.byte 0x65 \n"
       "	movb %b1,(%k2)"
       :
-      : "g" (selector), "qi" (value), "r" (offset));
+      : "rm" (selector), "qi" (value), "r" (offset));
 }
 
 extern __inline__ void
@@ -97,7 +100,7 @@ _farpokew(unsigned short selector,
       "	.byte 0x65 \n"
       "	movw %w1,(%k2)"
       :
-      : "g" (selector), "ri" (value), "r" (offset));
+      : "rm" (selector), "ri" (value), "r" (offset));
 }
 
 extern __inline__ void
@@ -109,7 +112,7 @@ _farpokel(unsigned short selector,
       "	.byte 0x65 \n"
       "	movl %k1,(%k2)"
       :
-      : "g" (selector), "ri" (value), "r" (offset));
+      : "rm" (selector), "ri" (value), "r" (offset));
 }
 
 extern __inline__ unsigned char
@@ -121,7 +124,7 @@ _farpeekb(unsigned short selector,
       "	.byte 0x65 \n"
       "	movb (%k2),%b0"
       : "=q" (result)
-      : "g" (selector), "r" (offset));
+      : "rm" (selector), "r" (offset));
   return result;
 }
 
@@ -134,7 +137,7 @@ _farpeekw(unsigned short selector,
       "	.byte 0x65 \n"
       "	movw (%k2),%w0 \n"
       : "=r" (result)
-      : "g" (selector), "r" (offset));
+      : "rm" (selector), "r" (offset));
   return result;
 }
 
@@ -147,7 +150,7 @@ _farpeekl(unsigned short selector,
       "	.byte 0x65\n"
       "	movl (%k2),%k0"
       : "=r" (result)
-      : "g" (selector), "r" (offset));
+      : "rm" (selector), "r" (offset));
   return result;
 }
 
@@ -156,7 +159,17 @@ _farsetsel(unsigned short selector)
 {
   __asm__ __volatile__ ("movw %w0,%%gs"
       :
-      : "g" (selector));
+      : "rm" (selector));
+}
+
+extern __inline__ unsigned short
+_fargetsel(void)
+{
+  unsigned short selector;
+  __asm__ __volatile__ ("movw %%gs,%w0 \n"
+      : "=r" (selector)
+      : );
+  return selector;
 }
 
 extern __inline__ void

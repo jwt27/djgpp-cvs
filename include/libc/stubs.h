@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_libc_stubs_h__
 #define __dj_include_libc_stubs_h__
@@ -27,7 +28,6 @@ extern "C" {
 #define mkdir __mkdir
 #define open __open
 #define read __read
-#define tzname __tzname
 #define tzset __tzset
 #define write __write
 

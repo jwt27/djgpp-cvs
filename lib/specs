@@ -8,10 +8,10 @@
 %{posix:-D_POSIX_SOURCE}
 
 *cc1:
-
+%{!m386:-m486 -malign-jumps=2 %{!m486:-malign-loops=2 -malign-functions=2}}
 
 *cc1plus:
-
+%{!m386:-m486 -malign-jumps=2 %{!m486:-malign-loops=2 -malign-functions=2}}
 
 *endfile:
 
@@ -40,7 +40,7 @@
 %{funsigned-char:-D__CHAR_UNSIGNED__}
 
 *predefines:
--Dunix -Di386 -DGO32 -DMSDOS -DDJGPP=2 -DDJGPP_MINOR=1
+-Dunix -Di386 -DGO32 -DMSDOS -DDJGPP=2 -DDJGPP_MINOR=2
 
 *cross_compile:
 0
