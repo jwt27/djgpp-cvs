@@ -42,10 +42,30 @@ Set the time formatting information.
 
 @end table
 
-The @var{locale} should be the name of the current locale.  Currently,
-only the "C" and "POSIX" locales are supported.  If the @var{locale}
-is NULL, no action is performed.  If @var{locale} is "", the locale is
-identified by environment variables (currently not supported).
+The @var{locale} should be the name of the current locale.  Supported
+locales includes user default locale (in this case settings obtained from
+the @var{country.sys} driver) and standard "C" and "POSIX" locales. You
+may address to user default locale by it's name if you want. If the
+@var{locale} is NULL, no action is performed.  If @var{locale} is "", the
+locale is identified by environment variables.  
+
+Due to limitations of the @file{country.sys} driver only
+the current user locale @code{""} or its name in the POSIX-like form
+@code{"@var{LL}_@var{TT}@var{ECU}.@var{CP}"}, and @code{"C"} (aka
+@code{"POSIX"}) locales are supported.  
+
+@cindex locale code format
+The POSIX-like locale code
+@code{"@var{LL}_@var{TT}@var{ECU}.@var{CS}"} consists of the ISO two
+letter lowercase language code @var{LL}, the ISO two letter uppercase
+territory code @var{TT}, optionally followed by the suffix
+@code{"_EURO"} for @var{ECU} if the country has adopted the Euro as
+its currency unit, and the character set @var{CS} specified by a code
+page number between 1 and 65534;
+for example, @samp{"de_AT.850"} for the German-speaking Austrian
+locale, or @samp{"fr_BE_EURO.850"} for the French-speaking Belgian
+locale using the Euro, both using Western multilingual ``Latin-1''
+code page number 850.  
 
 @xref{localeconv}.
 

@@ -1072,3 +1072,22 @@ The POSIX functions @code{asctime_r}, @code{ctime_r}, @code{gmtime_r},
 
 @findex _hash2v@r{ added}
 Hash function @code{_hash2v} used by @code{hsearch} was added.  
+
+@findex setlocale@r{, standard and current locales supported}
+The function @code{setlocale} now supports the following categories in
+environment variables: @env{LC_CTYPE}, @env{LC_COLLATE},
+@env{LC_NUMERIC}, @env{LC_MONETARY}, @env{LC_TIME}, as well as
+@env{LC_ALL} and also @env{LANG}, which provide defaults for all
+categories not explicitly given.  POSIX @env{LC_MESSAGES} are not
+supported.  
+Due to limitations of the @file{country.sys} driver only
+the current user locale @code{""} or its name in the POSIX form
+@code{"@var{LL}_@var{TT}@var{ECU}.@var{CP}"}.
+@xref{setlocale, locale code format, , libc, Libc}, for an explanation
+of the syntax.
+Modifies the character classes used by functions defined in headers
+@file{ctype.h} and @file{regex.h}, returns appropriate values from
+@code{strcoll} and @code{localeconv} functions, changes the decimal
+character used by functions for converting numeric strings from input
+and to output, and function @code{strftime} uses the appropriate NLS
+formats for @code{"%x"} and @code{"%X"} conversions. 
