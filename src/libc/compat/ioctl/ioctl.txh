@@ -1,5 +1,5 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.3 2000/10/06 16:55:35 dj Exp $
+@c $Id: ioctl.txh,v 1.4 2001/08/09 03:47:26 snowball Exp $
 @node ioctl (General description), io
 @code{ioctl} performs low level calls to communicate with device drivers. As
 there are lots of different device drivers, no really general description is
@@ -246,7 +246,8 @@ Disk file:
 
 @example
 #include <sys/ioctl.h>
-int main(int argc, char **argv)@{
+int main(int argc, char **argv)
+@{
    char buf[6];
    short *s;
 
@@ -263,8 +264,58 @@ int main(int argc, char **argv)@{
 @end example
 
 @node ioctl (UNIX), io
-The UNIX version first checks if an FSE handler is associated to the file
-descriptor. If so, it calls the handler in the usual way @ref{File System
-Extensions}. Otherwise it sets @var{errno} to @code{ENOTTY} and returns -1.
+@subheading Syntax
 
-As this part is still under development, it should not be used exhaustively.
+@example
+#include <sys/ioctl.h>
+
+int ioctl(int fd, int cmd, ... );
+@end example
+
+@subheading Description
+The UNIX version first checks if an FSEXT handler is associated with the file
+descriptor @var{fd}. If so, it calls the handler in the usual way
+(@pxref{File System Extensions}).
+
+Otherwise,the operation specified by @var{cmd} is performed on the file open
+on handle @var{fd}.  The following operations are defined
+by the header @file{sys/ioctl.h}:
+
+@table @code
+@item TIOCGWINSZ
+Fill in the @code{winsize} structure pointed to by the third argument
+with the screen width and height.
+
+The @code{winsize} structure is defined in @file{sys/ioctl.h}
+as follows:
+
+@example
+struct winsize
+@{
+  unsigned short ws_row;	/* rows, in characters */
+  unsigned short ws_col;	/* columns, in characters */
+  unsigned short ws_xpixel;	/* horizontal size, pixels */
+  unsigned short ws_ypixel;	/* vertical size, pixels */
+@};
+@end example
+
+@end table
+
+@subheading Return Value
+Zero for @code{TIOCGWINSZ}. Otherwise, -1 is returned and @code{errno} is set
+to @code{ENOSYS} for all others.
+
+@subheading Example
+
+@example
+#include <sys/ioctl.h>
+#include <stdio.h>
+int main(int argc, char **argv)
+@{
+  struct winsize sz;
+
+  ioctl(0, TIOCGWINSZ, &screen_size);
+  printf("Screen width: %i  Screen height: %i\n", sz.ws_col, sz.ws_row);
+  return 0;
+@}
+@end example
