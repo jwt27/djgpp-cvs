@@ -74,12 +74,17 @@ strtof(const char *s, char **sret)
   /* Handle NAN and NAN(<hex-number>). */
   if( ! strnicmp( "NAN", s, 3 ) )
   {
-    float f = NAN;
-    float_t n = *(float_t *)(&f);
+	union a_union 
+	{
+	    float f;
+	    float_t n;
+	} t;
+
+	t.f = NAN;
 
     if( sign < 0 )
     {
-      n.sign = 1;
+      t.n.sign = 1;
     }
 
     if( s[3] == '(' )
@@ -93,13 +98,13 @@ strtof(const char *s, char **sret)
 	mantissa_bits = mantissa_bits & 0x7fffff;
 	if( mantissa_bits )
 	{
-	    n.mantissa = mantissa_bits;
+	    t.n.mantissa = mantissa_bits;
 	}
 	if( sret )
 	{
 	  *sret = endptr+1;
 	}
-	return *(float *)(&n);
+	return (t.f);
       }
 
       /* The subject sequence didn't match NAN(<hex-number>), so match
@@ -110,7 +115,7 @@ strtof(const char *s, char **sret)
     {
       *sret = unconst((&s[3]), char *);
     }
-    return *(float *)(&n);
+	return (t.f);
   }
 
   /* Handle ordinary numbers. */
