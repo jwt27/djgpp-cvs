@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -47,6 +48,14 @@ __chdir (const char *mydirname)
   if (_farpeekb(_dos_ds, __tb + 1) == ':')
     drv_no = (_farpeekb(_dos_ds, __tb) & 0x1f) - 1;
 
+  if (drv_no != -1)	/* Must do this first for Windows 2000 */
+  {
+    /* Change current drive.  The directory change below checks it. */
+    r.h.ah = 0x0e;
+    r.h.dl = drv_no;
+    __dpmi_int(0x21, &r);
+  }
+
   if (drv_no == -1 || _farpeekb(_dos_ds, __tb + 2) != 0)
   {
     if(_USE_LFN)
@@ -61,15 +70,6 @@ __chdir (const char *mydirname)
       errno = __doserr_to_errno(r.x.ax);
       return -1;
     }
-  }
-
-  if (drv_no != -1)
-  {
-    /* Change current drive also.  This *will* work if
-       the directory change above worked. */
-    r.h.ah = 0x0e;
-    r.h.dl = drv_no;
-    __dpmi_int(0x21, &r);
   }
 
   return 0;
