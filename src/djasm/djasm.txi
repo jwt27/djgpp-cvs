@@ -132,7 +132,7 @@ The Netwide Assembler @acronym{NASM} lives at @url{@value{NASM_HOME}}.
 @cindex Cygnus
 @cindex DJGPP
 
-The need for @code{djasm} arose when when Cygnus, a major user of
+The need for @code{djasm} arose when Cygnus, a major user of
 DJGPP for their @acronym{DOS}-based products, requested a version of
 DJGPP that was fully independent and self-bootstrapping.
 The existing DJGPP 1.x system didn't entirely meet their need,
