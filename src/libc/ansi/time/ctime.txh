@@ -165,13 +165,16 @@ in that format.
 @example
 #include <time.h>
 
+extern char *tzname[2];
 void tzset(void);
 @end example
 
 @subheading Description
 
-This function initializes @code{tzname} according to environment variable
-TZ.
+This function initializes the gloabl variable @code{tzname} according to
+environment variable @code{TZ}.  After the call, @code{tzname} holds the
+specifications for the time zone for the standard and daylight-saving
+times.
 
 @subheading Return Value
 
