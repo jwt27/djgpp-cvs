@@ -4,7 +4,10 @@
 /src\/libemu\/emu387.dxe/ d
 /src\/stub\/djasm.c$/ d
 /src\/stub\/stub.h$/ d
-/src\/libc\/stubs\/.*\.s$/ d
+/src\/libc\/stubs\/.*\.S$/ d
 /src\/libc\/stubs\/makefil2$/ d
+/makefile.oi/ d
+/makefile.rf/ d
+/makefile.sub/ d
 /src\/libm\/.*\.def$/ d
-/CVS/ d
+/\/CVS\// d
