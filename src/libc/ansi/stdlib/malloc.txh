@@ -85,7 +85,8 @@ this function acts just like @code{malloc} (@pxref{malloc}).
 
 @subheading Return Value
 
-A pointer to the memory you should now refer to. 
+On success, a pointer is returned to the memory you should now refer
+to.  On failure, @code{NULL} is returned and @var{ptr} is not freed.
 
 @subheading Portability
 
