@@ -1,0 +1,34 @@
+@node atoll, string
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+long long int atoll(const char *string);
+@end example
+
+@subheading Description
+
+Convert as much of the string as possible to an equivalent long long
+integer value.
+
+This function is almost like @code{strtoll(string, NULL, 10)}
+(@pxref{strtoll}).
+
+@subheading Return Value
+
+The equivalent value, or zero if the string does not represent a number.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+main(int argc, char **argv)
+@{
+  long long int l = atoll(argv[1]);
+  @dots{}
+@}
+@end example
