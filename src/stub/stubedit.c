@@ -157,7 +157,7 @@ void num_s2v(void *addr, char *buf, int max)
       r *= 1048576L;
       break;
   }
-  if (max && r > max) {
+  if (max && r > (unsigned long)max) {
     printf("Warning: %ld reduced to %d\n", r, max);
     r = max;
   }
@@ -213,7 +213,7 @@ struct {
 
 void give_help(void)
 {
-  int i;
+  size_t i;
   fprintf(stderr, "Usage: stubedit [-v] [-h] filename.exe [field=value . . . ]\n");
   fprintf(stderr, "-h = give help   -v = view info  field=value means set w/o prompt\n");
   fprintf(stderr, HFORMAT, "-field-", "-description-");
@@ -226,7 +226,7 @@ void give_help(void)
 int main(int argc, char **argv)
 {
   int view_only = 0;
-  int i;
+  size_t i;
   int need_to_save;
 
   if (argc > 1 && strcmp(argv[1], "-h") == 0)
@@ -261,9 +261,10 @@ int main(int argc, char **argv)
 
   if (argc > 2)
   {
-    int f, got, got_any = 0;
+    int got, got_any = 0;
+    size_t f;
     char fname[100], fval[100];
-    for (i=2; i < argc; i++)
+    for (i=2; i < (size_t)argc; i++)
     {
       fname[0] = 0;
       fval[0] = 0;
