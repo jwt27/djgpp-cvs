@@ -76,7 +76,7 @@ tarread(char *buf, long buf_size)
         buf_size -= skipping;
         skipping  = 0;
         looking_for_header = 1;
-        if (buf_size < sizeof header)
+        if (buf_size < (long)(sizeof header))
           return 0;
       }
       else
@@ -112,7 +112,7 @@ tarread(char *buf, long buf_size)
       sscanf(header.osize, " %lo", &size);
       sscanf(header.otime, " %o", &ftime);
       sscanf(header.ocsum, " %o", &head_csum);
-      for (i = 0; i < sizeof header; i++)
+      for (i = 0; i < (int)(sizeof header); i++)
       {
         /* Checksum on header, but with the checksum field blanked out.  */
         int j = (i > 147 && i < 156) ? ' ' : *((unsigned char *)&header + i);
@@ -158,7 +158,7 @@ tarread(char *buf, long buf_size)
 	if (!skipping)	/* an empty file or a directory */
 	{
 	  looking_for_header = 1;
-	  if (buf_size < sizeof header)
+          if (buf_size < (long)(sizeof header))
 	    return 0;
 	}
         continue;
