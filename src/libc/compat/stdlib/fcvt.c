@@ -1,4 +1,6 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <stdlib.h>
 #include <float.h>
 
