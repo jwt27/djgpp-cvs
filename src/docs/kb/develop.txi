@@ -59,34 +59,34 @@ reformat your sources to comply with the DJGPP style:
 
 A C application's namespace should not be polluted with non-ANSI
 and non-POSIX functions from the C libraries, unless the application
-explicitly uses these symbols.  An example of a non-ANSI and
-non-POSIX function is @code{fsync} (@pxref{fsync, , fsync, libc}).
+explicitly uses these symbols.  An example of a non-ANSI and non-POSIX
+function is @code{uclock} (@pxref{uclock, , uclock, libc}).
 
 But what happens if you wish to call a non-ANSI and/or
 non-POSIX function from C library code?  The actual implementation
 is placed in the C library's private namespace with a stub function
-that calls the implementation.  Consider @code{fsync} ---
-the library would use the @code{__fsync} function internally,
-but application code would use the stub @code{fsync}.
+that calls the implementation.  Consider @code{uclock} ---
+the library would use the @code{__uclock} function internally,
+but application code would use the stub @code{uclock}.
 
 @cindex @file{libc/stubs.h}
 Functions that are stubbed have an entry in the include file
 @file{libc/stubs.h}, e.g.:
 
 @example
-#define fsync __fsync
+#define uclock __uclock
 @end example
 
 Any C library sources defining or calling the implementation
 should include @file{libc/stubs.h} as the first include file.
-This is so that we can refer to e.g. @code{fsync} as @code{fsync}
-in the library code, but the library code will actually define/call
-e.g. @code{__fsync} and will not pollute the application namespace.
+This is so that we can refer to, e.g., @code{uclock} as @code{uclock}
+in the library code, but the library code will actually define/call,
+e.g., @code{__uclock} and will not pollute the application namespace.
 
 The stub files are assembly language files generated automagically
 from @file{libc/stubs.h} as part of the C library build process.
 
-NB: The private name, e.g. @code{__fsync}, is @strong{not} part of
+NB: The private name, e.g., @code{__uclock}, is @strong{not} part of
 the published API.
 
 @subsection Far pointers usage
@@ -134,7 +134,7 @@ a file.  The dumping process records the value of each variable at
 the time of the dump to a file.  The symbols in the @code{.bss} section
 are moved to the @code{.data} section.  The values at the time of the dump
 are recorded, not the original values.  So if the library code is
-relying on the value of a static or global variable, e.g. to see whether
+relying on the value of a static or global variable, e.g., to see whether
 it needs to initialise some device or allocate memory, then it may break
 when the program restarts.
 
@@ -181,7 +181,7 @@ For more details see @file{src/libc/crt0/crt1.c} in the DJGPP libc sources.
 
 @file{src/gcc.opt} controls how the DJGPP sources are compiled.
 To build the C libraries for profiling, add the profiling options
-(e.g. @samp{-pg}) to @file{gcc.opt}, one option per line.  The library
+(e.g., @samp{-pg}) to @file{gcc.opt}, one option per line.  The library
 will need to be rebuilt from scratch for the new options to take effect,
 so a @samp{make clean} is needed before rebuilding in
 the directory of interest, e.g.:
@@ -258,7 +258,7 @@ Constants like @code{EINVAL} should be enclosed in @samp{@@code@{@}}.
 Avoid the urge to use @samp{@@ref@{@}} or variant in the middle of sentence,
 because it will look ugly in info documentation and terrible in printed
 documentation.  Instead use a textual reference followed by a comma followed
-by the reference command, e.g.
+by the reference command, e.g.:
 
 @example
 @@code@{yabbadabbadoo()@}, @@ref@{yabbadabbadoo()@}.
