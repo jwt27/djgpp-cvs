@@ -237,6 +237,12 @@ ENMFILE -- No more files.  @code{findfirst} and @code{findnext} assign
 this to @code{errno} when they exhaust the files in the directory.
 @code{readdir} does that as well.
 
+@item 39
+
+ELOOP -- Too many levels of symbolic links.  Can be set virtually by any
+file handling function in library. Usually means encountered link loop
+(link1 -> link2, link2 -> link1).
+
 @end table
 
 
