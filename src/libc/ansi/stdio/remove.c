@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <io.h>
@@ -7,7 +9,8 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <libc/dosio.h>
- 
+#include <sys/fsext.h>
+
 int
 remove(const char *fn)
 {
@@ -15,9 +18,25 @@ remove(const char *fn)
   unsigned attr;
   int directory_p;
   int use_lfn = _USE_LFN;
- 
+  int rv;
+
+  /* see if a file system extension wants to handle this */
+  if (__FSEXT_call_open_handlers(__FSEXT_unlink, &rv, &fn))
+    return rv;
+
   /* Get the file attribute byte.  */
   attr = _chmod(fn, 0);
+
+  /* The above _chmod will return -1 if the file
+     does not exist.  If it doesn't, don't bother
+     doing anything else, return an error, and
+     set errno properly. */
+  if (attr == -1)
+  {
+      errno = ENOENT;
+      return(-1);
+  }
+
   directory_p = attr & 0x10;
  
   /* Now, make the file writable.  We must reset Vol, Dir, Sys and Hidden bits 

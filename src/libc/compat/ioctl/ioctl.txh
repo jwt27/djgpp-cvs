@@ -1,44 +1,33 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.1 1996/08/12 23:10:08 dj Exp $
+@c $Id: ioctl.txh,v 1.2 1998/06/28 23:12:40 dj Exp $
 @node ioctl (General description), io
 @code{ioctl} performs low level calls to communicate with device drivers. As
 there are lots of different device drivers, no really general description is
 possible.
 
-The DJGPP version tries to cope two different flavors of @code{ioctl}, a DOSish
-and a UNIXish way. To distinguish between DOS-like and UNIX-like calls, all
-valid DOS commands have the 3 MSB set to 0, the UNIX command have at least one
-of the 3 MSB set.
+The DJGPP version tries to cope with two different flavors of @code{ioctl},
+a DOSish and a UNIXish way. To distinguish between DOS-like and UNIX-like
+calls, all valid DOS commands have all 3 MSB set to 0, the UNIX command have
+at least one of the 3 MSB set to 1.
 
 
 @node ioctl (DOS), io
 The DOSish version of @code{ioctl} performs an
 interrupt 0x21, function 0x44. It takes care of supplying transfer buffers in
 low address regions, if they are needed. For an exhaustive description of the
-various commands and subcommands, see Ralph Browns interrupt list.
+various commands and subcommands, see Ralf Brown's interrupt list.
 
 It is highly recommended to use only the DOS_*
 functions listed in @file{sys/ioctl.h}.
+
 @subheading Syntax
-        ioctl(fd, cmd, ... );
 
 @example
 #include <sys/ioctl.h>
-int main(int argc, char **argv)@{
-   char buf[6];
-   short *s;
 
-   open(fd,"EMMQXXX0",O_RDONLY);
-   mybuf[0] = '\0';
-   s = mybuf;
-   ioctl(fd,DOS_SNDDATA,6, (int) &mybuf);
-   if(*s ==0x25 )printf("EMM386 >= 4.45\n");
-   mybuf[0]='\x02';
-   ioctl(fd,DOS_SNDDATA,2,(int )&mybuf);
-   printf("EMM Version %d.%d\n",(int )mybuf[0],(int) mybuf[1]);
-   close(fd);
-@}
+int ioctl(int fd, int cmd, ... );
 @end example
+
 
 @subheading Description
 The parameter @code{fd} must refer to a file descriptor for character device
@@ -48,54 +37,159 @@ The following constants can be used for the @code{cmd} parameter:
 @table @code
 @item DOS_GETDEVDATA
 Get device information. Returns the device information word from @code{DX}.
+The call to @code{ioctl} should look like this:
+
+@example
+ int ret_val = ioctl (fd, DOS_GETDEVDATA);
+@end example
+
+For another way of achieving the same effect, see @ref{_get_dev_info}.
+
 @item DOS_SETDEVDATA
 Set device information. Returns the new device information word form @code{DX}
-or -1
+or -1.  The call to @code{ioctl} should look like this:
+
+@example
+ int ret_val = ioctl (fd, DOS_SETDEVDATA, 0, dev_info);
+@end example
+
 @item DOS_RCVDATA
 Read from character device control channel. After @code{cmd} must follow the
 number of requested bytes to read and a pointer to a buffer. Returns the number
-of bytes actually read or -1 on error.
+of bytes actually read or -1 on error.  The call to @code{ioctl} should
+look like this:
+
+@example
+ unsigned char buf[bytes_to_read];
+ int ret_val = ioctl (fd, DOS_RCVDATA, bytes_to_read, &buf);
+@end example
+
 @item DOS_SNDDATA
 Write to character device control channel. After @code{cmd} must follow the
 number of bytes to write and a pointer to a buffer holding the data.
-Returns the number of bytes actually written.
+Returns the number of bytes actually written.  An example of a call:
+
+@example
+ unsigned char buf[bytes_to_write];
+ int ret_val = ioctl (fd, DOS_SNDDATA, bytes_to_write, &buf);
+@end example
+
 @item DOS_RCVCTLDATA
 Read from block device control channel. See @code{DOS_RCVDATA}.
+
 @item DOS_SNDCTLDATA
 Write to block device control channel. See @code{DOS_SNDDATA}.
+
 @item DOS_CHKINSTAT
 Check the input status of a file. Returns 0 if not ready of at EOF, @code{0xff}
-if file is ready.
+if file is ready.  Here's an example of how to call:
+
+@example
+ int ret_val = ioctl (fd, DOS_CHKINSTAT);
+@end example
+
+A more portable way of doing this is by calling @code{select}.
+@xref{select}.
+
 @item DOS_CHKOUTSTAT
-Check the output status of a file. Returns 0 if not ready of at EOF, @code{0xff}
-if file is ready.
+Check the output status of a file. Returns 0 if not ready of at EOF,
+@code{0xff} if file is ready.  @code{select} (@pxref{select}) is
+another, more portable way of doing the same.
+
 @item DOS_ISCHANGEABLE
 Check if a block device is changeable. Returns 0 for removable or 1 for fixed.
+An example of a call:
+
+@example
+ int ret_val = ioctl (fd, DOS_ISCHANGEABLE);
+@end example
+
+
 @item DOS_ISREDIRBLK
-Check if a block device is remote o local.
+Check if a block device is remote o local.  The function
+@code{_is_remote_drive} (@pxref{_is_remote_drive}) is another way of
+returning the same info.
+
 @item DOS_ISREDIRHND
-Check if a file handle refers to a local or remote device.
+Check if a file handle refers to a local or remote device.  See
+@ref{_is_remote_handle} for another way of doing this.
+
 @item DOS_SETRETRY
-Set the sharing retry count. the first extra parameter specifies the pause
-between retries, the second number of retries.
+Set the sharing retry count. The first extra parameter specifies the pause
+between retries, the second number of retries.  An example:
+
+@example
+ int ret_val = ioctl (fd, DOS_SETRETRY, pause_between_retries, max_retries);
+@end example
+
 @item DOS_GENCHARREQ
-Generic character device request.
+Generic character device request.  Example:
+
+@example
+ int ret_val = ioctl (fd, DOS_GENCHARREQ, category_and_function,
+                      &param_block, si_value, di_value, param_block_size);
+@end example
+
+Refer to Ralf Brown's Interrupt List for the details about each function
+and relevant parameter block layout.
+
 @item DOS_GENBLKREQ
-Generic block device request.
+Generic block device request.  Example of the call:
+
+@example
+ int ret_val = ioctl (drive_no, DOS_GENBLKREQ, category_and_function,
+                      &param_block, si_value, di_value, param_block_size);
+@end example
+
+Note that instead of the handle, the first argument is the disk drive
+number (0 = default, 1 = A:, etc.).
+
 @item DOS_GLDRVMAP
-Get logical drive map.
+Get logical drive map.  A call like the following:
+
+@example
+ int ret_val = ioctl (drive_no, DOS_GLDRVMAP);
+@end example
+
+@noindent
+will return 0 if the block device has only one logical drive assigned,
+or a number in the range 1..26 which is the last drive numer used to
+reference that drive (1 = A:, etc.).  Thus, on a machine which has a
+single floppy drive, calling @code{ioctl (1, DOS_GLDRVMAP);} will return
+2 if the floppy was last refered to as B:.  This function and the next
+one can be used together to prevent DOS from popping the ugly prompt
+saying "Insert diskette for drive B: and press any key when ready".
+
 @item DOS_SLDRVMAP
-Set logical drive map.
+Set logical drive map.  For example, a call like this:
+
+@example
+ ioctl (1, DOS_SLDRVMAP);
+@end example
+
+@noindent
+will cause drive A: to be mapped to drive B:.
+
 @item DOS_QGIOCTLCAPH
 Query generic ioctl capability (handle). Test if a handle supports ioctl
-functions beyond those in the standard DOS 3.2 set.
+functions beyond those in the standard DOS 3.2 set.  Call like this:
+
+@example
+ int ret_val = ioctl (fd, DOS_QGIOCTLCAPH, category_and_function);
+@end example
+
+This will return zero if the specified IOCTL function is supported, 1 if
+not.
+
 @item DOS_QGIOCTLCAPD
 Query generic ioctl capability (drive). Test if a drive supports ioctl
-functions beyond those in the standard DOS 3.2 set.
+functions beyond those in the standard DOS 3.2 set.  Used same as
+DOS_QGIOCTLCAPH, but the first argument is a drive number (0 = default,
+1 = A:, etc.), not a handle.
 @end table
 
 If your specific device driver requires different commands, they must be or'ed
-together with the flags listed in @file{ioctl.h} to tell the drive about
+together with the flags listed in @code{<sys/ioctl.h>} to tell the drive about
 transfer buffers and what to return.
 
 @subheading Return Value
@@ -144,6 +238,26 @@ Disk file:
 
 5-0 drive number (0 = A:)
 @end table
+
+@subheading Example
+
+@example
+#include <sys/ioctl.h>
+int main(int argc, char **argv)@{
+   char buf[6];
+   short *s;
+
+   open(fd,"EMMQXXX0",O_RDONLY);
+   mybuf[0] = '\0';
+   s = mybuf;
+   ioctl(fd,DOS_SNDDATA,6, (int) &mybuf);
+   if(*s ==0x25 )printf("EMM386 >= 4.45\n");
+   mybuf[0]='\x02';
+   ioctl(fd,DOS_SNDDATA,2,(int )&mybuf);
+   printf("EMM Version %d.%d\n",(int )mybuf[0],(int) mybuf[1]);
+   close(fd);
+@}
+@end example
 
 @node ioctl (UNIX), io
 The UNIX version first checks if an FSE handler is associated to the file

@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <unistd.h>
@@ -78,10 +79,12 @@ fnmatch(const char *pattern, const char *string, int flags)
 
       /* optimize for pattern with * at end or before / */
       if (c == 0)
+      {
 	if (flags & FNM_PATHNAME)
 	  return find_slash(string) ? FNM_NOMATCH : 0;
 	else
 	  return 0;
+      }
       else if (isslash(c) && flags & FNM_PATHNAME)
       {
 	if ((string = find_slash(string)) == NULL)
