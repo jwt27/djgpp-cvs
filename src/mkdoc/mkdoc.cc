@@ -162,7 +162,7 @@ Node::Node(char *Pname, char *Pcat)
   lines = 0;
   lastline = 0;
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
-    bzero(&port_info[i], sizeof(port_info[i]));
+    memset(&port_info[i], 0, sizeof(port_info[i]));
   port_notes = NULL;
   last_port_note = NULL;
   written_portability = 0;
