@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -26,13 +27,13 @@ remove(const char *fn)
   char real_name[FILENAME_MAX];
   int rv;
 
-  /* see if a file system extension wants to handle this */
-  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_unlink, &rv, fn))
-    return rv;
-
   /* Handle symlinks */
   if (!__solve_dir_symlinks(fn, real_name))
     return -1;
+
+  /* see if a file system extension wants to handle this */
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_unlink, &rv, real_name))
+    return rv;
 
   /* Get the file attribute byte.  */
   attr = _chmod(real_name, 0);
