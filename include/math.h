@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -14,8 +15,13 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-extern double __dj_huge_val;
+extern double      __dj_huge_val;
+extern float       __dj_huge_valf;
+extern long double __dj_huge_vall;
+
 #define HUGE_VAL  __dj_huge_val
+#define HUGE_VALF __dj_huge_valf
+#define HUGE_VALL __dj_huge_vall
 
 double	acos(double _x);
 double	asin(double _x);
