@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
  * D_FINDF.C.
@@ -17,7 +18,7 @@
 #include <string.h>
 #include <dos.h>
 
-unsigned int _dos_findfirst(char *name, unsigned int attr, struct _find_t *result)
+unsigned int _dos_findfirst(const char *name, unsigned int attr, struct _find_t *result)
 {
   __dpmi_regs r;
 
