@@ -127,6 +127,12 @@ not_forced:
 	je	1f
 	cmpw	%ax,32(%ebp)
 	je	stack_ok
+	.byte	0x2e				/* CS: */
+	movw	___djgpp_ds_alias,%di
+	cmpw	%di,32(%ebp)	/* if it's DS alias, switch to normal DS */
+	jne	1f
+	movw	%ax,32(%ebp)
+	jmp	stack_ok
 1:	movl	$exception_stack+8000, 28(%ebp)
 	movw	%ax, 32(%ebp)
 stack_ok:
