@@ -20,7 +20,7 @@ utod(char *fname)
   struct ftime ftime;
   char buf[16384];
   char tfname[80], drive[3], path[80];
-  sf = open(fname, O_RDONLY|O_BINARY);
+  sf = open(fname, O_RDONLY|O_TEXT);
   if (sf < 0)
   {
     perror(fname);
