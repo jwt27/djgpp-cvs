@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_movedata_h_
 #define __dj_include_sys_movedata_h_
@@ -13,6 +14,10 @@ extern "C" {
 #ifndef _POSIX_SOURCE
 
 #include <sys/djtypes.h>
+
+__DJ_size_t
+#undef __DJ_size_t
+#define __DJ_size_t
 
 /* This header is intended to be included only by other
    headers, like <go32.h> and <string.h>.  You may
