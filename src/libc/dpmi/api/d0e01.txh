@@ -29,7 +29,7 @@ the calling application.
 @end table
 
 DJGPP programs using one of the provided emulators should generally call
-this functions with an argument of 2.  (The DJGPP startup code does that
+this function with an argument of 2.  (The DJGPP startup code does that
 automatically if no co-processor is detected.)
 
 @subheading Return Value

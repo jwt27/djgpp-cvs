@@ -9,7 +9,7 @@ char *tmpnam(char *s);
 
 @subheading Description
 
-This functions generates a string that is a valid file name and that
+This function generates a string that is a valid file name and that
 is not the same as the name of an existing file.  A different string is
 guaranteed to be produced each time it is called, up to @code{TMP_MAX}
 times (@code{TMP_MAX} is defined on stdio.h).  If @code{tmpnam} is called
