@@ -25,7 +25,6 @@ extern "C" {
 #define _IOERR    000200
 #define _IOSTRG   000400
 #define _IORW     001000
-#define _IOAPPEND 002000
 #define _IORMONCL 004000  /* remove on close, for temp files */
 /* if _flag & _IORMONCL, ._name_to_remove needs freeing */
 #define _IOUNGETC 010000  /* there is an ungetc'ed character in the buffer */
