@@ -34,6 +34,10 @@
 /* Maximum length of the command we can pass through CMDLINE=.  */
 #define CMDLINE_MAX  1023
 
+/* Enable attempt to reallocate temporary transfer buffer for long command
+   lines when defined */
+#define __ENABLE_TB_REALLOC
+
 extern char **_environ;
 
 int __dosexec_in_system = 0;
@@ -54,7 +58,7 @@ static unsigned long tbuf_ptr;
 static unsigned long tbuf_beg;
 static unsigned long tbuf_end;
 static unsigned long tbuf_len;
-#if 0
+#ifdef __ENABLE_TB_REALLOC
 static int	     tbuf_selector;
 #endif
 
@@ -80,7 +84,7 @@ static int check_talloc(size_t amt)
 
   if (tbuf_ptr + amt > tbuf_end)
   {
-#if 0
+#ifdef __ENABLE_TB_REALLOC
     /* Code that reallocs the transfer buffer; currently disabled.  */
     unsigned long new_tb;
     unsigned long min_len = tbuf_len + amt;
@@ -105,14 +109,18 @@ static int check_talloc(size_t amt)
       goto done;
     }
 
+    /* There is no use to allocate buffer bigger that 64K */
+    if (tbuf_len > max_len)
+      tbuf_len = max_len;
+
     tbuf_len = (tbuf_len + 15) & 0xffff0; /* round to nearest paragraph */
 
     if ((new_tb =
-	 __dpmi_allocate_dos_memory(tbuf_len/16, &max_avail)) == -1)
+	 __dpmi_allocate_dos_memory(tbuf_len/16, &max_avail)) == (unsigned)-1)
     {
-      if (max_avail*16 < min_len
+      if (max_avail*16 < (int) min_len
 	  || (new_tb =
-	      __dpmi_allocate_dos_memory(max_avail, &tbuf_selector)) == -1)
+	      __dpmi_allocate_dos_memory(max_avail, &tbuf_selector)) == (unsigned)-1)
       {
 	retval = 0;
 	goto done;
@@ -167,6 +175,10 @@ direct_exec_tail_1 (const char *program, const char *args,
   unsigned long arg_la;
   unsigned long parm_la;
   unsigned long env_la, env_e_la;
+#ifdef __ENABLE_TB_REALLOC
+  unsigned long proxy_off = 0;
+  int initial_tbuf_selector = tbuf_selector; 
+#endif
   size_t proxy_len = proxy ? strlen(proxy)+1 : 0;
   int seen_proxy = 0, seen_cmdline = 0;
   char arg_header[3];
@@ -199,10 +211,11 @@ direct_exec_tail_1 (const char *program, const char *args,
      usual DOS form, and, under LFN, to the short 8+3 alias.  */
   _put_path2(program, tbuf_beg == __tb ? tbuf_ptr - tbuf_beg : 0);
   if(lfn) {
+    unsigned pgm_name_loc = tbuf_beg == __tb ? tbuf_ptr : __tb;
     r.x.ax = 0x7160;			/* Truename */
     r.x.cx = 1;				/* Get short name */
-    r.x.ds = r.x.es = tbuf_ptr / 16;
-    r.x.si = r.x.di = tbuf_ptr & 15;
+    r.x.ds = r.x.es = pgm_name_loc / 16;
+    r.x.si = r.x.di = pgm_name_loc & 15;
     __dpmi_int(0x21, &r);
     if (r.x.flags & 1)
     {
@@ -242,6 +255,11 @@ direct_exec_tail_1 (const char *program, const char *args,
   dosmemput(arg_header, 1, arg_la); /* command tail length byte */
   dosmemput(args, arg_len, arg_la+1); /* command tail itself */
   dosmemput(arg_header+1, 1, arg_la+1+arg_len); /* terminating CR */
+
+#ifdef __ENABLE_TB_REALLOC
+  if (strncmp(args, __PROXY, __PROXY_LEN) == 0 && args[__PROXY_LEN] == ' ')
+     proxy_off = arg_la + 1 - tbuf_beg;
+#endif
 
   /* The 2 FCBs.  Some programs (like XCOPY from DOS 6.x) need them.  */
   fcb1_la = talloc(16);	       /* allocate space for 1st FCB */
@@ -283,7 +301,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   } while (env_la & 15);
   talloc(-1);
 
-#if 0
+#ifdef __ENABLE_TB_REALLOC
   /* Convert to relative, since `check_talloc' may relocate.  */
   arg_la  -= tbuf_beg;
   env_la  -= tbuf_beg;
@@ -299,6 +317,9 @@ direct_exec_tail_1 (const char *program, const char *args,
      Similar treatment is given the CMDLINE variable.  */
   for (i=0; envp[i]; i++)
   {
+#ifdef __ENABLE_TB_REALLOC
+    int have_proxy = 0;
+#endif
     const char *ep = envp[i];
     size_t env_len = strlen(ep)+1;
 
@@ -309,6 +330,9 @@ direct_exec_tail_1 (const char *program, const char *args,
       {
 	ep = proxy;
 	env_len = proxy_len;
+#ifdef __ENABLE_TB_REALLOC
+        have_proxy = 1;
+#endif
       }
       else
 	continue;
@@ -323,6 +347,9 @@ direct_exec_tail_1 (const char *program, const char *args,
     if (!check_talloc(env_len))
       return -1;
     env_e_la = talloc(env_len);
+#ifdef __ENABLE_TB_REALLOC
+    if (have_proxy) proxy_off = env_e_la - tbuf_beg;
+#endif
     dosmemput(ep, env_len, env_e_la);
   }
 
@@ -332,6 +359,9 @@ direct_exec_tail_1 (const char *program, const char *args,
     if (!check_talloc(proxy_len))
       return -1;
     env_e_la = talloc(proxy_len);
+#ifdef __ENABLE_TB_REALLOC
+    proxy_off = env_e_la - tbuf_beg;
+#endif
     dosmemput(proxy, proxy_len, env_e_la);
   }
 
@@ -357,14 +387,28 @@ direct_exec_tail_1 (const char *program, const char *args,
   dosmemput(progname, proglen, env_e_la);
 
   /* Prepare the parameter block and call Int 21h/AX=4B00h.  */
-#if 0
+#ifdef __ENABLE_TB_REALLOC
   arg_la  += tbuf_beg;
   env_la  += tbuf_beg;
   fcb1_la += tbuf_beg;
   fcb2_la += tbuf_beg;
   parm_la += tbuf_beg;
   program_la += tbuf_beg;
+
+  if ((initial_tbuf_selector != tbuf_selector) && proxy_off)
+  {
+    char temp[65], *s, t2[5];
+    sprintf (t2, "%04lX", tbuf_beg>>4);
+    dosmemget (tbuf_beg+proxy_off, 64, temp);
+    temp[64]=0;
+    s = strchr(temp,'\r');
+    if (s) *s=0;
+    dosmemput (t2, 4, tbuf_beg+proxy_off+13);
+    if (strlen(temp)>23) 
+        dosmemput (t2, 4, tbuf_beg+proxy_off+23);
+  }
 #endif
+
   parm.eseg     = env_la / 16;
   parm.argseg	= arg_la / 16;
   parm.argoff	= arg_la & 15;
@@ -380,7 +424,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   r.x.es = parm_la / 16;
   r.x.bx = parm_la & 15;
   __dpmi_int(0x21, &r);
-#if 0
+#ifdef __ENABLE_TB_REALLOC
   if (tbuf_selector)
     __dpmi_free_dos_memory (tbuf_selector);
   tbuf_selector = 0;
