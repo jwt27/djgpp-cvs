@@ -66,6 +66,18 @@ main(void)
 
 
 /*
+   --------------------------------------------------------------------
+   The following comment is no longer true, at least as of v2.02 (and I
+   suspect in v2.01 as well).  I leave it here for historical puproses,
+   but the test program worked for me without any glitches.
+
+   In general, doscan.c is much more stable now than it was in v2.00
+   and before.  So if anybody tells you there's a bug there, suspect a
+   cockpit error first ;-).
+
+                     Eli Zaretskii, 19-Apr-1999
+   --------------------------------------------------------------------
+
 ---8<---
 
 It outputs:
