@@ -1,5 +1,5 @@
 /*
- * File fpclassd.S.
+ * File fpclassl.S.
  *
  * Copyright (C) 2003 Martin Str@"omberg <ams@ludd.luth.se>.
  *
