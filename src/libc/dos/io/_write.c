@@ -57,7 +57,7 @@ _write_fill_seek_gap(int fd)
     
   /* Quit when not working with a file.  */
   fd_info = _get_dev_info(fd);
-  if (fd_info & (_DEV_STDIN | _DEV_STDOUT | _DEV_NUL))
+  if (fd_info & _DEV_CDEV)
   {
     /* Don't bother with handles that don't need the fix.  */
     __set_fd_flags(fd, FILE_DESC_DONT_FILL_EOF_GAP);
