@@ -814,6 +814,7 @@ static int script_exec(const char *program, char **argv, char **envp)
   FILE *f;
   char **newargs;
   int i, hasargs=0;
+  unsigned int ln;
   char *base, *p;
   int has_extension = 0, has_drive = 0;
   char pinterp[FILENAME_MAX];
@@ -832,8 +833,8 @@ static int script_exec(const char *program, char **argv, char **envp)
     return go32_exec(program, argv, envp);
 
   /* Paranoia: is this at all a text file?  */
-  for (i=0; i < sizeof(line)-1 && line[i] != '\0'; i++)
-    if (line[i] < 7 && line[i] >= 0)
+  for (ln=0; ln < sizeof(line)-1 && line[ln] != '\0'; ln++)
+    if (line[ln] < 7 && line[ln] >= 0)
       return direct_exec(program, argv, envp);
 
   iargs[0] = 0;
