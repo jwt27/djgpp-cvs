@@ -15,6 +15,7 @@ INCFILES = \
 	ems-vcpi.inc \
 	error.inc \
 	exeparam.inc \
+	gdt.inc \
 	highdata.inc \
 	hook-int.inc \
 	low-data.inc \
@@ -50,6 +51,7 @@ HFILES = \
 	clients.h \
 	code32.h \
 	cpu.h \
+	dpmi.h \
 	interface.h \
 	ldt.h
 
@@ -58,12 +60,12 @@ SFILES = \
 	misc.S
 
 MISCFILES = \
+	COPYING \
+	DOC \
+	Makefile \
+	README \
 	defines.sed \
-	doc \
-	link.scr \
-	copying \
-	readme \
-	makefile
+	link.scr
 
 .SUFFIXES: .dis
 .o.dis:
