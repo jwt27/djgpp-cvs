@@ -1,7 +1,9 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 static FILE *
 sfopen(const char *c, const char *m)
@@ -38,7 +40,9 @@ main(int argc, char **argv)
     sscanf(buf, "0000:%x %s", &addr, name);
     if (strncmp(name, "stubinfo", 8) == 0 && tag)
     {
-      strupr(name);
+      char *n;
+      for (n=name; *n; n++)
+	*n = toupper(*n);
       fprintf(outf, "#define %s %#x\n", name, addr);
     }
   }
