@@ -10,7 +10,13 @@ void *xmalloc(size_t size);
 @subheading Description
 
 This function is just like @code{malloc} (@pxref{malloc}), except that if
-there is no more memory, it prints an error message and exits. 
+there is no more memory, it prints an error message and exits.
+
+Note that, currently, the header @file{stdlib.h} does @strong{not}
+declare a prototype for @code{xmalloc}, because many programs declare
+its prototype in different and conflicting ways.  If you use
+@code{xmalloc} in your own code, you might need to provide your own
+prototype explicitly.
 
 @subheading Return Value
 

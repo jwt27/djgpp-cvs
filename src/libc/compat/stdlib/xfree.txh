@@ -13,6 +13,12 @@ void xfree(void *ptr);
 Frees memory allocated by @code{xmalloc} (@pxref{xmalloc}).  This
 function guarantees that a NULL pointer is handled gracefully.
 
+Note that, currently, the header @file{stdlib.h} does @strong{not}
+declare a prototype for @code{xfree}, because many programs declare
+its prototype in different and conflicting ways.  If you use
+@code{xfree} in your own code, you might need to provide your own
+prototype explicitly.
+
 @subheading Portability
 
 @portability !ansi, !posix
