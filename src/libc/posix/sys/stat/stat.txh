@@ -1,0 +1,80 @@
+@node stat, io
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int stat(const char *file, struct stat *sbuf);
+@end example
+
+@subheading Description
+
+This function obtains the status of the file @var{file} and stores
+it in @var{sbuf}, which has this structure:
+
+@example
+struct  stat @{
+        time_t   st_atime;     /* time of last modification */
+        time_t   st_ctime;     /*            ''             */
+        dev_t    st_dev;       /* The drive number (0 = a:) */
+        gid_t    st_gid;       /* getgid() */
+        ino_t    st_ino;       /* starting cluster or a unique identifier */
+        mode_t   st_mode;      /* file mode - S_IF* and S_IRUSR/S_IWUSR */
+        time_t   st_mtime;     /*            ''             */
+        nlink_t  st_nlink;     /* 1 */
+        off_t    st_size;      /* size of file in bytes */
+        off_t    st_blksize;   /* the size of transfer buffer */
+        uid_t    st_uid;       /* getuid() */
+@};
+@end example
+
+@subheading Return Value
+
+Zero on success, nonzero on failure (and @var{errno} set).
+
+@subheading Example
+
+@example
+struct stat s;
+stat("data.txt", &s);
+if (S_ISDIR(s.st_mode))
+  printf("is directory\n");
+@end example
+
+@subheading Implementation Notes
+
+Supplying a 100% Unix-compatible @code{f?stat()} functions under DOS is an
+implementation nightmare.  The following notes describe some of the
+obscure points specific to their behavior in DJGPP.
+
+1. The @samp{drive} for character devices (like @code{con}, @code{/dev/nul}
+and others is returned as -1.  For drives networked by Novell Netware, it
+is returned as -2.
+
+2. The starting cluster number of a file serves as its inode number.  For
+files whose starting cluster number is inaccessible (empty files, files on
+networked drives, etc.) the @code{st_inode} field will be @cite{invented}
+in a way which guarantees that no two different files will get the same
+inode number (thus it is unique).  This invented inode will also be
+different from any real cluster number of any local file.  However, only
+for local, non-empty files/directories the inode is guaranteed to be
+consistent between @code{stat()} and @code{fstat()} function calls.
+
+3. The WRITE access mode bit is set only for the user (unless the file is
+read-only, hidden or system).  EXECUTE bit is set for directories,  files
+which can be executed from the DOS prompt (batch files, .com, .dll and .exe
+executables) or run by go32 extender.
+
+4. Size of directories is reported as the number of its files (sans `.' and
+`..' entries) multiplied by 32 bytes (the size of directory entry).
+
+5. Time stamp for root directories is taken from the volume label entry,
+if that's available; otherwise, it is reported as 1-Jan-1980.
+
+6. The variable @ref{_djstat_flags} controls what hard-to-get fields of
+@code{struct stat} are needed by the application.
+
+7. @code{stat()} should not be used to get an up-to-date info about a file
+which is open and has been written to, because @code{stat()} will only
+return correct data after the file is closed.  Use @ref{fstat} while the
+file is open.
