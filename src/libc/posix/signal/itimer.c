@@ -34,6 +34,21 @@ static uclock_t r_exp, r_rel,  /* When REAL expires & reload value */
 
 static uclock_t u_now;
 
+/* Multiply a signed 32-bit VAL by a signed 32-bit M and divide the
+   64-bit intermediate result by a signed 32-bit D.  The inline
+   assembly avoids slow long long arithmetics.
+
+   Originally written by Sergey Vlasov <vsu@au.ru>, with improvements
+   by Nate Eldredge <neldredge@hmc.edu>.  */
+static inline long
+muldiv(long val, long m, long d)
+{
+  __asm__ __volatile__ ("imull %2\n\t"
+			"idivl %3"
+			: "=a" (val) : "0" (val), "rm" (m), "rm" (d) : "edx");
+  return val;
+}
+
 int
 getitimer(int which, struct itimerval *value)
 {
@@ -62,9 +77,11 @@ getitimer(int which, struct itimerval *value)
     return -1;
   }
   value->it_value.tv_sec    = expire / UCLOCKS_PER_SEC;
-  value->it_value.tv_usec   = (expire % UCLOCKS_PER_SEC)*3433/4096;
+  value->it_value.tv_usec   = muldiv(expire % UCLOCKS_PER_SEC,
+				     1000000, UCLOCKS_PER_SEC);
   value->it_interval.tv_sec = reload / UCLOCKS_PER_SEC;
-  value->it_interval.tv_usec= (reload % UCLOCKS_PER_SEC)*3433/4096;
+  value->it_interval.tv_usec= muldiv(reload % UCLOCKS_PER_SEC,
+				     1000000, UCLOCKS_PER_SEC);
   return 0;
 }
 
@@ -223,7 +240,7 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
        so don't return just yet.  */
   }
 
-  *t_rel = value->it_interval.tv_sec * UCLOCKS_PER_SEC;
+  *t_rel = (uclock_t)value->it_interval.tv_sec * UCLOCKS_PER_SEC;
 
   /* Posix systems expect timer values smaller than the resolution of
      the system clock be rounded up to the clock resolution.  */
@@ -234,24 +251,18 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
   if (value->it_interval.tv_sec == 0 && usecs < usecs_min)
     usecs = usecs_min;
 
-  /* Rounding errors ?? First multiply and then divide gives an
-     overflow if the USEC member is larger than 524288. */
-  if (usecs < 524200)
-    *t_rel += (usecs * 4096) / 3433;
-  else
-    *t_rel += (usecs * 2048) / 1716;
+  /* This doesn't overflow and doesn't cause any rounding errors,
+     since the intermediate result inside muldiv is 64-bit wide. */
+  *t_rel += muldiv(usecs, UCLOCKS_PER_SEC, 1000000);
 
   if ((value->it_value.tv_sec|value->it_value.tv_usec) == 0)
     return 0;
 
-  *t_exp = value->it_value.tv_sec * UCLOCKS_PER_SEC;
+  *t_exp = (uclock_t)value->it_value.tv_sec * UCLOCKS_PER_SEC;
   usecs = value->it_value.tv_usec;
   if (value->it_value.tv_sec == 0 && usecs < usecs_min)
     usecs = usecs_min;
-  if (usecs < 524200)
-    *t_exp += (usecs * 4096) / 3433;
-  else
-    *t_exp += (usecs * 2048) / 1716;
+  *t_exp += muldiv(usecs, UCLOCKS_PER_SEC, 1000000);
 
   /* u_now is returned zero first time uclock() is called.  That first
      call could be the one we issued above, or it could be two days
