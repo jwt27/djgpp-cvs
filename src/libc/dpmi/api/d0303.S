@@ -9,7 +9,7 @@
 	ENTER
 
 	pushl	%es
-	movw	___djgpp_ds_alias, %ax	/* from exceptn.s */
+	movw	___djgpp_ds_alias, %ax	/* from exceptn.S */
 	movw	%ax, %es
 	
 	pushl	%ds

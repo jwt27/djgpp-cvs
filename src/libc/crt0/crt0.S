@@ -22,7 +22,7 @@
 	.comm	___djgpp_selector_limit, 4
 	.comm	___djgpp_stack_limit, 4
 	.lcomm	sel_buf, 8
-	/* ___djgpp_ds_alias defined in go32/exceptn.s */
+	/* ___djgpp_ds_alias defined in go32/exceptn.S */
 
 #define MULTIBLOCK 1
 

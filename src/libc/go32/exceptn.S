@@ -289,7 +289,7 @@ ___djgpp_old_timer:		.long	0,0
 ___djgpp_exception_state_ptr:	.long	0
 exception_state:		.space	64
 	.global	___djgpp_ds_alias
-___djgpp_ds_alias:		.word	0	/* used in dpmi/api/d0303.s (alloc rmcb) */
+___djgpp_ds_alias:		.word	0	/* used in dpmi/api/d0303.S (alloc rmcb) */
 
 	.balign 16,,7
 	.global	___djgpp_npx_hdlr
