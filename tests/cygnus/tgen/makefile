@@ -3,19 +3,25 @@
 
 TOP = ../..
 CC = gcc
-LDFLAGS = $(NEWLIBM)
+
+CRT0       = $(TOP)/../lib/crt0.o
+LIBGCCA   := $(shell $(CC) -print-file-name=libgcc.a)
+LIBSTDCXX := $(shell $(CC) -print-file-name=libstdcxx.a)
+
+LDFLAGS = -nostdlib -L$(TOP)/../lib
+LIBS    = $(CRT0) $(NEWLIBM) $(LIBSTDCXX) $(LIBGCCA) -lc $(LIBGCCA)
 
 .SUFFIXES:
 .SUFFIXES: .exe .o .c .cpp
 
 .c.exe:
-	$(CC) -o $@ $^  $(CFLAGS) $(CPPFLAGS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 .o.exe:
-	$(CC) -L$(TOP)/../lib -o $@ $< $(QFLTLIB) $(LDFLAGS)
+	$(CXX) $(LDFLAGS) -o $@ $< $(QFLTLIB) $(LIBS)
 
 .cpp.o:
-	$(CC) -c $< $(CFLAGS) $(CPPFLAGS)
+	$(CXX) -c $< $(CFLAGS) $(CPPFLAGS)
 
 QFLOAT  = ./qfloat
 TEST    = ..
@@ -24,15 +30,15 @@ HEADERS	=	$(QFLOAT)/qfloat.h\
 		$(TEST)/test.h\
 		genmathv.h
 
-INCDIRS	=  -I. -I$(QFLOAT) -I$(MATH) -I$(TEST) -I$(DJDIR)/include
+INCDIRS	=  -I. -I$(QFLOAT) -I$(MATH) -I$(TEST) -I$(TOP)/../include
 
 QFLTLIB	= $(QFLOAT)/qfloatx.a
 
-NEWLIBM	= $(MATH)/libm.a
+NEWLIBM	= $(TOP)/../lib/libm.a
 
 # -Ic:/testmath/extended# -Ic:/cephes.src/qfloat
 
-CFLAGS	= -O2 $(INCDIRS) -D_USE_LIBM_MATH_H -D_HAVE_STDC \
+CFLAGS	= -nostdinc -O2 $(INCDIRS) -D_USE_LIBM_MATH_H -D_HAVE_STDC \
 		 -march=pentium -Wall
 
 ALL =	gacosvec.exe\
