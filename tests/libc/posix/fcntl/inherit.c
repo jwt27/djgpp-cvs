@@ -29,18 +29,18 @@ int main(int argc, char **argv)
   {
     /* Invoked as a child.
        Check if the descriptors passed by the parent exists.  */
-    int fd, index;
+    int fd, idx;
 
-    index = 1;
-    while (index < argc)
+    idx = 1;
+    while (idx < argc)
     {
-      fd = strtol(argv[index], NULL, 10);
+      fd = strtol(argv[idx], NULL, 10);
 
       if (fcntl(fd, F_GETFD) == -1)
-        printf("Handle %s was NOT inherited.\n", argv[index]);
+        printf("Handle %s was NOT inherited.\n", argv[idx]);
       else
-        printf("Handle %s was inherited.\n", argv[index]);
-      ++index;
+        printf("Handle %s was inherited.\n", argv[idx]);
+      ++idx;
     }
     printf("\n");
   }
