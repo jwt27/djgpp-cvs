@@ -43,6 +43,12 @@ lfilelength(int fhandle)
       long retval_l = _farpeekl (_dos_ds, __tb + 0x24);
       long retval_h = _farpeekl (_dos_ds, __tb + 0x20);
 
+      if (retval_h < 0)
+      {
+        errno = EOVERFLOW;
+        return -1;
+      }
+
       retval = retval_l + retval_h * (1LL << 32);
       return retval;
     }
