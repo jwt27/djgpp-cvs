@@ -10,6 +10,16 @@
 
 static const char env_delim = '~';
 
+/* Can't use stackavail, since it pollutes the namespace...  */
+static int __inline__
+enough_stack_p(void)
+{
+  extern unsigned __djgpp_stack_limit;
+  unsigned sp;
+  __asm__ __volatile__ ("movl %%esp,%k0\n" : "=r" (sp) : );
+  return (int) (sp - __djgpp_stack_limit) > 4*1024;
+}
+
 int
 _put_path(const char *path)
 {
@@ -76,6 +86,16 @@ _put_path2(const char *path, int offset)
         /* The value of the env var can include special constructs
            like /dev/x/foo or even a reference to another env var, so
            we need to recursively invoke ourselves.  */
+	if (!enough_stack_p())
+	{
+	  /* This is probably a case of infinite recursion caused by
+	     a self-referencing /dev/env/foo value, in which case
+	     ENAMETOOLONG is probably right.  But it could also happen
+	     if they were short on stack to begin with, in which case
+	     we would lie if we use ENAMETOOLONG.  So:  */
+	  errno = ENOMEM;
+	  return offset;
+	}
         new_offset = _put_path2(var_value, offset);
         space -= new_offset - offset;
         o += new_offset - offset;
@@ -99,6 +119,11 @@ _put_path2(const char *path, int offset)
         {
           *d = '\0';
           /* The default value may use special constructs as well.  */
+	  if (!enough_stack_p())	/* infinite recursion? */
+	  {
+	    errno = ENOMEM;
+	    return offset;
+	  }
           new_offset = _put_path2(var_name, offset);
           space -= new_offset - offset;
           o += new_offset - offset;
