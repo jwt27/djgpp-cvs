@@ -14,7 +14,7 @@ writing to a file, and closing a file opened for writing, also sets the
 modification time, you should only use this function on files opened for
 reading.
 
-@xref{getftime}.
+@xref{getftime}, for the description of @code{struct ftime}.
 
 @subheading Return Value
 

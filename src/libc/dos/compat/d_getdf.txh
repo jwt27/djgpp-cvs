@@ -4,17 +4,30 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_getdiskfree(unsigned int drive, struct diskfree_t *diskspace);
+unsigned int _dos_getdiskfree(unsigned int drive, 
+                              struct diskfree_t *diskspace);
 @end example
 
 @subheading Description
 
 This function determines the free space on @var{drive} drive
 (0=default, 1=A:, 2=B:, etc.) and fills @var{diskspace} structure.
+The members of @code{struct diskfree_t} are defined by @code{<dos.h>} as
+follows:
+
+@example
+struct diskfree_t @{
+  unsigned short total_clusters;
+  unsigned short avail_clusters;
+  unsigned short sectors_per_cluster;
+  unsigned short bytes_per_sector;
+@};
+@end example
 
 @subheading Return Value
 
-Returns with 0 if successful and non-zero on error (sets @var{errno}=EINVAL).
+Returns with 0 if successful, non-zero on error (and sets @code{errno}
+to @code{EINVAL}).
 
 @subheading Portability
 

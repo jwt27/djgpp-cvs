@@ -11,7 +11,8 @@ void setdate(struct date *ptr);
 
 This function sets the current time.
 
-@xref{getdate}. @xref{settime}.
+For the description of @code{struct date}, see @ref{getdate}.  Also see
+@ref{settime}.
 
 @subheading Return Value
 

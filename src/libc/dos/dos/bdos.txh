@@ -86,7 +86,82 @@ int int86(int ivec, union REGS *in, union REGS *out);
 
 @subheading Description
 
-Note: The @code{.x.} branch is a problem generator.  Most code expects
+The @code{union REGS} is defined by @code{<dos.h>} as follows:
+
+@example
+struct DWORDREGS @{
+  unsigned long edi;
+  unsigned long esi;
+  unsigned long ebp;
+  unsigned long cflag;
+  unsigned long ebx;
+  unsigned long edx;
+  unsigned long ecx;
+  unsigned long eax;
+  unsigned short eflags;
+@};
+
+struct DWORDREGS_W @{
+  unsigned long di;
+  unsigned long si;
+  unsigned long bp;
+  unsigned long cflag;
+  unsigned long bx;
+  unsigned long dx;
+  unsigned long cx;
+  unsigned long ax;
+  unsigned short flags;
+@};
+
+struct WORDREGS @{
+  unsigned short di, _upper_di;
+  unsigned short si, _upper_si;
+  unsigned short bp, _upper_bp;
+  unsigned short cflag, _upper_cflag;
+  unsigned short bx, _upper_bx;
+  unsigned short dx, _upper_dx;
+  unsigned short cx, _upper_cx;
+  unsigned short ax, _upper_ax;
+  unsigned short flags;
+@};
+
+struct BYTEREGS @{
+  unsigned short di, _upper_di;
+  unsigned short si, _upper_si;
+  unsigned short bp, _upper_bp;
+  unsigned long cflag;
+  unsigned char bl;
+  unsigned char bh;
+  unsigned short _upper_bx;
+  unsigned char dl;
+  unsigned char dh;
+  unsigned short _upper_dx;
+  unsigned char cl;
+  unsigned char ch;
+  unsigned short _upper_cx;
+  unsigned char al;
+  unsigned char ah;
+  unsigned short _upper_ax;
+  unsigned short flags;
+@};
+
+union REGS @{
+  struct DWORDREGS d;
+#ifdef _NAIVE_DOS_REGS
+  struct WORDREGS x;
+#else
+#ifdef _BORLAND_DOS_REGS
+  struct DWORDREGS x;
+#else
+  struct DWORDREGS_W x;
+#endif
+#endif
+  struct WORDREGS w;
+  struct BYTEREGS h;
+@};
+@end example
+
+Note: The @code{.x.} branch is a problem generator.  Most programs expect
 the @code{.x.} branch to have e.g. "@code{.x.ax}" members, and that
 they are 16-bit.  If you know you want 32-bit values, use the
 @code{.d.eax} members.  If you know you want 16-bit values, use the

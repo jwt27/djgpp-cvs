@@ -9,7 +9,8 @@ struct passwd *getpwnam(const char *name);
 
 @subheading Description
 
-This function gets the password file entry matching @var{name}.  @xref{getpwent}.
+This function gets the password file entry matching @var{name}.  See
+@ref{getpwent}, for the description of @code{struct passwd}.
 
 @subheading Return Value
 

@@ -73,6 +73,16 @@ once and exit immediately), or a pointer to a @code{struct timeval}
 variable (timeout: @code{select} will repeatedly test all the
 descriptors until some of them become ready, or the timeout expires).
 
+@code{struct timeval} is defined as follows:
+
+@example
+struct timeval @{
+  time_t tv_sec;
+  long tv_usec;
+@};
+@end example
+
+
 @subheading Return Value
 
 On successfull return, @code{select} returns the number of files ready,

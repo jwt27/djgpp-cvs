@@ -4,14 +4,13 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_findnext(struct _find_t *result);
+unsigned int _dos_findnext(struct find_t *result);
 @end example
 
 @subheading Description
 
 This finds the next file in the search started by @code{_dos_findfirst}.
-
-@xref{_dos_findfirst}.
+See @ref{_dos_findfirst}, for the description of @code{struct find_t}.
 
 This function does not support long filenames, even on systems where the
 LFN API (@pxref{_use_lfn, LFN}) is available.  For LFN-aware functions

@@ -22,6 +22,28 @@ struct passwd @{
 @};
 @end example
 
+The @code{pw_name} member is returned as described under @code{getlogin}
+(@pxref{getlogin}).  The @code{pw_uid} member is returned as described
+under @code{getuid} (@pxref{getuid}).  @code{pw_gid} is returned as
+described under @code{getgid} (@pxref{getgid}).  The @code{pw_dir}
+member is set to the value of the environment variable @code{HOME} if it
+is defined, or to @file{/} otherwise.  @code{pw_shell} is set as
+follows:
+
+@itemize @bullet
+@item
+If the environment variable @code{SHELL} is set, the value of
+@code{SHELL}.
+
+@item
+If @code{SHELL} is not set, but @code{COMSPEC} is, the value of
+@code{COMSPEC}.
+
+@item
+If neither of the above variables is defined, @code{pw_shell} is set to
+@code{"sh"}.
+@end itemize
+
 @subheading Return Value
 
 The next passwd entry, or @code{NULL} if there are no more.

@@ -1,4 +1,4 @@
-@node file_tree_walk, file system
+@node __file_tree_walk, file system
 @subheading Syntax
 
 @example

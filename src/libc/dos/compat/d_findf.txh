@@ -4,7 +4,8 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_findfirst(char *name, unsigned int attr, struct find_t *result);
+unsigned int _dos_findfirst(char *name, unsigned int attr, 
+                            struct find_t *result);
 @end example
 
 @subheading Description
@@ -46,6 +47,20 @@ Subdirectory
 Archive file
 
 @end table
+
+The results are returned in a @code{struct find_t} defined on
+@code{<dos.h>} as follows:
+
+@example
+struct find_t @{
+  char reserved[21];
+  unsigned char attrib;
+  unsigned short wr_time;
+  unsigned short wr_date;
+  unsigned long size;
+  char name[256];
+@};
+@end example
 
 @xref{_dos_findnext}.
 

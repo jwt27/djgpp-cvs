@@ -9,7 +9,29 @@ int utimes(const char *file, struct timeval tvp[2]);
 
 @subheading Description
 
-This function sets the timestamp of the file to @code{tvp[1].tv_sec}.
+This function sets the file access time as specified by
+@code{@var{tvp}[0]}, and its modification time as specified by
+@code{@var{tvp}[1]}.  @code{struct timeval} is defined as follows:
+
+@example
+struct timeval @{
+  time_t tv_sec;
+  long tv_usec;
+@};
+@end example
+
+Note that DOS and Windows maintain the file times with 2-second
+granularity.  Therefore, the @code{tv_usec} member of the argument is
+always ignored, and the underlying filesystem truncates (or sometimes
+rounds) the actual file time stamp to the multiple of 2 seconds.
+
+On plain DOS, only one file time is maintained, which is arbitrarily
+taken from @code{@var{tvp}[1].tv_sec}.  On Windows 9X, both times are
+used, but note that most versions of Windows only use the date part and
+ignore the time.
+
+Due to limitations of DOS and Windows, you cannot set times of
+directories.
 
 @subheading Return Value
 
@@ -25,7 +47,7 @@ Zero on success, nonzero on failure.
 time_t now;
 struct timeval tvp[2];
 time(&now);
-tvp[0].tv_sec = now + 100;
+tvp[1].tv_sec = now + 100;
 utimes("foo.dat", tvp);
 @end example
 

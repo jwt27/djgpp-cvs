@@ -45,6 +45,24 @@ The string pointed to is in a static buffer and will be overwritten with
 each call to asctime.  The data should be copied if it needs to be
 preserved. 
 
+The layout of the @code{struct tm} structure is like this:
+
+@example
+struct tm @{
+  int    tm_sec;    /* seconds after the minute [0-60] */
+  int    tm_min;    /* minutes after the hour [0-59] */
+  int    tm_hour;   /* hours since midnight [0-23] */
+  int    tm_mday;   /* day of the month [1-31] */
+  int    tm_mon;    /* months since January [0-11] */
+  int    tm_year;   /* years since 1900 */
+  int    tm_wday;   /* days since Sunday [0-6] */
+  int    tm_yday;   /* days since January 1 [0-365] */
+  int    tm_isdst;  /* Daylight Savings Time flag */
+  long   tm_gmtoff; /* offset from GMT in seconds */
+  char * tm_zone;   /* timezone abbreviation */
+@};
+@end example
+
 @subheading Return Value
 
 A pointer to the string.
@@ -123,7 +141,8 @@ struct tm *localtime(const time_t *tod);
 @subheading Description
 
 Converts the time represented by @var{tod} into a structure, correcting
-for the local timezone.  @xref{gmtime}.
+for the local timezone.  See @ref{gmtime}, for the description of
+@code{struct tm}.
 
 @subheading Return Value
 
@@ -147,7 +166,31 @@ time_t mktime(struct tm *tptr);
 
 This function converts a time structure into the number of seconds since
 00:00:00 GMT 1/1/1970.  It also attempts to normalize the fields of
-@var{tptr}. 
+@var{tptr}.  The layout of a @code{struct tm} is as follows:
+
+@example
+struct tm @{
+  int    tm_sec;    /* seconds after the minute [0-60] */
+  int    tm_min;    /* minutes after the hour [0-59] */
+  int    tm_hour;   /* hours since midnight [0-23] */
+  int    tm_mday;   /* day of the month [1-31] */
+  int    tm_mon;    /* months since January [0-11] */
+  int    tm_year;   /* years since 1900 */
+  int    tm_wday;   /* days since Sunday [0-6] */
+  int    tm_yday;   /* days since January 1 [0-365] */
+  int    tm_isdst;  /* Daylight Savings Time flag */
+  long   tm_gmtoff; /* offset from GMT in seconds */
+  char * tm_zone;   /* timezone abbreviation */
+@};
+@end example
+
+If you don't know whether daylight saving is in effect at the moment
+specified by the contents of @var{tptr}, set the @code{tm_isdst} member
+to -1, which will cause @code{mktime} to compute the DST flag using the
+data base in the @file{zoneinfo} subdirectory of your main DJGPP
+installation.  This requires that you set the environment variable
+@code{TZ} to a file in that directory which corresponds to your
+geographical area.
 
 @subheading Return Value
 

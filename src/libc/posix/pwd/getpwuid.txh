@@ -9,7 +9,8 @@ struct passwd *getpwuid(uid_t uid);
 
 @subheading Description
 
-This function gets the password file entry matching @var{uid}.  @xref{getpwent}.
+This function gets the password file entry matching @var{uid}.  See
+@ref{getpwent}, for the description of @code{struct passwd}.
 
 @subheading Return Value
 
