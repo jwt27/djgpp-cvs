@@ -158,7 +158,7 @@ int main(int argc, char **argv)
     if (cmdlen < 127)
     {
       cmdline[0] = cmdlen;
-      cmdline[i+1] = 13;
+      cmdline[cmdlen+1] = 13;
     }
     else
       cmdline[0] = 0xff;	/* already null-terminated, no need for CR */
