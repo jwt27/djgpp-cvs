@@ -1,0 +1,28 @@
+@node ffs, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int ffs(int _mask);
+@end example
+
+@subheading Description
+
+This function find the first (least significant) bit set in the input
+value.
+
+@subheading Return Value
+
+Bit position (1..32) of the least significant set bit, or zero if the
+input value is zero.
+
+@subheading Example
+
+@example
+ffs(0) = 0
+ffs(1) = 1
+ffs(5) = 1
+ffs(96) = 6
+@end example
+
