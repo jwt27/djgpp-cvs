@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_io_h_
@@ -21,16 +22,20 @@ int		_creat(const char *_path, int _attrib);
 int		_creatnew(const char *_path, int _attrib, int _mode);
 ssize_t		crlf2nl(char *_buffer, ssize_t _length);
 int		_dos_lock(int _fd, long _offset, long _length);
+int		_dos_lk64(int _fd, long long _offset, long long _length);
 long		filelength(int _handle);
 short		_get_dev_info(int _arg);
 long long	lfilelength(int _handle);
 int		lock(int _fd, long _offset, long _length);
+int		lock64(int _fd, long long _offset, long long _length);
 int		_open(const char *_path, int _oflag);
 ssize_t		_read(int _fd, void *_buf, size_t _nbyte);
 int		setmode(int _fd, int _newmode);
 off_t		tell(int _fd);
 int		_dos_unlock(int _fd, long _offset, long _length);
+int		_dos_unlk64(int _fd, long long _offset, long long _length);
 int		unlock(int _fd, long _offset, long _length);
+int		unlock64(int _fd, long long _offset, long long _length);
 ssize_t		_write(int _fd, const void *_buf, size_t _nbyte);
 int	        _chmod(const char *_path, int _func, ...);
 void		_flush_disk_cache(void);
