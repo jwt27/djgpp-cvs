@@ -936,6 +936,7 @@ tzset(void)
   if (name == NULL)
   {
     tzsetwall();
+    lcl_is_set = 1;
     return;
   }
   if (strlen(name) < sizeof(lcl_tzstr))
