@@ -477,7 +477,7 @@ extern "C" {
 
 /* Define if you have the vprintf() library function.  */
 #undef  HAVE_VPRINTF
-#define VPRINTF         1
+#define HAVE_VPRINTF    1
 
 /* Define if you have waitpid.  */
 #undef  HAVE_WAITPID    /* we do, but it always fails :-( */
