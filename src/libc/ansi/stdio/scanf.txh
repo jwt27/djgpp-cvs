@@ -29,11 +29,36 @@ This allows to describe an input field that is to be skipped.
 @item A width specifier, which specifies the maximum number of input
 characters to use in the conversion. 
 
-@item An optional conversion qualifier, which may be @samp{hh}
-to specify @code{char}, @samp{h} to specify @code{short}, @samp{l}
-to specify doubles or long ints, or @samp{L} or @samp{ll}
-(two lower-case ell letters) to specify long doubles and the
-long long type.  If the @samp{h} qualifier appears before a specifier
+@item An optional conversion qualifier, which may be:
+
+@table @code
+@item hh
+to specify @code{char};
+
+@item h
+to specify @code{short} integers;
+
+@item j
+to specify @code{intmax_t} or @code{uintmax_t} integers;
+
+@item l
+to specify doubles or @code{long} integers;
+
+@itemx ll
+(two lower-case ell letters) to specify @code{long long} integers;
+to specify @code{long} doubles, although this is non-standard;
+
+@item L
+to specify @code{long} doubles;
+
+@item t
+to specify @code{ptrdiff_t};
+
+@item z
+to specify @code{size_t}.
+@end table
+
+If the @samp{h} qualifier appears before a specifier
 that implies conversion to a @code{long} or @code{float} or
 @code{double}, like in @samp{%hD} or @samp{%hf}, it is generally
 ignored.
@@ -66,6 +91,10 @@ Convert the input to a signed @code{char} using 10 as the base.
 
 Convert the input to a signed @code{short} using 10 as the base.
 
+@item jd
+
+Convert the input to an @code{intmax_t} using 10 as the base.
+
 @item ld
 @itemx D
 
@@ -76,6 +105,14 @@ Convert the input to a signed @code{long} using 10 as the base.
 @itemx lD
 
 Convert the input to a signed @code{long long} using 10 as the base.
+
+@item td
+
+Convert the input to a @code{ptrdiff_t} using 10 as the base.
+
+@item zd
+
+Convert the input to a @code{size_t} using 10 as the base.
 
 @item e
 @itemx E
@@ -124,6 +161,10 @@ Like @samp{i}, but stores the result in a signed @code{char}.
 
 Like @samp{i}, but stores the result in a signed @code{short}.
 
+@item ji
+
+Like @samp{i}, but stores the result in an @code{intmax_t}.
+
 @item li
 @itemx I
 
@@ -134,6 +175,14 @@ Like @samp{i}, but stores the result in a signed @code{long}.
 @itemx lI
 
 Like @samp{i}, but stores the result in a signed @code{long long}.
+
+@item ti
+
+Like @samp{i}, but stores the result in a @code{ptrdiff_t}.
+
+@item zi
+
+Like @samp{i}, but stores the result in a @code{size_t}.
 
 @item n
 
@@ -148,6 +197,10 @@ Like @samp{n}, but the argument should point to a signed @code{char}.
 
 Like @samp{n}, but the argument should point to a signed @code{short}.
 
+@item jn
+
+Like @samp{n}, but the argument should point to an @code{intmax_t}.
+
 @item ln
 
 Like @samp{n}, but the argument should point to a signed @code{long}.
@@ -156,6 +209,14 @@ Like @samp{n}, but the argument should point to a signed @code{long}.
 @itemx lln
 
 Like @samp{n}, but the argument should point to a signed @code{long long}.
+
+@item tn
+
+Like @samp{n}, but the argument should point to a @code{ptrdiff_t}.
+
+@item zn
+
+Like @samp{n}, but the argument should point to a @code{size_t}.
 
 @item o
 
@@ -169,6 +230,10 @@ Convert the input to an unsigned @code{char}, using base 8.
 
 Convert the input to an unsigned @code{short}, using base 8.
 
+@item jo
+
+Convert the input to an @code{uintmax_t}, using base 8.
+
 @item lo
 @itemx O
 
@@ -179,6 +244,14 @@ Convert the input to an unsigned @code{long}, using base 8.
 @itemx lO
 
 Convert the input to an unsigned @code{long long}, using base 8.
+
+@item to
+
+Convert the input to a @code{ptrdiff_t}, using base 8.
+
+@item zo
+
+Convert the input to a @code{size_t}, using base 8.
 
 @item p
 
@@ -202,6 +275,10 @@ Convert the input to an unsigned @code{char} using 10 as the base.
 
 Convert the input to an unsigned @code{short} using 10 as the base.
 
+@item ju
+
+Convert the input to an @code{uintmax_t} using 10 as the base.
+
 @item lu
 @itemx U
 
@@ -212,6 +289,14 @@ Convert the input to an unsigned @code{long} using 10 as the base.
 @itemx lU
 
 Convert the input to an unsigned @code{long long} using 10 as the base.
+
+@item tu
+
+Convert the input to a @code{ptrdiff_t} using 10 as the base.
+
+@item zu
+
+Convert the input to a @code{size_t} using 10 as the base.
 
 @item x
 @itemx X
@@ -228,6 +313,11 @@ Convert the input to an unsigned @code{char}, using base 16.
 
 Convert the input to an unsigned @code{short}, using base 16.
 
+@item jx
+@itemx jX
+
+Convert the input to an @code{uintmax_t}, using base 16.
+
 @item lx
 @itemx lX
 
@@ -239,6 +329,16 @@ Convert the input to an unsigned @code{long}, using base 16.
 @itemx llX
 
 Convert the input to an unsigned @code{long long}, using base 16.
+
+@item tx
+@itemx tX
+
+Convert the input to a @code{ptrdiff_t}, using base 16.
+
+@item zx
+@itemx zX
+
+Convert the input to a @code{size_t}, using base 16.
 
 @item [@dots{}]
 
@@ -281,7 +381,17 @@ to be returned.
 
 @subheading Portability
 
-@port-note ansi The conversion specifiers @samp{F}, @samp{D}, @samp{I}, @samp{O}, and @code{U} are DJGPP extensions; they are provided for compatibility with Borland C and other compilers.  The conversion specifiers for the @code{long long} data type are GCC extensions.  The meaning of @samp{[a-c]} as a range of characters is a very popular extension to ANSI (which merely says a dash ``may have a special meaning'' in that context).
+@port-note ansi The conversion specifiers @samp{F}, @samp{D}, @samp{I},
+@samp{O}, and @code{U} are DJGPP extensions; they are provided
+for compatibility with Borland C and other compilers.
+The conversion specifiers for the @code{long long} data type are
+GCC extensions.  The meaning of @samp{[a-c]} as a range of characters
+is a very popular extension to ANSI (which merely says a dash
+``may have a special meaning'' in that context).
+
+@port-note ansi-c99 The @code{hh}, @code{j}, @code{t}
+and @code{z} conversion specifiers first appeared
+in the ANSI C99 standard.
 
 @portability ansi, posix
 

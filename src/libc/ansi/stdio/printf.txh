@@ -65,10 +65,34 @@ characters for a string.
 
 @item
 
-An optional conversion qualifier, which may be @code{hh} to specify
-@code{char}, @code{h} to specify @code{short} integers, @code{l}
-to specify @code{long} integers, @code{ll} to specify
-@code{long long} integers, or @code{L} to specify @code{long} doubles.
+An optional conversion qualifier, which may be:
+
+@table @code
+@item hh
+to specify @code{char};
+
+@item h
+to specify @code{short} integers;
+
+@item j
+to specify @code{intmax_t} or @code{uintmax_t} integers;
+
+@item l
+to specify doubles or @code{long} integers;
+
+@item ll
+(two lower-case ell letters) to specify @code{long long} integers;
+to specify @code{long} doubles, although this is non-standard;
+
+@item L
+to specify @code{long} doubles;
+
+@item t
+to specify @code{ptrdiff_t};
+
+@item z
+to specify @code{size_t}.
+@end table
 
 @item
 
@@ -163,8 +187,12 @@ The number of characters written.
 
 @subheading Portability
 
-The @code{D}, @code{O} and @code{U} conversion types are non-standard.
-gcc may generate warnings, if you use them.
+@port-note ansi The @code{D}, @code{O} and @code{U} conversion types
+are non-standard.  gcc may generate warnings, if you use them.
+
+@port-note ansi-c99 The @code{hh}, @code{j}, @code{t}
+and @code{z} conversion specifiers first appeared
+in the ANSI C99 standard.
 
 @portability ansi, posix
 
@@ -173,4 +201,3 @@ gcc may generate warnings, if you use them.
 @example
 printf("%-3d %10.2f%% Percent of %s\n", index, per[index], name[index]);
 @end example
-
