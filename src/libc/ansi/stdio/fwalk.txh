@@ -1,0 +1,24 @@
+@node _fwalk, stdio
+@subheading Syntax
+
+@example
+void _fwalk(void (*function)(FILE *file));
+@end example
+
+@subheading Description
+
+For each open file in the system, the given @var{function} is called,
+passing the file pointer as it's only argument
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+void pfile(FILE *x)
+@{ printf("FILE at %p\n", x); @}
+
+_fwalk(pfile);
+@end example

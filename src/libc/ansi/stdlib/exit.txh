@@ -1,0 +1,29 @@
+@node exit, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void exit(int exit_code);
+@end example
+
+@subheading Description
+
+This function exits the program, returning @var{exit_code} to the
+calling process.  Before exiting, all open files are closed and all
+@code{atexit} and @code{on_exit} requests are processed. 
+
+@subheading Return Value
+
+This function does not return.
+
+@subheading Example
+
+@example
+if (argc < 4)
+@{
+  print_usage();
+  exit(1);
+@}
+@end example
+

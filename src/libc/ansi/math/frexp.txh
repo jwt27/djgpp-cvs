@@ -1,0 +1,20 @@
+@c ----------------------------------------------------------------------
+@node frexp, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double frexp(double x, int *pexp);
+@end example
+
+@subheading Description
+
+This function separates the given value @var{x} into a mantissa
+[0.5,1) and an exponent @var{*pexp}, such that m * 2 ^ e = x.  As an
+exception, when @var{x} is zero, @var{*pexp} and the return value are
+also both zero.
+
+@subheading Return Value
+
+The mantissa.

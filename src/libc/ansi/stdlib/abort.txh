@@ -1,0 +1,25 @@
+@node abort, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void abort(void);
+@end example
+
+@subheading Description
+
+When you call @code{abort}, the message "Abort!" is printed on stdout
+and the program exits with an exit code of one. 
+
+@subheading Return Value
+
+This function does not return.
+
+@subheading Example
+
+@example
+if ((q = malloc(100)) == NULL)
+  abort();
+@end example
+

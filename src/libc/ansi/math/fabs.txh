@@ -1,0 +1,14 @@
+@c ----------------------------------------------------------------------
+@node fabs, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double fabs(double x);
+@end example
+
+@subheading Return Value
+
+@var{x} if @var{x} is positive, else -@var{x}.  Note that in this
+context, +0.0 is positive and -0.0 is negative.
