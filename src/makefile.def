@@ -54,7 +54,7 @@ CROSS_BISON = bison
 # For building programs that *run* during the build (hostbin/*);
 # assumes GNU versions
 
-GCC = gcc -g -O2 -pipe
+GCC = gcc -g -O2
 AR = ar
 LD = ld
 STRIP = strip
