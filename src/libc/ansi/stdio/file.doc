@@ -30,6 +30,7 @@ _IOERR		error occurred
 _IOSTRG		sprintf
 _IOAPPEND	append mode
 _IORMONCL	remove file on close
+_IOUNGETC       buffer contents does not correspond to file
 
 int   _file;
 
