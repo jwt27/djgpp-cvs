@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -127,10 +128,12 @@ struct Node {
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
   PortNote *last_port_note;
+  int written_portability;
   Node(char *name, char *cat);
   void add(char *line);
   void process(char *line);
   void error(char *str, ...);
+  void warning(char *str, ...);
   void extend_portability_note(char *str);
   void read_portability_note(char *str);
   void read_portability(char *str);
@@ -162,6 +165,7 @@ Node::Node(char *Pname, char *Pcat)
     bzero(&port_info[i], sizeof(port_info[i]));
   port_notes = NULL;
   last_port_note = NULL;
+  written_portability = 0;
 }
 
 void
@@ -191,6 +195,19 @@ Node::error (char *str, ...)
 }
 
 void
+Node::warning (char *str, ...)
+{
+  va_list arg;
+  char s[1024];
+
+  va_start (arg, str);
+  vsprintf (s, str, arg);
+  va_end (arg);
+
+  fprintf (stderr, "Warning (file %s, node %s): %s\n", filename, name, s);
+}
+
+void
 Node::extend_portability_note(char *str)
 {
   int newsize = strlen (last_port_note->note) + strlen (str) + 1;
@@ -206,6 +223,11 @@ Node::read_portability_note(char *str)
   char *s = work_str, *x = NULL;
   char *target;
   int i, j;
+
+  if (written_portability) {
+    warning("%s", "@port-note must come before @portability.");
+    warning("%s", "Ignoring all @port-note for this node.");
+  }
 
   while (isspace(*s)) s++;
   target = s;
@@ -551,6 +573,8 @@ Node::write_portability()
     delete p;
   }
   last_port_note = NULL;
+
+  written_portability++;
 }
 
 void
