@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_exceptn_h__
 #define __dj_include_sys_exceptn_h__
@@ -31,12 +32,24 @@ extern unsigned short __djgpp_our_DS;
 extern unsigned short __djgpp_app_DS;	/* Data selector invalidated by HW ints */
 extern unsigned short __djgpp_ds_alias;	/* Data selector always valid */
 extern unsigned short __djgpp_dos_sel;	/* Linear mem selector copy in locked mem */
-extern unsigned short __djgpp_hwint_flags; /* 1 = Disable Ctrl-C; 2 = Count Ctrl-Break (don't kill) */
+/* Hardware Interrupt Flags:
+
+   1 = Disable INTR and QUIT keys (Ctrl-C and Ctrl-\);
+   2 = Count Ctrl-Break (don't kill);
+   4 = IRET from our timer interrupt handler, don't chain */
+extern unsigned short __djgpp_hwint_flags;
 extern unsigned __djgpp_cbrk_count;	/* Count of CTRL-BREAK hits */
 extern int __djgpp_exception_inprog;	/* Nested exception count */
 
+extern unsigned short __djgpp_sigint_key;  /* key that raises SIGINT */
+extern unsigned short __djgpp_sigquit_key; /* key that raises SIGQUIT */
+extern unsigned short __djgpp_sigint_mask; /* kb mask for SIGINT key */
+extern unsigned short __djgpp_sigquit_mask;/* kb mask for SIGQUIT key */
+
 void __djgpp_exception_toggle(void);
-int  __djgpp_set_ctrl_c(int enable);	/* On by default */
+int  __djgpp_set_ctrl_c(int _enable);	/* On by default */
+int  __djgpp_set_sigint_key(int new_key);  /* Set key which raises SIGINT */
+int  __djgpp_set_sigquit_key(int new_key); /* Set key which raises SIGQUIT */
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
