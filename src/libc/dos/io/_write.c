@@ -120,12 +120,12 @@ _write_int(int fd, const char *buffer, unsigned long long write_count)
   __dpmi_regs r;
 
   tb_size = _go32_info_block.size_of_transfer_buffer;
-  buf_size = (write_count > tb_size) ? tb_size : write_count;
+  buf_size = (write_count <= tb_size) ? write_count : tb_size;
   
   total_written = 0;
   do
   {
-    chunk_count = (write_count <= buf_size) ? buf_size : write_count;
+    chunk_count = (write_count <= buf_size) ? write_count : buf_size;
     if (buffer && chunk_count)
       dosmemput(buffer, chunk_count, __tb);
     r.x.ax = 0x4000;
