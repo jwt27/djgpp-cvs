@@ -7,7 +7,7 @@ export LIBRARY_PATH
 export C_INCLUDE_PATH
 
 paranoia.exe: paranoia.c
-	gcc -Wall -g -o paranoia.exe paranoia.c
+	gcc -Wall -fno-builtin -g -o paranoia.exe paranoia.c
 
 test: paranoia.exe
 	paranoia

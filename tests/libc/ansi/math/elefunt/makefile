@@ -75,10 +75,10 @@ else  # no borland compiler, we use gcc
   RUN =    # how to run the executables
 ifdef DEBUG
     # don't use -O!!
-    CFLAGS = -g -Wall $(INCLUDE) $(DEFINES)
+    CFLAGS = -g -Wall -fno-builtin $(INCLUDE) $(DEFINES)
     LDFLAGS = -g $(LDIR)
 else
-    CFLAGS = -Wall $(INCLUDE) $(DEFINES)
+    CFLAGS = -Wall -fno-builtin $(INCLUDE) $(DEFINES)
     LDFLAGS = -s $(LDIR)
 endif
 endif

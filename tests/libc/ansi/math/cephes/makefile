@@ -59,7 +59,7 @@ ifdef DEBUG
     LDFLAGS = -g $(LDIR)
     TARGETS = mtstg.exe
 else
-    CFLAGS = -Wall -O $(DEFINES) $(INCLUDE)
+    CFLAGS = -Wall -O -fno-builtin $(DEFINES) $(INCLUDE)
     LDFLAGS = $(LDIR)
     TARGETS = mtst.exe
 endif
