@@ -172,8 +172,6 @@ void settime(struct time *);
 void getdfree(unsigned char _drive, struct dfree *_ptr);
 
 void delay(unsigned _msec);
-/* int _get_default_drive(void);
-void _fixpath(const char *, char *); */
 
 void __maybe_fix_w2k_ntvdm_bug(void);
 
