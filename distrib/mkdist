@@ -1,0 +1,88 @@
+#!/bin/perl
+# -*- perl -*-
+
+print "\nDon't forget to run rmtemps and copywrite in src and include! \n\n";
+
+$| = 1;
+
+$one = shift;
+
+open(DIST, "mkdist.bat");
+chdir "..";
+
+system "cp readme.1st zips";
+system "cp copying* zips";
+
+while (<DIST>) {
+    s/[\r\n]+$//;
+    last if /goto exit/;
+    next unless /^call mkdist1/;
+    next if $one && ! /$one/;
+    ($call, $mkdist, $file, $desc) = split(' ', $_, 4);
+
+    unlink "zips/$file.zip";
+
+    print "$file... ";
+    $p = "distrib/p/$file";
+
+    open(M, "> manifest/$file.ver");
+    print M "$file $desc\r\n";
+    close(M);
+
+    print "find... ";
+    &dtou("$p/files");
+    system "find `cat /tmp/d.$$` -type f -print > manifest/$file.mft"
+	|| die("find");
+
+    if ( -f "$p/skips" ) {
+	print "skips... ";
+	&dtou("$p/skips");
+	system "sed -f /tmp/d.$$ manifest/$file.mft > manifest/$file.tmp"
+	    || die("sed");
+	rename("manifest/$file.tmp", "manifest/$file.mft");
+    }
+
+    open(M, ">> manifest/$file.mft");
+    print M "manifest/$file.mft\n";
+    print M "manifest/$file.ver\n";
+    close(M);
+
+    if ( -f "$p/nobins" ) {
+	print "nobins... ";
+	system "distrib/nobins `cat $p/nobins` < manifest/$file.mft > manifest/$file.tmp"
+	    || die("nobins");
+	rename("manifest/$file.tmp", "manifest/$file.mft");
+    }
+
+    print "sort... ";
+    system "sort manifest/$file.mft > manifest/$file.tmp"
+	|| die("sort");
+    rename("manifest/$file.tmp", "manifest/$file.mft");
+
+    print "zip... ";
+    system "zip -qq -9 -@ /tmp/$file.zip < manifest/$file.mft"
+	|| die("zip");
+    system "cp /tmp/$file.zip zips/$file.zip";
+    unlink "/tmp/$file.zip";
+
+    print "done.\n";
+    last unless -f "zips/$file.zip";
+
+    $sz = (stat("zips/$file.zip"))[7];
+    0 while $sz =~ s/(.*\d)(\d\d\d)/$1,$2/;
+    printf "%12s %s.zip\n\n", $sz, $file;
+}
+
+sub dtou {
+    local($s) = @_;
+    open(S, $s);
+    open(D, ">/tmp/d.$$");
+    while (<S>) {
+	s/\r//g;
+	print D;
+    }
+    close(S);
+    close(D);
+}
+unlink "/tmp/d.$$";
+
