@@ -474,3 +474,7 @@ allocated by the DPMI host.
 @findex confstr@r{, added}
 @code{confstr} has been added to the library to support returning
 system-dependent configuration in strings.
+
+@cindex djgpp.env@r{, ls color settings for symlinks added}
+Colors for symlinks were added to the @samp{LS_COLORS} environment variable
+in @file{djgpp.env}.
