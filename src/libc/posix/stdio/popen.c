@@ -84,6 +84,8 @@ FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
   pl = l1;
 
   /* stick in elements we know already */
+  l1->command = NULL;
+
   if ((temp_name = malloc(L_tmpnam)) == NULL)
     goto error;
 
@@ -153,9 +155,6 @@ FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
   return l1->fp;
 
  error:
-
-  if (l1->command)
-    free(l1->command);
 
   if (temp_name)
     free(temp_name);
