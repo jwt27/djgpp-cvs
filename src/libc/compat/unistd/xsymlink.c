@@ -15,6 +15,11 @@
 
 #include "xsymlink.h"
 
+/* How many levels of symbolic links process before thinking 
+ * that we've found a link loop. 
+ */
+#define MAX_SYMLINK 8
+
 int __solve_symlinks(const char * __symlink_path, char * __real_path)
 {
    int    bytes_copied;
@@ -94,7 +99,7 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
             }
          }
       } while ((bytes_copied != -1) && (link_level <= _POSIX_LINK_MAX));
-      if (link_level > _POSIX_LINK_MAX)
+      if (link_level > MAX_SYMLINK)
       {
          errno = ELOOP;
          return 0;
