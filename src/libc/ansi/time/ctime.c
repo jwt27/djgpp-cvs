@@ -267,7 +267,7 @@ static int
 tzload(const char *name, struct state * const sp)
 {
   const char * p;
-  size_t i;
+  int i;
   int fid;
   char fullname[FILENAME_MAX + 1];
   const struct tzhead * tzhp;
@@ -313,7 +313,7 @@ tzload(const char *name, struct state * const sp)
   else
   {
     i = read(fid, buf, sizeof buf);
-    if (close(fid) != 0 || i < sizeof *tzhp)
+    if (close(fid) != 0 || i < (int)sizeof *tzhp)
       return -1;
   }
 
@@ -329,12 +329,12 @@ tzload(const char *name, struct state * const sp)
       sp->charcnt < 0 || sp->charcnt > TZ_MAX_CHARS ||
       (ttisstdcnt != sp->typecnt && ttisstdcnt != 0))
     return -1;
-  if (i < sizeof *tzhp +
+  if (i < (int)( sizeof *tzhp +
       sp->timecnt * (4 + sizeof (char)) +
       sp->typecnt * (4 + 2 * sizeof (char)) +
       sp->charcnt * sizeof (char) +
       sp->leapcnt * 2 * 4 +
-      ttisstdcnt * sizeof (char))
+      ttisstdcnt * sizeof (char) ))
     return -1;
   p = buf + sizeof *tzhp;
   for (i = 0; i < sp->timecnt; ++i)
@@ -891,7 +891,7 @@ tzparse(const char *name, struct state * const sp, const int lastditch)
   sp->charcnt = stdlen + 1;
   if (dstlen != 0)
     sp->charcnt += dstlen + 1;
-  if (sp->charcnt > sizeof sp->chars)
+  if (sp->charcnt > (int)sizeof sp->chars)
     return -1;
   cp = sp->chars;
   (void) strncpy(cp, stdname, stdlen);

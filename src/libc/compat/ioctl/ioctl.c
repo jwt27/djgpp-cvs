@@ -69,8 +69,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.2 1998/06/28 17:25:20 dj Exp $
+$Id: ioctl.c,v 1.3 2001/06/20 16:54:33 ams Exp $
 $Log: ioctl.c,v $
+Revision 1.3  2001/06/20 16:54:33  ams
+Do not mix signed and unsigned.
+
 Revision 1.2  1998/06/28 17:25:20  dj
 import djgpp 2.02
 
@@ -157,7 +160,7 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
     ** I _do_ like clear APIs.
     */
     if(cmd & DOS_XFER){
-        if(argcx <= __tb_size){ /* Can we use transfer buffer ? */
+        if(argcx <= (int)__tb_size){ /* Can we use transfer buffer ? */
             dosmemput((void *)argdx,argcx, __tb);
             r.x.ds = (__tb>>4) &0xffff;
             r.x.dx = __tb &0xf;
@@ -183,7 +186,7 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
     ** parameter after all the registers and the buffer pointer.
     */
     if( cmd & DOS_BRAINDEAD  ){
-        if(xarg <= __tb_size){ /* Can we use transfer buffer ? */
+        if(xarg <= (int)__tb_size){ /* Can we use transfer buffer ? */
             dosmemput((void *)argdx,xarg, __tb);
             r.x.ds = (__tb>>4) &0xffff;
             r.x.dx = __tb &0xf;
