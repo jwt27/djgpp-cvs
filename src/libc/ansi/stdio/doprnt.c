@@ -254,8 +254,18 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       }
       else
       {
+	struct IEEExp {
+	  unsigned manl:32;
+	  unsigned manh:32;
+	  unsigned exp:15;
+	  unsigned sign:1;
+	} ip = *(struct IEEExp *)&_ldouble;
+
+	if (ip.sign)
+	  neg_ldouble = 1;
+	else
+	  neg_ldouble = 0;
 	softsign = 0;
-	neg_ldouble = 0;
       }
       /*
        * cvt may have to round up past the "start" of the
