@@ -13,8 +13,12 @@
 //-----------------------------------------------------------------------------
 
 char *predefs[] = { "main", "edata", "end", "etext", "environ",
-		    "__udivdi3", "__umoddi3", "__divdi3", "__moddi3",
-		    0 };
+		    "__udivdi3", "__umoddi3", "__divdi3",
+		    "__moddi3", 0 };
+
+/* Note: tzname is POSIX, but we list it here because it is a datum,
+   not a function, and we can't stub it.  ctime() sets tzname, and
+   ctime is ANSI and tzname is POSIX.  Sigh. */
 
 char *ansi_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "atan", "atan2", "atexit", "atof", "atoi", "atol", "bsearch",
@@ -36,30 +40,30 @@ char *ansi_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "strcspn", "strerror", "strftime", "strlen", "strncat", "strncmp",
 "strncpy", "strpbrk", "strrchr", "strspn", "strstr", "strtod",
 "strtok", "strtol", "strtoul", "strxfrm", "system", "tan", "tanh",
-"time", "tmpfile", "tmpnam", "tolower", "toupper", "ungetc",
+"time", "tmpfile", "tmpnam", "tolower", "toupper", "tzname", "ungetc",
 "wcstombs", "vfprintf", "vprintf", "vsprintf", "wcstombs", "wctomb", 0
 };
 
-char *posix_fns[] = {
-"_exit", "access", "alarm", "cfgetispeed", "cfgetospeed", "cfsetispeed",
-"cfsetospeed", "chdir", "chmod", "chown", "close", "closedir", "confstr",
-"creat", "ctermid", "dup", "dup2", "execl", "execle", "execlp", "execv",
-"execve", "execvp", "fcntl", "fdopen", "fileno", "fnmatch", "fnmatch",
-"fork", "fpathconf", "fpathconf", "fstat", "getcwd", "getegid", "geteuid",
+char *posix_fns[] = { "_exit", "access", "alarm", "cfgetispeed",
+"cfgetospeed", "cfsetispeed", "cfsetospeed", "chdir", "chmod",
+"chown", "close", "closedir", "confstr", "creat", "ctermid", "dup",
+"dup2", "execl", "execle", "execlp", "execv", "execve", "execvp",
+"fcntl", "fdopen", "fileno", "fnmatch", "fnmatch", "fork",
+"fpathconf", "fpathconf", "fstat", "getcwd", "getegid", "geteuid",
 "getgid", "getgrgid", "getgrnam", "getgroups", "getlogin", "getopt",
-"getpgrp", "getpid", "getppid", "getpwnam", "getpwuid", "getuid", "glob",
-"glob", "globfree", "globfree", "isatty", "kill", "link", "lseek", "mkdir",
-"mkfifo", "open", "opendir", "optarg", "opterr", "optind", "optopt",
-"pathconf", "pathconf", "pause", "pclose", "pipe", "popen", "read",
-"readdir", "regcomp", "regerror", "regexec", "regfree", "rewinddir",
-"rmdir", "setgid", "setpgid", "setsid", "setuid", "sigaction", "sigaddset",
-"sigdelset", "sigemptyset", "sigfillset", "sigismember", "siglongjmp",
-"sigpending", "sigprocmask", "sigsetjmp", "sigsuspend", "sleep", "stat",
-"sysconf", "sysconf", "tcdrain", "tcflow", "tcflush", "tcgetattr",
-"tcgetpgrp", "tcsendbreak", "tcsetattr", "tcsetpgrp", "times", "ttyname",
-"tzname", "tzset", "umask", "uname", "unlink", "utime", "wait", "waitpid",
-"wordexp", "wordfree", "write",
-0 };
+"getpgrp", "getpid", "getppid", "getpwnam", "getpwuid", "getuid",
+"glob", "glob", "globfree", "globfree", "isatty", "kill", "link",
+"lseek", "mkdir", "mkfifo", "open", "opendir", "optarg", "opterr",
+"optind", "optopt", "pathconf", "pathconf", "pause", "pclose", "pipe",
+"popen", "read", "readdir", "regcomp", "regerror", "regexec",
+"regfree", "rewinddir", "rmdir", "setgid", "setpgid", "setsid",
+"setuid", "sigaction", "sigaddset", "sigdelset", "sigemptyset",
+"sigfillset", "sigismember", "siglongjmp", "sigpending",
+"sigprocmask", "sigsetjmp", "sigsuspend", "sleep", "stat", "sysconf",
+"sysconf", "tcdrain", "tcflow", "tcflush", "tcgetattr", "tcgetpgrp",
+"tcsendbreak", "tcsetattr", "tcsetpgrp", "times", "ttyname", "tzset",
+"umask", "uname", "unlink", "utime", "wait", "waitpid", "wordexp",
+"wordfree", "write", 0 };
 
 #define Tansi	0x01
 #define Tposix	0x02

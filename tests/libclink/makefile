@@ -3,7 +3,7 @@
 
 .PHONY: all p_check.out p_compare.out clean
 
-all : p_check.out p_compare.out
+all : p_check.out
 
 p_check.out : check.out
 	@cat check.out
@@ -11,12 +11,11 @@ p_check.out : check.out
 p_compare.out : compare.out
 	@cat compare.out
 
-check.out : check ../../lib/crt0.o ../../lib/libc.a
+check.out : check.exe ../../lib/crt0.o ../../lib/libc.a
 	@nm -g ../../lib/crt0.o ../../lib/libc.a | check > check.out
 
-check : check.o slist.o objs.o
+check.exe : check.o slist.o objs.o
 	gcc -o $@ $^
-	coff2exe $@
 
 compare.out : compare oldlibc.arm newlibc.arm
 	@compare oldlibc.arm newlibc.arm > compare.out
@@ -34,4 +33,4 @@ newlibc.arm : ../../lib/libc.a
 	nm --print-armap ../../lib/libc.a > newlibc.arm
 
 clean :
-	-rm -f check.out check check.exe *.o libc.map
+	-rm -f check.out check.exe *.o libc.map
