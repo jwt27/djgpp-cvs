@@ -27,6 +27,7 @@ ifeq ($(CROSS_BUILD),0)
 CROSS_GCC = gcc
 CROSS_AR = ar
 CROSS_LD = ld
+CROSS_STRIP = strip
 CROSS_BISON = bison
 
 # For building native programs (hostbin/*); assumes GNU versions
