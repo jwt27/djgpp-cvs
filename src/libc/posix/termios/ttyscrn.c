@@ -50,7 +50,7 @@ struct tty_screen_interface __tty_direct_intface =
     direct_puts, direct_scroll_up, direct_scroll_down,
     direct_scroll_left, direct_scroll_right, direct_clear };
 
-/* This drivers uses only the video bios routines.  */
+/* This driver uses only the video bios routines.  */
 struct tty_screen_interface __tty_vbios_intface =
   { NULL, vbios_write_ch, vbios_put_ch, vbios_put_ch_at,
     vbios_puts, vbios_scroll_up, vbios_scroll_down,
