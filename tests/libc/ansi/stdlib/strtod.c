@@ -9,6 +9,16 @@ static const char *testnum[] = {
   "1e6000000000",	/* overflow */
   "1e400",		/* ditto */
   "1e-400",		/* underflow */
+  "InF",		/* infinity */
+  "-inf",		/* infinity */
+  "infinity",		/* infinity */
+  "-inFinitY",		/* infinity */
+  "nAn",		/* nan */
+  "-nan",		/* nan */
+  "Nan()",		/* nan */
+  "nan(0)",		/* nan */
+  "Nan(1)",		/* nan */
+  "-NaN(0xfffff)",	/* nan */
   0
 };
 

@@ -5,12 +5,15 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <math.h>
 #include <stdlib.h>
 #include <float.h>
 #include <errno.h>
 #include <ctype.h>
+#include <string.h>
 #include <libc/unconst.h>
+#include <libc/ieee.h>
 
 float
 strtof(const char *s, char **sret)
@@ -43,6 +46,74 @@ strtof(const char *s, char **sret)
     s++;
   }
 
+  /* Handle INF and INFINITY. */
+  if ( ! strnicmp( "INF", s, 3 ) )
+  {
+    if( sret )
+    {
+      if ( ! strnicmp( "INITY", &s[3], 5 ) )
+      {
+	*sret = unconst((&s[8]), char *);
+      }
+      else
+      {
+	*sret = unconst((&s[3]), char *);
+      }
+    }
+
+    if( 0 <= sign )
+    {
+      return INFINITY;
+    }
+    else
+    {
+      return -INFINITY;
+    }
+  }
+
+  /* Handle NAN and NAN(<hex-number>). */
+  if( ! strnicmp( "NAN", s, 3 ) )
+  {
+    float f = NAN;
+    float_t n = *(float_t *)(&f);
+
+    if( sign < 0 )
+    {
+      n.sign = 1;
+    }
+
+    if( s[3] == '(' )
+    {
+      unsigned long mantissa_bits = 0;
+      char *endptr = unconst((&s[4]), char *);
+
+      mantissa_bits = strtoul(&s[4], &endptr, 16);
+      if( *endptr == ')' )
+      {
+	mantissa_bits = mantissa_bits & 0x7fffff;
+	if( mantissa_bits )
+	{
+	    n.mantissa = mantissa_bits;
+	}
+	if( sret )
+	{
+	  *sret = endptr+1;
+	}
+	return *(float *)(&n);
+      }
+
+      /* The subject sequence didn't match NAN(<hex-number>), so match
+	 only NAN. */
+    }
+
+    if( sret )
+    {
+      *sret = unconst((&s[3]), char *);
+    }
+    return *(float *)(&n);
+  }
+
+  /* Handle ordinary numbers. */
   while ((*s >= '0') && (*s <= '9'))
   {
     flags |= 1;

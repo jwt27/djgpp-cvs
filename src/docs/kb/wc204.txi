@@ -981,3 +981,12 @@ which gives the linear address of the transfer buffer.
 
 @pindex djtar@r{, and single-span spanned archives}
 @code{djtar} now copes with single-span spanned archives.
+
+@findex strtod@r{, @code{Inf} and @code{NaN} in input}
+@findex strtof@r{, @code{Inf} and @code{NaN} in input}
+@findex strtold@r{, @code{Inf} and @code{NaN} in input}
+@findex _strtold@r{, @code{Inf} and @code{NaN} in input}
+The functions @code{strtod}, @code{strtof}, @code{strtold} and
+@code{_strtold} now understand ``Inf'', ``Infinity'', ``NaN'',
+``NaN()'', ``NaN(@var{hex-number})'' and any variations of case in the
+input string.

@@ -1,10 +1,14 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
+#include <string.h>
 #include <libc/unconst.h>
+#include <libc/ieee.h>
 
 static long double powten[] =
 {
@@ -38,6 +42,77 @@ strtold(const char *s, char **sret)
     s++;
   }
 
+  /* Handle INF and INFINITY. */
+  if ( ! strnicmp( "INF", s, 3 ) )
+  {
+    if( sret )
+    {
+      if ( ! strnicmp( "INITY", &s[3], 5 ) )
+      {
+	*sret = unconst((&s[8]), char *);
+      }
+      else
+      {
+	*sret = unconst((&s[3]), char *);
+      }
+    }
+
+    if( 0 <= sign )
+    {
+      return INFINITY;
+    }
+    else
+    {
+      return -INFINITY;
+    }
+  }
+
+  /* Handle NAN and NAN(<whatever>). */
+  if ( ! strnicmp( "NAN", s, 3 ) )
+  {
+    long double ld = NAN;
+    long_double_t n = *(long_double_t *)(&ld);
+
+    if ( sign < 0 )
+    {
+      n.sign = 1;
+    }
+    
+    if( s[3] == '(' )
+    {
+      unsigned long long mantissa_bits = 0;
+      char *endptr = unconst((&s[4]), char *);
+      
+      mantissa_bits = strtoull(&s[4], &endptr, 16);
+      if ( *endptr == ')' )
+      {
+	mantissa_bits = mantissa_bits & 0x7fffffffffffffff; /* Ignore
+							       integer
+							       bit. */
+	if( mantissa_bits )
+	{
+	  n.mantissal = mantissa_bits & 0xffffffff;
+	  n.mantissah = ((mantissa_bits >> 32) & 0xffffffff ) | 0x80000000;
+	}
+	if( sret )
+	{
+          *sret = endptr+1;
+	}
+        return *(long double *)(&n);
+      }
+      
+      /* The subject sequence didn't match NAN(<hex-number>), so match
+	 only NAN. */
+    }
+
+    if( sret )
+    {
+      *sret = unconst((&s[3]), char *);
+    }
+    return *(long double *)(&n);;
+  }
+
+  /* Handle ordinary numbers. */
   while ((*s >= '0') && (*s <= '9'))
   {
     flags |= 1;

@@ -51,6 +51,68 @@ static const test3_t tests3[] = {
 
 static const size_t n_tests3 = sizeof(tests3) / sizeof(tests3[0]);
 
+typedef struct {
+  const char * const str; /* String to run strtof() on. */
+  const int diff; /* For endptr tests. How many characters from string start
+		     endptr should be offset. */
+} test4_t;
+
+static const test4_t tests4[] = {
+  { "inF",                 3 },
+  { "-INf",                4 },
+  { "infi",                3 },
+  { "-infi",               4 },
+  { "infinit",             3 },
+  { "-infinit",            4 },
+  { "INfINITY",            8 },
+  { "-InfInIty",           9 },
+  { "infinity0",           8 },
+  { "-infinity5",          9 },
+  { "infinity-1",          8 },
+  { "-infinity-6",         9 },
+};
+
+static const size_t n_tests4 = sizeof(tests4) / sizeof(tests4[0]);
+
+typedef struct {
+  const char * const str; /* String to run strtof() on. */
+  const int diff; /* For endptr tests. How many characters from string start
+		     endptr should be offset. */
+  const int sign; /* Sign bit. */
+  const int mantissa; /* What mantissa should be set to after
+			 conversion. 0 -> don't care as long as it's
+			 non-zero. */
+} test5_t;
+
+static const test5_t tests5[] = {
+  { "nAn",                         3,  0, 0 },
+  { "-nAn",                        4,  1, 0 },
+  { "nanny",                       3,  0, 0 },
+  { "-nanny",                      4,  1, 0 },
+  { "NAN()",                       5,  0, 0 },
+  { "NAN( )",                      3,  0, 0 },
+  { "-Nan()",                      6,  1, 0 },
+  { "nAN(0)",                      6,  0, 0 },
+  { "-nan(0)",                     7,  1, 0 },
+  { "nan(0x401234)",              13,  0, 0x401234 }, /* QNaN */
+  { "-nan(0x400088)",             14,  1, 0x400088 }, /* QNaN */
+  { "nan(0x1234)",                11,  0, 0x1234 }, /* SNaN -> QNaN? */
+  { "-nan(0x88)",                 10,  1, 0x88 }, /* SNaN -> QNaN? */
+  { "-nan(0xaa7d7aa74)",          17,  1, 0x7fffff }, /* Overflow. */
+  { "nan(0x12345678123456781)",   24,  0, 0x7fffff }, /* Overflow. */
+  { "-nan(0x12345678123456781)",  25,  1, 0x7fffff }, /* Overflow. */
+  { "naN(something)",              3,  0, 0 },
+  { "-nAn(smurf)",                 4,  1, 0 },
+  { "-nan(-nan)",                  4,  1, 0 },
+  { "nan(nan(nan()))",             3,  0, 0 },
+  { "NaN(0x1234oops)",             3,  0, 0 },
+  { "nan()()",                     5,  0, 0 },
+  { "NAN()nan",                    5,  0, 0 },
+};
+
+static const size_t n_tests5 = sizeof(tests5) / sizeof(tests5[0]);
+
+
 static void inline
 result (const size_t n, const float f_in, const float f_out)
 {
@@ -58,12 +120,17 @@ result (const size_t n, const float f_in, const float f_out)
 }
 
 int
-main (void)
+main (int argc, char *argv[])
 {
   char buf[128];
   float f_res;
   int eq;
   size_t i;
+
+  if ( 1 < argc ) {
+    /* Fault on FPU exception. */
+    _control87(0, 0x3f);
+  }
 
   ld_float_max    = __dj_float_max;
   ld_float_max_10 = ld_float_max * 10;
@@ -106,6 +173,64 @@ main (void)
 	puts("No - OK");
     }
   }
+  
+  puts("Infinity tests:");
+  for (i = 0; i < n_tests4; i++) {
+    char *endptr;
+    float_t float_bits;
 
+    f_res = strtof(tests4[i].str, &endptr);
+      
+    printf("strtof(\"%s\", &endptr) -> %f, %ld - ", tests4[i].str,
+	   f_res, endptr-tests4[i].str);
+
+    /* Need to do the Inf detection ourselves. */
+    float_bits = *(float_t *)(&f_res);
+    if (float_bits.exponent != 0xff) {
+      puts("exponent != 0xff - FAIL");
+    } else if (float_bits.mantissa != 0) {
+      puts("mantissa != 0 - FAIL");
+    } else if ( (float_bits.sign && 0 < f_res ) || 
+		(!float_bits.sign && f_res < 0) ) {
+      puts("Wrong sign - FAIL");
+    } else if ( endptr-tests4[i].str != tests4[i].diff) {
+      printf("endptr-(start_of_string) == %ld != %d - FAIL\n",
+	     endptr-tests4[i].str, tests4[i].diff);
+    } else {
+      puts("OK");
+    }
+  }
+  
+  puts("Nan tests:");
+  for (i = 0; i < n_tests5; i++) {
+    char *endptr;
+    float_t float_bits;
+
+    f_res = strtof(tests5[i].str, &endptr);
+
+    printf("strtof(\"%s\", &endptr) -> %f, %ld - ", tests5[i].str,
+	   f_res, endptr-tests5[i].str);
+
+    /* Need to to the NaN detection ourselves. */
+    float_bits = *(float_t *)(&f_res);
+    if (float_bits.exponent != 0xff ) {
+      puts("exponent != 0xff - FAIL");
+    } else if (float_bits.mantissa == 0) {
+      puts("mantissa == 0 - FAIL");
+    } else if (tests5[i].sign != float_bits.sign) {
+      printf("sign == %d != %d - FAIL\n", float_bits.sign,
+	     tests5[i].sign);
+    } else if ( endptr-tests5[i].str != tests5[i].diff) {
+      printf("endptr-(start_of_string) == %ld != %d - FAIL\n",
+	     endptr-tests5[i].str, tests5[i].diff);
+    } else if (tests5[i].mantissa && 
+	       tests5[i].mantissa != float_bits.mantissa) { 
+      printf("(note: mantissa == 0x%x != 0x%x) - OK\n",
+	     float_bits.mantissa, tests5[i].mantissa);
+    } else {
+      puts("OK");
+    }
+  }
+  
   return(EXIT_SUCCESS);
 }
