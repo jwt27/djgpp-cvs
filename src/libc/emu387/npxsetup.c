@@ -16,6 +16,7 @@
 #include <dpmi.h>
 #include <libc/internal.h>
 #include <sys/exceptn.h>
+#include <float.h>
 #ifndef IMBED_EMU387
 #include <sys/dxe.h>
 static int (*_emu_entry)(jmp_buf exc);
@@ -81,7 +82,11 @@ void _npxsetup(char *argv0)
     _write(2, "80387 detected.\r\n", 17);
   }
 
-  if(!have_80387) {
+  if(have_80387) {
+    /* mask all exceptions, except invalid operation */
+    _control87(0x033e, 0xffff);
+
+  } else {
     /* Flags value 3 means coprocessor emulation, exceptions to us */
     if (__dpmi_set_coprocessor_emulation(3)) {
       _write(2, "Warning: Coprocessor not present and DPMI setup failed!\r\n", 57);
