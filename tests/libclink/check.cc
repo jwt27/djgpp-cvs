@@ -35,13 +35,13 @@ char *ansi_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "memmove", "memset", "mktime", "modf", "perror", "pow", "printf",
 "putc", "putchar", "puts", "qsort", "raise", "rand", "realloc",
 "remove", "rename", "rewind", "scanf", "setbuf", "setjmp",
-"setlocale", "setvbuf", "signal", "sin", "sinh", "sprintf", "sqrt",
+"setlocale", "setvbuf", "signal", "sin", "sinh", "snprintf", "sprintf", "sqrt",
 "srand", "sscanf", "strcat", "strchr", "strcmp", "strcoll", "strcpy",
 "strcspn", "strerror", "strftime", "strlen", "strncat", "strncmp",
 "strncpy", "strpbrk", "strrchr", "strspn", "strstr", "strtod",
 "strtok", "strtol", "strtoul", "strxfrm", "system", "tan", "tanh",
 "time", "tmpfile", "tmpnam", "tolower", "toupper", "tzname", "ungetc",
-"vfprintf", "vprintf", "vsprintf", "wcstombs", "wctomb", 0
+"vfprintf", "vprintf", "vsnprintf", "vsprintf", "wcstombs", "wctomb", 0
 };
 
 char *posix_fns[] = { "_exit", "access", "alarm", "cfgetispeed",
