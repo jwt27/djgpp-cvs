@@ -40,7 +40,7 @@ None.
 
 @example
 char oldpath[100], newpath[FILENAME_MAX];
-scanf(oldpath);
+scanf("%s", oldpath);
 _fixpath(oldpath, newpath);
 printf("that really is %s\n", newpath);
 @end example
