@@ -93,5 +93,5 @@ save:
 	-rm junklist.___
 
 clean:
-	-cd qfloat; $(MAKE) $@
 	-rm -f *.o *.exe
+	-cd qfloat; $(MAKE) $@
