@@ -49,6 +49,13 @@ Returns a random number in the range 0..MAXINT.
 
 @portability !ansi, !posix
 
+@subheading Example
+
+@example
+ /* Produce a random integer between 0 and 199.  */
+ int random_number = random () % 200;
+@end example
+
 @c ----------------------------------------------------------------------
 @node initstate, random number
 @subheading Syntax
