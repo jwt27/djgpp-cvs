@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <fcntl.h>	/* for _USE_LFN */
 #include <io.h>		/* for the prototype of `_flush_disk_cache' */
