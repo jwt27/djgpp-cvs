@@ -1,0 +1,45 @@
+----- Missing POSIX functions -----
+
+alarm cfgetispeed cfgetospeed cfsetispeed cfsetospeed ctermid cuserid fcntl 
+
+fork fpathconf getgrgid getgrnam getgroups getpgrp getppid mkfifo pathconf 
+
+pause pipe setgid setpgid setsid setuid sigaction sigaddset sigdelset 
+
+sigemptyset sigfillset sigismember siglongjmp sigpending sigprocmask 
+
+sigsetjmp sigsuspend sysconf tcdrain tcflow tcflush tcgetattr tcgetpgrp 
+
+tcsendbreak tcsetattr tcsetpgrp times ttyname uname wait waitpid 
+
+
+
+----- Symbols in old library, but not in new one -----
+
+__atexit  __mb_cur_max  _bcopy  _cleanup  _ctype_  _dos_lock  _dos_unlock
+
+_exit  _findenv  _findiop  _get_default_drive  _interrupt_stack_size  _iob
+
+_memcpy  _setmode  _setstack  _smallbuf  _stklen  _tztab  alloca  brk
+
+endgrent  fchmod  fcloseall  ffs  fgetgrent  fgetpwent  fnmerge  fnsplit
+
+fork  fpathconf  fpurge  ftime  getdisk  getdtablesize  getgrent  getgrgid
+
+getgrnam  getgroups  getlongpass  getopt  getpagesize  getpass  getrusage
+
+initstate  insque  itoa  lock  longjmperror  memccpy  mkfifo  mknod  mkstemp
+
+nlist  on_exit  optarg  opterr  optind  optopt  pathconf  pipe  random
+
+rawclock  readcr  readv  realloc_srchlen  remque  setdisk  setenv  setgrent
+
+setstate  sigaction  sigaddset  sigdelset  sigemptyset  sigfillset
+
+sigismember  sigsetmask  srandom  stat_assist  strcasecmp  strncasecmp
+
+strsep  swab  sys_errlist  sys_nerr  sysconf  tell  tempnam  timezone
+
+ttyname  tzsetwall  unlock  unsetenv  usleep  valloc  vfork  wait  writecr
+
+writev
