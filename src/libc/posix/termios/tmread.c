@@ -10,12 +10,14 @@
 
 #include <libc/stubs.h>
 #include <go32.h>
+#include <io.h>
 #include <pc.h>
 #include <limits.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <termios.h>
+#include <sys/exceptn.h>
 #include <libc/file.h>
 #include <libc/ttyprvt.h>
 #include <libc/farptrgs.h>
