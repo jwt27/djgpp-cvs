@@ -27,6 +27,7 @@
  */
 
 #include <libc/stubs.h>
+#include <libc/symlink.h>
 #include <libc/bss.h>
 #include <stdio.h>
 #include <string.h>
@@ -254,6 +255,8 @@ rename(const char *old, const char *new)
   int e = errno;
   int simple_should_do = 0; /* _rename() enough? */
   int target_exists = 0;
+  char real_old[FILENAME_MAX];
+  char real_new[FILENAME_MAX];
 
   /* Much of the following quite tedious administrivia is necessary
      to return a meaningful code in errno.  Otherwise, for most of
@@ -270,9 +273,14 @@ rename(const char *old, const char *new)
       return -1;
     }
 
+  /* Handle symlinks */
+  if (!__solve_dir_symlinks(old, real_old) || 
+      !__solve_dir_symlinks(new, real_new))
+     return -1;
+
   /* Fail with ENAMETOOLONG if either OLD or NEW are too long.  This is
      explicitly checked so that DOS filename truncation won't fool us.  */
-  if (strlen(old) > FILENAME_MAX || strlen(new) > FILENAME_MAX)
+  if (strlen(real_old) > FILENAME_MAX || strlen(real_new) > FILENAME_MAX)
     {
       errno = ENAMETOOLONG;
       return -1;
@@ -280,16 +288,16 @@ rename(const char *old, const char *new)
 
   /* Fail with ENOENT if OLD doesn't exist or is otherwise
      inaccessible.  */
-  if ((source_attr = _chmod(old, 0)) == -1)
+  if ((source_attr = _chmod(real_old, 0)) == -1)
     return -1;      /* errno set by _chmod() */
 
   /* Fail with EXDEV, if old and new aren't on the same device.  */
-  if (old[1] == ':')
-    old_dev = toupper((unsigned char)old[0]) - 'A';
+  if (real_old[1] == ':')
+    old_dev = toupper((unsigned char)real_old[0]) - 'A';
   else
     old_dev = getdisk();
-  if (new[1] == ':')
-    new_dev = toupper((unsigned char)new[0]) - 'A';
+  if (real_new[1] == ':')
+    new_dev = toupper((unsigned char)real_new[0]) - 'A';
   else
     new_dev = getdisk();
   if (old_dev != new_dev)
@@ -299,8 +307,9 @@ rename(const char *old, const char *new)
     }
 
   /* Refuse to rename `.' or `..' or `d:.' or `d:..'  */
-  if ((old[0] == '.' && (old[1] == '\0' || (old[1] == '.' && old[2] == '\0'))) ||
-      (old[1] == ':' && old[2] == '.' && (old[3] == '\0' || (old[3] == '.' && old[4] == '\0'))))
+  if ((real_old[0] == '.' && (real_old[1] == '\0' || (real_old[1] == '.' && 
+       real_old[2] == '\0'))) || (real_old[1] == ':' && real_old[2] == '.' && 
+      (real_old[3] == '\0' || (real_old[3] == '.' && real_old[4] == '\0'))))
     {
       errno = EINVAL;
       return -1;
@@ -308,7 +317,7 @@ rename(const char *old, const char *new)
 
   /* Some problems can only happen if NEW already exists.  */
   errno = 0;
-  target_attr = _chmod(new, 0);
+  target_attr = _chmod(real_new, 0);
   if (errno != ENOENT)
     {
       int old_is_dir = (source_attr & 0x10) == 0x10;
@@ -334,7 +343,8 @@ rename(const char *old, const char *new)
           /* Fail if both OLD and NEW are directories and
              OLD is parent of NEW.  */
           errno = 0;
-          if (is_parent(_truename(old, old_true), _truename(new, new_true)))
+          if (is_parent(_truename(real_old, old_true), 
+                        _truename(real_new, new_true)))
             {
               errno = EINVAL;
               return -1;
@@ -366,7 +376,8 @@ rename(const char *old, const char *new)
       char new_true[FILENAME_MAX], old_true[FILENAME_MAX];
 
       errno = 0;
-      if (is_parent(_truename(old, old_true), _truename(new, new_true)))
+      if (is_parent(_truename(real_old, old_true), 
+                    _truename(real_new, new_true)))
 	{
 	  errno = EINVAL;
 	  return -1;
@@ -385,7 +396,7 @@ rename(const char *old, const char *new)
      moving a regular file, or renaming a directory.  Note that on
      Windows 95 this will also move a directory to a subtree of
      another parent directory.  */
-  if ((status = _rename(old, new)) == 0)
+  if ((status = _rename(real_old, real_new)) == 0)
     {
       errno = e;    /* restore errno we inherited */
       return 0;
@@ -395,7 +406,7 @@ rename(const char *old, const char *new)
        and return -1 with whatever errno we have.  */
     return -1;
   else if (errno == EACCES && target_exists && (target_attr & 0x10) &&
-           _chmod(new, 0) != -1)
+           _chmod(real_new, 0) != -1)
     {
       /* If target still exists (i.e., it wasn't removed inside
          _rename()) and is a directory, assume it's not empty.
@@ -414,10 +425,10 @@ rename(const char *old, const char *new)
 
       int retval;
 
-      strcpy(source, old);
+      strcpy(source, real_old);
       last = strlen(source) - 1;
 
-      strcpy(target, new);
+      strcpy(target, real_new);
       if (strchr(target, '\\'))
         for (p = target; *p; p++)
           {
@@ -430,7 +441,7 @@ rename(const char *old, const char *new)
         ++last;
 
       /* Create NEW and push it onto the stack.  */
-      if (mkdir(new, source_attr & 0xffe7) == -1 ||
+      if (mkdir(real_new, source_attr & 0xffe7) == -1 ||
           init_stack() == 0 || push_dir(old) == 0)
         return -1;
 
