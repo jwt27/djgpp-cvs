@@ -11,7 +11,10 @@ void *memset(void *buffer, int ch, size_t num);
 
 This function stores @var{num} copies of @var{ch}, starting at
 @var{buffer}.  This is often used to initialize objects to a known
-value. 
+value, like zero.
+
+Note that, although @var{ch} is declared @code{int} in the prototype,
+@code{memset} only uses its least-significant byte to fill @var{buffer}.
 
 @subheading Return Value
 
