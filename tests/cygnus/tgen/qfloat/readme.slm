@@ -1,0 +1,46 @@
+This archive contains extended precision floating point
+arithmetic routines, a calculator program, and a few additional
+functions.
+
+Several definitions must be configured in the source code, as follows:
+Define type of computer in mconf.h.
+Set precision NQ to 12 words (144 bit precision)
+	or 24 words (336 bit precision) in qhead.h.
+Set precision and iteration count in qhead.asm.
+Set size of address LARGEMEM in qcalc.h.
+
+For a version with strictly correct rounding rules:
+	define STICKY to be 1 in qflt.c
+	use qflta.c
+	use qsqrta.c
+This gets a rating of "excellent!" from the PARANOIA test program.
+
+For a faster version, all in C language, non strict rounding:
+	define STICKY to be 0 in qflt.c
+	use qfltb.c
+	use qsqrt.c
+
+Fastest IBM PC version, assembly language inner loops, non strict rounding:
+	define STICKY to be 0 in qflt.c
+	use subm.asm, divn.asm, mulr.asm
+	use qsqrt.c
+The .asm files work as written only with small memory model.
+
+Fastest version, 68000 processor:
+	define STICKY to be 0 in qflt.c
+	use qf68k.a
+	use qsqrt.c
+
+Fastest version, 68020 processor:
+	define STICKY to be 0 in qflt.c
+	use qfltd.asm
+	use qsqrt.c
+
+There are many dialects of 68000 assembly language.  Versions
+for System V Unix and Definicon DASM exist but are not included
+here.
+
+This software is copyright (C) 1984 - 1988 by Stephen L. Moshier.
+All rights are reserved.  A library of over 100 transcendental
+functions that use this arithmetic can be purchased from Oasys
+Systems, Waltham, Massachusetts.

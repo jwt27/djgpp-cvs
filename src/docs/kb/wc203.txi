@@ -83,7 +83,9 @@ now printed as @samp{Unnormal}.
 @findex rand48
 @findex srand48
 
-Many fixes to calls to @code{tolower}/@code{toupper} with signed chars
+Many fixes to calls to @code{tolower}/@code{toupper} with signed chars.
+@findex tolower
+@findex toupper
 
 The rmcb stub doesn't restore the flags so that you can return
 different ones.
@@ -91,15 +93,23 @@ different ones.
 
 Doc fixes for ansi/posix portability.
 
-handle error considions in @file{bin2h}
+Handle error conditions in @file{bin2h}.
 @pindex bin2h
 
-@file{tests/libclink/check.cc} - remove duplicates
+@file{tests/libclink/check.cc} - remove duplicates.
 
-Remove unneeded includes from @file{rand.c}
+Remove unneeded includes from @file{rand.c}.
 
-Call @code{system} properly in termios (Ctrl-Z)
+Call @code{system} properly in termios (Ctrl-Z).
+@findex system
+@pindex termios
 
-Work around a gcc 2.8.1 bug in emu387
+Work around a gcc 2.8.1 bug in emu387.
+@findex acos
 
-Linking with -lemu should obviate the need for emu387.dxe
+Linking with -lemu should obviate the need for emu387.dxe.
+@pindex emu387.dxe
+
+The ``Hidden Features'' chapter of the Knowledge Base now actually
+describes most of the special features provided by DJGPP.
+@cindex hidden features, documentation

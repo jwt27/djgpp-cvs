@@ -1,0 +1,76 @@
+ABOUT THE TEST-VECTOR GENERATORS
+
+This directory contains the programs that generate the test vectors
+that are used in the test environment.  Each program generates at
+least two functions (float and double precision).  Output consists
+of a file for each function covered whose name is <function>_vec.c.
+In MSDOS, this name is shortened as needed to fit in the format of
+an eight-character file name.
+
+Name of		Functions
+Generator	 Covered
+---------	---------
+gacosvec.cpp	acos	acosf
+gacoshvec.cpp	acosh	acoshf
+gasinvec.cpp	asin	asinf
+gasinhvec.cpp	asinh	asinhf
+gatanvec.cpp	atan	atanf
+gatan2vec.cpp	atan2	atan2f
+gatanhvec.cpp	atanh	atanhf
+gcoshvec.cpp	cosh	coshf
+gcosvec.cpp	cos	cosf
+gerfvec.cpp	erf	erff
+		erfc	erfcf
+gexpvec.cpp	exp	expf
+gfmodvec.cpp	fmod	fmodf
+gfrexpvec.cpp	frexp	frexpf
+ggammavec.cpp	gamma	gammaf
+ghypotvec.cpp	hypot	hypotf
+gjy01vec.cpp	j0	j0f	j1	j1f
+		y0	y0f	y1	y1f
+gjynvec.cpp	jn	jnf	yn	ynf
+gldexpvec.cpp	ldexp	ldexpf
+glog10vec.cpp	log10	log10f
+glog1pvec.cpp	log1p	log1pf
+glog2vec.cpp	log2	log2f
+glogvec.cpp	log	logf
+gmiscvec.cpp	ceil	ceilf
+		fabs	fabsf
+		floor	floorf
+gmodfvec.cpp	modf	modff
+gpowvec.cpp	pow	powf
+gsinhvec.cpp	sinh	sinhf
+gsinvec.cpp	sin	sinf
+gsqrtvec.cpp	sqrt	sqrtf
+gtanhvec.cpp	tanh	tanhf
+gtanvec.cpp	tan	tanf
+
+
+The principle code files for each of the generators consist of a *.cpp
+file and a header file, genmathv.h.  The code for each generator is built
+quite like each of its brethren:
+
+    There are two generating subroutines - one generates test vectors
+    for double precision functions, the other for float precision ones.
+    Each generating subroutine does the following:
+
+	1. Opens a disk file for output
+	2. Writes the first two lines of the vector file
+	3. Generates vectors, writes to disk
+
+    The main function is located at the very bottom of each program
+    file.
+
+Most of the generators use functions in the extra-precision library to
+produce base values.  The extra-precision functions, housed in directory
+tests/cygnus/tgen/qfloat, are defined in header file qfloat.h.  This file
+is a C++ wrapper file that defines inline functions for extra-precision
+arithmetic.
+
+To compile a generator, test.h and qfloat.h must be in their respective
+directories and the extra-precision library, qfloatx.a, must be located
+in the qfloat directory.  The makefile in this (the tgen) directory is
+fairly straightforward.
+
+K.B. Williams
+Kbwms@aol.com

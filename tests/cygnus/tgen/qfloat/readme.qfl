@@ -1,0 +1,12 @@
+The following warnings are okay.  The constants mentioned simply have
+too many digits of accuracy for the precision specified for constant
+NQ in header file qhead.h.
+
+qconst.c:163: warning: excess elements in array initializer after `qzero'
+qexp.c:26: warning: excess elements in array initializer after `C2'
+qlog.c:25: warning: excess elements in array initializer after `C2'
+qlog10.c:10: warning: excess elements in array initializer after `ql10e'
+
+
+K.B. Williams
+Kbwms@aol.com

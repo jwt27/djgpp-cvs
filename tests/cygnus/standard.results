@@ -1,0 +1,548 @@
+0.0 divided by 0.0 gives NaN
+testing rounding
+testing fcvtbuf
+testing fcvt/fcvtf
+testing gcvt/gcvtf
+testing ecvtbuf
+testing ecvt/ecvtf
+testing strtod
+testing nan
+testing nan print
+testing nanf
+testing nanf print
+testing infinity
+testing infinity print
+testing infinityf
+testing infinityf print
+testing scanf
+testing sprintf
+testing atof
+testing atoff
+testing strtodf
+testing atoi
+testing atol
+testing strtol
+testing strcmp
+testing strcpy
+testing strcat
+testing strncat
+testing strncmp
+testing strncpy
+testing strlen
+testing strchr
+testing index
+testing strrchr
+testing rindex
+testing strpbrk
+testing strstr
+testing strspn
+testing strcspn
+testing strtok
+testing memcmp
+testing memchr
+testing memcpy
+testing memset
+testing bcopy
+testing bzero
+testing bcmp
+testing acos
+testing acosf
+testing acosh
+testing acoshf
+testing asin
+testing asinf
+asinf:20, inaccurate answer: bit 33 (bfee598560000000 bfee5985a0000000) (-0.948428 -0.948428)
+asinf:21, inaccurate answer: bit 33 (bfeb235320000000 bfeb235360000000) (-0.848062 -0.848062)
+asinf:22, inaccurate answer: bit 33 (bfe841dec0000000 bfe841df00000000) (-0.758041 -0.758041)
+asinf:23, inaccurate answer: bit 33 (bfe59aad80000000 bfe59aadc0000000) (-0.675132 -0.675132)
+asinf:24, inaccurate answer: bit 33 (bfe31df400000000 bfe31df440000000) (-0.597406 -0.597407)
+asinf:25, inaccurate answer: bit 33 (bfe0c15240000000 bfe0c15280000000) (-0.523599 -0.523599)
+asinf:26, inaccurate answer: bit 33 (bfe31df400000000 bfe31df440000000) (-0.597406 -0.597407)
+asinf:27, inaccurate answer: bit 33 (bfe1ec2300000000 bfe1ec2340000000) (-0.560075 -0.560075)
+asinf:28, inaccurate answer: bit 33 (bfe0c15240000000 bfe0c15280000000) (-0.523599 -0.523599)
+asinf:38, inaccurate answer: bit 33 (3fe0c15240000000 3fe0c15280000000) (0.523599 0.523599)
+asinf:39, inaccurate answer: bit 33 (3fe1ec2300000000 3fe1ec2340000000) (0.560075 0.560075)
+asinf:40, inaccurate answer: bit 33 (3fe31df400000000 3fe31df440000000) (0.597406 0.597407)
+asinf:41, inaccurate answer: bit 33 (3fe59aad80000000 3fe59aadc0000000) (0.675132 0.675132)
+asinf:42, inaccurate answer: bit 33 (3fe841dec0000000 3fe841df00000000) (0.758041 0.758041)
+asinf:43, inaccurate answer: bit 33 (3feb235320000000 3feb235360000000) (0.848062 0.848062)
+asinf:44, inaccurate answer: bit 33 (3fee598560000000 3fee5985a0000000) (0.948428 0.948428)
+testing asinh
+testing asinhf
+testing atan
+testing atan2
+testing atan2f
+atan2f:273, inaccurate answer: bit 33 (bff921fb60000000 bff921fb20000000) (-1.5708 -1.5708)
+testing atanf
+testing atanh
+testing atanhf
+testing ceil
+testing ceilf
+testing cos
+testing cosf
+testing cosh
+testing coshf
+testing erf
+testing erfc
+testing erfcf
+testing erff
+testing exp
+testing expf
+testing fabs
+testing fabsf
+testing floor
+testing floorf
+testing fmod
+testing fmodf
+testing frexp
+testing frexpf
+testing gamma
+gamma:34, inaccurate answer: bit 58 (3f7261e6d250cf63 3f7261e6d250cf83) (0.0044879 0.0044879)
+gamma:35, inaccurate answer: bit 61 (bfaccbf9f5ed0f16 bfaccbf9f5ed0f1d) (-0.0562437 -0.0562437)
+testing gammaf
+gammaf:34, inaccurate answer: bit 33 (3f7261e6e0000000 3f7261e680000000) (0.0044879 0.0044879)
+gammaf:35, inaccurate answer: bit 31 (bfaccbfa00000000 bfaccbf900000000) (-0.0562437 -0.0562437)
+gammaf:51, inaccurate answer: bit 33 (3ff5776f20000000 3ff5776f60000000) (1.34166 1.34166)
+testing hypot
+testing hypotf
+testing j0
+j0:80, inaccurate answer: bit 60 (bf483a04fad8027b bf483a04fad8026e) (-0.000739338 -0.000739338)
+testing j0f
+j0f:69, inaccurate answer: bit 33 (3fc80ffa80000000 3fc80ffac0000000) (0.187988 0.187988)
+j0f:79, inaccurate answer: bit 33 (3f8fe78de0000000 3f8fe78e20000000) (0.0155784 0.0155784)
+j0f:80, inaccurate answer: bit 30 (bf48398020000000 bf483982a0000000) (-0.000739276 -0.000739278)
+j0f:141, inaccurate answer: bit 33 (bfd6f73120000000 bfd6f73160000000) (-0.358837 -0.358837)
+j0f:157, inaccurate answer: bit 33 (bfce4b89e0000000 bfce4b8a20000000) (-0.23668 -0.23668)
+j0f:159, inaccurate answer: bit 33 (bfcbd8fc20000000 bfcbd8fc80000000) (-0.217559 -0.217559)
+j0f:214, inaccurate answer: bit 33 (3fb381b060000000 3fb381b0a0000000) (0.0761976 0.0761977)
+testing j1
+j1:126, inaccurate answer: bit 61 (bf73d6707390e02c bf73d6707390e025) (-0.00484318 -0.00484318)
+testing j1f
+j1f:75, inaccurate answer: bit 33 (3fe18c50c0000000 3fe18c5100000000) (0.548378 0.548378)
+j1f:83, inaccurate answer: bit 33 (3fdfd063c0000000 3fdfd06420000000) (0.497094 0.497094)
+j1f:84, inaccurate answer: bit 33 (3fdf4f4860000000 3fdf4f48c0000000) (0.489214 0.489214)
+j1f:85, inaccurate answer: bit 32 (3fdec931e0000000 3fdec93260000000) (0.48103 0.48103)
+j1f:86, inaccurate answer: bit 33 (3fde3e3f80000000 3fde3e3fc0000000) (0.472549 0.472549)
+j1f:87, inaccurate answer: bit 32 (3fddae9140000000 3fddae91c0000000) (0.46378 0.46378)
+j1f:88, inaccurate answer: bit 33 (3fdd1a4820000000 3fdd1a4880000000) (0.454729 0.454729)
+j1f:89, inaccurate answer: bit 32 (3fdc8185e0000000 3fdc818660000000) (0.445405 0.445406)
+j1f:90, inaccurate answer: bit 32 (3fdbe46d20000000 3fdbe46da0000000) (0.435817 0.435817)
+j1f:91, inaccurate answer: bit 33 (3fdb432160000000 3fdb4321a0000000) (0.425972 0.425972)
+j1f:92, inaccurate answer: bit 33 (3fda9dc6c0000000 3fda9dc700000000) (0.41588 0.41588)
+j1f:93, inaccurate answer: bit 33 (3fd9f48260000000 3fd9f482a0000000) (0.405549 0.405549)
+j1f:95, inaccurate answer: bit 33 (3fd896d360000000 3fd896d3c0000000) (0.384206 0.384206)
+j1f:96, inaccurate answer: bit 33 (3fd7e2b620000000 3fd7e2b660000000) (0.373212 0.373212)
+j1f:97, inaccurate answer: bit 33 (3fd72b49a0000000 3fd72b49e0000000) (0.362017 0.362017)
+j1f:99, inaccurate answer: bit 33 (3fd5b32460000000 3fd5b324a0000000) (0.339059 0.339059)
+j1f:102, inaccurate answer: bit 33 (3fd36a17c0000000 3fd36a1820000000) (0.30335 0.30335)
+j1f:104, inaccurate answer: bit 33 (3fd1d817c0000000 3fd1d81800000000) (0.278814 0.278814)
+j1f:107, inaccurate answer: bit 33 (3fcedd0280000000 3fcedd02e0000000) (0.24112 0.24112)
+j1f:109, inaccurate answer: bit 33 (3fcb9618c0000000 3fcb961920000000) (0.215518 0.215518)
+j1f:111, inaccurate answer: bit 33 (3fc8460940000000 3fc8460980000000) (0.189637 0.189637)
+j1f:125, inaccurate answer: bit 32 (3f7fc311c0000000 3f7fc310e0000000) (0.00775439 0.00775439)
+j1f:126, inaccurate answer: bit 33 (bf73d663a0000000 bf73d66360000000) (-0.00484313 -0.00484313)
+j1f:127, inaccurate answer: bit 33 (bf91c01200000000 bf91c011c0000000) (-0.0173343 -0.0173342)
+j1f:130, inaccurate answer: bit 33 (bfabaf7aa0000000 bfabaf7ae0000000) (-0.0540732 -0.0540732)
+j1f:141, inaccurate answer: bit 33 (bfc68397c0000000 bfc6839800000000) (-0.175891 -0.175891)
+j1f:143, inaccurate answer: bit 33 (bfc8ff48c0000000 bfc8ff4900000000) (-0.195291 -0.195291)
+j1f:147, inaccurate answer: bit 33 (bfcd936360000000 bfcd9363a0000000) (-0.23106 -0.23106)
+j1f:148, inaccurate answer: bit 33 (bfcea28ae0000000 bfcea28b20000000) (-0.239335 -0.239335)
+j1f:161, inaccurate answer: bit 33 (bfd4798920000000 bfd4798960000000) (-0.319918 -0.319918)
+j1f:191, inaccurate answer: bit 33 (3f9d077b60000000 3f9d077ba0000000) (0.0283489 0.0283489)
+j1f:199, inaccurate answer: bit 33 (bfb8e803a0000000 bfb8e803e0000000) (-0.0972903 -0.0972903)
+j1f:200, inaccurate answer: bit 33 (bfb952d140000000 bfb952d180000000) (-0.0989199 -0.09892)
+j1f:209, inaccurate answer: bit 33 (3f34a69fe0000000 3f34a69fa0000000) (0.000315107 0.000315107)
+j1f:214, inaccurate answer: bit 33 (bfad83ec60000000 bfad83eca0000000) (-0.0576471 -0.0576471)
+testing jn
+jn:389, inaccurate answer: bit 60 (3fc98165614821bf 3fc98165614821b1) (0.199261 0.199261)
+jn:390, inaccurate answer: bit 60 (3fb09bc451605e03 3fb09bc451605dfa) (0.0648768 0.0648768)
+jn:391, inaccurate answer: bit 60 (3f90d3ce7f03d99f 3f90d3ce7f03d996) (0.016433 0.016433)
+jn:392, inaccurate answer: bit 60 (3f6bfc097e7718c5 3f6bfc097e7718b7) (0.00341608 0.00341608)
+jn:807, inaccurate answer: bit 61 (bf8d9c98ef232f86 bf8d9c98ef232f82) (-0.0144588 -0.0144588)
+jn:829, inaccurate answer: bit 60 (3f75544960c77536 3f75544960c7753f) (0.00520734 0.00520734)
+jn:835, inaccurate answer: bit 61 (bf964f67056be037 bf964f67056be031) (-0.0217873 -0.0217873)
+jn:862, inaccurate answer: bit 60 (bf9aea99777aa50d bf9aea99777aa515) (-0.0262856 -0.0262856)
+jn:887, inaccurate answer: bit 61 (3f73ea6c4f518bf5 3f73ea6c4f518bef) (0.00486224 0.00486224)
+jn:906, inaccurate answer: bit 59 (bf58a9b766aa1eaa bf58a9b766aa1ebb) (-0.00150531 -0.00150531)
+jn:923, inaccurate answer: bit 61 (bf5172d3dba28ab8 bf5172d3dba28ab2) (-0.00106497 -0.00106497)
+jn:987, inaccurate answer: bit 59 (3f46a76442a3db15 3f46a76442a3dafc) (0.000691341 0.000691341)
+jn:1066, inaccurate answer: bit 61 (3f652fc6f006f8aa 3f652fc6f006f8a3) (0.00258626 0.00258626)
+testing jnf
+jnf:343, inaccurate answer: bit 33 (3fd84fc360000000 3fd84fc3c0000000) (0.379868 0.379868)
+jnf:358, inaccurate answer: bit 33 (3fd984a520000000 3fd984a560000000) (0.398721 0.398721)
+jnf:363, inaccurate answer: bit 33 (3fd9e690a0000000 3fd9e69100000000) (0.404698 0.404698)
+jnf:384, inaccurate answer: bit 33 (3fc8c601c0000000 3fc8c60200000000) (0.193543 0.193543)
+jnf:385, inaccurate answer: bit 33 (3fafc5fe00000000 3fafc5fe40000000) (0.0620574 0.0620574)
+jnf:386, inaccurate answer: bit 33 (3f8fbabb00000000 3f8fbabb40000000) (0.0154929 0.0154929)
+jnf:387, inaccurate answer: bit 33 (3f6a040080000000 3f6a0400c0000000) (0.00317574 0.00317574)
+jnf:389, inaccurate answer: bit 30 (3fc9816540000000 3fc98167e0000000) (0.199261 0.199262)
+jnf:390, inaccurate answer: bit 31 (3fb09bc420000000 3fb09bc5e0000000) (0.0648768 0.0648769)
+jnf:391, inaccurate answer: bit 31 (3f90d3ce40000000 3f90d3d000000000) (0.016433 0.016433)
+jnf:392, inaccurate answer: bit 30 (3f6bfc0900000000 3f6bfc0be0000000) (0.00341608 0.00341608)
+jnf:403, inaccurate answer: bit 33 (3fdc8c3b40000000 3fdc8c3ba0000000) (0.446059 0.446059)
+jnf:408, inaccurate answer: bit 33 (3fdcd24a60000000 3fdcd24ac0000000) (0.450335 0.450335)
+jnf:413, inaccurate answer: bit 33 (3fdd14cca0000000 3fdd14cd00000000) (0.454394 0.454395)
+jnf:419, inaccurate answer: bit 33 (3fcdf7b740000000 3fcdf7b700000000) (0.234122 0.234122)
+jnf:421, inaccurate answer: bit 33 (3f97836100000000 3f978360c0000000) (0.0229621 0.0229621)
+jnf:423, inaccurate answer: bit 33 (3fdd8ed960000000 3fdd8ed9c0000000) (0.461844 0.461844)
+jnf:428, inaccurate answer: bit 33 (3fddc63d00000000 3fddc63d60000000) (0.465225 0.465225)
+jnf:433, inaccurate answer: bit 32 (3fddf9c660000000 3fddf9c6e0000000) (0.46837 0.46837)
+jnf:435, inaccurate answer: bit 33 (3fb7f45f40000000 3fb7f45f80000000) (0.0935726 0.0935726)
+jnf:436, inaccurate answer: bit 33 (3f9b7b75e0000000 3f9b7b7620000000) (0.0268382 0.0268382)
+jnf:437, inaccurate answer: bit 33 (3f79c3dfe0000000 3f79c3e020000000) (0.00629032 0.00629032)
+jnf:438, inaccurate answer: bit 33 (3fde296440000000 3fde2964a0000000) (0.471276 0.471276)
+jnf:448, inaccurate answer: bit 33 (3fde7c9ca0000000 3fde7c9ce0000000) (0.476356 0.476356)
+jnf:453, inaccurate answer: bit 33 (3fdea01900000000 3fdea01940000000) (0.478522 0.478522)
+jnf:463, inaccurate answer: bit 33 (3fdeda8d60000000 3fdeda8da0000000) (0.482089 0.482089)
+jnf:468, inaccurate answer: bit 33 (3fdef16ca0000000 3fdef16ce0000000) (0.483485 0.483485)
+jnf:478, inaccurate answer: bit 33 (3fdf123ea0000000 3fdf123ee0000000) (0.485489 0.485489)
+jnf:483, inaccurate answer: bit 33 (3fdf1c1e80000000 3fdf1c1ec0000000) (0.486091 0.486091)
+jnf:493, inaccurate answer: bit 33 (3fdf22a380000000 3fdf22a3c0000000) (0.486489 0.486489)
+jnf:498, inaccurate answer: bit 33 (3fdf1f3ba0000000 3fdf1f3be0000000) (0.486281 0.486281)
+jnf:508, inaccurate answer: bit 33 (3fdf0afd80000000 3fdf0afdc0000000) (0.485046 0.485046)
+jnf:513, inaccurate answer: bit 33 (3fdefa2020000000 3fdefa2060000000) (0.484016 0.484017)
+jnf:523, inaccurate answer: bit 33 (3fdecade80000000 3fdecadec0000000) (0.481132 0.481132)
+jnf:533, inaccurate answer: bit 33 (3fde8991a0000000 3fde8991e0000000) (0.477147 0.477147)
+jnf:578, inaccurate answer: bit 33 (3fdc8722a0000000 3fdc8722e0000000) (0.445748 0.445748)
+jnf:590, inaccurate answer: bit 33 (3fcd3f9220000000 3fcd3f9260000000) (0.228503 0.228503)
+jnf:591, inaccurate answer: bit 33 (3fb85a3760000000 3fb85a37a0000000) (0.0951266 0.0951266)
+jnf:595, inaccurate answer: bit 33 (3fcdde2ba0000000 3fcdde2be0000000) (0.233343 0.233343)
+jnf:611, inaccurate answer: bit 33 (3fbb9c9160000000 3fbb9c91a0000000) (0.107858 0.107858)
+jnf:642, inaccurate answer: bit 33 (3fa8358f00000000 3fa8358f40000000) (0.0472836 0.0472836)
+jnf:677, inaccurate answer: bit 33 (3faf2b81e0000000 3faf2b8220000000) (0.0608788 0.0608788)
+jnf:684, inaccurate answer: bit 33 (3fdbc8f240000000 3fdbc8f280000000) (0.43414 0.43414)
+jnf:694, inaccurate answer: bit 33 (3fdbb75240000000 3fdbb75280000000) (0.433064 0.433064)
+jnf:713, inaccurate answer: bit 33 (3fce7b1f00000000 3fce7b1f40000000) (0.238132 0.238132)
+jnf:714, inaccurate answer: bit 33 (3fdb6a1ee0000000 3fdb6a1f20000000) (0.428352 0.428352)
+jnf:716, inaccurate answer: bit 33 (3fc7df1080000000 3fc7df10c0000000) (0.186495 0.186495)
+jnf:718, inaccurate answer: bit 33 (3fcd308de0000000 3fcd308da0000000) (0.228044 0.228044)
+jnf:734, inaccurate answer: bit 33 (3fdae46920000000 3fdae46960000000) (0.420191 0.420191)
+jnf:748, inaccurate answer: bit 33 (3fc53039a0000000 3fc53039e0000000) (0.165534 0.165534)
+jnf:751, inaccurate answer: bit 33 (3fcb959760000000 3fcb9597a0000000) (0.215503 0.215503)
+jnf:752, inaccurate answer: bit 33 (3fb903b520000000 3fb903b560000000) (0.0977128 0.0977128)
+jnf:762, inaccurate answer: bit 33 (3fba786ca0000000 3fba786ce0000000) (0.1034 0.1034)
+jnf:768, inaccurate answer: bit 33 (3fbf5f66a0000000 3fbf5f66e0000000) (0.122549 0.122549)
+jnf:772, inaccurate answer: bit 33 (3fbbf87380000000 3fbbf873c0000000) (0.10926 0.10926)
+jnf:773, inaccurate answer: bit 33 (3fbc993840000000 3fbc993880000000) (0.111713 0.111713)
+jnf:783, inaccurate answer: bit 32 (3fb7098000000000 3fb7098080000000) (0.0899887 0.0899887)
+jnf:784, inaccurate answer: bit 33 (3fd8a067c0000000 3fd8a06800000000) (0.38479 0.38479)
+jnf:785, inaccurate answer: bit 33 (3fd88ce480000000 3fd88ce4c0000000) (0.383599 0.383599)
+jnf:786, inaccurate answer: bit 33 (3fcf5287c0000000 3fcf528820000000) (0.244706 0.244706)
+jnf:787, inaccurate answer: bit 33 (3fbe4cf6a0000000 3fbe4cf700000000) (0.118362 0.118362)
+jnf:790, inaccurate answer: bit 33 (3fd8afa0e0000000 3fd8afa120000000) (0.38572 0.38572)
+jnf:794, inaccurate answer: bit 33 (3fd8036fe0000000 3fd8037020000000) (0.37521 0.37521)
+jnf:795, inaccurate answer: bit 33 (3fd8d014c0000000 3fd8d01500000000) (0.3877 0.3877)
+jnf:798, inaccurate answer: bit 33 (3fad633040000000 3fad6330a0000000) (0.0573974 0.0573974)
+jnf:810, inaccurate answer: bit 33 (3fa5b4fdc0000000 3fa5b4fe00000000) (0.0423965 0.0423965)
+jnf:816, inaccurate answer: bit 33 (3fa1c923c0000000 3fa1c92420000000) (0.0347377 0.0347377)
+jnf:822, inaccurate answer: bit 33 (3fa0bb2880000000 3fa0bb28c0000000) (0.0326779 0.0326779)
+jnf:839, inaccurate answer: bit 33 (3fbcc867a0000000 3fbcc867e0000000) (0.112433 0.112433)
+jnf:841, inaccurate answer: bit 33 (bfa527d920000000 bfa527d980000000) (-0.0413196 -0.0413197)
+jnf:860, inaccurate answer: bit 33 (bfa6224b40000000 bfa6224b80000000) (-0.0432304 -0.0432304)
+jnf:862, inaccurate answer: bit 33 (bf9aea9980000000 bf9aea9940000000) (-0.0262856 -0.0262855)
+jnf:864, inaccurate answer: bit 33 (3fbbbc5f40000000 3fbbbc5f80000000) (0.108343 0.108343)
+jnf:866, inaccurate answer: bit 33 (bfb0e5e660000000 bfb0e5e6a0000000) (-0.066008 -0.066008)
+jnf:888, inaccurate answer: bit 33 (bfb6fb6ac0000000 bfb6fb6b00000000) (-0.0897738 -0.0897738)
+jnf:897, inaccurate answer: bit 33 (bfb7da0660000000 bfb7da06a0000000) (-0.0931705 -0.0931706)
+jnf:904, inaccurate answer: bit 33 (bf9de870e0000000 bf9de87140000000) (-0.029207 -0.029207)
+jnf:906, inaccurate answer: bit 29 (bf58a9b760000000 bf58a9b220000000) (-0.00150531 -0.0015053)
+jnf:910, inaccurate answer: bit 33 (bfad609320000000 bfad609360000000) (-0.0573774 -0.0573774)
+jnf:912, inaccurate answer: bit 33 (3f9712d8a0000000 3f9712d8e0000000) (0.0225328 0.0225328)
+jnf:923, inaccurate answer: bit 33 (bf5172d3e0000000 bf5172d3a0000000) (-0.00106497 -0.00106497)
+jnf:935, inaccurate answer: bit 33 (bfaebdc740000000 bfaebdc7a0000000) (-0.0600416 -0.0600417)
+jnf:937, inaccurate answer: bit 33 (3fa1254ba0000000 3fa1254be0000000) (0.0334877 0.0334877)
+jnf:946, inaccurate answer: bit 33 (3fadb024e0000000 3fadb02520000000) (0.0579845 0.0579845)
+jnf:963, inaccurate answer: bit 33 (bfae92ad20000000 bfae92ad60000000) (-0.0597128 -0.0597128)
+jnf:984, inaccurate answer: bit 33 (3fb9596440000000 3fb9596480000000) (0.0990203 0.0990203)
+jnf:986, inaccurate answer: bit 33 (bfb9ea74a0000000 bfb9ea74e0000000) (-0.101234 -0.101234)
+jnf:987, inaccurate answer: bit 29 (3f46a76440000000 3f46a75e40000000) (0.000691341 0.000691339)
+jnf:989, inaccurate answer: bit 33 (3fb8f03000000000 3fb8f03040000000) (0.097415 0.097415)
+jnf:998, inaccurate answer: bit 33 (bfb83d34c0000000 bfb83d3500000000) (-0.0946839 -0.0946839)
+jnf:999, inaccurate answer: bit 33 (3f9e2ffac0000000 3f9e2ffb00000000) (0.0294799 0.0294799)
+jnf:1015, inaccurate answer: bit 33 (3f9f9f63e0000000 3f9f9f6420000000) (0.0308815 0.0308815)
+jnf:1017, inaccurate answer: bit 33 (bf9064ec80000000 bf9064ece0000000) (-0.01601 -0.01601)
+jnf:1048, inaccurate answer: bit 33 (3f74a1e560000000 3f74a1e5a0000000) (0.00503721 0.00503721)
+jnf:1058, inaccurate answer: bit 33 (bfb3eeccc0000000 bfb3eecd00000000) (-0.0778625 -0.0778626)
+jnf:1059, inaccurate answer: bit 33 (3fab366e20000000 3fab366e60000000) (0.0531496 0.0531497)
+jnf:1060, inaccurate answer: bit 33 (3fb51c9840000000 3fb51c9880000000) (0.0824676 0.0824676)
+jnf:1071, inaccurate answer: bit 33 (3fa87e1f60000000 3fa87e1fa0000000) (0.0478372 0.0478372)
+testing ldexp
+testing ldexpf
+testing log
+testing log10
+testing log10f
+testing log1p
+log1p:3, inaccurate answer: bit 61 (3f944723d272a7f6 3f944723d272a7f1) (0.0198026 0.0198026)
+log1p:4, inaccurate answer: bit 61 (3fa414bcc0a3665d 3fa414bcc0a36658) (0.0392207 0.0392207)
+log1p:5, inaccurate answer: bit 61 (3fadd56c1d883ee6 3fadd56c1d883edf) (0.0582689 0.0582689)
+log1p:6, inaccurate answer: bit 61 (3fb3b3b802beeb94 3fb3b3b802beeb8f) (0.076961 0.076961)
+log1p:7, inaccurate answer: bit 61 (3fb8663f793c46cc 3fb8663f793c46c7) (0.0953102 0.0953102)
+log1p:8, inaccurate answer: bit 61 (3fbd031bd5179e02 3fbd031bd5179dfc) (0.113329 0.113329)
+testing log1pf
+testing log2
+testing log2f
+testing logf
+testing modf
+testing modff
+testing pow
+testing powf
+testing sin
+testing sinf
+testing sinh
+testing sinhf
+testing sqrt
+testing sqrtf
+testing tan
+testing tanf
+testing tanh
+testing tanhf
+testing y0
+testing y0f
+y0f:32, inaccurate answer: bit 33 (3f86aa0120000000 3f86aa00e0000000) (0.0110664 0.0110664)
+y0f:87, inaccurate answer: bit 33 (3fde7ee300000000 3fde7ee340000000) (0.476495 0.476495)
+y0f:88, inaccurate answer: bit 33 (3fde161500000000 3fde161540000000) (0.470098 0.470098)
+y0f:89, inaccurate answer: bit 33 (3fdda706a0000000 3fdda706e0000000) (0.463319 0.46332)
+y0f:93, inaccurate answer: bit 33 (3fdbafa340000000 3fdbafa380000000) (0.432595 0.432595)
+y0f:95, inaccurate answer: bit 33 (3fda92dca0000000 3fda92dce0000000) (0.415214 0.415214)
+y0f:141, inaccurate answer: bit 33 (bfc124c220000000 bfc124c260000000) (-0.133934 -0.133934)
+y0f:143, inaccurate answer: bit 33 (bfc3dac3c0000000 bfc3dac400000000) (-0.155114 -0.155114)
+y0f:147, inaccurate answer: bit 33 (bfc8ec1800000000 bfc8ec1840000000) (-0.194705 -0.194705)
+y0f:148, inaccurate answer: bit 33 (bfca1c1780000000 bfca1c17c0000000) (-0.203982 -0.203982)
+y0f:151, inaccurate answer: bit 33 (bfcd77ac60000000 bfcd77aca0000000) (-0.230215 -0.230215)
+y0f:160, inaccurate answer: bit 33 (bfd2c37a00000000 bfd2c37a40000000) (-0.293181 -0.293181)
+y0f:161, inaccurate answer: bit 33 (bfd31c9320000000 bfd31c9360000000) (-0.298619 -0.298619)
+y0f:166, inaccurate answer: bit 33 (3fb4e49f00000000 3fb4e49f40000000) (0.0816135 0.0816135)
+y0f:191, inaccurate answer: bit 33 (3f9bb5bd60000000 3f9bb5bda0000000) (0.0270605 0.0270605)
+y0f:199, inaccurate answer: bit 33 (bfb8d7f660000000 bfb8d7f6a0000000) (-0.0970453 -0.0970453)
+y0f:212, inaccurate answer: bit 33 (bfb8a468e0000000 bfb8a46920000000) (-0.0962587 -0.0962587)
+y0f:215, inaccurate answer: bit 33 (bf8dab6140000000 bf8dab6180000000) (-0.014487 -0.014487)
+testing y1
+y1:70, inaccurate answer: bit 61 (bfac32ea37e86b17 bfac32ea37e86b1d) (-0.0550759 -0.0550759)
+y1:73, inaccurate answer: bit 59 (bf749c6e3dd329bc bf749c6e3dd329d4) (-0.005032 -0.005032)
+y1:74, inaccurate answer: bit 61 (3f86eeebe987ae9e 3f86eeebe987ae9a) (0.0111979 0.0111979)
+testing y1f
+y1f:67, inaccurate answer: bit 33 (bfbb667a40000000 bfbb667a80000000) (-0.107032 -0.107032)
+y1f:70, inaccurate answer: bit 32 (bfac32ec60000000 bfac32ebe0000000) (-0.055076 -0.055076)
+y1f:72, inaccurate answer: bit 33 (bf9601e3c0000000 bf9601e400000000) (-0.0214916 -0.0214916)
+y1f:73, inaccurate answer: bit 30 (bf749c7f00000000 bf749c7ba0000000) (-0.00503206 -0.00503205)
+y1f:74, inaccurate answer: bit 32 (3f86eee3a0000000 3f86eee320000000) (0.0111978 0.0111978)
+y1f:75, inaccurate answer: bit 32 (3f9bd83c20000000 3f9bd83ca0000000) (0.0271921 0.0271921)
+y1f:76, inaccurate answer: bit 33 (3fa5fcd200000000 3fa5fcd1c0000000) (0.0429445 0.0429445)
+y1f:79, inaccurate answer: bit 33 (3fb6b450e0000000 3fb6b45120000000) (0.0886889 0.0886889)
+y1f:83, inaccurate answer: bit 29 (3fc2ad7200000000 3fc2ad6dc0000000) (0.145918 0.145918)
+y1f:84, inaccurate answer: bit 30 (3fc46ae4c0000000 3fc46ae100000000) (0.159512 0.159512)
+y1f:85, inaccurate answer: bit 30 (3fc61e9820000000 3fc61e9500000000) (0.172809 0.172808)
+y1f:86, inaccurate answer: bit 30 (3fc7c85ac0000000 3fc7c85800000000) (0.185802 0.185802)
+y1f:87, inaccurate answer: bit 30 (3fc967fbe0000000 3fc967f9a0000000) (0.198486 0.198486)
+y1f:88, inaccurate answer: bit 31 (3fcafd4c20000000 3fcafd4a40000000) (0.210855 0.210855)
+y1f:89, inaccurate answer: bit 31 (3fcc881ce0000000 3fcc881b80000000) (0.222904 0.222904)
+y1f:90, inaccurate answer: bit 31 (3fce084120000000 3fce083fe0000000) (0.234627 0.234627)
+y1f:91, inaccurate answer: bit 31 (3fcf7d8d00000000 3fcf7d8bc0000000) (0.246019 0.246019)
+y1f:92, inaccurate answer: bit 32 (3fd073eb00000000 3fd073ea80000000) (0.257075 0.257075)
+y1f:93, inaccurate answer: bit 32 (3fd12379c0000000 3fd1237940000000) (0.26779 0.26779)
+y1f:94, inaccurate answer: bit 33 (3fd1cd5f00000000 3fd1cd5ea0000000) (0.27816 0.27816)
+y1f:95, inaccurate answer: bit 33 (3fd27187e0000000 3fd27187a0000000) (0.288179 0.288179)
+y1f:107, inaccurate answer: bit 33 (3fd84e4760000000 3fd84e47a0000000) (0.379778 0.379778)
+y1f:110, inaccurate answer: bit 33 (3fd938f920000000 3fd938f960000000) (0.394102 0.394102)
+y1f:125, inaccurate answer: bit 33 (3fda7744e0000000 3fda774520000000) (0.41353 0.41353)
+y1f:127, inaccurate answer: bit 33 (3fda392120000000 3fda392160000000) (0.409737 0.409737)
+y1f:128, inaccurate answer: bit 33 (3fda114b40000000 3fda114b80000000) (0.407306 0.407306)
+y1f:130, inaccurate answer: bit 33 (3fd9b07500000000 3fd9b07540000000) (0.401395 0.401395)
+y1f:137, inaccurate answer: bit 33 (3fd7b246e0000000 3fd7b24720000000) (0.370256 0.370256)
+y1f:141, inaccurate answer: bit 33 (3fd6209740000000 3fd6209780000000) (0.345739 0.345739)
+y1f:152, inaccurate answer: bit 33 (3fd07b3c20000000 3fd07b3c60000000) (0.257522 0.257522)
+y1f:163, inaccurate answer: bit 33 (3fcfdfbcc0000000 3fcfdfbd00000000) (0.249015 0.249015)
+y1f:166, inaccurate answer: bit 33 (bfc91c9b40000000 bfc91c9b80000000) (-0.196185 -0.196186)
+y1f:168, inaccurate answer: bit 33 (3fc8bd7e00000000 3fc8bd7e40000000) (0.193283 0.193283)
+y1f:182, inaccurate answer: bit 32 (bf58c9ac20000000 bf58c9aca0000000) (-0.00151293 -0.00151293)
+y1f:189, inaccurate answer: bit 33 (3fb3e641a0000000 3fb3e641e0000000) (0.0777322 0.0777322)
+y1f:195, inaccurate answer: bit 33 (bfad145260000000 bfad1452a0000000) (-0.0567957 -0.0567957)
+y1f:202, inaccurate answer: bit 33 (bfb806a7a0000000 bfb806a7e0000000) (-0.0938515 -0.0938516)
+y1f:208, inaccurate answer: bit 33 (3fb5fc4640000000 3fb5fc4680000000) (0.0858807 0.0858807)
+y1f:209, inaccurate answer: bit 33 (3fb90072a0000000 3fb90072e0000000) (0.0976631 0.0976631)
+y1f:212, inaccurate answer: bit 33 (3f7d4e58e0000000 3f7d4e5940000000) (0.0071548 0.0071548)
+testing yn
+yn:518, inaccurate answer: bit 61 (bfb14a48ad86ec95 bfb14a48ad86ec91) (-0.0675397 -0.0675397)
+yn:523, inaccurate answer: bit 61 (bfabf19379a74c3a bfabf19379a74c33) (-0.0545775 -0.0545775)
+yn:528, inaccurate answer: bit 61 (bfa55a868b94bb0f bfa55a868b94bb14) (-0.0417063 -0.0417063)
+yn:533, inaccurate answer: bit 61 (bf9da0422ce650f5 bf9da0422ce650f0) (-0.0289317 -0.0289317)
+yn:538, inaccurate answer: bit 60 (bf90a63adf435ba6 bf90a63adf435bae) (-0.0162591 -0.0162591)
+yn:543, inaccurate answer: bit 58 (bf6e43945d4dacd0 bf6e43945d4dad0e) (-0.00369433 -0.00369433)
+yn:548, inaccurate answer: bit 60 (3f81ef2b469cc640 3f81ef2b469cc632) (0.00875696 0.00875696)
+yn:553, inaccurate answer: bit 60 (3f95985794637553 3f95985794637561) (0.021089 0.021089)
+yn:704, inaccurate answer: bit 60 (bfaa465676466c24 bfaa465676466c1c) (-0.0513179 -0.0513179)
+yn:714, inaccurate answer: bit 61 (bf9ec50d51cc5a49 bf9ec50d51cc5a4d) (-0.0300486 -0.0300486)
+yn:724, inaccurate answer: bit 59 (bf8275be8337b62c bf8275be8337b642) (-0.00901364 -0.00901364)
+yn:729, inaccurate answer: bit 57 (3f57032e256fb26f 3f57032e256fb20a) (0.00140457 0.00140457)
+yn:734, inaccurate answer: bit 60 (3f881097330f7196 3f881097330f71a4) (0.0117504 0.0117504)
+yn:739, inaccurate answer: bit 61 (3f968c2cc575edb3 3f968c2cc575edad) (0.0220191 0.0220191)
+yn:749, inaccurate answer: bit 60 (3fa5a91ecfe1897f 3fa5a91ecfe18973) (0.0423059 0.0423059)
+yn:754, inaccurate answer: bit 61 (3faac8f019ec2492 3faac8f019ec248b) (0.0523143 0.0523143)
+yn:759, inaccurate answer: bit 61 (3fafdc19039f4beb 3fafdc19039f4bf0) (0.0622261 0.0622261)
+yn:803, inaccurate answer: bit 59 (bf78092162df4e11 bf78092162df4e24) (-0.00586808 -0.00586808)
+yn:836, inaccurate answer: bit 61 (bf9d216a893917e5 bf9d216a893917e9) (-0.0284478 -0.0284478)
+yn:842, inaccurate answer: bit 61 (bf8d1a1ace6922cb bf8d1a1ace6922d0) (-0.0142099 -0.0142099)
+yn:855, inaccurate answer: bit 61 (bf89ac909cc52343 bf89ac909cc52348) (-0.0125362 -0.0125362)
+yn:861, inaccurate answer: bit 60 (3f895b04e4459a3c 3f895b04e4459a34) (0.0123806 0.0123806)
+yn:880, inaccurate answer: bit 61 (3f75c4b9b364ed56 3f75c4b9b364ed5a) (0.00531457 0.00531457)
+yn:932, inaccurate answer: bit 61 (3f7d956aec4fc025 3f7d956aec4fc029) (0.00722257 0.00722257)
+yn:957, inaccurate answer: bit 59 (bf6efed64182e08c bf6efed64182e09f) (-0.00378363 -0.00378363)
+yn:1016, inaccurate answer: bit 61 (bf98d90899633801 bf98d908996337fd) (-0.0242654 -0.0242654)
+testing ynf
+ynf:346, inaccurate answer: bit 33 (c01e6ecd80000000 c01e6ecdc0000000) (-7.60821 -7.60821)
+ynf:359, inaccurate answer: bit 33 (bfedd03240000000 bfedd03280000000) (-0.931665 -0.931665)
+ynf:361, inaccurate answer: bit 33 (c0193f0640000000 c0193f0680000000) (-6.31155 -6.31155)
+ynf:368, inaccurate answer: bit 33 (bfdecdeb20000000 bfdecdeb60000000) (-0.481318 -0.481318)
+ynf:378, inaccurate answer: bit 33 (bfdcf49400000000 bfdcf49440000000) (-0.452428 -0.452428)
+ynf:383, inaccurate answer: bit 33 (bfdc09bd40000000 bfdc09bd80000000) (-0.438094 -0.438094)
+ynf:386, inaccurate answer: bit 33 (c012ecdea0000000 c012ecdee0000000) (-4.73132 -4.73132)
+ynf:403, inaccurate answer: bit 31 (bfd867ce80000000 bfd867d040000000) (-0.381336 -0.381336)
+ynf:404, inaccurate answer: bit 33 (bfe8319b40000000 bfe8319ba0000000) (-0.756055 -0.756056)
+ynf:408, inaccurate answer: bit 31 (bfd7813c80000000 bfd7813e00000000) (-0.367263 -0.367263)
+ynf:409, inaccurate answer: bit 33 (bfe7ad1540000000 bfe7ad1580000000) (-0.739878 -0.739878)
+ynf:413, inaccurate answer: bit 31 (bfd69b4d60000000 bfd69b4ea0000000) (-0.353229 -0.353229)
+ynf:414, inaccurate answer: bit 33 (bfe72c9140000000 bfe72c9180000000) (-0.72419 -0.72419)
+ynf:418, inaccurate answer: bit 31 (bfd5b5f5e0000000 bfd5b5f700000000) (-0.339231 -0.339231)
+ynf:419, inaccurate answer: bit 33 (bfe6afbea0000000 bfe6afbee0000000) (-0.708953 -0.708953)
+ynf:423, inaccurate answer: bit 31 (bfd4d12dc0000000 bfd4d12ec0000000) (-0.325267 -0.325267)
+ynf:424, inaccurate answer: bit 33 (bfe63652a0000000 bfe63652e0000000) (-0.694131 -0.694131)
+ynf:428, inaccurate answer: bit 32 (bfd3ecef60000000 bfd3ecf040000000) (-0.311336 -0.311337)
+ynf:433, inaccurate answer: bit 32 (bfd3093780000000 bfd3093820000000) (-0.297438 -0.297438)
+ynf:434, inaccurate answer: bit 33 (bfe54c9ba0000000 bfe54c9be0000000) (-0.665602 -0.665602)
+ynf:438, inaccurate answer: bit 32 (bfd2260540000000 bfd22605e0000000) (-0.283571 -0.283571)
+ynf:443, inaccurate answer: bit 32 (bfd1435a00000000 bfd1435a80000000) (-0.269736 -0.269736)
+ynf:448, inaccurate answer: bit 32 (bfd0613920000000 bfd06139a0000000) (-0.255934 -0.255934)
+ynf:453, inaccurate answer: bit 31 (bfceff4f80000000 bfceff5080000000) (-0.242166 -0.242167)
+ynf:458, inaccurate answer: bit 33 (bfcd3d5a00000000 bfcd3d5a60000000) (-0.228435 -0.228435)
+ynf:463, inaccurate answer: bit 32 (bfcb7ca320000000 bfcb7ca3e0000000) (-0.214741 -0.214741)
+ynf:468, inaccurate answer: bit 32 (bfc9bd3f80000000 bfc9bd4020000000) (-0.201088 -0.201088)
+ynf:488, inaccurate answer: bit 33 (bfc2ceee60000000 bfc2ceeea0000000) (-0.14694 -0.14694)
+ynf:498, inaccurate answer: bit 32 (bfbec52920000000 bfbec529a0000000) (-0.120196 -0.120196)
+ynf:508, inaccurate answer: bit 32 (bfb7fdcec0000000 bfb7fdcf60000000) (-0.0937165 -0.0937166)
+ynf:509, inaccurate answer: bit 33 (bfdec46da0000000 bfdec46de0000000) (-0.480739 -0.480739)
+ynf:513, inaccurate answer: bit 33 (bfb4a167e0000000 bfb4a16840000000) (-0.0805879 -0.0805879)
+ynf:518, inaccurate answer: bit 32 (bfb14a4980000000 bfb14a4a00000000) (-0.0675398 -0.0675398)
+ynf:523, inaccurate answer: bit 33 (bfabf19520000000 bfabf194c0000000) (-0.0545775 -0.0545775)
+ynf:528, inaccurate answer: bit 32 (bfa55a8820000000 bfa55a8780000000) (-0.0417063 -0.0417063)
+ynf:533, inaccurate answer: bit 33 (bf9da04560000000 bf9da045c0000000) (-0.0289317 -0.0289317)
+ynf:538, inaccurate answer: bit 33 (bf90a63e20000000 bf90a63dc0000000) (-0.0162592 -0.0162592)
+ynf:539, inaccurate answer: bit 33 (bfda77a540000000 bfda77a580000000) (-0.413553 -0.413553)
+ynf:540, inaccurate answer: bit 33 (bfe739e380000000 bfe739e3c0000000) (-0.725816 -0.725817)
+ynf:541, inaccurate answer: bit 33 (bff52aed60000000 bff52aeda0000000) (-1.32298 -1.32298)
+ynf:542, inaccurate answer: bit 33 (c009d898c0000000 c009d89900000000) (-3.23076 -3.23076)
+ynf:543, inaccurate answer: bit 30 (bf6e43ae00000000 bf6e43b040000000) (-0.00369438 -0.00369439)
+ynf:548, inaccurate answer: bit 30 (3f81ef24e0000000 3f81ef22a0000000) (0.00875691 0.0087569)
+ynf:553, inaccurate answer: bit 32 (3f95985480000000 3f95985500000000) (0.0210889 0.0210889)
+ynf:558, inaccurate answer: bit 33 (3fa10c2300000000 3fa10c2340000000) (0.0332957 0.0332957)
+ynf:588, inaccurate answer: bit 33 (3fba83d880000000 3fba83d8c0000000) (0.103574 0.103574)
+ynf:603, inaccurate answer: bit 33 (3fc17a23e0000000 3fc17a2420000000) (0.13654 0.13654)
+ynf:613, inaccurate answer: bit 33 (3fc42c5720000000 3fc42c5760000000) (0.157603 0.157603)
+ynf:614, inaccurate answer: bit 33 (bfcfc436c0000000 bfcfc43700000000) (-0.248175 -0.248176)
+ynf:616, inaccurate answer: bit 33 (bfecddf040000000 bfecddf080000000) (-0.902092 -0.902092)
+ynf:617, inaccurate answer: bit 33 (bffd166680000000 bffd1666c0000000) (-1.81797 -1.81797)
+ynf:627, inaccurate answer: bit 33 (bffb397ce0000000 bffb397d20000000) (-1.70154 -1.70154)
+ynf:629, inaccurate answer: bit 33 (bfcb880660000000 bfcb8806a0000000) (-0.215089 -0.215089)
+ynf:631, inaccurate answer: bit 33 (bfeb121140000000 bfeb121180000000) (-0.845955 -0.845956)
+ynf:632, inaccurate answer: bit 33 (bffa5c65e0000000 bffa5c6620000000) (-1.64756 -1.64756)
+ynf:639, inaccurate answer: bit 33 (bfc8b58060000000 bfc8b580a0000000) (-0.193039 -0.193039)
+ynf:640, inaccurate answer: bit 33 (bfdfe884a0000000 bfdfe884e0000000) (-0.498567 -0.498567)
+ynf:642, inaccurate answer: bit 33 (bff8c1aa20000000 bff8c1aa60000000) (-1.54728 -1.54728)
+ynf:674, inaccurate answer: bit 32 (bfbdbe9d20000000 bfbdbe9da0000000) (-0.11619 -0.11619)
+ynf:675, inaccurate answer: bit 33 (bfdbad5e80000000 bfdbad5ee0000000) (-0.432457 -0.432457)
+ynf:676, inaccurate answer: bit 33 (bfe6b84980000000 bfe6b849c0000000) (-0.709996 -0.709996)
+ynf:677, inaccurate answer: bit 33 (bff4357a60000000 bff4357aa0000000) (-1.26306 -1.26306)
+ynf:685, inaccurate answer: bit 33 (bfda7e4700000000 bfda7e4740000000) (-0.413957 -0.413957)
+ynf:689, inaccurate answer: bit 32 (bfb565d440000000 bfb565d4c0000000) (-0.083585 -0.0835851)
+ynf:690, inaccurate answer: bit 33 (bfd9e74e80000000 bfd9e74ec0000000) (-0.404743 -0.404743)
+ynf:695, inaccurate answer: bit 33 (bfd9509d40000000 bfd9509d80000000) (-0.395545 -0.395545)
+ynf:696, inaccurate answer: bit 33 (bfe526bcc0000000 bfe526bd00000000) (-0.660979 -0.660979)
+ynf:699, inaccurate answer: bit 32 (bfafc252e0000000 bfafc25380000000) (-0.0620294 -0.0620295)
+ynf:704, inaccurate answer: bit 33 (bfaa4657e0000000 bfaa465780000000) (-0.0513179 -0.0513179)
+ynf:709, inaccurate answer: bit 32 (bfa4d0e3a0000000 bfa4d0e460000000) (-0.0406562 -0.0406562)
+ynf:719, inaccurate answer: bit 31 (bf93f7b3c0000000 bf93f7b220000000) (-0.0194996 -0.0194996)
+ynf:724, inaccurate answer: bit 30 (bf8275c3e0000000 bf8275c100000000) (-0.00901368 -0.00901366)
+ynf:729, inaccurate answer: bit 28 (3f570303a0000000 3f57030ee0000000) (0.00140453 0.00140454)
+ynf:739, inaccurate answer: bit 31 (3f968c2a20000000 3f968c2be0000000) (0.0220191 0.0220191)
+ynf:744, inaccurate answer: bit 32 (3fa07d4900000000 3fa07d4980000000) (0.0322058 0.0322059)
+ynf:749, inaccurate answer: bit 31 (3fa5a91d80000000 3fa5a91c60000000) (0.0423059 0.0423058)
+ynf:754, inaccurate answer: bit 32 (3faac8eee0000000 3faac8ef60000000) (0.0523142 0.0523143)
+ynf:759, inaccurate answer: bit 33 (3fafdc17c0000000 3fafdc1820000000) (0.062226 0.0622261)
+ynf:769, inaccurate answer: bit 33 (3fb4ecebe0000000 3fb4ecec20000000) (0.0817401 0.0817401)
+ynf:784, inaccurate answer: bit 33 (3fbc33a180000000 3fbc33a1e0000000) (0.110163 0.110163)
+ynf:789, inaccurate answer: bit 32 (3fbe9066a0000000 3fbe906740000000) (0.119391 0.119391)
+ynf:793, inaccurate answer: bit 33 (3fd77d0fa0000000 3fd77d0fe0000000) (0.367008 0.367008)
+ynf:794, inaccurate answer: bit 33 (3fc07247e0000000 3fc0724820000000) (0.128488 0.128488)
+ynf:796, inaccurate answer: bit 33 (bfde16fa80000000 bfde16fac0000000) (-0.470152 -0.470153)
+ynf:803, inaccurate answer: bit 32 (bf78092160000000 bf780920a0000000) (-0.00586808 -0.00586808)
+ynf:818, inaccurate answer: bit 33 (bfbc32c2e0000000 bfbc32c320000000) (-0.11015 -0.11015)
+ynf:819, inaccurate answer: bit 33 (3fc5029ae0000000 3fc5029b20000000) (0.164142 0.164142)
+ynf:820, inaccurate answer: bit 33 (3fc7446880000000 3fc74468c0000000) (0.181775 0.181775)
+ynf:821, inaccurate answer: bit 33 (bfade43ba0000000 bfade43c00000000) (-0.0583819 -0.0583819)
+ynf:822, inaccurate answer: bit 33 (bfccb3b920000000 bfccb3b980000000) (-0.224235 -0.224235)
+ynf:829, inaccurate answer: bit 33 (bfc98a1bc0000000 bfc98a1c00000000) (-0.199527 -0.199527)
+ynf:830, inaccurate answer: bit 33 (bfa8bb45a0000000 bfa8bb4600000000) (-0.0483038 -0.0483038)
+ynf:832, inaccurate answer: bit 33 (3fc406bda0000000 3fc406bde0000000) (0.156456 0.156456)
+ynf:836, inaccurate answer: bit 32 (bf9d216a80000000 bf9d216b20000000) (-0.0284478 -0.0284478)
+ynf:842, inaccurate answer: bit 33 (bf8d1a1ac0000000 bf8d1a1a60000000) (-0.0142099 -0.0142099)
+ynf:880, inaccurate answer: bit 33 (3f75c4b9c0000000 3f75c4b960000000) (0.00531457 0.00531456)
+ynf:882, inaccurate answer: bit 33 (3fa7c8c620000000 3fa7c8c660000000) (0.0464537 0.0464537)
+ynf:896, inaccurate answer: bit 33 (bfbc066d40000000 bfbc066d80000000) (-0.109473 -0.109473)
+ynf:897, inaccurate answer: bit 33 (bfbb264540000000 bfbb264580000000) (-0.106053 -0.106053)
+ynf:902, inaccurate answer: bit 33 (bfbef420c0000000 bfbef42100000000) (-0.120913 -0.120913)
+ynf:932, inaccurate answer: bit 33 (3f7d956ae0000000 3f7d956aa0000000) (0.00722257 0.00722257)
+ynf:934, inaccurate answer: bit 33 (bfb18e3f20000000 bfb18e3f60000000) (-0.0685768 -0.0685768)
+ynf:936, inaccurate answer: bit 33 (3fa8cd9700000000 3fa8cd9760000000) (0.0484435 0.0484435)
+ynf:949, inaccurate answer: bit 33 (bf478671c0000000 bf47867220000000) (-0.000717931 -0.000717931)
+ynf:953, inaccurate answer: bit 33 (bfa56ee400000000 bfa56ee440000000) (-0.0418617 -0.0418617)
+ynf:955, inaccurate answer: bit 32 (3f9c9ffea0000000 3f9c9fff20000000) (0.0279541 0.0279541)
+ynf:957, inaccurate answer: bit 29 (bf6efed640000000 bf6efeda60000000) (-0.00378363 -0.00378363)
+ynf:970, inaccurate answer: bit 33 (3f83f999e0000000 3f83f999a0000000) (0.00975342 0.00975342)
+ynf:972, inaccurate answer: bit 32 (3f7e098460000000 3f7e098540000000) (0.00733329 0.0073333)
+ynf:983, inaccurate answer: bit 33 (3fb915ac80000000 3fb915acc0000000) (0.097987 0.097987)
+ynf:989, inaccurate answer: bit 33 (3f9c04ec40000000 3f9c04ec80000000) (0.0273625 0.0273625)
+ynf:996, inaccurate answer: bit 33 (bfb43e5d00000000 bfb43e5d40000000) (-0.0790766 -0.0790766)
+ynf:999, inaccurate answer: bit 33 (3fb8906a20000000 3fb8906a60000000) (0.0959536 0.0959536)
+ynf:1001, inaccurate answer: bit 33 (bfb9587bc0000000 bfb9587c00000000) (-0.0990064 -0.0990064)
+ynf:1002, inaccurate answer: bit 33 (3f815f99c0000000 3f815f9980000000) (0.00848312 0.00848312)
+ynf:1031, inaccurate answer: bit 33 (3fb7d6c920000000 3fb7d6c960000000) (0.0931211 0.0931211)
+ynf:1033, inaccurate answer: bit 33 (3f5ecc1c20000000 3f5ecc1c80000000) (0.00187972 0.00187972)
+ynf:1035, inaccurate answer: bit 33 (bf85cec640000000 bf85cec680000000) (-0.0106483 -0.0106483)
+ynf:1049, inaccurate answer: bit 32 (bf58978920000000 bf589789e0000000) (-0.00150097 -0.00150097)
+ynf:1053, inaccurate answer: bit 33 (3fb6363760000000 3fb63637a0000000) (0.0867648 0.0867648)
+ynf:1055, inaccurate answer: bit 33 (bfb535fe60000000 bfb535fea0000000) (-0.0828551 -0.0828551)
+ynf:1065, inaccurate answer: bit 32 (bf6d608080000000 bf6d608100000000) (-0.00358605 -0.00358606)
+ynf:1068, inaccurate answer: bit 33 (bfa1e99220000000 bfa1e99260000000) (-0.0349851 -0.0349851)
+ynf:1070, inaccurate answer: bit 33 (3fa5ba9660000000 3fa5ba96a0000000) (0.0424392 0.0424392)
+testing isalnum define
+testing isalpha define
+testing isascii define
+testing iscntrl define
+testing isdigit define
+testing isgraph define
+testing islower define
+testing isprint define
+testing ispunct define
+testing isspace define
+testing isupper define
+testing isxdigit define
+testing isalnum function
+testing isalpha function
+testing isascii function
+testing iscntrl function
+testing isgraph function
+testing islower function
+testing isprint function
+testing ispunct function
+testing isspace function
+testing isupper function
+testing isxdigit function
+testing toascii function
+testing tolower function
+testing toupper function
+testing fpgetround/fpsetround
+testing fpsetmask/fpgetmask
+testing fpsetsticky/fpgetsticky
+testing fpsetroundtoi/fpgetroundtoi
+fpsetroundtoi/fpgetroundtoi:2, inacurate answer: (00000000 should be 00000001)
+testing fpsetround
+Tested 63223 functions, 395 errors detected

@@ -1,4 +1,4 @@
-@node DJGPP.ENV, , , Hidden Features
+@node DJGPP.ENV, , Features, Hidden Features
 @section DJGPP.ENV
 
 @cindex DJGPP.ENV

@@ -1,0 +1,73 @@
+
+I.  Introduction
+    ------------
+
+    This directory comprises a test suite which tests a large part of
+    the C library.  It was originally written by Cygnus for the FDLIBM
+    distribution (which is the base of the DJGPP libm math library,
+    see the sources in src/libm/math directory inside the djlsrNNN.zip
+    distribution).  Although the primary goal of this test suite is to
+    test the math functions, it also tests many other standard library
+    functions which have some bearing to manipulating numbers.  In
+    particular, the suite includes an extensive test of the `printf'
+    family of functions, and other functions, such as `strtod' and
+    `ecvt', that are used for converting numbers to and from strings.
+
+    The original test suite needed a lot of work to make it useful.
+    For example, many of the test vectors (arrays of arguments to
+    functions and expected results) were incorrect, and some low-level
+    functionality on which the tests depended was unavailable in
+    DJGPP.  Most of the hard work of making this suite an accurate and
+    reliable testing tool for the DJGPP library was done by
+    K.B. Williams <Kbwms@aol.com>, who also wrote the test vector
+    generating programs in the `tgen' subdirectory.  Eli Zaretskii
+    <eliz@is.elta.co.il> corrected the `printf' test vectors, adapted
+    the sources to DJGPP, and wrote the top-level makefile for the
+    test suite.
+
+
+II. What's in here
+    --------------
+
+    The top-level directory, `tests/cygnus', includes a makefile,
+    sources of the test program, and the test vectors (these are the
+    files whose names end with `_vec.c').  These are compiled and
+    linked into a single program called `mtest.exe', which, when run,
+    produces a test report on its standard output.  The program is
+    linked against the libm.a library, so the test program by default
+    tests the versions of math functions in libm.a only; the versions
+    of math functions inside libc.a are NOT tested.  However, some
+    libc.a functions, like the `printf' family mentioned in the first
+    paragraph of the introduction above, ARE tested.
+
+    The subdirectory `tgen' contains programs written by K.B. Williams
+    that generate the *_vec.c test vectors.  The programs are written
+    in C++ and are linked with a library of extended-precision math
+    functions in the `qfloat' subdirectory.  The qfloat library was
+    written by Stephen L. Moshier.  Use of extended-precision math
+    functions to generate the test cases ensures that the expected
+    results are accurate to the last bit of the mantissa.  See the
+    README files in `tgen' and `tgen/qfloat', for more details.
+
+
+III.How to run the tests
+    --------------------
+
+    To run the tests, chdir to the tests/cygnus directory and say
+    "make".  This builds the test program and runs it.  The run
+    results are written to the file `mtest.results', for later
+    examination, and a one-line summary of the test is printed on the
+    standard error stream.
+
+    Since some library functions are not accurate to the last bit,
+    some tests will trigger inaccuracy reports.  The test suite is set
+    up so that it requires 62 accurate bits for functions that return
+    a double, and 34 bits for the float variants.  Some functions
+    aren't accurate enough to pass these requirements for some
+    arguments.  In particular, many results of Bessel functions `j0',
+    `yn', etc. are only accurate to 61 bits, and many float versions
+    only return 33 accurate bits for some arguments.  The distribution
+    includes a file `standard.results' with the results of running the
+    test suite with the latest DJGPP libraries.  By comparing
+    `mtest.results' with this file you could find out which messages
+    are ``normal'' and which indicate problems.
