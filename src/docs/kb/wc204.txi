@@ -3,9 +3,6 @@
 
 Here is a list of changes from DJGPP V2.03 to V2.04.
 
-Texinfo documentation (WIP) for @code{djasm} has been added.
-@pindex djasm@r{, documentation}
-
 @findex uname@r{, CPU type detection}
 Ability to report the exact CPU type in @code{uname}.
 
@@ -232,6 +229,9 @@ that OS.
 @findex lfilelength@r{, and FAT32}
 The function @code{lfilelength} added with return type @code{long long}
 to support file sizes of up to @math{2^64-2}.
+
+@pindex djasm@r{, documentation}
+Texinfo documentation (WIP) for @code{djasm} has been added.
 
 @pindex djasm@r{, ISO dates}
 The dates inserted into the object file by @code{djasm} now follow ISO
