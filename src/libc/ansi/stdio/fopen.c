@@ -68,7 +68,6 @@ fopen(const char *file, const char *mode)
 
   if (*mode == 'a')
   {
-    f->_flag |= _IOAPPEND;
     llseek(fd, 0, SEEK_END);
   }
 
