@@ -2,12 +2,14 @@
 #include <stdlib.h>
 
 void
-swab(const void *from, void *to, int n)
+swab(const void *vfrom, void *vto, int n)
 {
   unsigned long temp;
+  const char *from=vfrom;
+  char *to=vto;
 
   n >>= 1; n++;
-#define	STEP	temp = *((const char *)from)++,*((char *)to)++ = *((const char *)from)++,*((char *)to)++ = temp
+#define	STEP	temp = *from++,*to++ = *from++,*to++ = temp
   /* round to multiple of 8 */
   while ((--n) & 07)
     STEP;
