@@ -90,13 +90,13 @@ int	unsetenv(const char *_var);
 #ifndef _POSIX_SOURCE
 
 typedef struct {
-  long long quot;
-  long long rem;
+  long long int quot;
+  long long int rem;
 } lldiv_t;
 
 void *		alloca(size_t _size);
 long double	_atold(const char *_s);
-long long	atoll(const char *_s);
+long long int	atoll(const char *_s);
 void		cfree(void *_ptr);
 double          drand48(void);
 char *		ecvtbuf(double _val, int _nd, int *_dp, int *_sn, char *_bf);
@@ -109,8 +109,8 @@ char *		getpass(const char *_prompt);
 int		getlongpass(const char *_prompt, char *_buffer, int _max_len);
 char *		itoa(int _value, char *_buffer, int _radix);
 long            jrand48(unsigned short _state[3]);
-long long	llabs(long long _i);
-lldiv_t		lldiv(long long _numer, long long _denom);
+long long int	llabs(long long int _i);
+lldiv_t		lldiv(long long int _numer, long long int _denom);
 void            lcong48(unsigned short _param[7]);
 unsigned long   lrand48(void);
 void *		memalign (size_t _amt, size_t _align);
@@ -120,8 +120,8 @@ unsigned short *seed48(unsigned short _state_seed[3]);
 void            srand48(long _seedval);
 int		stackavail(void);
 long double	_strtold(const char *_s, char **_endptr);
-long long	strtoll(const char *_s, char **_endptr, int _base);
-unsigned long long strtoull(const char *_s, char **_endptr, int _base);
+long long int	strtoll(const char *_s, char **_endptr, int _base);
+unsigned long long int strtoull(const char *_s, char **_endptr, int _base);
 void		swab(const void *_from, void *_to, int _nbytes);
 void *		valloc (size_t _amt);
 
