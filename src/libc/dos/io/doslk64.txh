@@ -1,0 +1,28 @@
+@node _dos_lk64, dos
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int _dos_lk64(int fd, long long offset, long long length);
+@end example
+
+@subheading Description
+
+Adds an advisory lock to the specified region of the file.
+
+Arguments @var{offset} and @var{length} must be of type @code{long
+long}, thus enabling you to lock with offsets and lengths as large as
+~@math{2^63} (FAT16 limits this to ~@math{2^31}; FAT32 limits this to
+@math{2^32-2}).
+
+@xref{_dos_unlk64}.
+
+@subheading Return Value
+
+Zero if the lock was added, nonzero otherwise.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -1,0 +1,34 @@
+@node lock64, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int lock64(int fd, long long offset, long long length);
+@end example
+
+@subheading Description
+Locks a region in file @var{fd} using MS-DOS file sharing interface.
+The region of @var{length} bytes, starting from @var{offset}, will
+become entirely inaccessible to other processes.  If multiple locks are
+used on a single file they must be non-overlapping.  The lock must be
+removed before the file is closed.
+
+This function will fail unless SHARE, or a network software providing
+similar interface, is installed.
+
+Arguments @var{offset} and @var{length} must be of type @code{long
+long}, thus enabling you to lock with offsets and lengths as large as
+~@math{2^63} (FAT16 limits this to ~@math{2^31}; FAT32 limits this to
+@math{2^32-2}).
+
+@xref{unlock64}.
+
+@subheading Return Value
+Zero if successful, nonzero if not.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
+

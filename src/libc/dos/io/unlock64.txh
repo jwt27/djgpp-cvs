@@ -1,0 +1,27 @@
+@node unlock64, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int unlock64(int fd, long long offset, long long length);
+@end example
+
+@subheading Description
+Unlocks a region previously locked by @code{lock64}.
+
+Arguments @var{offset} and @var{length} must be of type @code{long
+long}, thus enabling you to unlock with offsets and lengths as large as
+~@math{2^63} (FAT16 limits this to ~@math{2^31}; FAT32 limits this to
+@math{2^32-2}).
+
+@xref{lock64}.
+
+@subheading Return Value
+Zero if successful, nonzero if not.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
+

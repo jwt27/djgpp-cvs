@@ -1,0 +1,28 @@
+@node _dos_unlk64, dos
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int _dos_unlk64(int fd, long long offset, long long length);
+@end example
+
+@subheading Description
+
+Removes an advisory lock to the specified region of the file.
+
+Arguments @var{offset} and @var{length} must be of type @code{long
+long}, thus enabling you to unlock with offsets and lengths as large as
+~@math{2^63} (FAT16 limits this to ~@math{2^31}; FAT32 limits this to
+@math{2^32-2}).
+
+@xref{_dos_lk64}.
+
+@subheading Return Value
+
+Zero if the lock was removed, nonzero otherwise.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
