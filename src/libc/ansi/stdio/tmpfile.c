@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -34,10 +35,15 @@ tmpfile(void)
   do {
     errno = 0;
     temp_fd = _creatnew(temp_name, 0, SH_DENYRW);
-  } while (temp_fd == -1 && errno != ENOENT && (temp_name = tmpnam(0)) != 0);
+  } while (temp_fd == -1
+	   && errno != ENOENT && errno != EMFILE
+	   && (temp_name = tmpnam(0)) != 0);
 
-  if (temp_name == 0)
+  if (temp_name == 0 || temp_fd == -1)
+  {
+    free(n_t_r);
     return 0;
+  }
 
   /* This should have been fdopen(temp_fd, "wb+"), but `fdopen'
      is non-ANSI.  So we need to dump some of its guts here.  Sigh...  */
