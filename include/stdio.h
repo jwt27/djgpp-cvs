@@ -48,14 +48,14 @@ __DJ_size_t
    are here at all is to comply with ANSI specifictions. */
    
 typedef struct {
-  int   _cnt;
-  char *_ptr;
-  char *_base;
-  size_t   _bufsiz;
-  int   _flag;
-  int   _file;
-  char *_name_to_remove;
-  size_t   _fillsize;
+  int     _cnt;
+  char   *_ptr;
+  char   *_base;
+  size_t  _bufsiz;
+  int     _flag;
+  int     _file;
+  char   *_name_to_remove;
+  size_t  _fillsize;
 } FILE;
 
 typedef unsigned long		fpos_t;
@@ -111,14 +111,19 @@ int	vsprintf(char *_s, const char *_format, va_list _ap);
 
 #ifndef __STRICT_ANSI__
 
-#define L_ctermid
+#define L_ctermid 20
 #define L_cusrid
 /* #define STREAM_MAX	20 - DOS can change this */
 
 int	fileno(FILE *_stream);
 FILE *	fdopen(int _fildes, const char *_type);
+int	mkstemp(char *_template);
 int	pclose(FILE *_pf);
 FILE *	popen(const char *_command, const char *_mode);
+char *	tempnam(const char *_dir, const char *_prefix);
+int	vfscanf(FILE *_stream, const char *_format, va_list _ap);
+int	vscanf(const char *_format, va_list _ap);
+int	vsscanf(const char *_s, const char *_format, va_list _ap);
 
 #ifndef _POSIX_SOURCE
 
@@ -134,16 +139,11 @@ int	_doscan(FILE *_f, const char *_fmt, void **_argp);
 int	_doscan_low(FILE *, int (*)(FILE *_get), int (*_unget)(int, FILE *), const char *_fmt, void **_argp);
 int	fpurge(FILE *_f);
 int	getw(FILE *_f);
-int	mkstemp(char *_template);
 char *	mktemp(char *_template);
 int	putw(int _v, FILE *_f);
 void	setbuffer(FILE *_f, void *_buf, int _size);
 void	setlinebuf(FILE *_f);
-char *	tempnam(const char *_dir, const char *_prefix);
 int	_rename(const char *_old, const char *_new);	/* Simple (no directory) */
-int	vfscanf(FILE *_stream, const char *_format, va_list _ap);
-int	vscanf(const char *_format, va_list _ap);
-int	vsscanf(const char *_s, const char *_format, va_list _ap);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
