@@ -1,4 +1,3 @@
-/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -36,7 +35,6 @@
 
 void djerror(char *s);
 void yyerror(char *s);
-void shxd_error(int opcode);
 
 #define OUT_exe 0
 #define OUT_com 1
@@ -141,7 +139,6 @@ int undefs = 0;
 
 void destroy_symbol(Symbol *sym, int undef_error);
 void destroy_locals(void);
-void add_enum_element(Symbol *s);
 void add_struct_element(Symbol *s);
 void emit_struct(Symbol *ele, int tp, Symbol *struc);
 void emit_struct_abs(Symbol *ele, int tp, Symbol *struc, int offset);
@@ -231,14 +228,13 @@ void write_MODEND(FILE *outfile, int main_obj, int start_ptr);
 %token <i> ARITH2 ARITH2B ARITH2D ARITH2W
 %token <i> LXS MOVSZX MOVSZXB MOVSZXW
 %token <i> JCC JCCL JCXZ LOOP SETCC
-%token <i> SHIFT SHIFTB SHIFTD SHIFTW DPSHIFT
+%token <i> SHIFT SHLRD
 %token <i> ONEBYTE TWOBYTE ASCADJ
 %token <i> BITTEST GROUP3 GROUP3B GROUP3D GROUP3W GROUP6 GROUP7 STRUCT
 %token ALIGN ARPL
 %token BOUND BSS BSF BSR
 %token CALL CALLF CALLFD COPYRIGHT
-%token DB DD DEC DECB DECD DECW DUP DW
-%token ENDS ENUM ENTER
+%token DB DD DEC DECB DECD DECW DUP DW ENDS ENTER
 %token IN INC INCB INCD INCW INT INCLUDE
 %token JMPW JMPB JMPF JMPFD
 %token LAR LEA LINKCOFF LSL
@@ -344,8 +340,7 @@ struct opcode opcodes[] = {
   {".dd", DD, NO_ATTR},
   {".dup", DUP, NO_ATTR},
   {".dw", DW, NO_ATTR},
-  {".ends", ENDS, NO_ATTR},
-  {".enum", ENUM, NO_ATTR},
+  {".ends",ENDS, NO_ATTR},
   {".id", RCS_ID, NO_ATTR},
   {".include", INCLUDE, NO_ATTR},
   {".linkcoff", LINKCOFF, NO_ATTR},
@@ -523,29 +518,14 @@ struct opcode opcodes[] = {
   {"pushw", PUSHW, NO_ATTR},
   {"pushd", PUSHD, NO_ATTR},
   {"rcl", SHIFT, 2},
-  {"rclb", SHIFTB, 2},
-  {"rcld", SHIFTD, 2},
-  {"rclw", SHIFTW, 2},
   {"rcr", SHIFT, 3},
-  {"rcrb", SHIFTB, 3},
-  {"rcrd", SHIFTD, 3},
-  {"rcrw", SHIFTW, 3},
   {"ret", RET, NO_ATTR},
   {"retd", RETD, NO_ATTR},
   {"retf", RETF, NO_ATTR},
   {"retfd", RETFD, NO_ATTR},
   {"rol", SHIFT, 0},
-  {"rolb", SHIFTB, 0},
-  {"rold", SHIFTD, 0},
-  {"rolw", SHIFTW, 0},
   {"ror", SHIFT, 1},
-  {"rorb", SHIFTB, 1},
-  {"rord", SHIFTD, 1},
-  {"rorw", SHIFTW, 1},
   {"sar", SHIFT, 7},
-  {"sarb", SHIFTB, 7},
-  {"sard", SHIFTD, 7},
-  {"sarw", SHIFTW, 7},
   {"sbb", ARITH2, 3},
   {"sbbb", ARITH2B, 3},
   {"sbbd", ARITH2D, 3},
@@ -586,19 +566,10 @@ struct opcode opcodes[] = {
   {"sidt", GROUP7, 1},
   {"sldt", GROUP6, 0},
   {"sal", SHIFT, 4},
-  {"salb", SHIFTB, 4},
-  {"sald", SHIFTD, 4},
-  {"salw", SHIFTW, 4},
   {"shl", SHIFT, 4},
-  {"shlb", SHIFTB, 4},
-  {"shld", SHIFTD, 4},
-  {"shlw", SHIFTW, 4},
-  {"dshl", DPSHIFT, 0xa4},
+  {"shld", SHLRD, 0xa4},
   {"shr", SHIFT, 5},
-  {"shrb", SHIFTB, 5},
-  {"shrd", SHIFTD, 5},
-  {"shrw", SHIFTW, 5},
-  {"dshr", DPSHIFT, 0xac},
+  {"shrd", SHLRD, 0xac},
   {"smsw", GROUP7, 4},
   {"str", GROUP6, 1},
   {"sub", ARITH2, 5},
@@ -698,15 +669,6 @@ line
 					  $<sym>4->next=symtab;
 					  symtab=$<sym>4;
 	  				}
-	| ENUM ID '\n'			{ struct_pc=0;
-					  struct_sym=$2->name;
-					  lineno++;
-					  $<sym>$=symtab;
-					  if (symtab==$2)
-					      symtab=symtab->next;
-					}
-	  enum_lines
-	  ENDS
 	| ID STRUCT ID			{ emit_struct($1,$2,$3); }
 	| ID STRUCT ID '(' const ')'	{ emit_struct_abs($1,$2,$3,$5); }
 	| error
@@ -1034,53 +996,23 @@ line
 	| SETCC REG8			{ emitb(0x0f); emitb(0x90+$1); modrm(3, 0, $2); }
 	| SETCC regmem			{ emitb(0x0f); emitb(0x90+$1); reg(0); }
 
-	/* basic shift of register or memory (byte/word/double) operand */
 	| SHIFT REG8 ',' const		{ emitb($4 == 1 ? 0xd0 : 0xc0); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG8 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd2); modrm(3, $1, $2); }
-	| SHIFTB regmem ',' const	{ emitb($4 == 1 ? 0xd0 : 0xc0); reg($1); if ($4 != 1) emitb($4); }
-	| SHIFTB regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd2); reg($1); }
 	| SHIFT REG16 ',' const       	{ emitb($4 == 1 ? 0xd1 : 0xc1); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG16 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd3); modrm(3, $1, $2); }
-	| SHIFTW regmem ',' const	{ emitb($4 == 1 ? 0xd1 : 0xc1); reg($1); if ($4 != 1) emitb($4); }
-	| SHIFTW regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd3); reg($1); }
 	| SHIFT REG32 ',' const       	{ emitb(0x66); emitb($4 == 1 ? 0xd1 : 0xc1); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG32 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); modrm(3, $1, $2); }
-	| SHIFTD regmem ',' const	{ emitb(0x66); emitb($4 == 1 ? 0xd1 : 0xc1); reg($1); if ($4 != 1) emitb($4); }
-	| SHIFTD regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); reg($1); }
 
-	/* Trap any use of `sh[lr]d' to denote a double-precision shift.
-	This trap is not strictly necessary, because writing `sh[lr]d'
-	with three operands would generate a parse error anyway.  However,
-	there _was_ a time when djasm did use `sh[lr]d' as the mnemonics
-	for the double-precision shifts.  This usage was later removed
-	(it interfered with subsequent implementation of the basic shift
-	instructions with memory operands).  (jtw) */
-
-	| SHIFTD REG16 ',' REG16 ',' const	{ shxd_error($1); }
-	| SHIFTD REG16 ',' REG16 ',' REG8	{ shxd_error($1); }
-	| SHIFTD regmem ',' REG16 ',' const	{ shxd_error($1); }
-	| SHIFTD regmem ',' REG16 ',' REG8	{ shxd_error($1); }
-	| SHIFTD REG32 ',' REG32 ',' const	{ shxd_error($1); }
-	| SHIFTD REG32 ',' REG32 ',' REG8	{ shxd_error($1); }
-	| SHIFTD regmem ',' REG32 ',' const	{ shxd_error($1); }
-	| SHIFTD regmem ',' REG32 ',' REG8	{ shxd_error($1); }
-
-	/* The double-precision shift instructions do *not* require
-	a memory operand-size suffix.  The size of the memory operand
-	must agree with the size of the register, hence the allowable
-	combinations of operands are completely unambiguous.  (jtw) */
-
-	/* 16-bit double-precision shift */
-	| DPSHIFT REG16 ',' REG16 ',' const	{ emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
-	| DPSHIFT REG16 ',' REG16 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
-	| DPSHIFT regmem ',' REG16 ',' const	{ emitb(0x0f); emitb($1); reg($4); emitb($6); }
-	| DPSHIFT regmem ',' REG16 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x0f); emitb($1+1); reg($4); }
-
-	/* 32-bit double-precision shift */
-	| DPSHIFT REG32 ',' REG32 ',' const	{ emitb(0x66); emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
-	| DPSHIFT REG32 ',' REG32 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
-	| DPSHIFT regmem ',' REG32 ',' const	{ emitb(0x66); emitb(0x0f); emitb($1); reg($4); emitb($6); }
-	| DPSHIFT regmem ',' REG32 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0x0f); emitb($1+1); reg($4); }
+	| SHLRD REG16 ',' REG16 ',' const
+	  { emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
+	| SHLRD REG16 ',' REG16 ',' REG8
+	  { if ($6 != 1) djerror ("Non-constant shift count must be `cl'");
+	    emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
+	| SHLRD REG32 ',' REG32 ',' const
+	  { emitb(0x66); emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
+	| SHLRD REG32 ',' REG32 ',' REG8
+	  { if ($6 != 1) djerror ("Non-constant shift count must be `cl'");
+	    emitb(0x66); emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
 
 	| STACK				{ stack_ptr = pc; }
 	| START				{ start_ptr = pc; main_obj=1; }
@@ -1139,17 +1071,6 @@ struct_line
 	| struct_db
 	| ID				{ add_struct_element($1); }
 	  struct_db
-	;
-
-enum_lines
-	:
-	| enum_lines enum_line '\n' { lineno++; }
-	;
-
-enum_line
-	:
-	| ID				{ add_enum_element($1); }
-	| ID '=' const			{ struct_pc = $3; add_enum_element($1); }
 	;
 
 struct_db
@@ -1320,7 +1241,6 @@ offset
 	| '-' const			{ $$ = -$2; }
 	| 				{ $$ = 0; }
 	;
-
 %% /***********************************************************************/
 
 typedef struct FileStack {
@@ -1442,20 +1362,11 @@ int main(int argc, char **argv)
   exe[22] = 0;			/* relative CS */
   exe[23] = 0;
 
-  /* These must be zero, otherwise they are interpreted as an offset to 
-     a "new executable" header. */
-  exe[60] = 0;
-  exe[61] = 0;
-  exe[62] = 0;
-  exe[63] = 0;
-#define INFO_TEXT_START (64)
-
   time(&now);
-
-  sprintf(exe+INFO_TEXT_START, "\r\n%s generated from %s by djasm, on %.24s\r\n", argv[2], argv[1], ctime(&now));
+  sprintf(exe+28, "\r\n%s generated from %s by djasm, on %.24s\r\n", argv[2], argv[1], ctime(&now));
   if (copyright)
-    strncat(exe+INFO_TEXT_START, copyright, (512-3-INFO_TEXT_START)-strlen(exe+INFO_TEXT_START)); /* -3 for the following line: */
-  strcat(exe+INFO_TEXT_START, "\r\n\032");
+    strncat(exe+36, copyright, 476-strlen(exe+36));
+  strcat(exe+36, "\r\n\032");
 
   if (argv[2] == 0)
   {
@@ -1668,27 +1579,6 @@ void yyerror(char *s)
   fprintf(stderr, "%s:%d: Last token was `%s' (%s)\n", inname, lineno, last_token, yytname[(unsigned char)yytranslate[last_tret]]);
 }
 
-void
-shxd_error(int opcode)
-{
-  char *bad_op;
-  char *good_op;
-  char msg[80];
-
-  if (opcode == 4)
-  {
-    bad_op = "shld";
-    good_op = "dshl";
-  }
-  else
-  {
-    bad_op = "shrd";
-    good_op = "dshr";
-  }
-  sprintf(msg, "Obsolete use of `%s' detected.  Use `%s' instead.", bad_op, good_op);
-  djerror(msg);
-}
-
 Symbol *get_symbol(char *name, int create)
 {
   Symbol *s;
@@ -1710,29 +1600,6 @@ Symbol *get_symbol(char *name, int create)
   s->first_used = lineno;
   s->type = SYM_unknown;
   return s;
-}
-
-void
-add_enum_element(Symbol * s)
-{
-  if (islocal(s->name) || istemp(s->name, 0))
-  {
-    djerror("Cannot have local or temporary labels within an enum");
-  }
-  else
-  {
-    char *id = alloca(strlen(s->name) + strlen(struct_sym) + 2);
-    strcpy(id, struct_sym);
-    strcat(id, ".");		/* should this be "_" to disambiguate enums
-				   from structs? */
-    strcat(id, s->name);
-    if (!s->defined && !s->patches)
-    {
-      /* only delete fresh symbols */
-      destroy_symbol(s, 0);
-    }
-    set_symbol(get_symbol(id, 1), struct_pc++);
-  }
 }
 
 void add_struct_element(Symbol *s)
@@ -1778,6 +1645,10 @@ int is_structure(Symbol *s)
 
 int set_structure_symbols(Symbol *ele, Symbol *struc, int tp, int base, int type)
 {
+  if (tp!='s') {
+    djerror("must use `.struct' to emit structures or unions");
+    return 0;
+  }
   if (!struc->defined) {
     djerror("undefined symbol used in struct");
     return 0;
@@ -2639,20 +2510,20 @@ void add_rcs_ident(char *buf)
   struct tm *tm;
   time(&now);
   tm = localtime(&now);
-  sprintf(tmp, "%cId: %s built %04d-%02d-%02d %02d:%02d:%02d by djasm $\n",
+  sprintf(tmp, "%cId: %s built %02d/%02d/%02d %02d:%02d:%02d by djasm $\n",
 	  '$', inname,
-	  tm->tm_year + 1900,
 	  tm->tm_mon + 1,
 	  tm->tm_mday,
+	  tm->tm_year % 100,
 	  tm->tm_hour,
 	  tm->tm_min,
 	  tm->tm_sec);
   add_copyright(tmp);
-  sprintf(tmp, "@(#) %s built %04d-%02d-%02d %02d:%02d:%02d by djasm\n",
+  sprintf(tmp, "@(#) %s built %02d/%02d/%02d %02d:%02d:%02d by djasm\n",
 	  inname,
-	  tm->tm_year + 1900,
 	  tm->tm_mon + 1,
 	  tm->tm_mday,
+	  tm->tm_year % 100,
 	  tm->tm_hour,
 	  tm->tm_min,
 	  tm->tm_sec);
@@ -2737,8 +2608,7 @@ void do_linkcoff (char *filename)
 /*  AOUTHDR f_ohdr;*/		/* Optional file header (a.out) */
   SYMENT *symbol;
   RELOC *rp;
-  int cnt;
-  size_t i;
+  int cnt, i;
   void *base;
   int textbase, database, bssbase/*, delta*/;
   char smallname[9];
