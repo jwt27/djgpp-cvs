@@ -29,6 +29,13 @@ A no-op.  This is currently unused by the library functions.
 
 An open handler (@pxref{_open}).  This is called just before the library
 is about to issue the DOS OpenFile call on behalf of your program.
+
+If @code{_open} was called from the library function @code{open},
+then the file name passed to the handler will have either
+all its symlink components resolved or will refer to a symlink file
+(i.e.: all directory symlinks will be resolved), depending
+on whether the @code{O_NOLINK} was passed to @code{open} (@pxref{open}).
+
 Do not use this extension to emulate symlinks.
 Use @code{__FSEXT_readlink} handler instead.
 
@@ -37,6 +44,10 @@ Use @code{__FSEXT_readlink} handler instead.
 A create handler (@pxref{_creat}, and @pxref{_creatnew}).  Called when
 a file needs to be created.  Note that the handler should both create
 the ``file'' and open it.
+
+If @code{_creat} or @code{_creatnew} were called from
+the library functions @code{open} or @code{creat}, then the file name
+passed to the handler will have all its symlink components resolved.
 
 @item __FSEXT_read
 
@@ -98,10 +109,15 @@ A file llseek handler (@pxref{llseek}).
 A file link handler (@pxref{link}).  This is most relevant to file
 system extensions that emulate a directory structure.
 
+The source and destination file names are passed to the handler unchanged.
+
 @item __FSEXT_unlink
 
 A file unlink handler (@pxref{remove}, and @pxref{unlink}).  This is most
 relevant to file system extensions that emulate a directory structure.
+
+The file name passed to the handler will have all its directory symlinks
+resolved, so it may refer to a symlink file.
 
 @item __FSEXT_dup
 
@@ -119,6 +135,13 @@ A file lstat handler (@pxref{lstat}).  This extension should provide
 information about stated file.  If you provide this hook, function @code{stat}
 will be hooked too, as @code{stat} always calls @code{lstat}.
 
+If the handler is called as a result of a @code{stat} call, then
+the file name passed to the handler will have all its symlinks resolved,
+so it will refer to a ``regular'' file.  If the handler is called
+as result of a @code{lstat} call and not a @code{stat} call,
+then the file name passed to the handler will have all its directory symlinks
+resolved, so it may refer to a symlink file.
+
 @item __FSEXT_fstat
 
 A file fstat handler (@pxref{fstat}).  The extension should fill in
@@ -129,10 +152,15 @@ various status information about the emulated file.
 A file readlink handler (@pxref{readlink}).  This extension should be
 used to provide support for symlinks in some other than DJGPP format.
 
+The file name passed to the handler will have all its directory symlinks
+resolved, so it may refer to a symlink file.
+
 @item __FSEXT_symlink
 
 A file symlink handler (@pxref{symlink}).  This extension should create
 symlinks in other than DJGPP symlink file format.
+
+The source and destination file names are passed to the handler unchanged.
 
 @item __FSEXT_fchown
 
