@@ -43,6 +43,8 @@ extern "C" {
 #define STDOUT_FILENO		1
 #define STDERR_FILENO		2
 
+#define _CS_PATH		1
+
 #define _PC_CHOWN_RESTRICTED	1
 #define _PC_LINK_MAX		2
 #define _PC_MAX_CANON		3
@@ -90,6 +92,7 @@ unsigned int	alarm(unsigned int _seconds);
 int		chdir(const char *_path);
 int		chown(const char *_path, uid_t _owner, gid_t _group);
 int		close(int _fildes);
+size_t		confstr(int _name, char *_buf, size_t _len);
 char *		ctermid(char *_s);
 int		dup(int _fildes);
 int		dup2(int _fildes, int _fildes2);
