@@ -62,7 +62,7 @@ static __inline__ void __clear_fd_flags(int _fd, unsigned long _flags)
 
 static __inline__ unsigned long __get_fd_flags(int _fd)
 {
-  return __fd_properties[_fd]->flags;
+  return __has_fd_properties(_fd) ? __fd_properties[_fd]->flags : 0;
 }
 
 #endif /* !_POSIX_SOURCE */
