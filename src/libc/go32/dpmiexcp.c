@@ -257,7 +257,7 @@ do_faulting_finish_message(int fake_exception)
   err("\r\nebp="); itox(__djgpp_exception_state->__ebp, 8);
   err(" esp="); itox(__djgpp_exception_state->__esp, 8);
   err(" program=");
-  prog_name = __dos_argv0 ? __dos_argv0 : "<??UNKNOWN??>";
+  prog_name = __dos_argv0 ? __dos_argv0 : "<**UNKNOWN**>";
   for (i=0; prog_name[i]; i++);
   write(STDERR_FILENO, prog_name, i);
   err("\r\n");
