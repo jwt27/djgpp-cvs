@@ -2,6 +2,5 @@
 -O2
 -mcpu=pentium
 -march=i386
--fno-strength-reduce
 -Wall
 -nostdinc
