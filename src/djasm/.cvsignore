@@ -1,2 +1,3 @@
 *.d
 *.oh
+djasm.c
