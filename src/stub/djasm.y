@@ -36,6 +36,7 @@
 
 void djerror(char *s);
 void yyerror(char *s);
+void shxd_error(int opcode);
 
 #define OUT_exe 0
 #define OUT_com 1
@@ -230,7 +231,7 @@ void write_MODEND(FILE *outfile, int main_obj, int start_ptr);
 %token <i> ARITH2 ARITH2B ARITH2D ARITH2W
 %token <i> LXS MOVSZX MOVSZXB MOVSZXW
 %token <i> JCC JCCL JCXZ LOOP SETCC
-%token <i> SHIFT SHIFTB SHIFTD SHIFTW
+%token <i> SHIFT SHIFTB SHIFTD SHIFTW DPSHIFT
 %token <i> ONEBYTE TWOBYTE ASCADJ
 %token <i> BITTEST GROUP3 GROUP3B GROUP3D GROUP3W GROUP6 GROUP7 STRUCT
 %token ALIGN ARPL
@@ -592,10 +593,12 @@ struct opcode opcodes[] = {
   {"shlb", SHIFTB, 4},
   {"shld", SHIFTD, 4},
   {"shlw", SHIFTW, 4},
+  {"dshl", DPSHIFT, 0xa4},
   {"shr", SHIFT, 5},
   {"shrb", SHIFTB, 5},
   {"shrd", SHIFTD, 5},
   {"shrw", SHIFTW, 5},
+  {"dshr", DPSHIFT, 0xac},
   {"smsw", GROUP7, 4},
   {"str", GROUP6, 1},
   {"sub", ARITH2, 5},
@@ -1031,6 +1034,7 @@ line
 	| SETCC REG8			{ emitb(0x0f); emitb(0x90+$1); modrm(3, 0, $2); }
 	| SETCC regmem			{ emitb(0x0f); emitb(0x90+$1); reg(0); }
 
+	/* basic shift of register or memory (byte/word/double) operand */
 	| SHIFT REG8 ',' const		{ emitb($4 == 1 ? 0xd0 : 0xc0); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG8 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd2); modrm(3, $1, $2); }
 	| SHIFTB regmem ',' const	{ emitb($4 == 1 ? 0xd0 : 0xc0); reg($1); if ($4 != 1) emitb($4); }
@@ -1043,6 +1047,40 @@ line
 	| SHIFT REG32 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); modrm(3, $1, $2); }
 	| SHIFTD regmem ',' const	{ emitb(0x66); emitb($4 == 1 ? 0xd1 : 0xc1); reg($1); if ($4 != 1) emitb($4); }
 	| SHIFTD regmem ',' REG8	{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); reg($1); }
+
+	/* Trap any use of `sh[lr]d' to denote a double-precision shift.
+	This trap is not strictly necessary, because writing `sh[lr]d'
+	with three operands would generate a parse error anyway.  However,
+	there _was_ a time when djasm did use `sh[lr]d' as the mnemonics
+	for the double-precision shifts.  This usage was later removed
+	(it interfered with subsequent implementation of the basic shift
+	instructions with memory operands).  (jtw) */
+
+	| SHIFTD REG16 ',' REG16 ',' const	{ shxd_error($1); }
+	| SHIFTD REG16 ',' REG16 ',' REG8	{ shxd_error($1); }
+	| SHIFTD regmem ',' REG16 ',' const	{ shxd_error($1); }
+	| SHIFTD regmem ',' REG16 ',' REG8	{ shxd_error($1); }
+	| SHIFTD REG32 ',' REG32 ',' const	{ shxd_error($1); }
+	| SHIFTD REG32 ',' REG32 ',' REG8	{ shxd_error($1); }
+	| SHIFTD regmem ',' REG32 ',' const	{ shxd_error($1); }
+	| SHIFTD regmem ',' REG32 ',' REG8	{ shxd_error($1); }
+
+	/* The double-precision shift instructions do *not* require
+	a memory operand-size suffix.  The size of the memory operand
+	must agree with the size of the register, hence the allowable
+	combinations of operands are completely unambiguous.  (jtw) */
+
+	/* 16-bit double-precision shift */
+	| DPSHIFT REG16 ',' REG16 ',' const	{ emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
+	| DPSHIFT REG16 ',' REG16 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
+	| DPSHIFT regmem ',' REG16 ',' const	{ emitb(0x0f); emitb($1); reg($4); emitb($6); }
+	| DPSHIFT regmem ',' REG16 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x0f); emitb($1+1); reg($4); }
+
+	/* 32-bit double-precision shift */
+	| DPSHIFT REG32 ',' REG32 ',' const	{ emitb(0x66); emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
+	| DPSHIFT REG32 ',' REG32 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
+	| DPSHIFT regmem ',' REG32 ',' const	{ emitb(0x66); emitb(0x0f); emitb($1); reg($4); emitb($6); }
+	| DPSHIFT regmem ',' REG32 ',' REG8	{ if ($6 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0x0f); emitb($1+1); reg($4); }
 
 	| STACK				{ stack_ptr = pc; }
 	| START				{ start_ptr = pc; main_obj=1; }
@@ -1628,6 +1666,27 @@ void yyerror(char *s)
 {
   djerror(s);
   fprintf(stderr, "%s:%d: Last token was `%s' (%s)\n", inname, lineno, last_token, yytname[(unsigned char)yytranslate[last_tret]]);
+}
+
+void
+shxd_error(int opcode)
+{
+  char *bad_op;
+  char *good_op;
+  char msg[80];
+
+  if (opcode == 4)
+  {
+    bad_op = "shld";
+    good_op = "dshl";
+  }
+  else
+  {
+    bad_op = "shrd";
+    good_op = "dshr";
+  }
+  sprintf(msg, "Obsolete use of `%s' detected.  Use `%s' instead.", bad_op, good_op);
+  djerror(msg);
 }
 
 Symbol *get_symbol(char *name, int create)
