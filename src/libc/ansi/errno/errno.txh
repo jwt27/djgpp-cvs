@@ -247,7 +247,8 @@ file handling function in library. Usually means encountered link loop
 
 EOVERFLOW -- Value too large.  @code{filelength} can assign this to
 @code{errno} when a file's length is larger than @math{2^31-2}
-(@pxref{filelength}).
+(@pxref{filelength}).  @code{lfilelength} can assign this to @code{errno}
+when a file's length is larger than @math{2^63-1} (@pxref{lfilelength}).
 
 @end table
 
