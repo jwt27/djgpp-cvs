@@ -338,3 +338,13 @@ values no longer return non-zero values for strings which begin with
 @code{O_TEMPORARY} will be deleted when all file descriptors that refer
 to it are closed.
 
+@findex _rename@r{, on Windows ME}
+@findex rename@r{, on Windows ME}
+@findex mkdir@r{, on Windows ME}
+@pindex stubify@r{, on Windows ME}
+The functions @code{_rename} (and @code{rename} which calls it) and
+@code{mkdir} no longer fail on Windows ME when long file names support
+is disabled.  This solves the problem with failures to link programs if
+the @env{LFN} variable is set to @samp{n} because @code{stubify.exe}
+failed to rename the produced executable and reported @code{EINVAL}.
+

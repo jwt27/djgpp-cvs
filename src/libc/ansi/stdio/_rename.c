@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -114,6 +115,10 @@ int _rename(const char *old, const char *new)
   {
     if(use_lfn)
       r.x.ax = 0x7156;
+#if 0
+    /* It seems that no version of DOS, including DOS 8, which is part
+       of Windows/ME, implements this function.  Without LFN, this fails
+       _rename on Windows/ME.  Disabled.  */
     else if ((_osmajor > 7 && _osmajor < 10) /* OS/2 returns v10 and above */
 	     || (_osmajor == 7 && _osminor >= 20))
     {
@@ -124,6 +129,7 @@ int _rename(const char *old, const char *new)
       r.x.bp = 0x5053;
       r.h.cl = 0x56;
     }
+#endif
     else
       r.h.ah = 0x56;
     _put_path2(new, olen);
