@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <sys/types.h>
@@ -7,6 +8,7 @@
 #include <io.h>
 #include <libc/file.h>
 #include <libc/local.h>
+#include <libc/fd_props.h>
 
 FILE *
 fdopen(int fildes, const char *mode)
@@ -46,11 +48,6 @@ fdopen(int fildes, const char *mode)
   else
     oflags |= (_fmode & (O_TEXT|O_BINARY));
 
-  if (*mode == 'a')
-  {
-    f->_flag |= _IOAPPEND;
-  }
-
   f->_cnt = 0;
   f->_file = fildes;
   f->_bufsiz = 0;
@@ -64,6 +61,15 @@ fdopen(int fildes, const char *mode)
   f->_base = f->_ptr = NULL;
 
   setmode(fildes, oflags & (O_TEXT|O_BINARY));
+
+  /* Set or clear the append flag according to the mode.  */
+  if (__has_fd_properties(fildes))
+  {
+    if (*mode == 'a')
+      __set_fd_flags(fildes, FILE_DESC_APPEND);
+    else
+      __clear_fd_flags(fildes, FILE_DESC_APPEND);
+  }
 
   return f;
 }
