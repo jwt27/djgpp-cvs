@@ -820,3 +820,12 @@ Windows 2000 and XP.
 The functions @code{imaxabs}, @code{imaxdiv}, @code{strtoimax}
 and @code{strtoumax} were added.  The @code{PRI} and @code{SCN} families
 of macros were added.
+
+@findex _put_path@r{, and @file{/dev} directory on disk}
+The low-level function @code{_put_path} was changed to retain the @file{/dev}
+prefix if a @file{/dev} directory exists on the disk.  This allows DJGPP
+images to work with directories by this name.  You should avoid using 
+the @file{/dev} prefix on DOS device names if possible since the behavior
+will change if the directory exists (and file operations which use the
+name will be slower).  You should avoid using a @file{/dev} directory
+to avoid conflicts.
