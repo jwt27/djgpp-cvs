@@ -185,3 +185,28 @@ None.
 
 @portability !ansi, posix
 
+
+@c ----------------------------------------------------------------------
+@node tzsetwall, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+void tzsetwall(void);
+@end example
+
+@subheading Description
+
+This function sets up the time conversion information used by
+@code{localtime} (@pxref{localtime}) so that @code{localtime} returns
+the best available approximation of the local wall clock time.
+
+@subheading Return Value
+
+None.
+
+
+@subheading Portability
+
+@portability !ansi, !posix

@@ -159,7 +159,6 @@ static time_t		transtime P((time_t janfirst, int year,
 static int		tzload P((const char * name, struct state * sp));
 static int		tzparse P((const char * name, struct state * sp,
 				int lastditch));
-static void		tzsetwall(void);
 
 #ifdef ALL_STATE
 static struct state *lclptr;
