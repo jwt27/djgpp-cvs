@@ -8,11 +8,11 @@
 @opindex SHLD
 @opindex SHRD
 
-@opindex Shift logical left 
-@opindex Shift arithmetic left 
-@opindex Shift logical right 
-@opindex Shift arithmetic right 
-@opindex Double-precision shift left 
+@opindex Shift logical left
+@opindex Shift arithmetic left
+@opindex Shift logical right
+@opindex Shift arithmetic right
+@opindex Double-precision shift left
 @opindex Double-precision shift right
 
 @opindex shl
@@ -26,9 +26,9 @@
 @item Intel     @tab DJASM      @tab Meaning				@tab Notes
 @item """"""""  @tab """""""""" @tab """"""""""""""""""""""""""""""	@tab """"""""""""""""""""
 @item SHL       @tab shl[bwd]   @tab Shift logical left             	@tab (@pxref{shxd})
-@item SAL       @tab sal[bwd]   @tab Shift arithmetic left 
+@item SAL       @tab sal[bwd]   @tab Shift arithmetic left
 @item SHR       @tab shr[bwd]   @tab Shift logical right            	@tab (@pxref{shxd})
-@item SHR       @tab sar[bwd]   @tab Shift arithmetic right 
+@item SHR       @tab sar[bwd]   @tab Shift arithmetic right
 @item SHLD      @tab dshl       @tab Double precision shift left 	@tab No [bwd] suffix.
 @item SHRD      @tab dshr       @tab Double precision shift right	@tab No [bwd] suffix.
 @end multitable
