@@ -491,3 +491,9 @@ The startup code and the linker script file @file{djgpp.djl} include
 support for long section names.  Long section names are required by the
 latest versions of GNU Binutils to support automatic template
 instantiation in C++ programs.
+
+@findex tcgetpgrp@r{, added}
+@findex tcsetpgrp@r{, added}
+The @code{tcgetpgrp} and @code{tcsetpgrp} are now provided in the
+library.
+
