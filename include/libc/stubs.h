@@ -69,6 +69,7 @@ extern "C" {
 #define statfs __statfs
 #define stricmp __stricmp
 #define strnicmp __strnicmp
+#define strtold _strtold
 #define sync __sync
 #define tell __tell
 #define tzsetwall __tzsetwall

@@ -1,5 +1,7 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <libc/unconst.h>
@@ -11,7 +13,7 @@ static long double powten[] =
 };
 
 long double
-_strtold(const char *s, char **sret)
+strtold(const char *s, char **sret)
 {
   long double r;		/* result */
   int e, ne;			/* exponent */
