@@ -117,3 +117,20 @@ describes most of the special features provided by DJGPP.
 @code{redir} no longer fails to run programs when the program name
 is a substring of the redirected I/O file(s).
 @pindex redir
+
+@code{textcolor} and @code{textbackground} now support the 16 background
+colors mode (e.g., after a call to @code{intensevideo}).  Previously,
+@code{textbackground} would ignore the high intensity color bit in its
+argument, and @code{textcolor} would clobber thatt bit sometimes.
+@findex textcolor
+@findex textbackground
+
+A call to @code{lowvideo} doesn't clobber the background color anymore.
+@findex lowvideo
+
+The global variable @code{ScreenAttrib} now always matches the value of
+the @code{attribute} member of the @code{text_info} struct returned by
+@code{gettexinfo}.
+@findex gettexinfo
+@vindex ScreenAttrib
+
