@@ -1,0 +1,18 @@
+# Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details -*- makefile -*-
+
+include ./makefile.def
+
+AR = $(CROSS_AR)
+
+all : ../lib/libg.a(empty.o) ../lib/libpc.a(empty.o)
+
+../lib/libg.a(empty.o) : empty.o
+
+../lib/libpc.a(empty.o) : empty.o
+
+empty.o : empty.s
+	@./misc.exe echo - $(CROSS_GCC) '...' -c $<
+	@$(CROSS_GCC) -x assembler-with-cpp -c $<
+
+clean :
+	./misc.exe rm empty.o

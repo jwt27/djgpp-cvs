@@ -13,7 +13,7 @@ DIRS = \
 	../info		\
 	../lib
 
-all : misc.exe $(DIRS) makemake.exe subs
+all : misc.exe $(DIRS) makemake.exe subs ../lib/libg.a ../lib/libpc.a
 
 misc.exe : misc.c
 	gcc -O2 misc.c -o misc.exe
@@ -40,6 +40,7 @@ subs:
 	$(MAKE) -C utils
 	$(MAKE) -C docs/kb
 	$(MAKE) -C ../zoneinfo/src
+	$(MAKE) -f makempty
 
 .PHONY : clean
 clean : misc.exe makemake.exe
@@ -53,4 +54,5 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs/kb clean
 	$(MAKE) -C ../zoneinfo/src clean
+	$(MAKE) -f makempty clean
 		./misc.exe rm makemake.exe copyrite.exe misc.exe
