@@ -253,24 +253,26 @@ By default, @code{djtar} writes all files exactly as it finds them.
 
 @item -b
 
-Write all files exactly as found in the archive.  This is the default.
+Write all files exactly as found in the archive, with no conversions of
+text files.  This is the default.
 Files written to the console (when @code{-p} is in effect) are always
 written in text mode, so this option doesn't have any effect when used
 with @code{-p}, unless the output of @code{djtar} is redirected to a file
 or a pipe.
 
-@item -o @file{dir}
+@item -o @var{string}
 
-Only extract files which are children of the given directory @file{dir}.
+Only extract files whose full path names begin with @var{string}.
 This option can be used to extract portions of archive.  Files which aren't
-extracted will still be shown, but with a string @code{[ skipped ]}
+extracted will still be shown, but with a string @samp{[ skipped ]}
 appended to their names.  When given the @code{-o} option, @code{djtar}
-actually checks if @file{dir} is contained in filenames as a substring, so
-you can specify incomplete directory names, thus using it as a poor man's
+actually checks if @var{string} is the initial substring of each filename,
+so you can specify incomplete directory names, thus using it as a poor man's
 wildcard facility.
 
 @item -i
 
+Attempt to unpack damaged archives.
 By default, @code{djtar} will refuse to create files whose directory
 entries in the tar archive fail the checksum test, and any files beyond
 that point.  This option tells @code{djtar} to ignore the checksum test
