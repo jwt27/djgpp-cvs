@@ -13,6 +13,11 @@ This function truncates the file open on @var{handle} at byte position
 @var{where}.  The file pointer associated with @var{handle} is not
 changed.
 
+Note that this function knows nothing about buffering by stdio functions
+like @code{fwrite} and @code{fprintf}, so if @var{handle} comes from a
+@code{FILE} object, you need to call @code{fflush} before calling this
+function.
+
 @subheading Return Value
 
 Zero for success, nonzero for failure.
