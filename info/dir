@@ -1,5 +1,4 @@
-This is Info file dir, produced by Makeinfo version 1.68 from the input
-file dir.txi.
+This is dir, produced by makeinfo version 4.0 from dir.txi.
 
 
 File: dir,  Node: Top,  Next: (dir),  Prev: (dir),  Up: (dir)
@@ -60,6 +59,15 @@ From gccNNNb.zip
 * GCC: (gcc).
 	The GNU C, C++, and Objective-C Compiler
 
+* g77: (g77).
+	The GNU Fortran compiler.
+
+* gxxFAQ: (gxxFAQ).
+        A List of frequently-asked questions for users of the GNU C++
+          compiler g++.
+
+* gxxint (gxxint).
+        Documentation of the GNU C++ front-end internals.
 
 From bnuNNNb.zip
 
@@ -74,6 +82,7 @@ From bnuNNNb.zip
 * strings: (binutils)strings.	List printable strings from files
 * strip: (binutils)strip.	Discard symbols
 * c++filt: (binutils)c++filt.	Filter to demangle encoded C++ symbols
+* cxxfilt: (binutils)c++filt.	Filter to demangle encoded C++ symbols
 * addr2line: (binutils)addr2line.	Convert addresses to file and line
 * nlmconv: (binutils)nlmconv.	Converts object code into an NLM
 
@@ -125,20 +134,37 @@ From txiNNNb.zip
 * texindex: (texinfo)Format with tex/texindex.
 	Sorting Texinfo index files automatically.
 
+From gdbNNNb.zip
+
+* Bfd: (bfd).                   The Binary File Descriptor library.
+* Gdb: (gdb).                   The GNU debugger.
+* Gdb-Internals: (gdbint).	The GNU debugger's internals.
+* Stabs: (stabs).               The "stabs" debugging information format.
+* Standards: (standards).       GNU coding standards.
 
 Miscellaneous GNU utilities
-
 
 * Autoconf: (autoconf).
 	GNU Autoconf, a tool to generate shell scripts which
         automatically configure a package for a given computer.
 
+* automake: (automake).		Making Makefile.in's
+* aclocal: (automake)Invoking aclocal.          Generating aclocal.m4
+
 * Bison: (bison).
 	The GNU yacc-like parser generator
+
+* Bash: (bash).                 The GNU Bourne-Again SHell.
 
 * cpio: (cpio).
 	A program to manage tape or disk archives, or to copy
         entire directory trees.
+
+* CVS: (cvs).                   A distributed configuration management
+                                  system.
+* cvsclient: (cvsclient).       The CVS client/server protocol docs.
+
+* DC: (dc).                     An arbitrary precision postfix desk calculator.
 
 * Diffutils: (diff).		GNU difference utilities.
 * cmp: (diff)Invoking cmp.	Find first difference.
@@ -193,14 +219,32 @@ Disk usage
 * Gawk: (gawk).
 	GNU Awk, an interpreted batch language for processing text files.
 
-* GDB: (gdb).
-	The GNU Debugger.
+* GDBM: (gdbm).         GNU hashed database library.
 
-* Grep: (grep).
-	Print lines matching patterns.
+* gmp: (gmp).           GNU Multiple Precision Arithmetic Library.
+
+* GnuGo: (gnugo).       The GNU Go game.
+
+* Gperf: (gperf).       GNU Perfect Hash Function Generator.
+
+* Grep: (grep).         Print lines matching patterns.
+
+* Groff: (groff).       The GNU troff document formatting system.
 
 * Gzip: (gzip).
 	The GNU file compressor.
+
+GNU Gettext Utilities
+* Gettext: (gettext).                           GNU gettext utilities.
+* gettextize: (gettext)gettextize Invocation.   Prepare a package for gettext.
+* msgfmt: (gettext)msgfmt Invocation.           Make MO files out of PO files.
+* msgmerge: (gettext)msgmerge Invocation.       Update two PO files into one.
+* xgettext: (gettext)xgettext Invocation.       Extract strings into a PO file.
+
+* help2man: (help2man).         Automatic manual page generation.
+
+* History: (history).           The GNU history library API.
+* Readline: (readline).         The GNU readline library API.
 
 * Id-utils: (id-utils).		GNU Identifier database utilities.
 * mkid: (id-utils)mkid invocation.	Creating an ID database.
@@ -209,12 +253,18 @@ Disk usage
 * fnid: (id-utils)fnid invocation.	Looking up file names.
 * xtokid: (id-utils)xtokid invocation.	Testing mkid scanners.
 
+* Indent: (indent).
+	C/C++ code formatter.
 
 * m4: (m4).
 	A powerful macro processor.
 
 * Make: (make).
 	Automatically build programs from Makefiles.
+
+* Marst: (marst).       The GNU Algol-to-C Translator.
+
+* recode: (recode).     Conversion between character sets and surfaces.
 
 * Sed: (sed).
 	A Stream EDitor.
@@ -259,6 +309,14 @@ Modified command invocation
 Delaying
 * sleep: (sh-utils)sleep invocation.	Delay for a specified time.
 
+* Shar utilities: (sharutils).          GNU shar utilities.
+* mail-files: (sharutils)mail-files invocation. Send files to remote site.
+* mailshar: (sharutils)mailshar invocation.     Make and send a shell archive.
+* remsync: (sharutils)remsync invocation.       Synchronize remote files.
+* shar: (sharutils)shar invocation.             Make a shell archive.
+* unshar: (sharutils)unshar invocation.         Explode a shell archive.
+* uudecode: (sharutils)uudecode invocation.     Restore file from 7-bits.
+* uuencode: (sharutils)uuencode invocation.     Force binary file to 7-bits.
 
 * Tar: (tar).
 	GNU Tar, a program for handling archives of files.
@@ -298,10 +356,9 @@ Operating on characters
 * expand: (textutils)expand invocation.		Convert tabs to spaces.
 * unexpand: (textutils)unexpand invocation.	Convert spaces to tabs.
 
-
+* Which: (which).       Show the full path of commands.
 
 TeX
-
 * Web2c: (web2c).	TeX, Metafont, and companion programs.
 TeX: Typesetting
 * tex: (web2c)tex invocation.		Typesetting.
@@ -364,9 +421,17 @@ RHIDE
 * InfView: (infview).		InfView Documentation.
 * RHIDE: (rhide).		RHIDE, an IDE for DJGPP or Linux.
 
+Miscellaneous Utilities
+
+* Bzip2: (bzip2).		A program and library for data compression.
+
+Miscellaneous Documentation
+
+* Elisp: (elisp).	The Emacs Lisp Reference Manual.
+
 
 
 Tag Table:
-Node: Top87
+Node: Top61
 
 End Tag Table
