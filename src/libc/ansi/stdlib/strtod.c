@@ -1,7 +1,11 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <math.h>
 #include <stdlib.h>
+#include <float.h>
+#include <errno.h>
 #include <libc/unconst.h>
 
 double
@@ -19,6 +23,9 @@ strtod(const char *s, char **sret)
   sign = 1;
   e = 0;
   esign = 1;
+
+  if (sret)
+    *sret = unconst(s, char *);
 
   while ((*s == ' ') || (*s == '\t'))
     s++;
@@ -53,11 +60,10 @@ strtod(const char *s, char **sret)
   }
 
   if (flags == 0)
-  {
-    if (sret)
-      *sret = unconst(s, char *);
     return 0;
-  }
+
+  if (sret)
+    *sret = unconst(s, char *);
 
   if ((*s == 'e') || (*s == 'E'))
   {
@@ -70,11 +76,7 @@ strtod(const char *s, char **sret)
       esign = -1;
     }
     if ((*s < '0') || (*s > '9'))
-    {
-      if (sret)
-	*sret = unconst(s, char *);
-      return r;
-    }
+      return r * sign;
 
     while ((*s >= '0') && (*s <= '9'))
     {
@@ -84,12 +86,36 @@ strtod(const char *s, char **sret)
     }
   }
 
-  if (esign < 0)
+  /* Detect overflow.  */
+  if (e < 0)
+  {
+    errno = ERANGE;
+    r = HUGE_VAL;
+  }
+  else if (esign < 0)
     for (i = 1; i <= e; i++)
+    {
       r *= 0.1L;
+      /* Detect underflow below 2^-1075, which is half
+         the smallest representable double. */
+      if (r < 2.47032822920623272088e-324L)
+      {
+	errno = ERANGE;
+	r = 0.0;
+	break;
+      }
+    }
   else
     for (i = 1; i <= e; i++)
+    {
       r *= 10.0;
+      if (r > DBL_MAX)	/* detect overflow */
+      {
+	errno = ERANGE;
+	r = HUGE_VAL;
+	break;
+      }
+    }
 
   if (sret)
     *sret = unconst(s, char *);

@@ -1,6 +1,6 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
-@setfilename ../../info/utils.inf
+@setfilename ../../info/utils.info
 @settitle DJGPP Utilities Reference
 @c %**end of header
 
@@ -33,20 +33,20 @@ come with DJGPP.
 
 * bin2h::       Convert binary data files to C include files.
 
+* djecho::      Echo long command lines to files.
+
 * djtar::       Extract or list files from (possibly compressed)
 		tar archives, with DOS filename conversion.
 
 * dtou::        Convert text files from dos to unix.
 * utod::        Convert text files from unix to dos.
 
-* echo::        Echo long command lines to files.
-
 * gxx::         Build and link C++ programs
 
 * redir::       Manage I/O Redirection.
 
-* split::       split large files into multiple files.
-* merge::       Merge multiple files into one file.
+* djsplit::     split large files into multiple files.
+* djmerge::     Merge multiple files into one file.
 
 * texi2ps::     Convert texinfo files to Postscript.
 
@@ -55,11 +55,11 @@ come with DJGPP.
 @end menu
 
 @c -----------------------------------------------------------------------------
-@node bin2h,djtar,,Top
+@node bin2h, djecho, , Top
 @chapter bin2h
 
 @code{bin2h} allows a developer to embed a binary file into a source
-file, bu converting the binary data to an array of integer values.
+file, by converting the binary data to an array of integer values.
 
 Usage: @code{bin2h} @file{datafile} @var{symbol} @file{headerfile}
 
@@ -72,7 +72,35 @@ unsigned char symbol[] = @{
 @end example
 
 @c -----------------------------------------------------------------------------
-@node djtar, dtou, bin2h, Top
+@node djecho, djtar, bin2h, Top
+@chapter djecho
+
+This program simply echos whatever is given to it on the command line.
+
+Usage: @code{djecho} [@code{-n}] [@code{-o} @var{file}] stuff . . .
+
+@table @code
+
+@item -n
+
+Do not emit the trailing newline after printing the text.
+
+@item -o @var{file}
+
+Send output to a @var{file}.
+
+@end table
+
+The purpose of this program is to be able to interact directly with
+@code{make}'s ability to pass long command lines to programs.  If you
+use redirection, you aren't always able to handle long command lines
+(especially since echo is normally in @file{command.com}).  With
+@code{djecho}, you can, and you can use the @code{-o} option to redirect
+output to a file (and use the file later as a response file) without
+using dos's redirection.
+
+@c -----------------------------------------------------------------------------
+@node djtar, dtou, djecho, Top
 @chapter djtar
 
 Usage: @code{djtar} [@code{-n} @file{changeFile}] [@code{-o} @file{dir}]
@@ -92,17 +120,15 @@ fly.  (This can be also achieved by piping the output of @code{gzip} to
 @code{djtar}, but for very large archives you can run out of free disk
 space, because DOS implements pipes as temporary disk files.)
 @code{djtar} knows about all the compression methods supported by
-@code{gzip}, namely, deflation (aka LZ77, either by @code{gzip}, by
-@code{zip}, or by @code{pkzip}), LZW compression (by @code{compress}), LZH
-compression (as with @code{compress -H} available with some versions of
-@code{compress}), or Huffman compression (by @code{pack}).  Tar files
-compressed with @code{zip} or @code{pkzip} can be decompressed by
-@code{djtar} only if the @file{.zip} file contains a single tar file
+@code{gzip}, namely, deflation (by @code{gzip}), LZW compression
+(by @code{compress}), LZH compression (as with @code{compress -H}
+available with some versions of @code{compress}), or Huffman compression
+(by @code{pack}).
+
+@code{djtar} can also decompress files compressed with @code{zip} or
+@code{pkzip}, but only if the @file{.zip} file contains only files
 compressed with either the @code{deflation} or @code{stored} (i.e.,
-uncompressed, like with @samp{pkzip -e0}) methods; if more than a single
-tar file was put into a compressed zip file, files beyond the first one
-will be ignored by @code{djtar} (a message to this effect will be printed
-under @code{-v} option).
+uncompressed, like with @samp{pkzip -e0}) methods.
 
 @code{djtar} can also read tar archives (compressed or otherwise) written
 on a Unix machine to a diskette as a raw device (i.e., without DOS
@@ -174,7 +200,7 @@ test archive integrity.  This is the default behavior of
 
 This option modifies the output format slightly to aid in debugging tar
 file problems.  It also causes @code{djtar} to emit more verbose warning
-messages and print the compression method for compressed archices.
+messages and print the compression method for compressed archives.
 
 @item -.
 
@@ -279,7 +305,7 @@ text file mode to unix's NL text file mode.
 All djgpp wildcards are supported.  Timestamps of the files are preserved.
 
 @c -----------------------------------------------------------------------------
-@node utod, echo, dtou, Top
+@node utod, gxx, dtou, Top
 @chapter utod
 
 Each file specified on the command line is converted from unix's NL text
@@ -288,34 +314,7 @@ file mode to dos's CR/LF text file mode.
 All djgpp wildcards are supported.  Timestamps of the files are preserved.
 
 @c -----------------------------------------------------------------------------
-@node echo, gxx, utod, Top
-@chapter echo
-
-This program simply echos whatever is given to it on the command line.
-
-Usage: @code{echo} [@code{-n}] [@code{-o} @var{file}] stuff . . .
-
-@table @code
-
-@item -n
-
-Do not emit the trailing newline after printing the text.
-
-@item -o @var{file}
-
-Send output to a @var{file}.
-
-@end table
-
-The purpose of this program is to be able to interact directly with
-@code{make}'s ability to pass long command lines to programs.  If you
-use redirection, you aren't always able to handle long command lines.
-With @code{echo}, you can, and you can use the @code{-o} option to
-redirect output to a file (and use the file later as a response file)
-without using dos's redirection.
-
-@c -----------------------------------------------------------------------------
-@node gxx, redir, echo, Top
+@node gxx, redir, utod, Top
 @chapter gxx
 
 This program is exactly like @code{gcc} (in fact, it @i{calls} gcc), except
@@ -323,7 +322,7 @@ that it provides the extra libraries required to link most C++ programs,
 including the iostreams, stdc, and libg++ libraries.
 
 @c -----------------------------------------------------------------------------
-@node    redir, split, gxx, Top
+@node    redir, djsplit, gxx, Top
 @chapter redir
 
 DOS, in its many flavors and versions, lacks a decent I/O redirection
@@ -410,21 +409,21 @@ redir -eo -o prog.out command ... | pipe
 @end example
 
 @c -----------------------------------------------------------------------------
-@node split, merge, redir, Top
-@chapter split
+@node djsplit, djmerge, redir, Top
+@chapter djsplit
 
-The @code{split} and @code{merge} programs are designed to assist in
+The @code{djsplit} and @code{djmerge} programs are designed to assist in
 transporting files across unreliable channels or small media (like
-floppies).  @code{split} takes a big file and splits it into up to 1000
-smaller files.  @code{merge} puts them back together again.
+floppies).  @code{djsplit} takes a big file and splits it into up to 1000
+smaller files.  @code{djmerge} puts them back together again.
 
-Usage: @code{split} @var{inputfile} @var{chunksize} @var{outputbase}
+Usage: @code{djsplit} @var{inputfile} @var{chunksize} @var{outputbase}
 
 Each output file is made from appending a sequence number to
 @var{outputbase}.  For example:
 
 @example
-split foo.tgz 1300k footgz
+djsplit foo.tgz 1300k footgz
 @end example
 
 would result in @code{footgz.000}, @code{footgz.001}, etc.
@@ -433,28 +432,28 @@ The @code{chunksize} parameter can be expressed as bytes (NNN),
 kilobytes(NNNk) or megabytes (NNNm).
 
 @c -----------------------------------------------------------------------------
-@node merge, texi2ps, split, Top
-@chapter merge
+@node djmerge, texi2ps, djsplit, Top
+@chapter djmerge
 
-The @code{split} and @code{merge} programs are designed to assist in
+The @code{djsplit} and @code{djmerge} programs are designed to assist in
 transporting files across unreliable channels or small media (like
-floppies).  @code{split} takes a big file and splits it into up to 1000
-smaller files.  @code{merge} puts them back together again.
+floppies).  @code{djsplit} takes a big file and splits it into up to 1000
+smaller files.  @code{djmerge} puts them back together again.
 
-Usage: @code{split} @var{inputbase} @var{outputfile}
+Usage: @code{djmerge} @var{inputbase} @var{outputfile}
 
 Each input file is made from appending a sequence number to
 @var{inputbase}.  For example, given @code{footgz.000},
 @code{footgz.001}, etc,
 
 @example
-merge footgz foo.tgz
+djmerge footgz foo.tgz
 @end example
 
 would result in @code{foo.tgz} being created.
 
 @c -----------------------------------------------------------------------------
-@node texi2ps, update, merge, Top
+@node texi2ps, update, djmerge, Top
 @chapter texi2ps
 
 @code{texi2ps} is a modified version of @code{makeinfo} that quickly turns

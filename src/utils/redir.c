@@ -1,7 +1,8 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
 
-   Redir 1.0 Copyright (C) 1995 DJ Delorie (dj@delorie.com)
+   Redir 2.0 Copyright (C) 1995-1998 DJ Delorie (dj@delorie.com)
 
    Redir is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by
@@ -15,7 +16,8 @@
 
 */
    
-
+#include <ctype.h>
+#include <float.h>
 #include <stdio.h>
 #include <process.h>
 #include <string.h>
@@ -26,8 +28,25 @@
 #include <unistd.h>
 #include <errno.h>
 #include <crt0.h>
+#include <stubinfo.h>
+#include <sys/segments.h>
+#include <sys/exceptn.h>
 
-int _crt0_startup_flags = _CRT0_FLAG_DISALLOW_RESPONSE_FILES;
+/* Here's the deal.  We need to pass the command-line arguments to the
+   child program *exactly* as we got them.  This means we cannot allow
+   any wildcard expansion, we need to retain any quote characters, and
+   we need to disable response files processing.  That's why
+   _crt0_startup_flags are defined as they are, below, and that's why
+   we define an empty __crt0_glob_function.
+
+   In addition, we need to invoke the child program in the same way we
+   were invoked: if they called us via `system', that's how the child
+   should be invoked, and if they used `spawnXX', so should we.  This is
+   so the child will process quoted arguments and wildcards exactly as
+   the caller wanted.  */
+
+int _crt0_startup_flags =
+  (_CRT0_FLAG_DISALLOW_RESPONSE_FILES | _CRT0_FLAG_KEEP_QUOTES);
 
 char **
 __crt0_glob_function(char *a)
@@ -35,8 +54,10 @@ __crt0_glob_function(char *a)
   return 0;
 }
 
+extern void *xmalloc(size_t), *xrealloc(void *, size_t);
+
 int time_it=0, display_exit_code=0;
-time_t startt, endt;
+struct timeval startt, endt;
 int std_err_fid;
 FILE *std_err;
 int rv;
@@ -45,8 +66,9 @@ static void
 usage(void)
 {
   /*               ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8 */
-  fprintf(stderr, "Redir 1.0 Copyright (C) 1995 DJ Delorie (dj@delorie.com) - distribute freely\n");
-  fprintf(stderr, "NO WARRANTEE.  This program is protected by the GNU General Public License.\n");
+  fprintf(stderr, "Redir 2.0 Copyright (C) 1995 - 1998 DJ Delorie (dj@delorie.com)\n");
+  fprintf(stderr, "Distribute freely.  There is NO WARRANTY.\n");
+  fprintf(stderr, "This program is protected by the GNU General Public License.\n\n");
   fprintf(stderr, "Usage: redir [-i file] [-o file] [-oa file] [-e file] [-ea file]\n");
   fprintf(stderr, "                [-eo] [-oe] [-x] [-t] command [args . . .]\n\n");
   fprintf(stderr, "  -i file   redirect stdandard input from file\n");
@@ -67,13 +89,132 @@ static void
 fatal(const char *msg, const char *fn)
 {
   fprintf(std_err, msg, fn);
-  fprintf(std_err, "The error was: %s\n", strerror(errno));
+  fprintf(std_err, "\nThe error was: %s\n", strerror(errno));
   exit(1);
+}
+
+static void
+unquote(const char *src, char *dst)
+{
+  int quote=0;
+
+  while ((quote || !isspace(*src)) && *src)
+  {
+    if (quote && *src == quote)
+    {
+      quote = 0;
+      src++;
+    }
+    else if (!quote && (*src == '\'' || *src == '"'))
+    {
+      quote = *src;
+      src++;
+    }
+    else if (*src == '\\' && strchr("'\"", src[1]) && src[1])
+    {
+      src++;
+      *dst++ = *src++;
+    }
+    else
+    {
+      *dst++ = *src++;
+    }
+  }
+  *dst = '\0';
+}
+
+static char *
+unquoted_argv(int argc, char *argv[], char *reuse)
+{
+  char *new_arg;
+
+  if (reuse)
+    new_arg = (char *)xrealloc(reuse, strlen(argv[argc]) + 1);
+  else
+    new_arg = (char *)xmalloc(strlen(argv[argc]) + 1);
+  unquote(argv[argc], new_arg);
+  return new_arg;
+}
+
+extern char __PROXY[];	/* defined on crt1.c */
+extern size_t __PROXY_LEN;
+
+static int
+run_program(int argc, char *argv[])
+{
+  char doscmd[128];
+  char *tail = doscmd + 1, *tp = tail;
+  size_t tail_len;
+  int i = 0;
+
+  /* Decide whether to invoke them with `spawn' or `system'.  */
+  if (!getenv(__PROXY))
+  {
+    movedata(_stubinfo->psp_selector, 128, _my_ds(), (int)doscmd, 128);
+    tail_len = doscmd[0] & 0x7f;
+    tail[tail_len] = '\0';
+
+    /* If the DOS command tail is "!proxy XXXX YYYY", then
+       invoke via `spawn'.  */
+    if (strstr(tail, __PROXY+1))
+    {
+      while (isspace(*tp))
+	tp++;
+      if (strncmp(tp, __PROXY+1, __PROXY_LEN-1)==0)
+      {
+	char *endarg;
+
+	/* Paranoia: do we have at least three hex numbers after !proxy?  */
+	endarg = tp + __PROXY_LEN - 1;
+	do {
+	  tp = endarg;
+	  errno = 0;
+	  strtoul(tp, &endarg, 16);
+	  if (errno || endarg == tp)
+	    break;
+	  if (++i == 3)
+	  {
+	    gettimeofday(&startt, NULL);
+	    return spawnvp(P_WAIT, argv[1], argv+1);
+	  }
+	} while (*endarg);
+      }
+    }
+    /* The DOS command tail is the actual command line.
+       Get past our own options we've already parsed,
+       and pass the rest to the child via `system'.  */
+    tail = strstr(tail, argv[1]);
+    gettimeofday(&startt, NULL);
+    return system(tail);
+  }
+  /* We need to recreate the original command line as a single string,
+     from its breakdown in argv[].  */
+  for (tail_len = 0, i = 1; i < argc; i++)
+    tail_len += strlen(argv[i]) + 1;	/* +1 for the blank between args */
+
+  tp = tail = (char *)xmalloc(tail_len + 1);
+  for (i = 1; i < argc; i++)
+  {
+    size_t len = strlen(argv[i]);
+    memcpy(tp, argv[i], len);
+    tp[len] = ' ';
+    tp += len + 1;
+  }
+  tail[tail_len] = '\0';
+
+  gettimeofday(&startt, NULL);
+  return system(tail);
 }
 
 int
 main(int argc, char **argv)
 {
+  char *arg1 = NULL, *arg2 = NULL;
+
+  /* Don't let us crash because some naughty program left
+     the FPU in shambles.  */
+  _clear87();
+  _fpreset();
 
   if (argc < 2)
     usage();
@@ -81,67 +222,77 @@ main(int argc, char **argv)
   std_err_fid = dup(1);
   std_err = fdopen(std_err_fid, "w");
 
-  time(&startt);
-
-  while (argc > 1 && argv[1][0] == '-')
+  /* We requested that the startup code retains any quote characters
+     in the argv[] elements.  So we need to unquote those that we
+     process as we go.  */
+  while (argc > 1 && (arg1 = unquoted_argv(1, argv, arg2))[0] == '-')
   {
-    if (strcmp(argv[1], "-i")==0 && argc > 2)
+    int temp;
+    if (strcmp(arg1, "-i")==0 && argc > 2)
     {
-      close(0);
-      if (open(argv[2], O_RDONLY, 0666) != 0)
-	fatal("redir: attempt to redirect stdin from %s failed", argv[2]);
+      if ((temp = open(arg2 = unquoted_argv(2, argv, arg1),
+		       O_RDONLY, 0666)) < 0
+	  || dup2(temp, 0) == -1)
+	fatal("redir: attempt to redirect stdin from %s failed", arg2);
+      close(temp);
       argc--;
       argv++;
     }
-    else if (strcmp(argv[1], "-o")==0 && argc > 2)
+    else if (strcmp(arg1, "-o")==0 && argc > 2)
     {
-      close(1);
-      if (open(argv[2], O_WRONLY|O_CREAT|O_TRUNC, 0666) != 1)
-	fatal("redir: attempt to redirect stdout to %s failed", argv[2]);
+      if ((temp = open(arg2 = unquoted_argv(2, argv, arg1),
+		       O_WRONLY|O_CREAT|O_TRUNC, 0666)) < 0
+	  || dup2(temp, 1) == -1)
+	fatal("redir: attempt to redirect stdout to %s failed", arg2);
+      close(temp);
       argc--;
       argv++;
     }
-    else if (strcmp(argv[1], "-oa")==0 && argc > 2)
+    else if (strcmp(arg1, "-oa")==0 && argc > 2)
     {
-      close(1);
-      if (open(argv[2], O_WRONLY|O_APPEND|O_CREAT, 0666) != 1)
-	fatal("redir: attempt to append stdout to %s failed", argv[2]);
+      if ((temp = open(arg2 = unquoted_argv(2, argv, arg1),
+		       O_WRONLY|O_APPEND|O_CREAT, 0666)) < 0
+	  || dup2(temp, 1) == -1)
+	fatal("redir: attempt to append stdout to %s failed", arg2);
+      close(temp);
       argc--;
       argv++;
     }
-    else if (strcmp(argv[1], "-e")==0 && argc > 2)
+    else if (strcmp(arg1, "-e")==0 && argc > 2)
     {
-      close(2);
-      if (open(argv[2], O_WRONLY|O_CREAT|O_TRUNC, 0666) != 2)
-	fatal("redir: attempt to redirect stderr to %s failed", argv[2]);
+      if ((temp = open(arg2 = unquoted_argv(2, argv, arg1),
+		       O_WRONLY|O_CREAT|O_TRUNC, 0666)) < 0
+	  || dup2(temp, 2) == -1)
+	fatal("redir: attempt to redirect stderr to %s failed", arg2);
+      close(temp);
       argc--;
       argv++;
     }
-    else if (strcmp(argv[1], "-ea")==0 && argc > 2)
+    else if (strcmp(arg1, "-ea")==0 && argc > 2)
     {
-      close(2);
-      if (open(argv[2], O_WRONLY|O_APPEND|O_CREAT, 0666) != 2)
-	fatal("redir: attempt to append stderr to %s failed", argv[2]);
+      if ((temp = open(arg2 = unquoted_argv(2, argv, arg1),
+		       O_WRONLY|O_APPEND|O_CREAT, 0666)) < 0
+	  || dup2(temp, 2) == -1)
+	fatal("redir: attempt to append stderr to %s failed", arg2);
+      close(temp);
       argc--;
       argv++;
     }
-    else if (strcmp(argv[1], "-eo")==0)
+    else if (strcmp(arg1, "-eo")==0)
     {
-      close(2);
       if (dup2(1,2) == -1)
 	fatal("redir: attempt to redirect stderr to stdout failed", 0);
     }
-    else if (strcmp(argv[1], "-oe")==0)
+    else if (strcmp(arg1, "-oe")==0)
     {
-      close(1);
       if (dup2(2,1) == -1)
 	fatal("redir: attempt to redirect stdout to stderr failed", 0);
     }
-    else if (strcmp(argv[1], "-x")==0)
+    else if (strcmp(arg1, "-x")==0)
     {
       display_exit_code = 1;
     }
-    else if (strcmp(argv[1], "-t")==0)
+    else if (strcmp(arg1, "-t")==0)
     {
       time_it = 1;
     }
@@ -151,9 +302,24 @@ main(int argc, char **argv)
     argv++;
   }
 
-  rv = spawnvp(P_WAIT, argv[1], argv+1);
+  if (argc <= 1)
+  {
+    errno = EINVAL;
+    fatal("Missing program name; aborting", "");
+  }
+
+  /* We do NOT want `redir' to abort if the child is interrupted
+     or crashes for any reason.  */
+  _control87(0x033f, 0xffff);	/* mask all numeric exceptions */
+  __djgpp_exception_toggle();
+  rv = run_program(argc, argv);
+  gettimeofday(&endt, NULL);
+  _clear87();			/* clean up after the child, just in case */
+  _fpreset();
+  __djgpp_exception_toggle();
+
   if (rv < 0)
-    fatal("Error attempting to run program %s\n", argv[1]);
+    fatal("Error attempting to run program %s", argv[1]);
 
   if (display_exit_code)
   {
@@ -163,19 +329,27 @@ main(int argc, char **argv)
       fprintf(std_err, "Exit code: %d (0x%04x)\n", rv & 255, rv);
   }
 
-  time(&endt);
   if (time_it)
   {
-    time_t min, sec, hour, elapsedt;
-    elapsedt = endt - startt;
+    long min, sec, hour, elapsed_sec, elapsed_usec, msec;
+    elapsed_sec = endt.tv_sec - startt.tv_sec;
+    elapsed_usec = endt.tv_usec - startt.tv_usec;
+    if (elapsed_usec < 0)
+    {
+      elapsed_sec -= 1;
+      elapsed_usec += 1000000L;
+    }
 
-    sec = elapsedt % 60;
-    min = (elapsedt / 60) % 60;
-    hour = elapsedt / 3600;
-    if (elapsedt > 59)
-      fprintf(std_err, "Elapsed time: %d seconds (%d:%02d:%02d)\n", elapsedt, hour, min, sec);
+    msec = (elapsed_usec + 500) / 1000;
+    sec = elapsed_sec % 60;
+    min = (elapsed_sec / 60) % 60;
+    hour = elapsed_sec / 3600;
+    if (elapsed_sec > 59)
+      fprintf(std_err,
+	      "Elapsed time: %ld.%03ld seconds (%ld:%02ld:%02ld.%03ld)\n",
+	      elapsed_sec, msec, hour, min, sec, msec);
     else
-      fprintf(std_err, "Elapsed time: %d seconds\n", elapsedt);
+      fprintf(std_err, "Elapsed time: %ld.%03ld seconds\n", elapsed_sec, msec);
   }
 
   return rv;

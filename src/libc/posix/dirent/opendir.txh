@@ -25,19 +25,40 @@ following values to control the operation of @code{opendir}:
 Do not change the case of files to lower case.  Just in case Micros*ft
 decides to support case-sensitive file systems some day.
 
+You can also use this flag if you want the names of files like
+@file{README} and @file{FAQ} from Unix distributions to be returned in
+upper-case on Windows 9X filesystems.  @xref{_preserve_fncase}, for
+other ways of achieving this and for more detailed description of the
+automatic letter-case conversion by DJGPP library functions.
+
+@item __OPENDIR_NO_HIDDEN
+
+Do not include hidden files and directories in the search.  By default,
+all files and directories are included.
+
 @item __OPENDIR_FIND_HIDDEN
 
-Include hidden files and directories in the search.  By default, these
-are skipped.
+Provided for back-compatibility with previous DJGPP versions, where
+hidden files and directories were by default skipped.  In versions 2.02
+and later, this flag has no effect.
+
+@item __OPENDIR_FIND_LABEL
+
+Include volume labels in the search.  By default, these are skipped.
 
 @end table
 
-You can simply put "int __opendir_flags = ...;" in your code.  The
+You can simply put @samp{int __opendir_flags = ...;} in your code.  The
 default is to let it get set to zero as an uninitialized variable.
 
 @subheading Return Value
 
 The open directory structure, or @code{NULL} on error.
+
+@subheading Portability
+
+@port-note posix The @code{__opendir_flags} variable is DJGPP-specific.
+@portability !ansi, posix
 
 @subheading Example
 

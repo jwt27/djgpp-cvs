@@ -20,9 +20,18 @@ struct dirent @{
 @};
 @end example
 
+Note that some directory entries might be skipped by @code{readdir},
+depending on the bits set in the global variable
+@code{__opendir_flags}.  @xref{opendir, __opendir_flags, opendir}.
+
 @subheading Return Value
 
-A pointer to a static buffer that is overridden with each call.
+A pointer to a static buffer that is overwritten with each call.
+
+@subheading Portability
+
+@port-note posix The @code{__opendir_flags} variable is DJGPP-specific.
+@portability !ansi, posix
 
 @subheading Example
 

@@ -17,6 +17,11 @@ and the program exits with an exit code of one.
 
 This function does not return.
 
+@subheading Portability
+
+@port-node posix The return-value of one is DJGPP-specific.
+@portability ansi, posix
+
 @subheading Example
 
 @example
@@ -37,6 +42,10 @@ int abs(int value);
 @subheading Return Value
 
 The absolute value of @code{value} is returned.
+
+@subheading Portability
+
+@portability ansi, posix
 
 @subheading Example
 

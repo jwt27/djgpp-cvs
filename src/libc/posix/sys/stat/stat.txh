@@ -32,6 +32,10 @@ struct  stat @{
 
 Zero on success, nonzero on failure (and @var{errno} set).
 
+@subheading Portability
+
+@portability !ansi, posix
+
 @subheading Example
 
 @example
@@ -47,7 +51,7 @@ Supplying a 100% Unix-compatible @code{f?stat()} functions under DOS is an
 implementation nightmare.  The following notes describe some of the
 obscure points specific to their behavior in DJGPP.
 
-1. The @samp{drive} for character devices (like @code{con}, @code{/dev/nul}
+1. The @samp{drive} for character devices (like @code{con}, @code{/dev/null}
 and others is returned as -1.  For drives networked by Novell Netware, it
 is returned as -2.
 

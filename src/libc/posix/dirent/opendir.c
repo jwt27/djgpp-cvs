@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -10,7 +12,41 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <libc/dosio.h>
+#include <dpmi.h>
 #include "dirstruc.h"
+
+void
+_lfn_find_close(int handle)
+{
+  __dpmi_regs r;
+
+  r.x.bx = handle;
+  r.x.ax = 0x71a1;
+  __dpmi_int(0x21, &r);
+  if (r.x.flags & 1)
+  {
+    errno = __doserr_to_errno(r.x.ax);
+  }
+}
+
+void
+__set_need_fake_dot_dotdot(DIR *dir)
+{
+  dir->need_fake_dot_dotdot = 0;
+  if (strlen(dir->name) == 6)	/* "d:/" + "*.*" */
+  {
+    /* see if findfirst finds "." anyway */
+    if (findfirst(dir->name, &dir->ff, FA_ARCH|FA_RDONLY|FA_DIREC)
+	|| strcmp(dir->ff.ff_name, "."))
+      dir->need_fake_dot_dotdot = 2;
+    if (_USE_LFN && dir->ff.lfn_handle)
+    {
+      _lfn_find_close(dir->ff.lfn_handle);
+      dir->ff.lfn_handle = 0;
+    }
+  }
+}
 
 DIR *
 opendir(const char *name)
@@ -33,18 +69,6 @@ opendir(const char *name)
 
   /* Make absolute path */
   _fixpath(name, dir->name);
-
-  /* If we're doing opendir of the root directory, we need to
-     fake out the . and .. entries, as some unix programs (like
-     mkisofs) expect them and fail if they don't exist */
-  dir->need_fake_dot_dotdot = 0;
-  if (dir->name[1] == ':' && dir->name[2] == '/' && dir->name[3] == 0)
-  {
-    /* see if findfirst finds "." anyway */
-    int done = findfirst(dir->name, &dir->ff, FA_ARCH|FA_RDONLY|FA_DIREC|FA_SYSTEM);
-    if (done || strcmp(dir->ff.ff_name, "."))
-      dir->need_fake_dot_dotdot = 2;
-  }
 
   /* Ensure that directory to be accessed exists */
   if (access(dir->name, D_OK))
@@ -69,11 +93,16 @@ opendir(const char *name)
       break;
     }
   }
-
   dir->name[length++] = '/';
   dir->name[length++] = '*';
   dir->name[length++] = '.';
   dir->name[length++] = '*';
   dir->name[length++] = 0;
+
+  /* If we're doing opendir of the root directory, we need to
+     fake out the . and .. entries, as some unix programs (like
+     mkisofs) expect them and fail if they don't exist */
+  __set_need_fake_dot_dotdot(dir);
+
   return dir;
 }

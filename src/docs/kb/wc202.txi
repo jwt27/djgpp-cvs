@@ -1,0 +1,505 @@
+@node Changes in 2.02, , Changes in 2.01, What Changed
+@section Changes in 2.02
+
+Here is a list of changes from DJGPP V2.01 to V2.02
+
+@file{tests/libclink} no longer looks for DJGPP V1.
+
+@file{emu387.dxe} has been rebuilt to reflect fpatan fixes.
+@findex emu387
+
+@file{mcount.c} no longer writes to the mono monitor.  This had caused
+seg faults when profiling.
+@findex mcount.c
+
+You can now ``symlink'' to files with 8 character base names (like
+12345678.exe).  Previously, @file{stub.asm} assumed al was zero when it
+wasn't always that way.
+@pindex stubedit
+@findex stub.asm
+
+@code{rawclock()} now actually returns the number of ticks since
+midnight, not since program start.
+@findex rawclock
+
+@file{libc.tex} now uses ``Master Index'' instead of ``Index'' due
+to conflicts with the node for @code{index}.
+@findex libc.tex
+
+@code{srand()} is now documented.
+@findex srand
+
+@code{memchr()} is now 8-bit clean.
+@findex memchr
+
+Documentation for @code{delay()} includes the header file.
+@findex delay
+
+@code{__dpmi_simulate_real_mode_procedure_iret()} is now properly
+documented as DPMI call 0x0302.
+@findex __dpmi_simulate_real_mode_procedure_iret()
+
+@file{edebug} now unassembles @code{scasb} correctly.
+@pindex edebug
+
+Documentation for @code{qsort()} has correct prototypes
+in the examples.
+@findex qsort
+
+@file{info/dir.txi} includes an entry for the FAQ.
+@findex info/dir.txi
+
+Functions in @file{conio.h} now support DOS/V's virtual screens.
+@findex conio.h
+
+@file{edebug} and other debuggers using the common debugging framework
+will properly close files when they terminate the debuggee.
+This allows to restart the debuggee without losing handles.
+@findex dbgcom.c
+@pindex edebug
+
+@code{fnsplit()} now handles files like .emacs properly.
+@findex fnsplit
+
+@code{glob()} now handles files like .emacs properly.  This will fix
+wildcard expansion on new programs.
+@findex glob
+
+@file{go32-v2.exe} properly reverts the interrupt table before running
+the child process.
+@pindex go32-v2
+
+@code{_lfn_gen_short_name} no longer crashes in rare cases.
+@findex _lfn_gen_short_name
+
+@code{s[f]_ceil} and @code{s[f]_floor} functions in @file{libm.a} no
+longer crash when emulated.
+@findex s_ceil
+@findex sf_ceil
+@findex s_floor
+@findex sf_floor
+
+@code{fixpath} and @code{readdir} support multibyte file names.
+@findex fixpath
+@findex readdir
+@cindex multibyte
+
+You may now @code{set 387=y} to avoid the auto-detection.
+
+@code{opendir("/")} works.
+@findex opendir
+
+@code{rename("x", "x/y")} will now fail when "x" is a directory.
+@findex rename
+
+@code{sigprocmask} and @code{sigpending} actually do something now.
+All of the POSIX signal functions are now documented.
+@findex sigprocmask
+@findex sigpending
+@findex sigaddset
+@findex sigdelset
+@findex sigemptyset
+@findex sigfillset
+@findex sigismember
+
+@code{_truename} didn't use @code{putpath} and therefore didn't support
+the @code{/dev/} style of standard devices.  @code{stat} also failed on
+devices in some cases.  We think this is the cause of @file{bash}
+failing on redirection to @file{/dev/null}.
+@findex _truename
+@findex putpath
+@findex stat
+@pindex bash
+
+Documentation for FSEXT-enabled functions now mentions that they are
+FSEXT-enabled, and how to avoid that.
+@findex _close
+@findex _creat
+@findex _open
+@findex _read
+@findex _write
+
+Documentation for @code{bioscom} now documents (and uses) the
+@code{port} parameter.
+@findex bioscom
+
+@code{ffs()} returns the correct value.
+@findex ffs
+
+Various fixes and optimizations to @code{_use_lfn()}.
+@findex _use_lfn
+
+Return codes of @code{lock()} and @code{unlock()} are correct.
+@findex lock
+@findex unlock
+
+Added @code{memicmp()}
+@findex memicmp
+
+@code{tmpfile()} always opens the temp file in binary mode.
+@findex tmpfile
+
+New @code{statfs} returns the actual size of a CD-ROM instead of the
+default returned by MSCDEX.
+@findex statfs
+
+@file{gxx} won't try to link extra libraries if you specify @code{-c} or
+@code{-S} on the command line.
+@pindex gxx
+
+@code{_dos_findfirst()} takes a @code{const char *} instead of
+@code{char *}.
+@findex _dos_findfirst
+
+@code{rename()} handles extra error codes some network redirectors return.
+@findex rename
+
+@code{ctime} handles dumped emacs and DOS-style @code{$TZDIR}.
+@findex ctime
+
+@code{pathconf()} returns actual values for NAME_MAX and PATH_MAX, rather
+than defaults.  Therefore, it can be used to detect whether a given disk
+supports long file names.
+@findex pathconf
+
+The return values for @code{_go32_dpmi_lock_data} and
+@code{_go32_dpmi_lock_code} are now documented.
+@findex _go32_dpmi_lock_code
+@findex _go32_dpmi_lock_data
+
+The initial stack is aligned to an 8-byte boundary.
+
+@code{getkey} and @code{getxkey} allow you to do @kbd{ALT-keypad-224}.
+@findex getkey
+@findex getxkey
+
+@code{popen} selects temporary files correctly now.
+@findex popen
+
+@code{pclose} returns the status of the program it read from.
+@findex pclose
+
+@code{stubedit} won't let you set a transfer buffer bigger than 63k.
+If the stub detects a zero there, it assumes 63k.
+@pindex stubedit
+
+The stub now returns error codes in the 100..110 range when it has a
+startup failure.
+
+@code{system} works if @code{$COMSPEC} isn't set.
+@findex system
+
+@code{struct lconv} includes @code{mon_thousands_sep}.
+@findex lconv
+
+@code{scanf} works with long double formats like @code{%LG}.
+@findex scanf
+
+@code{_osmajor} and @code{_osminor} are now set at startup.
+@findex _osmajor
+@findex _osminor
+
+@code{write()} now calls FSEXT for ``text'' files.
+@findex write
+
+@file{assert.h} causes no more warnings with some gcc options.
+@findex assert
+
+@code{access()} now thinks devices are read/write, instead of read-only,
+regardless of what the device actually supports.
+@findex access
+
+New function @code{stackavail()} in @file{stdlib.h}
+@findex stackavail
+
+@file{echo}, @file{split} and @file{merge} are now called @file{djecho},
+@file{djsplit} and @file{djmerge} to avoid clashes with GNU's
+@file{echo}, @file{split} and @file{merge} programs.
+@pindex echo
+@pindex split
+@pindex merge
+
+@code{tzname[]} bug fixed; @code{tzname} no longer a function stub (!)
+@findex tzname
+
+More @code{djasm} improvements.
+@pindex djasm
+
+Added @code{_v2_prog_type} to @file{sys/system.h} and extended @code{symlink} with it.
+@findex _v2_prog_type
+@findex symlink
+
+@code{fread} and @code{fwrite} are documented as returning less than the
+requested size, rather than -1 on error, since they never return
+negative values.
+@code{fread}
+@code{fwrite}
+
+@code{stub} forcefully closes file descriptors 18 and 19, so that the
+stub and the DPMI server have enough handles to open the swap file and
+read the COFF information of the DJGPP executable.
+@findex stub
+
+Minor fixes to @code{popen}'s list of pending commands.
+@findex popen
+
+@code{tempnam} returns allocated memory, not a pointer to static space,
+and does not ignore its arguments @var{tmpdir} and @var{prefix} anymore.
+@findex tempnam
+
+@code{difftime} can return negative numbers now.
+@findex difftime
+
+@code{gethostname} removes trailing spaces now.
+@findex gethostname
+
+@code{insque} works with empty lists now.
+@findex insque
+
+@code{sync} also calls @code{_flush_disk_cache()}.
+@findex sync
+@findex _flush_disk_cache
+
+@code{printf} flushes stdout every time, unless it is redirected to a
+file, to reduce programmer confusion.  Note that @code{fprintf} and
+@code{vprintf} don't do this.
+@findex printf
+
+@code{exit} calls destructors *before* it closes all open files.
+@findex exit
+
+The code that reads blocks of data for FILE* streams has a new ``slow
+start'' algorithm that's designed to adjust the read size for both
+programs that seek a lot reading small amounts of data, and programs
+that don't seek but read lots of data.
+
+@code{mktime} handles the DST change hour gracefully
+@findex mktime
+
+@code{enable} and @code{disable} don't use DPMI (sti/cli are less buggy!)
+@findex enable
+@findex disable
+
+The command line parser can handle response files generated by
+@samp{find -print0}.
+
+@code{malloc} and @code{free} have been replaced by a more efficient
+(and not BSD) algorithm.  The source archive still contains
+@file{bsdmallo.c} and a new even faster (but more wasteful) version in
+@file{fmalloc.c}.
+@findex malloc
+@findex free
+
+@code{getmntent} better supports Windows NT and doesn't cause DOS to
+return stale data when the disk is changed.  Removable media such as JAZ
+drives are no longer reported when the drive is empty.  Disks written by
+Windows 9X are no longer reported with bogus names taken from LFN
+directory entries (which have their volume label attribute bit set).
+@findex getmntent
+
+File names which begin with @file{/dev/} or @file{x:/dev/} (where
+@file{x:} is any drive letter) are treated specially by all
+file-oriented library functions.  @file{/dev/tty} is converted to
+@file{con} and @file{/dev/null} is converted to @file{nul}, to make
+porting of Unix programs easier.  Other names get the drive letter and
+the @file{/dev/} prefix removed, so e.g. @file{d:/dev/lpt1} is converted
+to @file{lpt1}.  This is because DOS handles device names inconsistently
+unless they are devoid of the @file{x:/dev/} prefix.  File names of the
+form @file{/dev/x/foo} are converted to @file{x:/foo}; this allows to
+use Unix-style path names which always begin with a forward slash.
+
+The startup code now masks @strong{all} numeric exceptions when a
+floating-point hardware is present.  This means that illegal operations
+like @code{sqrt(-1)} will now return @code{NaN} (Not-a-number) rather
+than raise the @code{SIGFPE} signal.
+
+@code{fstat} is now more reliable when called from programs under a
+debugger, does not report bogus results on NT, reports files on the A:
+drive correctly, and correctly reports the write access bit on
+Windows9X.
+@findex fstat
+
+@code{stat} is now more reliable on NT and with character devices.
+@findex stat
+
+
+@file{djgpp.env} is read before command line arguments are expanded,
+so that they'll honor the @code{LFN} setting in @file{djgpp.env}.
+@pindex djgpp.env
+
+The @code{sys_siglist[]} array is now available with the names of all
+the signals, and the function @code{psignal} can be used to print
+messages which include the signal names.
+@findex _sys_siglist
+@findex psignal
+
+The new functions @code{basename} and @code{dirname} can be used to
+extract directory and basename parts from file names.
+@findex basename
+@findex dirname
+
+_my_* work for selectors with the high bit set
+
+The new function @code{_creatnew} creates a file only if it didn't
+already exist.
+@findex _creatnew
+
+@code{tmpfile} makes sure it opens a file which is not and will not be
+used by any other program.  It does so by repeatedly calling
+@code{tmpnam} until @code{_creatnew} succeeds to create a file which
+didn't exist before.  The temporary file is opened in DENY_ALL mode, so
+that no other process can neither read from nor write to it.  In case of
+a failure, @code{tmpfile} does not leak memory anymore.
+
+Previously, there was a small probability that a call to @code{open}
+with the @code{O_CREAT} and @code{O_EXCL} bits set would succeed even
+though the named file already existed (created by another process).
+This window is now closed.
+@findex open
+
+@code{mkstemp} now makes sure the file it creates is unique even if
+other processes can create files in the same directory, and opens the
+file in DENY_ALL mode.
+@findex mkstemp
+
+@code{__FSEXT_alloc_fd} now duplicates the initial file handle instead
+of reopening the NUL device on each call.  Thus, it is no longer limited
+by the value of the @samp{FILES=} parameter on your @file{CONFIG.SYS},
+but can allocate up to 254 handles (which is the maximum number allowed
+by DOS).
+@findex __FSEXT_alloc_fd
+@findex tmpfile
+
+Stack dumps will now fit the screen, instead of being limited to 10
+frames.
+
+@code{rename} will properly fail if the file doesn't exist.
+@findex rename
+
+@code{system} is now compliant with ANSI C Standard when its argument is
+a NULL pointer.
+@findex system
+
+Previously, at program startup @code{errno} would retain whatever value
+it was assigned by the DJGPP startup code.  ANSI C Standard requires
+@code{errno} to be zero at the beginning of @code{main}, so it is now
+reset to zero before calling @code{main}.
+@findex errno
+
+The stack dump printed when a program is aborted or crashes was
+improved.  First, it is no longer limited to 10 stack frames.  When the
+standard error stream is connected to the console, the maximum number of
+frames is computed so that the stack dump will use all the available
+screen area, without scrolling off the visible part.  For example, at
+50-line display, you can have as much as 36 stack frames printed and
+still see the registers and selectors dump, and the exception mnemonic
+that preceed it.
+
+When stderr is not the console, the number of printed stack frames is
+only limited by the stack size of the running program.
+
+In addition, the top and bottom of both the application code stack and
+the locked stack used for processing exceptions, are printed.  This
+makes detection of stack overflows and other stack-related atrocities
+much easier.
+@cindex stack dump, when aborted or crashed
+
+The @code{_doserrno} global variable is now provided.  Whenever a DOS
+call fails, this variable gets assigned the value of the error code
+returned by the failed DOS function.
+@findex _doserrno
+
+The header @file{sys/dxe.h} now works with C++.
+
+@code{fflush} now conforms to ANSI C standard when called with a
+@code{NULL} argument.
+@findex fflush
+
+@code{__dpmi_yield} doesn't wedge the DOS box on some versions of
+Windows 9X anymore.
+@findex __dpmi_yield
+
+@code{outports*} takes a const buffer
+@findex outportsb
+@findex outportsw
+@findex outportsl
+
+@code{glob} will initalize @code{*pglob} when appropriate.
+@findex glob
+
+The conversion functions @code{ecvtbuf}, @code{ecvt}, @code{fcvtbuf},
+@code{fcvt}, and @code{gcvt} are now provided.
+@findex fcvtbuf
+@findex fcvt
+@findex ecvtbuf
+@findex ecvt
+@findex gcvt
+
+The startup code now recognizes an additional flag
+_CRT0_FLAG_KEEP_QUOTES, which forces it to retain quote characters in
+command-line arguments.
+@vindex _crt0_startup_flags, the _CRT0_FLAG_KEEP_QUOTES flag
+
+@code{redir} invokes the subsidiary program in a way that preserves the
+command-line expansion.  Thus, you can now use @code{redir} to invoke
+programs whose command lines include quote characters and file name
+wildcards, and they will work as expected.
+
+Also, @code{redir} no longer crashes if the subsidiary program was
+interrupted or crashed, and reports the run time with millisecond
+resolution.
+@cindex redir
+
+The exit code now makes sure the timer interrupt is left pointing to its
+original handler, even if the program is aborted, or exits without
+disabling timers.  @code{__djgpp_exception_toggle} now toggles the timer
+interrupt handler as well, if it was hooked by SIGALRM/SIGPROF handler
+or by @code{setitimer}.  Thus, timers, periodic alarms, and profiling
+will be disabled inside blocks that call @code{__djgpp_exception_toggle}.
+@findex __djgpp_exception_toggle
+@findex setitimer
+@cindex SIGALRM
+@cindex SIGPROF
+@cindex profiling
+
+The functions of the @code{printf} family now always print a negative
+sign for a negative floating-point argument, even when the conversion
+generated no significant digits (i.e. only zeros are printed), if the
+format specifier requests an explicit sign, like in "%+f".  A special
+NaN value will also be printed with a sign in these cases (e.g. try
+printing @code{-nanf()}).
+@findex printf
+@findex fprintf
+@findex sprintf
+@findex _doprnt
+@findex nanf
+
+@code{select} now correctly zeroes out all the bits in the @code{fd_set}
+arguments when it returns due to expired timeout.
+@findex select
+
+@code{readdir} now includes hidden files and directories in the search
+by default.  The @code{__OPENDIR_FIND_HIDDEN} bit of the
+@code{__opendir_flags} variable has no effect, and a new
+@code{__OPENDIR_NO_HIDDEN} bit is provided to exclude hidden
+files/directories from the search.
+@findex opendir
+@findex readdir
+
+@code{getmntent} better supports Windows NT and doesn't cause DOS to
+return stale data when the disk is changed.  Removable media such as JAZ
+drives are no longer reported when the drive is empty.  Disks written by
+Windows 9X are no longer reported with bogus names taken from LFN
+directory entries (which have their volume label attribute bit set).
+@findex getmntent
+
+@code{opendir}, @code{closedir} and @code{rewinddir} don't lose search
+handles anymore when long file names are supported.  @code{rewinddir}
+and @code{seekdir} will not miss the (possibly faked) @file{.} and
+@file{..} entries in root directories.
+@findex opendir, does not lose search handles
+@findex closedir, does not lose search handles
+@findex rewinddir, does not lose search handles
+@findex seekdir, and @file{.} and @file{..} entries
+@findex rewinddir, and @file{.} and @file{..} entries
+

@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -59,8 +61,8 @@ static __inline__ char tochar(int n)
 #define	ZEROPAD		0x20		/* zero (as opposed to blank) pad */
 #define	HEXPREFIX	0x40		/* add 0x or 0X prefix */
 
-static cvtl(long double number, int prec, int flags, char *signp,
-	    unsigned char fmtch, char *startp, char *endp);
+static int cvtl(long double number, int prec, int flags, char *signp,
+	        unsigned char fmtch, char *startp, char *endp);
 static char *roundl(long double fract, int *expv, char *start, char *end,
 		    char ch, char *signp);
 static char *exponentl(char *p, int expv, unsigned char fmtch);
@@ -80,7 +82,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char *t;			/* buffer pointer */
   long double _ldouble;		/* double and long double precision arguments
 				   %L.[eEfgG] */
-  unsigned long long _ulonglong; /* integer arguments %[diouxX] */
+  unsigned long long _ulonglong=0; /* integer arguments %[diouxX] */
   int base;			/* base for [diouxX] conversion */
   int dprec;			/* decimal precision in [diouxX] */
   int fieldsz;			/* field size expanded by sign, etc */
@@ -94,6 +96,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char softsign;		/* temporary negative sign for floats */
   const char *digs;		/* digits for [diouxX] conversion */
   char buf[BUF];		/* space for %c, %[diouxX], %[eEfgG] */
+  int neg_ldouble = 0;		/* non-zero if _ldouble is negative */
 
   decimal = localeconv()->decimal_point[0];
 
@@ -245,9 +248,13 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       {
 	softsign = '-';
 	_ldouble = -_ldouble;
+	neg_ldouble = 1;
       }
       else
+      {
 	softsign = 0;
+	neg_ldouble = 0;
+      }
       /*
        * cvt may have to round up past the "start" of the
        * buffer, i.e. ``intf("%.2f", (double)9.999);'';
@@ -256,7 +263,13 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       *buf = NULL;
       size = cvtl(_ldouble, prec, flags, &softsign, *fmt, buf,
 		  buf + sizeof(buf));
-      if (softsign && !nan)
+      /*
+       * If the format specifier requested an explicit sign,
+       * we print a negative sign even if no significant digits
+       * will be shown, and we also print a sign for a NaN.  In
+       * other words, "%+f" might print -0.000000, +NaN and -NaN.
+       */
+      if (softsign || (sign == '+' && (neg_ldouble || nan == -1)))
 	sign = '-';
       nan = 0;
       t = *buf ? buf : buf + 1;
@@ -474,8 +487,10 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
      char *startp, char *endp)
 {
   char *p, *t;
-  long double fract;
+  long double fract=0;
   int dotrim, expcnt, gformat;
+  int doextradps=0;    /* Do extra decimal places if the precision needs it */
+  int doingzero=0;     /* We're displaying 0.0 */
   long double integer, tmp;
 
   if ((expcnt = isspeciall(number, startp)))
@@ -524,6 +539,13 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   }
   number = integer;
   fract = modfl(number, &integer);
+  /* If integer is zero then we need to look at where the sig figs are */
+  if (integer<1) {
+        /* If fract is zero the zero before the decimal point is a sig fig */
+        if (fract==0.0) doingzero=1;
+        /* If fract is non-zero all sig figs are in fractional part */
+        else doextradps=1;
+  }
   /*
    * get integer portion of number; put into the end of the buffer; the
    * .01 is added for modf(356.0 / 10, &integer) returning .59999999...
@@ -660,9 +682,15 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     break;
   case 'g':
   case 'G':
-    /* a precision of 0 is treated as a precision of 1. */
-    if (!prec)
-      ++prec;
+    if (prec) {
+        /* If doing zero and precision is greater than 0 count the
+         * 0 before the decimal place */
+        if (doingzero) --prec;
+    }
+    else {
+        /* a precision of 0 is treated as precision of 1 unless doing zero */
+        if (!doingzero) ++prec;
+    }
     /*
      * ``The style used depends on the value converted; style e
      * will be used only if the exponent resulting from the
@@ -707,7 +735,13 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     {
       fract = modfl(fract * 10.0L, &tmp);
       *t++ = tochar((int)tmp);
-      prec--;
+      /* If we're not adding 0s
+       * or we are but they're sig figs:
+       * decrement the precision */
+      if ((doextradps!=1) || ((int)tmp!=0)) {
+        doextradps=0;
+        prec--;
+      }
     }
     if (fract)
       startp = roundl(fract, (int *)NULL, startp, t - 1,
@@ -834,8 +868,8 @@ isspeciall(long double d, char *bufp)
   if ((ip->manh & 0x7fffffff) || ip->manl)
   {
     strcpy(bufp, "NaN");
-    nan = 1;			/* kludge: we don't need the sign,  it's not nice
-				   but it should work */
+    nan = ip->sign ? -1 : 1; /* kludge: we don't need the sign,  it's not nice
+				but it should work */
   }
   else
     (void)strcpy(bufp, "Inf");
