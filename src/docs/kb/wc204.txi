@@ -860,3 +860,8 @@ The constants @code{HUGE_VALF} and @code{HUGE_VALL} were added.
 The error code @code{EILSEQ} was added --- @code{errno} may be assigned it.
 @code{perror} and @code{strerror} were updated to display/return
 an error message for @code{EILSEQ}.
+
+@pindex stubify@r{, ability to set stub parameters}
+It's possible to set stub parameters by passing @option{-stubparams=...}
+to @command{stubify}.
+

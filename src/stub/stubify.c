@@ -28,6 +28,9 @@
 #define SEEK_SET 0
 #endif
 
+/* Option string that marks what to send to stubedit (stub options). */
+#define STUB_OPTIONS "-stubparams="
+
 const unsigned char stub_bytes[] = {
 #include "stub.h"
 };
@@ -36,6 +39,7 @@ const unsigned char stub_bytes[] = {
 int verbose=0;
 
 char *generate=NULL;
+char *stubparams=NULL;
 
 unsigned long
 get32(unsigned char *ptr)
@@ -47,6 +51,38 @@ unsigned short
 get16(unsigned char *ptr)
 {
   return ptr[0] | (ptr[1]<<8);
+}
+
+void stubedit(const char *filename)
+{
+  if( stubparams )
+  {
+    int i;
+    char *stubedit_str = malloc( sizeof("stubedit ")-1
+			   +strlen(filename)
+			   +1 /* space */
+			   +strlen(stubparams)
+			   +1 ); /* For NULL. */
+    if( stubedit_str )
+    {
+      sprintf(stubedit_str, "stubedit %s %s",
+	      filename, stubparams);
+      v_printf("Running '%s'\n", stubedit_str);
+      i = system(stubedit_str);
+      if( i )
+      {
+	fprintf(stderr, "%s: call to stubedit failed"
+		"(stubedit exit status was %d)\n", filename, i);
+      }
+      
+      free( stubedit_str );
+    }
+    else
+    {
+      fprintf(stderr, "%s: failed using %s (out of memory)\n", filename, 
+	      STUB_OPTIONS);
+    }
+  }
 }
 
 void coff2exe(char *fname)
@@ -241,19 +277,23 @@ void coff2exe(char *fname)
     }
   }
 
+  stubedit(ofilename);
 }
 
 void print_help(void)
 {
-  fprintf(stderr, "Usage: stubify [-v] [-g] <program>\n"
+  fprintf(stderr, "Usage: stubify [-v] [-g] [%sparam[,param...] <program>\n"
 	  "<program> may be COFF or stubbed .exe, and may be COFF with .exe extension.\n"
 	  "Resulting file will have .exe\n"
 	  "-v -> verbose\n"
 	  "-g -> generate a stub\n"
+	  "%sparam[,param...] -> pass param[ param...] to stubedit (commas are\n"
+	  "      converted into spaces); see stubedit documentation for what param can be\n"
 	  "\nThis program is NOT shareware or public domain.  It is copyrighted.\n"
 	  "It is redistributable but only as part of a complete package.  If you\n"
 	  "have a copy of this program, the place that you got it from is\n"
-	  "responsible for making sure you are able to get its sources as well.\n");
+	  "responsible for making sure you are able to get its sources as well.\n",
+	  STUB_OPTIONS, STUB_OPTIONS );
 }
 
 int main(int argc, char **argv)
@@ -278,6 +318,28 @@ int main(int argc, char **argv)
       generate = argv[2];
       argv += 2;
       argc -= 2;
+    }
+    else if (! strncmp(argv[1], STUB_OPTIONS, sizeof(STUB_OPTIONS)-1))
+    {
+      int j = 0;
+      i = sizeof(STUB_OPTIONS)-1;
+      stubparams = malloc( strlen(&(argv[1][i])) + 1 );
+      while (argv[1][i])
+      {
+	if (argv[1][i] == ',')
+	{
+	  stubparams[j] = ' ';
+	}
+	else
+	{
+	  stubparams[j] = argv[1][i];
+	}
+	i++;
+	j++;
+      }
+      stubparams[j] = 0;
+      argv++;
+      argc--;
     }
     else
     {
@@ -316,6 +378,7 @@ int main(int argc, char **argv)
 
     write(ofile, stub_bytes, sizeof(stub_bytes));
     close(ofile);
+    stubedit(ofilename);
   }
   else
   {

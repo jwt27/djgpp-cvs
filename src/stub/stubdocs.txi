@@ -31,7 +31,7 @@ will provide additional debugging output when it executes.
 @chapter @command{stubify}
 @pindex stubify
 
-Usage: @kbd{stubify [-v] [-g] files}
+Usage: @kbd{stubify [-v] [-g] [-stubparams=param[,param...]] files}
 
 @command{stubify} is a utility that adds a DOS exectuable stub loader to the
 front of a @acronym{COFF} image.  The input program may be @acronym{COFF}
@@ -55,6 +55,13 @@ image containing only the stub, which can be modified by
 program in the same directory.  This is used to simulate links, so
 @code{argv[0]} can be used to change program behavior or create a small
 alias to the other program.
+
+@item -stubparams=param[,param...]
+
+Pass @option{param[ param...]} to @command{stubedit} to tune the stub's
+parameters.  Commas in @option{param[,param...]} are converted into
+spaces.  See the documentation of @command{stubedit} (@pxref{stubedit})
+for the available parameters.
 
 @end table
 
