@@ -1,0 +1,109 @@
+/* ---------------------------------------------------------------------- */
+/* Copyright 1995-1996 by Morten Welinder (terra@diku.dk)                 */
+/* Distributed under the GPL, see COPYING for details.                    */
+/* ---------------------------------------------------------------------- */
+
+/* Error codes from DPMI server.  In addition there are cases where a DOS
+   error code is returned.  */
+#define DPMI_ERROR_UNSUPPORTED			0x8001
+#define DPMI_ERROR_INVALID_STATE		0x8002
+#define DPMI_ERROR_INTEGRITY			0x8003
+#define DPMI_ERROR_DEADLOCK			0x8004
+#define DPMI_ERROR_CANCELLED			0x8005
+#define DPMI_ERROR_RESOURCE_UNAVAILABLE		0x8010
+#define DPMI_ERROR_DESCRIPTOR_UNAVAILABLE	0x8011
+#define DPMI_ERROR_LINEAR_UNAVAILABLE		0x8012
+#define DPMI_ERROR_MEMORY_UNAVAILABLE		0x8013
+#define DPMI_ERROR_BACKING_UNAVAILABLE		0x8014
+#define DPMI_ERROR_CALLBACK_UNAVAILABLE		0x8015
+#define DPMI_ERROR_HANDLE_UNAVAILABLE		0x8016
+#define DPMI_ERROR_LOCK_COUNT_EXCEEDED		0x8017
+#define DPMI_ERROR_RESOURCE_OWNED_EXCLUSIVELY	0x8018
+#define DPMI_ERROR_RESOURCE_OWNED_SHARED	0x8019
+#define DPMI_ERROR_INVALID_VALUE		0x8021
+#define DPMI_ERROR_INVALID_SELECTOR		0x8022
+#define DPMI_ERROR_INVALID_HANDLE		0x8023
+#define DPMI_ERROR_INVALID_CALLBACK		0x8024
+#define DPMI_ERROR_INVALID_LINEAR		0x8025
+#define DPMI_ERROR_INVALID_REQUEST		0x8026
+
+/* 0x2f services.  */
+#define DPMI_YIELD				0x1680
+#define DPMI_GET_CPU_MODE			0x1686
+#define DPMI_INSTALL_CHECK			0x1687	/* real only */
+#define DPMI_GET_API_ENTRY			0x168a	/* protected only */
+
+/* 0x31 services.  */
+#define DPMI_ALLOCATE_DESCRIPTORS		0x0000	/* 0.9 */
+#define DPMI_FREE_DESCRIPTOR			0x0001	/* 0.9 */
+#define DPMI_SEGMENT_TO_DESCRIPTOR		0x0002	/* 0.9 */
+#define DPMI_GET_SELECTOR_INCREMENT		0x0003	/* 0.9 */
+#define DPMI_GET_SEGMENT_BASE			0x0006	/* 0.9 */
+#define DPMI_SET_SEGMENT_BASE			0x0007	/* 0.9 */
+#define DPMI_SET_SEGMENT_LIMIT			0x0008	/* 0.9 */
+#define DPMI_SET_ACCESS_RIGHTS			0x0009	/* 0.9 */
+#define DPMI_CREATE_ALIAS			0x000a	/* 0.9 */
+#define DPMI_GET_DESCRIPTOR			0x000b	/* 0.9 */
+#define DPMI_SET_DESCRIPTOR			0x000c	/* 0.9 */
+#define DPMI_ALLOCATE_SPECIFIC_DESCRIPTOR	0x000d	/* 0.9 */
+#define DPMI_GET_MULTIPLE_DESCRIPTORS		0x000e	/* 1.0 */
+#define DPMI_SET_MULTIPLE_DESCRIPTORS		0x000f	/* 1.0 */
+#define DPMI_ALLOCATE_DOS_MEMORY		0x0100	/* 0.9 */
+#define DPMI_FREE_DOS_MEMORY			0x0101	/* 0.9 */
+#define DPMI_RESIZE_DOS_MEMORY			0x0102	/* 0.9 */
+#define DPMI_GET_REAL_MODE_VECTOR		0x0200	/* 0.9 */
+#define DPMI_SET_REAL_MODE_VECTOR		0x0201	/* 0.9 */
+#define DPMI_GET_EXCEPTION_VECTOR		0x0202	/* 0.9 (old) */
+#define DPMI_SET_EXCEPTION_VECTOR		0x0203	/* 0.9 (old) */
+#define DPMI_GET_INTERRUPT_VECTOR		0x0204	/* 0.9 */
+#define DPMI_SET_INTERRUPT_VECTOR		0x0205	/* 0.9 */
+#define DPMI_GET_EXTENDED_EXCEPTION_PROT	0x0210	/* 1.0 */
+#define DPMI_GET_EXTENDED_EXCEPTION_REAL	0x0211	/* 1.0 */
+#define DPMI_SET_EXTENDED_EXCEPTION_PROT	0x0212	/* 1.0 */
+#define DPMI_SET_EXTENDED_EXCEPTION_REAL	0x0213	/* 1.0 */
+#define DPMI_SIMULATE_REAL_MODE_INT		0x0300	/* 0.9 */
+#define DPMI_CALL_REAL_MODE_FAR			0x0301	/* 0.9 */
+#define DPMI_CALL_REAL_MODE_IRET		0x0302	/* 0.9 */
+#define DPMI_ALLOCATE_CALLBACK			0x0303	/* 0.9 */
+#define DPMI_FREE_CALLBACK			0x0304	/* 0.9 */
+#define DPMI_GET_STATE_ROUTINES			0x0305	/* 0.9 */
+#define DPMI_GET_RAW_SWITCH_ROUTINES		0x0306	/* 0.9 */
+#define DPMI_GET_VERSION			0x0400	/* 0.9 */
+#define DPMI_GET_CAPABILITIES			0x0401	/* 1.0 */
+#define DPMI_GET_MEMORY_INFORMATION		0x0500	/* 0.9 (old) */
+#define DPMI_ALLOCATE_MEMORY			0x0501	/* 0.9 */
+#define DPMI_FREE_MEMORY			0x0502	/* 0.9 */
+#define DPMI_RESIZE_MEMORY			0x0503	/* 0.9 */
+#define DPMI_ALLOCATE_LINEAR			0x0504	/* 1.0 */
+#define DPMI_RESIZE_LINEAR			0x0505	/* 1.0 */
+#define DPMI_GET_PAGE_ATTRIBUTES		0x0506	/* 1.0 */
+#define DPMI_SET_PAGE_ATTRIBUTES		0x0507	/* 1.0 */
+#define DPMI_MAP_DEVICE				0x0508	/* 1.0 optional */
+#define DPMI_MAP_1MB				0x0509	/* 1.0 optional */
+#define DPMI_GET_MEMORY_BLOCK_INFO		0x050a	/* 1.0 */
+#define DPMI_GET_MEMORY_INFO			0x050b	/* 1.0 */
+#define DPMI_LOCK_LINEAR			0x0600	/* 0.9 */
+#define DPMI_UNLOCK_LINEAR			0x0601	/* 0.9 */
+#define DPMI_MARK_1MB_PAGEABLE			0x0602	/* 0.9 */
+#define DPMI_RELOCK_1MB				0x0603	/* 0.9 */
+#define DPMI_GET_PAGE_SIZE			0x0604	/* 0.9 */
+#define DPMI_MARK_PAGING_CANDIDATE		0x0702	/* 0.9 */
+#define DPMI_DISCARD_PAGES			0x0703	/* 0.9 */
+#define DPMI_PHYSICAL_ADDRESS_MAPPING		0x0800	/* 0.9 */
+#define DPMI_FREE_PHYSICAL_ADDRESS_MAPPING	0x0801	/* 1.0 */
+#define DPMI_DISABLE_INTERRUPTS			0x0900	/* 0.9 */
+#define DPMI_ENABLE_INTERRUPTS			0x0901	/* 0.9 */
+#define DPMI_GET_INTERRUPT_STATE		0x0902	/* 0.9 */
+#define DPMI_GET_API_ENTRY_09			0x0a00	/* 0.9 (old) */
+#define DPMI_SET_BREAKPOINT			0x0b00	/* 0.9 */
+#define DPMI_CLEAR_BREAKPOINT			0x0b01	/* 0.9 */
+#define DPMI_GET_BREAKPOINT_STATE		0x0b02	/* 0.9 */
+#define DPMI_RESET_BREAKPOINT_STATE		0x0b03	/* 0.9 */
+#define DPMI_INSTALL_RESIDENT			0x0c00	/* 1.0 */
+#define DPMI_TSR				0x0c01	/* 1.0 */
+#define DPMI_ALLOCATE_SHARED_MEMORY		0x0d00	/* 1.0 */
+#define DPMI_FREE_SHARED_MEMORY			0x0d01	/* 1.0 */
+#define DPMI_SERIALIZE_SHARED_MEMORY		0x0d02	/* 1.0 */
+#define DPMI_UNSERIALIZE_SHARED_MEMORY		0x0d03	/* 1.0 */
+#define DPMI_GET_FPU_STATUS			0x0e00	/* 1.0 */
+#define DPMI_SET_FPU_EMULATION			0x0e01	/* 1.0 */

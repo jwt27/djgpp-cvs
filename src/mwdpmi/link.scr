@@ -1,0 +1,16 @@
+OUTPUT_FORMAT("coff-go32")
+ENTRY(start)
+SECTIONS
+{
+  .text  0 : {
+    *(.text)
+  }
+  .data . : {
+    *(.data)
+  }
+  .bss . :
+  {
+    *(.bss)
+    *(COMMON)
+  }
+}
