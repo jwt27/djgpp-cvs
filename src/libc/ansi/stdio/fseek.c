@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
@@ -14,20 +15,32 @@ fseek(FILE *f, long offset, int ptrname)
   f->_flag &= ~_IOEOF;
   if (f->_flag & _IOREAD)
   {
-    if ((ptrname == SEEK_CUR) && f->_base && !(f->_flag & _IONBF))
+    if (f->_base && !(f->_flag & _IONBF))
     {
-      offset += ftell(f);
-      ptrname = SEEK_SET;
+      p = ftell(f);
+      if (ptrname == SEEK_CUR)
+      {
+	offset += p;
+	ptrname = SEEK_SET;
+      }
+      /* check if the target position is in the buffer and
+        optimize seek by moving inside the buffer */
+      if (ptrname == SEEK_SET && (f->_flag & (_IOUNGETC|_IORW)) == 0
+      && p-offset <= f->_ptr-f->_base && offset-p <= f->_cnt)
+      {
+        f->_ptr+=offset-p;
+        f->_cnt+=p-offset;
+        return 0;
+      }
     }
 
     if (f->_flag & _IORW)
-    {
-      f->_ptr = f->_base;
       f->_flag &= ~_IOREAD;
-    }
+
     p = lseek(fileno(f), offset, ptrname);
     f->_cnt = 0;
     f->_ptr = f->_base;
+    f->_flag &= ~_IOUNGETC;
   }
   else if (f->_flag & (_IOWRT|_IORW))
   {
