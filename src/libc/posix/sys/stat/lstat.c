@@ -673,13 +673,13 @@ stat_assist(const char *path, struct stat *statbuf)
 	errno = ENODEV;
       return -1;
     }
-  else if (pathname[3] == '\0')
+  else if (pathname[3] == '\0' && pathname[2] == '/')
     {
       /* Detect root directories.  These are special because, unlike
 	 subdirectories, FindFirst fails for them.  We look at PATHNAME
 	 because a network redirector could tweak what `_truename'
 	 returns to be utterly unrecognizable as root directory.  PATHNAME
-	 always begins with "d:/", so it is root if PATHNAME[3] = 0.  */
+	 begins with "d:/" (unless relative, in which case "d:.").  */
 
       /* Mode bits. */
       statbuf->st_mode |= (S_IFDIR|READ_ACCESS|WRITE_ACCESS|EXEC_ACCESS);
