@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -17,6 +18,7 @@
 /* Modified by Morten Welinder, terra@diku.dk, for use with full screen
    debugger.  These changes are copyright 1994 by Morten Welinder.  */
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -354,8 +356,12 @@ sib(void)
 void
 uprintf(char *s, ...)
 {
-  char **a = &s;
-  vsprintf(ubufp, s, a+1);
+  va_list args;
+
+  va_start(args, s);
+  vsprintf(ubufp, s, args);
+  va_end(args);
+
   while (*ubufp) ubufp++;
 }
 

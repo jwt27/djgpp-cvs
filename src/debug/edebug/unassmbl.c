@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -14,6 +15,7 @@
 ** warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -340,8 +342,12 @@ static int sib(void)
 /*------------------------------------------------------------------------*/
 static void uprintf(const char *s, ...)
 {
-  const char **a = &s;
-  vsprintf(ubufp, s, a+1);
+  va_list args;
+
+  va_start(args, s);
+  vsprintf(ubufp, s, args);
+  va_end(args);
+
   while (*ubufp) ubufp++;
 }
 
