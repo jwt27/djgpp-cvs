@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -12,6 +13,10 @@ struct __atexit *__atexit_ptr = 0;
 
 void (*__stdio_cleanup_hook)(void);
 
+/* A hook to close down the file system extensions if any where opened.
+   This does not force them to be linked in. */
+void (*__FSEXT_exit_hook)(void) = NULL;
+
 typedef void (*FUNC)(void);
 extern FUNC djgpp_first_dtor[] __asm__("djgpp_first_dtor");
 extern FUNC djgpp_last_dtor[] __asm__("djgpp_last_dtor");
@@ -20,17 +25,29 @@ void
 exit(int status)
 {
   int i;
-  struct __atexit *a = __atexit_ptr;
+  struct __atexit *a;
+
+  a = __atexit_ptr;
   __atexit_ptr = 0; /* to prevent infinite loops */
   while (a)
   {
     (a->__function)();
     a = a->__next;
   }
-  if (__stdio_cleanup_hook)
-    __stdio_cleanup_hook();
+
+  /* Destructors should probably be called after functions registered
+     with atexit(), this is the way it happens in Linux anyway. */
   for (i=0; i<djgpp_last_dtor-djgpp_first_dtor; i++)
     djgpp_first_dtor[i]();
+
+  /* Do this last so that everyone else may write to files
+     during shutdown */
+  if (__stdio_cleanup_hook)
+    __stdio_cleanup_hook();
+
+  /* Do this after the stdio cleanup to let it close off the fopen'd files */
+  if (__FSEXT_exit_hook)
+    __FSEXT_exit_hook();
 
   /* in case the program set it this way */
   setmode(0, O_TEXT);
