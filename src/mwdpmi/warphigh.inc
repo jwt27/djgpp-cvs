@@ -33,6 +33,7 @@ warp_high:
 	mov	[_server_page_table_linear], edi
 	call	copy_page
 
+	sub	edi, 2 * PAGE_SIZE
 	cmpb	[_vcpi_present], 0
 	jne	@f1
 
@@ -42,7 +43,6 @@ warp_high:
 	sub	edi, PAGE_SIZE
 
 @f1:
-	sub	edi, 2 * PAGE_SIZE
 	cmpb	[_memory_source], MEMORY_FROM_VCPI
 	jne	@f1
 
@@ -51,7 +51,8 @@ warp_high:
 	shl	si, 2
 	mov	eax, [si + _vcpi_server_pages]
 	mov	ebx, [si + _vcpi_server_pages + 4]
-	jmp	@f2
+;	jmp	@f2
+	jmp	@f3	; VCPI is present at this point
 
 @f1:
 	mov	eax, edi
@@ -62,14 +63,14 @@ warp_high:
 
 @f2:
 	cmpb	[_vcpi_present], 0
-	jne	@f1
+	jne	@f3
 
 	mov	ecx, ebx
 	add	ecx, PAGE_SIZE
 	mov	[_dosmem_page_table_physical], ecx
 	jmp	@f2
 
-@f1:
+@f3:
 	mov	ecx, [_dosmem_page_table_physical]
 	mov	[_vcpi_tss - (vcpi_go32 - _go32) + 0x1c], eax
 	mov	[_vcpi_client - (vcpi_go32 - _go32) + 0], eax
@@ -122,7 +123,7 @@ warp_high:
 copy_page:
 	mov	ecx, PAGE_SIZE / 4
 	.addrsize			; WOW - _four_ prefixes...
-	es:
+	.seges
 	rep
 	movsd
 	ret
