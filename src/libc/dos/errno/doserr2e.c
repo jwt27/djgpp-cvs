@@ -1,5 +1,7 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+
 #include <errno.h>
 #include <libc/dosio.h>
 
@@ -8,7 +10,7 @@ static unsigned char map[] = {
   /* 08-0f */ ENOMEM, EFAULT, EFAULT, EINVAL, EINVAL, EINVAL, EINVAL, ENODEV,
   /* 10-17 */ EBUSY, EXDEV, ENMFILE, EROFS, ENXIO, ENXIO, EINVAL, EIO,
   /* 18-1f */ EINVAL, EIO, EIO, EIO, EIO, EIO, EIO, EIO,
-  /* 20-27 */ EPERM, EPERM, ENXIO, EBADF, ENOLCK, EINVAL, EIO, ENOSPC,
+  /* 20-27 */ EPERM, EACCES, ENXIO, EBADF, ENOLCK, EINVAL, EIO, ENOSPC,
   /* 28-2f */ EINVAL, EINVAL, EINVAL, EINVAL, EINVAL, EINVAL, EINVAL, EINVAL,
   /* 30-37 */ EINVAL, EINVAL, ENOSYS, EIO, EINVAL, EINVAL, EBUSY, ENXIO,
   /* 38-3f */ EINVAL, EIO, EIO, EIO, EIO, EAGAIN, EINVAL, ENOSPC,
