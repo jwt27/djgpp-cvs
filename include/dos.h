@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -235,6 +236,18 @@ struct _DOSERROR {
 };
 #define DOSERROR _DOSERROR
 
+struct _DOSERROR_STR {
+  char *exterror_str;
+  #ifdef __cplusplus
+  char *errclass_str;
+  #else
+  char *class_str;
+  #endif
+  char *action_str;
+  char *locus_str;
+};
+#define DOSERROR_STR _DOSERROR_STR
+
 unsigned int   _dos_creat(const char *_filename, unsigned int _attr, int *_handle);
 unsigned int   _dos_creatnew(const char *_filename, unsigned int _attr, int *_handle);
 unsigned int   _dos_open(const char *_filename, unsigned int _mode, int *_handle);
@@ -262,6 +275,8 @@ unsigned int   _dos_getdiskfree(unsigned int _drive, struct _diskfree_t *_disksp
 
 int            _dosexterr(struct _DOSERROR *_p_error);
 #define dosexterr(_ep) _dosexterr(_ep)
+int            _dostrerr(struct _DOSERROR *_p_error, struct _DOSERROR_STR *_p_str);
+#define dostrerr(_ep,_sp) _dostrerr(_ep,_sp)
 
 #define int386(_i, _ir, _or)         int86(_i, _ir, _or)
 #define int386x(_i, _ir, _or, _sr)   int86x(_i, _ir, _or, _sr)

@@ -21,6 +21,7 @@ SRC += d_setdrv.c
 SRC += d_setfa.c
 SRC += d_setftm.c
 SRC += d_settim.c
+SRC += d_strerr.c
 SRC += d_write.c
 
 include $(TOP)/../makefile.inc
