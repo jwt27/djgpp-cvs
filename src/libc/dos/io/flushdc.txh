@@ -14,7 +14,7 @@ Attempts to update the disk with the data cached in the write-behind
 disk caches (such as @code{SmartDrv} and the built-in Windows 95 disk
 cache).
 
-Note that this does @strong{not} flushes the DOS buffers.  You need to
+Note that this does @strong{not} flush the DOS buffers.  You need to
 call @code{fsync} (@pxref{fsync}) or @code{close} (@pxref{close}) to
 force DOS to commit the file data to the disk; @code{sync}
 (@pxref{sync}) does that for all open files, and also calls
