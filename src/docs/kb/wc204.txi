@@ -1045,3 +1045,7 @@ A bug was fixed in the @code{scanf} family of functions,
 when suppressing assignment of conversions to variables.
 Previously the @code{scanf} family of functions could return
 a match failure at EOF instead of @code{EOF}.
+
+@findex assert@r{, and function name}
+Now @code{assert} prints also the name of the function where an assertion
+fails, if that function is compiled with C99 features enabled.
