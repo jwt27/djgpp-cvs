@@ -18,7 +18,7 @@ sources-dsm: djlsr204
 manifest: djdev204
 
 short-description: DJGPP Development Kit and Runtime
-license: Mostly the GNU General Public License with modifications
+license: Mostly the GNU General and Library General Public Licenses with some allowed exceptions - see copying.dj.
 author: DJ Delorie
 author-email: dj@delorie.com
 web-site: http://www.delorie.com/djgpp/

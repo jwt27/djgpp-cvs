@@ -18,7 +18,7 @@ binaries-dsm: djdev204
 manifest: djlsr204
 
 short-description: DJGPP base library sources
-license: Mostly the GNU General Public License with modifications
+license: GNU General Public License and GNU Library General Public License - see copying.dj.
 author: DJ Delorie
 author-email: dj@delorie.com
 web-site: http://www.delorie.com/djgpp/
