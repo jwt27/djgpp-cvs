@@ -134,3 +134,9 @@ the @code{attribute} member of the @code{text_info} struct returned by
 @findex gettexinfo
 @vindex ScreenAttrib
 
+@cindex response file, ^Z at the end
+@cindex ^Z character, at end of a response file
+If the last character of a response file is @samp{^Z}, it is now
+ignored.  Previous versions would pass it to the @code{main} function.
+Use two @samp{^Z} characters in a row if you actually need to pass such
+a character as part of the last element of the @code{argv[]} array.

@@ -288,6 +288,9 @@ expand_response_files(ArgList *al)
         if (len < 0)
 	  len = 0;
         _close(f);
+        /* if the last character is ^Z, remove it */
+        if (len > 0 && bytes[len-1] == 0x1a)
+          len--;
 	/* assume 'find -print0' if the last char is a '\0' */
 	if (len > 0 && bytes[len-1] == '\0')
           al->argv[i]->arg_file = parse_print0(bytes, len);
