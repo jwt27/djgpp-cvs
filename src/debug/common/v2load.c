@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* Routine to load V2.0 format image.  Control is returned to the caller so
@@ -50,9 +51,9 @@ static int read_section(int pf, unsigned ds, unsigned foffset, unsigned soffset,
 
 int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
 {
-  unsigned short header[3];
+  unsigned short header[5];
   int pf,i, envp;
-  unsigned coff_offset;
+  unsigned coff_offset,exe_start;
   _GO32_StubInfo si;
   unsigned long coffhdr[42];
   unsigned start_eip, text_foffset, text_soffset, text_size, data_foffset;
@@ -73,7 +74,8 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
     coff_offset = (long)header[2]*512L;
     if (header[1])
       coff_offset += (long)header[1] - 512L;
-    lseek(pf, 512, 0);			/* Position of V2 stubinfo */
+    exe_start = (unsigned)header[4]*16;
+    lseek(pf, exe_start, 0);			/* Position of V2 stubinfo */
     read(pf, si.magic, 8);
     if (memcmp(SIMAGIC, si.magic, 8) != 0) {
       close(pf);

@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_locale_h_
 #define __dj_include_locale_h_
@@ -23,6 +24,7 @@ struct lconv {
   char *int_curr_symbol;
   char *mon_decimal_point;
   char *mon_grouping;
+  char *mon_thousands_sep;
   char *negative_sign;
   char *positive_sign;
   char *thousands_sep;

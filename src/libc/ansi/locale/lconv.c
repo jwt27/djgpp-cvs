@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <locale.h>
 #include <limits.h>
@@ -8,6 +9,7 @@ static char DSTR[] = ".";
 static struct lconv __lconv_ = {
   ESTR,
   DSTR,
+  ESTR,
   ESTR,
   ESTR,
   ESTR,
