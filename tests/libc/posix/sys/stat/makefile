@@ -8,5 +8,6 @@ SRC += mkdir.c
 SRC += stat.c
 SRC += stat1.c
 SRC += svsf.c
+SRC += symstat.c
 
 include $(TOP)/../makefile.inc
