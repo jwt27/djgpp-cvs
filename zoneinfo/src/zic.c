@@ -1484,9 +1484,9 @@ const char * const	name;
 	}
 	fullname = erealloc(fullname,
 		(int) (strlen(directory) + 1 + strlen(name) + 1));
-#ifdef __MSDOS__
 	/* Some zone names use `+' as part of their names, but DOS
 	   doesn't allow `+' in file names.  Replace with a `%'.  */
+	if (getenv ("COMSPEC") || getenv ("CROSS_BUILD"))
 	{
 		char new_name[FILENAME_MAX + 1], *p;
 
@@ -1496,9 +1496,8 @@ const char * const	name;
 				*p = '%';
 		(void) sprintf(fullname, "%s/%s", directory, new_name);
 	}
-#else  /* !__MSDOS__ */
-	(void) sprintf(fullname, "%s/%s", directory, name);
-#endif /* __MSDOS__ */
+	else
+		(void) sprintf(fullname, "%s/%s", directory, name);
 	/*
 	** Remove old file, if any, to snap links.
 	*/
