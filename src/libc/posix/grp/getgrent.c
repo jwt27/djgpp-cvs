@@ -1,4 +1,6 @@
+/* Copyright (C) 2005 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <grp.h>
 #include <unistd.h>
 
