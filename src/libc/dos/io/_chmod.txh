@@ -1,0 +1,37 @@
+@node _chmod, file system
+@subheading Syntax
+ 
+@example
+#include <io.h>
+ 
+int _chmod(const char *filename, int func, mode_t mode);
+@end example
+ 
+@subheading Description
+ 
+This is a direct connection to the MS-DOS chmod function call, int
+0x21, %ax = 0x4300/0x4301.  If @var{func} is 0, then DOS is called with
+AX = 0x4300, which returns an attribute byte of a file.  If @var{func}
+is 1, then the attributes of a file are set as specified in @var{mode}.
+Note that the directory and volume attribute bits must always be 0 when
+@code{_chmod()} is called with @var{func = 1}, or else the call will fail.
+The third argument is optional when getting attributes.
+The attribute bits are defined as follows:
+ 
+@example
+  Bit       Meaning
+76543210
+.......1    Read-only
+......1.    Hidden
+.....1..    System
+....1...    Volume Label
+...1....    Directory
+..1.....    Archive
+xx......    Reserved (used by some network redirectors)
+@end example
+ 
+@subheading Return Value
+ 
+If the file exists, @code{_chmod()} returns its attribute byte in case
+it succeded, or -1 in case of failure.
+
