@@ -4,7 +4,9 @@
 @menu
 
 * Changes in 2.01::		DJGPP 2.01
+* Changes in 2.02::		DJGPP 2.02
 
 @end menu
 
 @include wc201.txi
+@include wc202.txi
