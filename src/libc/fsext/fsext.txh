@@ -110,6 +110,12 @@ descriptor is needed to refer to an existing descriptor.
 A file dup2 handler (@pxref{dup2}).  This is called when two different
 file descriptors are used to refer to the same open file.
 
+@item __FSEXT_stat
+
+A file lstat handler (@pxref{lstat}).  This extension should provide
+information about stated file.  If you provide this hook, function @code{stat}
+will be hooked too, as @code{stat} always calls @code{lstat}.
+
 @item __FSEXT_fstat
 
 A file fstat handler (@pxref{fstat}).  The extension should fill in
