@@ -1362,11 +1362,20 @@ int main(int argc, char **argv)
   exe[22] = 0;			/* relative CS */
   exe[23] = 0;
 
+  /* These must be zero, otherwise they are interpreted as an offset to 
+     a "new executable" header. */
+  exe[60] = 0;
+  exe[61] = 0;
+  exe[62] = 0;
+  exe[63] = 0;
+#define INFO_TEXT_START (64)
+
   time(&now);
-  sprintf(exe+28, "\r\n%s generated from %s by djasm, on %.24s\r\n", argv[2], argv[1], ctime(&now));
+
+  sprintf(exe+INFO_TEXT_START, "\r\n%s generated from %s by djasm, on %.24s\r\n", argv[2], argv[1], ctime(&now));
   if (copyright)
-    strncat(exe+36, copyright, 476-strlen(exe+36));
-  strcat(exe+36, "\r\n\032");
+    strncat(exe+INFO_TEXT_START, copyright, (512-3-INFO_TEXT_START)-strlen(exe+INFO_TEXT_START)); /* -3 for the following line: */
+  strcat(exe+INFO_TEXT_START, "\r\n\032");
 
   if (argv[2] == 0)
   {
@@ -2510,20 +2519,20 @@ void add_rcs_ident(char *buf)
   struct tm *tm;
   time(&now);
   tm = localtime(&now);
-  sprintf(tmp, "%cId: %s built %02d/%02d/%02d %02d:%02d:%02d by djasm $\n",
+  sprintf(tmp, "%cId: %s built %04d-%02d-%02d %02d:%02d:%02d by djasm $\n",
 	  '$', inname,
+	  tm->tm_year + 1900,
 	  tm->tm_mon + 1,
 	  tm->tm_mday,
-	  tm->tm_year,
 	  tm->tm_hour,
 	  tm->tm_min,
 	  tm->tm_sec);
   add_copyright(tmp);
-  sprintf(tmp, "@(#) %s built %02d/%02d/%02d %02d:%02d:%02d by djasm\n",
+  sprintf(tmp, "@(#) %s built %04d-%02d-%02d %02d:%02d:%02d by djasm\n",
 	  inname,
+	  tm->tm_year + 1900,
 	  tm->tm_mon + 1,
 	  tm->tm_mday,
-	  tm->tm_year,
 	  tm->tm_hour,
 	  tm->tm_min,
 	  tm->tm_sec);
