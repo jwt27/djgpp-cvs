@@ -782,3 +782,6 @@ The @code{int_n_cs_precedes}, @code{int_n_sep_by_space},
 @code{int_n_sign_posn}, @code{int_p_cs_precedes},
 @code{int_p_sep_by_space} and @code{int_p_sign_posn} members were added
 to @code{struct lconv}, to comply with the C99 standard.
+
+@findex _Exit
+The function @code{_Exit} was added.

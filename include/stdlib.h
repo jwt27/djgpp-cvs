@@ -46,6 +46,7 @@ __DJ_wchar_t
 #define _WCHAR_T
 #endif
 
+void	_Exit(int _status) __attribute__((noreturn));
 void	abort(void) __attribute__((noreturn));
 int	abs(int _i);
 int	atexit(void (*_func)(void));
