@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* inflate.c -- Not copyrighted 1992 by Mark Adler
    version c10p1, 10 January 1993 */
@@ -101,7 +102,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: inflate.c,v 1.1 1995/11/17 01:01:20 dj Exp $";
+static char rcsid[] = "$Id: inflate.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
 #endif
 
 #include <sys/types.h>
@@ -141,7 +142,7 @@ int inflate_stored (void);
 int inflate_fixed (void);
 int inflate_dynamic (void);
 int inflate_block (int *);
-int inflate (void);
+int inflate (int (*)(char *, long));
 
 
 /* The inflate algorithm uses a sliding 32K byte window on the uncompressed
@@ -154,7 +155,7 @@ int inflate (void);
    must be in unzip.h, included above. */
 /* unsigned wp;             current position in slide */
 #define wp outcnt
-#define flush_output(w) (wp=(w),flush_window())
+#define flush_output(w) (wp=(w),flush_window(func))
 
 /* Tables for deflate from PKZIP's appnote.txt. */
 static unsigned border[] = {    /* Order of the bit length code lengths */
@@ -209,6 +210,8 @@ static ush cpdext[] = {         /* Extra bits for distance codes */
 
 ulg bb;                         /* bit buffer */
 unsigned bk;                    /* bits in bit buffer */
+
+int (*func)(char *, long);
 
 ush mask_bits[] = {
     0x0000,
@@ -914,13 +917,14 @@ int *e;                 /* last block flag */
 
 
 
-int inflate()
+int inflate(int (*fp)(char *, long))
 /* decompress an inflated entry */
 {
   int e;                /* last block flag */
   int r;                /* result code */
   unsigned h;           /* maximum struct huft's malloc'ed */
 
+  func = fp;
 
   /* initialize window, bit buffer */
   wp = 0;

@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* unzip.c -- decompress files in gzip or pkzip format.
  * Copyright (C) 1992-1993 Jean-loup Gailly
@@ -19,7 +20,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unzip.c,v 1.1 1995/11/17 01:04:06 dj Exp $";
+static char rcsid[] = "$Id: unzip.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
 #endif
 
 #include "tailor.h"
@@ -117,7 +118,7 @@ int unzip(void *in)
     /* Decompress */
     if (method == DEFLATED)  {
 
-	int res = inflate();
+	int res = inflate(tarread);
 
 	if (res == 3) {
 	    error("out of memory");
@@ -139,9 +140,9 @@ int unzip(void *in)
 #ifdef CRYPT
 	    if (decrypt) zdecode(c);
 #endif
-	    put_ubyte(c);
+	    put_ubyte(c, tarread);
 	}
-	flush_window();
+	flush_window(tarread);
     } else {
 	error("internal error, invalid method");
     }

@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* util.c -- utility functions for gzip support
  * Copyright (C) 1992-1993 Jean-loup Gailly
@@ -9,7 +10,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: util.c,v 1.1 1995/11/17 01:05:18 dj Exp $";
+static char rcsid[] = "$Id: util.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
 #endif
 
 #include <ctype.h>
@@ -31,7 +32,7 @@ extern ulg crc_32_tab[];   /* crc table, defined below */
 
 /* ===========================================================================
  * Copy input to output unchanged.
- * For DJTAR this means we call tarrread() directly.
+ * For DJTAR this means we call tarread() directly.
  * IN assertion: insize bytes have already been read in inbuf.
  */
 int copy(void *in)
@@ -110,13 +111,13 @@ int fill_inbuf(int eof_ok)
  * (For DJTAR we pipe the data through tarread() which untars the
  * files on-the-fly.)
  */
-void flush_window(void)
+void flush_window(int (*func)(char *, long))
 {
     if (outcnt == 0) return;
     updcrc(window, outcnt);
 
     if (!test) {
-	tarread((char *)window, outcnt);
+	func((char *)window, outcnt);
     }
     else
 	bytes_out += (ulg)outcnt;

@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* unpack.c -- decompress files in pack format.
  * Copyright (C) 1992-1993 Jean-loup Gailly
@@ -8,7 +9,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unpack.c,v 1.1 1995/11/17 01:01:20 dj Exp $";
+static char rcsid[] = "$Id: unpack.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
 #endif
 
 #include "tailor.h"
@@ -225,13 +226,13 @@ int unpack(void *in)
 	}
 	/* At this point, peek is the next complete code, of len bits */
 	if (peek == eob && len == max_len) break; /* end of file? */
-	put_ubyte(literal[peek+lit_base[len]]);
+	put_ubyte(literal[peek+lit_base[len]], tarread);
 	Tracev((stderr,"%02d %04x %c\n", len, peek,
 		literal[peek+lit_base[len]]));
 	skip_bits(len);
     } /* for (;;) */
 
-    flush_window();
+    flush_window(tarread);
     Trace((stderr, "bytes_out %ld\n", bytes_out));
     if (orig_len != (ulg)bytes_out) {
 	error("invalid compressed data--length error");
