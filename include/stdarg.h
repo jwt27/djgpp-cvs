@@ -28,7 +28,7 @@ __DJ_va_list
 #define va_end(ap)
 
 #define va_start(ap, last_arg) \
-  (ap = (va_list) ((char *)(&(last_arg)) + __dj_va_rounded_size(last_arg)))
+ (ap = ((va_list) __builtin_next_arg (last_arg)))
   
 #ifndef __STRICT_ANSI__
 
