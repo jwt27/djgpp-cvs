@@ -13,6 +13,8 @@ SRC += tcgetatr.c
 SRC += tcsetatr.c
 SRC += tcsndbrk.c
 SRC += tminit.c
+SRC += tmread.c
+SRC += tmwrite.c
 SRC += tcgetpgr.c
 SRC += tcsetpgr.c
 
