@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -11,6 +12,7 @@
 #include <go32.h>
 #include <dpmi.h>		/* For dpmisim */
 #include <crt0.h>		/* For crt0 flags */
+#include <dos.h>		/* For Win NT version check */
 #include <sys/stat.h>
 #include <libc/dosio.h>
 
@@ -25,6 +27,7 @@ __get_current_directory(char *out, int drive_number)
   char tmpbuf[FILENAME_MAX];
 
   memset(&r, 0, sizeof(r));
+  r.x.flags = 1;		/* Set carry for safety */
   if(use_lfn)
     r.x.ax = 0x7147;
   else
@@ -36,7 +39,11 @@ __get_current_directory(char *out, int drive_number)
 
   if (r.x.flags & 1)
   {
-    errno = r.x.ax;
+#ifdef TEST
+    errno = __doserr_to_errno(r.x.ax);
+    perror("Get dir failed in fixpath");
+#endif
+    *out++ = '.';	/* Return relative path (lfn=n on Win9x) */
     return out;
   }
   else
@@ -44,13 +51,58 @@ __get_current_directory(char *out, int drive_number)
     dosmemget(__tb, sizeof(tmpbuf), tmpbuf);
     strcpy(out+1,tmpbuf);
 
-    /* Root path, don't insert "/", it'll be added later */
     if (*(out + 1) != '\0')
+    {
       *out = '/';
-    else
-      *out = '\0';
-    return out + strlen(out);
+      return out + strlen(out);
+    } 
+    else if (_os_trueversion != 0x532 || !use_lfn)
+      /* Root path, don't insert "/", it'll be added later */
+      return out;
   }
+
+  /* Root path under WinNT/2K/XP with lfn (may be silent failure).
+     If the short name equivalent of the current path is greater than
+     64 characters, Windows 2000 and XP do not return the correct long
+     path name - they return the root directory instead without any
+     failure code.  Since this can be disastrous in deep directories
+     doing an rm -rf, we check for this bug and try and fix the path. */
+
+  r.x.ax = 0x7160;
+  r.x.cx = 0x8002;	/* Get Long Path Name, using subst drive basis */
+  r.x.es = __tb_segment;
+  r.x.di = __tb_offset + FILENAME_MAX;
+  
+  tmpbuf[0] = drive_number + 'A';
+  tmpbuf[1] = ':';
+  tmpbuf[2] = '.';
+  tmpbuf[3] = 0;
+  _put_path(tmpbuf);
+
+  __dpmi_int(0x21, &r);
+
+  if (!(r.x.flags & 1))
+  {
+    dosmemget(__tb + FILENAME_MAX, sizeof(tmpbuf), tmpbuf);
+
+    /* Validate return form and drive matches what _fixpath expects. */
+    if (tmpbuf[0] == (drive_number + 'A') && tmpbuf[1] == ':')
+    {
+      strcpy(out, tmpbuf+2);	/* Trim drive, just directory */
+      return out + strlen(out);
+    }
+  } 
+#ifdef TEST
+  else
+  {
+    errno = __doserr_to_errno(r.x.ax);
+    perror("Truename failed in fixpath");
+  }
+#endif
+
+  /* Fixpath failed or returned inconsistent info.  Return relative path. */
+  *out++ = '.';
+  return out;
 }
 
 __inline__ static int
@@ -148,6 +200,12 @@ _fixpath(const char *in, char *out)
     if (*ip == '.' && *(ip + 1) == '.' && is_term(*(ip + 2)))
     {
       ip += 2;
+      if(out[2] == '.' && *(op - 1) == '.') 
+      { 				/* relative path not skipped */
+        *op++ = '/';
+        *op++ = '.';
+        *op++ = '.';
+      } else
       /* Don't back up over drive spec */
       if (op > out + 2)
 	/* This requires "/" to follow drive spec */
@@ -235,10 +293,47 @@ _fixpath(const char *in, char *out)
 int main (int argc, char *argv[])
 {
   char fixed[FILENAME_MAX];
+  __dpmi_regs r;
+
+  if (argc > 2) {
+    _put_path(argv[1]);
+    if(_USE_LFN)
+      r.x.ax = 0x713b;
+    else
+      r.h.ah = 0x3b;
+    r.x.dx = __tb_offset;
+    r.x.ds = __tb_segment;
+    __dpmi_int(0x21, &r);
+    if(r.x.flags & 1) {
+      errno = __doserr_to_errno(r.x.ax);
+      sprintf(fixed, "Change dir to %s failed (lfn=%d)", argv[1], _USE_LFN);
+      perror(fixed);
+    } else
+      printf("Set dir: %s\n", argv[1]);
+    argc--;
+    argv++;
+  }
+
+  if(_USE_LFN)
+    r.x.ax = 0x7147;
+  else
+    r.h.ah = 0x47;
+  r.h.dl = 0;
+  r.x.si = __tb_offset;
+  r.x.ds = __tb_segment;
+  __dpmi_int(0x21, &r);
+  if (r.x.flags & 1) {
+    errno = __doserr_to_errno(r.x.ax);
+    perror("getcwd failed");
+  } else {
+    dosmemget(__tb, sizeof(fixed), fixed);
+    printf("Get dir[%d]: \\%s\n", strlen(fixed), fixed);
+  }
+
   if (argc > 1)
     {
       _fixpath (argv[1], fixed);
-      printf ("You mean %s?\n", fixed);
+      printf ("Fixpath: %s\n", fixed);
     }
   return 0;
 }
