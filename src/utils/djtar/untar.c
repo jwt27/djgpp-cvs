@@ -170,6 +170,12 @@ tarread(char *buf, long buf_size)
       fprintf(log_out, "%6lo %02x %12ld %s\n",perm,header.flags[0],size,changed_name);
 #endif
 
+      if (header.flags[0] == '1' || header.flags[0] == '2')
+      {
+        /* Symbolic links always have zero data, but some broken
+           tar programs claim otherwise.  */
+        size = 0;
+      }
       if (should_be_written == 0)
       {
         skipping = (size+511) & ~511;
