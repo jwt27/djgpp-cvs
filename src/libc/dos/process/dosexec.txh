@@ -18,8 +18,26 @@ int spawnvpe(int mode, const char *path, const char **argv, const char **envp);
 @subheading Description
 
 These functions run other programs.  The @var{path} points to the
-program to run.  The extension is optional - if not given, the usual
-extensions @code{.com}, @code{.exe}, and @code{.bat} are checked.
+program to run.  The extension is optional---if not given, and
+@var{path} is not found neither in the current directly nor along the
+@samp{PATH}, the extensions @file{.com}, @file{.exe}, @file{.bat},
+@file{.btm}, @file{.sh}, and @file{.ksh} are checked.  @file{.com}
+programs are invoked via the usual DOS calls; DJGPP @file{.exe} programs
+are invoked in a way that allows long command lines to be passed; other
+@file{.exe} programs are invoked via DOS; @file{.bat} and @file{.btm}
+programs are invoked via the command processor given by the
+@samp{COMSPEC} environment variable; @file{.sh}, @file{.ksh} programs
+and programs with any other extensions that have @code{#!} as their
+first two caharacters are assumed to be Unix-style scripts and are
+invoked by calling a program whose pathname immediately follows the
+first two characters.  (If the name of that program is a Unix-style
+pathname, without a drive letter and without an extension, like
+@samp{/bin/sh}, the @code{spawn} functions will additionally look them
+up on the @samp{PATH}; this allows to run Unix scripts without editing,
+if you have a shell installed somewhere along your @samp{PATH}.)
+
+Note that built-in commands of the shells can @emph{not} be invoked via
+these functions; use @code{system} instead.
 
 The programs are invoked with the arguments given.  The zeroth argument
 is normally not used, since MS-DOS cannot pass it separately.  There are
@@ -37,25 +55,37 @@ You may also specify @code{p} to indicate that you would like
 the current environment) for the executable, else it will only check the
 explicit path given. 
 
-Note that these function understand about other djgpp programs, and will
-call them directly, so that you can pass command lines longer than 128
-characters to them without any special code. 
+Note that these function understand about other DJGPP programs, and will
+call them directly, so that you can pass command lines longer than 126
+characters to them without any special code.  DJGPP programs called by
+these functions will @emph{not} glob the arguments passed to them; other
+programs also won't glob the arguments if they suppress expansion when
+given quoted filenames.
 
 @xref{exec*}.
 
 @subheading Return Value
 
 If successful and @code{mode} is @code{P_WAIT}, these functions return
-the exit code of the child process.  Note that if the program is run by a
-command processor (e.g., if it's a batch file), the exit code of that
-command processor will be returned.  @file{COMMAND.COM} is notorious for
-returning 0 even if it couldn't run the command.
+the exit code of the child process in the lower 8 bits of the return
+value.  Note that if the program is run by a command processor (e.g., if
+it's a batch file), the exit code of that command processor will be
+returned.  @file{COMMAND.COM} is notorious for returning 0 even if it
+couldn't run the command.
 
 If successful and @var{mode} is @code{P_OVERLAY}, these functions will
 not return. 
 
-If there is an error, these functions return -1 and set @code{errno} to
-indicate the error. 
+If there is an error (e.g., the program specified as @code{argv[0]}
+cannot be run, or the command line is too long), these functions return
+-1 and set @code{errno} to indicate the error.  If the child program was
+interrupted by @key{Ctrl-C} or a Critical Device error, @code{errno} is
+set to @code{EINTR} (even if the child's exit code is 0), and bits 8-17
+of the return value are set to @code{SIGINT} or @code{SIGABRT},
+accordingly.  Note that you must set the signal handler for
+@code{SIGINT} to @code{SIG_IGN}, or arrange for the handler to return,
+or else your program will be aborted before it will get chance to set
+the value of the return code.
 
 @subheading Example
 
@@ -74,6 +104,6 @@ char *args[] = @{
   0
 @};
 
-spawnvpe("gcc", args, environ);
+spawnvpe(P_WAIT, "gcc", args, environ);
 @end example
 
