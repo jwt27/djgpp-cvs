@@ -103,6 +103,10 @@ co-processor itself (Int 75h).  The co-processor status word is printed
 by the default handler for this signal.  @xref{_status87}, for the
 definition of the individual bits of the status word.
 
+The DJGPP startup code masks all numeric exceptions, so this signal is
+usually only triggered by an integer divide by zero operation.  If you
+want to unmask some of the numeric exceptions, see @ref{_control87}.
+
 @item SIGILL
 
 The Invalid Execution signal.  Currently only generated for
