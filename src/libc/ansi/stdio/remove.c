@@ -17,7 +17,7 @@ int
 remove(const char *fn)
 {
   __dpmi_regs r;
-  unsigned attr;
+  int attr;
   int directory_p;
   int use_lfn = _USE_LFN;
   char real_name[FILENAME_MAX];
