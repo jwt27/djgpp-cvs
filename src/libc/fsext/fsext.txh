@@ -179,6 +179,11 @@ The module is responsible for calling @code{_close} on the descriptor
 after setting the handler function to zero in the extended close
 handler.
 
+@subheading Return Value
+
+If successful, a new file descriptor is returned. On error, a negative number
+is returned and @var{errno} is set to indicate the error.
+
 @subheading Portability
 
 @portability !ansi, !posix
@@ -304,7 +309,7 @@ _read(int fd, void *buf, int len)
 @example
 #include <sys/fsext.h>
 
-int __FSEXT_set_data(int _fd, void *_data);
+void * __FSEXT_set_data(int _fd, void *_data);
 @end example
 
 @subheading Description
