@@ -10,11 +10,11 @@ int llockf (int fildes, int function, offset_t size);
 @subheading Description
 
 The @code{llockf} function is a simplified interface to the locking
-facilities of @code{fcntl} (see @ref{fcntl} for more detailed
+facilities of @code{fcntl} (see @ref{fcntl}, for more detailed
 information).
 
 The @code{llockf} function performs exactly the same functions as
-@code{lockf} (see @pxref{lockf}), with exactly the same input commands
+@code{lockf} (@pxref{lockf}), with exactly the same input commands
 and results, but the input @var{size} parameter is of type
 @code{offset_t} instead of @code{off_t}, and the @code{fcntl} calls are
 made using functions @code{F_GETLK64}, @code{F_SETLK64} and
@@ -30,12 +30,12 @@ functions with @var{size} values greater than @math{2^31 - 1}.
 taken.  The permissible values for function are defined in <unistd.h> as
 follows:
 
-@example
+@smallexample
 #define   F_ULOCK   0   /* Unlock a previously locked section */
 #define   F_LOCK    1   /* Lock a section for exclusive use */
 #define   F_TLOCK   2   /* Test and lock a section for exclusive use */
 #define   F_TEST    3   /* Test section for other locks */
-@end example
+@end smallexample
 
 All other values of @var{function} are reserved for future extensions
 and will result in an error return if not implemented, with @code{errno}
@@ -46,8 +46,8 @@ The resource to be locked starts at the current offset in the file and
 extends forward for a positive @var{size} and backward for a negative
 @var{size} (the preceding bytes up to but not including the current
 offset).  If @var{size} is zero, the section from the current offset
-through the largest file offset is locked (i.e., from the current offset
-through the end-of-file).
+through the largest file offset is locked (i.e.@: from the current offset
+through the end of file).
 
 The functions defined for @code{llockf} are as follows:
 
@@ -56,16 +56,16 @@ The functions defined for @code{llockf} are as follows:
 This function is used to detect if the specified section is already
 locked.
 
-@itemx F_LOCK
+@item F_LOCK
 @itemx F_TLOCK
 @code{F_LOCK} and @code{F_TLOCK} both lock a section of a file, if the
 section is available.  These two function requests differ only by the
 action taken if the resource is not available.  @code{F_LOCK} will cause
 the calling program to wait until the resource is available.
 @code{F_TLOCK} will cause the function to return a -1 and set
-@code{errno} to error @code{EACCES} if the section is already locked.
+@code{errno} to @code{EACCES} if the section is already locked.
 
-@itemx F_ULOCK
+@item F_ULOCK
 @code{F_ULOCK} removes locks from a section of the file. This function
 will release locked sections controlled by the program.
 @end table
@@ -78,16 +78,16 @@ is true:
 @item EBADF
 Parameter @var{fildes} is not a valid open file.
 
-@itemx EACCES
+@item EACCES
 Parameter @var{function} is @code{F_TLOCK} or @code{F_TEST} and the
 section is already locked.
 
-@itemx EINVAL
+@item EINVAL
 Parameter @var{function} is not one of the implemented functions.
 @end table
 
 All lock requests in this implementation are coded as exclusive locks
-(i.e., all locks use the @code{fcntl} request @code{F_WRLCK}).
+(i.e.@: all locks use the @code{fcntl} request @code{F_WRLCK}).
 
 It is therefore wise to code @code{llockf} by using function
 @code{F_TLOCK} with all lock requests, and to test the return value to

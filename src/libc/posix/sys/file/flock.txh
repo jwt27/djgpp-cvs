@@ -9,16 +9,15 @@ int flock (int _fildes, int _op);
 
 @subheading Description
 
-Apply or remove an advisory lock on an open file. The file is specified
-by file handle @var{_fildes}. Valid operations are given below:
+Apply or remove an advisory lock on an open file.  The file is specified
+by file handle @var{_fildes}.  Valid operations are given below:
 
 @table @code
 @item LOCK_SH
 Shared lock.  More than one process may hold a shared lock for a given
-file at a given time.
-
-However, all locks on DOS/Win9x are exclusive locks, so @code{LOCK_SH}
-requests are treated as if they were @code{LOCK_EX} requests.
+file at a given time.  However, all locks on DOS/Windows 9X are
+exclusive locks, so @code{LOCK_SH} requests are treated as if they were
+@code{LOCK_EX} requests.
 
 @item LOCK_EX
 Exclusive lock.  Only one process may hold an exclusive lock for a given
@@ -28,26 +27,26 @@ file at a given time.
 Unlock the file.
 
 @item LOCK_NB
-Don't block when locking. May be specified (by or'ing) along with one of
-the other operations.
+Don't block when locking.  May be specified (by or'ing) along with one
+of the other operations.
 @end table
 
 On other systems, a single file may not simultaneously have both shared
-and exclusive locks.  However, on DOS/Win9x, all locks are exclusive
-locks, so this rule is not true for DOS/Win9x.
+and exclusive locks.  However, on DOS/Windws 9X, all locks are exclusive
+locks, so this rule is not true for DOS/Windows 9X.
 
-A file is locked, not the file descriptor.  So, dup (2) does not create
-multiple instances of a lock.
+A file is locked, not the file descriptor.  So, @samp{dup (2);} does not
+create multiple instances of a lock.
 
-Dos/Win9x does not support shared locks, but the underlying
+Dos/Windows 9X do not support shared locks, but the underlying
 implementation (which uses the @code{F_SETLK} (non-blocking) or
-@code{F_SETLKW} (blocking) commands to @code{fcntl}, see @ref{fcntl})
+@code{F_SETLKW} (blocking) commands to @code{fcntl}, @pxref{fcntl})
 translates all shared lock request into exclusive lock requests.  Thus,
 requests for shared locks will be treated as if exclusive locks were
 requested, and only one lock will ever be permitted at any one time on
 any specified region of the file.
 
-It is therefore wise to code @code{flock} by or'ing @code{LOCK_NB} with
+It is therefore wise to code @code{flock} by @code{or}ing @code{LOCK_NB} with
 all lock requests, whether shared or exclusive, and to test the return
 value to determine if the lock was obtained or not.  Using
 @code{LOCK_NB} will cause the implementation to use @code{F_SETLK}
