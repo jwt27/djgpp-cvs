@@ -2,6 +2,7 @@ TOP=../../..
 
 SRC += fixpath.c
 SRC += leak.c
+SRC += lstat.c
 SRC += mkdir.c
 SRC += stat.c
 SRC += stat1.c

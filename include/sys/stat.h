@@ -64,6 +64,8 @@ mode_t	umask(mode_t _cmask);
 
 /* POSIX.1 doesn't mention these at all */
 
+#define S_ISLNK(m)	(((m) & 0xf000) == 0x8000)
+
 #define S_IFMT		0xf000
 
 #define S_IFREG		0x0000
@@ -71,6 +73,7 @@ mode_t	umask(mode_t _cmask);
 #define S_IFCHR		0x2000
 #define S_IFDIR		0x3000
 #define S_IFIFO		0x4000
+#define S_IFLNK         0x8000
 #define S_IFFIFO	S_IFIFO
 
 #define S_IFLABEL	0x5000

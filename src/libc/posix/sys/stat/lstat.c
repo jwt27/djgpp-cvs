@@ -628,21 +628,39 @@ stat_assist(const char *path, struct stat *statbuf)
 
       else
         {
-          /* This is a regular file. */
-          char *extension  = strrchr(ff_blk.ff_name, '.');
+          int bytes_read;
+          int old_errno;
+          char buf[2];
 
-          /* Set regular file bit.  */
-          statbuf->st_mode |= S_IFREG;
+          /* Check if it is symlink.  */
+          old_errno = errno;
+          bytes_read = readlink(pathname, buf, 1);
+          if (bytes_read != -1)
+          {
+              /* Yes, it is.  */
+              statbuf->st_mode |= S_IFLNK;
+              errno = old_errno;
+          }
+          else
+          {
+              /* This is a regular file. */
+              char *extension  = strrchr(ff_blk.ff_name, '.');
 
-          if ((_djstat_flags & _STAT_EXECBIT) != _STAT_EXECBIT)
-            {
-              /* Set execute bits based on file's extension and
-                 first 2 bytes. */
-              if (extension)
-                extension++;    /* get past the dot */
-              if (_is_executable(pathname, -1, extension))
-                statbuf->st_mode |= EXEC_ACCESS;
-            }
+              errno = old_errno;
+
+              /* Set regular file bit.  */
+              statbuf->st_mode |= S_IFREG;
+
+              if ((_djstat_flags & _STAT_EXECBIT) != _STAT_EXECBIT)
+                {
+                  /* Set execute bits based on file's extension and
+                     first 2 bytes. */
+                  if (extension)
+                    extension++;    /* get past the dot */
+                  if (_is_executable(pathname, -1, extension))
+                    statbuf->st_mode |= EXEC_ACCESS;
+                }
+          }
         }
     }
   else if ((_djstat_fail_bits & _STFAIL_TRUENAME))
