@@ -378,6 +378,16 @@ The floating-point emulator software had a bug in emulation of
 subtraction, addition, and comparison instructions, whereby the results
 produced for some rare pairs of numbers with the same exponent but
 different mantissa were grossly incorrect.  This is now fixed.
+This bug was known to cause all kinds of weird failures, like incorrect
+values produced by functions @code{sin} and @code{cos}, programs being
+trapped inside infinite loops when they called @code{acos}, etc.
+
+@cindex FP emulation, hangs on Windows
+Another bug in the floating-point emulation only happened on Windows: a
+program which used the @sc{fwait} instruction would be trapped in an
+infinite loop, because the emulation of @sc{fwait} didn't increment the
+@sc{eip} of the application.  The emulation of @sc{fwait} was corrected
+to avoid this problem.
 
 @pindex libemu.a@r{, missing} npxsetup.o
 The FP emulation library @file{libemu.a} omitted the specially-compiled
@@ -497,10 +507,6 @@ instantiation in C++ programs.
 The @code{tcgetpgrp} and @code{tcsetpgrp} are now provided in the
 library.
 
-@findex realloc@r{, crashes when memory is exhausted}
-@code{realloc} no longer crashes when the avialable virtual memory is
-not enough to satisfy the reallocation request.
-
 @findex symlink@r{, source and target in different directories}
 Previously, the @code{symlink} function would sometimes think that the
 source and the target of the link were in the same directory, when in
@@ -512,10 +518,6 @@ actually needs to rename some of the files during unpacking.  In
 particular, simply listing the contents of an archive, as in @samp{djtar
 foo.tgz}, will not produce an empty @file{tarchange.lst} file anymore.
 
-@findex memicmp@r{, included in the library}
-The function @code{memicmp} was omitted from the library in version
-2.02.  This is fixed now.
-
 @pindex fsdb@r{, Step Over bug}
 @pindex fsdb@r{, support for }SIGQUIT
 Previously, @code{fsdb} could not step over function calls when 4 or
@@ -524,13 +526,9 @@ more breakpoints were set: it would display an error message saying that
 @code{fsdb} now supports the @code{SIGQUIT} signal, if the program being
 debugged generates it.
 
-@pindex emu387.dxe@r{, on Windows}
-@pindex libemu.a@r{, on Windows}
-@cindex FP emulation, on Windows
-The floating-point emulation now works on Windows.  Previously, a bug in
-the emulation of the WAIT/FWAIT instructions caused the emulator to get
-stuck in an endless loop on Windows.  (On MS-DOS, these two instructions
-don't generate an FP exception, and so don't get into the emulator.)
+@pindex redir@r{, and FP emulation}
+@code{redir} no longer crashes when floating-point instructions are
+emulated.
 
 @cindex FP emulation, and @code{SIGFPE}
 @cindex @code{SIGFPE} and FP emulation
@@ -554,20 +552,6 @@ The emulator now correctly sets the condition code bits @code{C0},
 raised, and as result of emulating the @code{FPREM} and @code{FPREM1}
 instructions.
 
-@pindex emu387.dxe@r{, and FSQRT instruction}
-@pindex libemu.a@r{, and FSQRT instruction}
-@cindex FP emulator, and FSQRT instruction
-The floating-point emulator software had a bug in emulation of the
-@code{FSQRT} instruction, which could cause the calling program to hang.
-This was due to incorrect optimization by the version of GCC used to
-produce @file{djdev202.zip}.  The new version of the emulator works
-around this bug by preventinging the compiler from performing these
-incorrect optimizations.
-
-@findex fsetpos@r{, return value}
-@code{fsetpos} no longer returns zero when it fails to move the file
-position pointer.
-
 @pindex djtar@r{, file-name conversions}
 @code{djtar} now converts @file{.info-} into @file{.i} only if the
 character following @file{.info-} is a digit.  @file{.tar.gz} is
@@ -575,6 +559,10 @@ converted to @file{.tgz} only at the end of a file name.  @file{++} is
 converted to @file{xx} (instead of @file{plus} in previous versions),
 and this conversion is performed for all occurrences of @file{++} in a
 file name (previous versions only converted the first occurrence).
+
+@findex fsetpos@r{, return value}
+@code{fsetpos} no longer returns zero when it fails to move the file
+position pointer.
 
 @pindex gxx@r{, and missing libgpp.a}
 @cindex @file{libstdcxx.a}, and @code{gxx}
@@ -585,3 +573,104 @@ optional GNU C@t{++} class library @file{libgpp.a} is not installed.  If
 if the standard C@t{++} library, @file{libstdcxx.a}, cannot be found,
 @code{gxx} now tries @file{libstdcx.a} and @file{libstd~1.a}, in case
 the user has some LFN-related installation @emph{snafu}.
+
+@cindex FP emulation, abnormal results
+The FP emulation behaves closer to a real FPU when an FP instruction
+produces abnormal results, such as @code{Inf} or @code{NaN}.  In
+particular:
+
+@itemize @bullet
+@item
+@cindex Overflow in emulation of arithmetic FP instructions
+@cindex Underflow in emulation of arithmetic FP instructions
+Overflow and underflow are now correctly detected in addition,
+subtraction, multiplication and division, and instructions that perform
+these operations internally.  Overflow causes an @code{Inf} to be stored
+in the results, while underflow usually results in a denormal or a zero.
+
+@item
+Undefined operations, such as division of zero by zero or of @code{Inf}
+by an @code{Inf}, produce a @code{NaN}.
+
+@item
+@cindex FST/FSTS instructions, emulation of, over/underflow
+Emulation of @code{FST} and @code{FSTS} instructions avoids overflowing
+of the exponent when it is too large for the destination format; it
+stores an @code{Inf} or a maximum finite number instead.  Operands that
+are too small for the destination format cause either a denormal or a
+zero to be stored.
+
+@item
+@cindex FXCH instruction, emulation, abnormal operands
+The emulation of @code{FXCH} stores a @code{NaN} when one or both of its
+operands is a @code{NaN}.
+
+@item
+@cindex FYL2X instruction, emulation pops the stack
+@findex acosh@r{, }Inf@r{ or}NaN@r{ operands in emulator}
+@findex asinh@r{, }Inf@r{ or}NaN@r{ operands in emulator}
+The emulation of @code{FYL2X} always pops the operands from the FPU
+stack, even if one of the operands is invalid (@code{Inf} or
+@code{NaN}), or if the operand on top of the stack is negative.  This
+affects functions @code{acosh} and @code{asinh}.
+
+@item
+@cindex FPREM/FPREM1 instruction, emulation for large arguments
+@findex ceil@r{, for negative arguments, emulation}
+The emulation of the @code{FPREM} and @code{FPREM1} instructions no
+longer hangs the program when the difference of the exponents of the
+operands is larger than 64.  Instead, it correctly implements the
+``partial remainder'' algorithm defined by the Intel manuals.  Also, the
+sign of the result of these instructions is now in accordance with the
+Intel manuals (this affects the @code{ceil} function for small negative
+arguments).
+
+@item
+@cindex FPTAN instruction, emulation, argument out of range
+@findex tan@r{, emulation, argument out of range}
+The emulation of @code{FPTAN} now correctly handles the case where its
+operand is out of range.
+
+@item
+@cindex FPATAN instruction, emulation, accuracy
+@findex atan@r{, accuracy of emulation}
+@findex atan2@r{, accuracy of emulation}
+@findex asin@r{, accuracy of emulation}
+@findex acos@r{, accuracy of emulation}
+@code{FPATAN} emulation now uses a better approximation which is
+accurate to 63 bits, even when its argument is near 1.  (Previously, it
+would suffer a catastrophic accuracy loss of up to 13 significant digits
+for arguments near 1.)  This affects functions @code{atan},
+@code{atan2}, @code{asin}, and @code{acos}.
+
+@item
+@cindex FSQRT instruction, emulation for infinite arguments
+@findex sqrt@r{, emulation for infinite arguments}
+The emulation of @code{FSQRT} behaves correctly for infinite arguments.
+
+@item
+@cindex FRNDINT instruction, emulation for negative arguments
+@findex fmod@r{, emulation for negative arguments}
+@code{FRNDINT} emulation returns a negative zero for negative
+arguments.  This affects the @code{fmod} function for negative
+arguments.
+
+@item
+@cindex FSCALE instruction, emulation, handles overflow
+The emulation of @code{FSCALE} handles overflow correctly.
+
+@item
+@cindex FSINCOS instruction, emulation for large arguments
+@cindex FSIN instruction, emulation for large arguments
+@cindex FCOS instruction, emulation for large arguments
+@findex sin@r{, emulation for large arguments}
+@findex cos@r{, emulation for large arguments}
+@findex sincos@r{, emulation for large arguments}
+@findex tan@r{, emulation for large arguments}
+The emulations of @code{FSINCOS}, @code{FSIN} and @code{FCOS} return a
+@code{NaN} for an argument that is a @code{NaN}, and raise an Invalid
+Operation exception for an @code{Inf} argument; this is what the Intel
+manuals require.  This affects functions @code{sin}, @code{cos},
+@code{sincos}, and @code{tan}.
+@end itemize
+

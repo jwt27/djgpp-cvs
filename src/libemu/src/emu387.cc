@@ -565,7 +565,8 @@ static void r_sub(reg& a, reg& b, reg& d)
   if (a.tag == TW_Z)
   {
     d = b;
-    d.sign ^= SIGN_POS^SIGN_NEG;
+    if (b.tag != TW_Z || b.sign)
+      d.sign ^= SIGN_POS^SIGN_NEG;
     return;
   }
   if (a.tag == TW_S)
@@ -732,7 +733,12 @@ static void r_mul(reg& a, reg& b, reg& s)
     }
     s.sigl = *(long *)(sl+4);
     s.sigh = *(long *)(sl+6);
-    s.exp = a.exp + b.exp - EXP_BIAS + 1;
+    long biased_exp = a.exp;
+    biased_exp += b.exp - EXP_BIAS + 1;
+    if (biased_exp > EXP_MAX)
+      s.exp = EXP_MAX + 1;
+    else
+      s.exp = biased_exp;
     s.tag = TW_V;
   }
   if (a.sign == b.sign)
@@ -746,10 +752,15 @@ static void r_div(reg& a, reg& b, reg& q)
 {
   if (a.tag == TW_S)
   {
-    if (val_same(a, CONST_PINF))
-      q = a;
-    else if (val_same(a, CONST_NINF))
-      q = a;
+    if (val_same(a, CONST_PINF) || val_same(a, CONST_NINF))
+    {
+      if (val_same(b, CONST_PINF) || val_same(b, CONST_NINF))
+	q = CONST_NAN;
+      else
+	q = a;
+    }
+    else if (a.exp > EXP_MAX)
+      q = CONST_NAN;
   }
   else if (b.tag == TW_S)
   {
@@ -757,14 +768,20 @@ static void r_div(reg& a, reg& b, reg& q)
       q = CONST_Z;
     else if (val_same(b, CONST_NINF))
       q = CONST_Z;
+    else if (a.exp > EXP_MAX)
+      q = CONST_NAN;
   }
   else if (a.tag == TW_Z)
   {
-    q = a;
+    if (b.tag == TW_Z)
+      q = CONST_NAN;
+    else
+      q = a;
   }
   else if (b.tag == TW_Z)
   {
     exception(EX_Z);
+    q = CONST_PINF;
   }
   else
   {
@@ -1049,8 +1066,52 @@ static void r_mov(reg& s, double *d)
   }
   else
   {
+    short unbiased_exp = s.exp - EXP_BIAS;
     l[0] = (s.sigl >> 11) | (s.sigh << 21);
-    l[1] = ((s.sigh >> 11) & 0xfffff) | (((s.exp-EXP_BIAS+1023) & 0x7ff) << 20);
+    l[1] = (s.sigh >> 11) & 0xfffff;
+    if (s.exp == 0x7fff)	// NaN or Inf
+      l[1] |= 0x7ff00000;
+    else if (unbiased_exp > 1023) // overflow
+    {
+      // If Overflow is unmasked, longjmp without storing anything.
+      exception(EX_O);
+      int rmode = (control_word & CW_RC);
+      if ((rmode == RC_DOWN && s.sign == 0)
+	  || (rmode == RC_UP && s.sign)
+	  || rmode == RC_CHOP)
+      {
+	l[0] = 0xffffffff;	// max finite number
+	l[1] = 0x7fefffff;
+      }
+      else
+      {
+	l[0] = 0;		// Inf
+	l[1] = 0x7ff00000;
+      }
+    }
+    else if (unbiased_exp < -1022) // underflow
+    {
+      exception(EX_U);
+      if (unbiased_exp < -1074)
+	l[0] = l[1] = 0;
+      else
+      {	// Gradual underflow
+	int to_shift = -1023 - unbiased_exp;
+	if (to_shift >= 32)
+	{
+	  l[0] = l[1] >> (to_shift - 32);
+	  l[1] = 0;
+	}
+	else
+	{
+	  l[0] >>= to_shift;
+	  l[0] |= (l[1] << (32 - to_shift));
+	  l[1] >>= to_shift;
+	}
+      }
+    }
+    else
+      l[1] |= (((unbiased_exp + 1023) & 0x7ff) << 20);
   }
   if (s.sign)
     l[1] |= 0x80000000;
@@ -1065,8 +1126,33 @@ static void r_mov(reg& s, float *d)
   }
   else
   {
+    short unbiased_exp = s.exp - EXP_BIAS;
     f = (s.sigh >> 8) & 0x007fffff;
-    f |= ((s.exp-EXP_BIAS+127) & 0xff) << 23;
+    if (s.exp == 0x7fff)	// NaN or Inf
+      f |= 0x7f800000;
+    else if (unbiased_exp > 127) // overflow
+    {
+      // If Overflow is unmasked, longjmp without storing anything.
+      exception(EX_O);
+      int rmode = (control_word & CW_RC);
+      if ((rmode == RC_DOWN && s.sign == 0)
+	  || (rmode == RC_UP && s.sign)
+	  || rmode == RC_CHOP)
+	f = 0x7f7fffff;		// max finite number
+      else
+	f = 0x7f800000;		// Inf
+    }
+    else if (unbiased_exp < -126) // underflow
+    {
+      exception(EX_U);
+      if (unbiased_exp < -149)
+	f = 0;
+      else
+	// Gradual underflow
+	f >>= -127 - unbiased_exp;
+    }
+    else
+      f |= ((unbiased_exp + 127) & 0xff) << 23;
   }
   if (s.sign)
     f |= 0x80000000;
@@ -1452,14 +1538,14 @@ static void emu_10()
 
 static void emu_11()
 {
-  if (empty())
-    return;
   if (modrm > 0277)
   {
+    if (empty())
+      st() = CONST_NAN;
     // fxch st(i)
     int i = modrm & 7;
     if (empty(i))
-      return;
+      st(i) = CONST_NAN;
     reg t;
     t = st();
     st() = st(i);
@@ -1548,7 +1634,7 @@ static void ftst()
       }
       else if (val_same(st(), CONST_NINF))
       {
-        setcc(SW_C3);
+        setcc(SW_C0);
         break;
       }
       setcc(SW_C0|SW_C2|SW_C3);
@@ -1697,7 +1783,7 @@ static void f2xm1()
 
 static void fyl2x()
 {
-  if (empty())
+  if (empty() || empty(1))
     return;
   reg z, x, nom, denom, xsquare, term, temp, sum, pow;
   long exponent;
@@ -1707,6 +1793,9 @@ static void fyl2x()
   if ((z.tag != TW_V) || (z.sign != SIGN_POS))
   {
     exception(EX_I); // not valid, zero or negative
+    st().tag = TW_E;
+    top++;
+    st() = CONST_NAN;	// FIXME!
     return;
   }  
   exponent = (long)(z.exp - EXP_BIAS);
@@ -1720,6 +1809,16 @@ static void fyl2x()
   r_sub(z, CONST_1, nom);
   r_add(z, CONST_1, denom);
   r_div(nom, denom, x);
+  if (x.tag == TW_S)
+  {
+    st().tag = TW_E;
+    top++;
+    int sign = st().sign;
+    st() = CONST_PINF;
+    if (!sign)
+      st().sign = 1;
+    return;
+  }
   pow = x;
   sum = x;
   r_mul(x, x, xsquare);
@@ -1761,7 +1860,7 @@ static int fprem_do(reg& quot, reg& div1, int round) // remainder of st() / st(1
   {
     reg tmp, tmp2;
     r_div(quot, div1, tmp);
-    long q;
+    long long q;
     r_mov(tmp, &q);
     r_mov(&q, tmp);
     r_mul(div1, tmp, tmp2);
@@ -1775,8 +1874,10 @@ static int fprem_do(reg& quot, reg& div1, int round) // remainder of st() / st(1
     setcc(SW_C2);
     r_div(st(), div1, tmp);
     int old_exp = tmp.exp;
-    tmp.exp &= 31;
-    long q;
+    // 62 below is "an implementation-dependent number between 32
+    // and 63", as required by the Intel manual.
+    tmp.exp = 62 + EXP_BIAS;
+    long long q;
     r_mov(tmp, &q);
     r_mov(&q, tmp);
     tmp.exp = old_exp;
@@ -1791,8 +1892,25 @@ static int fprem_do(reg& quot, reg& div1, int round) // remainder of st() / st(1
 
 static void fsincos()
 {
-  if (empty())
+  if (empty() || full())
     return;
+  if (st().exp > EXP_MAX)
+  {
+    if (nan_type(st()) != NAN_NONE)
+    {
+      top--;
+      st() = st(1);
+    }
+    else
+      exception(EX_I);
+    return;
+  }
+  if (st().exp > 63 + EXP_BIAS)
+  {
+    /* Source operand is out of range.  */
+    setcc(SW_C2);
+    return;
+  }
   int q = fprem_do(st(), CONST_PI2, RC_CHOP);
 
   if (q & 1)
@@ -1844,7 +1962,7 @@ static void fsincos()
 static void fptan()
 {
   fsincos();
-  if (empty(1))
+  if ((status_word & SW_C2) == SW_C2 || empty(1))
     return;
   reg tmp;
   r_div(st(1), st(), tmp);
@@ -1876,7 +1994,7 @@ static void fpatan()
     top++;
     return;
   }
-  reg x2, sum, term, pow, temp;
+  reg x2, na, da, nb, db, temp, mx2, sum, m;
   int quadrant = 0;
   if (st(1).sign == SIGN_NEG)
     quadrant |= 1;
@@ -1891,21 +2009,35 @@ static void fpatan()
     st() = temp;
   }
 
-  r_div(st(1), st(), sum);
-  r_mul(sum, sum, x2);
-  pow = sum;
+  r_div(st(1), st(), nb);
+  r_mul(nb, nb, x2);
+  da = db = m = CONST_1;
+  na = CONST_Z;
 
-  x2.sign ^= SIGN_POS^SIGN_NEG;
-
-  for (long i=3; i<25; i+=2)
+  for (long i=3; i<53; i+=2)
   {
-    r_mul(pow, x2, temp);
-    pow = temp;
-    r_mov(&i, temp);
-    r_div(pow, temp, term);
-    r_add(sum, term, temp);
-    sum = temp;
+    reg t1, t2, ti;
+
+    r_mul(m, x2, mx2);
+    r_mov(&i, ti);
+
+    r_mul(na, mx2, t1);
+    r_mul(ti, nb, t2);
+    r_add(t2, t1, temp);
+    na = nb;
+    nb = temp;
+
+    r_mul(da, mx2, t1);
+    r_mul(ti, db, t2);
+    r_add(t2, t1, temp);
+    da = db;
+    db = temp;
+
+    r_add(m, ti, t1);
+    m = t1;
   }
+
+  r_div(na, da, sum);
 
   if (quadrant & 4)
   {
@@ -1942,7 +2074,12 @@ static void fprem1()
 {
   if (empty(1))
     return;
+  reg t = st();
   int q = fprem_do(st(), st(1), RC_RND);
+  // If the result is zero, its sign must be the same as the sign of
+  // the dividend.
+  if (st().tag == TW_Z)
+    st().sign = t.sign;
   if (q == -1)
     setcc(SW_C2);
   else
@@ -1985,7 +2122,11 @@ static void fprem()
 {
   if (empty(1))
     return;
+  // Intel Manual says: "The sign of the remainder is the same as the
+  // sign of the dividend."
+  int sign = st().sign;
   int q = fprem_do(st(), st(1), RC_CHOP);
+  st().sign = sign;
   if (q == -1)
     setcc(SW_C2);
   else
@@ -2014,11 +2155,12 @@ static void fsqrt()
     return;
   if (st().tag == TW_Z)
     return;
-  if (st().exp == EXP_MAX)
+  if (st().exp == EXP_MAX + 1)
     return;
   if (st().sign == SIGN_NEG)
   {
     exception(EX_I);
+    st() = CONST_NAN;
     return;
   }
 
@@ -2067,8 +2209,14 @@ static void frndint()
   long long tmp;
   if (st().exp > EXP_BIAS+62)
     return;
-  r_mov(st(), &tmp);
-  r_mov(&tmp, st());
+  reg t = st();
+  // We need to remember the sign to return -0.0 if the
+  // argument was negative.
+  int sign = t.sign;
+  r_mov(t, &tmp);
+  r_mov(&tmp, t);
+  t.sign = sign;
+  st() = t;
 }
 
 static void fscale()
@@ -2077,13 +2225,35 @@ static void fscale()
   if (empty(1))
     return;
   r_mov(st(1), &scale1);
-  st().exp += scale1;
+  scale1 += st().exp;
+  if (scale1 > EXP_MAX)
+  {
+    int sign = st().sign;
+    exception(EX_O);
+    st() = CONST_PINF;	// FIXME: the result should depend on rounding mode
+    st().sign = sign;
+  }
+  else
+    st().exp = scale1;
 }
 
 static void fsin()
 {
   if (empty())
     return;
+  if (st().exp > EXP_MAX)
+  {
+    if (nan_type(st()) == NAN_NONE)
+      exception(EX_I);
+    setcc(SW_C2);
+    return;
+  }
+  if (st().exp > 63 + EXP_BIAS)
+  {
+    /* Source operand is out of range.  */
+    setcc(SW_C2);
+    return;
+  }
   int q = fprem_do(st(), CONST_PI2, RC_CHOP);
 
   if (q & 1)
@@ -2119,6 +2289,19 @@ static void fcos()
 {
   if (empty())
     return;
+  if (st().exp > EXP_MAX)
+  {
+    if (nan_type(st()) == NAN_NONE)
+      exception(EX_I);
+    setcc(SW_C2);
+    return;
+  }
+  if (st().exp > 63 + EXP_BIAS)
+  {
+    /* Source operand is out of range.  */
+    setcc(SW_C2);
+    return;
+  }
   int q = fprem_do(st(), CONST_PI2, RC_CHOP);
 
   if (q & 1)
@@ -3544,6 +3727,7 @@ int _emu_entry(jmp_buf _exception_state)
   modrm = *eip++;
   esc_value |= (modrm & 070);
   (esc_table[esc_value])();
+//  eprintf("EIP: 0x%x TOP: %d\r\n", eip, top);
 //  emu_printall();
   _exception_state->__eip = (unsigned long) eip;
   _exception_state->__eax = eax;
