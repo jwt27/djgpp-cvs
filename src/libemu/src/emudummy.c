@@ -13,7 +13,6 @@
 #include <stdarg.h>
 #include <io.h>
 #include <libc/dosio.h>
-#include <errno.h>
    
 int
 vsprintf (char *buf, const char *fmt, va_list args)
@@ -24,8 +23,7 @@ vsprintf (char *buf, const char *fmt, va_list args)
 ssize_t
 _write (int fd, const void *buf, size_t nbyte)
 {
-  errno = EACCES;
-  return -1;
+  return 0;
 }
 
 void mcount (int _to);
