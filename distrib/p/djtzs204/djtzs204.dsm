@@ -2,7 +2,7 @@
 # DSM for sources to DJGPP timezone support files for 2.04
 #
 
-dsm-file-version: 1.1
+dsm-file-version: 1.2
 dsm-version: 0.6.0
 dsm-name: djtzs204
 
@@ -19,6 +19,10 @@ license: Various: public domain, BSD
 web-site: http://www.delorie.com/djgpp/
 newsgroup: comp.os.msdos.djgpp
 newsgroup-email-gateway: djgpp@delorie.com
+
+author: The Timezone Caballeros
+author-email: tz@elsie.nci.nih.gov
+author-ftp-site: ftp://elsie.nci.nih.gov/pub/
 
 simtelnet-path: v2/
 zip: djtzs204.zip
