@@ -39,6 +39,7 @@ subs:
 	$(MAKE) -C libm
 	$(MAKE) -C utils
 	$(MAKE) -C docs/kb
+	$(MAKE) -C ../zoneinfo/src
 
 .PHONY : clean
 clean : misc.exe makemake.exe
@@ -51,4 +52,5 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C dxe clean
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs/kb clean
+	$(MAKE) -C ../zoneinfo/src clean
 		./misc.exe rm makemake.exe copyrite.exe misc.exe

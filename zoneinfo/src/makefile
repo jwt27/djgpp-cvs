@@ -57,6 +57,15 @@ MANDIR=		$(TOPDIR)/info
 LIBDIR=		$(TOPDIR)/lib
 TZLIB=		$(LIBDIR)/libtz.a
 
+# This defines several variables that enable zoneinfo/src/* files to be
+# built both natively and with cross-tools on Unix.
+
+include $(TOPDIR)/src/makefile.def
+
+# A replacement for (possibly missing) Unix programs:
+
+UTIL=		$(TOPDIR)/src/misc.exe
+
 # If you always want time values interpreted as "seconds since the epoch
 # (not counting leap seconds)", use
 #	REDO=		posix_only
@@ -104,7 +113,7 @@ LDLIBS=
 #	if you do not want run time warnings about formats that may cause
 #	year 2000 grief
 #
-GCC_DEBUG_FLAGS = -Dlint -g -O -fno-common \
+GCC_DEBUG_FLAGS = -Dlint -O -fno-common \
 	-Wall -Wcast-qual -Wconversion -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith -Wshadow \
 	-Wtraditional # -Wstrict-prototypes -Wwrite-strings
@@ -203,12 +212,15 @@ GCC_DEBUG_FLAGS = -Dlint -g -O -fno-common \
 CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
 		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 \
 		-DTM_GMTOFF=__tm_gmtoff -DTM_ZONE=__tm_zone -DSTD_INSPIRED \
-		-DLOCALE_HOME=\"c:/djgpp/locale\" $(GCC_DEBUG_FLAGS) -O2
+		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/locale\" \
+		$(GCC_DEBUG_FLAGS) -O2
+
+LFLAGS=		-s
 
 # If you want zic's -s option used when installing, uncomment the next line
 # ZFLAGS=	-s
 
-zic=		./zic
+zic=		./host-zic
 ZIC=		$(zic) $(ZFLAGS)
 
 # The name of a Posix-compliant `awk' on your system.
@@ -216,8 +228,8 @@ AWK=		gawk
 
 ###############################################################################
 
-cc=		gcc
-CC=		$(cc) -DTZDIR=\"c:/djgpp/zoneinfo\"
+cc=		$(CROSS_GCC)
+CC=		$(cc) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\"
 
 TZCSRCS=	zic.c localtime.c asctime.c scheck.c ialloc.c
 TZCOBJS=	zic.o localtime.o asctime.o scheck.o ialloc.o
@@ -251,50 +263,59 @@ ENCHILADA=	$(DOCS) $(SOURCES) $(DATA) $(MISC)
 
 SHELL=		/bin/sh
 
-all:		zic zdump $(LIBOBJS)
-
-ALL:		all date tzselect
+INSTALL:	ALL install date.1
+		-$(UTIL) mkdir $(TOPDIR)
+		-$(UTIL) mkdir $(BINDIR)
+		$(UTIL) cp date.exe $(BINDIR)/date.exe
+		-$(UTIL) mkdir $(MANDIR)
+		-$(UTIL) rm $(MANDIR)/date.1
+		$(UTIL) cp date.1 $(MANDIR)/date.1
 
 install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
 		$(ZIC) -y $(YEARISTYPE) \
 			-d $(TZDIR) -l $(LOCALTIME) -p $(POSIXRULES)
-		-rm -f $(TZDIR)/iso3166.tab $(TZDIR)/zone.tab
-		cp iso3166.tab zone.tab $(TZDIR)/.
-		-mkdir $(TOPDIR) $(ETCDIR)
-		cp zic zdump $(ETCDIR)/.
-		-mkdir $(TOPDIR) $(MANDIR) \
-			$(MANDIR)/man3 $(MANDIR)/man5 $(MANDIR)/man8
-		-rm -f $(MANDIR)/man3/newctime.3 \
-			$(MANDIR)/man3/newtzset.3 \
-			$(MANDIR)/man5/tzfile.5 \
-			$(MANDIR)/man8/tzselect.8 \
-			$(MANDIR)/man8/zdump.8 \
-			$(MANDIR)/man8/zic.8
-		cp newctime.3 newtzset.3 $(MANDIR)/man3/.
-		cp tzfile.5 $(MANDIR)/man5/.
-		cp tzselect.8 zdump.8 zic.8 $(MANDIR)/man8/.
+		-$(UTIL) rm $(TZDIR)/iso3166.tab $(TZDIR)/zone.tab
+		$(UTIL) cp iso3166.tab $(TZDIR)/iso3166.tab
+		$(UTIL) cp zone.tab $(TZDIR)/zone.tab
+		-$(UTIL) mkdir $(TOPDIR)
+		-$(UTIL) mkdir $(ETCDIR)
+		$(UTIL) cp zic.exe $(ETCDIR)/zic.exe
+		$(UTIL) cp zdump.exe $(ETCDIR)/zdump.exe
+		-$(UTIL) mkdir $(MANDIR)
+		-$(UTIL) rm $(MANDIR)/newctime.3 \
+			$(MANDIR)/newtzset.3 \
+			$(MANDIR)/tzfile.5 \
+			$(MANDIR)/tzselect.8 \
+			$(MANDIR)/zdump.8 \
+			$(MANDIR)/zic.8
+		$(UTIL) cp newctime.3 $(MANDIR)/newctime.3
+		$(UTIL) cp newtzset.3 $(MANDIR)/newtzset.3
+		$(UTIL) cp tzfile.5 $(MANDIR)/tzfile.5
+		$(UTIL) cp tzselect.8 $(MANDIR)/tzselect.8
+		$(UTIL) cp zdump.8 $(MANDIR)/zdump.8
+		$(UTIL) cp zic.8 $(MANDIR)/zic.8
 
-INSTALL:	ALL install date.1
-		-mkdir $(TOPDIR) $(BINDIR)
-		cp date $(BINDIR)/.
-		-mkdir $(TOPDIR) $(MANDIR) $(MANDIR)/man1
-		-rm -f $(MANDIR)/man1/date.1
-		cp date.1 $(MANDIR)/man1/.
+all:		host-zic zic.exe zdump.exe $(LIBOBJS)
 
-zdump:		$(TZDOBJS)
+ALL:		all date.exe tzselect
+
+zdump.exe:	$(TZDOBJS)
 		$(CC) $(CFLAGS) $(LFLAGS) $(TZDOBJS) $(LDLIBS) -o $@
 
-zic:		$(TZCOBJS) yearistype
+host-zic:	$(TZCOBJS) yearistype
+		$(GCC) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\" \
+		 $(CFLAGS) $(LFLAGS) $(TZCOBJS) $(LDLIBS) -o $@
+
+zic.exe:	$(TZCOBJS) yearistype
 		$(CC) $(CFLAGS) $(LFLAGS) $(TZCOBJS) $(LDLIBS) -o $@
 
 yearistype:	yearistype.sh
-		cp yearistype.sh yearistype
-		chmod +x yearistype
+		$(UTIL) cp yearistype.sh yearistype
 
-posix_only:	zic $(TDATA)
+posix_only:	$(zic) $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
 
-right_only:	zic leapseconds $(TDATA)
+right_only:	$(zic) leapseconds $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
 
 # In earlier versions of this makefile, the other two directories were
@@ -306,7 +327,7 @@ right_only:	zic leapseconds $(TDATA)
 # Therefore, the other two directories are now siblings of $(TZDIR).
 # You must replace all of $(TZDIR) to switch from not using leap seconds
 # to using them, or vice versa.
-other_two:	zic leapseconds $(TDATA)
+other_two:	$(zic) leapseconds $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) \
 			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
@@ -318,40 +339,40 @@ right_posix:	right_only other_two
 zones:		$(REDO)
 
 $(TZLIB):	$(LIBOBJS)
-		-mkdir $(TOPDIR) $(LIBDIR)
-		ar rus $@ $(LIBOBJS)
+		-$(UTIL) mkdir $(TOPDIR)
+		-$(UTIL) mkdir $(LIBDIR)
+		$(CROSS_AR) rus $@ $(LIBOBJS)
 
 # We use the system's logwtmp in preference to ours if available.
 
-date:		$(DATEOBJS)
-		ar rs logwtmpl.a logwtmp.o
+date.exe:	$(DATEOBJS)
+		$(CROSS_AR) rs logwtmpl.a logwtmp.o
 		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
 			$(LDLIBS) -lc logwtmpl.a -o $@
-		rm -f logwtmpl.a
+		$(UTIL) rm logwtmpl.a
 
 tzselect:	tzselect.ksh
 		sed \
 			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
-			-e 's|TZDIR=[^}]*|TZDIR=$(DJDIR)/zoneinfo|' \
+			-e 's|TZDIR=[^}]*|TZDIR=/dev/env/DJDIR/zoneinfo|' \
 			<$? >$@
-		chmod +x $@
 
 check_tables:	checktab.awk $(PRIMARY_YDATA)
 		$(AWK) -f checktab.awk $(PRIMARY_YDATA)
 
 clean:
-		rm -f core *.o *.out tzselect zdump zic yearistype date \
-			logwtmpl* *.tar.gz
+		$(UTIL) rm core *.o *.out tzselect zdump zic yearistype date \
+			logwtmpl* *.tar.gz host-zic *.exe
 
 names:
-		@echo $(ENCHILADA)
+		@$(UTIL) echo $(ENCHILADA)
 
 public:		$(ENCHILADA)
 		tar cf - $(DOCS) $(SOURCES) $(MISC) | gzip -9 > tzcode.tar.gz
 		tar cf - $(DATA) | gzip -9 > tzdata.tar.gz
 
 zonenames:	$(TDATA)
-		@awk '/^Zone/ { print $$2 } /^Link/ { print $$3 }' $(TDATA)
+		@$(AWK) '/^Zone/ { print $$2 } /^Link/ { print $$3 }' $(TDATA)
 
 asctime.o:	private.h tzfile.h
 date.o:		private.h
