@@ -1,0 +1,24 @@
+@node __dpmi_set_multiple_descriptors, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_set_multiple_descriptors(int _count, void *_buffer);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x000f (DPMI 1.0 only)
+
+This function sets multiple descriptors.  Buffer usage is like
+@ref{__dpmi_get_multiple_descriptors}, but the caller fills in
+everything before calling.
+
+@subheading Return Value
+
+Returns _count if successful, the negative of # descriptors set if failure.
