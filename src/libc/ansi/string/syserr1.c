@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include "syserr1.h"
@@ -43,3 +44,4 @@ char __syserr37[] = "Improper link (EXDEV)";
 char __syserr38[] = "No more files (ENMFILE)";
 char __syserr39[] = "Too many levels of symbolic links (ELOOP)";
 char __syserr40[] = "Value too large (EOVERFLOW)";
+char __syserr41[] = "Invalid or incomplete multibyte or wide character (EILSEQ)";

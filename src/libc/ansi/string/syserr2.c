@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -13,7 +14,7 @@ __syserr20, __syserr21, __syserr22, __syserr23, __syserr24,
 __syserr25, __syserr26, __syserr27, __syserr28, __syserr29,
 __syserr30, __syserr31, __syserr32, __syserr33, __syserr34,
 __syserr35, __syserr36, __syserr37, __syserr38, __syserr39,
-__syserr40
+__syserr40, __syserr41
 };
 
 int __sys_nerr = sizeof(__sys_errlist) / sizeof(__sys_errlist[0]);
