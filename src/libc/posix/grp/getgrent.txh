@@ -24,6 +24,7 @@ struct group @{
   char  ** gr_mem;    /* gr_mem[0] points to
                           getenv("USER"/"LOGNAME") or "user" */
   char  *  gr_name;   /* getenv("GROUP") or "dos" */
+  char  *  gr_passwd; /* "" */
 @};
 @end example
 
