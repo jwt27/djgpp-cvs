@@ -53,13 +53,19 @@ scripts.
 
 @item Translation of DOS device names.
 
-Any file name which begins with @file{/dev/} or @file{@var{x:}/dev/}
-(where @var{x:} is any valid DOS drive letter) has the @file{/dev/} or
-@file{@var{x:}/dev/} prefix removed, and the rest is passed to DOS.
+Any file name which begins with @file{/dev/} or @file{@var{x}:/dev/}
+(where @var{x}: is any valid DOS drive letter) has the @file{/dev/} or
+@file{@var{x}:/dev/} prefix removed (if the @file{/dev/} directory does
+not exist), and the rest is passed to DOS.
 This is because some DOS functions don't recognize device names unless
 they are devoid of the drive and directory specifications, and programs
 could add a drive and a directory if they convert a name like
 @file{/dev/con} to a fully-qualified path name.
+Because of the different behavior when the @file{/dev/} directory
+exists, you should only add the prefix @file{/dev/} to your DOS device 
+names if necessary and be sure that the @file{/dev/} does not exist.
+Due to the additional overhead of checking if @file{/dev/} exists, 
+functions working with DOS device names with the prefix will be slower.
 
 @item @file{/dev/x/} is translated into @file{x:/}.
 

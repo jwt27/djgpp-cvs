@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -9,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <io.h>
+#include <dpmi.h>
 
 static const char env_delim = '~';
 
@@ -145,8 +148,27 @@ _put_path2(const char *path, int offset)
         o--;
       path = p;
     }
-    else if (p[5])
-      path = p + 5;
+    else	/* Don't recognize item after /dev, remove if no directory */
+    {
+      __dpmi_regs r;
+      const long *q;
+
+      q = (const long *)path;
+      _farnspokel(o, *q);			/* First 8 characters */
+      _farnspokel(o+4, *(q+1));
+      if (path[4] == '/')
+        _farnspokeb(o+4, 0);			/* /dev */
+      else
+        _farnspokeb(o+6, 0);			/* d:/dev */
+
+      r.x.ax = 0x4300;
+      r.x.dx = __tb_offset;
+      r.x.ds = __tb_segment;
+      __dpmi_int(0x21, &r);
+      if ((r.x.flags & 1) || !(r.x.cx & 0x10) )	/* Exist?  Directory? */
+        if (p[5])
+          path = p + 5;
+    }
   }
 
   /* collapse multiple slashes to a single slash */
