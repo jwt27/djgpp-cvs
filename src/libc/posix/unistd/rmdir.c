@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <errno.h>
@@ -8,7 +10,7 @@
 #include <libc/dosio.h>
 
 int
-rmdir(const char *dirname)
+rmdir(const char *mydirname)
 {
   __dpmi_regs r;
 
@@ -18,7 +20,7 @@ rmdir(const char *dirname)
     r.h.ah = 0x3a;
   r.x.ds = __tb_segment;
   r.x.dx = __tb_offset;
-  _put_path(dirname);
+  _put_path(mydirname);
   __dpmi_int(0x21, &r);
 
   if (r.x.flags & 1)
