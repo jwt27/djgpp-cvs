@@ -31,7 +31,7 @@
 @comment The following two commands start the copyright page.
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1999--2001 DJ Delorie
+Copyright @copyright{} 1999,2000,2001 DJ Delorie
 @end titlepage
 
 @comment node-name, next, previous, up
@@ -58,11 +58,11 @@ LyX documentation for @code{djasm}, dated @value{BC_DJASM_DOC_DATE}.
 * Overview::                    Features, omissions, limitations, and
                                         differences from other assemblers.
 * Invocation::                  Invoking @code{djasm}.
-* Reference::                   Assembler language reference.
+* Language Reference::          Assembler language reference.
 * Examples::                    Programming examples.
 * Contributors::                Contributors.
 * Topic Index::                 Index of topics.
-* Keyword Index::               Index of djasm keywords.
+* Keyword Index::               Index of keywords.
 @end menu
 
 @comment node-name, next, previous, up
@@ -195,9 +195,9 @@ code (the linking is done by @code{djasm}).
 (currently this is the only available mode).
 @item
 There is support for several output formats, including raw hex output
-for subsequent use with assembler and @sc{c} code.
+for subsequent use with assembler and C code.
 @item
-Support for @sc{c}-style structure, union, and enumeration types.
+Support for C-style structure, union, and enumeration types.
 @item
 Most instructions and addressing modes are supported
 (a few are still missing).
@@ -324,7 +324,7 @@ The @file{.sys} format is supported so that device drivers can be built
 directly (i.e., without needing to rename a @file{.bin} output file to
 a @file{.sys} file).
 @item .h
-Produce a @sc{c}-compilable array of bytes (without type declaration or
+Produce a C-compilable array of bytes (without type declaration or
 surrounding @{@}s).
 @item .inc
 Produce a @file{.db} array for other @code{djasm} @file{.asm} files.
@@ -357,12 +357,12 @@ boot loaders, or micro-kernels.
 @end itemize
 
 @comment node-name, next, previous, up
-@node Reference
+@node Language Reference
 @chapter The @code{djasm} Language
 
 @menu
 * Syntax::                      Assembler syntax.
-* General::                     General directives.
+* General::                     General assembler directives.
 * Data::                        Data directives.
 * Structures::                  Structure, union, and enumeration types.
 * Prefixes::                    Segment override prefixes.
@@ -429,7 +429,7 @@ Usage:  .copyright @var{string}
 Inserts the copyright message @var{string} into the header of the
 executable, starting approximately at offset 0x61 (there is also some
 text with the generation details of the file starting at offset 0x28).
-@var{string} is a standard @sc{c} string.
+@var{string} is a standard C string.
 Multiple @code{.copyright} directives concatenate.
 This directive is currently supported only for the @file{.exe} output format.
 
@@ -587,7 +587,7 @@ constructed from the following :
 A decimal (e.g., 144), hexadecimal (e.g., 0x90),
 or character (e.g., 'A') constant.
 @item string
-A @sc{c}-style string constant, e.g. @code{"This is a string."}.
+A C-style string constant, e.g., @code{"This is a string."}.
 @item UID offset
 This item is available only for the @code{dwlist} and @code{ddlist}
 directives.
@@ -599,7 +599,7 @@ Repeat a block of data.
 @node Structures
 @section Structures
 
-The following directives provide support for @sc{c}-style @code{struct},
+The following directives provide support for C-style @code{struct},
 @code{union}, and @code{enum} constructs.
 
 @table @code
@@ -636,8 +636,8 @@ End a structure, union, or enumeration.
 @cindex type, union
 @cindex structure, ending
 
-In their usage, @code{.struct} is the same as @code{struct} in @sc{c},
-and @code{.union} is the same as @code{union} in @sc{c}.
+In their usage, @code{.struct} is the same as @code{struct} in C,
+and @code{.union} is the same as @code{union} in C.
 For example, the construct
 
 @example
@@ -805,7 +805,7 @@ system tables).
 @cindex type, enumeration
 
 The enumeration type allows arbitrary mnemonic identifiers (the
-`enumeration constants') to be mapped to a set of integer values.
+@dfn{enumeration constants}) to be mapped to a set of integer values.
 The classical textbook example is that of defining a boolean variable.
 The following construct defines @samp{boolean} as an enumeration
 type that can take the values 0 (@samp{false}) or 1 (@samp{true}).
