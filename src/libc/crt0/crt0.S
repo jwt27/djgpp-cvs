@@ -17,8 +17,8 @@
 
 #include "stubinfo.h"
 
-#if    (GAS_MAJOR == 2) \
-    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
+#if    1		/* Define problems with old bnutils */
+
 #define LJMP(there) \
 	ljmp	there
 #define LCALL(there) \
