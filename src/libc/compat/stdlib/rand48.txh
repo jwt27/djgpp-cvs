@@ -1,0 +1,80 @@
+@node rand48, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+double drand48(void);
+double erand48(unsigned short state[3]);
+unsigned long lrand48(void);
+unsigned long nrand48(unsigned short state[3]);
+long mrand48(void);
+long jrand48(unsigned short state[3]);
+void srand48(long seed);
+unsigned short *seed48(unsigned short state_seed[3]);
+void lcong48(unsigned short param[7]);
+@end example
+
+@subheading Description
+
+This is the family of *rand48 functions. The basis for these functions
+is the linear congruential formula X[n+1] = (a*X[n] + c) mod 2^48, n
+>= 0. a = 0x5deece66d and c = 0xb at start and after a call to either
+@code{srand48} or @code{seed48}. A call to @code{lcong48}
+changes a and c (and the internal state). 
+
+@code{drand48} and @code{erand48} return @code{double}s uniformly
+distributed in the interval [0.0, 1.0). 
+
+@code{lrand48} and @code{nrand48} return @code{unsigned long}s
+uniformly distributed in the interval [0, 2^31).
+
+@code{mrand48} and @code{jrand48} return @code{long}s uniformly
+distributed in the interval [-2^31, 2^31). 
+
+@code{erand48}, @code{jrand48} and @code{nrand48} requires the
+state of the random generator to be passed.  
+
+@code{drand48}, @code{lrand48} and @code{mrand48} uses an
+internal state (common with all three functions) which should be
+initialised with a call to one of the functions @code{srand48},
+@code{seed48} or @code{lcong48}. 
+
+@code{srand48} sets the high order 32 bits to the argument
+@var{seed}. The low order 16 bits are set to the arbitrary value
+0x330e. 
+
+@code{seed48} sets the internal state according to the argument
+@var{state_seed} (@var{state_seed[0]} is least significant). The
+previous state of the random generator is saved in an internal
+(static) buffer, to which a pointer is returned. 
+
+@code{lcong48} sets the internal state to @var{param[0-2]}, a to 
+@var{param[3-5]} (@var{param[0]} and @var{param[3]} are least
+significant) and c to @var{param[6]}. 
+
+@subheading Return Value
+
+A random number.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main(void)
+@{
+
+  srand48(time(NULL));
+  printf("%.12f is a random number in [0.0, 1.0).\n", drand48());
+
+  exit(0);
+@}
+
+@end example

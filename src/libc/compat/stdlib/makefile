@@ -20,6 +20,7 @@ SRC += ecvt.c
 SRC += fcvtbuf.c
 SRC += fcvt.c
 SRC += gcvt.c
+SRC += rand48.c
 
 
 include $(TOP)/../makefile.inc
