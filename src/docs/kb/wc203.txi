@@ -344,7 +344,7 @@ It is now possible to debug programs that redirect their standard
 handles, without the debugger losing those handles at the same time.
 Debuggers which want to use this feature need to call the new
 @code{redir_*} functions before and after jumping to the debuggee's
-code.  @xref{redir_debug_init, , Redirection in the debugger, libc.info,
+code.  @xref{redir_debug_init, , Redirection in the debugger, libc,
 libc.a reference}.
 
 @cindex debug support, documentation
