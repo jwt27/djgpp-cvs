@@ -1,8 +1,11 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -14,9 +17,11 @@
 #include <libc/bss.h>
 #include <libc/environ.h>
 #include <libc/farptrgs.h>
+#include <libc/dosio.h>
 
 static int      use_lfn_bss_count = -1;	/* if we are restarted (emacs) */
 static unsigned filesystem_flags  = _FILESYS_UNKNOWN;
+static char _lfnenv = 'y'; /* remember here $(LFN) */
 static unsigned last_env_changed = 0;
 static int	last_drive; /* drive *letter*, not *number*! */
 
@@ -25,30 +30,30 @@ unsigned
 _get_volume_info (const char *path, int *maxfile, int *maxpath, char *fsystype)
 {
   __dpmi_regs r;
-  unsigned long tbuf_la  = __tb & 0xfffff;
+  unsigned long tbuf_la  = __tb;
   unsigned long tbuf_seg = tbuf_la >> 4;
   unsigned	retval;
 
   if (path && *path)
   {
-    if (path[1] == ':')
+    _put_path(path);
+    _farsetsel(_dos_ds);
+    if (_farnspeekb(tbuf_la + 1) == ':')
     {
-      dosmemput (path, 3, tbuf_la);
       tbuf_la += 3;
-      if (path[2] != '\\')
-	_farpokeb(_dos_ds, tbuf_la - 1, '\\');
-      _farpokeb(_dos_ds, tbuf_la++, '\0');
+      if (_farnspeekb(tbuf_la - 1) != '\\')
+	_farnspokeb(tbuf_la - 1, '\\');
+      _farnspokeb(tbuf_la++, '\0');
     }
-    else if (*path == '\\' && path[1] == '\\')
+    else if (_farnspeekb(tbuf_la) == '\\' && _farnspeekb(tbuf_la + 1) == '\\')
     {
-      int plen = strlen (path) + 1;
-
       /* FIXME: what should we do with the UNC pathnames like
 	 "\\machine\vol\path"?  We need to know either their
 	 DOS drive letter or where does the root directory path
 	 ends.  For now, we assume the entire path is the root path.  */
-      dosmemput (path, plen, tbuf_la);
-      tbuf_la += plen + 1;
+      for (tbuf_la += 2; _farnspeekb(tbuf_la) != 0; tbuf_la++)
+	;
+      tbuf_la++;
     }
   }
 
@@ -121,11 +126,22 @@ _use_lfn (const char *path)
     return 0;
   }
 
+  /* Forget everything we knew before we were dumped (Emacs).  */
+  if (use_lfn_bss_count != __bss_count)
+    {
+      use_lfn_bss_count = __bss_count;
+      filesystem_flags = _FILESYS_UNKNOWN;
+      _lfnenv = 'y';
+      last_drive = 0;
+    }
+
   same_drive_as_last_time = 1;
-  if (path)
+  if (path && *path)
   {
+    _put_path(path);
     /* FIXME: a UNC PATH will always force a call to `_get_volume_info'.  */
-    if ((path[1] == ':' && toupper (*path) != last_drive)
+    if ((_farpeekb(_dos_ds, __tb + 1) == ':'
+	 && toupper (_farpeekb(_dos_ds, __tb)) != last_drive)
 	|| (*path == '\\' && path[1] == '\\'))
       same_drive_as_last_time = 0;
     else
@@ -138,31 +154,35 @@ _use_lfn (const char *path)
     }
   }
 
-  if (same_drive_as_last_time
-      && last_env_changed  == __environ_changed
-      && use_lfn_bss_count == __bss_count
-      && filesystem_flags  != _FILESYS_UNKNOWN)	/* paranoia */
-    return (filesystem_flags & _FILESYS_LFN_SUPPORTED) != 0;
-  else
+  if (!same_drive_as_last_time
+      || last_env_changed  != __environ_changed
+      || filesystem_flags  == _FILESYS_UNKNOWN)
   {
+    /* check now the environment for $(LFN) */
     char *lfnenv;
 
-    use_lfn_bss_count = __bss_count;
     last_env_changed  = __environ_changed;
 
     lfnenv = getenv ("LFN");
     if(lfnenv && (tolower (lfnenv[0]) == 'n'))
     {
-      filesystem_flags &= ~_FILESYS_LFN_SUPPORTED;
+      _lfnenv = 'n';
       last_drive = 0;
-      return 0;
+    }
+    else
+    {
+      /* if $(LFN) was not set or != 'n' assume it as 'y' */
+      _lfnenv = 'y';
     }
   }
 
   if (!same_drive_as_last_time || filesystem_flags == _FILESYS_UNKNOWN)
     filesystem_flags = _get_volume_info (path, 0, 0, 0);
 
-  return (filesystem_flags & _FILESYS_LFN_SUPPORTED) != 0;
+          /* Does the filesystem LFN support ? */
+  return ((filesystem_flags & _FILESYS_LFN_SUPPORTED) != 0 &&
+          /* Is it not disabled by the user ? */
+          _lfnenv != 'n');
 }
 
 #ifdef TEST

@@ -5,6 +5,8 @@
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <float.h>
 #include <unistd.h>
 #include <io.h>
 #include <libc/farptrgs.h>
@@ -24,6 +26,8 @@
 extern unsigned end __asm__ ("end");
 static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
+extern unsigned _stklen;
+extern unsigned __djgpp_stack_limit;
 
 /* These are all defined in exceptn.S and only used here */
 extern int __djgpp_exception_table;
@@ -34,6 +38,8 @@ extern int __djgpp_iret, __djgpp_i24;
 extern void __djgpp_cbrk_hdlr(void);
 extern int __djgpp_hw_lock_start, __djgpp_hw_lock_end;
 extern __dpmi_paddr __djgpp_old_kbd;
+extern unsigned djgpp_exception_stack __asm__("exception_stack");
+extern __dpmi_paddr __djgpp_old_timer;
 
 static void
 itox(int v, int len)
@@ -82,6 +88,8 @@ except_to_sig(int excep)
       return SIGTIMR;
     else if(excep == 0x79 || excep == 0x1b)
       return SIGINT;
+    else if(excep == 0x7a)
+      return SIGQUIT;
     else
       return SIGILL;
   }
@@ -92,7 +100,20 @@ show_call_frame(void)
 {
   unsigned *vbp, *vbp_new, *tos;
   unsigned veip;
-  int max=0;
+  int max;
+
+  if (isatty(STDERR_FILENO))
+  {
+    max =_farpeekb(_dos_ds, 0x484) + 1;	/* number of screen lines */
+    if (max < 10 || max > 75)	/* sanity check */
+      max = 10;			/* 10 worked for v2.0 and v2.01 */
+    else
+      max -= 15;		/* 13 lines of preamble + 2 for symify */
+  }
+  else
+    /* This could be MAX_INT.  But the stack can be scrogged, so we
+       limit by the maximum that the stack could hold (2 int's per frame).  */
+    max = _stklen / (2*sizeof(unsigned));
 
   tos = (unsigned *)__djgpp_selector_limit;
   vbp = (unsigned *)__djgpp_exception_state->__ebp;
@@ -107,7 +128,7 @@ show_call_frame(void)
     err("\r\n  0x");
     itox(veip, 8);
     vbp = vbp_new;
-    if (++max == 10)
+    if (--max <= 0)
       break;
   } 
   err("\r\n");
@@ -161,10 +182,11 @@ dump_selector(const char *name, int sel)
 }
 
 static void
-do_faulting_finish_message(void)
+do_faulting_finish_message(int fake_exception)
 {
   const char *en;
   unsigned long signum = __djgpp_exception_state->__signum;
+  unsigned excpt_stack_addr = (unsigned)&djgpp_exception_stack;
   int i;
   
   /* check video mode for original here and reset (not if PC98) */
@@ -175,27 +197,42 @@ do_faulting_finish_message(void)
   exception_names[signum];
   if (signum == 0x75)
     en = "Floating Point exception";
-  if (signum == 0x1b)
+  else if (signum == 0x1b)
     en = "Control-Break Pressed";
-  if (signum == 0x79)
-    en = "Control-C Pressed";
+  else if (signum == 0x79)
+    en = "INTR key Pressed";
+  else if (signum == 0x7a)
+    en = "QUIT key Pressed";
   if (en == 0)
   {
-    err("Exception ");
-    itox(signum, 2);
-    err(" at eip=");
-    itox(__djgpp_exception_state->__eip, 8);
+    if (fake_exception)
+      err("Raised");
+    else
+    {
+      err("Exception ");
+      itox(signum, 2);
+    }
   }
   else
-  {
     _write(STDERR_FILENO, en, strlen(en));
-    err(" at eip=");
+
+  err(" at eip=");
+  /* For fake exceptions like SIGABRT report where `raise' was called.  */
+  if (fake_exception
+      && __djgpp_exception_state->__cs == _my_cs()
+      && (unsigned)__djgpp_exception_state->__ebp
+		>= __djgpp_exception_state->__esp
+      && (unsigned *)__djgpp_exception_state->__ebp >= &end
+      && (unsigned *)__djgpp_exception_state->__ebp
+		< (unsigned *)__djgpp_selector_limit)
+    itox(*((unsigned *)__djgpp_exception_state->__ebp + 1), 8);
+  else
     itox(__djgpp_exception_state->__eip, 8);
-  }
+
   if (signum == 0x79)
   {
     err("\r\n");
-    exit(-1);
+    exit(-1); /* note: `exit', not `_exit' as for the rest of signals! */
   }
   if (signum <= EXCEPTION_COUNT && has_error[signum])
   {
@@ -204,6 +241,10 @@ do_faulting_finish_message(void)
     {
       err(", error="); itox(errorcode, 4);
     }
+  }
+  if (except_to_sig(signum) == SIGFPE)
+  {
+    err(", x87 status="); itox(_status87(), 4);
   }
   err("\r\neax="); itox(__djgpp_exception_state->__eax, 8);
   err(" ebx="); itox(__djgpp_exception_state->__ebx, 8);
@@ -223,10 +264,14 @@ do_faulting_finish_message(void)
   dump_selector("fs", __djgpp_exception_state->__fs);
   dump_selector("gs", __djgpp_exception_state->__gs);
   dump_selector("ss", __djgpp_exception_state->__ss);
+  err("App stack: ["); itox(__djgpp_stack_limit+_stklen, 8);
+  err(".."); itox(__djgpp_stack_limit, 8);
+  err("]  Exceptn stack: ["); itox(excpt_stack_addr+8000, 8);
+  err(".."); itox(excpt_stack_addr, 8); err("]\r\n");
   err("\r\n");
   if (__djgpp_exception_state->__cs == _my_cs())
     show_call_frame();
-  exit(-1);
+  _exit(-1);
 }
 
 typedef void (*SignalHandler) (int);
@@ -249,41 +294,75 @@ signal(int sig, SignalHandler func)
 
 static const char signames[] = "ABRTFPE ILL SEGVTERMALRMHUP INT KILLPIPEQUITUSR1USR2NOFPTRAP";
 
+static void print_signal_name(int sig)
+{
+  err("Exiting due to signal ");
+  if (sig >= SIGABRT && sig <= SIGTRAP)
+  {
+    err("SIG");
+    _write(STDERR_FILENO, signames+(sig-SIGABRT)*4, 4);
+  }
+  else
+  {
+    err("0x");
+    itox(sig, 4);
+  }
+  err("\r\n");
+}
+    
+void __djgpp_traceback_exit(int);
+
+void __djgpp_traceback_exit(int sig)
+{
+  jmp_buf fake_exception;
+
+  if (sig >= SIGABRT && sig <= SIGTRAP)
+  {
+    if (!__djgpp_exception_state_ptr)
+    {
+      /* This is a software signal, like SIGABRT or SIGKILL.
+	 Fill the exception structure, so we get the traceback.  */
+      __djgpp_exception_state_ptr = &fake_exception;
+      if (setjmp(__djgpp_exception_state))
+      {
+	err("Bad longjmp to __djgpp_exception_state--aborting\r\n");
+	do_faulting_finish_message(0); /* does not return */
+      }
+      else
+	/* Fake the exception number.  7Ah is the last one hardwired
+	   inside exceptn.S, for SIGQUIT.  */
+	__djgpp_exception_state->__signum = 0x7a + 1 + sig - SIGABRT;
+    }
+  }
+  print_signal_name(sig);
+  if(__djgpp_exception_state_ptr)
+    /* This exits, does not return.  */
+    do_faulting_finish_message(__djgpp_exception_state == fake_exception);
+  _exit(-1);
+}
+
 int
 raise(int sig)
 {
   SignalHandler temp;
+
   if(sig <= 0)
     return -1;
   if(sig > SIGMAX)
     return -1;
   temp = signal_list[sig - 1];
-  if(temp == (SignalHandler)SIG_IGN)
+  if(temp == (SignalHandler)SIG_IGN
+     || (sig == SIGQUIT && temp == (SignalHandler)SIG_DFL))
     return 0;			/* Ignore it */
   if(temp == (SignalHandler)SIG_DFL)
-  {
-  traceback_exit:
-    if (sig >= SIGABRT && sig <= SIGTRAP)
-    {
-      err("Exiting due to signal SIG");
-      _write(STDERR_FILENO, signames+(sig-SIGABRT)*4, 4);
-    }
-    else
-    {
-      err("Exiting due to signal 0x");
-      itox(sig, 4);
-    }
-    err("\r\n");
-    if(__djgpp_exception_state_ptr)
-      do_faulting_finish_message();	/* Exits, does not return */
-    exit(-1);
-  }
-  if((unsigned)temp < 4096 || temp > (SignalHandler)&end)
+    __djgpp_traceback_exit(sig); /* this does not return */
+  else if((unsigned)temp < 4096 || temp > (SignalHandler)&end)
   {
     err("Bad signal handler, ");
-    goto traceback_exit;
+    __djgpp_traceback_exit(sig); /* does not return */
   }
-  temp(sig);
+  else
+    temp(sig);
   return 0;
 }
 
@@ -299,15 +378,15 @@ __djgpp_exception_processor(void)
   if(__djgpp_exception_state->__signum >= EXCEPTION_COUNT) /* Not exception so continue OK */
     longjmp(__djgpp_exception_state, __djgpp_exception_state->__eax);
   /* User handler did not exit or longjmp, we must exit */
-  err("Cannot continue from exception, exiting due to signal ");
-  itox(sig, 4);
-  err("\r\n");
-  do_faulting_finish_message();
+  err("Cannot continue from exception, ");
+  print_signal_name(sig);
+  do_faulting_finish_message(0);
 }
 
 static __dpmi_paddr except_ori[EXCEPTION_COUNT];
 static __dpmi_paddr kbd_ori;
 static __dpmi_paddr npx_ori;
+static __dpmi_paddr timer_ori;
 static __dpmi_raddr cbrk_ori,cbrk_rmcb;
 static char cbrk_hooked = 0;
 static __dpmi_regs cbrk_regs;
@@ -343,6 +422,89 @@ __djgpp_exception_toggle(void)
     __dpmi_set_real_mode_interrupt_vector(cbrk_vect, &cbrk_rmcb);
     cbrk_hooked = 1;
   }
+  /* If the timer interrupt is hooked, toggle it as well.  This is so
+     programs which use SIGALRM or itimer, and don't unhook the timer before
+     they exit, won't leave the system with timer pointing into the void.  */
+  if (__djgpp_old_timer.selector != 0 && __djgpp_old_timer.offset32 != 0)
+  {
+    if (timer_ori.selector == __djgpp_old_timer.selector
+	&& timer_ori.offset32 == __djgpp_old_timer.offset32)
+    {
+      __dpmi_get_protected_mode_interrupt_vector(8, &timer_ori);
+      __dpmi_set_protected_mode_interrupt_vector(8, &__djgpp_old_timer);
+    }
+    else
+    {
+      __dpmi_set_protected_mode_interrupt_vector(8, &timer_ori);
+      timer_ori = __djgpp_old_timer;
+    }
+  }
+}
+
+#define RSHIFT 1
+#define LSHIFT 2
+#define CTRL   4
+#define ALT    8
+#define SHIFT  (RSHIFT | LSHIFT)
+
+#define DEFAULT_SIGINT  0x042e /* Ctrl-C: scan code 2Eh, kb status 04h */
+#define DEFAULT_SIGQUIT 0x042b /* Ctrl-\: scan code 2Bh, kb status 04h */
+#define DEFAULT_SIGINT_98  0x042b /* Ctrl-C: scan code 2Bh, kb status 04h */
+#define DEFAULT_SIGQUIT_98 0x040d /* Ctrl-\: scan code 0Dh, kb status 04h */
+
+/* Make it so the key NEW_KEY will generate the signal SIG.
+   NEW_KEY must include the keyboard status byte in bits 8-15 and the
+   scan code in bits 0-7.  */
+static int
+set_signal_key(int sig, int new_key)
+{
+  int old_key;
+  unsigned short *mask;
+  unsigned short *key;
+  unsigned short kb_status;
+
+  if (sig == SIGINT)
+  {
+    mask = &__djgpp_sigint_mask;
+    key  = &__djgpp_sigint_key;
+  }
+  else if (sig == SIGQUIT)
+  {
+    mask = &__djgpp_sigquit_mask;
+    key  = &__djgpp_sigquit_key;
+  }
+  else
+    return -1;
+
+  old_key = *key;
+
+  *key = new_key & 0xffff;
+  kb_status = *key >> 8;
+
+  *mask = 0x000f;	/* Alt, Ctrl and Shift bits only */
+  /* Mask off the RShift bit unless they explicitly asked for it.
+     Our keyboard handler pretends that LShift is pressed when they
+     press RShift.  */
+  if ((kb_status & RSHIFT) == 0)
+    *mask &= ~RSHIFT;
+  /* Mask off the LShift bit if any of the Ctrl or Alt are set,
+     since Shift doesn't matter when Ctrl and/or Alt are pressed.  */
+  if (kb_status & (CTRL | ALT))
+    *mask &= ~LSHIFT;
+
+  return old_key;
+}
+
+int
+__djgpp_set_sigint_key(int new_key)
+{
+  return set_signal_key(SIGINT, new_key);
+}
+
+int
+__djgpp_set_sigquit_key(int new_key)
+{
+  return set_signal_key(SIGQUIT, new_key);
 }
 
 void
@@ -351,6 +513,17 @@ __djgpp_exception_setup(void)
   __dpmi_paddr except;
   __dpmi_meminfo lockmem;
   int i;
+
+  if (ScreenPrimary != 0xa000)
+    {
+      __djgpp_set_sigint_key(DEFAULT_SIGINT);
+      __djgpp_set_sigquit_key(DEFAULT_SIGQUIT);
+    }
+  else
+    {				/* for PC98 */
+      __djgpp_set_sigint_key(DEFAULT_SIGINT_98);
+      __djgpp_set_sigquit_key(DEFAULT_SIGQUIT_98);
+    }
 
   for (i = 0; i < SIGMAX; i++)
     signal_list[i] = (SignalHandler)SIG_DFL;
@@ -388,6 +561,7 @@ __djgpp_exception_setup(void)
   __dpmi_set_protected_mode_interrupt_vector(0x24, &except);
 
   __dpmi_get_protected_mode_interrupt_vector(9, &__djgpp_old_kbd);
+  __dpmi_get_protected_mode_interrupt_vector(8, &timer_ori);
   __djgpp_exception_toggle();	/* Set new values & save old values */
 
   /* get original video mode and save */
@@ -417,3 +591,34 @@ _exit(int status)
     __djgpp_exception_toggle ();
   __exit (status);
 }
+
+#ifdef TEST
+
+#include <string.h>
+
+int
+main(void)
+{
+  volatile int count = 0;	/* don't let gcc optimize it away */
+
+  __djgpp_set_sigint_key (0x0522); /* Ctrl-RShift-G */
+  signal (SIGQUIT, __djgpp_traceback_exit);
+
+  while (1)
+  {
+    char buf[30];
+
+    count++;
+    if (count % 100000 == 0)
+    {
+      sprintf (buf, "counted to %d\r\n", count);
+      _write(STDERR_FILENO, buf, strlen (buf));
+    }
+    if (count >= 1000000000L)
+      count = 0;
+  }
+
+  return 0;
+}
+
+#endif

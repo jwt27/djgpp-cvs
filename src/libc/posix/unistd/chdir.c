@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <unistd.h>
@@ -7,25 +9,35 @@
 #include <ctype.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
+#include <libc/farptrgs.h>
 
 int
-__chdir (const char *dirname)
+__chdir (const char *mydirname)
 {
   __dpmi_regs r;
+  int drv_no = -1;
 
-  if (dirname == 0)
+  if (mydirname == 0)
   {
     errno = EINVAL;
     return -1;
   }
 
-  if (dirname[0] == 0)
+  if (mydirname[0] == 0)
   {
     errno = ENOENT;
     return -1;
   }
 
-  if (dirname[1] != ':' || dirname[2])
+  _put_path(mydirname);
+
+  /* _put_path performs some magic conversions of file names, so
+     the path in the transfer buffer can include a drive even though
+     MYDIRNAME doesn't seem to.  */
+  if (_farpeekb(_dos_ds, __tb + 1) == ':')
+    drv_no = (_farpeekb(_dos_ds, __tb) & 0x1f) - 1;
+
+  if (drv_no == -1 || _farpeekb(_dos_ds, __tb + 2) != 0)
   {
     if(_USE_LFN)
       r.x.ax = 0x713b;
@@ -33,7 +45,6 @@ __chdir (const char *dirname)
       r.h.ah = 0x3b;
     r.x.dx = __tb_offset;
     r.x.ds = __tb_segment;
-    _put_path(dirname);
     __dpmi_int(0x21, &r);
     if(r.x.flags & 1)
     {
@@ -42,12 +53,12 @@ __chdir (const char *dirname)
     }
   }
 
-  if (dirname[1] == ':')
+  if (drv_no != -1)
   {
     /* Change current drive also.  This *will* work if
        the directory change above worked. */
     r.h.ah = 0x0e;
-    r.h.dl = (dirname[0] & 0x1f) - 1;
+    r.h.dl = drv_no;
     __dpmi_int(0x21, &r);
   }
 

@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_config_h_
 #define __dj_include_sys_config_h_
@@ -166,6 +168,9 @@ extern "C" {
 /* Define if you have the <signal.h> header file.  */
 #undef  HAVE_SIGNAL_H
 #define HAVE_SIGNAL_H   1
+
+#undef  HAVE_SYS_SIGLIST
+#define HAVE_SYS_SIGLIST 1
 
 /* Define if you have the <stdarg.h> header file.  */
 #undef  HAVE_STDARG_H

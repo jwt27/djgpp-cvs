@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -13,6 +14,7 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <ctype.h>
+#include <sys/system.h>
 #include <sys/movedata.h>
 #include <libc/dosexec.h>
 #include <libc/unconst.h>
@@ -161,7 +163,12 @@ direct_exec_tail(const char *program, const char *args,
   int i;
   unsigned long fcb1_la, fcb2_la, fname_la;
   
-  sync();
+  /* This used to just call sync().  But `sync' flushes the disk
+     cache nowadays, and that can slow down the child tremendously,
+     since some caches (e.g. SmartDrv) invalidate all of their
+     buffers when `_flush_disk_cache' is called.  */
+  for (i = 0; i < 255; i++)
+    fsync(i);
 
   if (lfn == 2)		/* don't know yet */
     lfn = _USE_LFN;
@@ -170,8 +177,10 @@ direct_exec_tail(const char *program, const char *args,
   proglen = strlen(program)+1;
   if (!check_talloc(proglen))
     return -1;
+  /* Make sure any magic names, like /dev/c/foo, are converted to the
+     usual DOS form, and, under LFN, to the short 8+3 alias.  */
+  _put_path2(program, tbuf_beg == __tb ? tbuf_ptr - tbuf_beg : 0);
   if(lfn) {
-    dosmemput(program, proglen, tbuf_ptr);
     r.x.ax = 0x7160;			/* Truename */
     r.x.cx = 1;				/* Get short name */
     r.x.ds = r.x.es = tbuf_ptr / 16;
@@ -182,11 +191,10 @@ direct_exec_tail(const char *program, const char *args,
       errno = __doserr_to_errno(r.x.ax);
       return -1;
     }
-    dosmemget(tbuf_ptr, FILENAME_MAX, short_name);
-    progname = short_name;
-    proglen = strlen(short_name)+1;
-  } else
-    progname = program;
+  }
+  dosmemget(tbuf_beg == __tb ? tbuf_ptr : __tb, FILENAME_MAX, short_name);
+  progname = short_name;
+  proglen = strlen(short_name)+1;
 
   if (!check_talloc(proglen + strlen(args) + 3 + sizeof(Execp) + 48))
     return -1;
@@ -499,99 +507,47 @@ static int direct_exec(const char *program, char **argv, char **envp)
   return direct_exec_tail(program, args, envp, 0, 2);
 }
 
-typedef struct {
-  char magic[16];
-  int struct_length;
-  char go32[16];
-} StubInfo;
-#define STUB_INFO_MAGIC "StubInfoMagic!!"
-
 static int go32_exec(const char *program, char **argv, char **envp)
 {
+  const _v2_prog_type * type;
   char *save_argv0;
-  int is_stubbed = 0, is_coff = 0;
-  int found_si = 0;
-  StubInfo si;
-  unsigned short header[3];
-  int pf, i;
+  int i;
   char *go32, *sip=0;
   char rpath[FILENAME_MAX];
-  int stub_offset, argc=0;
+  int argc=0;
 
-  int v2_0 = 0;
   int si_la=0, si_off=0, rm_off, argv_off;
   char cmdline[CMDLEN_LIMIT+2], *cmdp = cmdline;
   char *pcmd = cmdline, *pproxy = 0, *proxy_cmdline = 0;
   int retval;
   int lfn = 2;	/* means don't know yet */
 
-  pf = open(program, O_RDONLY|O_BINARY);
+  type = _check_v2_prog (program, -1);
 
-  read(pf, header, sizeof(header));
-  if (header[0] == 0x010b || header[0] == 0x014c)
-  {
-    unsigned char firstbytes[1];
-    unsigned long coffhdr[40];
+  /* Because this function is called only, when program
+     exists, I can skip the check for type->valid */
 
-    /* Seems to be an unstubbed COFF.  See what the first opcode
-       is to determine if it's v1.x or v2 COFF (or an impostor).
+#define v2_0 (type->version.v.major > 1)
+#define is_stubbed (type->exec_format == _V2_EXEC_FORMAT_STUBCOFF)
+#define is_coff (type->object_format == _V2_OBJECT_FORMAT_COFF)
+#define found_si (type->has_stubinfo)
 
-       FIXME: the code here assumes that any COFF that's not a V1
-       can only be V2.  What about other compilers that use COFF?  */
-    is_coff = 1;
-    if (lseek(pf, 2, 1) < 0
-	|| read(pf, coffhdr, sizeof(coffhdr)) != sizeof(coffhdr)
-	|| lseek(pf, coffhdr[10 + 5], 0) < 0
-	|| read(pf, firstbytes, 1) != 1) /* scnptr */
-      is_coff = 0;	/* "Aha! An impostor!" (The Adventure game) */
-    else if (firstbytes[0] != 0xa3) /* opcode of movl %eax, 0x12345678 (V1) */
-      v2_0 = 1;
-  }
-  else if (header[0] == 0x5a4d)	/* "MZ" */
+  if (type->exec_format == _V2_EXEC_FORMAT_UNIXSCRIPT)
   {
-    int header_offset = (long)header[2]*512L;
-    is_stubbed = 1;
-    if (header[1])
-      header_offset += (long)header[1] - 512L;
-    lseek(pf, 512, 0);
-    read(pf, cmdline, 8);
-    cmdline[8] = 0;
-    if (strcmp(cmdline, "go32stub") == 0)
-    {
-      v2_0 = 1;
-      is_coff = 1;
-    }
-    else
-    {
-      lseek(pf, header_offset - 4, 0);
-      read(pf, &stub_offset, 4);
-      header[0] = 0;
-      read(pf, header, sizeof(header));
-      if (header[0] == 0x010b)
-	is_coff = 1;
-      if (header[0] == 0x014c)
-	is_coff = 1;
-      lseek(pf, stub_offset, 0);
-      read(pf, &si, sizeof(si));
-      if (memcmp(STUB_INFO_MAGIC, si.magic, 16) == 0)
-	found_si = 1;
-    }
-  }
-  else if (header[0] == 0x2123)	/* "#!" */
-  {
-    close(pf);
     return script_exec(program, argv, envp);
   }
 
   /* Non-DJGPP programs cannot be run by !proxy.  */
   if (!is_coff)
   {
-    close(pf);
-    return direct_exec(program, argv, envp);
+    if (type->exec_format == _V2_EXEC_FORMAT_EXE)
+      return direct_exec(program, argv, envp);
+    else
+      return __dosexec_command_exec (program, argv, envp);
   }
 
   if (found_si)
-    go32 = si.go32;
+    go32 = type->stubinfo->go32;
   else if (v2_0 && !is_stubbed)
     go32 = GO32_V2_STRING;
   else
@@ -606,19 +562,15 @@ static int go32_exec(const char *program, char **argv, char **envp)
     int e = errno;
     if (!__dosexec_find_on_path(go32, envp, rpath))
     {
-      close(pf);
       errno = e;
       return direct_exec(program, argv, envp); /* give up and just run it */
     }
 
     if (found_si)
     {  
-      lseek(pf, stub_offset, 0);
-      sip = (char *)alloca(si.struct_length);
-      read(pf, sip, si.struct_length);
+      sip = (char *)type->stubinfo;
     }
   }
-  close(pf);
 
   /* V2.0 programs invoked by `system' must be run via
      `direct_exec', because otherwise the command-line arguments
@@ -668,7 +620,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   if (!__dosexec_in_system || !v2_0 || cmdp - cmdline > CMDLEN_LIMIT)
   {
     if (!check_talloc(found_si ?
-		      si.struct_length : 0
+		      type->stubinfo->struct_length : 0
 		      + (argc+1)*sizeof(short)))
     {
       argv[0] = save_argv0;
@@ -676,9 +628,9 @@ static int go32_exec(const char *program, char **argv, char **envp)
     }
     if (found_si)
     {
-      si_la = talloc(si.struct_length);
+      si_la = talloc(type->stubinfo->struct_length);
       si_off = si_la - tbuf_beg;
-      dosmemput(sip, si.struct_length, si_la);
+      dosmemput(sip, type->stubinfo->struct_length, si_la);
     }
 
     rm_off = argv_off = talloc((argc+1) * sizeof(short)) - tbuf_beg;
@@ -988,15 +940,8 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
     }
   }
 
-  if (hasdot)
-  {
-    if (access(buf, 0) == 0 && access(buf, D_OK))
-    {
-      errno = e;
-      return buf;
-    }
-  }
-  else
+  /* Under LFN, we must try the extensions even if PROGRAM already has one.  */
+  if (!hasdot || _use_lfn(program))
     for (i=0; interpreters[i].extension; i++)
     {
       strcpy(rp, interpreters[i].extension);
@@ -1010,6 +955,12 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
 	return buf;
       }
     }
+
+  if (access(buf, 0) == 0 && access(buf, D_OK))
+  {
+    errno = e;
+    return buf;
+  }
 
   if (haspath || !envp)
     return 0;
@@ -1043,16 +994,7 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
       *rp++ = *ptr;
     *rp = 0;
     
-    if (hasdot)
-    {
-      if (access(buf, 0) == 0 && access(buf, D_OK))
-      {
-	errno = e;
-	return buf;
-      }
-    }
-    else
-    {
+    if (!hasdot || _use_lfn(buf))
       for (i=0; interpreters[i].extension; i++)
       {
         strcpy(rp, interpreters[i].extension);
@@ -1062,6 +1004,10 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
           return buf;
 	}
       }
+    if (access(buf, 0) == 0 && access(buf, D_OK))
+    {
+      errno = e;
+      return buf;
     }
     if (*pe == 0)
       return 0;
@@ -1077,6 +1023,8 @@ int __spawnve(int mode, const char *path, char *const argv[], char *const envp[]
   char **envpp;
   char rpath[FILENAME_MAX], *rp, *rd=0;
   int e = errno;
+  int is_dir = 0;
+  int found = 0;
 
   if (path == 0 || argv[0] == 0)
   {
@@ -1101,25 +1049,52 @@ int __spawnve(int mode, const char *path, char *const argv[], char *const envp[]
       rd = 0;
   }
   *rp = 0;
-  if (rd)
+
+  /* If LFN is supported on the volume where rpath resides, we
+     might have something like foo.bar.exe or even foo.exe.com.
+     If so, look for RPATH.ext before even trying RPATH itself. */
+  if (_use_lfn(rpath) || !rd)
   {
     for (i=0; interpreters[i].extension; i++)
-      if (stricmp(rd, interpreters[i].extension) == 0)
-        break;
-  }
-  while (access(rpath, 0) && access(rpath, D_OK))
-  {
-    i++;
-    if (interpreters[i].extension == 0 || rd)
     {
-      errno = ENOENT;
-      return -1;
+      strcpy(rp, interpreters[i].extension);
+      if (access(rpath, F_OK) == 0 && !(is_dir = (access(rpath, D_OK) == 0)))
+      {
+	found = 1;
+	break;
+      }
     }
-    strcpy(rp, interpreters[i].extension);
+  }
+
+  if (!found)
+  {
+    const char *rpath_ext;
+
+    if (rd)
+    {
+      i = 0;
+      rpath_ext = rd;
+    }
+    else
+    {
+      i = INTERP_NO_EXT;
+      rpath_ext = "";
+    }
+    for ( ; interpreters[i].extension; i++)
+      if (stricmp(rpath_ext, interpreters[i].extension) == 0
+	  && access(rpath, F_OK) == 0
+	  && !(is_dir = (access(rpath, D_OK) == 0)))
+      {
+	found = 1;
+        break;
+      }
+  }
+  if (!found)
+  {
+    errno = is_dir ? EISDIR : ENOENT;
+    return -1;
   }
   errno = e;
-  if (i == -1)
-    i = INTERP_NO_EXT;
   i = interpreters[i].interp(rpath, argvp, envpp);
   if (mode == P_OVERLAY)
     exit(i);

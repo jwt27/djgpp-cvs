@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -77,12 +78,19 @@ void
 _fixpath(const char *in, char *out)
 {
   int		drive_number;
-  const char	*ip = in;
+  char		in1[FILENAME_MAX];
+  char		*ip;
   char		*op = out;
   int		preserve_case = _preserve_fncase();
   char		*name_start;
+  int		mbsize;
 
-  use_lfn = _USE_LFN;
+  use_lfn = _use_lfn(in);
+
+  /* Perform the same magic conversions that _put_path does.  */
+  _put_path(in);
+  dosmemget(__tb, sizeof(in1), in1);
+  ip = in1;
 
   /* Add drive specification to output string */
   if (((*ip >= 'a' && *ip <= 'z') ||
@@ -149,7 +157,22 @@ _fixpath(const char *in, char *out)
 
     /* Copy path component from in to out */
     *op++ = '/';
+#if 0
     while (!is_term(*ip)) *op++ = *ip++;
+#else
+    while (!is_term(*ip))
+      {
+	mbsize = mblen (ip, MB_CUR_MAX);
+	if (mbsize > 1)
+	  {
+	    /* copy multibyte character */
+	    while (--mbsize >= 0)
+	      *op++ = *ip++;
+	  }
+	else
+	  *op++ = *ip++;
+      }
+#endif
   }
 
   /* If root directory, insert trailing slash */
@@ -163,6 +186,15 @@ _fixpath(const char *in, char *out)
   {
     char long_name[FILENAME_MAX], short_name[13];
 
+#if 1
+    /* skip multibyte character */
+    mbsize = mblen (op, MB_CUR_MAX);
+    if (mbsize > 1)
+      {
+	op += mbsize - 1;
+	continue;
+      }
+#endif
     if (*op == '\\')
       *op = '/';
     if (!preserve_case && (*op == '/' || *op == '\0'))
@@ -171,9 +203,24 @@ _fixpath(const char *in, char *out)
       long_name[op - name_start - 1] = '\0';
       if (!strcmp(_lfn_gen_short_fname(long_name, short_name), long_name))
       {
+#if 0
 	while (++name_start < op)
 	  if (*name_start >= 'A' && *name_start <= 'Z')
 	    *name_start += 'a' - 'A';
+#else
+	while (++name_start < op)
+	  {
+	    mbsize = mblen (name_start, MB_CUR_MAX);
+	    if (mbsize > 1)
+	      {
+		/* skip multibyte character */
+		name_start += mbsize - 1;
+		continue;
+	      }
+	    else if (*name_start >= 'A' && *name_start <= 'Z')
+	      *name_start += 'a' - 'A';
+	  }
+#endif
       }
       else
 	name_start = op;
