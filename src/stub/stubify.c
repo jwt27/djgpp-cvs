@@ -245,7 +245,7 @@ void coff2exe(char *fname)
 
 void print_help(void)
 {
-  fprintf(stderr, "Usage: stubify [-v] [-g] [%sopt[,opt...] <program>\n"
+  fprintf(stderr, "Usage: stubify [-v] [-g] <program>\n"
 	  "<program> may be COFF or stubbed .exe, and may be COFF with .exe extension.\n"
 	  "Resulting file will have .exe\n"
 	  "-v -> verbose\n"
