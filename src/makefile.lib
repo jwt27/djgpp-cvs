@@ -1,0 +1,14 @@
+OBJS :=
+
+LIB = $(TOP)/../../lib
+
+include makefile.oi
+
+$(LIB)/lib$(LIBNAME).a : $(OBJS) makefile.rf $(TOP)/../ident.c
+	gcc -c -DLIB=lib$(LIBNAME) $(TOP)/../ident.c -o id_$(LIBNAME).o
+	@-rm -f $@
+	ar q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
+	ar s $(LIB)/lib$(LIBNAME).a
+
+clean :
+	@-rm -f $(LIB)/lib$(LIBNAME).a makefile.oi makefile.rf
