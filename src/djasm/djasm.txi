@@ -979,24 +979,21 @@ generally follows that of Triebel (1992) (@pxref{Triebel-1992}).
 @node Data Transfer Instructions
 @subsection Data Transfer Instructions
 
-[Not this release.]
-@c @include xfer.txi
+@include xfer.txi
 
 @comment node-name, next, previous, up
 @node Arithmetic Instructions
 @subsection Arithmetic Instructions
 
-[Not this release.]
-@c @include add.txi
-@c @include sub.txi
-@c @include muldiv.txi
+@include add.txi
+@include sub.txi
+@include muldiv.txi
 
 @comment node-name, next, previous, up
 @node Logic Instructions
 @subsection Logic Instructions
 
-[Not this release.]
-@c @include logic.txi
+@include logic.txi
 
 @comment node-name, next, previous, up
 @node Shift Instructions
@@ -1008,59 +1005,51 @@ generally follows that of Triebel (1992) (@pxref{Triebel-1992}).
 @node Rotate Instructions
 @subsection Rotate Instructions
 
-[Not this release.]
-@c @include rotate.txi
+@include rotate.txi
 
 @comment node-name, next, previous, up
 @node Bit Test and Bit Scan Instructions
 @subsection Bit Test and Bit Scan Instructions
 
-[Not this release.]
-@c @include bit.txi
+@include bit.txi
 
 @comment node-name, next, previous, up
 @node Flag Control Instructions
 @subsection Flag Control Instructions
 
-[Not this release.]
-@c @include flag.txi
+@include flag.txi
 
 @comment node-name, next, previous, up
 @node Compare and Set Instructions
 @subsection Compare and Set Instructions
 
-[Not this release.]
-@c @include cmp.txi
-@c @include set.txi
+@include cmp.txi
+@include set.txi
 
 @comment node-name, next, previous, up
 @node Jump Instructions
 @subsection Jump Instructions
 
-[Not this release.]
-@c @include jmp.txi
-@c @include jcc.txi
+@include jmp.txi
+@include jcc.txi
 
 @comment node-name, next, previous, up
 @node Subroutine Handling Instructions
 @subsection Subroutine Handling Instructions
 
-[Not this release.]
-@c @include subr.txi
+@include subr.txi
 
 @comment node-name, next, previous, up
 @node Loop Handling Instructions
 @subsection Loop Handling Instructions
 
-[Not this release.]
-@c @include loop.txi
+@include loop.txi
 
 @comment node-name, next, previous, up
 @node String Handling Instructions
 @subsection String Handling Instructions
 
-[Not this release.]
-@c @include string.txi
+@include string.txi
 
 @comment node-name, next, previous, up
 @node Examples
