@@ -10,18 +10,36 @@ char * searchpath(const char *file);
 @subheading Description
  
 Given a name of a file in @var{file}, searches for that file in a list
-of directories, including the current working directory and those
-defined in the PATH environment variable.
+of directories, including the current working directory and directories
+listed in the @code{PATH} environment variable, and if found, returns
+the file name with leading directories prepended, so that the result can
+be used to access the file (e.g. by calling @code{open} or @code{stat}).
+
+If @var{file} includes a drive letter or leading directories,
+@code{searchpath} first tries that name unaltered, in case it is already
+a fully-qualified path, or is relative to the current working
+directory.  If that fails, it tries every directory in @code{PATH} in
+turn.  Note that this will find e.g. @file{c:/foo/bar/baz.exe} if you
+pass @samp{bar/baz.exe} to @code{searchpath} and if @file{c:/foo} is
+mentioned in @code{PATH}.
  
 @subheading Return Value
  
 When successfull, the function returns a pointer to a static buffer
 where the full pathname of the found file is stored.  Otherwise, it
-returns NULL.
+returns @code{NULL}.  (The static buffer is overwritten on each call.)
  
 @subheading Portability
 
 @portability !ansi, !posix
+
+This function is provided for compatibility with Borland's library.
+However, note that the Borland version disregards the leading
+directories altogether and searches for the basename only.  Thus, it
+will happily find e.g. @file{c:/foo/bar/baz.exe}, even if the directory
+@file{c:/foo/bar} doesn't exist, provided that @file{baz.exe} is
+somewhere on your @code{PATH}.  We think this is a bug, so DJGPP's
+implementation doesn't behave like that.
 
 @subheading Example
  

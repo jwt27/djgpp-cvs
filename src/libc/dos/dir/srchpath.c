@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <limits.h>
@@ -28,6 +29,12 @@ searchpath(const char *file)
 {
   static char found[PATH_MAX];
   static char *path;
+
+  if (!file || !*file)
+    {
+      errno = file ? ENOENT : EINVAL;
+      return NULL;
+    }
 
   memset(found, 0, sizeof(found));
  
@@ -91,9 +98,29 @@ searchpath(const char *file)
     else
       path[1] = 0;
   }
-  if (strpbrk (file, "/\\:") != 0)
+
+  /* Borland's version (as of BC 3.1) always disregards the leading
+     directories and only looks at the file-name component.  So, for
+     example, "foo/bar/baz.exe" could find "c:/bin/baz.exe".  But that
+     doesn't seem right, so we don't follow their lead here.  */
+
+  /* If the file name includes slashes or the drive letter, maybe they
+     already have a good name.  */
+  if (strpbrk (file, "/\\:") != 0 && __file_exists(file))
   {
-    strcpy(found, file);
+    if (file[0] == '/' || file[0] == '\\' || file[1] == ':'
+	|| (file[0] == '.'
+	    && (file[1] == '/' || file[1] == '\\'
+		|| (file[1] == '.'
+		    && (file[2] == '/' || file[2] == '\\')))))
+      /* Either absolute file name or it begins with a "./".  */
+      strcpy(found, file);
+    else
+    {
+      /* Relative file name: add "./".  */
+      strcpy(found, "./");
+      strcat(found, file);
+    }
     return found;
   }
   else
@@ -124,7 +151,10 @@ searchpath(const char *file)
       test_dir = dp + 1;
     } while (*test_dir != 0);
   }
- 
+
+  /* FIXME: perhaps now that we failed to find it, we should try the
+     basename alone, like BC does?  But let somebody complain about
+     this first... ;-) */
   return NULL;
 }
 

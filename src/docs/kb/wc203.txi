@@ -319,3 +319,10 @@ mode even when @code{termios} functions are used.
 @samp{+} is the last (third) character of the @var{mode} string, like in
 @samp{wt+} or @samp{ab+}.
 
+@findex searchpath@r{, and file names with slashes}
+Previously, @code{searchpath} would always return its argument unchanged
+and signal a success, when the argument included slashes or a drive
+letter, even if the file didn't actually exist.  This is now fixed:
+non-existent files always cause @code{searchpath} to return a
+@code{NULL} pointer.
+
