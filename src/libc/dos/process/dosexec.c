@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -1087,6 +1088,7 @@ static int script_exec(const char *program, char **argv, char **envp)
   int has_extension = 0, has_drive = 0;
   char pinterp[FILENAME_MAX];
   int (*spawnfunc)(int, const char *, char *const [], char *const []);
+  int e = errno;
 
   f = fopen(program, "rt");
   if (!f)
@@ -1150,7 +1152,10 @@ static int script_exec(const char *program, char **argv, char **envp)
   }
   else if (__dosexec_find_on_path(interp, (char **)0, pinterp)
 	   || __dosexec_find_on_path(base, envp, pinterp))
+  {
     spawnfunc = spawnve;	/* no need to search on PATH: we've found it */
+    errno = e;
+  }
   else
     return -1;
 
@@ -1190,7 +1195,7 @@ static struct {
   { ".sed", script_exec, INTERP_FLAG_SKIP_SEARCH },  /* Sed */
   { "",     go32_exec, 0 },
   { 0,      script_exec, 0 },  /* every extension not mentioned above calls it */
-  { 0,      0 },
+  { 0,      0, 0 },
 };
 
 /* This is the index into the above array of the interpreter
@@ -1379,6 +1384,9 @@ int __spawnve(int mode, const char *path, char *const argv[], char *const envp[]
 	found = 1;
         break;
       }
+    if (!found && access(rpath, F_OK) == 0 &&
+        !(is_dir = (access(rpath, D_OK) == 0)))
+      found = 1;
   }
   if (!found)
   {
