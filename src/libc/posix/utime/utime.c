@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -8,6 +9,8 @@
 #include <errno.h>		/* For errno */
 #include <go32.h>
 #include <dpmi.h>
+#include <dos.h>
+#include <libc/dosio.h>
 
 /* An implementation of utime() for DJGPP.  The utime() function
    specifies an access time and a modification time.  DOS has only one
@@ -24,10 +27,6 @@ utime(const char *path, const struct utimbuf *times)
   unsigned int dostime, dosdate;
   int retval = 0, e = 0;
 
-  /* DOS wants the file open */
-  fildes = open(path, O_RDONLY);
-  if (fildes == -1) return -1;
-
   /* NULL times means use current time */
   if (times == NULL)
     modtime = time((time_t *) 0);
@@ -40,6 +39,42 @@ utime(const char *path, const struct utimbuf *times)
     ((tm->tm_year - 80) << 9);
   dostime = tm->tm_sec / 2 + (tm->tm_min << 5) +
     (tm->tm_hour << 11);
+
+
+  if (_osmajor == 5 &&
+      (_USE_LFN)    &&
+      (_get_dos_version(1) == 0x532)) /* LFN and NT (or 2000 or XP) */
+  {
+
+     _put_path(path);
+     r.x.ds = __tb_segment;  /* DS:DX -> ASCIZ filename */
+     r.x.dx = __tb_offset;
+
+     r.x.cx = dostime; /* New time */
+     r.x.di = dosdate; /* New date */
+     r.x.si = 0x00;    /* Set to zero just in case */
+     
+     r.x.ax = 0x7143;  /* LFN API for extended get and set time */
+     r.x.bx = 0x03;    /* Set last write date / time */
+     __dpmi_int(0x21, &r);
+     
+     if (!(r.x.flags & 1))  /* Pass then continue */
+     {
+         /* Uses date allready in r.x.di */
+         r.x.ax = 0x7143;  /* LFN API for extended get and set time */
+         r.x.bx = 0x05;    /* Set last access date / time */
+         __dpmi_int(0x21, &r);
+         if (!(r.x.flags & 1))  /* Pass then continue */
+         {
+             return 0;
+         }
+     }
+  }
+
+  /* DOS wants the file open */
+  fildes = open(path, O_RDONLY);
+  if (fildes == -1) return -1;
+
 
   /* Set the file timestamp */
   r.h.ah = 0x57; /* DOS FileTimes call */

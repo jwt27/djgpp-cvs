@@ -555,3 +555,16 @@ There's now a work-around for the bug in NTVDM, the DOS emulator, which
 ships with Windows 2000: nested DJGPP programs no longer cause NTVDM to
 crash.  This allows to use GCC, Make, RHIDE, Bash, and other programs
 which routinely invoke child programs.
+
+@findex utime@r{, on Windows 2000 and XP}
+@pindex touch@r{, on Windows 2000 and XP}
+@pindex dtou@r{, on Windows 2000 and XP}
+@pindex utod@r{, on Windows 2000 and XP}
+@pindex recode@r{, on Windows 2000 and XP}
+@cindex time stamp of directories, changing
+The function @code{utime} now works on Windows 2000 and Windows XP.
+Previously, it would fail with @code{errno} set to @code{EIO}; this
+affected programs like @code{touch}, @code{dtou}, and @code{recode},
+which set time stamps of files.  In addition, @code{utime} now allows to
+set the time stamp of directories, but only on Windows 2000 or XP (other
+versions of Windows do not allow to change time stamps of directories).

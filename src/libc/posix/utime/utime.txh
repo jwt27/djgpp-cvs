@@ -26,6 +26,10 @@ function, and only @code{modtime} field is used.  On filesystems which
 support long filenames, both fields are used and both access and
 modification times are set.
 
+If @var{file} is a directory, the function always fails, except on
+Windows 2000 and Windows XP, because other systems don't allow changing
+the time stamp of a directory.
+
 @subheading Return Value
 
 Zero for success, nonzero for failure.
