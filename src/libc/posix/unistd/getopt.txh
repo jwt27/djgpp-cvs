@@ -11,7 +11,7 @@ extern int optind, opterr, optopt;
 
 @subheading Description
 
-Parse options from the command line.  The @var{options} are a string of
+Parse options from the command line.  @var{options} is a string of
 valid option characters.  If a given option takes an argument, that
 character should be followed by a colon.
 
@@ -20,18 +20,24 @@ For each valid switch, this function sets @code{optarg} to the argument
 that it is using, sets @code{optopt} to the option letter found, and
 returns the option letter found.
 
-If an unexpected option is found, @code{getopt} will return @code{?},
-and if @code{opterr} is nonzero, will print an error message to stderr. 
+If an unexpected option is found, a question mark (@samp{?}) is returned.  
+If an option argument is missing, a colon (@samp{:}) is returned if the
+first character in @var{options} is a colon, otherwise a question mark is
+returned.  In both cases, if @code{opterr} is nonzero and the first character
+in @var{options} is not a colon, an error message is printed to
+@code{stderr}.
+
 The example below shows how @samp{?} can still be used as an option
 (e.g., to request a summary of program usage) in addition to flagging
-an unexpected option.
-
-The special option @samp{--} indicates that no more options follow on
-the command line, and cause @code{getopt} to stop looking. 
+an unexpected option and a missing argument.
 
 @subheading Return Value
 
-The option found, or -1 if no more options.
+The option character is returned when found.  -1 is returned when there are no
+more options.  A colon (@samp{:}) is returned when an option argument is
+missing and the first character in @var{options} is a colon.  A question mark
+(@samp{?}) is returned when an invalid option is found or an option argument
+is missing and the first character in @var{options} is not a colon.
 
 @subheading Portability
 
@@ -42,7 +48,7 @@ The option found, or -1 if no more options.
 @example
 int c;
 opterr = 0;
-while ((c=getopt(argc, argv, "?vbf:")) != -1)
+while ((c=getopt(argc, argv, ":?vbf:")) != -1)
 @{
   switch (c)
   @{
@@ -55,6 +61,10 @@ while ((c=getopt(argc, argv, "?vbf:")) != -1)
     case 'f':
       output_filename = optarg;
       break;
+    case ':':
+      printf("Missing argument %c\n", optopt);
+      usage();
+      exit(1);
     case '?':
       if (optopt == '?') @{
         usage();

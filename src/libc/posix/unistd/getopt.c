@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
@@ -8,7 +9,8 @@
 int opterr = 1,	optind = 1, optopt = 0;
 char *optarg = 0;
 
-#define	BADCH	(int)'?'
+#define	BADOPT	(int)'?'
+#define	BADARG	(int)':'
 #define	EMSG	""
 
 int
@@ -23,28 +25,26 @@ getopt(int nargc, char *const nargv[], const char *ostr)
     if (optind >= nargc || *(place = nargv[optind]) != '-')
     {
       place = EMSG;
-      return(EOF);
+      return -1;
     }
     if (place[1] && *++place == '-')
     {
       ++optind;
       place = EMSG;
-      return(EOF);
+      return -1;
     }
   }
 
   if ((optopt = (int)*place++) == (int)':'
       || !(oli = strchr(ostr, optopt)))
   {
-    /*
-     * if the user didn't specify '-' as an option,
-     * assume it means EOF.
-     */
+    /* If the user didn't specify '-' as an option,
+       assume it means stop.  */
     if (optopt == (int)'-')
-      return EOF;
+      return -1;
     if (!*place)
       ++optind;
-    if (opterr)
+    if (opterr && ostr[0] != ':')
     {
       if (!(p = strrchr(*nargv, '/')))
 	p = *nargv;
@@ -52,7 +52,7 @@ getopt(int nargc, char *const nargv[], const char *ostr)
 	++p;
       fprintf(stderr, "%s: illegal option -- %c\n", p, optopt);
     }
-    return BADCH;
+    return BADOPT;
   }
   if (*++oli != ':')
   {		/* don't need argument */
@@ -71,10 +71,12 @@ getopt(int nargc, char *const nargv[], const char *ostr)
 	p = *nargv;
       else
 	++p;
-      if (opterr)
+      if (opterr && ostr[0] != ':')
 	fprintf(stderr, "%s: option requires an argument -- %c\n",
 		p, optopt);
-      return BADCH;
+      /* Posix requires ':' to be returned when it's the first character
+         in the option string, else return '?'.  */
+      return (ostr[0] == ':') ? BADARG : BADOPT;
     }
     else			/* white space */
       optarg = nargv[optind];
