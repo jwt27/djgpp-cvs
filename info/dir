@@ -69,6 +69,12 @@ From gccNNNb.zip
 * gxxint (gxxint).
         Documentation of the GNU C++ front-end internals.
 
+* Cpplib: (cppinternals).
+	Cpplib internals.
+
+* ObjC (objc-features).
+        Documentation of the GNU Objective-C runtime features.
+
 From bnuNNNb.zip
 
 * as: (as).			The GNU assembler
