@@ -21,7 +21,6 @@
 #include <sys/exceptn.h>
 #include <sys/nearptr.h>		/* For DS base/limit info */
 #include <libc/internal.h>
-#include <stubinfo.h>
 
 #define err(x) _write(STDERR_FILENO, x, sizeof(x)-1)
 
@@ -586,29 +585,6 @@ __djgpp_set_ctrl_c(int enable_sigs)
   return oldenable;
 }
 
-unsigned short _windows_major, _windows_minor;
-
-/* Compute the version Windows reports via Int 2Fh/AX=1600h.  */
-static void
-get_windows_version(void)
-{
-  if (!_windows_major)
-    {
-      __dpmi_regs r;
-
-      r.x.ax = 0x1600;
-      __dpmi_int(0x2f, &r);
-      if (r.h.al > 2 && r.h.al != 0x80 && r.h.al != 0xff
-	  && (r.h.al > 3 || r.h.ah > 0))
-	{
-	  _windows_major = r.h.al;
-	  _windows_minor = r.h.ah;
-	}
-      else
-	_windows_major = 0xff;	/* meaning no Windows */
-    }
-}
-
 /* A work-around for a bug in W2K's NTVDM, suggested by
    The Owl <theowl@freemail.c3.hu>.
 
@@ -628,40 +604,29 @@ get_windows_version(void)
    DOSX does pass the parent PSP selector to NTVDM when it notifies it
    about a DPMI program exit, but NTVDM does not use this information.)
 
-   To work around that, we force NTVDM to record a valid PSP before we
-   exit.  We do that by invoking a PM Int 21h, function 50h, passing
-   it our PM selector for the PSP, as it was returned by the PM switch
-   entry point we called at startup to enter protected mode.  We do
-   that just before exiting, to make sure that even an application
-   which crashes (e.g., due to SIGSEGV or Ctrl-BREAK) immediately
-   after its child returns will always leave its valid PSP recorded by
-   NTVDM before it exits.
+   To work around that, we ask NTVDM to record a valid PSP before we
+   exit.  We do that by invoking a PM Int 21h, function 51h, which gets
+   the PM selector for the PSP (which triggers NTVDM to record the
+   correct internal value).  We do that just before exiting, to make 
+   sure that even an application which crashes (e.g., due to SIGSEGV 
+   or Ctrl-BREAK) immediately after its child returns will always leave 
+   its valid PSP recorded by NTVDM before it exits.
 
    (To play it safe in the face of non-DJGPP DPMI programs and old
    DJGPP programs, we also restore the PSP in dosexec.c, which see.)
 
-   Note that we invoke here a PM Int 21, passing it the PM selector of
-   our PSP.  This is _not_ a call to __dpmi_int with a real-mode PSP
-   address!  */
+   Note that we invoke here a PM Int 21, which returns the PM selector of
+   our PSP.  This is _not_ a call to __dpmi_int ! */
+
 void
 __maybe_fix_w2k_ntvdm_bug(void)
 {
-  /* The _osmajor == 0 case takes care of a crash that happens before
-     we had a chance to get DOS version.  (Yes, I am being paranoiac!)  */
-  if ((_osmajor == 5 || _osmajor == 0) && _osminor == 0
-      && _get_dos_version(1) == 0x0532) /* NT or Windows 2000? */
-    {
-      get_windows_version();
-      if (_windows_major == 0xff) /* this is NT or W2K */
-	{
-	  extern int _int86(int ivec, union REGS *in, union REGS *out);
-	  union REGS regs;
-
-	  regs.h.ah = 0x50;
-	  regs.d.ebx = _stubinfo->psp_selector;
-	  _int86 (0x21, &regs, &regs);
-	}
-    }
+  if (_os_trueversion == 0x532) /* NT or Windows 2000? */
+  {
+    /* Protected mode call to GetPSP - may return RM PSP if not extended */
+    asm volatile("movb $0x51, %%ah ; int $0x21"
+                  : : : "ax", "bx" );    /* input, output, regs */
+  }
 }
 
 void __attribute__((noreturn))
