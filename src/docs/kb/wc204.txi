@@ -204,4 +204,11 @@ the file name itself, for compatibility with stock DOS/Windows shells.
 @findex valloc@r{, added to the library}
 @findex memalign@r{, added to the library}
 The functions @code{valloc} and @code{memalign} have been added to the
-library to support allocating memory at power of 2 addresses.
+library to support allocating memory at power-of-2 addresses.
+
+@pindex djsplit@r{, preserves file's time stamp}
+@pindex djmerge@r{, preserves file's time stamp}
+The @code{djsplit} and @code{djmerge} utilities now preserve the
+original file's time stamp and mode bits.  The @samp{-t} switch to those
+programs restores the old behavior, where each file was created with the
+current time stamp and default attribute bits.

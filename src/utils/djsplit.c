@@ -5,13 +5,17 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <utime.h>
 #include <dpmi.h>
 
 static void
 usage(void)
 {
-  fprintf(stderr,"Usage: djsplit [inputFile] [chunkSize] [outputBase]\n");
+  fprintf(stderr,"Usage: djsplit [-t] [inputFile] [chunkSize] [outputBase]\n");
   fprintf(stderr, "chunksize is bytes or kbytes (ex: 1440k), creates <outputBase>.000, <outputBase>.001, etc\n");
+  fprintf(stderr, " -t means don't set the chunks' time stamp and modes as for original file\n");
   exit(1);
 }
 
@@ -24,6 +28,20 @@ p_open(char *ob, int p)
   return open(partname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0666);
 }
 
+static void
+p_set_modes(char *ob, int p, struct stat *stbuf)
+{
+  char partname[FILENAME_MAX];
+  struct utimbuf timbuf;
+
+  sprintf(partname, "%s.%03d", ob, p);
+  timbuf.actime = stbuf->st_atime;
+  timbuf.modtime = stbuf->st_mtime;
+  utime(partname, &timbuf);
+  chown(partname, stbuf->st_uid, stbuf->st_gid);
+  chmod(partname, stbuf->st_mode);
+}
+
 char *buf;
 int bufsize;
 
@@ -34,8 +52,10 @@ main(int argc, char **argv)
   int partnum;
   int inf, f;
   char *endp;
+  struct stat stbuf;
+  int preserve_file_time = 1;
   
-  if (argc != 4)
+  if (argc != 4 && argc != 5)
     usage();
 
   inf = open(argv[1], O_RDONLY|O_BINARY);
@@ -56,6 +76,17 @@ main(int argc, char **argv)
     buf = (char *) alloca(bufsize);
   }
   printf("buf size: %d\n", bufsize);
+
+  if (strcmp(argv[2], "-t") == 0)
+  {
+    preserve_file_time = 0;
+    ++argv;
+  }
+  else if (fstat(inf, &stbuf) != 0)
+  {
+    perror("Couldn't fstat, file's time and modes won't be preserved");
+    preserve_file_time = 0;
+  }
 
   chunksize = strtol(argv[2], &endp, 0);
   if (chunksize < 1)
@@ -85,6 +116,7 @@ main(int argc, char **argv)
     {
       close(f);
       close(inf);
+      p_set_modes(argv[3], partnum, &stbuf);
       exit(0);
     }
     
@@ -94,6 +126,7 @@ main(int argc, char **argv)
     if (left == 0)
     {
       close(f);
+      p_set_modes(argv[3], partnum, &stbuf);
       partnum++;
       f = p_open(argv[3], partnum);
       left = chunksize;

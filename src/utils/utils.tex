@@ -535,7 +535,7 @@ transporting files across unreliable channels or small media (like
 floppies).  @code{djsplit} takes a big file and splits it into up to 1000
 smaller files.  @code{djmerge} puts them back together again.
 
-Usage: @code{djsplit} @var{inputfile} @var{chunksize} @var{outputbase}
+Usage: @code{djsplit [-t] @var{inputfile} @var{chunksize} @var{outputbase}}
 
 Each output file is made from appending a sequence number to
 @var{outputbase}.  For example:
@@ -550,6 +550,13 @@ The @code{chunksize} parameter can be expressed as bytes (NNN),
 kilobytes(NNNk) or megabytes (NNNm).  The number NNN @emph{must} be an
 integer; for example, @samp{1.1m} will @strong{not} work.
 
+By default, @code{djsplit} creates the output files
+@file{@var{outputbase}.@var{nnn}} with the same time stamp and mode bits
+as the original file @file{@var{inputfile}}.  (@code{djmerge} will then
+recreate the file's time and modes as they originally were.)  If you
+want the output files to have the current time and the default attribute
+bits, use the @samp{-t} switch.
+
 @c -----------------------------------------------------------------------------
 @node djmerge, texi2ps, djsplit, Top
 @chapter djmerge
@@ -559,7 +566,7 @@ transporting files across unreliable channels or small media (like
 floppies).  @code{djsplit} takes a big file and splits it into up to 1000
 smaller files.  @code{djmerge} puts them back together again.
 
-Usage: @code{djmerge} @var{inputbase} @var{outputfile}
+Usage: @code{djmerge [-t] @var{inputbase} @var{outputfile}}
 
 Each input file is made from appending a sequence number to
 @var{inputbase}.  For example, given @code{footgz.000},
@@ -570,6 +577,12 @@ djmerge footgz foo.tgz
 @end example
 
 would result in @code{foo.tgz} being created.
+
+By default, @code{djmerge} creates the output file
+@file{@var{outputfile}} with the same time stamp and mode bits as the
+first file @file{@var{inputbase}.000}.  If you want the output file to
+have the current time and the default attribute bits, use the @samp{-t}
+switch.
 
 @c -----------------------------------------------------------------------------
 @node texi2ps, update, djmerge, Top
