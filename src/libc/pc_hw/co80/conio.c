@@ -43,6 +43,8 @@ static int font_seg = -1;           /* segment of DOS buffer for 8x10 font */
 static unsigned last_mode = 0xffff; /* video mode when before program start */
 static int oldattrib =  -1;         /* text attribute before program start */
 
+static int intense_bg_mode;         /* non-zero if high bit is for bright bg */
+
 static int conio_count = -1;
 
 #define VIDADDR(r,c) (ScreenAddress + 2*(((r) * txinfo.screenwidth) + (c)))
@@ -193,30 +195,33 @@ void
 textcolor(int color)
 {
   /* strip blinking (highest) bit and textcolor */
-  ScreenAttrib &= 0x70; /* strip blinking (highest) bit and textcolor */
-  txinfo.attribute=(ScreenAttrib |= (color & 0x8f));
+  int bg = ScreenAttrib & (intense_bg_mode ? 0xf0 : 0x70);
+  txinfo.attribute = (bg | (color & (intense_bg_mode ? 0x0f : 0x8f)));
+  ScreenAttrib = txinfo.attribute;
 }
 
 void
 textbackground(int color)
 {
-  /* strip background color, keep blinking bit */
-  ScreenAttrib &= 0x8f; 
-  /* high intensity background colors (>7) are not allowed 
-     so we strip 0x08 bit (and higher bits) of color */
-  txinfo.attribute=(ScreenAttrib |= ((color & 0x07) << 4));
+  /* strip background color from ScreenAttrib, keep blinking bit */
+  int fg = ScreenAttrib & (intense_bg_mode ? 0x0f : 0x8f);
+
+  /* high intensity background colors (>7) are not allowed, unless
+     intense_bg_mode is on, so we strip 0x08 bit (and higher bits) of color */
+  color &= (intense_bg_mode ? 0x0f : 0x07);
+  txinfo.attribute = ScreenAttrib = (fg | (color << 4));
 }
 
 void
 highvideo(void)
 {
-  txinfo.attribute=(ScreenAttrib |= 0x08);
+  txinfo.attribute = (ScreenAttrib |= 0x08);
 }
 
 void
 lowvideo(void)
 {
-  txinfo.attribute=(ScreenAttrib &= 0x07);
+  txinfo.attribute = (ScreenAttrib &= 0xf7);
 }
 
 void
@@ -1006,6 +1011,7 @@ blinkvideo(void)
   regs.h.bl = 1;
   regs.x.ax = 0x1003;
   __dpmi_int(0x10, &regs);
+  intense_bg_mode = (_farpeekb(_dos_ds, 0x465) & 0x20) == 0;
 }
 
 void
@@ -1017,6 +1023,7 @@ intensevideo(void)
   regs.h.bl = 0;
   regs.x.ax = 0x1003;
   __dpmi_int(0x10, &regs);
+  intense_bg_mode = (_farpeekb(_dos_ds, 0x465) & 0x20) == 0;
 }
 
 void
@@ -1044,6 +1051,7 @@ gppconio_init(void)
     ScreenAddress = 0xb0000UL;
   else
     ScreenAddress = 0xb8000UL;
+  intense_bg_mode = (_farpeekb(_dos_ds, 0x465) & 0x20) == 0;
 
   regs.x.es = regs.x.di = 0;	/* Dummy for checking */
   regs.h.ah = 0xfe;		/* Get Video Buffer */
