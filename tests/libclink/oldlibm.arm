@@ -1,0 +1,216 @@
+
+Archive index:
+_acos in acos.o
+_acosh in acosh.o
+_asin in asin.o
+_asinh in asinh.o
+_atan in atan.o
+_atan2 in atan2.o
+_atanh in atanh.o
+_ceil in ceil.o
+_cos in cos.o
+_cosh in cosh.o
+_pow2 in exp.o
+_exp in exp.o
+_pow10 in exp.o
+_pow in exp.o
+_fabs in fabs.o
+_floor in floor.o
+_fmod in fmod.o
+_frexp in frexp.o
+_hypot in hypot.o
+_log in log.o
+_log10 in log10.o
+_log2 in log2.o
+_sin in sin.o
+_sinh in sinh.o
+_sqrt in sqrt.o
+_tan in tan.o
+_tanh in tanh.o
+
+acos.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000008 T _acos
+
+acosh.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _acosh
+         U _log
+         U _sqrt
+00000000 t gcc2_compiled.
+
+asin.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _asin
+
+asinh.o:
+0000005c b .bss
+0000005c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _asinh
+         U _log
+         U _sqrt
+00000000 t gcc2_compiled.
+
+atan.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _atan
+
+atan2.o:
+0000003c b .bss
+00000034 d .data
+00000000 t .text
+00000000 T _atan2
+         U _errno
+0000001a t doit
+0000001d t isanan
+00000034 d nan
+
+atanh.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 T _atanh
+         U _log
+00000000 t gcc2_compiled.
+
+ceil.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T _ceil
+
+cos.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000008 T _cos
+
+cosh.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 T _cosh
+         U _exp
+         U _fabs
+00000000 t gcc2_compiled.
+
+exp.o:
+000000d8 b .bss
+000000d0 d .data
+00000000 t .text
+00000056 T _exp
+0000006a T _pow
+00000060 T _pow10
+00000040 T _pow2
+00000092 t error
+00000008 t frac
+0000007e t xltez
+0000009a t xltz
+000000cd t yeven
+00000095 t ygtz
+000000d0 d yint
+000000b3 t yisint
+
+fabs.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _fabs
+
+floor.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T _floor
+
+fmod.o:
+00000024 b .bss
+00000020 d .data
+00000000 t .text
+00000000 T _fmod
+00000015 t next
+0000001e t out
+
+frexp.o:
+00000094 b .bss
+00000094 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _frexp
+00000000 t gcc2_compiled.
+
+hypot.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _hypot
+         U _sqrt
+00000000 t gcc2_compiled.
+
+log.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _log
+
+log10.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _log10
+
+log2.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _log2
+
+sin.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000008 T _sin
+
+sinh.o:
+00000058 b .bss
+00000058 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _exp
+00000008 T _sinh
+00000000 t gcc2_compiled.
+
+sqrt.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _sqrt
+
+tan.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000008 T _tan
+
+tanh.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _exp
+00000000 T _tanh
+00000000 t gcc2_compiled.
