@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -7,21 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-typedef struct BLOCK {
-  size_t size;
-  struct BLOCK *next;
-  int bucket;
-} BLOCK;
-
-#define BEFORE(bp)	((BLOCK *)((char *)bp - *(int *)((char *)bp - 4) - 8))
-#define BEFSZ(bp)	(*(size_t *)((char *)bp - 4))
-#define ENDSZ(bp)	(*(size_t *)((char *)bp + bp->size + 4))
-#define AFTER(bp)	((BLOCK *)((char *)bp + bp->size + 8))
-#define DATA(bp)	((char *)&(bp->next))
+#include <libc/malloc.h>
 
 #define NUMSMALL	0
-#define ALIGN		8
 #define SMALL		(NUMSMALL*ALIGN)
 
 static BLOCK *slop = 0;
