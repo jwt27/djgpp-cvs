@@ -4,7 +4,7 @@
 
 /*
 ** This file is in the public domain, so clarified as of
-** June 5, 1996 by Arthur David Olson (arthur_david_olson@nih.gov).
+** 1996-06-05 by Arthur David Olson (arthur_david_olson@nih.gov).
 */
 
 /*
@@ -21,7 +21,7 @@
 
 #ifndef lint
 #ifndef NOID
-static char	privatehid[] = "@(#)private.h	7.43";
+static char	privatehid[] = "@(#)private.h	7.47";
 #endif /* !defined NOID */
 #endif /* !defined lint */
 
@@ -45,6 +45,10 @@ static char	privatehid[] = "@(#)private.h	7.43";
 #ifndef HAVE_STRERROR
 #define HAVE_STRERROR		0
 #endif /* !defined HAVE_STRERROR */
+
+#ifndef HAVE_SYMLINK
+#define HAVE_SYMLINK		1
+#endif /* !defined HAVE_SYMLINK */
 
 #ifndef HAVE_UNISTD_H
 #define HAVE_UNISTD_H		1
@@ -173,6 +177,39 @@ extern int errno;
 #endif /* !defined errno */
 
 /*
+** Private function declarations.
+*/
+char *	icalloc P((int nelem, int elsize));
+char *	icatalloc P((char * old, const char * new));
+char *	icpyalloc P((const char * string));
+char *	imalloc P((int n));
+void *	irealloc P((void * pointer, int size));
+void	icfree P((char * pointer));
+void	ifree P((char * pointer));
+char *	scheck P((const char *string, const char *format));
+
+/*
+** Declarations for functions which shut up GCC $(GCC_DEBUG_FLAGS).
+*/
+#ifndef STD_INSPIRED
+static
+#endif /* !defined STD_INSPIRED */
+void tzsetwall P((void));
+struct tm * localtime_r P((const time_t * const __timep, struct tm * __tmp));
+struct tm * gmtime_r P((const time_t * const __tp, struct tm * __tm));
+char * ctime_r P((const time_t * const __tp, char * __buf));
+char * asctime_r P((const struct tm *, char *));
+#ifdef STD_INSPIRED
+struct tm * offtime P((const time_t * const __tp, const long __off));
+time_t timelocal P((struct tm * const __tmp));
+time_t timegm P((struct tm * const __tmp));
+time_t timeoff P((struct tm * const __tmp, const long __off));
+time_t time2posix P((time_t));
+time_t posix2time P((time_t));
+#endif /* defined STD_INSPIRED */
+
+
+/*
 ** Finally, some convenience items.
 */
 
@@ -226,6 +263,14 @@ extern int errno;
 #define INITIALIZE(x)
 #endif /* !defined GNUC_or_lint */
 #endif /* !defined INITIALIZE */
+
+#ifdef __MSDOS__
+#define IS_SLASH(c)	((c) == '/' || (c) == '\\')
+#define HAS_DEVICE(n)	((n)[0] && (n)[1] == ':')
+#define IS_ABSOLUTE(n)	(IS_SLASH((n)[0]) || HAS_DEVICE(n))
+#undef TZDIR
+#define TZDIR (getenv("TZDIR")?getenv("TZDIR"):"c:/djgpp/zoneinfo")
+#endif /* __MSDOS__ */
 
 /*
 ** For the benefit of GNU folk...
