@@ -31,8 +31,6 @@ static unsigned ah_key_sense;
 static unsigned ah_key_get;
 static unsigned ah_ctrl_sense;
 
-static const unsigned char *ext_key_string;
-
 static ssize_t __libc_termios_read (int handle, void *buffer, size_t count, ssize_t *rv);
 static ssize_t __libc_termios_read_cooked_tty (int handle, void *buffer, size_t count);
 static ssize_t __libc_termios_read_raw_tty (int handle, void *buffer, size_t count);
@@ -44,7 +42,10 @@ static void __libc_termios_maybe_erase1 (void);
 static void __libc_termios_erase_editline (void);
 static void __libc_termios_kill_editline (void);
 static void __libc_termios_insert_editline (unsigned char ch);
+#if 0
+/* Not used.  */
 static void __libc_termios_clear_queue (void);
+#endif
 static int __libc_termios_get_queue (void);
 static int __libc_termios_put_queue (unsigned char ch);
 static void __libc_termios_fill_queue (void);
@@ -111,14 +112,14 @@ __direct_keyinput (void)
 /* Get an extended key and return its encoding.  */
 static inline
 const unsigned char *
-set_ext_key_string(void)
+get_ext_key_string(void)
 {
   __dpmi_regs r;
 
   r.h.ah = ah_key_get;
   __dpmi_int(0x16, &r);
 
-  return (ext_key_string = __get_extended_key_string((int)r.h.ah));
+  return (__get_extended_key_string((int)r.h.ah));
 }
 
 #define _KEY_INS  0x80
@@ -143,6 +144,16 @@ __direct_ctrlsense (void)
   return 0;
 }
 
+static inline int
+wait_keysense(void)
+{
+  int sense;
+
+  while ((sense = __direct_keysense()) == SENSE_NO_KEY)
+    __dpmi_yield();
+
+  return sense;
+}
 
 /******************************************************************************/
 /* special read function ******************************************************/
@@ -189,12 +200,6 @@ __libc_termios_read_cooked_tty (int handle, void *buffer, size_t count)
 
   wp = buffer;
   n = count;
-
-#if 0
-  /* clear cooked queue */
-  if (__libc_termios_exist_queue ())
-    __libc_termios_clear_queue ();
-#endif
 
   if (__libc_tty_p->t_lflag & ICANON)
     {
@@ -245,28 +250,22 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
 
   n = count;
   wp = buffer;
-
-  /* clear cooked queue */
-  if (__libc_termios_exist_queue ())
-    __libc_termios_clear_queue ();
+  sense = SENSE_NO_KEY;
 
   /* block until getting inputs */
-  while (ext_key_string == NULL && __direct_keysense() == SENSE_NO_KEY)
-    __dpmi_yield ();
+  if (!__libc_termios_exist_queue())
+    wait_keysense();
 
   while (--n >= 0)
     {
       /* exhaust inputs ? */
-      if (ext_key_string == NULL
+      if (!__libc_termios_exist_queue()
           && (sense = __direct_keysense()) == SENSE_NO_KEY)
 	break;
 
-      if (ext_key_string)
+      if (__libc_termios_exist_queue())
       {
-        ch = *ext_key_string;
-        ++ext_key_string;
-        if (*ext_key_string == '\0')
-          ext_key_string = NULL;
+        ch = (unsigned char)__libc_termios_get_queue();
       }
       else if (sense == SENSE_REG_KEY)
       {
@@ -278,7 +277,10 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
       }
       else
       {
-        if (set_ext_key_string() == NULL)
+        const unsigned char *ext_key_string;
+
+        ext_key_string = get_ext_key_string();
+        if (ext_key_string == NULL)
         {
           /* This extended key has no encoding.  If there are no keys
              already stored in the buffer, wait for another key to ensure
@@ -286,13 +288,14 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
           ++n;
           if (wp == (unsigned char *)buffer)
           {
-            while (__direct_keysense() == SENSE_NO_KEY)
-              __dpmi_yield();
+            wait_keysense();
           }
           continue;
         }
         ch = *ext_key_string;
         ++ext_key_string;
+        /* Add the rest of the string to the queue.  */
+        __libc_termios_puts_queue(ext_key_string);
       }
 
       /* copy a character into buffer and echo */
@@ -478,6 +481,8 @@ __libc_termios_exist_queue (void)
   return __libc_tty_p->t_count;
 }
 
+#if 0
+/* Not used.  */
 static void
 __libc_termios_clear_queue (void)
 {
@@ -485,6 +490,7 @@ __libc_termios_clear_queue (void)
   __libc_tty_p->t_rpos = __libc_tty_p->t_top;
   __libc_tty_p->t_wpos = __libc_tty_p->t_top;
 }
+#endif
 
 static int
 __libc_termios_get_queue (void)
@@ -523,23 +529,25 @@ __libc_termios_fill_queue (void)
 {
   unsigned char ch;
   int sense;
+  const unsigned char *ext_key_string;
+
+  ext_key_string = NULL;
 
   while (1)
     {
-      /* exhaust inputs ? */
+      /* exhausted inputs? */
       if (ext_key_string == NULL
           && (sense = __direct_keysense()) == SENSE_NO_KEY)
 	{
 	  if (__libc_tty_p->t_lflag & ICANON)
 	    {
-	      /* wait for NL or EOT */
-	      __dpmi_yield ();
-	      continue;
+	      /* waiting for NL or EOT */
+	      sense = wait_keysense();
 	    }
 	  return;
 	}
 
-      /* really get */
+      /* Add a character to the output buffer. */
       if (ext_key_string)
       {
         ch = *ext_key_string;
@@ -547,7 +555,7 @@ __libc_termios_fill_queue (void)
         if (*ext_key_string == '\0')
           ext_key_string = NULL;
       }
-      else  if (sense == SENSE_REG_KEY)
+      else if (sense == SENSE_REG_KEY)
       {
         ch = __direct_keyinput();
 
@@ -557,14 +565,16 @@ __libc_termios_fill_queue (void)
       }
       else
       {
-        if (set_ext_key_string() == NULL)
+        ext_key_string = get_ext_key_string();
+        if (ext_key_string == NULL)
           continue;
         ch = *ext_key_string;
         ++ext_key_string;
       }
 
-      /* input process if need */
-      if (! (__libc_tty_p->t_status & _TS_LNCH) || ch != (unsigned char) _POSIX_VDISABLE)
+      /* process input if needed */
+      if (! (__libc_tty_p->t_status & _TS_LNCH)
+          || ch != (unsigned char) _POSIX_VDISABLE)
 	{
 	  /* software signals */
 	  if (__libc_tty_p->t_lflag & ISIG)
@@ -704,6 +714,25 @@ proc_skip:
 	  __libc_termios_put_queue (ch);
 	}
     } /* end of while (1) */
+}
+
+int
+__libc_termios_puts_queue(const unsigned char *str)
+{
+  while (*str)
+  {
+    if (__libc_tty_p->t_count >= __libc_tty_p->t_size)
+      return -1;
+
+    *__libc_tty_p->t_wpos++ = *str;
+    ++__libc_tty_p->t_count;
+    ++str;
+
+    if (__libc_tty_p->t_wpos >= __libc_tty_p->t_bottom)
+      __libc_tty_p->t_wpos = __libc_tty_p->t_top;
+
+  }
+  return 0;
 }
 
 /******************************************************************************/
