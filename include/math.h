@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_math_h_
 #define __dj_include_math_h_
@@ -58,10 +59,6 @@ double	tanh(double _x);
 #define PI		M_PI
 #define PI2		M_PI_2
 
-double  acosh(double _a);
-double  asinh(double _a);
-double  atanh(double _a);
-double	hypot(double _x, double _y);
 double	log2(double _x);
 long double modfl(long double _x, long double *_pint);
 double	pow10(double _x);
@@ -70,13 +67,17 @@ double	pow2(double _x);
 /* These are in libm.a (Cygnus).  You must link -lm to get these */
 /* See libm/math.h for comments */
 
+#ifndef __cplusplus
 struct exception {
 	int type;
-	char *name;
+	const char *name;
 	double arg1;
 	double arg2;
 	double retval;
+	int err;
 };
+#endif
+
 extern double erf(double);
 extern double erfc(double);
 extern double gamma(double);
@@ -99,7 +100,9 @@ extern double logb(double);
 extern double nextafter(double, double);
 extern double remainder(double, double);
 extern double scalb(double, double);
+#ifndef __cplusplus
 extern int matherr(struct exception *);
+#endif
 extern double significand(double);
 extern double copysign(double, double);
 extern int ilogb(double);
@@ -108,10 +111,8 @@ extern double scalbn(double, int);
 extern double drem(double, double);
 extern double expm1(double);
 extern double log1p(double);
-#ifdef _REENTRANT
 extern double gamma_r(double, int *);
 extern double lgamma_r(double, int *);
-#endif /* _REENTRANT */
 extern float acosf(float);
 extern float asinf(float);
 extern float atanf(float);
@@ -164,10 +165,8 @@ extern float scalbnf(float, int);
 extern float dremf(float, float);
 extern float expm1f(float);
 extern float log1pf(float);
-#ifdef _REENTRANT
 extern float gammaf_r(float, int *);
 extern float lgammaf_r(float, int *);
-#endif	/* _REENTRANT */
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
