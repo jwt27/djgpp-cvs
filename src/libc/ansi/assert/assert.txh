@@ -12,20 +12,21 @@ assertval(expression);
 @subheading Description
 
 These macros are used to assist in debugging.  The source code includes
-references to assert and assertval, passing them expressions that should
-be true (or non-zero).  When the expression equals zero, a diagnostic
-message is printed to stderr and the program aborts.
+references to @code{assert} or @code{assertval}, passing them
+expressions that should be @code{true} (non-zero).  When the expression
+yields @code{false} (zero), a diagnostic message is printed to the
+standard error stream, and the program aborts.
 
 If you define the macro @code{NDEBUG} before including @file{assert.h},
-then the macros expand to nothing to reduce code size after debugging is
-done.
+then these @code{assert} and @code{assertval} expand to nothing to
+reduce code size after debugging is done.
 
 @subheading Return Value
 
-@code{assert} returns one if it passes, else it aborts.
+@code{assert} returns 1 if its argument is non-zero, else it aborts.
 
-@code{assertval} returns the value of the expression if nonzero, else it
-aborts.
+@code{assertval} returns the value of its @var{expression} argument, if
+non-zero, else it aborts.
 
 @subheading Portability
 
@@ -36,8 +37,11 @@ aborts.
 @subheading Example
 
 @example
-int strdup(char *s)
+/* Like `strdup', but doesn't crash if the argument is NULL.  */
+char * safe_strdup(const char *s)
 @{
   assert(s != 0);
+  return strdup(s);
+@}
 @end example
 
