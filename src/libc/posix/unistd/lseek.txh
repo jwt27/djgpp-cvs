@@ -9,23 +9,25 @@ off_t lseek(int fd, off_t offset, int whence);
 
 @subheading Description
 
-This function moves the file pointer for @var{fd} according to
+This function moves the file pointer for handle @var{fd} according to
 @var{whence}:
 
 @table @code
 
 @item SEEK_SET
 
-The file pointer is moved to the offset specified.
+The file pointer is moved to the @var{offset} specified.
 
 @item SEEK_CUR
 
-The file pointer is moved relative to its current position.
+The file pointer is moved @var{offset} bytes relative to its current
+position.
 
 @item SEEK_END
 
 The file pointer is moved to a position @var{offset} bytes from the end
-of the file.  The offset is usually nonpositive in this case. 
+of the file.  The value of @var{offset} is usually nonpositive in this
+case. 
 
 @end table
 
