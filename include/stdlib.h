@@ -73,6 +73,7 @@ void *	realloc(void *_ptr, size_t _size);
 void	srand(unsigned _seed);
 double	strtod(const char *_s, char **_endptr);
 long	strtol(const char *_s, char **_endptr, int _base);
+long double	strtold(const char *_s, char **_endptr);
 unsigned long	strtoul(const char *_s, char **_endptr, int _base);
 int	system(const char *_s);
 size_t	wcstombs(char *_s, const wchar_t *_wcs, size_t _n);
