@@ -17,8 +17,10 @@
  *
  * There are some tests based on the current-working directory:
  *   1. An absolute path using '..' to navigate through the directories.
- *   2. A relative path using a drive letter and '..'.
- *   3. A relative path using a drive letter and one too many '..' over 2.
+ *   2. An absolute path without drive letter using '..' to navigate and
+ *      not ending in current-working directory.
+ *   3. A relative path using a drive letter and '..'.
+ *   4. A relative path using a drive letter and one too many '..' over 3.
  *
  * And following are failure tests:
  *   1. Simple symlink loop.
@@ -145,6 +147,27 @@ int main(void)
 
      test.src    = path;
      test.target = tests_success[0].target;
+
+     printf("Test %d: Solving %s\n", j, test.src);
+     ret = test_success(j, test.src, test.target);
+     if (!ret)
+       ok = 0;
+
+     /* Try tests_success[2] with an absolute path without drive letter
+      * and with '..'. */
+     j++;
+
+     strcpy(path, cwd_without_drive);
+     for (i = 0; i < n_slashes; i++)
+     {
+       strcat(path, "/..");
+     }
+     strcat(path, cwd_without_drive);
+     strcat(path, "/");
+     strcat(path, tests_success[2].src);
+
+     test.src    = path;
+     test.target = tests_success[2].target;
 
      printf("Test %d: Solving %s\n", j, test.src);
      ret = test_success(j, test.src, test.target);
