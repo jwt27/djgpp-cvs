@@ -2,5 +2,10 @@
 TOP=..
 
 SRC += dxeload.c
+SRC += dlerror.c
+SRC += dlregsym.c
+SRC += dlunregs.c
+SRC += dxe3stat.c
+SRC += dlopen.c
 
 include $(TOP)/../makefile.inc
