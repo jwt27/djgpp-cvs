@@ -1,0 +1,7 @@
+@node Changes in 2.04, , Changes in 2.03, What Changed
+@section Changes in 2.04
+
+Here is a list of changes from DJGPP V2.03 to V2.04.
+
+@findex uname@r{, CPU type detection}
+Ability to report the exact CPU type in @code{uname}.
