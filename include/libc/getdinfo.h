@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_libc_getdinfo_h__
 #define __dj_include_libc_getdinfo_h__

@@ -1,3 +1,5 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_stat_h_
 #define __dj_include_sys_stat_h_

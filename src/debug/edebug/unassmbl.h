@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1993 DJ Delorie, see COPYING.DJ for details */
 /* This is file UNASSMBL.H */
 /*

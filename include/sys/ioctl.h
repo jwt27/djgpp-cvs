@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_ioctl_h_
 #define __dj_include_sys_ioctl_h_

@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -69,8 +70,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.5 2001/08/09 03:59:13 snowball Exp $
+$Id: ioctl.c,v 1.6 2002/10/17 23:00:24 richdawe Exp $
 $Log: ioctl.c,v $
+Revision 1.6  2002/10/17 23:00:24  richdawe
+Update copyright messages
+
 Revision 1.5  2001/08/09 03:59:13  snowball
 Add bare-bones implementation of TIOCSWINSZ.
 
