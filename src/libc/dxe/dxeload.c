@@ -25,6 +25,13 @@ void *_dxe_load(char *name)
   }
 
   data = (char *)malloc(dh.element_size);
+  if (data == 0)
+  {
+    _close(h);
+    errno = ENOMEM;
+    return 0;
+  }
+
   _read(h, data, dh.element_size);
 
   {
