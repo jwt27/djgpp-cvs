@@ -1,9 +1,12 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/system.h>
 #include <sys/stat.h>
 #include <process.h>
 #include <dpmi.h>
@@ -17,7 +20,7 @@ static char STUBEDIT[]	 = "stubedit.exe";
 static const char *
 tail (const char *path)
 {
-  const char *p = path ? path + strlen (path) - 1 : path;
+  const char *p = path && path[0] ? path + strlen (path) - 1 : path;
 
   if (p)
     {
@@ -29,6 +32,31 @@ tail (const char *path)
   return p;
 }
 
+/*
+   This returns
+              -1, when the file does not exist
+               0, when it is not a v2 executable
+               1, when it is a v2 executable
+*/
+
+static int is_v2_prog(const char *program)
+{
+  const _v2_prog_type *type;
+
+  type = _check_v2_prog (program, -1);
+
+  if (!type->valid)
+    return -1;
+
+  if (type->object_format != _V2_OBJECT_FORMAT_COFF)
+    return 0;
+
+  if (type->version.v.major < 2)
+    return 0;
+
+  return 1;
+}
+
 /* Support the DJGPP ``symlinks'' for .exe files.  */
 int
 symlink (const char *source, const char *dest)
@@ -37,6 +65,8 @@ symlink (const char *source, const char *dest)
   char dest_abs[FILENAME_MAX+5];
   char *np, ropt[FILENAME_MAX+15]; /* some extra for ``runfile='' */
   const char *src_base, *dest_base;
+
+  int v2_prog = 0;
 
   _fixpath (source, src_abs);
   _fixpath (dest, dest_abs);
@@ -54,11 +84,38 @@ symlink (const char *source, const char *dest)
   if (stricmp (src_abs, dest_abs) == 0)
     return 0;
 
+  /* Check at first, if the given name is a v2 executable (may be
+     unstubbed COFF image) */
+  v2_prog = is_v2_prog(src_abs);
+
+  /* It is an existing file but no v2 executable */
+  if (v2_prog == 0)
+  {
+    errno = EXDEV;
+    return -1;
+  }
+
   /* Allow to say `ln -s src dest' when we really
      mean `src.exe' and `dest.exe'  */
-  np = src_abs + strlen (src_abs) - 4;
-  if (stricmp (np, EXE_SUFFIX))
+  np = src_abs + strlen (src_abs);
+  if (np - src_abs > 4 && stricmp (np - 4, EXE_SUFFIX) != 0)
+  {
     strcat (src_abs, EXE_SUFFIX);
+    /* Now test again for v2 executable, but only if not already
+       succeed. */
+    v2_prog = v2_prog == 1 ? v2_prog : is_v2_prog(src_abs);
+  }
+
+  /* It is an existing file but no v2 executable */
+  if (v2_prog == 0)
+  {
+    errno = EXDEV;
+    return -1;
+  }
+
+  /* When we are here, either the file exists and is a v2 executable
+     or it does not exist and we hope, the the user knows what he
+     does. */
 
   /* Under LFN, we need the short version of the program name, since that
      is what the stub stores (and what a program gets in its argv[0]).  */
@@ -107,10 +164,13 @@ symlink (const char *source, const char *dest)
       }
 
   /* `stubedit' needs its argument with the .EXE suffix explicit.  */
-  np = dest_abs + strlen (dest_abs) - 4;
-  if (stricmp (np, EXE_SUFFIX))
+  np = dest_abs + strlen (dest_abs);
+  if (np - dest_abs > 4 && stricmp (np - 4, EXE_SUFFIX) != 0)
     strcat (dest_abs, EXE_SUFFIX);
 
+  /* Any file is already a link to itself.  */
+  if (stricmp (src_abs, dest_abs) == 0)
+    return 0;
 
   if (spawnlp (P_WAIT, STUBIFY, STUBIFY, "-g", dest_abs, (char *)0)
       || spawnlp (P_WAIT, STUBEDIT, STUBEDIT, dest_abs, ropt, (char *)0))
