@@ -69,6 +69,10 @@ object is a disk file (data.c, etc).
 If @code{b} or @code{t} is not specified in @var{mode}, the file type is
 chosen by the value of @code{fmode} (@pxref{_fmode}). 
 
+You can open directories using @code{fopen}, but there is limited
+support for stream file operations on directories.  In particular,
+they cannot be read from or written to.
+
 If you need to specify the DOS share flags use the @code{__djgpp_share_flags}.
 @xref{__djgpp_share_flags}.
 
