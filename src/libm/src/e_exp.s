@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 /*
  * Copyright (c) 1993,94 Winning Strategies, Inc.
@@ -36,7 +37,7 @@
 
 #include <machine/asm.h>
 
-RCSID("$Id: e_exp.s,v 1.1 1994/09/26 03:09:36 dj Exp $")
+RCSID("$Id: e_exp.s,v 1.2 1996/07/23 22:00:18 dj Exp $")
 
 /* e^x = 2^(x * log2(e)) */
 ENTRY(__ieee754_exp)
@@ -51,4 +52,5 @@ ENTRY(__ieee754_exp)
 	fld1
 	faddp				/* 2^(fract(x * log2(e))) */
 	fscale				/* e^x */
+        ffree %st(1)
 	ret

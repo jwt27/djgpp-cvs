@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 /*
  * Copyright (c) 1994 Winning Strategies, Inc.
@@ -36,10 +37,11 @@
 
 #include <machine/asm.h>
 
-RCSID("$Id: e_scalb.s,v 1.1 1994/09/26 03:09:38 dj Exp $")
+RCSID("$Id: e_scalb.s,v 1.2 1996/07/23 22:00:18 dj Exp $")
 
 ENTRY(__ieee754_scalb)
 	fldl	12(%esp)
 	fldl	4(%esp)
 	fscale
+        ffree  %st(1)
 	ret
