@@ -52,6 +52,8 @@ come with DJGPP.
 
 * update::      conditionally copy one file to another.
 
+* djasm::       The DJGPP 16-bit assembler.
+
 @end menu
 
 @c -----------------------------------------------------------------------------
@@ -620,7 +622,7 @@ Note that the Postscript file is sent to standard output, so you must
 redirect the output to a file or a printer.
 
 @c -----------------------------------------------------------------------------
-@node update, , texi2ps, Top
+@node update, djasm, texi2ps, Top
 @chapter update
 
 @code{update} is a fancy copy-if-needed program.  Basically, it compares
@@ -642,5 +644,12 @@ foo.c foo.h : foo.y
         update y_tab.h foo.h
         update y_tab.c foo.c
 @end example
+
+@c -----------------------------------------------------------------------------
+@node djasm, , update, Top
+@chapter djasm
+@lowersections
+
+@include djasm.txi
 
 @bye
