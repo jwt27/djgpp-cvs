@@ -20,9 +20,9 @@ scan code in @var{xkey_code}.
 A pointer to an @sc{ecma-48} compliant string if the scan code @var{xkey_code}
 has an encoding or @code{NULL} if there is not.
 
-@subheading Portability
+Note that this function is DJGPP-specific.
 
-@port-note This function is DJGPP-specific.
+@subheading Portability
 
 @portability !ansi, !posix
 
