@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stddef.h>
 
 int d1 = 0x12345678;
 int d2 = 0x76543210;
@@ -23,7 +24,7 @@ main(void)
 
   c = bss;
   e = c + sizeof(bss);
-  printf("bss scan from %p to %p, %lu bytes\n", c, e, e-c);
+  printf("bss scan from %p to %p, %d bytes\n", c, e, (ptrdiff_t) (e-c));
   while (c < e)
   {
     if (*c)
