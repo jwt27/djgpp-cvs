@@ -28,6 +28,9 @@ struct statfs
 @};
 @end example
 
+Note that if INT 21h is hooked by a TSR, the total size is limited
+to approximately 2GB.
+
 @subheading Return Value
 
 Zero on success, nonzero on failure.
