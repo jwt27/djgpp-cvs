@@ -339,7 +339,7 @@ extern "C" {
 
 /* Define if you have the getgroups function.  */
 #undef  HAVE_GETGROUPS
-#define HAVE_GETGROUPS
+#define HAVE_GETGROUPS	1
 
 /* Define if you have gethostname() function in your library.  */
 #undef  HAVE_GETHOSTNAME
