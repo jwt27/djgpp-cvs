@@ -11,6 +11,7 @@
 #include <go32.h>
 #include <libc/file.h>
 #include <io.h>
+#include <libc/fd_props.h>
 
 int
 _flsbuf(int c, FILE *f)
@@ -97,17 +98,19 @@ _flsbuf(int c, FILE *f)
 	|| __libc_write_termios_hook == NULL
 	|| __libc_write_termios_hook(fileno(f), base, rn, &n) == 0)
     {
-      if (f->_flag & _IOAPPEND)
+      int fd = fileno(f);
+      if (__has_fd_properties(fd)
+          && (__get_fd_flags(fd) & FILE_DESC_APPEND))
       {
 	int save_errno = errno; /* We don't want llseek()'s setting 
 				   errno to remain. */
-	if( llseek(fileno(f), 0, SEEK_END) == -1 )
+	if( llseek(fd, 0, SEEK_END) == -1 )
 	{
 	  errno = save_errno;
 	  return EOF;
 	}
       }
-      n = _write(fileno(f), base, rn);
+      n = _write(fd, base, rn);
     }
     if (n <= 0)
     {
