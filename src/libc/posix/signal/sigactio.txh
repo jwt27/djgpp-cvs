@@ -19,6 +19,7 @@ the header file @file{signal.h}, is declared as follows:
    void (*sa_handler)(int);  /* the handler for the signal */
    sigset_t sa_mask;         /* additional signals to be blocked */
  @};
+@end example
 
 The @code{sa_handler} member is a signal handler, see @ref{signal}.  The
 @code{sa_mask} member defines the signals, in addition to @var{sig},
@@ -41,3 +42,4 @@ see if @var{sig} is a valid signal number on this system (if not,
 @subheading Portability
 
 @portability !ansi, posix
+
