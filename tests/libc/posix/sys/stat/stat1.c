@@ -22,7 +22,7 @@ main (int argc, char *argv[])
       char name[256];
       int fd;
 
-      sprintf (name, "/tmp/foo%d", i);
+      sprintf (name, "/dev/env/DJDIR/tmp/foo%d", i);
       if ((fd = open (name, O_CREAT, 0777)) < 0)
 	{
 	  fprintf (stderr, "open number %d failed, last fd = %d.\n", i,
