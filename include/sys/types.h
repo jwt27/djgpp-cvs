@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_types_h_
 #define __dj_include_sys_types_h_
