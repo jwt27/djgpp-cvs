@@ -15,7 +15,7 @@ returned to the heap with @code{free} (@pxref{free}).
 
 Note: this version of malloc is designed to reduce memory usage.  A
 faster but less efficient version is available in the libc sources
-(djlsr*.zip) in src/libc/ansi/stdlib/fmalloc.c
+(@file{djlsr*.zip}) in the file @file{src/libc/ansi/stdlib/fmalloc.c}.
 
 @subheading Return Value
 
@@ -46,7 +46,7 @@ void free(void *ptr);
 @subheading Description
 
 Returns the allocated memory to the heap (@pxref{malloc}).  If the
-@var{ptr} is @code{NULL}, it does nothing. 
+@var{ptr} is @code{NULL}, @code{free} does nothing. 
 
 @subheading Return Value
 
