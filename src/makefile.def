@@ -33,6 +33,7 @@ CROSS_BISON = bison
 GCC = gcc -g
 AR = ar
 LD = ld
+STRIP = strip
 BISON = bison
 
 else
@@ -45,6 +46,7 @@ else
 CROSS_GCC = i586-pc-msdosdjgpp-gcc -pipe
 CROSS_AR = i586-pc-msdosdjgpp-ar
 CROSS_LD = i586-pc-msdosdjgpp-ld
+CROSS_STRIP = i586-pc-msdosdjgpp-strip
 CROSS_BISON = bison
 
 # For building programs that *run* during the build (hostbin/*);
@@ -53,6 +55,7 @@ CROSS_BISON = bison
 GCC = gcc -g -O2 -pipe
 AR = ar
 LD = ld
+STRIP = strip
 BISON = bison
 
 # You may need to replace coff-go32 with coff-i386 in lib/djgpp.djl or

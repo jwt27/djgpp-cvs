@@ -216,7 +216,9 @@ CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
 		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/locale\" \
 		$(GCC_DEBUG_FLAGS) -O2
 
-LFLAGS=		-s
+# Don't use -s here, since "gcc -s" on DJ's Irix machine dumps core
+# when invoked with -s.  To work around, we use strip explicitly.
+LFLAGS=
 
 # If you want zic's -s option used when installing, uncomment the next line
 # ZFLAGS=	-s
@@ -304,13 +306,16 @@ ALL:		all date.exe tzselect
 
 zdump.exe:	$(TZDOBJS)
 		$(CC) $(CFLAGS) $(LFLAGS) $(TZDOBJS) $(LDLIBS) -o $@
+		$(CROSS_STRIP) $@
 
 host-zic:	$(TZCSRCS) yearistype
 		$(GCC) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\" \
 		 $(CFLAGS) $(LFLAGS) $(TZCSRCS) $(LDLIBS) -o $@
+		$(STRIP) $@
 
 zic.exe:	$(TZCOBJS) yearistype
 		$(CC) $(CFLAGS) $(LFLAGS) $(TZCOBJS) $(LDLIBS) -o $@
+		$(CROSS_STRIP) $@
 
 yearistype:	yearistype.sh
 		$(UTIL) cp yearistype.sh yearistype
@@ -355,6 +360,7 @@ date.exe:	$(DATEOBJS)
 		$(CROSS_AR) rs logwtmpl.a logwtmp.o
 		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
 			$(LDLIBS) -lc logwtmpl.a -o $@
+		$(CROSS_STRIP) $@
 		$(UTIL) rm logwtmpl.a
 
 tzselect:	tzselect.ksh
