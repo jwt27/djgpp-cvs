@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -5,6 +7,7 @@
 #include <string.h>
 #include <libc/internal.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <go32.h>
 #include <stubinfo.h>
 #include <dpmi.h>
@@ -13,6 +16,7 @@
 #include <libc/bss.h>
 #include <fcntl.h>
 #include <libc/environ.h>
+#include <dos.h> /* for _osmajor/_osminor */
 
 /* Global variables */
 
@@ -45,7 +49,8 @@ setup_core_selector(void)
   }
   _dos_ds = c;
 
-  __dpmi_set_segment_limit(_dos_ds, -1);
+  /* This was -1, but DPMI doesn't guarantee more than 1M + 64K */
+  __dpmi_set_segment_limit(_dos_ds, 0x10ffff);
 }
 
 static void
@@ -125,6 +130,27 @@ setup_environment(void)
   strcpy(__dos_argv0, cp+3);
 }
 
+static char *prog_name;
+
+static void
+setup_pname(void)
+{
+  char *ap, *fc;
+
+  fc = __dos_argv0;
+  for(ap = __dos_argv0; *ap; ap++)
+    if(*ap == ':' || *ap == '\\' || *ap == '/')
+      fc = ap + 1;
+
+  if(_stubinfo->argv0[0])
+    {
+      fc = _stubinfo->argv0;
+    }
+
+  prog_name = (char *)calloc(1, strlen(fc) + 1);
+  strcpy(prog_name, fc);
+}
+
 extern void __main(void);
 extern int  main(int, char **, char **);
 extern void _crt0_init_mcount(void);	/* For profiling */
@@ -132,12 +158,22 @@ extern void _crt0_init_mcount(void);	/* For profiling */
 char __PROXY[] = " !proxy";
 size_t __PROXY_LEN = sizeof(__PROXY)-1;
 
+static void
+setup_os_version(void)
+{
+  unsigned short v;
+  v = _get_dos_version(0); /* Get the reported version */
+  _osmajor = (v >> 8) & 0xff; /* paranoia */
+  _osminor = v & 0xff;
+}
+
+
 void
 __crt1_startup(void)
 {
-  char *pn;
   __bss_count ++;
   __crt0_argv = 0;
+  setup_os_version();
   setup_core_selector();
   setup_screens();
   setup_go32_info_block();
@@ -146,13 +182,15 @@ __crt1_startup(void)
   __environ_changed++;
   /* Make so rest of startup could use LFN.  */
   (void)_USE_LFN;
-  __crt0_setup_arguments();
-  pn = __crt0_argv ? __crt0_argv[0] : __dos_argv0;
-  __crt0_load_environment_file(pn);
+  setup_pname();
+  __crt0_load_environment_file(prog_name);
   (void)_USE_LFN;	/* DJGPP.ENV might have set $LFN */
-  _npxsetup(pn);
+  free(prog_name);
+  __crt0_setup_arguments();
+  _npxsetup(__crt0_argv ? __crt0_argv[0] : __dos_argv0);
   _crt0_init_mcount();
   __main();
+  errno = 0;	/* ANSI says errno should be zero at program startup */
   exit(main(__crt0_argc, __crt0_argv, environ));
 }
 
