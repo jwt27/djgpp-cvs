@@ -34,31 +34,45 @@ warp_high:
 	call	copy_page
 
 	cmpb	[_vcpi_present], 0
-	je	@f1
+	jne	@f1
 
+	; Can't move this page under VCPI and it's specially allocated anyway.
+	mov	esi, [_dosmem_page_table_physical]
+	call	copy_page
+	sub	edi, PAGE_SIZE
+
+@f1:
 	sub	edi, 2 * PAGE_SIZE
+	cmpb	[_memory_source], MEMORY_FROM_VCPI
+	jne	@f1
+
 	mov	si, approximate_temp_page_dir
 	shr	si, PAGE_SIZE_LOG
 	shl	si, 2
 	mov	eax, [si + _vcpi_server_pages]
 	mov	ebx, [si + _vcpi_server_pages + 4]
-	mov	ecx, [_dosmem_page_table_physical]
-	mov	[_vcpi_tss - (vcpi_go32 - _go32) + 0x1c], eax
-	mov	[_vcpi_client - (vcpi_go32 - _go32) + 0], eax
 	jmp	@f2
 
 @f1:
-	; Can't move this page under VCPI and it's specially allocated anyway.
-	mov	esi, [_dosmem_page_table_physical]
-	call	copy_page
-	sub	edi, 3 * PAGE_SIZE
 	mov	eax, edi
 	sub	eax, SERVER_LINEAR
 	add	eax, [_server_physical]
 	mov	ebx, eax
 	add	ebx, PAGE_SIZE
+
+@f2:
+	cmpb	[_vcpi_present], 0
+	jne	@f1
+
 	mov	ecx, ebx
 	add	ecx, PAGE_SIZE
+	mov	[_dosmem_page_table_physical], ecx
+	jmp	@f2
+
+@f1:
+	mov	ecx, [_dosmem_page_table_physical]
+	mov	[_vcpi_tss - (vcpi_go32 - _go32) + 0x1c], eax
+	mov	[_vcpi_client - (vcpi_go32 - _go32) + 0], eax
 
 @f2:
 	; Install new page directory in EAX,
@@ -66,7 +80,7 @@ warp_high:
 	; dosmem page table in ECX
 	mov	[_page_dir_physical], eax
 	mov	[_server_page_table_physical], ebx
-	mov	[_dosmem_page_table_physical], ecx
+;	mov	[_dosmem_page_table_physical], ecx
 	xchg	eax, ecx
 	or	al, PT_P | PT_W | PT_U
 	.addrsize
