@@ -23,13 +23,16 @@ struct statfs
     long	f_bavail; /* available clusters */
     long	f_files;  /* clusters on drive */
     long	f_ffree;  /* available clusters */
-    fsid_t	f_fsid;   /* [0]=drive_number, [1]=MOUNT_UFS
+    fsid_t	f_fsid;   /* array: [0]=drive_number, [1]=MOUNT_UFS */
     long	f_magic;  /* FS_MAGIC */
 @};
 @end example
 
 Note that if INT 21h is hooked by a TSR, the total size is limited
 to approximately 2GB.
+
+Note that there is a POSIX-compliant function @code{statvfs}
+(@pxref{statvfs}), which returns similar information.
 
 @subheading Return Value
 

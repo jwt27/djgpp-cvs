@@ -1,0 +1,45 @@
+@node fstatvfs, file system
+@subheading Syntax
+
+@example
+#include <sys/types.h>
+#include <sys/statvfs.h>
+
+int fstatvfs (int fd, struct statvfs *sbuf);
+@end example
+
+@subheading Description
+
+This function returns information about the ``filesystem'' (FS)
+containing the file referred to by the file descriptor @var{fd}
+and stores it in @var{sbuf}, which has the structure below:
+
+@example
+struct statvfs @{
+  unsigned long f_bsize;   /* FS block size */
+  unsigned long f_frsize;  /* fundamental block size */
+  fsblkcnt_t    f_blocks;  /* # of blocks on filesystem */
+  fsblkcnt_t    f_bfree;   /* # of free blocks on FS */
+  fsblkcnt_t    f_bavail;  /* # of free blocks on FS for
+                            * unprivileged users */
+  fsfilcnt_t    f_files;   /* # of file serial numbers */
+  fsfilcnt_t    f_ffree;   /* # of free file serial numbers */
+  fsfilcnt_t    f_favail;  /* # of free file serial numbers
+                            * for unprivileged users */
+  unsigned long f_fsid;    /* FS identifier */
+  unsigned long f_flag;    /* FS flags: bitwise OR of ST_NOSUID,
+                            * ST_RDONLY */
+  unsigned long f_namemax; /* Maximum file name length on FS */
+@};
+@end example
+
+Note that if INT 21h is hooked by a TSR, the total size is limited
+to approximately 2GB.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure (and @code{errno} set).
+
+@subheading Portability
+
+@portability !ansi, posix

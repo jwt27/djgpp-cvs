@@ -708,3 +708,9 @@ Corrected problem with negative gmt offsets with z format in @code{strftime}.
 @cindex startup code, and memory corruption
 The startup code was updated, to prevent memory corruption when
 the @env{DJGPP} environment variable is not set.
+
+@findex fstatvfs
+@findex statvfs
+The functions @code{fstatvfs} and @code{statvfs} have been added.
+@code{statvfs} does much the same as @code{statfs}, but it is
+POSIX-compliant.
