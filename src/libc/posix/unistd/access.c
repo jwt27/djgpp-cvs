@@ -8,6 +8,7 @@
 #include <io.h>
 #include <dir.h>
 #include <errno.h>
+#include <dirent.h>
 
 int access(const char *fn, int flags)
 {
