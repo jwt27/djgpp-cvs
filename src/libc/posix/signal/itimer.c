@@ -203,10 +203,8 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
     *t_exp = *t_rel = 0;
     /* If both stopped, stop timer */
     if (( p_exp | r_exp ) == 0 )
-    {
       stop_timer();
-      return 0;
-    }
+    return 0;
   }
 
   *t_exp = value->it_value.tv_sec    * UCLOCKS_PER_SEC;
