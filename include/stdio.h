@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 
@@ -97,6 +98,7 @@ void	rewind(FILE *_stream);
 int	scanf(const char *_format, ...);
 void	setbuf(FILE *_stream, char *_buf);
 int	setvbuf(FILE *_stream, char *_buf, int _mode, size_t _size);
+int	snprintf(char *str, size_t n, const char *fmt, ...);
 int	sprintf(char *_s, const char *_format, ...);
 int	sscanf(const char *_s, const char *_format, ...);
 FILE *	tmpfile(void);
@@ -104,6 +106,7 @@ char *	tmpnam(char *_s);
 int	ungetc(int _c, FILE *_stream);
 int	vfprintf(FILE *_stream, const char *_format, va_list _ap);
 int	vprintf(const char *_format, va_list _ap);
+int	vsnprintf(char *str, size_t n, const char *fmt, va_list ap);
 int	vsprintf(char *_s, const char *_format, va_list _ap);
 
 #ifndef __STRICT_ANSI__
