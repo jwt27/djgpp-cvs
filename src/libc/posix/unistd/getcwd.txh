@@ -11,9 +11,15 @@ char *getcwd(char *buffer, int max);
 @subheading Description
 
 Get the current directory.  The return value includes the drive
-specifier.  If @var{buffer} is @code{NULL}, @code{getcwd} allocates
-memory with @code{malloc}.  This call fails if more than @var{max}
-characters are required to specify the current directory.
+specifier.
+
+If @var{buffer} is @code{NULL}, @code{getcwd} allocates
+a buffer of size @var{max} with @code{malloc}.  This is an extension
+of the POSIX standard, which is compatible with the behaviour of glibc
+(the C library used on Linux).
+
+This call fails if more than @var{max} characters are required
+to specify the current directory.
 
 @subheading Return Value
 
@@ -21,6 +27,8 @@ The buffer, either @var{buffer} or a newly-allocated buffer, or
 @code{NULL} on error.
 
 @subheading Portability
+
+@port-note posix The behaviour when @var{buffer} is @code{NULL} is unspecified for POSIX.
 
 @portability !ansi, posix
 
