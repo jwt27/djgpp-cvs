@@ -1,0 +1,27 @@
+@node strtoull, string
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+unsigned long long strtoull(const char *s, char **endp, int base);
+@end example
+
+@subheading Description
+
+This is just like @code{strtoll} (@pxref{strtoll}) except that the result
+is unsigned. 
+
+@subheading Return Value
+
+The value.
+
+@subheading Example
+
+@example
+printf("Enter a number: "); fflush(stdout);
+gets(buf);
+char *bp;
+printf("The value is %llu\n", strtoull(buf, &bp, 0));
+@end example
+

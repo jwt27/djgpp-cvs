@@ -1,0 +1,17 @@
+@node llabs, misc
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+long long llabs(long long x);
+@end example
+
+@subheading Description
+
+This function takes the absolute value of @var{x}.  @xref{abs}.
+
+@subheading Return Value
+
+|@var{x}|
+

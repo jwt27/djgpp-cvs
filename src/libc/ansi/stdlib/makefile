@@ -1,3 +1,4 @@
+# Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
@@ -15,13 +16,17 @@ SRC += exit.c
 SRC += getenv.c
 SRC += labs.c
 SRC += ldiv.c
+SRC += llabs.c
+SRC += lldiv.c
 SRC += malloc.c
 SRC += qsort.c
 SRC += rand.c
 SRC += strtod.c
 SRC += strtol.c
 SRC += strtold.c
+SRC += strtoll.c
 SRC += strtoul.c
+SRC += strtoull.c
 SRC += system.c
 
 include $(TOP)/../makefile.inc
