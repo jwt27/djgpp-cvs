@@ -61,6 +61,7 @@ TZLIB=		$(LIBDIR)/libtz.a
 # built both natively and with cross-tools on Unix.
 
 include $(TOPDIR)/src/makefile.def
+export CROSS_BUILD
 
 # A replacement for (possibly missing) Unix programs:
 
@@ -281,6 +282,7 @@ install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
 		-$(UTIL) mkdir $(ETCDIR)
 		$(UTIL) cp zic.exe $(ETCDIR)/zic.exe
 		$(UTIL) cp zdump.exe $(ETCDIR)/zdump.exe
+		$(UTIL) cp tzselect $(ETCDIR)/tzselect
 		-$(UTIL) mkdir $(MANDIR)
 		-$(UTIL) rm $(MANDIR)/newctime.3 \
 			$(MANDIR)/newtzset.3 \
@@ -290,6 +292,7 @@ install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
 			$(MANDIR)/zic.8
 		$(UTIL) cp newctime.3 $(MANDIR)/newctime.3
 		$(UTIL) cp newtzset.3 $(MANDIR)/newtzset.3
+		$(UTIL) cp time2posix.3 $(MANDIR)/time2posix.3
 		$(UTIL) cp tzfile.5 $(MANDIR)/tzfile.5
 		$(UTIL) cp tzselect.8 $(MANDIR)/tzselect.8
 		$(UTIL) cp zdump.8 $(MANDIR)/zdump.8

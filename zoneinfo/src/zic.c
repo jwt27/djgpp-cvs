@@ -609,9 +609,9 @@ const char * const	tofile;
 		toname = ecatalloc(toname, "/");
 		toname = ecatalloc(toname, tofile);
 	}
-#ifdef __MSDOS__
 	/* Some zone names use `+' as part of their names, but DOS
 	   doesn't allow `+' in file names.  Replace with a `%'.  */
+	if (getenv ("COMSPEC") || getenv ("CROSS_BUILD"))
 	{
 		char *p;
 
@@ -623,7 +623,6 @@ const char * const	tofile;
 				*p = '%';
 	}
 
-#endif
 	/*
 	** We get to be careful here since
 	** there's a fair chance of root running us.
