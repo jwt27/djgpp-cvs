@@ -690,9 +690,13 @@ The types @code{blksize_t} and @code{blkcnt_t} were added.
 @code{blksize_t} is now used for the @code{st_blksize} member of
 @code{struct stat}.
 
+@cindex C libraries and profiling
 @cindex libc and profiling
 @cindex libm and profiling
+@cindex @file{emu387.dxe} and profiling
 @cindex @file{gcc.opt}, and profiling
 The build system for the C libraries was modified, so that profiling
 versions can be built.  Profiling options in @file{gcc.opt} are ignored
-for certain files in the C libraries' sources.
+for certain files in the C libraries' sources.  The build system for
+@file{emu387.dxe}, the math co-processor emulation library, was also
+modified, so that it can be built against a profiled version of libc.

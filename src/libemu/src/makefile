@@ -8,3 +8,9 @@ SRC += npxsetup.o
 EXTRA_OBJS += emudummy.o
 
 include $(TOP)/../makefile.inc
+
+%.o : %.cc
+	$(XNOPGGCC) -c -fno-exceptions $<
+
+%.o : %.c
+	$(XNOPGGCC) -c $<
