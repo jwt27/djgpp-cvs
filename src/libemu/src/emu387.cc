@@ -1,8 +1,10 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
@@ -141,8 +143,13 @@ static inline int is_zero(reg a)
 #ifndef eprintf
 static void eprintf(const char *f, ...)
 {
+  va_list args;
   char buf[1000];
-  vsprintf(buf, f, (&f)+1);
+
+  va_start(args, f);
+  vsnprintf(buf, sizeof(buf), f, args);
+  va_end(args);
+
   _write(1, buf, strlen(buf));
 }
 #endif

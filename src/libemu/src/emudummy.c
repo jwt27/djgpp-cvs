@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -15,7 +16,7 @@
 #include <libc/dosio.h>
    
 int
-vsprintf (char *buf, const char *fmt, va_list args)
+vsnprintf (char *buf, size_t buflen, const char *fmt, va_list args)
 {
   return 0;
 }
