@@ -3,7 +3,7 @@
 # Constructed by Richard Dawe <richdawe@bigfoot.com> 1999-05-17
 #
 
-dsm-file-version: 1.2
+dsm-file-version: 1.3
 dsm-version: 0.5.1
 dsm-name: djlsr203
 
@@ -28,8 +28,12 @@ zip: djlsr203.zip
 #builtin-post-install-script: echo Welcome to the world of DJGPP!
 
 replaces: djlsr < 2.03
+
+requires: djdev
 requires: gcc
 requires: g++
 requires: binutils
 requires: make
 requires: sed
+requires: bison
+requires: texinfo
