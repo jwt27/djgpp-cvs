@@ -1,0 +1,16 @@
+@node _dos_unlock, dos
+@subheading Syntax
+
+@example
+#include <io.h>
+
+_dos_unlock(int _fd, long _offset, long _length)
+@end example
+
+@subheading Description
+
+Removes an advisory lock to the specified region of the file.
+
+@subheading Return Value
+
+Zero if the lock was removed, nonzero otherwise.

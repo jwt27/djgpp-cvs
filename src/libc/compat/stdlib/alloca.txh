@@ -1,0 +1,26 @@
+@node alloca, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *alloca(size_t _size)
+@end example
+
+@subheading Description
+
+Allocate memory that will be automatically released when the current
+procedure exits.  Note that, when compiling with gcc, alloca is a
+built-in function and not a library call.
+
+@subheading Return Value
+
+A pointer to the memory, else NULL.
+
+@subheading Example
+
+@example
+q = alloca(strlen(x)+1);
+strcpy(q, x);
+@end example
+

@@ -1,0 +1,16 @@
+@node _dos_lock, dos
+@subheading Syntax
+
+@example
+#include <io.h>
+
+_dos_lock(int _fd, long _offset, long _length)
+@end example
+
+@subheading Description
+
+Adds an advisory lock to the specified region of the file.
+
+@subheading Return Value
+
+Zero if the lock was added, nonzero otherwise.
