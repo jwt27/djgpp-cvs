@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 
-static char *
+static __inline__ char *
 max_ptr(char *p1, char *p2)
 {
   if (p1 > p2)
