@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <libc/bss.h>
 #include <fcntl.h>
+#include <io.h>
 #include <unistd.h>
 #include <libc/fd_props.h>
 
