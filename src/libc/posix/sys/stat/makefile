@@ -1,9 +1,11 @@
+# Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../../..
 
 SRC += chmod.c
+SRC += fchmod.c
 SRC += filelen.c
 SRC += fixpath.c
 SRC += fstat.c

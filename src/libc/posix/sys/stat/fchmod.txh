@@ -1,0 +1,63 @@
+@node fchmod, file system
+@findex fchmod
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int fchmod(int fd, mode_t mode);
+@end example
+
+@subheading Description
+
+This function changes the mode (writable or write-only) of the file
+opened under the file descriptor @var{fd}.  The value of @var{mode}
+can be a combination of one or more of the @code{S_I*} constants
+described in the description of the @code{chmod} function (@pxref{chmod}).
+
+Some @code{S_I*} constants are ignored for regular files:
+
+@itemize @bullet
+@item
+@code{S_I*GRP} and @code{S_I*OTH} are ignored, because DOS/Windows
+has no concept of ownership, so all files are considered to belong
+to the user;
+
+@item
+@code{S_IR*} are ignored, because files are always readable on DOS/Windows.
+@end itemize
+
+@code{fchmod} will always succeed for character devices, but the mode
+will be ignored.
+
+@code{fchmod} may not be able to change the mode of files that have been
+opened using low-level methods.  High-level methods for opening files
+include the @code{fopen} (@pxref{fopen}) and @code{open} (@pxref{open})
+functions.  Low-level methods include the @code{_open} (@pxref{_open})
+and @code{_dos_open} (@pxref{_dos_open}) functions.  In particular,
+redirected handles cannot have their mode changed with @code{fchmod}.
+
+@code{fchmod} may also not work as expected under DOS.  For instance,
+if a file is opened as read-write, then changed to read-only
+with @code{fchmod}, but then written to, then the mode will not
+be changed.
+
+This function can be hooked by File System Extensions
+(@pxref{File System Extensions}).
+
+@subheading Return Value
+
+Zero if the file exists and the mode was changed, else -1.
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+int fd;
+
+fd = open("/tmp/dj.dat", O_RDWR);
+fchmod(fd, S_IWUSR|S_IRUSR);
+@end example
