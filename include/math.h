@@ -59,10 +59,21 @@ double	tanh(double _x);
 #define PI		M_PI
 #define PI2		M_PI_2
 
+double	acosh(double);
+double	asinh(double);
+double	atanh(double);
+double	cbrt(double);
+double	exp10(double _x);
+double	exp2(double _x);
+double	expm1(double);
+double	hypot(double, double);
+double	log1p(double);
 double	log2(double _x);
 long double modfl(long double _x, long double *_pint);
 double	pow10(double _x);
 double	pow2(double _x);
+double	powi(double, int);
+void	sincos(double *, double *, double);
 
 /* These are in libm.a (Cygnus).  You must link -lm to get these */
 /* See libm/math.h for comments */
@@ -81,7 +92,6 @@ struct exception {
 extern double erf(double);
 extern double erfc(double);
 extern double gamma(double);
-extern double hypot(double, double);
 extern int isinf(double);
 extern int isnan(double);
 extern int finite(double);
@@ -89,13 +99,10 @@ extern double j0(double);
 extern double j1(double);
 extern double jn(int, double);
 extern double lgamma(double);
+extern double nan(void);
 extern double y0(double);
 extern double y1(double);
 extern double yn(int, double);
-extern double acosh(double);
-extern double asinh(double);
-extern double atanh(double);
-extern double cbrt(double);
 extern double logb(double);
 extern double nextafter(double, double);
 extern double remainder(double, double);
@@ -109,8 +116,6 @@ extern int ilogb(double);
 extern double rint(double);
 extern double scalbn(double, int);
 extern double drem(double, double);
-extern double expm1(double);
-extern double log1p(double);
 extern double gamma_r(double, int *);
 extern double lgamma_r(double, int *);
 extern float acosf(float);
@@ -146,6 +151,7 @@ extern float j0f(float);
 extern float j1f(float);
 extern float jnf(int, float);
 extern float lgammaf(float);
+extern float nanf(void);
 extern float y0f(float);
 extern float y1f(float);
 extern float ynf(int, float);

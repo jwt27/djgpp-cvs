@@ -15,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.2 1998/07/25 19:08:20 dj Exp $
+ * $Id: math.h,v 1.3 1999/07/04 14:37:08 eliz Exp $
  */
 
 #ifndef _MATH_H_
@@ -171,15 +171,23 @@ extern double nan __P((void));
 extern double y0 __P((double));
 extern double y1 __P((double));
 extern double yn __P((int, double));
-#define log2(x) (log (x) / M_LOG2_E)
+extern double log2 __P((double));
 
 #if !defined(_XOPEN_SOURCE)
 extern double acosh __P((double));
 extern double asinh __P((double));
 extern double atanh __P((double));
 extern double cbrt __P((double));
+extern double exp10 __P((double));
+extern double exp2 __P((double));
+extern double log1p __P((double));
 extern double logb __P((double));
+extern long double modfl __P((long double, long double *));
 extern double nextafter __P((double, double));
+extern double pow10 __P((double));
+extern double pow2 __P((double));
+extern double powi __P((double, int));
+extern void   sincos __P((double *, double *, double));
 extern double remainder __P((double, double));
 extern double scalb __P((double, double));
 
