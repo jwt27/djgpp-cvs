@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <libc/file.h>
 #include <io.h>
+#include <libc/fd_props.h>
 
 int
 fflush(FILE *f)
@@ -30,7 +31,8 @@ fflush(FILE *f)
     return 0;
   }
 
-  if (f->_flag & _IOAPPEND)
+  if (__has_fd_properties(fileno(f))
+      && (__get_fd_flags(fileno(f)) & FILE_DESC_APPEND))
   {
     int save_errno = errno; /* We don't want llseek()'s setting 
 			       errno to remain. */
