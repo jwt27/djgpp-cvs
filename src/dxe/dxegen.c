@@ -177,10 +177,12 @@ int main(int argc, char **argv)
       name = strings + sym[i].e.e.e_offset;
     }
 #if 0
-    printf("[%3d] 0x%08x 0x%04x 0x%04x %d %s\n",
+    if(sym[i].e_sclass == 2)
+    printf("[%3ld] 0x%08lx 0x%04x 0x%04x 0x%02x %d %s\n",
 	   i,
 	   sym[i].e_value,
 	   sym[i].e_scnum & 0xffff,
+	   sym[i].e_type,
 	   sym[i].e_sclass,
 	   sym[i].e_numaux,
 	   name
@@ -224,7 +226,7 @@ int main(int argc, char **argv)
 #if 0
   /* Thus, this won't work except on PCs */
   for (i=0; i<sc.s_nreloc; i++)
-    printf("0x%08x %3d 0x%04x - 0x%08x\n",
+    printf("0x%08lx %3ld 0x%04x - 0x%08lx\n",
 	   relocs[i].r_vaddr,
 	   relocs[i].r_symndx,
 	   relocs[i].r_type,
