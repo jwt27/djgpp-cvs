@@ -19,5 +19,7 @@ SRC += tmwrite.c
 SRC += tcgetpgr.c
 SRC += tcsetpgr.c
 SRC += ttyscrn.c
+SRC += readhook.c
+SRC += writhook.c
 
 include $(TOP)/../makefile.inc

@@ -9,9 +9,6 @@
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
 
-int (*__libc_read_termios_hook)(int handle, void *buffer, size_t count,
-				ssize_t *rv) = NULL;
-
 ssize_t
 read(int handle, void* buffer, size_t count)
 {

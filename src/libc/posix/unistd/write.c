@@ -20,10 +20,6 @@
 
 #define tblen _go32_info_block.size_of_transfer_buffer
 
-
-int (*__libc_write_termios_hook)(int handle, const void *buffer, size_t count,
-				 ssize_t *rv) = NULL;
-
 ssize_t
 write(int handle, const void* buffer, size_t count)
 {
