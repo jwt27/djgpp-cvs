@@ -4,8 +4,10 @@
 #undef bcmp
 
 int
-bcmp(const void *ptr1, const void *ptr2, int length)
+bcmp(const void *vptr1, const void *vptr2, int length)
 {
+  const char *ptr1 = vptr1;
+  const char *ptr2 = vptr2; 
   if (ptr1 == ptr2)
     return 0;
 
@@ -14,7 +16,7 @@ bcmp(const void *ptr1, const void *ptr2, int length)
 
   while (length)
   {
-    if (*((const char *)ptr1)++ != *((const char *)ptr2)++)
+    if (*ptr1++ != *ptr2++)
       return length;
     length--;
   }
