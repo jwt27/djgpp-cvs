@@ -21,6 +21,7 @@ extern "C" {
 #define dup __dup
 #define dup2 __dup2
 #define fnmatch __fnmatch
+#define fstatvfs __fstatvfs
 #define getcwd __getcwd
 #define glob __glob
 #define isatty __isatty
@@ -29,6 +30,7 @@ extern "C" {
 #define open __open
 #define putenv __putenv
 #define read __read
+#define statvfs __statvfs
 #define tzset __tzset
 #define write __write
 
