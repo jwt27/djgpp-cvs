@@ -39,7 +39,10 @@ Copyright @copyright{} 1996 DJ Delorie
 * Unimplemented::          Compatibility functions that either
                            always fail or do nothing
 
-* Master Index::
+* Function Index::
+* Variable Index::
+* Data Type Index::
+* Concept Index::
 @end menu
 
 @node    Introduction, Functional Categories, Top,      Top
@@ -72,7 +75,7 @@ your program with @samp{-ldbg} to use them.
 
 @include libc2.tex
 
-@node Unimplemented, Master Index, Alphabetical List, Top
+@node Unimplemented, Function Index, Alphabetical List, Top
 @chapter Unimplemented Functions
 
 The DJGPP standard C library is @sc{ansi}- and @sc{posix}-compliant, and
@@ -131,10 +134,25 @@ functionality is either always available or always ignored.
 * waitpid::                  Always fails.
 @end menu
 
-@node Master Index, , Unimplemented, Top
-@printindex cp
+@node Function Index, Variable Index, Unimplemented, Top
+@unnumbered Function Index
 
-@xref{Alphabetical List}.
+@printindex fn
+
+@node Variable Index, Data Type Index, Function Index, Top
+@unnumbered Variable Index
+
+@printindex vr
+
+@node Data Type Index, Concept Index, Variable Index, Top
+@unnumbered Data Type Index
+
+@printindex tp
+
+@node Concept Index, , Data Type Index, Top
+@unnumbered Concept Index
+
+@printindex cp
 
 @contents
 @bye
