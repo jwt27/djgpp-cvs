@@ -21,10 +21,10 @@ typedef struct BLOCK {
 #define ALIGN		8
 #define SMALL		(NUMSMALL*ALIGN)
 
-BLOCK *slop = 0;
-BLOCK *freelist[30];
+static BLOCK *slop = 0;
+static BLOCK *freelist[30];
 #if NUMSMALL
-BLOCK *smallblocks[NUMSMALL];
+static BLOCK *smallblocks[NUMSMALL];
 #endif
 
 #define MIN_SAVE_EXTRA	64
@@ -33,14 +33,14 @@ BLOCK *smallblocks[NUMSMALL];
 #define DEBUG 0
 
 #if DEBUG
- void
+static void
 check(BLOCK *b)
 {
   printf("check %08x %d %08x %d\n", b, b->size, &(ENDSZ(b)), ENDSZ(b));
 }
 #define CHECK(p) do { check(p); assert(p->size == ENDSZ(p)); consistency(); } while (0)
 #define CHECK1(p) do { check(p); assert(p->size == ENDSZ(p)); } while (0)
- void
+static void
 consistency()
 {
 #if 0
