@@ -19,8 +19,9 @@ ld to resolve references to build your code.
 The loader only adds around 300 bytes to your image, and the prototype 
 is found in <sys/dxe.h>:
 
-  void *dxe_load(char *filename);
+  void *_dxe_load(char *filename);
 
 It takes a single argument which is the file on disk containing the dynamic
 execution code.  It returns a pointer to the symbol you specified at DXE
-generation time.
+generation time.  See the documentation of `_dxe_load' in the library
+docs, for more details ("info libc alpha _dxe_load" from the DOS prompt).
