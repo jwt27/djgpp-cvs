@@ -763,7 +763,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 
 	case DPMI_ALLOCATE_MEMORY - 0x0500:  /* 0.9 */
 	  {
-	    word32 linear, handle;
+	    word32 linear = 0, handle;
 	    word32 size = (BX << 16) | CX;
 	    int err = client_allocate_memory (size, &linear, &handle, 1);
 
@@ -822,7 +822,64 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	  }
 
 	case DPMI_ALLOCATE_LINEAR - 0x0500:  /* 1.0 */
+	  {
+	    word32 linear = ebx, handle;
+	    word32 size = ecx;
+	    int err = client_allocate_memory (size, &linear, &handle, edx & 1);
+
+	    if (err) ERROR (err);
+
+#ifdef DEBUG
+	    if (DEBUG_TEST (DEBUG_MEMORY))
+	      eprintf ("%sommitted memory allocated.  "
+		       "Size=%08x, linear=%08x, handle=%08x.\r\n\n",
+		       edx & 1 ? "C" : "Unc",
+		       size, linear, handle);
+#endif
+
+	    ebx = linear;
+	    esi = handle;
+	    BARRIER ();
+	    return;
+	  }
+
 	case DPMI_RESIZE_LINEAR - 0x0500:  /* 1.0 */
+	  sel = es;
+	  {
+	    word32 new_size = ecx;
+	    word32 old_handle = esi;
+	    word32 new_handle = old_handle;
+	    word32 new_linear;
+	    int err;
+
+	    /* FIXME: support descriptor update */
+	    if (edx & 2)
+	      {
+		if (SEL_LDT_INSPECTABLE_P (sel) && __cpu_verw (sel))
+		  ERROR (DPMI_ERROR_UNSUPPORTED);
+		else
+		  ERROR (DPMI_ERROR_INVALID_HANDLE);
+	      }
+
+	    err = client_resize_memory (&new_handle, &new_linear,
+					new_size, edx & 1);
+	    if (err) ERROR (err);
+
+#ifdef DEBUG
+	    if (DEBUG_TEST (DEBUG_MEMORY))
+	      eprintf ("Memory resized.  Handle %08x->%08x, "
+		       "size=%08x, linear=%08x.\r\n\n",
+		       old_handle, new_handle,
+		       new_size,
+		       new_linear);
+#endif
+
+	    ebx = new_linear;
+	    esi = new_handle;
+	    BARRIER ();
+	    return;
+	  }
+
 	case DPMI_GET_PAGE_ATTRIBUTES - 0x0500:  /* 1.0 */
 	case DPMI_SET_PAGE_ATTRIBUTES - 0x0500:  /* 1.0 */
 	case DPMI_MAP_DEVICE - 0x0500:  /* 1.0 optional */

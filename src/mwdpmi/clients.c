@@ -301,6 +301,9 @@ client_allocate_memory (word32 size, word32 *linear, word32 *handle,
 
   if (size == 0) return DPMI_ERROR_INVALID_VALUE;
 
+  /* FIXME: allocation at given address not supported */
+  if (*linear != 0) return DPMI_ERROR_LINEAR_UNAVAILABLE;
+
   area = malloc (sizeof (client_memory_area));
   if (area == 0) return DPMI_ERROR_MEMORY_UNAVAILABLE;
   memset (area, 0, sizeof (client_memory_area));
@@ -461,6 +464,7 @@ client_resize_memory (word32 *handle, word32 *linear, word32 newsize,
   old_pg_count = (old_area->size + (PAGE_SIZE - 1)) / PAGE_SIZE;
 
   /* Allocate a new area uncomitted.  */
+  *linear = 0;
   err = client_allocate_memory (newsize, linear, &new_handle, 0);
   if (err) return err;
   new_area = (client_memory_area *)new_handle;
