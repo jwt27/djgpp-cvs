@@ -7,7 +7,6 @@
 #include <io.h>
 #include <sys/fsext.h>
 #include <libc/dosio.h>
-#include <libc/fd_props.h>
 
 int
 dup(int fd)
@@ -25,8 +24,5 @@ dup(int fd)
   /* Copy the fsext hook, the handle modes, and the properties.  */
   __FSEXT_set_function(r.x.ax, __FSEXT_get_function(fd));
   setmode(r.x.ax, __file_handle_modes[fd]);
-  if (__has_fd_properties(fd))
-    __dup_fd_properties(fd, r.x.ax);
-
   return r.x.ax;
 }
