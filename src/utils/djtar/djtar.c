@@ -123,6 +123,12 @@ typedef struct CHANGE {
 
 CHANGE *change_root = 0;
 
+static int
+any_changes_done(void)
+{
+  return change_root != NULL;
+}
+
 static void
 dump_changes(void)
 {
@@ -547,16 +553,16 @@ main(int argc, char **argv)
     setmode(fileno(stdout), O_TEXT);
     return 0;
   }
-  else
+  else if (any_changes_done())
   {
     change_file = fopen("tarchange.lst", "w");
     if (change_file != (FILE *)0)
     {
       dump_changes();
       fclose(change_file);
-      return 0;
     }
     else
       return 1;
   }
+  return 0;
 }

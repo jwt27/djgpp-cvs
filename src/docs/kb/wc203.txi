@@ -501,9 +501,14 @@ library.
 @code{realloc} no longer crashes when the avialable virtual memory is
 not enough to satisfy the reallocation request.
 
-
 @findex symlink@r{, source and target in different directories}
 Previously, the @code{symlink} function would sometimes think that the
 source and the target of the link were in the same directory, when in
 fact they weren't.  This bug is now fixed.
+
+@pindex djtar@{, and the }@file{tarchange.lst}@r{ file}
+@code{djtar} now creates the file @file{tarchange.lst} only if it
+actually needs to rename some of the files during unpacking.  In
+particular, simply listing the contents of an archive, as in @samp{djtar
+foo.tgz}, will not produce an empty @file{tarchange.lst} file anymore.
 
