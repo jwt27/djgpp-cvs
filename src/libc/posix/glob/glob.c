@@ -15,6 +15,8 @@
 #include <glob.h>
 #include <crt0.h>
 
+#define PATHBUF_LEN 2000
+
 typedef struct Save {
   struct Save *prev;
   char *entry;
@@ -25,6 +27,7 @@ static int save_count;
 static int flags;
 static int (*errfunc)(const char *epath, int eerno);
 static char *pathbuf;
+static char *pathbuf_end;
 static int wildcard_nesting;
 static char use_lfn;
 static char preserve_case;
@@ -180,7 +183,7 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
   pp = pattern;
   bp = epathbuf;
   pslash = bp-1;
-  while (1)
+  while (bp < pathbuf_end)
   {
     if (*pp == ':' || *pp == '\\' || *pp == '/')
     {
@@ -227,6 +230,10 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
     *bp++ = *pp++;
   }
   *bp = 0;
+
+  /* A pattern this big won't match any file.  */
+  if (bp >= pathbuf_end && *pp)
+    return 0;
 
   if (*pp == 0) /* end of pattern? */
   {
@@ -348,10 +355,11 @@ str_compare(const void *va, const void *vb)
 int
 glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _eerrno), glob_t *_pglob)
 {
-  char path_buffer[2000];
+  char path_buffer[PATHBUF_LEN + 1];
   int l_ofs, l_ptr;
 
   pathbuf = path_buffer+1;
+  pathbuf_end = path_buffer + PATHBUF_LEN;
   flags = _flags;
   errfunc = _errfunc;
   wildcard_nesting = 0;
