@@ -127,6 +127,8 @@ void _npxsetup(char *argv0)
 	}
 #endif
       signal(SIGNOFP, nofpsig);
+      /* mask all exceptions for the emulation case, too */
+      _control87(0x033f, 0xffff);
     }
   }
 }
