@@ -246,7 +246,7 @@ file handling function in library. Usually means encountered link loop
 @item 40
 
 EOVERFLOW -- Value too large.  @code{filelength} can assign this to
-@code{errno} when a file's length is larger than @code{LONG_MAX}
+@code{errno} when a file's length is larger than @math{2^31-2}
 (@pxref{filelength}).
 
 @end table
