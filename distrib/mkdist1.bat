@@ -26,6 +26,7 @@ echo manifest/%1.dsm>>manifest\%1.mft
 if not exist distrib\p\%1\nobins goto dobins
 echo nobins... 
 cp manifest/%1.mft manifest/%1.tmp
+if not exist distrib\nobins.exe gcc -s -O2 distrib/nobins.c -o distrib/nobins.exe
 distrib\nobins @distrib/p/%1/nobins < manifest\%1.tmp > manifest\%1.tm2
 mv manifest/%1.tm2 manifest/%1.mft
 :dobins
