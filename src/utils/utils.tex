@@ -95,7 +95,7 @@ The purpose of this program is to be able to interact directly with
 @code{make}'s ability to pass long command lines to programs.  If you
 use redirection, you aren't always able to handle long command lines
 (especially since echo is normally in @file{command.com}).  With
-@code{djecho}, you can, and you can use the @code{-o} option to redirect
+@code{djecho}, you can, and you can use the @samp{-o} option to redirect
 output to a file (and use the file later as a response file) without
 using dos's redirection.
 
@@ -140,8 +140,8 @@ validate them with whatever reduntant checks are available with the
 compression format, and print diagnostic messages whenever these checks
 fail.  The checks and the diagnostics are generally identical to those
 performed by @code{gzip}.  Some of the diagnostics are only printed under
-the verbose operation switched on by the @code{-v} switch.  Unless you use
-the @code{-i} switch, @code{djtar} will refuse to create files and
+the verbose operation switched on by the @samp{-v} switch.  Unless you use
+the @samp{-i} switch, @code{djtar} will refuse to create files and
 directories beyond the first tar directory entry which fails the checksum
 test; this usually means the file is either corrupted or not in a valid
 tar format.
@@ -149,7 +149,7 @@ tar format.
 An additional bonus of using @code{djtar} is that it can convert
 Unix-style text files to DOS-style text files, and vice versa.  By
 default, it will write all files exactly as found in the archive, but the
-@code{-u} and @code{-d} options can change that.
+@samp{-u} and @samp{-d} options can change that.
 
 @code{djtar} performs a number of file name conversions in an attempt
 to make the files fit into MS-DOS's restricted file names.  Any file
@@ -170,13 +170,13 @@ either a complete path, a replacement file name (no directory part), or
 just hit return (the file is skipped).
 
 If @code{djtar} is called as @code{djtart}, it behaves as if it were
-called with the @code{-t} switch; when called as @code{djtarx}, it
+called with the @samp{-t} switch; when called as @code{djtarx}, it
 behaves like @code{djtar -x}.  Thus you can create 2 links to
 @file{djtar.exe} which will save you some typing.
 
 By default, @code{djtar} just lists the contents of the archive(s)
 given as its arguments.  If you want to extract files, you must use
-the @code{-x} option.
+the @samp{-x} option.
 
 @strong{Options:}
 
@@ -255,9 +255,9 @@ By default, @code{djtar} writes all files exactly as it finds them.
 
 Write all files exactly as found in the archive, with no conversions of
 text files.  This is the default.
-Files written to the console (when @code{-p} is in effect) are always
+Files written to the console (when @samp{-p} is in effect) are always
 written in text mode, so this option doesn't have any effect when used
-with @code{-p}, unless the output of @code{djtar} is redirected to a file
+with @samp{-p}, unless the output of @code{djtar} is redirected to a file
 or a pipe.
 
 @item -o @var{string}
@@ -265,9 +265,9 @@ or a pipe.
 Only extract files whose full path names begin with @var{string}.
 This option can be used to extract portions of archive.  Files which aren't
 extracted will still be shown, but with a string @samp{[ skipped ]}
-appended to their names.  When given the @code{-o} option, @code{djtar}
+appended to their names.  When given the @samp{-o} option, @code{djtar}
 actually checks if @var{string} is the initial substring of each filename,
-so you can specify incomplete directory names, thus using it as a poor man's
+so you can specify incomplete file names, thus using @samp{-o} as a poor man's
 wildcard facility.
 
 @item -i
@@ -278,7 +278,7 @@ entries in the tar archive fail the checksum test, and any files beyond
 that point.  This option tells @code{djtar} to ignore the checksum test
 and proceed anyway.  Checksum failure usually means that the tar file is
 either corrupted or not in valid tar format, so this option is meant to be
-used either with the @code{-t} option, or in the rare cases when you
+used either with the @samp{-t} option, or in the rare cases when you
 @emph{know} for sure the tar file is valid (like if you had to edit it to
 change the filenames).
 
@@ -288,7 +288,7 @@ When given this switch, @code{djtar} will write the files to its standard
 output, which can be piped into another program (like a pager) or
 redirected to a file.  This option is designed to allow you to view or
 extract individual files (e.g., the @code{README} files) without having to
-open the entire archive, and should be used with an appropriate @code{-o
+open the entire archive, and should be used with an appropriate @samp{-o
 filename} option.
 
 When this option is used, diagnostic messages will be directed to the
