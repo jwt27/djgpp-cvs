@@ -15,8 +15,16 @@ EXTRA_OBJS += $(LIB)/gcrt0.o
 
 include $(TOP)/../makefile.inc
 
-$(LIB)/crt0.o : crt0.S
-	$(GCC) -o $@
+exit16.ah : exit16.asm
+	djasm exit16.asm exit16.ah
 
-$(LIB)/gcrt0.o : gcrt0.S
+sbrk16.ah : sbrk16.asm
+	djasm sbrk16.asm sbrk16.ah
+
+$(LIB)/crt0.o : crt0.S exit16.ah sbrk16.ah
 	$(GCC) -o $@
+	sed 's@crt0.o@$(LIB)/crt0.o@' crt0.d > crt02.d
+
+$(LIB)/gcrt0.o : gcrt0.S exit16.ah sbrk16.ah
+	$(GCC) -o $@
+	sed 's@gcrt0.o@$(LIB)/gcrt0.o@' gcrt0.d > gcrt02.d
