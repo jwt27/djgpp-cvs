@@ -13,6 +13,7 @@
 #include <io.h>
 #include <libc/file.h>
 #include <libc/local.h>
+#include <libc/symlink.h>
 
 FILE *
 tmpfile(void)
@@ -21,6 +22,7 @@ tmpfile(void)
   FILE *f;
   char *temp_name = tmpnam(0);
   char *n_t_r = (char *)malloc(L_tmpnam);
+  char  real_path[FILENAME_MAX];
 
   if (!n_t_r)
     return 0;
@@ -32,9 +34,15 @@ tmpfile(void)
      moment when we actually open the file below.  This loop
      retries the call to `tmpnam' until we actually succeed
      to create the file which didn't exist before.  */
+
   do {
+    /* Call to tmpnam() might have symlinks in returned path, however
+     * _creatnew does not support them.  So resolve them here.
+     */
+    if (!__solve_symlinks(temp_name, real_path))
+       return 0;
     errno = 0;
-    temp_fd = _creatnew(temp_name, 0, SH_DENYRW);
+    temp_fd = _creatnew(real_path, 0, SH_DENYRW);
   } while (temp_fd == -1
 	   && errno != ENOENT && errno != EMFILE
 	   && (temp_name = tmpnam(0)) != 0);
@@ -61,7 +69,7 @@ tmpfile(void)
   else
   {
     close(temp_fd);
-    remove(temp_name);
+    remove(real_path);
     free(n_t_r);
   }
   return f;
