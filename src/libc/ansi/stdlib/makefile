@@ -20,6 +20,7 @@ SRC += ldiv.c
 SRC += llabs.c
 SRC += lldiv.c
 SRC += malloc.c
+SRC += malldbg.c
 SRC += qsort.c
 SRC += rand.c
 SRC += strtod.c
