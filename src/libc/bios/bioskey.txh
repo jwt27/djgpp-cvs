@@ -15,14 +15,14 @@ argument @var{command} can accept the following values:
 
 @table @asis
 
-@item @var{command} = 0
+@item @var{command} = 00h
 
 Returns the next key pressed.  The value returned is a combination of
 the key's scan code in the high 8 bits and its ASCII code in the low 8
 bits.  For non-alphanumeric keys, such as the arrow keys, the low 8
 bits are zeroed.
 
-@item @var{command} = 1
+@item @var{command} = 01h
 
 Checks the keyboard, returns zero if no key pressed, else the key.  Does
 not dequeue the key from the keyboard buffer.  The value returned when a
@@ -31,7 +31,7 @@ bits and either its ASCII code or zero in the low 8 bits.
 
 If the @kbd{Ctrl-@key{BREAK}} key was pressed, returns -1.
 
-@item @var{command} = 2
+@item @var{command} = 02h
 
 Returns the keyboard shift state:
 
@@ -48,7 +48,7 @@ Returns the keyboard shift state:
 X--- ----  Insert on
 @end example
 
-@item @var{command} = 10
+@item @var{command} = 10h
 
 Returns the next extended key pressed.  This works like the case of
 @var{command} = 0, but it recognizes additional keys from the AT-style
@@ -59,12 +59,12 @@ the @code{E0h} prefix in the low 8 bits.
 
 Almost every PC nowadays has an extended 101-key keyboard.
 
-@item @var{command} = 11
+@item @var{command} = 11h
 
 Like the case of @var{command} = 1, but recognizes the additional keys
 of the extended keyboard.
 
-@item @var{command} = 12
+@item @var{command} = 12h
 
 Returns the two status bytes of the enhanced keyboard, packed in the low
 16 bits of the return value.  The individual bits of the return value
