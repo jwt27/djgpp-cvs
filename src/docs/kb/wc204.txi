@@ -458,3 +458,15 @@ functions are @code{mallinfo}, @code{malloc_debug},
 with many Unix and GNU/Linux systems.  In addition, special hooks, such
 as @code{__libc_malloc_hook} and @code{__libc_free_hook}, are provided
 for building custom @code{malloc} debugging packages.
+
+@cindex startup code, and crashes on Windows
+Nested DJGPP programs which are run by other DJGPP programs on Windows
+should no longer crash (and take the DOS box with them) due to the fact
+that Windows leaks selectors.  These crashes were caused by a failure to
+allocate a selector for conventional memory, and subsequent use of the
+invalid selector by the startup code itself.  This problem was typical
+for Make, Bash, and any other program which can launch lots of child
+programs without ever exiting to DOS.  To avoid this, the startup code
+was fixed to print an error message and exit to DOS with an exit status
+that indicates a failure, when a selector for DOS memory could not be
+allocated by the DPMI host.

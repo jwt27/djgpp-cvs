@@ -16,6 +16,7 @@
 #include <pc.h>
 #include <libc/bss.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <libc/environ.h>
 #include <dos.h> /* for _osmajor/_osminor */
 
@@ -45,8 +46,33 @@ setup_core_selector(void)
   int c = __dpmi_allocate_ldt_descriptors(1);
   if (c == -1)
   {
-    _dos_ds = 0;
-    return;
+    /* We cannot continue without a valid _dos_ds selector, since
+       setup_screens, called next, already uses it, and will crash
+       unless we do something.
+
+       The failure to allocate a descriptor is known to happen on
+       Windows, when a long nested job (e.g., large recursive
+       Makefile) is in progress, due to the fact that the Windows DPMI
+       host leaks descriptors.
+
+       So we want to print an error message and exit; but the tricky
+       part is that we cannot use the transfer buffer or any other
+       buffer in conventional memory, because we don't have a selector
+       for DOS memory.  That's why we use function 02 of Int 21h.
+       (The idea is due to Morten Welinder.)  */
+    static const char no_dos_ds_msg[] =
+      "Cannot allocate selector for conventional memory; exiting\r\n";
+    const char *p = no_dos_ds_msg;
+    __dpmi_regs r;
+
+    while (*p)
+    {
+      r.h.ah = 2;  /* in case DOS clobbers it */
+      r.h.dl = *p & 0xff;
+      __dpmi_int(0x21, &r);
+      p++;
+    }
+    __exit(107);  /* the same error code stub.asm uses for no selectors */
   }
   _dos_ds = c;
 
