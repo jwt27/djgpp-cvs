@@ -322,3 +322,12 @@ the C@t{++} standard, and also recommended by the C standard.
 @code{_get_dos_version} now recognises @acronym{OEM} number @code{0xfd}
 as FreeDOS.
 
+@findex strtol@r{, and 8-bit characters}
+@findex strtoll@r{, and 8-bit characters}
+@findex strtoul@r{, and 8-bit characters}
+@findex strtoull@r{, and 8-bit characters}
+@findex atoi@r{, and 8-bit characters}
+@findex atol@r{, and 8-bit characters}
+Functions which convert numeric strings to the corresponding integer
+values no longer return non-zero values for strings which begin with
+8-bit characters.

@@ -45,7 +45,7 @@ strtoul(const char *nptr, char **endptr, int base)
     base = c == '0' ? 8 : 10;
   cutoff = (unsigned long)ULONG_MAX / (unsigned long)base;
   cutlim = (unsigned long)ULONG_MAX % (unsigned long)base;
-  for (acc = 0, any = 0;; c = *s++, c &= 0xff)
+  for (acc = 0, any = 0, c &= 0xff;; c = *s++, c &= 0xff)
   {
     if (isdigit(c))
       c -= '0';

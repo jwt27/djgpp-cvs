@@ -48,7 +48,7 @@ strtoll(const char *nptr, char **endptr, int base)
     cutlim = 0;
     cutoff++;
   }
-  for (acc = 0, any = 0;; c = *s++, c &= 0xff)
+  for (acc = 0, any = 0, c &= 0xff;; c = *s++, c &= 0xff)
   {
     if (isdigit(c))
       c -= '0';
