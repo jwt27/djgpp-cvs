@@ -1,4 +1,5 @@
 @node getpwuid, unix
+@findex getpwuid
 @subheading Syntax
 
 @example

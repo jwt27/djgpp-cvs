@@ -1,4 +1,5 @@
 @node setsid, unix
+@findex setsid
 @subheading Syntax
 
 @example

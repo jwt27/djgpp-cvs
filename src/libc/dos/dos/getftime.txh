@@ -1,4 +1,5 @@
 @node getftime, file system
+@findex getftime
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node chmod, file system
+@findex chmod
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _open, file system
+@findex _open
 @subheading Syntax
 
 @example

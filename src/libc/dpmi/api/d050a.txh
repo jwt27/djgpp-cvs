@@ -1,4 +1,5 @@
 @node __dpmi_get_memory_block_size_and_base, dpmi
+@findex __dpmi_get_memory_block_size_and_base
 @subheading Syntax
 
 @smallexample

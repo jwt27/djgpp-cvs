@@ -1,4 +1,5 @@
 @node utime, file system
+@findex utime
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node getopt, misc
+@findex getopt
 @subheading Syntax
 
 @example

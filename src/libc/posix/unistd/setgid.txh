@@ -1,4 +1,5 @@
 @node setgid, unix
+@findex setgid
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node inportl, cpu
+@findex inportl
 @subheading Syntax
 
 @example

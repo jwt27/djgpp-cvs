@@ -1,4 +1,5 @@
 @node stat, io
+@findex stat
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node fork, unix
+@findex fork
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node filelength, io
+@findex filelength
 @subheading Syntax
 
 @example

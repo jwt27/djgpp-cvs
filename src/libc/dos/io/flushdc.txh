@@ -1,4 +1,5 @@
 @node _flush_disk_cache, dos
+@findex _flush_disk_cache
 @subheading Syntax
 
 @example

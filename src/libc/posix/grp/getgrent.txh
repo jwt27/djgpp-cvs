@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node getgrent, unix
+@findex getgrent
 @subheading Syntax
 
 @example
@@ -51,6 +52,7 @@ endgrent();
 
 @c ----------------------------------------------------------------------
 @node fgetgrent, unix
+@findex fgetgrent
 @subheading Syntax
 
 @example
@@ -70,6 +72,7 @@ This function, in MS-DOS, is exactly the same as @code{getgrent}
 
 @c ----------------------------------------------------------------------
 @node setgrent, unix
+@findex setgrent
 @subheading Syntax
 
 @example
@@ -94,6 +97,7 @@ None.
 
 @c ----------------------------------------------------------------------
 @node endgrent, unix
+@findex endgrent
 @subheading Syntax
 
 @example
@@ -121,6 +125,7 @@ None.
 
 @c ----------------------------------------------------------------------
 @node getgrgid, unix
+@findex getgrgid
 @subheading Syntax
 
 @example
@@ -144,6 +149,7 @@ The matching group, or @code{NULL} if none match.
 
 @c ----------------------------------------------------------------------
 @node getgrnam, unix
+@findex getgrnam
 @subheading Syntax
 
 @example

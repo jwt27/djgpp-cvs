@@ -1,4 +1,5 @@
 @node tcsendbreak, termios
+@findex tcsendbreak
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node fpathconf, file system
+@findex fpathconf
 @subheading Syntax
 
 @example
@@ -25,6 +26,7 @@ The configuration value; for details, see @ref{pathconf}.
 
 @c ----------------------------------------------------------------------
 @node pathconf, posix
+@findex pathconf
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _read, file system
+@findex _read
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node getkey, bios
+@findex getkey
 @subheading Syntax
 
 @example

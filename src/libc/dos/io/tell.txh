@@ -1,4 +1,5 @@
 @node tell, io
+@findex tell
 @subheading Syntax
 
 @example

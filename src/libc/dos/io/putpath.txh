@@ -1,4 +1,6 @@
 @node _put_path, io
+@findex _put_path
+@findex _put_path2
 
 @subheading Syntax
 

@@ -1,4 +1,5 @@
 @node readdir, file system
+@findex readdir
 @subheading Syntax
 
 @example
@@ -77,6 +78,7 @@ closedir(d);
 
 @c -------------------------------------------------
 @node DTTOIF, file system
+@findex DTTOIF
 @subheading Syntax
 
 @example

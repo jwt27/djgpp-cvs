@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node _control87, cpu
+@findex _control87
 @subheading Syntax
 
 @example

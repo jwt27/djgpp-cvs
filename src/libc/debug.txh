@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node edi_init, debugging
+@findex edi_init
 @subheading Syntax
 
 @example
@@ -37,6 +38,7 @@ The argument @var{start_state} is usually set by a preceding call to
 
 @c ----------------------------------------------------------------------
 @node save_npx, debugging
+@findex save_npx
 @subheading Syntax
 
 @example
@@ -100,6 +102,7 @@ To restore the x87 state when control is returned to the debugger, call
 
 @c ----------------------------------------------------------------------
 @node load_npx, debugging
+@findex load_npx
 @subheading Syntax
 
 @example
@@ -161,6 +164,7 @@ and provided that a call to @code{save_npx} was issued before
 
 @c ----------------------------------------------------------------------
 @node run_child, debugging
+@findex run_child
 
 @subheading Syntax
 
@@ -269,6 +273,7 @@ debugger's standard handle is redirected as well.
 
 @c ----------------------------------------------------------------------
 @node read_child, debugging
+@findex read_child
 
 @subheading Syntax
 
@@ -300,6 +305,7 @@ the limits of the debuggee's code segment.
 
 @c ----------------------------------------------------------------------
 @node write_child, debugging
+@findex write_child
 
 @subheading Syntax
 
@@ -332,6 +338,7 @@ the limits of the debuggee's code segment.
 
 @c ----------------------------------------------------------------------
 @node read_sel_addr, debugging
+@findex read_sel_addr
 
 @subheading Syntax
 
@@ -361,6 +368,7 @@ the limits of the segment whose selector is @var{sel}).
 
 @c ----------------------------------------------------------------------
 @node write_sel_addr, debugging
+@findex write_sel_addr
 
 @subheading Syntax
 
@@ -391,6 +399,7 @@ the limits of the @var{sel}s segment).
 
 @c ----------------------------------------------------------------------
 @node cleanup_client, debugging
+@findex cleanup_client
 
 @subheading Syntax
 
@@ -410,6 +419,7 @@ debugger's original signal handlers.
 
 @c ----------------------------------------------------------------------
 @node v2loadimage, debugging
+@findex v2loadimage
 
 @subheading Syntax
 
@@ -475,6 +485,7 @@ Zero in case of success, non-zero otherwise.
 @c ----------------------------------------------------------------------
 
 @node wild, debugging
+@findex wild
 
 @subheading Syntax
 
@@ -508,6 +519,7 @@ otherwise.
 @c ----------------------------------------------------------------------
 
 @node redir_debug_init, debugging
+@findex redir_debug_init
 
 @subheading Syntax
 
@@ -622,6 +634,7 @@ otherwise.
 @c ----------------------------------------------------------------------
 
 @node redir_cmdline_delete, debugging
+@findex redir_cmdline_delete
 
 @subheading Syntax
 
@@ -660,6 +673,7 @@ of the @code{cmdline_t} structure.
 @c ----------------------------------------------------------------------
 
 @node redir_cmdline_parse, debugging
+@findex redir_cmdline_parse
 
 @subheading Syntax
 
@@ -730,6 +744,7 @@ OS, like @file{lost+found} on DOS.
 @c ----------------------------------------------------------------------
 
 @node redir_to_child, debugging
+@findex redir_to_child
 
 @subheading Syntax
 
@@ -782,6 +797,7 @@ handles.
 @c ----------------------------------------------------------------------
 
 @node redir_to_debugger, debugging
+@findex redir_to_debugger
 
 @subheading Syntax
 
@@ -833,6 +849,7 @@ handles.
 @c ----------------------------------------------------------------------
 
 @node syms_init, debugging
+@findex syms_init
 
 @subheading Syntax
 
@@ -873,6 +890,7 @@ None.
 @c ----------------------------------------------------------------------
 
 @node syms_name2val, debugging
+@findex syms_name2val
 
 @subheading Syntax
 
@@ -952,6 +970,7 @@ The address specified by @var{string}, or zero, if none found.
 @c ----------------------------------------------------------------------
 
 @node syms_val2name, debugging
+@findex syms_val2name
 
 @subheading Syntax
 
@@ -1002,6 +1021,7 @@ to @code{free}!
 @c ----------------------------------------------------------------------
 
 @node syms_val2line, debugging
+@findex syms_val2line
 
 @subheading Syntax
 
@@ -1045,6 +1065,7 @@ The name of the source file which corresponds to @var{addr}, or
 @c ----------------------------------------------------------------------
 
 @node syms_listwild, debugging
+@findex syms_listwild
 
 @subheading Syntax
 
@@ -1152,6 +1173,7 @@ None.
 @c ----------------------------------------------------------------------
 
 @node syms_module, debugging
+@findex syms_module
 
 @subheading Syntax
 
@@ -1182,6 +1204,7 @@ program whose symbols were read by @code{syms_init}.
 @c ----------------------------------------------------------------------
 
 @node syms_line2val, debugging
+@findex syms_line2val
 
 @subheading Syntax
 

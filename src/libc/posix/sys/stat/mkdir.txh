@@ -1,4 +1,5 @@
 @node mkdir, file system
+@findex mkdir
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node l64a, string
+@findex l64a
 @subheading Syntax
 
 @example

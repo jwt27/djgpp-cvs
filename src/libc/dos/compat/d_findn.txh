@@ -1,4 +1,5 @@
 @node _dos_findnext, dos
+@findex _dos_findnext
 @subheading Syntax
 
 @example

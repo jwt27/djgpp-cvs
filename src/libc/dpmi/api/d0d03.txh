@@ -1,4 +1,5 @@
 @node __dpmi_free_serialization_on_shared_memory, dpmi
+@findex __dpmi_free_serialization_on_shared_memory
 @subheading Syntax
 
 @smallexample

@@ -1,4 +1,12 @@
 @node exec*, process
+@findex execl
+@findex execle
+@findex execlp
+@findex execlpe
+@findex execv
+@findex execve
+@findex execvp
+@findex execvpe
 @subheading Syntax
 
 @example

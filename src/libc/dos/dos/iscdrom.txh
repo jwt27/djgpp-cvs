@@ -1,4 +1,5 @@
 @node _is_cdrom_drive, file system
+@findex _is_cdrom_drive
 @subheading Syntax
 
 @example

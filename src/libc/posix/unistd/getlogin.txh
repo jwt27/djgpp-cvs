@@ -1,4 +1,5 @@
 @node getlogin, unix
+@findex getlogin
 @subheading Syntax
 
 @example

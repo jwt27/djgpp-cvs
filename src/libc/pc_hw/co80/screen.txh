@@ -1,5 +1,8 @@
 @c ----------------------------------------------------------------------
 @node Screen Variables, conio
+@vindex ScreenPrimary
+@vindex ScreenSecondary
+@vindex ScreenAttrib
 @subheading Syntax
 
 @example
@@ -40,6 +43,7 @@ _farpokew(_dos_ds, ScreenPrimary, ( ((unsigned short) attr) << 8) + char ));
 
 @c ----------------------------------------------------------------------
 @node ScreenMode, conio
+@findex ScreenMode
 @subheading Syntax
 
 @example
@@ -71,6 +75,7 @@ video_mode = ScreenMode();
 
 @c ----------------------------------------------------------------------
 @node ScreenRows, conio
+@findex ScreenRows
 @subheading Syntax
 
 @example
@@ -106,6 +111,7 @@ int rows = ScreenRows();
 
 @c ----------------------------------------------------------------------
 @node ScreenCols, conio
+@findex ScreenCols
 @subheading Syntax
 
 @example
@@ -141,6 +147,7 @@ int available_columns = ScreenCols();
 
 @c ----------------------------------------------------------------------
 @node ScreenPutChar, conio
+@findex ScreenPutChar
 @subheading Syntax
 
 @example
@@ -173,6 +180,7 @@ ScreenPutChar('R', (BLUE << 4) | LIGHTMAGENTA, 75, 0);
 
 @c ----------------------------------------------------------------------
 @node ScreenGetChar, conio
+@findex ScreenGetChar
 @subheading Syntax
 
 @example
@@ -215,6 +223,7 @@ ScreenGetChar(&ch, &attr, 0, 0);
 
 @c ----------------------------------------------------------------------
 @node ScreenPutString, conio
+@findex ScreenPutString
 @subheading Syntax
 
 @example
@@ -249,6 +258,7 @@ ScreenPutString("Hello, world!", (BLUE << 4) | LIGHTBLUE, 20, 10);
 
 @c ----------------------------------------------------------------------
 @node ScreenSetCursor, conio
+@findex ScreenSetCursor
 @subheading Syntax
 
 @example
@@ -280,6 +290,7 @@ ScreenSetCursor(0, 0);   /* home the cursor */
 
 @c ----------------------------------------------------------------------
 @node ScreenGetCursor, conio
+@findex ScreenGetCursor
 @subheading Syntax
 
 @example
@@ -311,6 +322,7 @@ ScreenGetCursor(&wherex, &wherey);
 
 @c ----------------------------------------------------------------------
 @node ScreenClear, conio
+@findex ScreenClear
 @subheading Syntax
 
 @example
@@ -342,6 +354,7 @@ ScreenClear();
 
 @c ----------------------------------------------------------------------
 @node ScreenUpdate, conio
+@findex ScreenUpdate
 @subheading Syntax
 
 @example
@@ -373,6 +386,7 @@ ScreenUpdate(saved_screen);
 
 @c ----------------------------------------------------------------------
 @node ScreenUpdateLine, conio
+@findex ScreenUpdateLine
 @subheading Syntax
 
 @example
@@ -403,6 +417,7 @@ ScreenUpdateLine(line_buf, 10);
 
 @c ----------------------------------------------------------------------
 @node ScreenRetrieve, conio
+@findex ScreenRetrieve
 @subheading Syntax
 
 @example
@@ -438,6 +453,7 @@ ScreenRetrieve(saved_screen);
 
 @c ----------------------------------------------------------------------
 @node ScreenVisualBell, conio
+@findex ScreenVisualBell
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node sigaddset, signal
+@findex sigaddset
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _go32_dpmi_remaining_physical_memory, dpmi
+@findex _go32_dpmi_remaining_physical_memory
 @subheading Syntax
 
 @example
@@ -22,6 +23,7 @@ The amount in bytes.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_remaining_virtual_memory, dpmi
+@findex _go32_dpmi_remaining_virtual_memory
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node sigismember, signal
+@findex sigismember
 @subheading Syntax
 
 @example

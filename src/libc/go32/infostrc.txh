@@ -1,4 +1,5 @@
 @node _go32_info_block, dpmi
+@vindex _go32_info_block
 @subheading Syntax
 
 @example

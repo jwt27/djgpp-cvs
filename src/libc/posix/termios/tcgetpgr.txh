@@ -1,4 +1,5 @@
 @node tcgetpgrp, termios
+@findex tcgetpgrp
 @subheading Syntax
 
 @example
@@ -28,6 +29,7 @@ process group ID, which is currently identical to the value returned by
 @c -------------------------------------------------------------------
 
 @node tcsetpgrp, termios
+@findex tcsetpgrp
 @subheading Syntax
 
 @example

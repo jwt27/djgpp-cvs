@@ -1,4 +1,5 @@
 @node ntohs, cpu
+@findex ntohs
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _dos_read, dos
+@findex _dos_read
 @subheading Syntax
 
 @example

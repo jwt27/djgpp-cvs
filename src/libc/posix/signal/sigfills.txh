@@ -1,4 +1,5 @@
 @node sigfillset, signal
+@findex sigfillset
 @subheading Syntax
 
 @example

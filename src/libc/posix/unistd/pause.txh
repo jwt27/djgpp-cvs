@@ -1,4 +1,5 @@
 @node pause, process
+@findex pause
 @subheading Syntax
 
 @example

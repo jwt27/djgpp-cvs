@@ -1,4 +1,5 @@
 @node cfsetispeed, termios
+@findex cfsetispeed
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node rewinddir, file system
+@findex rewinddir
 @subheading Syntax
 
 @example

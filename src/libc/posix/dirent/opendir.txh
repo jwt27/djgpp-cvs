@@ -1,4 +1,5 @@
 @node opendir, file system
+@findex opendir
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node fileno, stdio
+@findex fileno
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node getitimer, process
+@findex getitimer
 @subheading Syntax
 
 @example
@@ -34,6 +35,7 @@ Returns 0 on success, -1 on failure (and sets @code{errno}).
 
 @c ----------------------------------------------------------------------
 @node setitimer, process
+@findex setitimer
 @subheading Syntax
 
 @example

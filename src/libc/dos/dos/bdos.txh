@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node bdos, dos
+@findex bdos
 @subheading Syntax
 
 @example
@@ -35,6 +36,7 @@ int ch = bdos(1, 0, 0) & 0xff;
 
 @c ----------------------------------------------------------------------
 @node bdosptr, dos
+@findex bdosptr
 @subheading Syntax
 
 @example
@@ -76,6 +78,7 @@ bdosptr(9, "Hello, there$", 0);
 
 @c -------------------------------------------------------------------------
 @node int86, dos
+@findex int86
 @subheading Syntax
 
 @example
@@ -233,6 +236,7 @@ int86(0x21, &r, &r);
 
 @c -------------------------------------------------------------------------
 @node int386, dos
+@findex int386
 @subheading Syntax
 
 @example
@@ -256,6 +260,7 @@ The returned value of @code{EAX}.
 
 @c ----------------------------------------------------------------------
 @node int86x, dos
+@findex int86x
 @subheading Syntax
 
 @example
@@ -295,6 +300,7 @@ int86x(0x21, &r, &r, &s);
 
 @c ----------------------------------------------------------------------
 @node int386x, dos
+@findex int386x
 @subheading Syntax
 
 @example
@@ -319,6 +325,7 @@ The value of @code{EAX} is returned.
 
 @c ----------------------------------------------------------------------
 @node intdos, dos
+@findex intdos
 @subheading Syntax
 
 @example
@@ -342,6 +349,7 @@ the interrupt vector is 0x21.
 
 @c ----------------------------------------------------------------------
 @node intdosx, dos
+@findex intdosx
 @subheading Syntax
 
 @example

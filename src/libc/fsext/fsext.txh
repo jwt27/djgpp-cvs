@@ -1,4 +1,6 @@
 @node File System Extensions, file system
+@cindex File System Extensions
+@cindex FSEXT
 
 @subheading Description
 
@@ -231,6 +233,7 @@ support functions.
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_alloc_fd, file system
+@findex __FSEXT_alloc_fd
 @subheading Syntax
 
 @example
@@ -280,6 +283,7 @@ int socket()
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_set_function, file system
+@findex __FSEXT_set_function
 @subheading Syntax
 
 @example
@@ -347,6 +351,7 @@ install_screen_write_handler (void)
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_get_function, file system
+@findex __FSEXT_get_function
 @subheading Syntax
 
 @example
@@ -381,6 +386,7 @@ _read(int fd, void *buf, int len)
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_set_data, file system
+@findex __FSEXT_set_data
 @subheading Syntax
 
 @example
@@ -497,6 +503,7 @@ int my_fsext(__FSEXT_Fnumber Op, int* RV, va_list Args)
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_get_data, file system
+@findex __FSEXT_get_data
 @subheading Syntax
 
 @example

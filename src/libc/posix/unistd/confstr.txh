@@ -1,4 +1,5 @@
 @node confstr, posix
+@findex confstr
 @subheading Syntax
 
 @example

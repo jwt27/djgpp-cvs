@@ -1,4 +1,5 @@
 @node getpgrp, unix
+@findex getpgrp
 @subheading Syntax
 
 @example

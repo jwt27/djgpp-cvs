@@ -1,4 +1,5 @@
 @node regcomp, string
+@findex regcomp
 @subheading Syntax
 
 @example
@@ -374,6 +375,7 @@ is clarified, behavior in such cases should not be relied on.
 @c -------------------------------------------------------------------------
 
 @node regexec, string
+@findex regexec
 @subheading Syntax
 
 @example
@@ -541,6 +543,7 @@ bugs may lurk in combinations of word-boundary matching and anchoring.
 @c ----------------------------------------------------------------------
 
 @node regerror, string
+@findex regerror
 @subheading Syntax
 
 @example
@@ -601,6 +604,7 @@ The size of buffer needed to hold the message (including terminating
 @c --------------------------------------------------------------------------
 
 @node regfree, string
+@findex regfree
 @subheading Syntax
 
 @example

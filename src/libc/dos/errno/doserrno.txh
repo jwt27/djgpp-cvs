@@ -1,4 +1,5 @@
 @node _doserrno, dos
+@vindex _doserrno
 @subheading Syntax
  
 @example

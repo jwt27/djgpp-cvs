@@ -1,4 +1,5 @@
 @node __set_fd_properties, io
+@findex __set_fd_properties
 @subheading Syntax
 
 @example
@@ -60,6 +61,7 @@ Returns 0 on success. Returns -1 when unable to store the information.
 @portability !ansi, !posix
 
 @node __clear_fd_properties, io
+@findex __clear_fd_properties
 @subheading Syntax
 
 @example
@@ -88,6 +90,7 @@ Always returns 0 for success.
 @portability !ansi, !posix
 
 @node __dup_fd_properties, io
+@findex __dup_fd_properties
 @subheading Syntax
 
 @example

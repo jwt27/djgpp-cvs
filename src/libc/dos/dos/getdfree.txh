@@ -1,4 +1,5 @@
 @node getdfree, file system
+@findex getdfree
 @subheading Syntax
 
 @example

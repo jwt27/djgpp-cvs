@@ -1,4 +1,5 @@
 @node tcdrain, termios
+@findex tcdrain
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node dup, io
+@findex dup
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node fnmerge, file system
+@findex fnmerge
 @subheading Syntax
 
 @example
@@ -37,6 +38,7 @@ fnmerge(buf, "d:", "/foo/", "data", ".txt");
 
 @c ----------------------------------------------------------------------
 @node fnsplit, file system
+@findex fnsplit
 @subheading Syntax
 
 @example

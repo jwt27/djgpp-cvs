@@ -1,4 +1,5 @@
 @node inpw, cpu
+@findex inpw
 @subheading Syntax
 
 @example

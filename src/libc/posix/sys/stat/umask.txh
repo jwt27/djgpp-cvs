@@ -1,4 +1,5 @@
 @node umask, file system
+@findex umask
 @subheading Syntax
 
 @example

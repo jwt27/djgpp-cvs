@@ -1,4 +1,5 @@
 @node closedir, file system
+@findex closedir
 @subheading Syntax
 
 @example

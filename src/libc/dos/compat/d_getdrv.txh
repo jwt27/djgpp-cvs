@@ -1,4 +1,5 @@
 @node _dos_getdrive, dos
+@findex _dos_getdrive
 @subheading Syntax
 
 @example

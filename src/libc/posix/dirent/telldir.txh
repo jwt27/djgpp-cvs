@@ -1,4 +1,5 @@
 @node telldir, file system
+@findex telldir
 @subheading Syntax
 
 @example

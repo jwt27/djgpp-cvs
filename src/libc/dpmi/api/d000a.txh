@@ -1,4 +1,5 @@
 @node __dpmi_create_alias_descriptor, dpmi
+@findex __dpmi_create_alias_descriptor
 @subheading Syntax
 
 @example

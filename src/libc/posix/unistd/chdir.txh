@@ -1,4 +1,5 @@
 @node chdir, file system
+@findex chdir
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _detect_80387, cpu
+@findex _detect_80387
 @subheading Syntax
 
 @example
@@ -30,6 +31,7 @@ if (_detect_80387())
 
 @c ----------------------------------------------------------------------
 @node _8087, cpu
+@vindex _8087
 @subheading Syntax
 
 @example

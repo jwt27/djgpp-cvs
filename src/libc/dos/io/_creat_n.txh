@@ -1,4 +1,5 @@
 @node _creatnew, file system
+@findex _creatnew
 @subheading Syntax
 
 @example

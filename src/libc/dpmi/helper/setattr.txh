@@ -1,4 +1,5 @@
 @node __djgpp_set_page_attributes, memory
+@findex __djgpp_set_page_attributes
 @subheading Syntax
 
 @example

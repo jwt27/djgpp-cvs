@@ -1,4 +1,5 @@
 @node __dpmi_get_descriptor_access_rights, dpmi
+@findex __dpmi_get_descriptor_access_rights
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node __dpmi_set_extended_exception_handler_vector_pm, dpmi
+@findex __dpmi_set_extended_exception_handler_vector_pm
 @subheading Syntax
 
 @smallexample

@@ -1,4 +1,5 @@
 @node _get_dev_info, io
+@findex _get_dev_info
 @subheading Syntax
 
 @example

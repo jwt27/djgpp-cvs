@@ -1,4 +1,5 @@
 @node open, io
+@findex open
 @subheading Syntax
 
 @example
@@ -127,6 +128,7 @@ int q = open("/tmp/foo.dat", O_RDONLY|O_BINARY);
 
 @c ---------------------------------------------------------------------------
 @node __djgpp_share_flags, io
+@findex __djgpp_share_flags
 
 @subheading Syntax
 

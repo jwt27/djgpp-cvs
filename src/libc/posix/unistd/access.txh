@@ -1,4 +1,5 @@
 @node access, file system
+@findex access
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node gettime, time
+@findex gettime
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node dosmemgetw, memory
+@findex _dosmemgetw
 @subheading Syntax
 
 @example

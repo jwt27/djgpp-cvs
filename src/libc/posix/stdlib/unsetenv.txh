@@ -1,4 +1,5 @@
 @node unsetenv, environment
+@findex unsetenv
 @subheading Syntax
 
 @example

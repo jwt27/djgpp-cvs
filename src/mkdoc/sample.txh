@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node abort, process
+@findex abort
 @subheading Syntax
 
 @example
@@ -31,6 +32,7 @@ if ((q = malloc(100)) == NULL)
 
 @c ----------------------------------------------------------------------
 @node abs, math
+@findex abs
 @subheading Syntax
 
 @example

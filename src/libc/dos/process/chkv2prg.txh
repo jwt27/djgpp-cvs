@@ -1,4 +1,5 @@
 @node _check_v2_prog, process
+@findex _check_v2_prog
 @subheading Syntax
 
 @example

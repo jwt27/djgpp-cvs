@@ -1,4 +1,5 @@
 @node mkfifo, unix
+@findex mkfifo
 @subheading Syntax
 
 @example

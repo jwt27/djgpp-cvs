@@ -1,4 +1,5 @@
 @node _write, file system
+@findex _write
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node sleep, process
+@findex sleep
 @subheading Syntax
 
 @example

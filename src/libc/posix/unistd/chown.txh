@@ -1,4 +1,5 @@
 @node chown, unix
+@findex chown
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node __dpmi_get_selector_increment_value, dpmi
+@findex __dpmi_get_selector_increment_value
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node sigaction, signal
+@findex sigaction
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _fixpath, file system
+@findex _fixpath
 @subheading Syntax
 
 @example

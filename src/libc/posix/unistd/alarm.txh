@@ -1,4 +1,5 @@
 @node alarm, process
+@findex alarm
 @subheading Syntax
 
 @example

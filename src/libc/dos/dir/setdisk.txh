@@ -1,4 +1,5 @@
 @node setdisk, dos
+@findex setdisk
 @subheading Syntax
 
 @example

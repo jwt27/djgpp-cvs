@@ -1,4 +1,5 @@
 @node ftw, file system
+@findex ftw
 @subheading Syntax
 
 @example

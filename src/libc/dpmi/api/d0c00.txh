@@ -1,4 +1,5 @@
 @node __dpmi_install_resident_service_provider_callback, dpmi
+@findex __dpmi_install_resident_service_provider_callback
 @subheading Syntax
 
 @smallexample

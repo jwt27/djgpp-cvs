@@ -1,4 +1,5 @@
 @node getpwent, unix
+@findex getpwent
 @subheading Syntax
 
 @example
@@ -69,6 +70,7 @@ endpwent();
 
 @c ----------------------------------------------------------------------
 @node setpwent, unix
+@findex setpwent
 @subheading Syntax
 
 @example
@@ -92,6 +94,7 @@ None.
 
 @c ----------------------------------------------------------------------
 @node endpwent, unix
+@findex endpwent
 @subheading Syntax
 
 @example

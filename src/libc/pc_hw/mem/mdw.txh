@@ -1,4 +1,5 @@
 @node movedataw, memory
+@findex _movedataw
 @subheading Syntax
 
 @example

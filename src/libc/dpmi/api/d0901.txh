@@ -1,4 +1,5 @@
 @node __dpmi_get_and_enable_virtual_interrupt_state, dpmi
+@findex __dpmi_get_and_enable_virtual_interrupt_state
 @subheading Syntax
 
 @example

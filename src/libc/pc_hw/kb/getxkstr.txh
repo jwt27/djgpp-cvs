@@ -1,4 +1,5 @@
 @node __get_extended_key_string, bios
+@findex __get_extended_key_string
 @subheading Syntax
 
 @example

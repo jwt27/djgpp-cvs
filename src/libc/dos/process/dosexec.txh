@@ -1,4 +1,12 @@
 @node spawn*, process
+@findex spawnl
+@findex spawnle
+@findex spawnlp
+@findex spawnlpe
+@findex spawnv
+@findex spawnve
+@findex spawnvp
+@findex spawnvpe
 @subheading Syntax
 
 @smallexample
@@ -140,6 +148,7 @@ spawnvpe(P_WAIT, "gcc", args, environ);
 @c -----------------------------------------------------------------------
 
 @node __djgpp_spawn, process
+@findex __djgpp_spawn
 @subheading Syntax
 
 @example
@@ -195,6 +204,7 @@ __djgpp_spawn(P_WAIT, "/dev/env/DJDIR/bin/gcc.exe", args, NULL,
 @c -----------------------------------------------------------------------
 
 @node __dosexec_find_on_path, process
+@findex __dosexec_find_on_path
 @subheading Syntax
 
 @example

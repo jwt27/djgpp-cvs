@@ -1,4 +1,5 @@
 @node _go32_dpmi_allocate_dos_memory, dpmi
+@findex _go32_dpmi_allocate_dos_memory
 @subheading Syntax
 
 @example
@@ -45,6 +46,7 @@ _go32_dpmi_free_dos_memory(&info);
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_free_dos_memory, dpmi
+@findex _go32_dpmi_free_dos_memory
 @subheading Syntax
 
 @example
@@ -80,6 +82,7 @@ _go32_dpmi_free_dos_memory(&info);
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_resize_dos_memory, dpmi
+@findex _go32_dpmi_resize_dos_memory
 @subheading Syntax
 
 @example

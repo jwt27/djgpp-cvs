@@ -1,4 +1,5 @@
 @node getuid, unix
+@findex getuid
 @subheading Syntax
 
 @example

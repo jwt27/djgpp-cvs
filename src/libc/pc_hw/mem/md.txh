@@ -1,4 +1,5 @@
 @node movedata, memory
+@findex movedata
 @subheading Syntax
 
 @example

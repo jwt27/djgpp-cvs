@@ -1,4 +1,5 @@
 @node _dxe_load, misc
+@findex _dxe_load
 @subheading Syntax
 
 @example

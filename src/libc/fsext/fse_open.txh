@@ -1,4 +1,5 @@
 @node __FSEXT_add_open_handler, file system
+@findex __FSEXT_add_open_handler
 @subheading Syntax
 
 @example
@@ -35,6 +36,7 @@ int main()
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_call_open_handlers, file system
+@findex __FSEXT_call_open_handlers
 @subheading Syntax
 
 @example

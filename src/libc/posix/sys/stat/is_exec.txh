@@ -1,4 +1,5 @@
 @node _is_executable, io
+@findex _is_executable
 @subheading Syntax
 
 @example

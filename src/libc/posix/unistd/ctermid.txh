@@ -1,4 +1,5 @@
 @node ctermid, posix
+@findex ctermid
 @subheading Syntax
 
 @example

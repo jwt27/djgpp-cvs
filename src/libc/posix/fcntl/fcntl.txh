@@ -1,4 +1,5 @@
 @node fcntl, io
+@findex fcntl
 @subheading Syntax
 
 @example

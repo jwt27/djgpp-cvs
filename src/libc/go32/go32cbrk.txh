@@ -1,4 +1,5 @@
 @node _go32_want_ctrl_break, go32
+@findex _go32_want_ctrl_break
 @subheading Syntax
 
 @example
@@ -37,6 +38,7 @@ _g32_want_ctrl_break(0);
 
 @c ----------------------------------------------------------------------
 @node _go32_was_ctrl_break_hit, go32
+@findex _go32_was_ctrl_break_hit
 @subheading Syntax
 
 @example

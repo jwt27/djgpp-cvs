@@ -1,4 +1,5 @@
 @node siglongjmp, misc
+@findex siglongjmp
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _dos_creatnew, dos
+@findex _dos_creatnew
 @subheading Syntax
 
 @example

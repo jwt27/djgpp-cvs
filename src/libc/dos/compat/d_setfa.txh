@@ -1,4 +1,5 @@
 @node _dos_setfileattr, dos
+@findex _dos_setfileattr
 @subheading Syntax
 
 @example

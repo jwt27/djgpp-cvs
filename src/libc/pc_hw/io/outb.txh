@@ -1,4 +1,5 @@
 @node outb, cpu
+@findex outb
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node setmode, io
+@findex setmode
 @subheading Syntax
 
 @example

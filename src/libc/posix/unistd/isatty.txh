@@ -1,4 +1,5 @@
 @node isatty, unix
+@findex isatty
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node lstat, io
+@findex lstat
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node lseek, io
+@findex lseek
 @subheading Syntax
 
 @example

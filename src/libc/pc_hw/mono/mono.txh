@@ -1,4 +1,5 @@
 @node _mono_clear, mono
+@findex _mono_clear
 @subheading Syntax
 
 @example
@@ -17,6 +18,7 @@ Clears the monochrome monitor.
 
 @c ----------------------------------------------------------------------
 @node _mono_printf, mono
+@findex _mono_printf
 @subheading Syntax
 
 @example
@@ -35,6 +37,7 @@ Like @ref{printf}, but prints to the monochrome monitor.
 
 @c ----------------------------------------------------------------------
 @node _mono_putc, mono
+@findex _mono_putc
 @subheading Syntax
 
 @example

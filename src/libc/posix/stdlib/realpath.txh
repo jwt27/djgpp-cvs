@@ -1,4 +1,5 @@
 @node realpath, file system
+@findex realpath
 @subheading Syntax
 
 @example

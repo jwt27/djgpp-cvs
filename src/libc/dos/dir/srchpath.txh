@@ -1,4 +1,5 @@
 @node searchpath, file system
+@findex searchpath
 @subheading Syntax
  
 @example

@@ -7,6 +7,7 @@
 @end ignore
 
 @node _get_fat_size, file system
+@findex _get_fat_size
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node clreol, conio
+@findex clreol
 @subheading Syntax
 
 @example
@@ -35,6 +36,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node clrscr, conio
+@findex clrscr
 @subheading Syntax
 
 @example
@@ -66,6 +68,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node gotoxy, conio
+@findex gotoxy
 @subheading Syntax
 
 @example
@@ -98,6 +101,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node wherex, conio
+@findex wherex
 @subheading Syntax
 
 @example
@@ -129,6 +133,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node wherey, conio
+@findex wherey
 @subheading Syntax
 
 @example
@@ -160,6 +165,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node putch, conio
+@findex putch
 @subheading Syntax
 
 @example
@@ -198,6 +204,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node getch, conio
+@findex getch
 @subheading Syntax
 
 @example
@@ -241,6 +248,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node getche, conio
+@findex getche
 @subheading Syntax
 
 @example
@@ -284,6 +292,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node ungetch, conio
+@findex ungetch
 @subheading Syntax
 
 @example
@@ -320,6 +329,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node _conio_kbhit, conio
+@findex _conio_kbhit
 @subheading Syntax
 
 @example
@@ -358,6 +368,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node delline, conio
+@findex delline
 @subheading Syntax
 
 @example
@@ -389,6 +400,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node _conio_gettext, conio
+@findex _conio_gettext
 @subheading Syntax
 
 @example
@@ -411,6 +423,7 @@ Retrieve a block of screen characters into a buffer.
 
 @c ----------------------------------------------------------------------
 @node gettext, conio
+@findex gettext
 @subheading Syntax
 
 @example
@@ -458,6 +471,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node gettextinfo, conio
+@findex gettextinfo
 @subheading Syntax
 
 @example
@@ -508,6 +522,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node highvideo, conio
+@findex highvideo
 @subheading Syntax
 
 @example
@@ -539,6 +554,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node insline, conio
+@findex insline
 @subheading Syntax
 
 @example
@@ -571,6 +587,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node lowvideo, conio
+@findex lowvideo
 @subheading Syntax
 
 @example
@@ -602,6 +619,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node movetext, conio
+@findex movetext
 @subheading Syntax
 
 @example
@@ -638,6 +656,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node normvideo, conio
+@findex normvideo
 @subheading Syntax
 
 @example
@@ -669,6 +688,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node puttext, conio
+@findex puttext
 @subheading Syntax
 
 @example
@@ -705,6 +725,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node textattr, conio
+@findex textattr
 @subheading Syntax
 
 @example
@@ -753,6 +774,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node textbackground, conio
+@findex textbackground
 @subheading Syntax
 
 @example
@@ -784,6 +806,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node textcolor, conio
+@findex textcolor
 @subheading Syntax
 
 @example
@@ -815,6 +838,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node textmode, conio
+@findex textmode
 @subheading Syntax
 
 @example
@@ -882,6 +906,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node window, conio
+@findex window
 @subheading Syntax
 
 @example
@@ -914,6 +939,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node _setcursortype, conio
+@findex _setcursortype
 @subheading Syntax
 
 @example
@@ -961,6 +987,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node cgets, conio
+@findex cgets
 @subheading Syntax
 
 @example
@@ -1000,6 +1027,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node cprintf, conio
+@findex cprintf
 @subheading Syntax
 
 @example
@@ -1038,6 +1066,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node cputs, conio
+@findex cputs
 @subheading Syntax
 
 @example
@@ -1073,6 +1102,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node cscanf, conio
+@findex cscanf
 @subheading Syntax
 
 @example
@@ -1110,6 +1140,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node gppconio_init, conio
+@findex gppconio_init
 @subheading Syntax
 
 @example
@@ -1131,6 +1162,7 @@ BIOS function which affects screen parameters.
 
 @c ----------------------------------------------------------------------
 @node _set_screen_lines, conio
+@findex _set_screen_lines
 @subheading Syntax
 
 @example
@@ -1176,6 +1208,7 @@ manually (this is the function called by a static constructor).
 
 @c ----------------------------------------------------------------------
 @node blinkvideo, conio
+@findex blinkvideo
 
 @subheading Syntax
 
@@ -1207,6 +1240,7 @@ characters will be displayed.
 
 @c ----------------------------------------------------------------------
 @node intensevideo, conio
+@findex intensevideo
 
 @subheading Syntax
 

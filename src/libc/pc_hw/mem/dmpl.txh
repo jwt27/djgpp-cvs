@@ -1,4 +1,5 @@
 @node dosmemputl, memory
+@findex _dosmemputl
 @subheading Syntax
 
 @example

@@ -5,6 +5,16 @@ number 240977-001.  Also, try ftp.qdeck.com:/pub/memory/dpmi*
 and http://www.delorie.com/djgpp/doc/dpmi/.
 
 @node DPMI Overview, dpmi
+@vindex __dpmi_error
+@tindex __dpmi_raddr
+@tindex __dpmi_paddr
+@tindex __dpmi_meminfo
+@tindex __dpmi_regs
+@tindex __dpmi_version_ret
+@tindex __dpmi_free_mem_info
+@tindex __dpmi_memory_info
+@tindex __dpmi_callback_info
+@tindex __dpmi_shminfo
 
 @example
 extern unsigned short __dpmi_error;

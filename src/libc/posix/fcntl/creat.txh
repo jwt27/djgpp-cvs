@@ -1,4 +1,5 @@
 @node creat, io
+@findex creat
 @subheading Syntax
 
 @example

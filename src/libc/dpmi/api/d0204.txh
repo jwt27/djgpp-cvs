@@ -1,4 +1,5 @@
 @node __dpmi_get_protected_mode_interrupt_vector, dpmi
+@findex __dpmi_get_protected_mode_interrupt_vector
 @subheading Syntax
 
 @example

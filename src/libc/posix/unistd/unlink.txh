@@ -1,4 +1,5 @@
 @node unlink, file system
+@findex unlink
 @subheading Syntax
 
 @example

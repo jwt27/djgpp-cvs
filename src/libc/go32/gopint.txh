@@ -1,4 +1,5 @@
 @node _go32_dpmi_allocate_iret_wrapper, dpmi
+@findex _go32_dpmi_allocate_iret_wrapper
 @subheading Syntax
 
 @example
@@ -49,6 +50,7 @@ _go32_dpmi_free_iret_wrapper(&info);
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_chain_protected_mode_interrupt_vector, dpmi
+@findex _go32_dpmi_chain_protected_mode_interrupt_vector
 @subheading Syntax
 
 @example
@@ -87,6 +89,7 @@ Zero on success, nonzero on failure.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_free_iret_wrapper, dpmi
+@findex _go32_dpmi_free_iret_wrapper
 @subheading Syntax
 
 @example
@@ -116,6 +119,7 @@ Zero on success, nonzero on failure.
 @xref{_go32_dpmi_allocate_iret_wrapper}.
 @c ----------------------------------------------------------------------
 @node _go32_interrupt_stack_size, go32
+@vindex _go32_interrupt_stack_size
 @subheading Syntax
 
 @example
@@ -134,6 +138,7 @@ The default size of the interrupt handler's stack.  Defaults to 32k.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_lock_code, go32
+@findex _go32_dpmi_lock_code
 @subheading Syntax
 
 @example
@@ -173,6 +178,7 @@ void lock_my_handler()
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_lock_data, go32
+@findex _go32_dpmi_lock_data
 @subheading Syntax
 
 @example

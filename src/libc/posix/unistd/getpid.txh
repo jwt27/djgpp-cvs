@@ -1,4 +1,5 @@
 @node getpid, unix
+@findex getpid
 @subheading Syntax
 
 @example

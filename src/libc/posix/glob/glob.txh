@@ -1,4 +1,5 @@
 @node glob, shell
+@findex glob
 @subheading Syntax
 
 @example

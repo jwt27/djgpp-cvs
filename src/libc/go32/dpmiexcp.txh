@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node raise, signal
+@findex raise
 @subheading Syntax
 
 @example
@@ -24,6 +25,7 @@ This function raises the given signal @var{sig}.
 @c ----------------------------------------------------------------------
 
 @node signal, signal
+@findex signal
 @subheading Syntax
 
 @example
@@ -264,6 +266,7 @@ loops which only use values in the registers), it cannot be interrupted.
 @c -------------------------------------------------------------------------
 
 @node __djgpp_set_ctrl_c, signal
+@findex __djgpp_set_ctrl_c
 @subheading Syntax
 
 @example
@@ -329,6 +332,7 @@ call: 0 if it was disabled, 1 if it was enabled.  If the argument
 @c -------------------------------------------------------------------------
 
 @node __djgpp_exception_toggle, signal
+@findex __djgpp_exception_toggle
 @subheading Syntax
 
 @example
@@ -368,6 +372,7 @@ also passed to the parent).
 @c -------------------------------------------------------------------------
 
 @node __djgpp_set_sigint_key, signal
+@findex __djgpp_set_sigint_key
 @subheading Syntax
 
 @example
@@ -450,6 +455,7 @@ The previous INTR key (scan code in bits 0-7, keyboad status in bits
 @c -------------------------------------------------------------------------
 
 @node __djgpp_set_sigquit_key, signal
+@findex __djgpp_set_sigquit_key
 @subheading Syntax
 
 @example
@@ -532,6 +538,7 @@ The previous QUIT key (scan code in bits 0-7, keyboad status in bits
 @c -------------------------------------------------------------------------
 
 @node __djgpp_traceback_exit, signal
+@findex __djgpp_traceback_exit
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node seekdir, file system
+@findex seekdir
 @subheading Syntax
 
 @example

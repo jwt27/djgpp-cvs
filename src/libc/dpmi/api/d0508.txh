@@ -1,4 +1,5 @@
 @node __dpmi_map_device_in_memory_block, dpmi
+@findex __dpmi_map_device_in_memory_block
 @subheading Syntax
 
 @smallexample

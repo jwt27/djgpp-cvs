@@ -1,4 +1,5 @@
 @node _dos_close, dos
+@findex _dos_close
 @subheading Syntax
 
 @example

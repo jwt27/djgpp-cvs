@@ -1,4 +1,5 @@
 @node _invent_inode, file system
+@findex _invent_inode
 @subheading Syntax
 @example
 ino_t

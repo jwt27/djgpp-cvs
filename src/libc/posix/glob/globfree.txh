@@ -1,4 +1,5 @@
 @node globfree, shell
+@findex globfree
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node __dpmi_get_raw_mode_switch_addr, dpmi
+@findex __dpmi_get_raw_mode_switch_addr
 @subheading Syntax
 
 @example

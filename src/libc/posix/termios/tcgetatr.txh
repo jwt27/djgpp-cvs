@@ -1,4 +1,5 @@
 @node tcgetattr, termios
+@findex tcgetattr
 @subheading Syntax
 
 @example

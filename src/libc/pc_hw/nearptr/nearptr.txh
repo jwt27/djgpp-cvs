@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node __djgpp_nearptr_enable, memory
+@findex __djgpp_nearptr_enable
 @subheading Syntax
 
 @example
@@ -51,6 +52,7 @@ Returns 0 if near pointers are not available, or nonzero if they are.
 
 @c ----------------------------------------------------------------------
 @node __djgpp_nearptr_disable, memory
+@findex __djgpp_nearptr_disable
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node rmdir, file system
+@findex rmdir
 @subheading Syntax
 
 @example

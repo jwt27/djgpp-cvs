@@ -1,4 +1,5 @@
 @node _go32_dpmi_allocate_real_mode_callback_iret, dpmi
+@findex _go32_dpmi_allocate_real_mode_callback_iret
 @subheading Syntax
 
 @example
@@ -58,6 +59,7 @@ setup()
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_allocate_real_mode_callback_retf, dpmi
+@findex _go32_dpmi_allocate_real_mode_callback_retf
 @subheading Syntax
 
 @example
@@ -97,6 +99,7 @@ usage.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_free_real_mode_callback, dpmi
+@findex _go32_dpmi_free_real_mode_callback
 @subheading Syntax
 
 @example
@@ -128,6 +131,7 @@ usage.
 
 @c ----------------------------------------------------------------------
 @node _go32_rmcb_stack_size, go32
+@vindex _go32_rmcb_stack_size
 @subheading Syntax
 
 @example

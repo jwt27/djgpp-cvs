@@ -1,4 +1,5 @@
 @node _go32_dpmi_get_protected_mode_interrupt_vector, dpmi
+@findex _go32_dpmi_get_protected_mode_interrupt_vector
 @subheading Syntax
 
 @example
@@ -34,6 +35,7 @@ usage.
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_set_protected_mode_interrupt_vector, dpmi
+@findex _go32_dpmi_set_protected_mode_interrupt_vector
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node ttyname, unix
+@findex ttyname
 @subheading Syntax
 
 @example

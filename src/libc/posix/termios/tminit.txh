@@ -1,4 +1,5 @@
 @node __libc_termios_init, termios
+@findex __libc_termios_init
 @subheading Syntax
 
 @example
@@ -19,6 +20,7 @@ this function is automatically called by the other termios functions.
 @portability !ansi, !posix
 
 @node __libc_termios_exist_queue, termios
+@findex __libc_termios_exist_queue
 @subheading Syntax
 
 @example

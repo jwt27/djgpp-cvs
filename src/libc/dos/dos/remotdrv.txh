@@ -1,5 +1,6 @@
 @c -------------------------------------------------------------------
 @node _is_remote_drive, io
+@findex _is_remote_drive
 @subheading Syntax
 
 @example
@@ -27,6 +28,7 @@ Zero for local drives, non-zero for remote and CD-ROM drives.
 @c -------------------------------------------------------------------
 
 @node _is_remote_handle, io
+@findex _is_remote_handle
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _media_type, file system
+@findex _media_type
 @subheading Syntax
 
 @example

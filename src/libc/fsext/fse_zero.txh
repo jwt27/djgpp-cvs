@@ -1,4 +1,5 @@
 @node __install_dev_zero, file system
+@findex __install_dev_zero
 
 @subheading Syntax
 
@@ -27,6 +28,7 @@ On success, a non-zero value is returned; on failure, zero is returned.
 @portability !ansi, !posix
 
 @node __install_dev_full, file system
+@findex __install_dev_full
 
 @subheading Syntax
 

@@ -1,4 +1,5 @@
 @node delay, dos
+@findex delay
 @subheading Syntax
 
 @example

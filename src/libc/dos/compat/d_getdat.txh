@@ -1,4 +1,5 @@
 @node _dos_getdate, dos
+@findex _dos_getdate
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node uname, unix
+@findex uname
 @subheading Syntax
 
 @example

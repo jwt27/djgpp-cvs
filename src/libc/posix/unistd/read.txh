@@ -1,4 +1,5 @@
 @node read, io
+@findex read
 @subheading Syntax
 
 @example

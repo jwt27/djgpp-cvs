@@ -1,4 +1,5 @@
 @node movedatab, memory
+@findex _movedatab
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node __dpmi_set_multiple_descriptors, dpmi
+@findex __dpmi_set_multiple_descriptors
 @subheading Syntax
 
 @example

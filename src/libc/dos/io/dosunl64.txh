@@ -1,4 +1,5 @@
 @node _dos_unlk64, dos
+@findex _dos_unlk64
 @subheading Syntax
 
 @example

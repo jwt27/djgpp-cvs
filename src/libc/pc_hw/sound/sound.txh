@@ -1,4 +1,5 @@
 @node sound, sound
+@findex sound
 @subheading Syntax
 
 @example
@@ -18,6 +19,7 @@ Enables the PC speaker at the given frequency.  The argument
 
 @c ----------------------------------------------------------------------
 @node nosound, sound
+@findex nosound
 @subheading Syntax
 
 @example

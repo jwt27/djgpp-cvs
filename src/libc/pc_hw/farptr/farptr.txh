@@ -1,5 +1,19 @@
 @c ----------------------------------------------------------------------
 @node _far*, memory
+@findex _farpeekb
+@findex _farpeekw
+@findex _farpeekl
+@findex _farpokeb
+@findex _farpokew
+@findex _farpokel
+@findex _farsetsel
+@findex _fargetsel
+@findex _farnspeekb
+@findex _farnspeekw
+@findex _farnspeekl
+@findex _farnspokeb
+@findex _farnspokew
+@findex _farnspokel
 @subheading Syntax
 
 @example

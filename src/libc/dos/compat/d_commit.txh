@@ -1,4 +1,5 @@
 @node _dos_commit, dos
+@findex _dos_commit
 @subheading Syntax
 
 @example

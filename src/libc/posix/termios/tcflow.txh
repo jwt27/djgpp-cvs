@@ -1,4 +1,5 @@
 @node tcflow, termios
+@findex tcflow
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node __file_tree_walk, file system
+@findex __file_tree_walk
 @subheading Syntax
 
 @example

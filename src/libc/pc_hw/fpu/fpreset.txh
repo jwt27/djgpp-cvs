@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node _fpreset, cpu
+@findex _fpreset
 @subheading Syntax
 
 @example

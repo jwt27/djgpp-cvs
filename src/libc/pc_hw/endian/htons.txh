@@ -1,4 +1,5 @@
 @node htons, cpu
+@findex htons
 @subheading Syntax
 
 @example

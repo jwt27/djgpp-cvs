@@ -1,4 +1,5 @@
 @node _go32_dpmi_get_free_memory_information, dpmi
+@findex _go32_dpmi_get_free_memory_information
 @subheading Syntax
 
 @example
@@ -52,6 +53,7 @@ int phys_mem_left()
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_simulate_fcall, dpmi
+@findex _go32_dpmi_simulate_fcall
 @subheading Syntax
 
 @example
@@ -96,6 +98,7 @@ printf("returns %d\n", r.x.ax);
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_simulate_fcall_iret, dpmi
+@findex _go32_dpmi_simulate_fcall_iret
 @subheading Syntax
 
 @example
@@ -141,6 +144,7 @@ printf("returns %d\n", r.x.ax);
 
 @c ----------------------------------------------------------------------
 @node _go32_dpmi_simulate_int, dpmi
+@findex _go32_dpmi_simulate_int
 @subheading Syntax
 
 @example
@@ -186,6 +190,7 @@ printf("disk is %d cyl, %d head, %d sect\n",
 
 @c ----------------------------------------------------------------------
 @node _go32_my_cs, go32
+@findex _go32_my_cs
 @subheading Syntax
 
 @example
@@ -209,6 +214,7 @@ vectors and such.
 
 @c ----------------------------------------------------------------------
 @node _go32_my_ds, go32
+@findex _go32_my_ds
 @subheading Syntax
 
 @example
@@ -232,6 +238,7 @@ and such.
 
 @c ----------------------------------------------------------------------
 @node _go32_my_ss, go32
+@findex _go32_my_ss
 @subheading Syntax
 
 @example
@@ -255,6 +262,7 @@ and such.
 
 @c ----------------------------------------------------------------------
 @node _go32_conventional_mem_selector, go32
+@findex _go32_conventional_mem_selector
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _close, file system
+@findex _close
 @subheading Syntax
 
 @example

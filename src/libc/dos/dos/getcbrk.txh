@@ -1,4 +1,5 @@
 @node getcbrk, dos
+@findex getcbrk
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _get_dos_version, misc
+@findex _get_dos_version
 @subheading Syntax
 
 @example

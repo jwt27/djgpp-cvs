@@ -1,4 +1,5 @@
 @node _dos_write, dos
+@findex _dos_write
 @subheading Syntax
 
 @example

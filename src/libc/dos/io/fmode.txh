@@ -1,4 +1,5 @@
 @node _fmode, stdio
+@vindex _fmode
 @subheading Syntax
 
 @example

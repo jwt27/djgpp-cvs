@@ -1,4 +1,5 @@
 @node _dos_lock, dos
+@findex _dos_lock
 @subheading Syntax
 
 @example

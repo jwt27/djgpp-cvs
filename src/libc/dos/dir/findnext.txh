@@ -1,4 +1,5 @@
 @node findnext, file system
+@findex findnext
 @subheading Syntax
 
 @example

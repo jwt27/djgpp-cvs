@@ -1,4 +1,5 @@
 @node kbhit, bios
+@findex kbhit
 @subheading Syntax
 
 @example

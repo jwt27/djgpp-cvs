@@ -1,4 +1,5 @@
 @node Termios functions, termios
+@cindex termios
 
 The @code{termios} functions allow to control terminals and asynchronous
 communications ports.  The DJGPP implementation currently supports the
@@ -164,6 +165,7 @@ to 9600 baud, but the value is always ignored by this implementation,
 since no asynchronous ports are used.
 
 @node tcsetattr, termios
+@findex tcsetattr
 @subheading Syntax
 
 @example

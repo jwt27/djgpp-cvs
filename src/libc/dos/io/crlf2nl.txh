@@ -1,4 +1,5 @@
 @node crlf2nl, io
+@findex crlf2nl
 @subheading Syntax
 
 @example

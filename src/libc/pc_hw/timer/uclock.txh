@@ -1,4 +1,5 @@
 @node uclock, time
+@findex uclock
 @subheading Syntax
 
 @example

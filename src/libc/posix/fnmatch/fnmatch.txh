@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node fnmatch, file system
+@findex fnmatch
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _use_lfn, file system
+@findex _use_lfn
 @subheading Syntax
  
 @example
@@ -79,6 +80,7 @@ filesystem to be queried.
 @c --------------------------------------------------------------------
 
 @node _get_volume_info, file system
+@findex _get_volume_info
 @subheading Syntax
  
 @example
@@ -144,6 +146,7 @@ either @code{ENODEV} or @code{ENXIO}.
 @c -----------------------------------------------------------------------
 
 @node _preserve_fncase, file system
+@findex _preserve_fncase
 @subheading Syntax
  
 @example
@@ -185,6 +188,7 @@ otherwise.
 @c -----------------------------------------------------------------------
 
 @node _lfn_gen_short_fname, file system
+@findex _lfn_gen_short_fname
 @subheading Syntax
  
 @example
@@ -261,6 +265,7 @@ int dos_check (char *fname)
 @c -----------------------------------------------------------------------
 
 @node _lfn_get_ftime, file system
+@findex _lfn_get_ftime
 @subheading Syntax
  
 @example
@@ -340,6 +345,7 @@ If the underlying system calls fail, the function will return 0 and set
 @c -----------------------------------------------------------------------
 
 @node _is_DOS83, file system
+@findex _is_DOS83
 @subheading Syntax
  
 @example

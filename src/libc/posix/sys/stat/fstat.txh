@@ -1,4 +1,5 @@
 @node fstat, stdio
+@findex fstat
 @subheading Syntax
 
 @example

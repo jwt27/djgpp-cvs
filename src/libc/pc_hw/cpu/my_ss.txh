@@ -1,4 +1,5 @@
 @node _my_ss, cpu
+@findex _my_ss
 @subheading Syntax
 
 @example

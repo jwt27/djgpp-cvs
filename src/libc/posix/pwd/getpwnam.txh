@@ -1,4 +1,5 @@
 @node getpwnam, unix
+@findex getpwnam
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node _status87, cpu
+@findex _status87
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node times, time
+@findex times
 @subheading Syntax
 
 @example

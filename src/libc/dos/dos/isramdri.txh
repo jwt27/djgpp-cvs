@@ -1,4 +1,5 @@
 @node _is_ram_drive, file system
+@findex _is_ram_drive
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node sysconf, posix
+@findex sysconf
 @subheading Syntax
 
 @example

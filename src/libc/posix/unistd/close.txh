@@ -1,4 +1,5 @@
 @node close, io
+@findex close
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node unlock64, io
+@findex unlock64
 @subheading Syntax
 
 @example

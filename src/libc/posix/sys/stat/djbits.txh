@@ -1,4 +1,5 @@
 @node _djstat_flags, stdio
+@vindex _djstat_flags
 @subheading Syntax
 
 @example
@@ -86,6 +87,7 @@ are required.
 
 @c ----------------------------------------------------------------------
 @node _djstat_fail_bits, stdio
+@vindex _djstat_fail_bits
 @subheading Syntax
 
 @example

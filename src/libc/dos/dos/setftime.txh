@@ -1,4 +1,5 @@
 @node setftime, file system
+@findex setftime
 @subheading Syntax
 
 @example

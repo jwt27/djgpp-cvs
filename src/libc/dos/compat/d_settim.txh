@@ -1,4 +1,5 @@
 @node _dos_settime, dos
+@findex _dos_settime
 @subheading Syntax
 
 @example
