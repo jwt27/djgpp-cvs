@@ -716,3 +716,9 @@ called with a file name which refers to an invalid drive or a drive
 whose media has been removed (e.g. an empty floppy drive).
 @code{_get_volume_info} now returns @code{_FILESYS_UNKNOWN} for such
 drives.
+
+@pindex symify@r{, and long file/function names}
+@code{symify} no longer crashes when the name of the function or source
+file are too long to fit on a single screen line.  It also doesn't
+overwrite the address on the next screen line.  Instead, @code{symify}
+truncates the long names to fit on a single screen line.

@@ -10,12 +10,16 @@
 #define SC(r,c) (*(char *)(sc + (r)*ScreenCols() + (c)))
 #define SW(r,c) (*(sc + (r)*ScreenCols() + (c)))
 
+void *xmalloc (size_t);
+void *xrealloc (void *, size_t);
+
 TSS a_tss;
 int main(int argc, char **argv)
 {
   int r, c;
   short *sc;
-  char buf[90];
+  char *buf = NULL;
+  size_t bufsize = 0;
   int i, lineno;
   unsigned v;
   unsigned long d;
@@ -88,42 +92,99 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  sc = (short *)malloc(ScreenRows() * ScreenCols() * 2);
+  sc = (short *)xmalloc(ScreenRows() * ScreenCols() * 2);
 
   ScreenRetrieve(sc);
+
+  bufsize = ScreenCols() + 10;
+  buf = xmalloc (bufsize);
 
   for (r=0; r<ScreenRows(); r++)
   {
     if (SC(r,0) == ' ' && SC(r,1) == ' ' && SC(r,2) == '0' && SC(r,3) == 'x')
     {
+      int l_left = bufsize - 1, l_func = 0, l_off = 0, l_file = 0;
       buf[8] = 0;
       for (i=0; i<8; i++)
         buf[i] = SC(r, i+4);
       sscanf(buf, "%x", &v);
       func = syms_val2name(v, &d);
       file = syms_val2line(v, &lineno, 0);
+      if (ofile)
+	fprintf (ofile, "  0x%08x", v);
       buf[0] = 0;
       if (func)
       {
-	strcpy(buf, func);
+	l_func = strlen (func);
+	if (l_func > l_left - 10)
+	{
+	  bufsize += l_func + 10;
+	  l_left += l_func + 10;
+	  buf = xrealloc (buf, bufsize);
+	}
+	strcat(buf, func);
+	l_left -= l_func;
 	if (d)
-	  sprintf(buf+strlen(buf), "%+ld", d);
+	{
+	  l_left -= sprintf(buf+l_func, "%+ld", d);
+	  l_off = strlen(buf);
+	}
       }
       if (file)
       {
+	l_file = strlen(file);
+	if (l_left < l_file + 25)
+	{
+	  bufsize += l_file + 25;
+	  l_left += l_file + 25;
+	  buf = xrealloc (buf, bufsize);
+	}
         if (buf[0])
+	{
           strcat(buf, ", ");
+	  l_left -= 2;
+	}
         sprintf(buf+strlen(buf), "line %d of %s", lineno, file);
+	l_file = strlen(buf);
       }
       if (buf[0])
-        for (i=0; buf[i]; i++)
-          SW(r, 15+i) = 0x0f00 + buf[i];
-    }
-  }
+      {
+	int j;
+	int max_func =
+	  l_file > ScreenCols() - 13 && l_off > ScreenCols() / 2 - 6
+	  ? ScreenCols() / 2 - 8 - (l_off - l_func)
+	  : l_off;
+	int in_func = 1, in_file = 0;
 
-  if (ofile)
-  {
-    for (r=0; r<ScreenRows(); r++)
+	/* 0xdeadbeef _FooBar_Func..+666, line 1234 of FooBarF..e.Ext  */
+	/*            ^             ^   ^                            ^ */
+	/*            0         l_func l_off                    l_file */
+	for (i=0, j=0; buf[j]; i++, j++)
+	{
+	  if (i >= ScreenCols())
+	    break;
+	  else if (in_func && i >= max_func && j < l_off)
+	  {
+	    SW(r, 13+i) = 0x0700 + '.'; i++;
+	    SW(r, 13+i) = 0x0700 + '.'; i++;
+	    j = l_func;		/* truncate function name, jump to offset */
+	    in_func = 0;
+	    in_file = 1;
+	  }
+	  else if (in_file && 13+i >= ScreenCols() - 7 && j < l_file - 5)
+	  {
+	    SW(r, 13+i) = 0x0700 + '.'; i++;
+	    SW(r, 13+i) = 0x0700 + '.'; i++;
+	    j = l_file - 5;	/* jump to last char before extension */
+	    in_file = 0;
+	  }
+	  SW(r, 13+i) = 0x0f00 + buf[j];
+	}
+	if (ofile)
+	  fprintf (ofile, " %s\n", buf);
+      }
+    }
+    else if (ofile)
     {
       c = 0;
       for (i=0; i<ScreenCols(); i++)
@@ -133,8 +194,10 @@ int main(int argc, char **argv)
         fputc(SC(r,i), ofile);
       fputc('\n', ofile);
     }
-    fclose(ofile);
   }
+
+  if (ofile)
+    fclose(ofile);
   else
     ScreenUpdate(sc);
   return 0;
