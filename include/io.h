@@ -23,6 +23,7 @@ ssize_t		crlf2nl(char *_buffer, ssize_t _length);
 int		_dos_lock(int _fd, long _offset, long _length);
 long		filelength(int _handle);
 short		_get_dev_info(int _arg);
+long long	lfilelength(int _handle);
 int		lock(int _fd, long _offset, long _length);
 int		_open(const char *_path, int _oflag);
 ssize_t		_read(int _fd, void *_buf, size_t _nbyte);
