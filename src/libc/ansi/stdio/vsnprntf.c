@@ -1,5 +1,6 @@
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
+#include <string.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <errno.h>
