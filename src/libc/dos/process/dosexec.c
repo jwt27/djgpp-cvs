@@ -614,87 +614,81 @@ static int go32_exec(const char *program, char **argv, char **envp)
 
   /* Can't call any functions that use the transfer buffer beyond
      this point: they will overwrite the data already in __tb.  */
+
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = _go32_info_block.size_of_transfer_buffer;
   tbuf_end = tbuf_ptr + tbuf_len - 1;
 
-  /* If called from `system' and we have a command line shorter
-     than the DOS limit, we don't need to use !proxy at all.
-     Note that v1.x programs are always run through !proxy,
-     to prevent go32.exe from printing its copyright line. */
-  if (!__dosexec_in_system || !v2_0 || cmdp - cmdline > CMDLEN_LIMIT)
+  /* Starting from DJGPP v2.04, programs are always run through !proxy.
+     This allows correctly handle symlinks to .exes. */
+  if (!check_talloc(found_si ?
+		    type->stubinfo->struct_length : 0
+		    + (argc+1)*sizeof(short)))
   {
-    if (!check_talloc(found_si ?
-		      type->stubinfo->struct_length : 0
-		      + (argc+1)*sizeof(short)))
+    argv[0] = save_argv0;
+    return -1;
+  }
+  if (found_si)
+  {
+    si_la = talloc(type->stubinfo->struct_length);
+    si_off = si_la - tbuf_beg;
+    dosmemput(sip, type->stubinfo->struct_length, si_la);
+  }
+
+  rm_off = argv_off = talloc((argc+1) * sizeof(short)) - tbuf_beg;
+#if 0
+  /* `alloca' could be dangerous with long command lines.  We
+     will instead move the offsets one by one with `_farpokew'.  */
+  rm_argv = (short *)alloca((argc+1) * sizeof(short));
+#endif
+
+  for (i=0; i<argc; i++)
+  {
+    char *pargv = argv[i];
+    int sl = strlen(pargv) + 1;
+    unsigned long q;
+
+    if (check_talloc(sl))
+    {
+      q = talloc(sl);
+      dosmemput(pargv, sl, q);
+      _farpokew(_dos_ds, tbuf_beg + argv_off, (q - tbuf_beg) & 0xffff);
+      argv_off += sizeof(short);
+    }
+    else	/* not enough space to pass args */
     {
       argv[0] = save_argv0;
       return -1;
     }
-    if (found_si)
-    {
-      si_la = talloc(type->stubinfo->struct_length);
-      si_off = si_la - tbuf_beg;
-      dosmemput(sip, type->stubinfo->struct_length, si_la);
-    }
-
-    rm_off = argv_off = talloc((argc+1) * sizeof(short)) - tbuf_beg;
-#if 0
-    /* `alloca' could be dangerous with long command lines.  We
-       will instead move the offsets one by one with `_farpokew'.  */
-    rm_argv = (short *)alloca((argc+1) * sizeof(short));
-#endif
-
-    for (i=0; i<argc; i++)
-    {
-      char *pargv = argv[i];
-      int sl = strlen(pargv) + 1;
-      unsigned long q;
-
-      if (check_talloc(sl))
-      {
-	q = talloc(sl);
-	dosmemput(pargv, sl, q);
-	_farpokew(_dos_ds, tbuf_beg + argv_off, (q - tbuf_beg) & 0xffff);
-	argv_off += sizeof(short);
-      }
-      else	/* not enough space to pass args */
-      {
-	argv[0] = save_argv0;
-	return -1;
-      }
-    }
-
-    _farpokew (_dos_ds, tbuf_beg + argv_off, 0);
-    argv_off += sizeof(short);
-
-    argv[0] = save_argv0;
-    /* Environment variables are all malloced.  */
-    proxy_cmdline = (char *)malloc (34);
-    if (!proxy_cmdline)
-      return -1;
-    
-    sprintf(proxy_cmdline, "%s=%04x %04x %04x %04x %04x",
-	     __PROXY, argc,
-	    (unsigned)(tbuf_beg >> 4), rm_off & 0xffff,
-	    (unsigned)(tbuf_beg >> 4), si_off & 0xffff);
-    if (!found_si)
-      proxy_cmdline[22] = 0; /* remove stubinfo information */
-
-    if (__dosexec_in_system && v2_0)
-      pproxy = proxy_cmdline;
-    else
-    {
-      /* `proxy_cmdline looks like an environment variable " !proxy=value".
-         This is used as the REAL command line specification by 2.01
-	 and later executables when called by `system'.  But if that's
-	 not the case, we need a blank instead of the `='.  */
-      proxy_cmdline[__PROXY_LEN] = ' ';
-      pcmd = proxy_cmdline;
-    }
   }
+
+  _farpokew (_dos_ds, tbuf_beg + argv_off, 0);
+  argv_off += sizeof(short);
+
+  argv[0] = save_argv0;
+  /* Environment variables are all malloced.  */
+  proxy_cmdline = (char *)malloc (34);
+  if (!proxy_cmdline)
+    return -1;
+  
+  sprintf(proxy_cmdline, "%s=%04x %04x %04x %04x %04x",
+    __PROXY, argc,
+   (unsigned)(tbuf_beg >> 4), rm_off & 0xffff,
+   (unsigned)(tbuf_beg >> 4), si_off & 0xffff);
+  if (!found_si)
+    proxy_cmdline[22] = 0; /* remove stubinfo information */
+
+  if (__dosexec_in_system && v2_0)
+    pproxy = proxy_cmdline;
   else
-    argv[0] = save_argv0;
+  {
+    /* `proxy_cmdline looks like an environment variable " !proxy=value".
+        This is used as the REAL command line specification by 2.01
+        and later executables when called by `system'.  But if that's
+        not the case, we need a blank instead of the `='.  */
+    proxy_cmdline[__PROXY_LEN] = ' ';
+    pcmd = proxy_cmdline;
+  }
 
   retval = direct_exec_tail(rpath, pcmd, envp, pproxy, lfn);
   if (proxy_cmdline)
