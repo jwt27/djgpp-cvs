@@ -7,7 +7,7 @@ include $(TOP)/../makefile.inc
 all :: $(HOSTBIN)/mkdoc.exe
 
 $(HOSTBIN)/mkdoc.exe : mkdoc.cc
-	$(GCC) mkdoc.cc -o $@
+	$(GCC) mkdoc.cc $(LIBSTDCXX) -o $@
 
 clean ::
 	@-$(MISC) rm $(HOSTBIN)/mkdoc.exe
