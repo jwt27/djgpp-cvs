@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -17,8 +18,6 @@
 #define __DJ_uid_t	typedef int uid_t;
 
 /* For GCC 3.00 or later we use its builtin va_list.                       */
-/* In most cases these definitions won't be used, because headers provided */
-/* by GCC hide them. But we can DTRT if GCC headers are missing.           */
 #if __GNUC__ >= 3
 #define __DJ_va_list    typedef __builtin_va_list va_list;
 #else
