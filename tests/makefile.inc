@@ -31,7 +31,7 @@ L = ${LIB}/libc.a
 EXES := $(addsuffix .exe, $(basename $(SRC)))
 ERRS := $(addsuffix .err, $(basename $(SRC)))
 
-LINK = ld $(LDFLAGS) $^ -o $@ -T ${TOP}/../../lib/djgpp.lnk
+LINK = ld $(LDFLAGS) $^ -o $@ ${LIB}/libgcc.a -T ${TOP}/../../lib/djgpp.djl
 EXE = @${TOP}/../../bin/stubify.exe $@
 
 .PRECIOUS: %.exe %.out %.err

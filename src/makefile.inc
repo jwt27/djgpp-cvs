@@ -22,7 +22,7 @@ GCC = gcc @$(TOP)/../gcc.opt -I. -I- -I$(TOP)/../../include $(CFLAGS) -c $<
 %.ss : %.cc
 	$(GCC) -S > $@
 
-LINK = ld $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ -T ${TOP}/../../lib/djgpp.lnk
+LINK = ld $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ ${LIB}/libgcc.a -T ${TOP}/../../lib/djgpp.djl
 EXE = ${TOP}/../../bin/stubify.exe $@
 
 LIB=$(TOP)/../../lib
