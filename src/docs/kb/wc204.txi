@@ -348,3 +348,9 @@ is disabled.  This solves the problem with failures to link programs if
 the @env{LFN} variable is set to @samp{n} because @code{stubify.exe}
 failed to rename the produced executable and reported @code{EINVAL}.
 
+@findex write@r{, security fix and increased POSIX compliance}
+@findex _write@r{, security fix}
+When @code{write} and @code{_write} detect that a file pointer is past EOF,
+that space will now be filled with zeroes to increase POSIX compliance
+and plug a security hole on disks containing sensitive information.
+
