@@ -330,8 +330,10 @@ non-existent files always cause @code{searchpath} to return a
 The DJGPP debug support functions in @file{libdbg.a} now have the
 capability to debug programs that catch signals such as @code{SIGINT}.
 The signal interrupts the debuggee and is reported by the debugger,
-instead of aborting the debuggee.  Some limitations still exist:
-@code{SIGALRM} and @code{SIGQUIT} are reported as @code{SIGINT}.
+instead of aborting the debuggee.  You can also deliver signals to
+the debuggee, even if they didn't actually happen.  Most of the work
+that made this possible was done by @email{muller@@cerbere.u-strasbg.fr,
+Pierre Muller} and @email{pavenis@lanet.lv, Andris Pavenis}.
 
 @cindex debug support, and floating-point code
 The DJGPP functions in @file{libdbg.a} support FP code much better now,

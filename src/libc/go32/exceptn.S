@@ -67,6 +67,14 @@ EXCEPTION_ENTRY($17)
 ;*	[   RET EIP*	]	* Don't modify
 ;*	[  EXCEPTION #	]	(And later EBP)
 ;*/
+/* ;WARNING WARNING WARNING
+   ;The mechanism for passing signals between the debugger
+   ;and the debuggee relies on the *exact* instructions between
+   ;EXCEPTION_ENTRY($13) above and "cmpb $0, forced" instruction
+   ;below!  These instructions are stored in forced_test[] buffer
+   ;in src/debug/common/dbgcom.c.  Do NOT change anything between
+   ;these two instructions, or you will break signal support in
+   ;the debuggers!!  */
 exception_handler:
 	pushl	%ebx
 	pushl	%ds
@@ -249,6 +257,8 @@ Lss_ok:	subl	$92, %esp		/* 64 plus extra for longjmp */
 	.balign	8		/* We will touch this; it must be locked */
 	.global ___djgpp_hw_lock_start
 ___djgpp_hw_lock_start:
+	/* src/debug/common/dbgcom.c knows that `ds_limit' is stored
+	   4 bytes before `forced' and relies on that.  Do NOT change that! */
 ds_limit:			.long	0
 forced:				.long	0
 	.global	___djgpp_cbrk_count

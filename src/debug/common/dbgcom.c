@@ -17,7 +17,7 @@
 #include <debug/dbgcom.h>
 #include <sys/exceptn.h>
 #include <stubinfo.h>
-#include <sys/farptr.h>
+#include <libc/farptrgs.h>
 #include <sys/fsext.h>
 #include <io.h>
 
@@ -256,6 +256,7 @@ void _set_break_DPMI(void)
     return;
   extract = edi.dr[7] >> 16;
   nset = 0;
+  edi.app_base = vbase;
 
   for(i=0;i<4;i++)
     if( (edi.dr[7] >> (i*2))&3 ) {		/* enabled? */
@@ -709,11 +710,17 @@ Lc31_set_selector_limit:                                                \n\
         movl    _app_ds_index,%eax                                      \n\
         movw    %cx,_app_ds_size+2(,%eax,4)                             \n\
         movw    %dx,_app_ds_size(,%eax,4)                               \n\
-        incl    _app_ds_index                                           \n\
-        cmpl    $128,_app_ds_index                                      \n\
+        cmpl    $127,_app_ds_index                                      \n\
         jne     Lc31_index_ok                                           \n\
-        movl    $0,_app_ds_index                                        \n\
+        pushl   %ebx                                                    \n\
+        movl    _app_ds_size-4(,%eax,4),%ebx                            \n\
+        movl    %ebx,_app_ds_size                                       \n\
+        movl    _app_ds_size(,%eax,4),%ebx                              \n\
+        movl    %ebx,_app_ds_size+4                                     \n\
+        movl    $1,_app_ds_index                                        \n\
+        popl    %ebx                                                    \n\
 Lc31_index_ok:                                                          \n\
+        incl    _app_ds_index                                           \n\
         popl    %eax                                                    \n\
         popl    %ds                                                     \n\
         jmp     L_jmp_to_old_i31                                        \n\
@@ -904,8 +911,8 @@ Lc21_exit:                                                              \n\
 /* complete code to return from an exception */
 asm (  ".text
        .balign 16,,7
-       .globl    _dbgcom_exception_return_complete
-_dbgcom_exception_return_complete:       /* remove errorcode from stack */
+       .globl    _dbgcom_exception_return_to_debuggee
+_dbgcom_exception_return_to_debuggee:       /* remove errorcode from stack */
        /* we must also switch stack back !! */
        /* relative to ebp */
        /* 0 previous ebp */
@@ -923,6 +930,10 @@ _dbgcom_exception_return_complete:       /* remove errorcode from stack */
        pushl  %ds
        pushl  %eax
        pushl  %esi
+       movl   %cs:___djgpp_our_DS,%eax
+       movw   %ax,%ds
+       addl   $32,_cur_pos
+       decl    _child_exception_level
        movl   24(%ebp),%eax
        movw   %ax,%ds
        movl   20(%ebp),%esi
@@ -966,13 +977,16 @@ _dbgcom_exception_return_complete:       /* remove errorcode from stack */
 static jmp_buf here;
 
 /* simple code to return from an exception */
+/* don't forget to increment cur_pos       */
 asm (  ".text
        .balign 16,,7
-       .globl    _dbgcom_exception_return
-_dbgcom_exception_return:       /* remove errorcode from stack */
+       .globl    _dbgcom_exception_return_to_here
+_dbgcom_exception_return_to_here:       /* remove errorcode from stack */
         movl    %cs:___djgpp_our_DS,%eax                                \n\
         movw    %ax,%ds                                                 \n\
         movw    %ax,%es                                                 \n\
+        addl    $32,_cur_pos                                            \n\
+        decl    _child_exception_level                                  \n\
 	pushl	$1							\n\
 	pushl	$_here						        \n\
 	call	_longjmp						\n\
@@ -1024,10 +1038,13 @@ static void unhook_dpmi(void)
 		 /* Why? (AP) */
 }
 
-static void call_app_exception(int signum, char complete)
+#define RETURN_TO_HERE 0
+#define RETURN_TO_DEBUGGEE 1
+
+static void call_app_exception(int signum, char return_to_debuggee)
     {
-    extern void dbgcom_exception_return(void);
-    extern void dbgcom_exception_return_complete(void);
+    extern void dbgcom_exception_return_to_here(void);
+    extern void dbgcom_exception_return_to_debuggee(void);
 #ifdef DEBUG_EXCEPTIONS
     redir_excp_count++;
 #endif
@@ -1044,16 +1061,23 @@ static void call_app_exception(int signum, char complete)
     load_state->__cs=app_handler[signum].selector;
     /* use our own exception stack */
     child_exception_level++;
-    memset(&excep_stack,0xAB,sizeof(excep_stack));
-    cur_pos = &excep_stack[1000-40] - 8;
+    cur_pos -= 8;
+    if (cur_pos < &excep_stack[0])
+      {
+       /* We have a problem here, but this should never happen.  */
+       fprintf (stderr,
+		"Level of nesting in debugger exceptions too high: %d\n",
+		child_exception_level);
+       exit(-1);
+      }
     load_state->__ss = my_ds;
     load_state->__esp= (int) cur_pos;
     /* where to return */
     ret_cs = my_cs;
-    if (complete)
-      ret_eip = (int) &dbgcom_exception_return_complete;
+    if (return_to_debuggee)
+      ret_eip = (int) &dbgcom_exception_return_to_debuggee;
     else
-      ret_eip = (int) &dbgcom_exception_return;
+      ret_eip = (int) &dbgcom_exception_return_to_here;
     cur_pos[0] = ret_eip;
     cur_pos[1] = ret_cs;
     cur_pos[2] = errcode;
@@ -1089,7 +1113,7 @@ static void dbgsig(int sig)
 	
       if (app_ds_index>1)
         {
-          /* set the limt correctly */
+          /* set the limit correctly */
           __dpmi_set_segment_limit(app_ds,app_ds_size[app_ds_index-2]);
         }
      /* let app restore the ds selector */
@@ -1100,11 +1124,11 @@ static void dbgsig(int sig)
        load_state->__esp = here->__esp;
        load_state->__cs = here->__cs;
        load_state->__ss = here->__ss;
-       /* do use ss stack */
-       load_state->__signum = 0xd;
+       /* do use ds exception */
+       load_state->__signum = 0xc;
        /* longjmp returns eax value */
        load_state->__eax = 1;
-       call_app_exception(__djgpp_exception_state->__signum,0);
+       call_app_exception(__djgpp_exception_state->__signum, RETURN_TO_HERE);
       }
      __djgpp_exception_state->__signum=signum;
     }
@@ -1138,8 +1162,10 @@ static void dbgsig(int sig)
      (app_handler[signum].selector !=
       our_handler[signum].selector)))
     {
-     *load_state = *__djgpp_exception_state;     /* exception was in other process */
-     call_app_exception(signum,1);
+     *load_state = *__djgpp_exception_state;
+     /* This exception was in other process, so the debuggee should
+        handle it.  */
+     call_app_exception(signum, RETURN_TO_DEBUGGEE);
     }
    /*  else
      {
@@ -1180,11 +1206,23 @@ void run_child(void)
 	   the child when it is resumed.  */
 	if (a_tss.tss_irqn >= DPMI_EXCEPTION_COUNT && forced_address_known)
 	  {
-	    /* This is a fake exception (SIGINT, SIGALRM, etc.).  */
-#if 0
-	    movedata(my_ds, (int)&a_tss.tss_irqn, app_cs, forced_address, 4);
-#endif
-	    a_tss.tss_irqn = 0x0d;
+	    unsigned app_ds_size = __dpmi_get_segment_limit (app_ds);
+	    if (app_ds_size > 0xfff)
+	      {
+		/* This is a fake exception (SIGINT, SIGALRM, etc.).
+		   We need to poke the `forced' variable in the child
+		   with the fake exception number.  */
+		_farpokel (app_ds, forced_address, a_tss.tss_irqn);
+
+		/* We also need to save the child's DS limit in the
+		   child's ds_limit variable, because the child's fake
+		   exception handling code will try to restore the DS
+		   limit from the value of ds_limit.  ds_limit is
+		   defined in exceptn.S at offset -4 relative to the
+		   forced variable (PM).  */
+		_farpokel (app_ds, forced_address - 4, app_ds_size);
+	      }
+	    a_tss.tss_irqn = 0x0d; /* simulate a GPF in the child */
 	  }
 	if ((a_tss.tss_irqn < DPMI_EXCEPTION_COUNT)
 	    && (app_handler[a_tss.tss_irqn].offset32)
@@ -1192,7 +1230,12 @@ void run_child(void)
 	    && !invalid_sel_addr(app_handler[a_tss.tss_irqn].selector,
 				 app_handler[a_tss.tss_irqn].offset32,1,0))
 	  {
-	    call_app_exception(a_tss.tss_irqn, 1);
+	    call_app_exception(a_tss.tss_irqn, RETURN_TO_DEBUGGEE);
+	  }
+	else
+	  {
+	    a_tss.tss_irqn = 0;
+	    longjmp(load_state, load_state->__eax);
 	  }
 	else
 	  {
@@ -1386,6 +1429,11 @@ void edi_init(jmp_buf start_state)
   memset(dos_descriptors,0,sizeof(dos_descriptors));
   dos_descriptors[0] = _farpeekw(si.psp_selector,0x2c);
   dos_descriptors[1] = si.psp_selector; 
+  /* set initial value of cur_pos */
+  cur_pos = &excep_stack[1000-40];
+  /* pattern fill exception stack for debugging */
+  memset(&excep_stack,0xAB,sizeof(excep_stack));
+  child_exception_level = 0;
 }
 
 static void close_handles(void); /* Forward declaration */
