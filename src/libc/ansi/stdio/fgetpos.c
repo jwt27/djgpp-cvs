@@ -5,10 +5,21 @@
 int
 fgetpos(FILE *stream, fpos_t *pos)
 {
+  long ret;
+
   if (stream && pos)
   {
-    *pos = (fpos_t)ftell(stream);
-    return 0;
+    ret = ftell(stream);
+    if (ret != -1L)
+      {
+	*pos = (fpos_t)ret;
+	return 0;
+      }
+    else
+      {
+	/* ftell will have set errno appropriately. */
+	return -1;
+      }
   }
   errno = EFAULT;
   return 1;

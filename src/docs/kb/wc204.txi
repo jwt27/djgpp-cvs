@@ -663,3 +663,8 @@ New option @samp{-e} has been added to @code{djtar} to skip specified files
 and directories when extracting.  Also @code{djtar} can accept multiple 
 @samp{-o} and @samp{-e} options in a single command line.  Finally, the file
 name change file format allows skipping files and directories.
+
+@findex fgetpos
+The function @code{fgetpos} will now fail, if it is unable to determine
+the current offset for a stream.  Previously the failure would have been
+silently ignored.
