@@ -2,6 +2,7 @@
 #include <libc/stubs.h>
 #include <string.h>
 #include <dirent.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <ctype.h>
 #include "dirstruc.h"
@@ -11,6 +12,19 @@ readdir(DIR *dir)
 {
   int done;
   int oerrno = errno;
+
+  if (dir->need_fake_dot_dotdot)
+  {
+    /* Fake out . and .. on /; see opendir for comments */
+    dir->need_fake_dot_dotdot --;
+    if (dir->need_fake_dot_dotdot)
+      strcpy(dir->de.d_name, ".");
+    else
+      strcpy(dir->de.d_name, "..");
+    dir->de.d_namlen = strlen(dir->de.d_name);
+    return &(dir->de);
+  }
+
   if (dir->num_read)
     done = findnext(&dir->ff);
   else
@@ -29,13 +43,16 @@ readdir(DIR *dir)
     return 0;
   }
   dir->num_read ++;
-  strcpy(dir->de.d_name, dir->ff.ff_name);
-  dir->de.d_namlen = strlen(dir->de.d_name);
   if (!(dir->flags & __OPENDIR_PRESERVE_CASE))
   {
-    char *cp;
-    for (cp=dir->de.d_name; *cp; cp++)
-      *cp = tolower(*cp);
+    char *cp, fsh[13];
+
+    if (!strcmp(_lfn_gen_short_fname(dir->ff.ff_name, fsh), dir->ff.ff_name))
+      for (cp=dir->ff.ff_name; *cp; cp++)
+	if (*cp >= 'A' && *cp <= 'Z')
+	  *cp += 'a' - 'A';
   }
+  strcpy(dir->de.d_name, dir->ff.ff_name);
+  dir->de.d_namlen = strlen(dir->de.d_name);
   return &dir->de;
 }
