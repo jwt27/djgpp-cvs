@@ -412,6 +412,17 @@ append mode.
 Type of @code{__file_handle_modes} extended to be able to hold the
 @code{O_APPEND} flag.
 
+@findex fdopen.c@r{, no longer uses _IOAPPEND flag}
+@findex fflush.c@r{, no longer uses _IOAPPEND flag}
+@findex flsbuf.c@r{, no longer uses _IOAPPEND flag}
+@findex fopen.c@r{, no longer uses _IOAPPEND flag}
+@findex freopen.c@r{, no longer uses _IOAPPEND flag}
+@cindex libc/file.h@r{, _IOAPPEND flag deleted}
+Due to the improved append mode implementation, the functions @code{fopen},
+@code{fflush}, @code{_flsbuf}, @code{fopen}, and @code{freopen} no longer
+use the @code{_IOAPPEND} flag.  And since the flag is no longer used, the
+@code{_IOAPPEND} flag has been deleted from @file{libc/file.h}.
+
 @findex getopt@r{, enhanced for POSIX compliance}
 When the first character in the valid options string is a colon @samp{:},
 @code{getopt} will now return a colon when a missing option argument is
