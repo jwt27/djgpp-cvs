@@ -113,11 +113,11 @@ void fileio_unget(int c)
 
 void fileio_include(char *n)
 {
-  FILE *f;
+  FILE *f=0;
   FileStack *fs;
   IncludeItem *ip;
   char tmp[1000];
-  char *found;
+  char *found=0;
 
   for (ip=include_path; ip; ip=ip->next)
   {

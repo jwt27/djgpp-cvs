@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
 ** Copyright (C) 1993 DJ Delorie, 24 Kirsten Ave, Rochester NH 03867-2954
@@ -86,10 +87,12 @@ static void tssprint(TSS *t)
     t->tss_esi, t->tss_edi, t->tss_ebp);
   for (i=0; i<18; i++)
     if (fluse[i])
+    {
       if (t->tss_eflags & (1<<(17-i)))
         printf(" %2.2s", flset+i*2);
       else
         printf(" %2.2s", floff+i*2);
+    }
   printf("\nds=%04x es=%04x fs=%04x gs=%04x ss:esp=%04x:%08lx cs=%04x\n",
     t->tss_ds, t->tss_es, t->tss_fs, t->tss_gs, t->tss_ss, t->tss_esp, t->tss_cs);
 }

@@ -85,7 +85,6 @@ void
 pscomment(char *fmt, ...)
 {
   char tmp[1000];
-  int need;
 
   if (ps_col)
     putchar('\n');
