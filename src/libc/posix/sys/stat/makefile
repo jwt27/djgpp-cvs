@@ -6,6 +6,7 @@ SRC += filelen.c
 SRC += fixpath.c
 SRC += fstat.c
 SRC += is_exec.c
+SRC += lfilelen.c
 SRC += lstat.c
 SRC += mkdir.c
 SRC += mkfifo.c
