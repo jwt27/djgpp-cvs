@@ -12,7 +12,7 @@ size_t
 fwrite(const void *vptr, size_t size, size_t count, FILE *f)
 {
   const char *ptr = (const char *)vptr;
-  register int s;
+  size_t s;
 
   if (__libc_write_termios_hook
       && (f->_flag & (_IOTERM | _IONTERM)) == 0)

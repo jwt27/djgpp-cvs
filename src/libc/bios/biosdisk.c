@@ -45,7 +45,8 @@ int
 biosdisk(int cmd, int drive, int head, int track,
 	 int sector, int nsects, void *buffer)
 {
-  int seg=0, ofs=0, xfer=0, before=0;
+  int seg=0, ofs=0, before=0;
+  size_t xfer=0;
   __dpmi_regs r;
   switch (cmd)
   {
@@ -120,7 +121,8 @@ biosdisk(int cmd, int drive, int head, int track,
 unsigned 
 _bios_disk(unsigned _cmd, struct diskinfo_t *_di)
 {
-  int seg=0, ofs=0, xfer=0, before=0;
+  int seg=0, ofs=0, before=0;
+  size_t xfer=0;
   __dpmi_regs r;
 
   switch( _cmd )

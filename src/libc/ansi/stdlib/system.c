@@ -98,7 +98,7 @@ _shell_command (const char *prog, const char *cmdline)
     char *cmd_tail = (char *)alloca(cmd_tail_alloc);
     const char *s = prog;
     char *d = cmd_tail + 3;
-    int cmd_tail_len;
+    size_t cmd_tail_len;
 
     strcpy (cmd_tail, "/c ");
     while ((*d = *s++) != 0)

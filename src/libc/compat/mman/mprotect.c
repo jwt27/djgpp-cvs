@@ -25,7 +25,7 @@ int mprotect(void *addr, size_t len, int prot)
 
   {
     unsigned short pageprot[npage];
-    int i;
+    unsigned i;
     __dpmi_meminfo meminfo;
     __djgpp_sbrk_handle *handle_info;
 
