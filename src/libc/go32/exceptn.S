@@ -149,7 +149,7 @@ not_forced:
 	cmpw	%ax,32(%ebp)
 	je	stack_ok
 	.byte	0x2e				/* CS: */
-	movw	___djgpp_ds_alias,%di
+	movw	___excep_ds_alias,%di
 	cmpw	%di,32(%ebp)	/* if it's DS alias, switch to normal DS */
 	jne	1f
 	movw	%ax,32(%ebp)
@@ -301,8 +301,8 @@ ___djgpp_old_timer:		.long	0,0
 	.global	___djgpp_exception_state_ptr
 ___djgpp_exception_state_ptr:	.long	0
 exception_state:		.space	64
-	.global	___djgpp_ds_alias
-___djgpp_ds_alias:		.word	0	/* used in dpmi/api/d0303.S (alloc rmcb) */
+	.global	___excep_ds_alias
+___excep_ds_alias:		.word	0	/* private locked __djgpp_ds_alias */
 
 	.balign 16,,7
 	.global	___djgpp_npx_hdlr
@@ -400,7 +400,7 @@ ___djgpp_timer_hdlr:
 	cmpl	$0,___djgpp_timer_countdown
 	je	4f
 	pushl	%ds
-	movw	%cs:___djgpp_ds_alias, %ds
+	movw	%cs:___excep_ds_alias, %ds
 	decl	___djgpp_timer_countdown
 	popl	%ds
 	jmp	3f
