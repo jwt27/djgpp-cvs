@@ -1,0 +1,256 @@
+@c ----------------------------------------------------------------------
+@node bdos, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int bdos(int func, unsigned dx, unsigned al);
+@end example
+
+@subheading Description
+
+Calls function @var{func} of the software interrupt 0x21, passing it
+@var{al} as the subfunction and (the lower 16 bit of) @var{dx} in the
+@code{DX} register.  This function will only work for a subset of DOS
+functions which require no arguments at all, or take non-pointer arguments
+in the @code{AL} and @code{DX} registers only.  For functions which
+require a pointer in the @code{DX} register, use @code{bdosptr}
+(@pxref{bdosptr}).
+
+@subheading Return Value
+
+Whatever the called function returns in the AX register.
+
+@subheading Example
+
+@example
+/* read a character */
+int ch = bdos(1, 0, 0) & 0xff;
+@end example
+
+@c ----------------------------------------------------------------------
+@node bdosptr, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int bdosptr(int func, void *ptr, unsigned al);
+@end example
+
+@subheading Description
+
+Calls function @var{func} of the software interrupt 0x21, passing it
+@var{al} as the subfunction and a pointer to a copy of the buffer contents
+whose address is in @var{ptr} through the @code{DX} register.  This
+function will only work for a subset of DOS which require an argument
+in the @code{AL} register and a pointer in @code{DX} register.  For
+functions which require non-pointer arguments in the @code{DX} register,
+use @code{bdos} (@pxref{bdos}).  To make the contents of @var{ptr}
+available to DOS, @code{bdosptr} copies it to the transfer buffer located
+in the low (below 1 Meg mark) memory.
+
+Currently, some of the functions which take a pointer to a buffer in
+@code{DX} are @emph{NOT} supported (notably, most of the FCB-based
+functions).  @xref{int86} for the list of supported functions.
+
+@subheading Return Value
+
+Whatever the called function returns in the AX register.
+
+@subheading Example
+
+@example
+/* print a string */
+bdos(9, "Hello, there$", 0);
+@end example
+
+@c -------------------------------------------------------------------------
+@node int86, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int int86(int ivec, union REGS *in, union REGS *out);
+@end example
+
+@subheading Description
+
+Note: The @code{.x.} branch is a problem generator.  Most code expects
+the @code{.x.} branch to have e.g. "@code{.x.ax}" members, and that
+they are 16-bit.  If you know you want 32-bit values, use the
+@code{.d.eax} members.  If you know you want 16-bit values, use the
+@code{.w.ax} members.  The @code{.x.} members behave according to
+@code{#defines}, as follows:
+
+@table @code
+
+@item default
+
+If you specify no @code{#define}, the @code{.x.} branch has
+"@code{ax}" members and is 32-bit.  This is compatible with previous
+versions of djgpp.
+
+@item _NAIVE_DOS_REGS
+
+This define gives you @code{.x.ax}, but they are 16-bit.  This is
+probably what most programs ported from 16-bit dos compilers will
+want.
+
+@item _BORLAND_DOS_REGS
+
+This define gives you @code{.x.eax} which are 32-bit.  This is
+compatible with Borland's 32-bit compilers.
+
+@end table
+
+This function simulates a software interrupt.  Note that, unlike the
+@code{__dpmi_int} function, requests that go through @code{int86}
+and similar functions are specially processed to make them suitable for
+invoking real-mode interrupts from protected-mode programs.  For example,
+if a particular routine takes a pointer in @code{BX}, @code{int86} expects
+you to put a (protected-mode) pointer in @code{EBX}.  Therefore,
+@code{int86} should have specific support for every interrupt and function
+you invoke this way.  Currently, it supports only a subset of all
+available interrupts and functions:
+
+1) All functions of any interrupt which expects only scalar arguments
+registers (i.e., no pointers to buffers).
+
+2) In addition, the following functions of interrupt 21h are supported:
+9, 39h, 3Ah, 3Bh, 3Ch, 3Dh, 3Fh, 40h, 41h, 43h, 47h, 56h.
+
+When the interrupt is invoked, the CPU registers are copied from
+@var{in}.  After the interrupt, the CPU registers are copied to
+@var{out}.
+
+This function is just like @code{int86x} (@pxref{int86x}) except that
+suitable default values are used for the segment registers.
+
+@xref{int86x}. @xref{intdos}. @xref{bdos}.
+
+@subheading Return Value
+
+The returned value of @code{EAX}.
+
+@subheading Example
+
+@example
+union REGS r;
+r.x.ax = 0x0100;
+r.h.dl = 'c';
+int86(0x21, &r, &r);
+@end example
+
+@c -------------------------------------------------------------------------
+@node int386, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int int386(int ivec, union REGS *in, union REGS *out);
+@end example
+
+@subheading Description
+
+This function is equal to @code{int86} function.
+See @xref{int86} for further description.
+
+@subheading Return Value
+
+The returned value of @code{EAX}.
+
+@c ----------------------------------------------------------------------
+@node int86x, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int int86x(int ivec, union REGS *in, union REGS *out, struct SREGS *seg);
+@end example
+
+@subheading Description
+
+This function is just like @code{int86} (@pxref{int86}) except that
+values you pass in @var{SREGS} are used for the segment registers instead
+of the defaults.
+
+@xref{int86}. @xref{intdos}. @xref{bdos}.
+
+@subheading Return Value
+
+The value of @code{EAX} is returned.
+
+@subheading Example
+
+@example
+union REGS r;
+struct SREGS s;
+r.h.ah = 0x31;
+r.h.dl = 'c';
+r.x.si = si_val;
+s.ds = ds_val;
+int86x(0x21, &r, &r, &s);
+@end example
+
+@c ----------------------------------------------------------------------
+@node int386x, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int int386x(int ivec, union REGS *in, union REGS *out, struct SREGS *seg);
+@end example
+
+@subheading Description
+
+This function is equal to @code{int86x}.
+See @xref{int86} for further description.
+
+@subheading Return Value
+
+The value of @code{EAX} is returned.
+
+@c ----------------------------------------------------------------------
+@node intdos, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int intdos(union REGS *in, union REGS *out);
+@end example
+
+@subheading Description
+
+This function is just like @code{int86} (@pxref{int86x}) except that
+the interrupt vector is 0x21.
+
+@subheading Return Value
+
+@code{EAX}
+
+@c ----------------------------------------------------------------------
+@node intdosx, dos
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int intdosx(union REGS *in, union REGS *out, struct SREGS *s);
+@end example
+
+@subheading Description
+
+This function is just like @code{int86x} (@pxref{int86x}) except that the
+interrupt vector is 0x21.
+
+@subheading Return Value
+
+@code{EAX}
+
