@@ -131,7 +131,7 @@ extern "C" {
 #endif
 
 extern unsigned short   _osmajor, _osminor;
-extern unsigned short   _windows_major, _windows_minor;
+extern unsigned short   _os_trueversion;
 extern const    char  * _os_flavor;
 extern int		_doserrno;
 
