@@ -61,7 +61,7 @@ but a placeholder of the same size does it also */
 _frame_struct:
         .long   0,0,0,0,0,0
         .long   0,0,0,0,0,0 /* DJ - more zeros, just in case */
-.section .eh_fram
+.section .eh_frame
 _CRT0_EH_FRAME_BEGIN_:
 
 	.data
