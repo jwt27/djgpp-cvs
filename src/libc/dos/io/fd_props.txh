@@ -25,6 +25,29 @@ struct fd_properties
 @};
 @end example
 
+@code{flags} can contain a combination of bits:
+
+@table @code
+
+@item FILE_DESC_TEMPORARY
+Delete @code{filename} when @code{ref_count} becomes zero.
+
+@item FILE_DESC_ZERO_FILL_EOF_GAP
+Tell @code{write} and @code{_write} to test for file offset greater than
+EOF.  Set by @code{lseek} and @code{llseek}.
+
+@item FILE_DESC_DONT_FILL_EOF_GAP
+Don't test for the EOF gap.  Set automatically for stdin, stdout, and NUL.
+Can also be set by an FSEXT.
+
+@item FILE_DESC_PIPE
+The file descriptor is used in emulating a pipe.
+
+@item FILE_DESC_APPEND
+The file pointer will be set to the end of file before each write.
+
+@end table
+
 For more information, see @ref{__clear_fd_properties} and
 @ref{__dup_fd_properties}.
 
