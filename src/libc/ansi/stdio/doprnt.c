@@ -579,16 +579,18 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
         else doextradps=1;
   }
   /*
-   * get integer portion of number; put into the end of the buffer; the
-   * .01 is added for modf(356.0 / 10, &integer) returning .59999999...
+   * get integer portion of number; put into the end of the buffer.
    * The test p >= startp is due to paranoia: buffer length is guaranteed
    * to be large enough, but if tmp is somehow a NaN, this loop could
    * eventually blow away the stack.
    */
   for (; integer && p >= startp; ++expcnt)
   {
-    tmp = modfl(integer * 0.1L , &integer);
-    *p-- = tochar((int)((tmp + .01L) * 10));
+    if(modfl(integer / 10.0L , &tmp))
+      *p-- = tochar((int)(integer - (tmp * 10.0L)));
+    else
+      *p-- = '0';
+    integer = tmp;
   }
   switch(fmtch)
   {
