@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 #include <stdint.h>
 
@@ -9,6 +10,14 @@ extern "C" {
 #endif
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+/* ANSI/ISO C99 says these should not be visible in C++ unless
+   explicitly requested.  */
+
+#if !defined(__cplusplus) || defined(__STDC_FORMAT_MACROS)
 
 #define PRId8       "hhd"
 #define PRId16      "hd"
@@ -175,6 +184,8 @@ extern "C" {
 #define SCNxMAX     "llx"
 #define SCNxPTR     "lx"
 
+#endif /* !__cplusplus || __STDC_FORMAT_MACROS */
+
 typedef struct {
   intmax_t quot;
   intmax_t rem;
@@ -184,6 +195,8 @@ intmax_t imaxabs (intmax_t _j);
 imaxdiv_t imaxdiv (intmax_t _numer, intmax_t _denom);
 intmax_t strtoimax (const char *_nptr, char **_endptr, int _base);
 uintmax_t strtoumax (const char *_nptr, char **_endptr, int _base);
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
 #ifndef __STRICT_ANSI__
 
