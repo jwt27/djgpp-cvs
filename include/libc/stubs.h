@@ -17,8 +17,10 @@ extern "C" {
 /* POSIX functions (for when compiling an ANSI function) */
 
 #define access __access
+#define asctime_r __asctime_r
 #define chdir __chdir
 #define close __close
+#define ctime_r __ctime_r
 #define dup __dup
 #define dup2 __dup2
 #define fdopen __fdopen
@@ -26,7 +28,9 @@ extern "C" {
 #define fstatvfs __fstatvfs
 #define getcwd __getcwd
 #define glob __glob
+#define gmtime_r __gmtime_r
 #define isatty __isatty
+#define localtime_r __localtime_r
 #define lseek __lseek
 #define mkdir __mkdir
 #define open __open
@@ -46,6 +50,7 @@ extern "C" {
 #define ecvtbuf __ecvtbuf
 #define fchown __fchown
 #define fcvtbuf __fcvtbuf
+#define fgetgrent __fgetgrent
 #define filelength __filelength
 #define findfirst __findfirst
 #define findnext __findnext
