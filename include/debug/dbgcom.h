@@ -23,6 +23,15 @@ typedef struct {
 
 extern ExternalDebuggerInfo edi;
 
+/* structure of FPU state                       */
+/* 14 bytes for FPU env                         */
+/* plus 8*10 bytes from the FPU stack           */
+/* r[8] is the array as defined in intel docs   */
+/* st0 is r[top]                                */
+
+#define NPX_TOP_MASK 0x3800
+#define NPX_TOP_SHIFT 11
+
 typedef struct {
   unsigned short sig0;
   unsigned short sig1;
@@ -41,6 +50,11 @@ typedef struct {
   unsigned long dataptr;
   unsigned long datasel;
   NPXREG reg[8];
+  long double st[8];
+  char st_valid[8];
+  long double mmx[8];
+  char in_mmx_mode;
+  char top;
 } NPX;
 
 extern NPX npx;
