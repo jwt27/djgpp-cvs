@@ -73,7 +73,7 @@ typedef struct __dxe_handle
 } dxe_handle, *dxe_h;
 
 /* Last-resort symbol resolver */
-void *(*dlsymresolver) (const char *symname) = NULL;
+void *(*_dlsymresolver) (const char *symname) = NULL;
 /* Last-error unresolved symbol count */
 int _dl_unresolved_count = 0;
 /* Last-error unresolved symbol */
@@ -382,8 +382,8 @@ void *dlsym (void *dxe, const char *symname)
           }
 modscan_done:
 
-    if (!sym && dlsymresolver)
-      sym = dlsymresolver (symname);
+    if (!sym && _dlsymresolver)
+      sym = _dlsymresolver (symname);
 
     return sym;
   }

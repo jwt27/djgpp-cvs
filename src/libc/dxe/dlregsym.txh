@@ -53,14 +53,14 @@ Returns number of symbol tables in use if success, -1 on failure.
 
 @portability !ansi, !posix
 
-@node dlsymresolver, misc
-@findex dlsymresolver
+@node _dlsymresolver, misc
+@findex _dlsymresolver
 @subheading Syntax
 
 @example
 #include <sys/dxe.h>
 
-extern void *(*dlsymresolver) (const char *symname);
+extern void *(*_dlsymresolver) (const char *symname);
 @end example
 
 @subheading Description

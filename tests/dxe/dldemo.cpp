@@ -49,7 +49,7 @@ void *dxe_res (const char *symname)
 int main ()
 {
   // Set the error callback function
-  dlsymresolver = dxe_res;
+  _dlsymresolver = dxe_res;
 
   // Register the symbols exported into dynamic modules
   dlregsym (syms);

@@ -137,7 +137,7 @@ int dlunregsym (const dxe_symbol_table *symtab);
  * that the dynamic loader have at his disposition. The handler should return
  * NULL to rise a error condition, otherwise it should return a valid address.
  */
-extern void *(*dlsymresolver) (const char *symname);
+extern void *(*_dlsymresolver) (const char *symname);
 
 /* The following variable contains a pointer to a function that is being
  * called when static linking fails because of missing module. Note that
