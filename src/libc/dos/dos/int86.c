@@ -1,5 +1,7 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <string.h>
 #include <dos.h>
 #include <go32.h>
 #include <dpmi.h>
