@@ -1,9 +1,12 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <regex.h>
 #include <assert.h>
+#include <unistd.h>
 
 #include "main.ih"
 
@@ -24,6 +27,7 @@ extern void regprint();
 /*
  - main - do the simple case, hand off to regress() for regression
  */
+int
 main(argc, argv)
 int argc;
 char *argv[];
