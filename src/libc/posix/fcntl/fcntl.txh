@@ -31,20 +31,34 @@ DOS/Windows; handles beyond that cannot be inherited.  In addition, the
 stub loader of the child DJGPP program will forcibly close handles 19
 and 18 (since otherwise it will be unable to read the COFF executable
 information and enter protected mode).  Therefore, the current
-implementation always returns 0 for handles below 18, meaning that all
-those handles are inherited, and @code{FD_CLOEXEC} for handles 18 and
+implementation always returns @code{FD_CLOEXEC} for handles 18 and
 above.
 
-The no-inherit bit can be set when the file is opened, by setting the
-@code{O_NOINHERIT} bit in the open flags; see @ref{open}.
+For handles less than 18, the call will try to determine the status of
+the @code{O_NOINHERIT} flag for that file and will return either
+@code{FD_CLOEXEC} if the flag is set, or 0 if the flag is not set.  If
+the status of the @code{O_NOINHERIT} flag cannot be determined, the call
+will return -1, setting @code{errno} to @code{ENOSYS}.
+
+The no-inherit bit can be set when the file is opened by using the
+@code{O_NOINHERIT} in the open flags; see @ref{open}.
 
 @item F_SETFD
-Set the close-on-exec flag for the handle @var{fd} using the LSB of the
-integer value supplied as the third argument.  Currently, @code{fcntl}
-always fails this call and sets @code{errno} to @code{ENOSYS}, since
-DOS/Windows don't support changing the no-inherit status of an open
-file.
+Set or unset the close-on-exec flag for the handle @var{fd} using the
+LSB of the integer value supplied as the third argument.  Since only the
+first 20 handles are passed to child programs, and since the stub loader
+of the child DJGPP program will forcibly close handles 19 and 18 (since
+otherwise it will be unable to read the COFF executable information and
+enter protected mode), the flag can only be set or unset on the first 18
+handles.  Attempts to set the flag for handles 18 or above will always
+return 0, and attempts to unset the flag for handles 18 or above will
+always return -1, setting @code{errno} to @code{ENOSYS}.
 
+For handles less than 18, the call will try to set or unset the
+@code{O_NOINHERIT} flag for that file and will return 0 if the flag is
+changed.  If the @code{O_NOINHERIT} flag cannot be changed, the call
+will return -1, setting @code{errno} to @code{ENOSYS}.
+  
 @item F_GETFL
 Get the open mode and status flags associated with the handle @var{fd}.
 The flags are those supported by @code{open} and @code{creat} functions,
@@ -53,23 +67,70 @@ always returns zero, with no flags set.
 
 @item F_SETFL
 Set the open mode and status flags associated with the handle @var{fd}.
-This always fails and sets @code{errno} to @code{ENOSYS}, since DOS and
-Windows don't allow to change the descriptor flags after the file is
-open.
+This fails in all but one case, and sets @code{errno} to @code{ENOSYS},
+since DOS and Windows don't allow changing the descriptor flags after
+the file is open.
+
+The one allowed case is for @code{O_NONBLOCK}, since DJGPP doesn't
+support it anyway.  That is, calls using @code{F_SETFL} will fail for
+all flag values @strong{except} @code{O_NONBLOCK}.
+
+@example
+#include <fcntl.h>
+
+ret = fcntl(fd, F_SETFL, O_BINARY); /* This will fail, returning -1  */
+                                    /* and setting errno to ENOSYS.  */
+
+ret = fcntl(fd, F_SETFL, O_NONBLOCK); /* This will succeed          */
+                                      /* returning 0.               */
+@end example
 
 @item F_GETLK
-Get a description of a file segment lock as specified in the structure
-pointed to by the third argument.  This is unsupported and will always
-fail.
+Return the lock structure that prevents obtaining the lock pointed to by
+the third argument, or set the @code{l_type} field of the lock structure
+to @code{F_UNLCK} if there is no obstruction.  Currently, only the
+setting of the @code{l_type} field is provided.  This call will not
+return values in the @code{struct flock} parameter identifying what lock
+parameters prevent getting the requested lock, since there is no way to
+obtain this information from DOS/Windows.  If the lock cannot be
+obtained, -1 is returned and @code{errno} is set to the reason (which
+will be one of @code{EINVAL}, @code{EBADF}, @code{EACCES} or
+@code{ENOLCK}).
 
 @item F_SETLK
 Set or clear a file segment lock according to the structure pointed to
-by the third argument.  This is unsupported and will always fail.
+by the third argument.  The lock is set when @code{l_type} is
+@code{F_RDLCK} (shared lock request) or @code{F_WRLCK} (exclusive lock
+request), and the lock is cleared when @code{l_type} is @code{F_UNLCK}.
+If the lock is already held, then this call returns -1 and sets
+@code{errno} to @code{EACCES}.
+
+The @code{F_RDLCK} value for requesting a read lock is always treated as
+if it were @code{F_WRLCK} for a write lock.
+
+This is because DOS/Win9x only supports one kind of lock, and it is the
+exclusive kind.
 
 @item F_SETLKW
 Same as @code{F_SETLK}, but if the lock is blocked, the call will wait
-until it is unblocked and the lock can be applied.  This is unsupported
-and will always fail.
+(using @code{__dpmi_yield}, see @pxref{__dpmi_yield}) until it is
+unblocked and the lock can be applied.  This call will @strong{never
+exit} if the program making the call is the program which already owns
+the lock.
+
+@item F_GETLK64
+@item F_SETLK64
+@item F_SETLKW64
+Each of these does exactly the same function as the non-"64" version,
+but the third argument must be of type @code{struct flock64}, which
+allows the @var{l_start} and @var{l_len} members to be @code{long long
+int} values.  The current code will only use these @code{long long int}
+values modulo @math{2^32}, which allows file locking positions up to 4
+gigabytes minus 1.  True 64-bit file locking is @strong{not} supported.
+
+The @code{struct flock64} members @var{l_start} and @var{l_len} are
+declared to be of type @code{offset_t}, which is in turn typedef'ed to
+be a @code{long long}.
 @end table
 
 This function can be hooked by the @dfn{Filesystem extensions}, see
@@ -86,6 +147,10 @@ to the appropriate value.  Unsupported values of @var{cmd} cause
 @code{F_DUPFD}, the function returns the new descriptor or -1 in case of
 a failure.
 
+Lock requests which specify the open file's current @code{EOF} position
+as the value of @var{l_start} and zero as the @var{l_len} value will
+fail, returning -1 with @code{errno} set to @code{EACCES}.
+
 
 @subheading Portability
 
@@ -98,5 +163,47 @@ a failure.
 @example
  /* Save the handle in a way that it won't be passed
     to child processes.  */
-  int saved_fd = fcntl (fd, F_DUPFD, 20);
+  int saved_fd = fcntl(fd, F_DUPFD, 20);
+
+ /* Set an advisory lock for the whole file.  */
+  struct flock flock;
+  int retval, fd;
+
+  flock.l_type = F_RDLCK;
+  flock.l_whence = SEEK_SET;
+  flock.l_start = flock.l_len = 0;
+  errno = 0;
+  retval = fcntl(fd, F_SETLK, &flock);
+
+ /* Get the status of the lock we just obtained
+    (should return -1 with errno == EACCES).  */
+  errno = 0;
+  retval = fcntl(fd, F_GETLK, &flock);
+
+ /* Release the lock.  */
+  errno = 0;
+  flock.l_type = F_UNLCK;
+  retval = fcntl(fd, F_SETLK, &flock);
+
+ /* Get the status of the lock we just released
+    (should return 0).  */
+  errno = 0;
+  flock.l_type = F_RDLCK;
+  retval = fcntl(fd, F_GETLK, &flock);
+
+ /* Try to set the O_BINARY flag on the open file
+    (should return -1 with errno == ENOSYS).  */
+  errno = 0;
+  retval = fcntl(fd, F_SETFL, O_BINARY);
+
+ /* Set the O_NONBLOCK flag on the open file
+    (should return 0).  */
+  errno = 0;
+  retval = fcntl(fd, F_SETFL, O_NONBLOCK);
+
+ /* Get the flags on the open file
+    (always returns 0).  */
+  errno = 0;
+  retval = fcntl(fd, F_GETFL);
+
 @end example
