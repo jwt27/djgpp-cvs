@@ -20,6 +20,7 @@ SRC += huge_val.c
 SRC += hypot.c
 SRC += ldexp.c
 SRC += log.S
+SRC += log10.S
 SRC += modf.S
 SRC += modfl.S
 SRC += pow.S
