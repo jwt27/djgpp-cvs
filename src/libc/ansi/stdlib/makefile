@@ -1,3 +1,4 @@
+# Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
@@ -11,6 +12,7 @@ SRC += atof.c
 SRC += atoi.c
 SRC += atol.c
 SRC += atold.c
+SRC += atoll.c
 SRC += bsearch.c
 SRC += calloc.c
 SRC += div.c
