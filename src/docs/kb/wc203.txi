@@ -171,3 +171,8 @@ of the @file{DJGPP.ENV} file which define sections for individual
 programs.  This is so editing @file{DJGPP.ENV} with some losing editors
 that don't strip trailing whitespace when saving the file doesn't
 prevent the startup code from recognizing section names.
+
+@pindex dtou
+@pindex utod
+@code{dtou} and @code{utod} no longer overwrite the stack when invoked
+on file names longer than 80 characters.

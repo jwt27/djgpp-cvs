@@ -8,17 +8,12 @@
 #include <string.h>
 #include <unistd.h>
 
-typedef struct F {
-	char *name;
-	struct F *next;
-	} F;
-
 static int
 dtou(char *fname)
 {
   int sf, df, l;
   char buf[16384];
-  char tfname[80], drive[3], path[80];
+  char tfname[MAXPATH], drive[3], path[MAXPATH];
   struct ftime ftime;
   sf = open(fname, O_RDONLY|O_TEXT);
   if (sf < 1)

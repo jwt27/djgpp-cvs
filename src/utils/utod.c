@@ -9,18 +9,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-typedef struct F {
-	char *name;
-	struct F *next;
-	} F;
-
 static int
 utod(char *fname)
 {
   int sf, df, l;
   struct ftime ftime;
   char buf[16384];
-  char tfname[80], drive[3], path[80];
+  char tfname[MAXPATH], drive[3], path[MAXPATH];
   sf = open(fname, O_RDONLY|O_TEXT);
   if (sf < 0)
   {
