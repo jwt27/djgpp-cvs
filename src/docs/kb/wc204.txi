@@ -473,4 +473,4 @@ allocated by the DPMI host.
 
 @findex confstr@r{, added}
 @code{confstr} has been added to the library to support returning
-system-dependant configuration in strings.
+system-dependent configuration in strings.
