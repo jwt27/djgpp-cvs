@@ -272,7 +272,7 @@ static void emu_printall()
           (long)(r->sigl & 0xFFFF),
           r->exp - EXP_BIAS + 1);
     }
-    eprintf("%s\r\n", tag_desc[r->tag]);
+    eprintf("%s\r\n", tag_desc[(int)r->tag]);
   }
 }
 
