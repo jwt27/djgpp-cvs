@@ -1,3 +1,4 @@
+# Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
@@ -13,6 +14,7 @@ MAKEFLAGS := --no-print-directory
 #
 ifeq ($(CROSS_BUILD),1)
 GCC_OPT := $(shell cat $(TOP)/../gcc.opt)
+GPP_OPT := $(shell cat $(TOP)/../gpp.opt)
 GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
 endif
 
@@ -59,9 +61,11 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 #
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 else
 XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XGPP = $(CROSS_GCC) $(GPP_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 endif
 
@@ -72,6 +76,7 @@ endif
 # profiling support code).
 #
 XNOPGGCC = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gcc.opt) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 
 MISC = $(TOP)/../misc.exe
 
@@ -79,8 +84,8 @@ MISC = $(TOP)/../misc.exe
 	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	@$(XGCC) -c $<
 %.o : %.cc
-	@$(MISC) echo - $(CROSS_GCC) '...' -c -fno-exceptions $<
-	@$(XGCC) -c -fno-exceptions $<
+	@$(MISC) echo - $(CROSS_GPP) '...' -c -fno-exceptions $<
+	@$(XGPP) -c -fno-exceptions $<
 %.o : %.S
 	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	@$(XGCC) -c $<
@@ -91,14 +96,14 @@ MISC = $(TOP)/../misc.exe
 %.i : %.c
 	$(XGCC) -c $< -E > $@
 %.i : %.cc
-	$(XGCC) -c $< -E > $@
+	$(XGPP) -c $< -E > $@
 %.i : %.S
 	$(XGCC) -c $< -E > $@
 
 %.ss : %.c
 	$(XGCC) -c $< -S > $@
 %.ss : %.cc
-	$(XGCC) -c $< -S > $@
+	$(XGPP) -c $< -S > $@
 
 %.c : %.y
 	bison $*.y -o $*.c
@@ -152,8 +157,12 @@ $(BIN)/%.exe : $C %.o $L
 $(HOSTBIN)/%.exe : %
 	$(GCC) -o $@ $^
 
-all :: $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
+all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
 	$(NOP)
+
+$(TOP)/../gpp.opt : $(TOP)/../gcc.opt
+	sed -f $(TOP)/../gpp.sed $< > $@
+
 
 ifneq ($(MAKEFILE_LIB),1)
 all :: makefile.oh

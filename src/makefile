@@ -1,3 +1,4 @@
+# Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
@@ -62,6 +63,8 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C dxe clean
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs clean
+	$(MAKE) -C djasm clean
 	-$(MAKE) -C ../zoneinfo/src clean
 	$(MAKE) -f makempty clean
-		./misc.exe rm makemake.exe copyrite.exe misc.exe
+	./misc.exe rm gpp.opt
+	./misc.exe rm makemake.exe copyrite.exe misc.exe
