@@ -49,9 +49,9 @@ struct stat {
   time_t	st_mtime;
   nlink_t	st_nlink;
   off_t		st_size;
-  off_t		st_blksize;
+  blksize_t	st_blksize;
   uid_t		st_uid;
-  dev_t		st_rdev; /* unused */
+  dev_t		st_rdev;
 };
 
 int	chmod(const char *_path, mode_t _mode);
