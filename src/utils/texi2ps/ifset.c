@@ -99,7 +99,7 @@ alloc_flag(size_t need_bytes)
       char *d = flag_table;
       char *s = d + 1;
 
-      while (s - flag_table < used_size - 1)
+      while (s - flag_table < (long signed int)used_size - 1)
         {
           size_t i = strspn(s, "?");    /* find first char which ISN'T `?' */
 
