@@ -1864,7 +1864,7 @@ static void f2xm1()
   val = xloga;
   rv = xloga;
 
-  for (i=2; i<16; i++)
+  for (i=2; i<19; i++)
   {
     r_mov(&i, bottom);
     r_mul(val, xloga, tmp);
