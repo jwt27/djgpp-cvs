@@ -142,8 +142,21 @@ open(const char* filename, int oflag, ...)
     return fd;	/* errno already set by _open or _creat */
 
   if ((oflag & O_TRUNC) && !should_create)
-    if (_write(fd, 0, 0) < 0)
+#ifndef TRUNC_CHECK
+    _write(fd, 0, 0);
+#else
+    /* Windows 2000/XP will fail 0 byte writes (truncate) on a character
+       device (nul, con) if opened with lfn calls.  We can either ignore
+       the return completely or ignore errors on NT.  Since a truncate
+       fail should never happen (and if it does we expect an error on
+       the next write) this probably doesn't make much difference. */
+
+    if (_write(fd, 0, 0) < 0 && _get_dos_version(1) != 0x532)
+    {
+      _close(fd);
       return -1;
+    }
+#endif
 
   /* we do this last because _open and _create set it also. */
   /* force setmode() to do ioctl() for cooked/raw */
