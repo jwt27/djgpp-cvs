@@ -3,24 +3,23 @@
 #include <libc/unconst.h>
 
 void *
-bsearch(const void *key, const void *base0, size_t nelem,
+bsearch(const void *key, const void *base, size_t nelem,
 	size_t size, int (*cmp)(const void *ck, const void *ce))
 {
-  char *base = unconst(base0, char *);
   int lim, cmpval;
-  void *p;
+  const void *p;
 
   for (lim = nelem; lim != 0; lim >>= 1)
   {
-    p = base + (lim >> 1) * size;
+    p = (const char *)base + (lim >> 1) * size;
     cmpval = (*cmp)(key, p);
     if (cmpval == 0)
-      return p;
+      return unconst(p, void *);
     if (cmpval > 0)
     {				/* key > p: move right */
-      base = (char *)p + size;
+      base = (const char *)p + size;
       lim--;
     } /* else move left */
   }
-  return 0;
+  return NULL;
 }
