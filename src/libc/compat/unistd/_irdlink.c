@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -44,7 +45,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
 					     __path, __buf, __max))
          return ret;
       /* We will check if file exists by the way */
-      if (findfirst(__path, &file_info, 0))
+      if (findfirst(__path, &file_info, FA_RDONLY|FA_ARCH))
       {
          errno = ENOENT;
          return -1;
