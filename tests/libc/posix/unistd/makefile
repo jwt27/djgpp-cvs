@@ -8,8 +8,10 @@ SRC += getpid.c
 SRC += sleep.c
 SRC += tread.c
 SRC += write.c
+SRC += t-fchdir.c
 SRC += t-isatty.c
 SRC += t-lseek.c
 SRC += t-pwrite.c
+SRC += t-select.c
 
 include $(TOP)/../makefile.inc
