@@ -4,6 +4,7 @@ TOP=../..
 
 SRC += a64l.c
 SRC += l64a.c
+SRC += realpath.c
 SRC += unsetenv.c
 
 include $(TOP)/../makefile.inc
