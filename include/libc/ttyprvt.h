@@ -71,23 +71,23 @@ struct tty_screen_interface
   void (*init)(void);
   /* Write a character and update col and row.
      May or may not update the cursor.  */
-  void (*write_ch)(unsigned char ch, int *col, int *row);
+  void (*write_ch)(unsigned char _ch, int *_col, int *_row);
   /* Write a character and update the cursor.  */
-  void (*putch)(unsigned char ch);
+  void (*putch)(unsigned char _ch);
   /* Write a character without updating the cursor.  */
-  void (*putch_at)(unsigned char ch);
+  void (*putch_at)(unsigned char _ch);
   /* Write out a null-terminated string.  */
-  void (*puts)(const unsigned char *s);
+  void (*puts)(const unsigned char *_s);
   /* Scroll the lines y1 through y2 up to ydst. */
-  void (*scroll_up)(int y1, int y2, int ydst);
+  void (*scroll_up)(int _y1, int _y2, int _ydst);
   /* Scroll the lines y1 through y2 down to ydst. */
-  void (*scroll_down)(int y1, int y2, int ydst);
+  void (*scroll_down)(int _y1, int _y2, int _ydst);
   /* Scroll the characters between x1 and x2 right to xdst on line y.  */
-  void (*scroll_left)(int y, int x1, int x2, int xdst);
+  void (*scroll_left)(int _y, int _x1, int _x2, int _xdst);
   /* Scroll the characters between x1 and x2 left to xdst on line y.  */
-  void (*scroll_right)(int y, int x1, int x2, int xdst);
+  void (*scroll_right)(int _y, int _x1, int _x2, int _xdst);
   /* Clear the space between (x1, y1) and (x2, y2).  */
-  void (*clear)(int x1, int y1, int x2, int y2);
+  void (*clear)(int _x1, int _y1, int _x2, int _y2);
 };
 
 #if !defined (_POSIX_VDISABLE) || (_POSIX_VDISABLE == 0)
