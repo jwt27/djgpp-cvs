@@ -42,7 +42,8 @@ more than a regular memory access), resulting in very optimal code.
 The first two groups of functions take a @var{selector} and an @var{offset}.
 This selector is @emph{not} a dos segment.  If you want to access dos
 memory, pass _go32_info_block.selector_for_linear_memory (or just
-_dos_ds) as the selector, and seg*16+ofs as the offset.  For functions which
+_dos_ds, which is defined in the include file go32.h) as the selector,
+and seg*16+ofs as the offset.  For functions which
 poke the memory, you should also provide the @var{value} to put there.
 
 The last two groups assume that you've used @code{_farsetsel} to

@@ -16,7 +16,8 @@ between conventional and linear memory, and among each as well.  The
 selectors passed are @emph{not} segment values like in DOS.  They are
 protected mode selectors that can be obtained by the @code{_my_ds} and
 @code{_go32_info_block.selector_for_linear_memory} (or just
-@code{_dos_ds}) functions (@ref{_my_ds}, @ref{_go32_info_block}).
+@code{_dos_ds}, which is defined in the include file go32.h) functions
+(@ref{_my_ds}, @ref{_go32_info_block}).
 The offsets are linear offsets.  If the selector is for the program's
 data area, this offset corresponds to the address of a buffer (like
 @code{(unsigned)&something}).  If the selector is for the conventional
