@@ -16,6 +16,9 @@ extern "C" {
    hold the extra information.  Fields marked LFN are only valid if the magic
    is set to LFN32 */
 
+/* This is for g++ 2.7.2 and below */
+#pragma pack(1)
+  
 struct ffblk {
   char lfn_magic[6] __attribute__((packed));			/* LFN */
   short lfn_handle __attribute__((packed));			/* LFN */
@@ -42,6 +45,8 @@ struct ffblklfn {
   char               fd_longname[260] __attribute__((packed));
   char               fd_name[14] __attribute__((packed));
 };
+
+#pragma pack(4)
 
 #define FA_RDONLY       1
 #define FA_HIDDEN       2
