@@ -9,11 +9,15 @@ int __solve_symlinks(const char *symlink_path, char *real_path);
 @end example
 
 @subheading Description
+
 This function fully resolves given symlink in @var{symlink_path}---all 
 path components and all symlink levels are resolved.  The
 returned path in @var{real_path} is guaranteed to be symlink-clean
 and understandable by DOS.  If @var{symlink_path} does not contain
 symlinks at all, it is simply copied to @var{real_path}.
+
+@var{real_path} should be of size @code{FILENAME_MAX}, to contain
+the maximum possible length of path.
 
 @subheading Return Value
 
@@ -31,9 +35,10 @@ error code), non-zero in case of success.
   #include <libc/symlink.h>
   #include <stdio.h>
 
+  const char fn[] = "c:/somedir/somelink";
+  char file_name[FILENAME_MAX];
+
   __solve_symlinks(fn, file_name);
   printf("File %s is really %s\n", fn, file_name);
 
-
 @end example
-
