@@ -46,7 +46,11 @@ Zero on success, nonzero on failure.
 
 @example
 struct statfs fs;
+unsigned long long bfree, bsize;
+
 statfs("anything", &fs);
-printf("%d bytes left\n", fs.f_bfree * fs.f_bsize);
+bfree = fs.f_bfree;
+bsize = fs.f_bsize;
+printf("%llu bytes left\n", bfree * bsize);
 @end example
 
