@@ -19,6 +19,11 @@ This is an internal function that stores information about the file descriptor
 @var{fd} in a @code{fd_properties} struct.  It is called by @code{open} and
 its helper functions.
 
+The file name stored in @code{fd_properties} is the result
+of the @code{_truename} function (@pxref{_truename}) on @var{filename}.
+The @var{open_flags} are scanned and the temporary and append flags
+are stored in the @code{flags} field in @code{fd_properties}.
+
 @example
 struct fd_properties
 @{
@@ -50,6 +55,9 @@ The file descriptor is used in emulating a pipe.
 
 @item FILE_DESC_APPEND
 The file pointer will be set to the end of file before each write.
+
+@item FILE_DESC_DIRECTORY
+The file descriptor is for a directory.
 
 @end table
 

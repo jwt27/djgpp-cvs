@@ -36,6 +36,9 @@ extern "C" {
 /* Set when the descriptor is opened for append only. */
 #define FILE_DESC_APPEND            0x10
 
+/* Set when the descriptor is used for directory emulation. */
+#define FILE_DESC_DIRECTORY         0x20
+
 typedef struct fd_properties fd_properties;
 
 struct fd_properties
