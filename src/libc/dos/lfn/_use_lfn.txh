@@ -1,0 +1,35 @@
+@node _use_lfn, file system
+@subheading Syntax
+ 
+@example
+#include <libc/dosio.h>
+ 
+int _use_lfn(void);
+@end example
+ 
+@subheading Description
+ 
+This function returns a nonzero value if the low level libc routines should
+try to use the Long File Name (LFN) functions provided with Windows 95.  This
+routine can be replaced with one always returning 0 to disable using long
+file names.
+
+Long file names can also be disabled by setting the flag _CRT0_FLAG_NO_LFN in 
+_crt0_startup_flags for an image which should not allow use of long file names.
+Long names can be suppressed at runtime on a global basis by setting the 
+environment variable LFN to N, i.e. SET LFN=N.  This might be needed if a 
+distribution expected the truncation of long file names to 8.3 format to 
+work.  For example, if a C source routine included the file exception.h
+(9 letters) and the file was unzipped as exceptio.h, then GCC would not find
+the file unless the environment variable was set.  The environment variable
+can be set in the djgpp.env file to always disable LFN support on any
+system, or can be set in the DOS environment for a short term (single project)
+basis.  If you dual boot a system between Windows 95 and DOS, you probably
+should set LFN=n in your djgpp.env file, since long file names would not
+be visable under DOS, and working with the short names under DOS will damage
+the long names when returning to Windows 95.
+ 
+@subheading Return Value
+ 
+If LFN APIs are supported and should be used, it returns 1, else 0.
+
