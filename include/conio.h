@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_conio_h_
 #define __dj_include_conio_h_
@@ -47,7 +48,7 @@ enum COLORS {
     BROWN,
     LIGHTGRAY,
     /*  light colors    */
-    DARKGRAY,
+    DARKGRAY, /* "light black" */
     LIGHTBLUE,
     LIGHTGREEN,
     LIGHTCYAN,
