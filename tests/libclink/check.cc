@@ -12,7 +12,7 @@
 
 //-----------------------------------------------------------------------------
 
-char *predefs[] = { "main", "edata", "end", "etext", "environ",
+char *predefs[] = { "main", "edata", "end", "etext", "_environ",
 		    "__udivdi3", "__umoddi3", "__divdi3",
 		    "__moddi3", 0 };
 
