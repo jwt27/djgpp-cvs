@@ -4,9 +4,7 @@
 #ifndef __dj_include_libc_file_h__
 #define __dj_include_libc_file_h__
 
-#include <libc/stubs.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
 
@@ -70,8 +68,9 @@ static __inline__ int __getc(FILE *const p)
   if (__libc_read_termios_hook
       && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
   {
+    extern int __isatty(int);
     /* first time we see this handle--see if termios hooked it */
-    if (!((p)->_flag & _IOSTRG) && isatty((p)->_file))
+    if (!((p)->_flag & _IOSTRG) && __isatty((p)->_file))
       (p)->_flag |= _IOTERM;
     else
       (p)->_flag |= _IONTERM;
@@ -87,8 +86,9 @@ static __inline__ int __putc(const int x,FILE *const p)
   if (__libc_write_termios_hook
       && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
   {
+    extern int __isatty(int);
     /* first time we see this handle--see if termios hooked it */
-    if (!((p)->_flag & _IOSTRG) && isatty((p)->_file))
+    if (!((p)->_flag & _IOSTRG) && __isatty((p)->_file))
       (p)->_flag |= _IOTERM;
     else
       (p)->_flag |= _IONTERM;
