@@ -1,15 +1,22 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 int
-setenv (const char *var, const char *val, int replace)
+setenv(const char *var, const char *val, int replace)
 {
   char *prev;
 
+  errno = 0;
+
   if (var == (char *)0 || val == (char *)0)
+  {
+    errno = EINVAL;
     return -1;
+  }
 
   if ((prev  = getenv (var)) && !replace)
     return 0;
