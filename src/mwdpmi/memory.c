@@ -179,7 +179,7 @@ pfree (int page_no)
 		lcall	_vcpi_entry"
 	   : /* No output */
 	   : "d" (page_no << PAGE_SIZE_LOG)
-	   : "eax", "edx");
+	   : "eax");
       else
 	{
 	  __dpmi_regs regs;
