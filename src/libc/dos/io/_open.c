@@ -28,7 +28,7 @@ _open(const char* filename, int oflag)
   if (__FSEXT_call_open_handlers(__FSEXT_open, &rv, &filename))
     return rv;
 
-  if(use_lfn && _osmajor == 5 && _get_dos_version(1) == 0x532) {
+  if(use_lfn && _os_trueversion == 0x532) {
     /* Windows 2000 or XP; or NT with LFN TSR.  Windows 2000 behaves
        badly when using IOCTL and write-truncate calls on LFN handles.
        We convert the long name to a short name and open existing files
