@@ -1,3 +1,5 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 Charles Sandmann (sandmann@clio.rice.edu)
    setitimer implmentation - used for profiling and alarm
    BUGS: ONLY ONE AT A TIME, first pass code
@@ -5,9 +7,12 @@
 
    Changed to work with SIGALRM & SIGPROF by Tom Demmer.
    Gotchas:
-     - It relies on uclock(), which does not work under Windows 95.
-     - It screws up debuggers for reasons I cannot figure out.
-     - Both is true for the old version, too.
+     - It relies on uclock(), which does not work under Windows 3.X
+       and sometimes under Windows 9X.
+     - It screws up debuggers compiled with v2.02 or earlier, since
+       debugging support before v2.03 couldn't pass signals to
+       debugged programs.
+     (Both of the above were true for the old version, too.)
 */
 
 #include <libc/stubs.h>
@@ -16,6 +21,13 @@
 #include <dpmi.h>
 #include <signal.h>
 #include <go32.h>
+
+
+#define DEFAULT_CLOCK_TICK_INTERVAL 54926
+
+/* Applications should set this to the number of microseconds between
+   timer ticks if they reprogram the system clock.  */
+long __djgpp_clock_tick_interval = -1;
 
 static uclock_t r_exp, r_rel,  /* When REAL expires & reload value */
                 p_exp, p_rel;  /* When PROF expires & reload value */
@@ -31,22 +43,18 @@ getitimer(int which, struct itimerval *value)
   if (which == ITIMER_REAL)
   {
     if (r_exp)
-    {
       expire = r_exp - u_now;
-      reload = r_rel;
-    }
     else
-      expire = reload = 0;
+      expire = 0;
+    reload = r_rel;
   }
   else if (which == ITIMER_PROF)
   {
     if (p_exp)
-    {
       expire = p_exp - u_now;
-      reload = p_rel;
-    }
     else
-      expire = reload = 0;
+      expire = 0;
+    reload = p_rel;
   }
   else
   {
@@ -179,6 +187,7 @@ int
 setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
 {
   uclock_t *t_exp, *t_rel;
+  long usecs, usecs_min;
 
   if (ovalue)
   {
@@ -194,6 +203,11 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
     return -1;
   }
 
+  /* If VALUE is a NULL pointer, don't crash, just return the
+     current timer value.  Posix systems seem to expect that behavior.  */
+  if (!value)
+    return 0;
+
   t_exp = which == ITIMER_REAL ? &r_exp: &p_exp;
   t_rel = which == ITIMER_REAL ? &r_rel: &p_rel;
 
@@ -204,23 +218,40 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
     /* If both stopped, stop timer */
     if (( p_exp | r_exp ) == 0 )
       stop_timer();
-    return 0;
+
+    /* Even though it_value is zero, we need to record the interval,
+       so don't return just yet.  */
   }
 
-  *t_exp = value->it_value.tv_sec    * UCLOCKS_PER_SEC;
   *t_rel = value->it_interval.tv_sec * UCLOCKS_PER_SEC;
+
+  /* Posix systems expect timer values smaller than the resolution of
+     the system clock be rounded up to the clock resolution.  */
+  usecs_min = __djgpp_clock_tick_interval;
+  if (usecs_min < 0)
+    usecs_min = DEFAULT_CLOCK_TICK_INTERVAL;
+  usecs = value->it_interval.tv_usec;
+  if (value->it_interval.tv_sec == 0 && usecs < usecs_min)
+    usecs = usecs_min;
 
   /* Rounding errors ?? First multiply and then divide gives an
      overflow if the USEC member is larger than 524288. */
-  if (value->it_value.tv_usec < 524200)
-    *t_exp += (value->it_value.tv_usec * 4096) / 3433;
+  if (usecs < 524200)
+    *t_rel += (usecs * 4096) / 3433;
   else
-    *t_exp += (value->it_value.tv_usec * 2048) / 1716;
+    *t_rel += (usecs * 2048) / 1716;
 
-  if (value->it_interval.tv_usec < 524200)
-    *t_rel += (value->it_interval.tv_usec * 4096) / 3433;
+  if ((value->it_value.tv_sec|value->it_value.tv_usec) == 0)
+    return 0;
+
+  *t_exp = value->it_value.tv_sec * UCLOCKS_PER_SEC;
+  usecs = value->it_value.tv_usec;
+  if (value->it_value.tv_sec == 0 && usecs < usecs_min)
+    usecs = usecs_min;
+  if (usecs < 524200)
+    *t_exp += (usecs * 4096) / 3433;
   else
-    *t_rel += (value->it_interval.tv_usec * 2048) / 1716;
+    *t_exp += (usecs * 2048) / 1716;
 
   /* u_now is returned zero first time uclock() is called.  That first
      call could be the one we issued above, or it could be two days

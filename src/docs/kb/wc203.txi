@@ -429,3 +429,22 @@ when called on a root directory or a character device.
 @findex _check_v2_prog@r{, leaks file descriptor}
 @code{_check_v2_prog} no longer leaks file descriptors when called on a
 corrupt executable by name.
+
+@findex setitimer@r{, when called with} NULL@r{ argument}
+@code{setitimer} no longer crashes when its second argument is a
+@code{NULL} pointer, it simply returns after setting the third argument
+to the value of the last timer set with a previous call to
+@code{setitimer}.
+
+@findex setitimer@r{, and system clock granularity}
+@findex getitimer@r{, and system clock granularity}
+@vindex __djgpp_clock_tick_interval@r{, introduced}
+@cindex timer tick frequency, and @code{setitimer} function
+@code{setitimer} now rounds up timer values smaller than the system
+clock granularity to that granularity, before it uses the values.
+Therefore, @code{setitimer} and @code{getitimer} will return rounded up
+values for such small timers.  The global variable
+@code{__djgpp_clock_tick_interval} is provided for changing the
+granularity used by @code{setitimer}, in case an application reprograms
+the timer chip to run with a non-standard frequency.
+

@@ -64,5 +64,14 @@ main(int argc, char **argv)
 
   printf("\n");
 
+  tv.it_interval.tv_sec = 0;
+  tv.it_interval.tv_usec = 1;
+  tv.it_value.tv_sec = 0;
+  tv.it_value.tv_usec = 0;
+  setitimer (ITIMER_REAL, &tv, 0);
+  setitimer (ITIMER_REAL, 0, &tv);
+  printf ("System clock granularity: %ld microseconds.\n",
+	  tv.it_interval.tv_usec);
+
   return 0;
 }

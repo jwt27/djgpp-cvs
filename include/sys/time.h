@@ -22,6 +22,12 @@ struct itimerval {
   struct  timeval it_value;       /* current value */
 };
 
+/* Applications should set this to the number of microseconds between
+   timer ticks if they reprogram the system clock.  By default, it is
+   set to -1, which causes setitimer to use the default 54.925 msec
+   clock granularity.  */
+extern long __djgpp_clock_tick_interval;
+
 int getitimer(int _which, struct itimerval *_value);
 int setitimer(int _which, struct itimerval *_value, struct itimerval *_ovalue);
 int utimes(const char *_file, struct timeval _tvp[2]);
