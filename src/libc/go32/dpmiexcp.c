@@ -619,10 +619,10 @@ __djgpp_set_ctrl_c(int enable_sigs)
    Note that we invoke here a PM Int 21, which sets the PM selector of
    our PSP.  This is _not_ a call to __dpmi_int ! */
 
-void
+static void
 __maybe_fix_w2k_ntvdm_bug(void)
 {
-  if (_os_trueversion == 0x532) /* Windows NT, 2000 or XP? */
+  if (_osmajor == 5 && _get_dos_version(1) == 0x532) /* Windows NT, 2000 or XP? */
   {
     /* Protected mode call to SetPSP - may destroy RM PSP if not extended */
     asm volatile("movw %0, %%bx                           \n\
