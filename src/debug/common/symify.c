@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -82,7 +83,10 @@ int main(int argc, char **argv)
         {
           if (func)
             fprintf(ofile, ", ");
-          fprintf(ofile, "line %d of %s", lineno, file);
+          if (lineno)
+            fprintf(ofile, "line %d of %s", lineno, file);
+          else
+            fprintf(ofile, "line ?? of %s", file);
         }
         fputc('\n', ofile);
       }
@@ -144,7 +148,10 @@ int main(int argc, char **argv)
           strcat(buf, ", ");
 	  l_left -= 2;
 	}
-        sprintf(buf+strlen(buf), "line %d of %s", lineno, file);
+        if (lineno)
+          sprintf(buf+strlen(buf), "line %d of %s", lineno, file);
+        else
+          sprintf(buf+strlen(buf), "line ?? of %s", file);
 	l_file = strlen(buf);
       }
       if (buf[0])

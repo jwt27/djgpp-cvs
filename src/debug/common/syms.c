@@ -333,12 +333,21 @@ static void process_coff(FILE *fd, long ofs)
              crash.  */
           if (f_aux[i+1].x_sym.x_fcnary.x_fcn.x_lnnoptr >= f_sh[scn].s_lnnoptr)
           {
-            l = f_lnno[scn]
-              + ((f_aux[i+1].x_sym.x_fcnary.x_fcn.x_lnnoptr
-                  - f_sh[scn].s_lnnoptr)/LINESZ);
-            l_pending = 1;
-            i2_max = f_sh[scn].s_nlnno - (l - f_lnno[scn]);
-            l->l_addr.l_paddr = f_symtab[i].e_value;
+            size_t l_idx = (f_aux[i+1].x_sym.x_fcnary.x_fcn.x_lnnoptr
+			    - f_sh[scn].s_lnnoptr) / LINESZ;
+
+            /* No line number info can be at offset larger than 0xffff
+               from f_lnno[scn], because COFF is limited to 64K
+               line-number entries.  If they have more line entries
+               than that, they had line number overflow at link
+               time. */
+            if (l_idx < 0xffffU)
+              {
+                l = f_lnno[scn] + l_idx;
+                l_pending = 1;
+                i2_max = f_sh[scn].s_nlnno - l_idx;
+                l->l_addr.l_paddr = f_symtab[i].e_value;
+              }
           }
         }
 
@@ -350,7 +359,7 @@ static void process_coff(FILE *fd, long ofs)
           syms[s].name = symndup(f_symtab[i].e.e_name, 8);
         else
           syms[s].name = f_string_table + f_symtab[i].e.e.e_offset;
-        
+
         switch (f_symtab[i].e_scnum)
         {
           case 1 ... 10:
