@@ -3,6 +3,7 @@
 
 @example
 #include <time.h>
+#include <string.h>
 
 int
 select(int nfds,
@@ -179,7 +180,7 @@ is line-buffered by DOS.  This means that if you type one character,
 call to @code{getc} will still block until the @key{Enter} key is
 pressed.  If you need to make sure that reading a single character won't
 block, you should read either with BIOS functions such as @code{getkey}
-(@pxref{getkey}, or with raw input DOS functions such as @code{getch}
+(@pxref{getkey}) or with raw input DOS functions such as @code{getch}
 (@pxref{getch}), or switch the handle to binary mode with a call to
 @code{setmode} (@pxref{setmode}).
 @end itemize
