@@ -1,4 +1,4 @@
-# @(#)Makefile	7.48
+# @(#)Makefile	7.67
 
 # Change the line below for your time zone (after finding the zone you want in
 # the time zone files, or adding it to a time zone file).
@@ -17,7 +17,7 @@ LOCALTIME=	US/Eastern
 # time zone files, or adding it to a time zone file).
 # (When a POSIX-style environment variable is handled, the rules in the
 # template file are used to determine "spring forward" and "fall back" days and
-# times; the environment variable itself specifies GMT offsets of standard and
+# times; the environment variable itself specifies UTC offsets of standard and
 # summer time.)
 # Alternately, if you discover you've got the wrong time zone, you can just
 #	zic -p rightzone
@@ -31,7 +31,7 @@ POSIXRULES=	America/New_York
 
 # Everything gets put in subdirectories of. . .
 
-TOPDIR=		/djgpp
+TOPDIR=		../..
 
 # "Compiled" time zone information is placed in the "TZDIR" directory
 # (and subdirectories).
@@ -45,16 +45,17 @@ ETCDIR=		$(TOPDIR)/etc
 
 # If you "make INSTALL", the "date" command gets installed in. . .
 
-BINDIR=		$(TOPDIR)/bin
+BINDIR=		$(TOPDIR)/etc
+
 
 # Manual pages go in subdirectories of. . .
 
-MANDIR=		$(TOPDIR)/man
+MANDIR=		$(TOPDIR)/info
 
 # Library functions are put in an archive in LIBDIR.
 
 LIBDIR=		$(TOPDIR)/lib
-TZLIB=		$(LIBDIR)/libz.a
+TZLIB=		$(LIBDIR)/libtz.a
 
 # If you always want time values interpreted as "seconds since the epoch
 # (not counting leap seconds)", use
@@ -91,6 +92,7 @@ LDLIBS=
 #  -DHAVE_SETTIMEOFDAY=2 if settimeofday uses 2nd arg (4.3BSD)
 #  -DHAVE_SETTIMEOFDAY=3 if settimeofday ignores 2nd arg (4.4BSD)
 #  -DHAVE_STRERROR=1 if `strerror' works
+#  -DHAVE_SYMLINK=0 if your system lacks the symlink function
 #  -DLOCALE_HOME=\"path\" if locales are in "path", not "/usr/lib/locale"
 #  -DHAVE_UNISTD_H=0 if your compiler lacks a "unistd.h" (Microsoft C++ 7?)
 #  -DHAVE_UTMPX_H=1 if your compiler has a "utmpx.h"
@@ -98,6 +100,9 @@ LDLIBS=
 #  -TTZ_DOMAINDIR=\"/path\" to use "/path" for gettext directory;
 #	the default is system-supplied, typically "/usr/lib/locale"
 #  $(GCC_DEBUG_FLAGS) if you are using GCC and want lots of checking
+#  -DNO_RUN_TIME_WARNINGS_ABOUT_YEAR_2000_PROBLEMS_THANK_YOU=1
+#	if you do not want run time warnings about formats that may cause
+#	year 2000 grief
 #
 GCC_DEBUG_FLAGS = -Dlint -g -O -fno-common \
 	-Wall -Wcast-qual -Wconversion -Wmissing-prototypes \
@@ -119,7 +124,7 @@ GCC_DEBUG_FLAGS = -Dlint -g -O -fno-common \
 # to the end of the "CFLAGS=" line.
 # Neither tm_gmtoff nor _tm_gmtoff is described in X3J11's work;
 # in its work, use of "tm_gmtoff" is described as non-conforming.
-# Both UCB and Sun have done the equivalent of defining TM_GMTOFF in
+# Both Linux and BSD have done the equivalent of defining TM_GMTOFF in
 # their recent releases.
 #
 # If your system has a "zone abbreviation" field in its "struct tm"s
@@ -147,7 +152,7 @@ GCC_DEBUG_FLAGS = -Dlint -g -O -fno-common \
 # that gives an offset to add to the time_t when converting it.
 # "timelocal" is equivalent to "mktime".
 # "timegm" is like "timelocal" except that it turns a struct tm into
-# a time_t using GMT (rather than local time as "timelocal" does).
+# a time_t using UTC (rather than local time as "timelocal" does).
 # "timeoff" is like "timegm" except that it accepts a second (long) argument
 # that gives an offset to use when converting to a time_t.
 # "posix2time" and "time2posix" are described in an included manual page.
@@ -188,19 +193,31 @@ GCC_DEBUG_FLAGS = -Dlint -g -O -fno-common \
 #	-DPCTS
 # to the end of the "CFLAGS=" line.
 #
-# If you want strict compliance with XPG4 as of April 9, 1994, add
+# If you want strict compliance with XPG4 as of 1994-04-09, add
 #	-DXPG4_1994_04_09
 # to the end of the "CFLAGS=" line.  This causes "strftime" to always return
 # 53 as a week number (rather than 52 or 53) for those days in January that
 # before the first Monday in January when a "%V" format is used and January 1
 # falls on a Friday, Saturday, or Sunday.
 
-CFLAGS=
+CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
+		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 \
+		-DTM_GMTOFF=__tm_gmtoff -DTM_ZONE=__tm_zone -DSTD_INSPIRED \
+		-DLOCALE_HOME=\"c:/djgpp/locale\" $(GCC_DEBUG_FLAGS) -O2
+
+# If you want zic's -s option used when installing, uncomment the next line
+# ZFLAGS=	-s
+
+zic=		./zic
+ZIC=		$(zic) $(ZFLAGS)
+
+# The name of a Posix-compliant `awk' on your system.
+AWK=		gawk
 
 ###############################################################################
 
 cc=		gcc
-CC=		$(cc) -DTZDIR=\"$(TZDIR)\"
+CC=		$(cc) -DTZDIR=\"c:/djgpp/zoneinfo\"
 
 TZCSRCS=	zic.c localtime.c asctime.c scheck.c ialloc.c
 TZCOBJS=	zic.o localtime.o asctime.o scheck.o ialloc.o
@@ -213,18 +230,20 @@ LIBOBJS=	localtime.o asctime.o difftime.o
 HEADERS=	tzfile.h private.h
 NONLIBSRCS=	zic.c zdump.c scheck.c ialloc.c
 NEWUCBSRCS=	date.c logwtmp.c strftime.c
-SOURCES=	$(HEADERS) $(LIBSRCS) $(NONLIBSRCS) $(NEWUCBSRCS)
+SOURCES=	$(HEADERS) $(LIBSRCS) $(NONLIBSRCS) $(NEWUCBSRCS) tzselect.ksh
 MANS=		newctime.3 newstrftime.3 newtzset.3 time2posix.3 \
-			tzfile.5 zic.8 zdump.8
+			tzfile.5 tzselect.8 zic.8 zdump.8
 DOCS=		README Theory $(MANS) date.1 Makefile
-YDATA=		africa antarctica asia australasia \
-		europe northamerica southamerica pacificnew etcetera factory \
-		backward
+PRIMARY_YDATA=	africa antarctica asia australasia \
+		europe northamerica southamerica
+YDATA=		$(PRIMARY_YDATA) pacificnew etcetera factory backward
 NDATA=		systemv
 SDATA=		solar87 solar88 solar89
 TDATA=		$(YDATA) $(NDATA) $(SDATA)
-DATA=		$(YDATA) $(NDATA) $(SDATA) leapseconds yearistype.sh
-MISC=		usno1988 usno1989 usno1989a usno1995 Music WWW
+TABDATA=	iso3166.tab zone.tab
+DATA=		$(YDATA) $(NDATA) $(SDATA) $(TABDATA) leapseconds yearistype.sh
+MISC=		usno1988 usno1989.orig usno1989 usno1995 usno1997 usno1998 \
+			Arts.htm WWW.htm gccdiffs checktab.awk
 ENCHILADA=	$(DOCS) $(SOURCES) $(DATA) $(MISC)
 
 # And for the benefit of csh users on systems that assume the user
@@ -234,11 +253,13 @@ SHELL=		/bin/sh
 
 all:		zic zdump $(LIBOBJS)
 
-ALL:		all date
+ALL:		all date tzselect
 
-install:	all $(DATA) $(REDO) $(TZLIB) $(MANS)
-		./zic -y $(YEARISTYPE) \
+install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
+		$(ZIC) -y $(YEARISTYPE) \
 			-d $(TZDIR) -l $(LOCALTIME) -p $(POSIXRULES)
+		-rm -f $(TZDIR)/iso3166.tab $(TZDIR)/zone.tab
+		cp iso3166.tab zone.tab $(TZDIR)/.
 		-mkdir $(TOPDIR) $(ETCDIR)
 		cp zic zdump $(ETCDIR)/.
 		-mkdir $(TOPDIR) $(MANDIR) \
@@ -246,11 +267,12 @@ install:	all $(DATA) $(REDO) $(TZLIB) $(MANS)
 		-rm -f $(MANDIR)/man3/newctime.3 \
 			$(MANDIR)/man3/newtzset.3 \
 			$(MANDIR)/man5/tzfile.5 \
+			$(MANDIR)/man8/tzselect.8 \
 			$(MANDIR)/man8/zdump.8 \
 			$(MANDIR)/man8/zic.8
 		cp newctime.3 newtzset.3 $(MANDIR)/man3/.
 		cp tzfile.5 $(MANDIR)/man5/.
-		cp zdump.8 zic.8 $(MANDIR)/man8/.
+		cp tzselect.8 zdump.8 zic.8 $(MANDIR)/man8/.
 
 INSTALL:	ALL install date.1
 		-mkdir $(TOPDIR) $(BINDIR)
@@ -270,38 +292,56 @@ yearistype:	yearistype.sh
 		chmod +x yearistype
 
 posix_only:	zic $(TDATA)
-		./zic -y $(YEARISTYPE) -d .. -L /dev/null $(TDATA)
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
 
 right_only:	zic leapseconds $(TDATA)
-		./zic -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
 
+# In earlier versions of this makefile, the other two directories were
+# subdirectories of $(TZDIR).  However, this led to configuration errors.
+# For example, with posix_right under the earlier scheme,
+# TZ='right/Australia/Adelaide' got you localtime with leap seconds,
+# but gmtime without leap seconds, which led to problems with applications
+# like sendmail that subtract gmtime from localtime.
+# Therefore, the other two directories are now siblings of $(TZDIR).
+# You must replace all of $(TZDIR) to switch from not using leap seconds
+# to using them, or vice versa.
 other_two:	zic leapseconds $(TDATA)
-		./zic -y $(YEARISTYPE) -d $(TZDIR)/posix -L /dev/null $(TDATA)
-		./zic -y $(YEARISTYPE) \
-			-d $(TZDIR)/right -L leapseconds $(TDATA)
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null $(TDATA)
+		$(ZIC) -y $(YEARISTYPE) \
+			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
 
 posix_right:	posix_only other_two
 
 right_posix:	right_only other_two
 
+zones:		$(REDO)
+
 $(TZLIB):	$(LIBOBJS)
 		-mkdir $(TOPDIR) $(LIBDIR)
-		ar ru $@ $(LIBOBJS)
-		if [ -x /usr/ucb/ranlib -o -x /usr/bin/ranlib ] ; \
-			then ranlib $@ ; fi
+		ar rus $@ $(LIBOBJS)
 
 # We use the system's logwtmp in preference to ours if available.
 
 date:		$(DATEOBJS)
-		ar r ,lib.a logwtmp.o
-		if [ -x /usr/ucb/ranlib -o -x /usr/bin/ranlib ] ; \
-			then ranlib ,lib.a ; fi
+		ar rs logwtmpl.a logwtmp.o
 		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
-			$(LDLIBS) -lc ,lib.a -o $@
-		rm -f ,lib.a
+			$(LDLIBS) -lc logwtmpl.a -o $@
+		rm -f logwtmpl.a
+
+tzselect:	tzselect.ksh
+		sed \
+			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
+			-e 's|TZDIR=[^}]*|TZDIR=$(DJDIR)/zoneinfo|' \
+			<$? >$@
+		chmod +x $@
+
+check_tables:	checktab.awk $(PRIMARY_YDATA)
+		$(AWK) -f checktab.awk $(PRIMARY_YDATA)
 
 clean:
-		rm -f core *.o *.out zdump zic yearistype date ,* *.tar.gz
+		rm -f core *.o *.out tzselect zdump zic yearistype date \
+			logwtmpl* *.tar.gz
 
 names:
 		@echo $(ENCHILADA)
