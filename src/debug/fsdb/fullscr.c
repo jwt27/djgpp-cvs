@@ -1021,7 +1021,7 @@ typedef enum { R_Step, R_Step1, R_Over, R_Run, R_RunMain } KIND_TYPE;
 static void
 step (KIND_TYPE kind)
 {
-  int i, b, no, len, int03hit;
+  int i, b = -1, no, len, int03hit;
   char *inst = 0;
   int tracing = (kind == R_Step1);
   word32 final = -1;
@@ -1103,7 +1103,6 @@ step (KIND_TYPE kind)
       user_screen ();
       b = set_breakpoint (BP_Code, 0, final);
       go (1);
-      reset_breakpoint (b);
       break;
     case R_Run:
       user_screen ();
@@ -1123,6 +1122,8 @@ step (KIND_TYPE kind)
   if ((int03hit = (i == 0x03)
        && get_breakpoint (BP_Code, 0, a_tss.tss_eip - 1) != -1))
     a_tss.tss_eip--;  /* point back to Int 3 */
+  if (kind == R_Over && b >= 0)
+    reset_breakpoint (b);  /* reset only after get_breakpoint did its thing */
   if (tracing) return;
 
   /* Find out whether a breakpoint stopped us.  */
@@ -1204,11 +1205,13 @@ step (KIND_TYPE kind)
 	message (CL_Error, "User program used debug registers");
       else if (i == 1 && (edi.dr[6] & (1 << 15)))
 	message (CL_Error, "Task switch caused debug exception");
-      else if (i == 3 && !int03hit)
-	message (CL_Error, "Unexpected Int 3 hit");
     }
+  else if (i == 3 && !int03hit)
+    message (CL_Error, "Unexpected Int 3 hit");
   else if (i == 0x79 || i == 0x09)
     message (CL_Info, "Keyboard interrupt");
+  else if (i == 0x7a)
+    message (CL_Info, "QUIT key pressed");
   else if (i == 0x75)
     {
       char *reason;

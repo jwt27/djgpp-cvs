@@ -515,3 +515,12 @@ foo.tgz}, will not produce an empty @file{tarchange.lst} file anymore.
 @findex memicmp@r{, included in the library}
 The function @code{memicmp} was omitted from the library in version
 2.02.  This is fixed now.
+
+@pindex fsdb@r{, Step Over bug}
+@pindex fsdb@r{, support for }SIGQUIT
+Previously, @code{fsdb} could not step over function calls when 4 or
+more breakpoints were set: it would display an error message saying that
+@samp{Exception 3 occurred}.  This is now fixed.  In addition,
+@code{fsdb} now supports the @code{SIGQUIT} signal, if the program being
+debugged generates it.
+
