@@ -1,0 +1,598 @@
+@c ----------------------------------------------------------------------
+@node clreol, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void clreol(void);
+@end example
+
+@subheading Description
+
+Clear to end of line.
+
+@subheading Return Value
+
+None.
+
+@c ----------------------------------------------------------------------
+@node clrscr, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void clrscr(void);
+@end example
+
+@subheading Description
+
+Clear the entire screen.
+
+@c ----------------------------------------------------------------------
+@node gotoxy, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void gotoxy(int x, int y);
+@end example
+
+@subheading Description
+
+Move the cursor to row y, column x.  The upper left corner of the
+current window is (1,1).
+
+@c ----------------------------------------------------------------------
+@node wherex, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int wherex(void);
+@end example
+
+@subheading Return Value
+
+The column the cursor is on.  The leftmost column is 1.
+
+@c ----------------------------------------------------------------------
+@node wherey, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int     wherey(void);
+@end example
+
+@subheading Return Value
+
+The row the cursor is on.  The topmost row is 1.
+
+@c ----------------------------------------------------------------------
+@node putch, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int putch(int _c);
+@end example
+
+@subheading Description
+
+Put the character @var{_c} on the screen at the current cursor
+position.  The special characters return, linefeed, bell, and
+backspace are handled properly, as is line wrap and scrolling.  The
+cursor position is updated.
+
+@subheading Return Value
+
+The character is returned.
+
+@c ----------------------------------------------------------------------
+@node getch, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int     getch(void);
+@end example
+
+@subheading Description
+
+A single character from the console (stdin) is returned.  The input is
+not line-buffered.  If there is a character pending from
+@ref{ungetch}, it is returned instead.  The character is not echoed to
+the screen.
+
+@subheading Return Value
+
+The character.
+
+@c ----------------------------------------------------------------------
+@node getche, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int getche(void);
+@end example
+
+@subheading Description
+
+A single character from the console (stdin) is returned.  The input is
+not line-buffered.  If there is a character pending from
+@ref{ungetch}, it is returned instead.  The character is echoed to
+the screen.
+
+@subheading Return Value
+
+The character.
+
+@c ----------------------------------------------------------------------
+@node ungetch, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int ungetch(int);
+@end example
+
+@subheading Description
+
+Puts a character back, so that @ref{getch} will return it instead of
+actually reading the console.
+
+@subheading Return Value
+
+The charater is returned.
+
+@c ----------------------------------------------------------------------
+@node _conio_kbhit, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int _conio_kbhit(void);
+@end example
+
+@subheading Description
+
+Determines whether or not a character is waiting at the keyboard.  If
+there is an ungetch'd character, this function returns true.  Note
+that if you include @code{conio.h}, the @ref{kbhit} function is
+redefined to be this function instead.
+
+@subheading Return Value
+
+Nonzero if a key is waiting, else zero.
+
+@c ----------------------------------------------------------------------
+@node delline, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void    delline(void);
+@end example
+
+@subheading Description
+
+The line the cursor is on is deleted; lines below it scroll up.
+
+@c ----------------------------------------------------------------------
+@node gettext, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int     gettext(int _left, int _top, int _right, int _bottom, void *_destin);
+@end example
+
+@subheading Description
+
+Retrieve a block of screen characters into a buffer.
+
+@subheading Return Value
+
+1
+
+@c ----------------------------------------------------------------------
+@node gettextinfo, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void    gettextinfo(struct text_info *_r);
+@end example
+
+@subheading Description
+
+This function returns the parameters of the current window on the
+screen.  The return structure is this:
+
+@example
+struct text_info @{
+    unsigned char winleft;
+    unsigned char wintop;
+    unsigned char winright;
+    unsigned char winbottom;
+    unsigned char attribute;
+    unsigned char normattr;
+    unsigned char currmode;
+    unsigned char screenheight;
+    unsigned char screenwidth;
+    unsigned char curx;
+    unsigned char cury;
+@};
+@end example
+
+The @code{normattr} field is the text attribute which was in effect
+before the program started.
+@c ----------------------------------------------------------------------
+@node highvideo, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void highvideo(void);
+@end example
+
+@subheading Description
+
+Causes any new characters put on the screen to be bright.
+
+@c ----------------------------------------------------------------------
+@node insline, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void insline(void);
+@end example
+
+@subheading Description
+
+A blank line is inserted at the current cursor position.  The previous
+line and lines below it scroll down.
+
+@c ----------------------------------------------------------------------
+@node lowvideo, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void    lowvideo(void);
+@end example
+
+@subheading Description
+
+Causes any new characters put on the screen to be dim.
+
+@c ----------------------------------------------------------------------
+@node movetext, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int movetext(int _left, int _top, int _right, int _bottom, 
+             int _destleft, int _desttop);
+@end example
+
+@subheading Description
+
+Moves a block of text on the screen.
+
+@subheading Return Value
+
+1 on success, zero on error.
+
+@c ----------------------------------------------------------------------
+@node normvideo, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void normvideo(void);
+@end example
+
+@subheading Description
+
+Resets the text attribute to what it was before the program started.
+
+@c ----------------------------------------------------------------------
+@node puttext, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int puttext(int _left, int _top, int _right, int _bottom, void *_source);
+@end example
+
+@subheading Description
+
+The opposite of @ref{gettext}.
+
+@subheading Return Value
+
+1 on success, zero on error.
+
+@c ----------------------------------------------------------------------
+@node textattr, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void textattr(int _attr);
+@end example
+
+@subheading Description
+
+Sets the attribute used for future writes to the screen:
+
+@example
+---- XXXX = foreground color
+-XXX ---- = background color
+X--- ---- = 1=blink 0=steady
+@end example
+
+@c ----------------------------------------------------------------------
+@node textbackground, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void textbackground(int _color);
+@end example
+
+@subheading Description
+
+Sets just the background of the text attribute. @xref{textattr}.
+
+@c ----------------------------------------------------------------------
+@node textcolor, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void textcolor(int _color);
+@end example
+
+@subheading Description
+
+Sets just the foreground of the text attribute. @xref{textattr}.
+
+@c ----------------------------------------------------------------------
+@node textmode, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void textmode(int _mode);
+@end example
+
+@subheading Description
+
+Sets the text mode of the screen.  @var{_mode} is one of the
+following:
+
+@table @code
+
+@item LASTMODE
+
+The text mode which was in effect @emph{before} the last call to
+@code{textmode()}.
+
+@item BW40
+
+40-column black and white (on a color screen)
+
+@item C40
+
+40-color color.
+
+@item BW80
+
+80-column black and white (on a color screen)
+
+@item C80
+
+80-column color
+
+@item MONO
+
+The monochrome monitor
+
+@item C4350
+
+80-column, 43- (on EGAs) or 50-row (on VGAs) color
+
+@end table
+
+@xref{_set_screen_lines}, for a more versatile method of setting
+text screen dimensions.
+@c ----------------------------------------------------------------------
+@node window, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void    window(int _left, int _top, int _right, int _bottom);
+@end example
+
+@subheading Description
+
+Specifies the window on the screen to be used for future output
+requests.  The upper left corner of the physical screen is (1,1).
+
+@c ----------------------------------------------------------------------
+@node _setcursortype, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void _setcursortype(int _type);
+@end example
+
+@subheading Description
+
+Sets the cursor type.  @var{_type} is one of the following:
+
+@table @code
+
+@item _NOCURSOR
+
+No cursor is displayed.
+
+@item _SOLIDCURSOR
+
+A solid block is displayed.
+
+@item _NORMALCURSOR
+
+An underline cursor is displayed.
+
+@end table
+
+@c ----------------------------------------------------------------------
+@node cgets, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+char *cgets(char *_str);
+@end example
+
+@subheading Description
+
+Get a string from the console.  This will take advantage of any
+command-line editing TSRs.  To use, you must pre-fill the first
+character of the buffer.  The first character is the size of the
+buffer.  On return, the second character is the number of characters
+read.  The third character is the first character read.
+
+@subheading Return Value
+
+A pointer to the first character read.
+
+@c ----------------------------------------------------------------------
+@node cprintf, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int cprintf(const char *_format, ...);
+@end example
+
+@subheading Description
+
+Like @code{printf} (@pxref{printf}), but prints through the console,
+taking into consideration window borders and text attributes.  There
+is currently a 2048-byte limit on the size of each individual cprintf
+call.
+
+@subheading Return Value
+
+The number of characters written.
+
+@c ----------------------------------------------------------------------
+@node cputs, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int cputs(const char *_str);
+@end example
+
+@subheading Description
+
+Puts the string onto the console.  The cursor position is updated.
+
+@subheading Return Value
+
+zero on success.
+
+@c ----------------------------------------------------------------------
+@node cscanf, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+int cscanf(const char *_format, ...);
+@end example
+
+@subheading Description
+
+Like @code{scanf} (@pxref{scanf}), but it reads from the keyboard directly.
+
+@subheading Return Value
+
+The number of fields stored.
+
+@c ----------------------------------------------------------------------
+@node gppconio_init, conio
+@subheading Syntax
+
+@example
+#include <conio.h>
+
+void gppconio_init(void);
+@end example
+
+@subheading Description
+
+Initialize the screen.  This is called automatically at program start-up
+if you use any of the @code{conio} functions, but there may be
+times when you need to call it again, typically after calling some video
+BIOS function which affects screen parameters.
+@c ----------------------------------------------------------------------
+@node _set_screen_lines, conio
+@subheading Syntax
+@example
+#include <conio.h>
+void _set_screen_lines(int nlines);
+@end example
+@subheading Description
+This function sets the text screen width to 80 and its height to the
+value given by @var{nlines}, which can be one of the following: 25, 28,
+35, 40, 43 or 50.  On a CGA, only 25-line screen is supported.  On an
+EGA, you can use 25, 35 and 43.  VGA, PGA and MCGA support all of the
+possible dimensions.
+The number of columns (i.e., screen width) is 80 for all of the above
+resolutions, because the standard EGA/VGA has no way of changing it.
+After this function returns, calls to @code{gettextinfo()} will return
+the actual screen dimensions as set by @code{_set_screen_lines()}.
+That is, you can e.g. test whether @code{_set_screen_lines()} succeeded
+by checking the screen height returned by @code{gettextinfo()} against
+the desired height.
+This function has a side effect of erasing the screen contents, so
+application programs which use it should make their own arrangements to
+redisplay it.
