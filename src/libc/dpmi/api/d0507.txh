@@ -17,7 +17,7 @@ DPMI function AX = 0x0507 (DPMI 1.0 only)
 
 Sets page attributes.  Pass handle, offset within block in
 @code{@var{_info}->address}, and number of pages in
-@code{@var{_info}->count.  Buffer @var{_buffer} points to new attributes
+@code{@var{_info}->count}.  Buffer @var{_buffer} points to new attributes
 (see spec).
 
 @subheading Return Value
