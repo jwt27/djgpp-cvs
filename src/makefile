@@ -34,11 +34,13 @@ copyrite.exe : copyrite.cc
 	gcc -O2 copyrite.cc -o copyrite.exe
 
 subs:
+	$(MAKE) -C djasm native
 	$(MAKE) -C stub native
 	$(MAKE) -C dxe native
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
 	$(MAKE) -C debug
+	$(MAKE) -C djasm
 	$(MAKE) -C stub
 	$(MAKE) -C dxe
 	$(MAKE) -C libemu
