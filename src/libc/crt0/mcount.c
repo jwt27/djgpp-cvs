@@ -8,6 +8,7 @@
 #include <setjmp.h>
 #include <sys/time.h>
 #include <sys/exceptn.h>
+#include <sys/mono.h>
 
 /* header of a GPROF type file
 */
@@ -38,6 +39,8 @@ static int mcount_skip = 1;
 static int histlen;
 static MTAB *mtab=0;
 
+extern int etext;
+
 /* called by functions.  Use the pointer it provides to cache
 ** the last used MTABE, so that repeated calls to/from the same
 ** pair works quickly - no lookup.
@@ -53,11 +56,15 @@ void mcount(int _to)
   int mtabi;
   MTABE **cache;
 
+  if (&_to < &etext)
+    *(int *)(-1) = 0; /* fault! */
+
   mcount_skip = 1;
   asm("movl %%edx,%0" : "=g" (cache)); /* obtain the cached pointer */
   to = *((&_to)-1) - 12;
   ebp = *((&_to)-2); /* glean the caller's return address from the stack */
   from = ((int *)ebp)[1];
+  _mono_printf("from %08x  to %08x\r\n", from, to);
   if (*cache && ((*cache)->from == from) && ((*cache)->to == to))
   {
     /* cache paid off - works quickly */
