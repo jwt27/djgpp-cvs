@@ -35,6 +35,10 @@ int main(void)
        exit(1);
    }
    printf("Running __solve_dir_symlink() testsuite:\n");
+   test_success("/", "/");
+   test_success("c:/", "c:/");
+   test_success("/dev/c", "/dev/c");
+   test_success("/dev/c/", "/dev/c");
    test_success("test1", "test1");
    test_success("test1/", "test1");
    test_success("dir1/test1", "dir1/test1");
