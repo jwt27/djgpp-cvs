@@ -46,8 +46,8 @@ warp_high:
 	cmpb	[_memory_source], MEMORY_FROM_VCPI
 	jne	@f1
 
-	mov	si, approximate_temp_page_dir
-	shr	si, PAGE_SIZE_LOG
+	mov	esi, approximate_temp_page_dir
+	shr	esi, PAGE_SIZE_LOG
 	shl	si, 2
 	mov	eax, [si + _vcpi_server_pages]
 	mov	ebx, [si + _vcpi_server_pages + 4]
@@ -100,12 +100,12 @@ warp_high:
 	movsd
 
 ; DEBUG SECTION
-;	mov	di, temp_high_stack
+;	mov	edi, temp_high_stack
 ;@b1:
-;	cmp	di, _code32_end
+;	cmp	edi, _code32_end
 ;	je	@f1
-;	movb	[di], 0
-;	inc	di
+;	movb	[edi], 0
+;	inc	edi
 ;	jmp	@b1
 ;@f1:
 ; DEBUG SECTION ENDS

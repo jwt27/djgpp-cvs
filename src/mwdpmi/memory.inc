@@ -8,8 +8,8 @@
 ;   Otherwise => All extended memory.
 
 investigate_memory:
-	mov	ax, _code32_end
-	mov	[_server_ext_size], ax
+	mov	eax, _code32_end
+	mov	[_server_ext_size], eax
 
 	cmpb	[_vcpi_present], 0
 	je	@f1
@@ -26,9 +26,9 @@ investigate_memory:
 @f2:
 	mov	[_memory_ext_last], ax
 
-	mov	cx, [_server_ext_size]
-	add	cx, PAGE_SIZE - 1
-	shr	cx, PAGE_SIZE_LOG
+	mov	ecx, [_server_ext_size]
+	add	ecx, PAGE_SIZE - 1
+	shr	ecx, PAGE_SIZE_LOG
 	mov	bx, _vcpi_server_pages
 	mov	es, [_server_page_table_seg]
 	xor	di, di
@@ -52,9 +52,9 @@ investigate_memory:
 	cmpb	[_xms_present], 0
 	je	@f1
 
-	mov	dx, [_server_ext_size]
-	add	dx, KB_SIZE - 1 + 0x10
-	shr	dx, KB_SIZE_LOG
+	mov	edx, [_server_ext_size]
+	add	edx, KB_SIZE - 1 + 0x10
+	shr	edx, KB_SIZE_LOG
 	call	xms_allocate
 	jcl	out_of_ext_memory
 	mov	[_xms_server_handle], dx
@@ -104,9 +104,9 @@ investigate_memory:
 	mov	ax, di
 	sub	ax, si
 	mov	[_memory_total], ax
-	mov	bx, [_server_ext_size]
-	add	bx, PAGE_SIZE - 1
-	shr	bx, PAGE_SIZE_LOG
+	mov	ebx, [_server_ext_size]
+	add	ebx, PAGE_SIZE - 1
+	shr	ebx, PAGE_SIZE_LOG
 	add	bx, 10			; Safety margin
 	cmp	ax, bx
 	jbl	out_of_ext_memory
@@ -125,9 +125,9 @@ set_server_mapping:
 	mov	eax, [_server_physical]
 	mov	es, [_server_page_table_seg]
 	xor	di, di
-	mov	cx, [_server_ext_size]
-	add	cx, PAGE_SIZE - 1
-	shr	cx, PAGE_SIZE_LOG
+	mov	ecx, [_server_ext_size]
+	add	ecx, PAGE_SIZE - 1
+	shr	ecx, PAGE_SIZE_LOG
 @b1:
 	or	al, PT_P | PT_W | PT_U
 	stosd

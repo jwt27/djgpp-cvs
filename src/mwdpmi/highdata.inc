@@ -26,8 +26,6 @@ _memory_ext_last:		; Last available page in extended memory
 	.dw	0
 _memory_total:			; Total number of pages available.
 	.dw	0
-_server_ext_size:		; Number of bytes for the server in extended
-	.dw	0		; memory.
 _low_memory_end:		; Byte after last to remain in low memory
 	.dw	0
 
@@ -45,5 +43,7 @@ _server_physical:		; Physical address of server in extended
 	.dd	0		; memory.  0 for VCPI-mem.
 _page_dir_linear:		; Page directory pte, linear address in ext
 	.dd	0
+_server_ext_size:		; Number of bytes for the server in extended
+	.dd	0		; memory.
 ; ---------------------------------------------------------------------------
 high_data_end = .

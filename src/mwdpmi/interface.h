@@ -40,7 +40,8 @@ extern const bool vcpi_present;
 extern const word8 memory_source;
 extern const word32 low_code_linear;
 
-extern const word16 memory_ext_first, memory_ext_last, server_ext_size;
+extern const word16 memory_ext_first, memory_ext_last;
+extern const word32 server_ext_size;
 extern const word8 server_stack, server_stack_start;
 extern const word16 prefixseg;
 extern word16 low_memory_end;

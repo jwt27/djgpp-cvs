@@ -77,8 +77,8 @@ _go32_end:
 	mov	[_prefixseg], es
 	cld
 
-	mov	bx, end_of_memory + 0x10f	; 0x100 for psp, 0xf for round
-	shr	bx, 4
+	mov	ebx, end_of_memory + 0x10f	; 0x100 for psp, 0xf for round
+	shr	ebx, 4
 	mov	ah, DOS_RESIZE_MEMORY
 	int	INT_DOS
 
