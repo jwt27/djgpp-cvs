@@ -304,3 +304,7 @@ interfaces to these two new @code{_dos_*} functions.
 
 @pindex djasm@r{, enumeration type}
 Support for enumeration type added to @code{djasm}.
+
+@cindex C99 comlpliance, new header files
+Header files, which are part of the new ANSI/ISO C99 Standard, are now
+available.  These include @file{stdint.h}.
