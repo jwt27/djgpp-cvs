@@ -586,7 +586,7 @@ main(int argc, char **argv)
 
   // Alphabetical List
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
-  fprintf(co, "@node Alphabetical List, , Functional Categories, Top\n");
+  fprintf(co, "@node Alphabetical List, Unimplemented, Functional Categories, Top\n");
   fprintf(co, "@unnumbered Alphabetical List\n");
   fprintf(co, "\n");
   fprintf(co, "@menu\n");

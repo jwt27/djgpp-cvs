@@ -36,6 +36,9 @@ Copyright @copyright{} 1996 DJ Delorie
 * Alphabetical List::      All public symbols in alphabetical
                            order
 
+* Unimplemented::          Compatibility functions that either
+                           always fail or do nothing
+
 * Master Index::
 @end menu
 
@@ -69,7 +72,67 @@ your program with @samp{-ldbg} to use them.
 
 @include libc2.tex
 
-@node Master Index,,,Top
+@node Unimplemented, Master Index, Alphabetical List, Top
+@chapter Unimplemented Functions
+
+The DJGPP standard C library is @sc{ansi}- and @sc{posix}-compliant, and
+provides many additional functions for compatibility with Unix/Linux
+systems.  However, some of the functions needed for this compatibility
+are very hard or impossible to implement using DOS facilities.
+
+Therefore, a small number of library functions are really just stubs:
+they are provided because @sc{posix} requires them to be present in a
+compliant library, or because they are widely available on Unix systems,
+but they either always fail, or handle only the trivial cases and fail
+for all the others.  An example of the former behavior is the function
+@code{fork}: it always returns a failure indication; an example of the
+latter behavior is the function @code{mknode}: it handles the cases of
+regular files and existing character devices, but fails for all other
+file types.
+
+This chapter lists all such functions.  This list is here for the
+benefit of programmers who write portable programs or port Unix packages
+to DJGPP.
+
+Each function below is labeled as either ``always fails'' or
+``trivial'', depending on which of the two classes described above it
+belongs to.  An additional class, labeled ``no-op'', includes functions
+which pretend to succeed, but have no real effect, since the underlying
+functionality is either always available or always ignored.
+
+@menu
+* addmntent::                Always fails.
+* cfgetispeed::              No-op.
+* cfgetospeed::              No-op.
+* cfsetispeed::              No-op.
+* cfsetospeed::              No-op.
+* chown::                    Trivial.
+* fcntl::                    Always fails for all operations except
+                             @code{F_DUPFD} and @code{F_GETFD}.
+* fork::                     Always fails.
+* getgrgid::                 Trivial.
+* getgrnam::                 Trivial.
+* getgroups::                Trivial.
+* getpwnam::                 Trivial.
+* getpwuid::                 Trivial.
+* mkfifo::                   Always fails.
+* mknod::                    Trivial.
+* nice::                     No-op.
+* pipe::                     Always fails.
+* setgid::                   Trivial.
+* setpgid::                  Trivial.
+* setsid::                   Trivial.
+* setuid::                   Trivial.
+* tcdrain::                  No-op.
+* tcsendbreak::              No-op.
+* tcsetpgrp::                Trivial.
+* umask::                    Trivial.
+* vfork::                    Always fails.
+* wait::                     Always fails.
+* waitpid::                  Always fails.
+@end menu
+
+@node Master Index, , Unimplemented, Top
 @printindex cp
 
 @xref{Alphabetical List}.
