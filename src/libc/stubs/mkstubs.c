@@ -11,6 +11,7 @@ main(int argc, char **argv)
 {
   char buf[1000];
   char fn[1000];
+  char stubname[1000], realname[1000];
   int i;
   FILE *stubs, *as, *mk, *oh;
 
@@ -32,16 +33,20 @@ main(int argc, char **argv)
   {
     if (strncmp(buf, "#define", 7))
       continue;
-    sscanf(buf, "%*s %s", buf);
-    if (strncmp(buf, "__dj_include", 10) == 0)
+    sscanf(buf, "%*s %s %s", stubname, realname);
+    if (strncmp(stubname, "__dj_include", 10) == 0)
       continue;
 
     sprintf(fn, "stub%04d.S", i);
     as = fopen(fn, "w");
-    /* Blank line at start of output file is added to workaround gcc-3.0 preprocessor bug  */
-    /* See  http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view&pr=3081&database=gcc for details  */
-    fprintf(as, "\n\t.file \"%s.stub\"\n\t.global _%s\n_%s:\n\tjmp ___%s\n",
-	    buf, buf, buf, buf);
+    /* Blank line at start of output file is added to work around
+     * gcc-3.0 preprocessor bug. See:
+     *
+     * http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view&pr=3081&database=gcc
+     *
+     * for details. */
+    fprintf(as, "\n\t.file \"%s.stub\"\n\t.global _%s\n_%s:\n\tjmp _%s\n",
+	    stubname, stubname, stubname, realname);
     fclose(as);
 
     fprintf(mk, "SRC += %s\n", fn);
