@@ -2,7 +2,7 @@
 #include <crt0.h>
 
 char **
-__crt0_glob_function(char *a)
+q__crt0_glob_function(char *a)
 {
   return 0;
 }
