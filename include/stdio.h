@@ -135,8 +135,8 @@ extern FILE __dj_stdprn, __dj_stdaux;
 
 void	_djstat_describe_lossage(FILE *_to_where);
 int	_doprnt(const char *_fmt, va_list _args, FILE *_f);
-int	_doscan(FILE *_f, const char *_fmt, void **_argp);
-int	_doscan_low(FILE *, int (*)(FILE *_get), int (*_unget)(int, FILE *), const char *_fmt, void **_argp);
+int	_doscan(FILE *_f, const char *_fmt, va_list _args);
+int	_doscan_low(FILE *, int (*)(FILE *_get), int (*_unget)(int, FILE *), const char *_fmt, va_list _args);
 int	fpurge(FILE *_f);
 int	getw(FILE *_f);
 char *	mktemp(char *_template);

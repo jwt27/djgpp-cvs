@@ -1,7 +1,9 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -18,7 +20,7 @@
 #define	INT	0
 #define	FLOAT	1
 
-static int _innum(int **ptr, int type, int len, int size, FILE *iop, 
+static int _innum(int *ptr, int type, int len, int size, FILE *iop, 
                   int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), 
                   int *eofptr);
 static int _instr(char *ptr, int type, int len, FILE *iop, 
@@ -40,18 +42,18 @@ static char _sctab[256] = {
 static int nchars = 0;
 
 int 
-_doscan(FILE *iop, const char *fmt, void **argp)
+_doscan(FILE *iop, const char *fmt, va_list argp)
 {
   return(_doscan_low(iop, fgetc, ungetc, fmt, argp));
 }
 
 int
 _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
-            const char *fmt, void **argp)
+            const char *fmt, va_list argp)
 {
   register int ch;
   int nmatch, len, ch1;
-  int **ptr, fileended, size;
+  int *ptr, fileended, size;
 
   nchars = 0;
   nmatch = 0;
@@ -64,7 +66,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       goto def;
     ptr = 0;
     if (ch != '*')
-      ptr = (int **)argp++;
+      ptr = va_arg(argp, int *);
     else
       ch = *fmt++;
     len = 0;
@@ -122,13 +124,13 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       if (!ptr)
         break;
       if (size==LONG)
-	**(long**)ptr = nchars;
+	*(long*)ptr = nchars;
       else if (size==SHORT)
-        **(short**)ptr = nchars;
+        *(short*)ptr = nchars;
       else if (size==LONGDOUBLE)
-        **(long long**)ptr = nchars;
+        *(long long*)ptr = nchars;
       else
-        **(int**)ptr = nchars;
+        *(int*)ptr = nchars;
       break;
     }
       
@@ -176,7 +178,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
 }
 
 static int
-_innum(int **ptr, int type, int len, int size, FILE *iop,
+_innum(int *ptr, int type, int len, int size, FILE *iop,
        int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), int *eofptr)
 {
   register char *np;
@@ -187,7 +189,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
   int cpos;
 
   if (type=='c' || type=='s' || type=='[')
-    return(_instr(ptr? *(char **)ptr: (char *)NULL, type, len,
+    return(_instr(ptr? (char *)ptr: (char *)NULL, type, len,
 		  iop, scan_getc, scan_ungetc, eofptr));
   lcval = 0;
   ndigit = 0;
@@ -281,31 +283,31 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
 
   case (FLOAT<<4) | SHORT:
   case (FLOAT<<4) | REGULAR:
-    **(float **)ptr = atof(numbuf);
+    *(float *)ptr = atof(numbuf);
     break;
 
   case (FLOAT<<4) | LONG:
-    **(double **)ptr = atof(numbuf);
+    *(double *)ptr = atof(numbuf);
     break;
 
   case (FLOAT<<4) | LONGDOUBLE:
-    **(long double **)ptr = _atold(numbuf);
+    *(long double *)ptr = _atold(numbuf);
     break;
 
   case (INT<<4) | SHORT:
-    **(short **)ptr = (short)lcval;
+    *(short *)ptr = (short)lcval;
     break;
 
   case (INT<<4) | REGULAR:
-    **(int **)ptr = (int)lcval;
+    *(int *)ptr = (int)lcval;
     break;
 
   case (INT<<4) | LONG:
-    **(long **)ptr = (long)lcval;
+    *(long *)ptr = (long)lcval;
     break;
 
   case (INT<<4) | LONGDOUBLE:
-    **(long long **)ptr = lcval;
+    *(long long *)ptr = lcval;
     break;
   }
   return(1);
