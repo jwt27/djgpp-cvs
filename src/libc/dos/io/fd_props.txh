@@ -1,0 +1,93 @@
+@node __set_fd_properties, io
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+int __set_fd_properties(int fd, const char *filename, int open_flags);
+
+@end example
+
+@subheading Description
+
+This is an internal function that stores information about the file descriptor
+@var{fd} in a @code{fd_properties} struct.  It is called by @code{open} and
+its helper functions.
+
+@example
+struct fd_properties
+@{
+  unsigned char ref_count;
+  char *filename;
+  unsigned long flags;
+  fd_properties *prev;
+  fd_properties *next;
+@};
+@end example
+
+For more information, see @ref{__clear_fd_properties} and
+@ref{__dup_fd_properties}.
+
+@subheading Return Value
+
+Returns 0 on success. Returns -1 when unable to store the information.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __clear_fd_properties, io
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+int __clear_fd_properties(int fd);
+
+@end example
+
+@subheading Description
+
+This internal function is called when the file descriptor @var{fd} is
+no longer valid.  The usage count of the associated @code{fd_properties} struct
+is decremented.  And if it becomes zero, this function performs cleanup
+and releases the memory used by the @code{fd_properties} struct.
+
+For more information, see @ref{__set_fd_properties} and
+@ref{__dup_fd_properties}.
+
+@subheading Return Value
+
+Always returns 0 for success.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __dup_fd_properties, io
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+void __dup_fd_properties(int existing_handle, int new_handle);
+
+@end example
+
+@subheading Description
+
+Causes the new file descriptor @var{new_handle} to refer to the same
+@code{fd_properties} struct as @var{existing_handle}.  
+This internal function is called by @code{dup} and @code{dup2}.
+
+For more information, see @ref{__set_fd_properties} and
+@ref{__clear_fd_properties}.
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
