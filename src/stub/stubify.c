@@ -16,6 +16,12 @@
 #include <errno.h>
 #endif
 
+#ifdef __DJGPP__
+#ifndef __tb_size
+#define __tb_size _go32_info_block.size_of_transfer_buffer
+#endif
+#endif
+
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
