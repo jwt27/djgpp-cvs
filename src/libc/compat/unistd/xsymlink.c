@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
 /* Written by Laurynas Biveinis                                      */
@@ -163,10 +164,17 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    return 1;
 }
 
+/* Advance to the next portion of the path. Cope with multiple slashes. */
 static void advance(char ** s, char ** e)
 {
    *s = strpbrk(*s + 1, "/\\");
    if (*s)
-     (*s)++;
-   *e = strpbrk(*e + 1, "/\\");
+   {
+     while ((**s == '/') || (**s == '\\'))
+       (*s)++;
+   }
+
+   while ((**e == '/') || (**e == '\\'))
+     (*e)++;
+   *e = strpbrk(*e, "/\\");
 }
