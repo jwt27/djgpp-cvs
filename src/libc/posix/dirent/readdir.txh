@@ -62,8 +62,7 @@ A pointer to a static buffer that is overwritten with each call.
 
 @subheading Portability
 
-@port-note posix The @code{__opendir_flags} variable is DJGPP-specific.
-@port-note posix The @code{d_type} member is an extension available on some systems such as GNU/Linux.
+@port-note posix The @code{__opendir_flags} variable is DJGPP-specific.  The @code{d_type} member is an extension available on some systems such as GNU/Linux.
 @portability !ansi, posix
 
 @subheading Example
@@ -90,8 +89,9 @@ mode_t file_mode = DTTOIF(de->d_type)
 @subheading Description
 
 This macro converts the @code{d_type} member of a @code{struct dirent}
-variable to an equivalent value of the @code{st_mode} member of a
-@code{struct stat} variable (@pxref{stat}).
+variable, as returned by @code{readdir} (@pxref{readdir}) to an
+equivalent value of the @code{st_mode} member of a @code{struct stat}
+variable (@pxref{stat}).
 
 Note that the access rights are not set in the result returned by this
 macro.  Only the file-type information is copied.
