@@ -12,8 +12,9 @@ main(void)
   {
     if (f->_cnt > last_count)
     {
-      printf("Count: %5d  Fill: %5d  Bufsiz: %5d  SoFar: %5d\n",
-	     f->_cnt, f->_fillsize, f->_bufsiz, so_far);
+      printf("Count: %5d  Fill: %5lu  Bufsiz: %5lu  SoFar: %5d\n",
+	     f->_cnt, (unsigned long) f->_fillsize,
+	     (unsigned long) f->_bufsiz, so_far);
     }
     last_count = f->_cnt;
     so_far++;
