@@ -43,7 +43,7 @@ remove(const char *fn)
      in addition to the Read-Only bit, or else 214301 will fail.  */
   _chmod(fn, 1, attr & 0xffe0);
 
-  /* Now delete it.  Note, _chmod leaves dir name in tranfer buffer. */
+  /* Now delete it.  Note, _chmod leaves dir name in transfer buffer. */
   if (directory_p)
     r.h.ah = 0x3a;		/* DOS Remove Directory function */
   else
@@ -60,6 +60,12 @@ remove(const char *fn)
   {
     /* We failed.  Leave the things as we've found them.  */
     int e = __doserr_to_errno(r.x.ax);
+
+    /* We know the file exists, so ENOENT at this point means a bug.
+       Since write-protected floppies are the most probable cause,
+       return EACCES instead.  */
+    if(e == ENOENT)
+      e = EACCES;
  
     _chmod(fn, 1, attr & 0xffe7);
     errno = e;
