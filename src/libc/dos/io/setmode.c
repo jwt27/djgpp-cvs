@@ -7,6 +7,7 @@
 #include <io.h>
 
 #include <libc/dosio.h>
+#include <libc/ttyprvt.h>
 
 void (*__setmode_stdio_hook)(int fd, int mode); /* BSS to zero */
 
@@ -32,7 +33,10 @@ setmode(int handle, int mode)
   else
     newmode &= ~0x20;
 
-  if (oldmode & 0x80)	/* Only for character dev */
+  if (__libc_read_termios_hook != NULL
+      && (oldmode & 0x80) && (oldmode & 0x03) && handle == 0) /* for termios */
+    __djgpp_set_ctrl_c (! (mode & O_BINARY));
+  else if (oldmode & 0x80)	/* Only for character dev */
   {
     regs.x.ax = 0x4401;
     regs.x.bx = handle;
@@ -47,9 +51,10 @@ setmode(int handle, int mode)
       __djgpp_set_ctrl_c(!(mode & O_BINARY));
   }
 
-  oldmode = __file_handle_modes[handle] & (O_BINARY|O_TEXT);
-  __file_handle_modes[handle] &= ~(O_BINARY|O_TEXT);
-  __file_handle_modes[handle] |= (mode & (O_BINARY|O_TEXT));
+  oldmode = __file_handle_modes[handle];
+  newmode = (oldmode & ~(O_BINARY|O_TEXT)) | (mode & (O_BINARY|O_TEXT));
+  __file_handle_set (handle, newmode);
+  oldmode &= (O_BINARY|O_TEXT);
 
   return oldmode;
 }
