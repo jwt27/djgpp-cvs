@@ -14,3 +14,4 @@
 /\/\.cvsignore/ d
 /src\/debug\/ar\.in/ d
 /src\/libc\/dpmi\/api\/_dpmi/ d
+/src\/mwdpmi/ d
