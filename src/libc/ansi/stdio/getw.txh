@@ -9,7 +9,10 @@ int getw(FILE *file);
 
 @subheading Description
 
-Reads a single binary word in native format from @var{file}.
+Reads a single 32-bit binary word in native format from @var{file}.
+This function is provided for compatibility with other 32-bit
+environments, so it reads a 32-bit @code{int}, not a 16-bit
+@code{short}, like some 16-bit DOS compilers do.
 
 @xref{putw}.
 

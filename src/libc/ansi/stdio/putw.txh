@@ -9,7 +9,10 @@ int putw(int x, FILE *file);
 
 @subheading Description
 
-Writes a single binary word in native format to @var{file}.
+Writes a single 32-bit binary word @var{x} in native format to
+@var{file}.  This function is provided for compatibility with other
+32-bit environments, so it writes a 32-bit @code{int}, not a 16-bit
+@code{short}, like some 16-bit DOS compilers do.
 
 @subheading Return Value
 
