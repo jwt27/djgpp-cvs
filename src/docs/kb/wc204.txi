@@ -978,3 +978,6 @@ syncronized with the timer tick.
 The macro @code{__tb_size} was added, to represent the size
 of the transfer buffer.  This complements the macro @code{__tb},
 which gives the linear address of the transfer buffer.
+
+@pindex djtar@r{, and single-span spanned archives}
+@code{djtar} now copes with single-span spanned archives.
