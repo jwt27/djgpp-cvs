@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 
 int
@@ -26,7 +27,7 @@ main (void)
     {
       fprintf(stderr, "FAILED snprintf\n");
       fprintf(stderr,
-	      "sizeof (%ld), snprintf(%d), strlen(%ld)\n",
+	      "sizeof (%lu), snprintf(%d), strlen(%lu)\n",
 	      sizeof(holder), i, strlen(BIG)) ;
       exit(EXIT_FAILURE);
     }
@@ -106,7 +107,7 @@ main (void)
       {
 	fprintf(stderr,
 		"FAILED with padding larger than buffer: %d output, "
-		"%ld written to buffer\n",
+		"%lu written to buffer\n",
 		i, strlen(holder));
 	exit(EXIT_FAILURE);
       }
@@ -122,7 +123,7 @@ main (void)
       {
 	fprintf(stderr,
 		"FAILED with precision larger than buffer: %d output, "
-		"%ld written to buffer\n",
+		"%lu written to buffer\n",
 		i, strlen(holder));
 	exit(EXIT_FAILURE);
       }

@@ -32,7 +32,7 @@ int convert_and_print (const char *fmt, const char *buf)
 
 	  memset (cbuf, 0, sizeof cbuf);
 	  converted = sscanf (buf, fmt, cbuf);
-	  printf ("`%s' converted %ld characters, result: %s\n",
+	  printf ("`%s' converted %lu characters, result: %s\n",
 		  fmt, strlen (cbuf), cbuf);
 	  return converted;
 	}
