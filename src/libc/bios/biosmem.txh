@@ -1,0 +1,26 @@
+@node biosmemory, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+unsigned biosmemory(void);
+@end example
+
+@subheading Description
+
+This function returns the amount of system memory in 1k blocks.
+
+Note that this function will return 65535 if the system has more than
+64M of memory.  This is a limitation of the BIOS. 
+
+@subheading Return Value
+
+Bytes of memory / 1024.
+
+@subheading Example
+
+@example
+printf("This system has %d bytes of memory\n", biosmemory()*1024);
+@end example
+

@@ -1,0 +1,50 @@
+@node biosprint, bios
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int biosprint(int cmd, int byte, int port)
+@end example
+
+@subheading Description
+
+@table @asis
+
+@item @var{command} = 0
+
+@code{byte} is sent to parallel port @var{port}.
+
+@item @var{command} = 1
+
+Parallel port @var{port} is reset and initialized.
+
+@item @var{command} = 2
+
+The status of parallel port @var{port} is returned.
+
+@example
+7654 3210  Meaning
+
+---- ---X  Timeout
+---- -XX-  Unused
+---- X---  I/O Error
+---X ----  Selected
+--X- ----  Out of paper
+-X-- ----  Acknowledged
+X--- ----  Idle
+@end example
+
+@end table
+
+@subheading Return Value
+
+The printer status.
+
+@subheading Example
+
+@example
+while (*c)
+  biosprint(0, *c++, 0);
+@end example
+
