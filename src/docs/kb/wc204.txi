@@ -170,7 +170,7 @@ The functions @code{rename} and @code{_rename} can now be used to change
 the letter case of a file name, like in this snippet:
 
 @example
- rename ("makefile", "Makefile);
+ rename ("makefile", "Makefile");
 @end example
 
 @noindent
