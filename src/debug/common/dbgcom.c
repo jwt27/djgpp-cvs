@@ -110,18 +110,18 @@ void save_npx (void)
   int i;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
-  asm ("movb	$0x0b, %%al
-	outb	%%al, $0xa0
-	inb	$0xa0, %%al
-	testb	$0x20, %%al
-	jz	1f
-	xorb	%%al, %%al
-	outb	%%al, $0xf0
-	movb	$0x20, %%al
-	outb	%%al, $0xa0
-	outb	%%al, $0x20
-1:
-	fnsave	%0
+  asm ("movb	$0x0b, %%al					\n\
+	outb	%%al, $0xa0					\n\
+	inb	$0xa0, %%al					\n\
+	testb	$0x20, %%al					\n\
+	jz	1f						\n\
+	xorb	%%al, %%al					\n\
+	outb	%%al, $0xf0					\n\
+	movb	$0x20, %%al					\n\
+	outb	%%al, $0xa0					\n\
+	outb	%%al, $0x20					\n\
+1:								\n\
+	fnsave	%0						\n\
 	fwait"
        : "=m" (npx)
        : /* No input */
@@ -923,79 +923,79 @@ Lc21_exit:                                                              \n\
 	);
 
 /* complete code to return from an exception */
-asm (  ".text
-       .balign 16,,7
-       .globl    _dbgcom_exception_return_to_debuggee
-_dbgcom_exception_return_to_debuggee:       /* remove errorcode from stack */
-       /* we must also switch stack back !! */
-       /* relative to ebp */
-       /* 0 previous ebp */
-       /* 4 exception number */
-       /* 8 return eip */
-       /* 12 return cs */
-       /* 16 return eflags */
-       /* 20 return esp  */
-       /* 24 return ss  */
-       /* -4 stored ds */
-       /* -8 stored eax */
-       /* -12 stored esi */
-       pushl  %ebp
-       movl   %esp,%ebp
-       pushl  %ds
-       pushl  %eax
-       pushl  %esi
-       movl   %cs:___djgpp_our_DS,%eax
-       movw   %ax,%ds
-       addl   $32,_cur_pos
-       decl    _child_exception_level
-       movl   24(%ebp),%eax
-       movw   %ax,%ds
-       movl   20(%ebp),%esi
-       /* ds:esi points now to app stack */
-       subl  $28,%esi
-       movl  %esi,20(%ebp)
-       /* eflags on app stack */
-       movl  16(%ebp),%eax
-       movl  %eax,%ds:24(%esi)
-       /* cs on app stack */
-       movl  12(%ebp),%eax
-       movl  %eax,%ds:20(%esi)
-       /* eip on app stack */
-       movl  8(%ebp),%eax
-       movl  %eax,%ds:16(%esi)
-       /* esi on app stack */
-       movl  -12(%ebp),%eax
-       movl  %eax,%ds:12(%esi)
-       /* eax on app stack */
-       movl  -8(%ebp),%eax
-       movl  %eax,%ds:8(%esi)
-       /* ds on app_stack */
-       movl  -4(%ebp),%eax
-       movl  %eax,%ds:4(%esi)
-       /* ebp on app_stack */
-       movl  (%ebp),%eax
-       movl  %eax,%ds:(%esi)
-       /* switch stack */
-       movl  24(%ebp),%eax
-       movw  %ax,%ss
-       movl  %esi,%esp
-       /* now on app stack */
-       popl  %ebp
-       popl  %eax
-       movw  %ax,%ds
-       popl  %eax
-       popl  %esi
-       iret
+asm (  ".text								\n\
+       .balign 16,,7							\n\
+       .globl    _dbgcom_exception_return_to_debuggee			\n\
+_dbgcom_exception_return_to_debuggee:       /* remove errorcode from stack */\n\
+       /* we must also switch stack back !! */				\n\
+       /* relative to ebp */						\n\
+       /* 0 previous ebp */						\n\
+       /* 4 exception number */						\n\
+       /* 8 return eip */						\n\
+       /* 12 return cs */						\n\
+       /* 16 return eflags */						\n\
+       /* 20 return esp  */						\n\
+       /* 24 return ss  */						\n\
+       /* -4 stored ds */						\n\
+       /* -8 stored eax */						\n\
+       /* -12 stored esi */						\n\
+       pushl  %ebp							\n\
+       movl   %esp,%ebp							\n\
+       pushl  %ds							\n\
+       pushl  %eax							\n\
+       pushl  %esi							\n\
+       movl   %cs:___djgpp_our_DS,%eax					\n\
+       movw   %ax,%ds							\n\
+       addl   $32,_cur_pos						\n\
+       decl    _child_exception_level					\n\
+       movl   24(%ebp),%eax						\n\
+       movw   %ax,%ds							\n\
+       movl   20(%ebp),%esi						\n\
+       /* ds:esi points now to app stack */				\n\
+       subl  $28,%esi							\n\
+       movl  %esi,20(%ebp)						\n\
+       /* eflags on app stack */					\n\
+       movl  16(%ebp),%eax						\n\
+       movl  %eax,%ds:24(%esi)						\n\
+       /* cs on app stack */						\n\
+       movl  12(%ebp),%eax						\n\
+       movl  %eax,%ds:20(%esi)						\n\
+       /* eip on app stack */						\n\
+       movl  8(%ebp),%eax						\n\
+       movl  %eax,%ds:16(%esi)						\n\
+       /* esi on app stack */						\n\
+       movl  -12(%ebp),%eax						\n\
+       movl  %eax,%ds:12(%esi)						\n\
+       /* eax on app stack */						\n\
+       movl  -8(%ebp),%eax						\n\
+       movl  %eax,%ds:8(%esi)						\n\
+       /* ds on app_stack */						\n\
+       movl  -4(%ebp),%eax						\n\
+       movl  %eax,%ds:4(%esi)						\n\
+       /* ebp on app_stack */						\n\
+       movl  (%ebp),%eax						\n\
+       movl  %eax,%ds:(%esi)						\n\
+       /* switch stack */						\n\
+       movl  24(%ebp),%eax						\n\
+       movw  %ax,%ss							\n\
+       movl  %esi,%esp							\n\
+       /* now on app stack */						\n\
+       popl  %ebp							\n\
+       popl  %eax							\n\
+       movw  %ax,%ds							\n\
+       popl  %eax							\n\
+       popl  %esi							\n\
+       iret								\n\
     ");
 
 static jmp_buf here;
 
 /* simple code to return from an exception */
 /* don't forget to increment cur_pos       */
-asm (  ".text
-       .balign 16,,7
-       .globl    _dbgcom_exception_return_to_here
-_dbgcom_exception_return_to_here:       /* remove errorcode from stack */
+asm (  ".text								\n\
+       .balign 16,,7							\n\
+       .globl    _dbgcom_exception_return_to_here			\n\
+_dbgcom_exception_return_to_here:       /* remove errorcode from stack */\n\
         movl    %cs:___djgpp_our_DS,%eax                                \n\
         movw    %ax,%ds                                                 \n\
         movw    %ax,%es                                                 \n\
@@ -1011,9 +1011,9 @@ _dbgcom_exception_return_to_here:       /* remove errorcode from stack */
 	movw	$0x7021,0xb0f00						\n\ */
 
 /* do not set limit of ds selector two times */
-asm (".text
-        .global ___dbgcom_kbd_hdlr
-___dbgcom_kbd_hdlr:
+asm (".text								\n\
+        .global ___dbgcom_kbd_hdlr					\n\
+___dbgcom_kbd_hdlr:							\n\
         " LJMP(%cs:___djgpp_old_kbd) "");
         
     
@@ -1108,8 +1108,8 @@ static void dbgsig(int sig)
 {
   unsigned int ds_size;
   int signum =  __djgpp_exception_state->__signum;
-  asm ("movl _app_ds,%%eax
-        lsl  %%eax,%%eax
+  asm ("movl _app_ds,%%eax					\n\
+        lsl  %%eax,%%eax					\n\
         movl %%eax,%0"
         : "=g" (ds_size) );
 
@@ -1325,15 +1325,15 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
   char read_allowed = 0;
   char write_allowed = 0;
   
-  asm("
-      movw  %2,%%ax
-      verr  %%ax
-      jnz   .Ldoes_not_has_read_right
-      movb  $1,%0
-.Ldoes_not_has_read_right:
-      verw  %%ax
-      jnz   .Ldoes_not_has_write_right
-      movb  $1,%1
+  asm("										\n\
+      movw  %2,%%ax								\n\
+      verr  %%ax								\n\
+      jnz   .Ldoes_not_has_read_right						\n\
+      movb  $1,%0								\n\
+.Ldoes_not_has_read_right:							\n\
+      verw  %%ax								\n\
+      jnz   .Ldoes_not_has_write_right						\n\
+      movb  $1,%1								\n\
 .Ldoes_not_has_write_right: "
      : "=g" (read_allowed), "=g" (write_allowed)
      : "g" (sel)
