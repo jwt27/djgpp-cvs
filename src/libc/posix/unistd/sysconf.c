@@ -1,15 +1,17 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <errno.h>
 #include <unistd.h>
 #include <limits.h>
 #include <time.h>
+#include <go32.h>
 
 long
 sysconf(int name)
 {
   switch (name)
   {
-  case _SC_ARG_MAX:	return ARG_MAX;
+  case _SC_ARG_MAX:	return _go32_info_block.size_of_transfer_buffer;
   case _SC_CHILD_MAX:	return CHILD_MAX;
   case _SC_CLK_TCK:	return CLOCKS_PER_SEC;
   case _SC_NGROUPS_MAX:	return NGROUPS_MAX;
