@@ -70,8 +70,8 @@ MISC = $(TOP)/../misc.exe
 	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	@$(XGCC) -c $<
 %.o : %.cc
-	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	@$(XGCC) -c $<
+	@$(MISC) echo - $(CROSS_GCC) '...' -c -fno-exceptions $<
+	@$(XGCC) -c -fno-exceptions $<
 %.o : %.S
 	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	@$(XGCC) -c $<
