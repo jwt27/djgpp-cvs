@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <time.h>
+#include <libc/unconst.h>
 
 static int
 compare (const char *fmt, const struct tm *tm, const char *expected)
@@ -35,7 +36,7 @@ main (void)
 
   /* This is necessary to make strftime give consistent zone strings and
      e.g., seconds since the epoch (%s).  */
-  putenv ("TZ=GMT0");
+  putenv (unconst("TZ=GMT0", char *));
 
 #undef CMP
 #define CMP(Fmt, Expected) n_fail += compare ((Fmt), tm, (Expected))

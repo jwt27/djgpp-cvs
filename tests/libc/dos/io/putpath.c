@@ -1,8 +1,14 @@
-/* A test program for the various /dev/* transformations inside _put_path().
+/* A test program for the various /dev/... transformations inside _put_path().
    Written by Markus F.X.J. Oberhumer.  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <go32.h>
+#include <libc/dosio.h>
 #include <libc/environ.h>
+#include <libc/unconst.h>
 extern char **environ;
 
 static void p(const char *path)
@@ -26,14 +32,15 @@ static void p2(const char *path)
   free(tmp);
 }
 
-int main()
+int
+main (void)
 {
   /* first clear the environment the quick way */
   environ = (char **) calloc(1, sizeof(char *));
   __environ_changed++;
   /* setup out test environment */
-  putenv("DJDIR=c:/djgpp2");
-  putenv("HOME=c:\\home");
+  putenv(unconst("DJDIR=c:/djgpp2", char *));
+  putenv(unconst("HOME=c:\\home", char *));
 
   /* normal dir tests */
   p2("/dir1/dir2");
@@ -95,10 +102,10 @@ int main()
   printf("\n");
 
   /* deeply nested tests */
-  putenv("X2=/dev/env/X1");
-  putenv("X3=/dev/env/foo~/dev/env/X1~");
-  putenv("X4=/dev/env/foo~/dev/env/X2~");
-  putenv("X5=/dev/env/foo~/dev/env/X4~");
+  putenv(unconst("X2=/dev/env/X1", char *));
+  putenv(unconst("X3=/dev/env/foo~/dev/env/X1~", char *));
+  putenv(unconst("X4=/dev/env/foo~/dev/env/X2~", char *));
+  putenv(unconst("X5=/dev/env/foo~/dev/env/X4~", char *));
   {
     const char **x;
     static const char *x1[] = {
@@ -110,7 +117,7 @@ int main()
     for (x = x1; *x; x++)
     {
       printf("%s\n", *x);
-      putenv(*x);
+      putenv(unconst(*x, char *));
       p("/dev/env/X1");
       p("/dev/env/X2");
       p("/dev/env/X3");
@@ -123,17 +130,17 @@ int main()
   /* infinite recursion tests */
   /* these all should print an error message with ENOMEM
      and should *not* crash */
-  putenv("A1=/dev/env/A1");
+  putenv(unconst("A1=/dev/env/A1", char *));
   errno = 0;
   p("/dev/env/A1");
   if (errno) perror("/dev/env/A1");
   errno = 0;
-  putenv("A1=/dev/env/foo~/dev/env/A1~");
+  putenv(unconst("A1=/dev/env/foo~/dev/env/A1~", char *));
   p("/dev/env/A1");
   if (errno) perror("/dev/env/A1");
   errno = 0;
-  putenv("A1=/dev/env/foo~/dev/env/A2~");
-  putenv("A2=/dev/env/foo~/dev/env/A1~");
+  putenv(unconst("A1=/dev/env/foo~/dev/env/A2~", char *));
+  putenv(unconst("A2=/dev/env/foo~/dev/env/A1~", char *));
   p("/dev/env/A1");
   if (errno) perror("/dev/env/A1");
 
