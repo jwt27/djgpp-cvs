@@ -7,6 +7,7 @@
 #include <libc/symlink.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <io.h>
 #include <dir.h>

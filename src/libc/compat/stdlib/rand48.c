@@ -8,7 +8,8 @@
  *
  */
 
-#include "stdlib.h"
+#include <stdlib.h>
+#include <string.h>
 
 #define RAND48_MULT0 (0xe66d)
 #define RAND48_MULT1 (0xdeec)

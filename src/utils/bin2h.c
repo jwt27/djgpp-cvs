@@ -3,6 +3,7 @@
 /* 1998 -- Modified by Nils van den Heuvel (n.heuvel@wxs.nl) */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
