@@ -737,8 +737,8 @@ The debug support routines in @file{libdbg.a} now support exceptions
 longer overwrite memory when exceptions higher than 19 are used by
 the debuggee.
 
-@findex fchmod
-The function @code{fchmod} was added.
+@findex fchown
+The function @code{fchown} was added.
 
 @cindex File System Extensions, and large numbers of file descriptors
 A bug was fixed in the File System Extensions mechanism that could be
