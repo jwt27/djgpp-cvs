@@ -197,7 +197,7 @@ static void display_help (void)
  printf("-o output.dxe\tDefine the name of output DXE file\n");
  printf("-P module.dxe\tSpecify dependency module (cumulative)\n");
  printf("-I import.a\tCreate an import library for given DXE file\n");
- printf("-Y import.a\tCreate an import library for given DXE file (autoresolve)\n");
+ printf("-Y import.a\tCreate an autoresolved import library for given DXE file\n");
  printf("-D description\tSet module description string\n");
  printf("-E prefix\tExport only symbols that start with <prefix> (cumulative)\n");
  printf("-X prefix\tExclude symbols that start with <prefix> (cumulative)\n");

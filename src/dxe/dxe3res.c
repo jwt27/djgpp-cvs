@@ -180,12 +180,13 @@ static void dump (FILE *f, symset *m, symset *u)
  * In  : symset, increment
  * Out : 0 if success
  *
- * Note: symset is expanded only if necessary
+ * Note: touches `errno'; symset is expanded only if necessary
  */
 static int growtable (symset *s, int adjust)
 {
  if ((s->n+adjust) > s->max) {
     if ((s->t=(char **)realloc(s->t, (s->max=s->n+adjust+1024)*sizeof(char *))) == NULL) {
+       errno = ENOMEM;
        return -1;
     }
  }
@@ -280,27 +281,30 @@ static char *gettables (const char *filename, dxe3_header *dxehdr)
  char *table;
 
  char *scan;
- char tempfn[FILENAME_MAX + 1]; /* Temporary filename */
+ char tempfn[FILENAME_MAX]; /* Temporary filename */
 
  /* Find the dynamic module along the LD_LIBRARY_PATH */
  if (!ACCESS(filename)) {
     char *nextscan;
     size_t fnl = strlen (filename) + 1;
-    for (scan = getenv ("LD_LIBRARY_PATH"); scan && *scan; scan = nextscan + strspn (nextscan, "; \t")) {
-        char *name;
-        nextscan = strchr (scan, ';');
-        if (!nextscan) nextscan = strchr (scan, 0);
-        if (nextscan - scan > FILENAME_MAX - 12)
-           continue;
-        memcpy (tempfn, scan, nextscan - scan);
-        name = tempfn + (nextscan - scan);
-        if (name [-1] != '/' && name [-1] != '\\')
-           *name++ = '/';
-        memcpy (name, filename, fnl);
-        if (ACCESS(tempfn)) {
-           filename = tempfn;
-           goto found;
-        }
+    /* LD_LIBRARY_PATH is scanned only for relative paths */
+    if ((filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':')) {
+       for (scan = getenv ("LD_LIBRARY_PATH"); scan && *scan; scan = nextscan + strspn (nextscan, "; \t")) {
+           char *name;
+           nextscan = strchr (scan, ';');
+           if (!nextscan) nextscan = strchr (scan, 0);
+           if (nextscan - scan > FILENAME_MAX - 12)
+              continue;
+           memcpy (tempfn, scan, nextscan - scan);
+           name = tempfn + (nextscan - scan);
+           if (name [-1] != '/' && name [-1] != '\\')
+              *name++ = '/';
+           memcpy (name, filename, fnl);
+           if (ACCESS(tempfn)) {
+              filename = tempfn;
+              goto found;
+           }
+       }
     }
     errno = ENOENT;
     return NULL;
@@ -309,7 +313,7 @@ found:
 
  if ((f=fopen(filename, "rb")) != NULL) {
     if (readf(dxehdr, sizeof(dxe3_header), f, 0) && (isdxe(dxehdr) == 3)) {
-       if ((table=(char *)malloc(dxehdr->exp_size + dxehdr->unres_size + dxehdr->dep_size)) != NULL) {
+       if ((table=malloc(dxehdr->exp_size + dxehdr->unres_size + dxehdr->dep_size)) != NULL) {
           if (readf(table, dxehdr->exp_size, f, dxehdr->exp_table)
               && readf(table + dxehdr->exp_size, dxehdr->unres_size, f, dxehdr->unres_table)
               && readf(table + dxehdr->exp_size + dxehdr->unres_size, dxehdr->dep_size, f, dxehdr->dep_table)
@@ -318,6 +322,8 @@ found:
              return table;
           }
           free(table);
+       } else {
+          errno = ENOMEM;
        }
     }
     fclose(f);
