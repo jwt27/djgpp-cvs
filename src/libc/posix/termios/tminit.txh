@@ -32,7 +32,7 @@ int __libc_termios_exist_queue (void);
 This function checks whether there are any characters buffered in the
 termios internal queue.  Functions that work on file handles which might
 be hooked by termios should call this function before they invoke system
-calls, to see if there are any characters available for input.
+calls which test if there are any characters available for input.
 
 @subheading Return Value
 
