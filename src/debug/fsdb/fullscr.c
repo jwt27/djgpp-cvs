@@ -1615,7 +1615,7 @@ redraw (int first)
 	    if (abs (exp) < 1000)
 	      {
 		d = *((long double*)(npx.reg + i));
-		sprintf(dstr,"%+.19Lg", (double) d);
+		sprintf(dstr,"%+.19Lg", d);
 	      }
 	    else
 	      sprintf (dstr, "Valid, %s, and %s",
