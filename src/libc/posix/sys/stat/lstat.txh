@@ -43,6 +43,11 @@ returned by the filesystem is zero (to prevent the situation where the
 file appears to have been created @emph{after} it was last accessed,
 which doesn't look good).
 
+The @code{st_size} member is an signed 32-bit integer type, so it will
+overflow on FAT32 volumes for files that are larger than 2GB.
+Therefore, if your program needs to support large files, you should
+treat the value of @code{st_size} as an unsigned value.
+
 Some members of @code{struct stat} are very expensive to compute.  If
 your application is a heavy user of @code{lstat} and is too slow, you can
 disable computation of the members your application doesn't need, as
