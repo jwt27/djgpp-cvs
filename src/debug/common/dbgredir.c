@@ -305,7 +305,7 @@ get_redirection (const char *s, cmdline_t *cmd)
   *d++ = *s++;			/* copy the redirection symbol */
   if (*s == '>' && *start == '>') /* >> */
     *d++ = *s++;
-  while (isspace (*s))		/* skip whitespace before file name */
+  while (isspace ((unsigned char)*s))	/* skip whitespace before file name */
     s++;
   *d++ = ' ';			/* separate redirection from file name */
 
@@ -329,7 +329,7 @@ get_redirection (const char *s, cmdline_t *cmd)
 	    s++;
 	  *d++ = *s++;
 	}
-      else if (isspace (*s) && !quote)
+      else if (isspace ((unsigned char )*s) && !quote)
 	break;
       else
 	*d++ = *s++;
@@ -410,7 +410,7 @@ redir_cmdline_parse (const char *args, cmdline_t *cmd)
   if (!d || !cmd->redirection)
     return -1;
 
-  while (isspace (*s))
+  while (isspace ((unsigned char)*s))
     s++;
 
   while (*s)
@@ -437,7 +437,8 @@ redir_cmdline_parse (const char *args, cmdline_t *cmd)
 		return -1;	/* funky command */
 	      s += copied;
 	    }
-	  else if (isspace (*s) && isspace (d[-1]))
+	  else if (isspace ((unsigned char)*s)
+		   && isspace ((unsigned char)d[-1]))
 	    {
 	      /* Collapse multiple whitespace characters.  */
 	      d--;

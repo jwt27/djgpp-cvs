@@ -163,7 +163,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       else
       {
 	n = 0;
-	while (isascii(*fmt) && isdigit(*fmt))
+	while (isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt))
 	  n = 10 * n + todigit(*fmt++);
 	--fmt;
       }
@@ -182,7 +182,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       n = 0;
       do {
 	n = 10 * n + todigit(*fmt);
-      } while (isascii(*++fmt) && isdigit(*fmt));
+      } while (isascii((unsigned char)*++fmt) && isdigit((unsigned char)*fmt));
       width = n;
       --fmt;
       goto rflag;

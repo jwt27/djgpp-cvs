@@ -418,7 +418,7 @@ static const long n_year_lengths[3] = {
 static const char *
 getzname(const char *strp)
 {
-  char c;
+  unsigned char c;
 
   while ((c = *strp) != '\0' && !isdigit(c) && c != ',' && c != '-' &&
 	 c != '+')
@@ -436,10 +436,10 @@ getzname(const char *strp)
 static const char *
 getnum(const char *strp, int * const nump, const int min, const int max)
 {
-  char c;
+  unsigned char c;
   int num;
 
-  if (strp == NULL || !isdigit(*strp))
+  if (strp == NULL || !isdigit((unsigned char)*strp))
     return NULL;
   num = 0;
   while ((c = *strp) != '\0' && isdigit(c))
@@ -508,7 +508,7 @@ getoffset(const char *strp, long * const offsetp)
     neg = 1;
     ++strp;
   }
-  else if (isdigit(*strp) || *strp++ == '+')
+  else if (isdigit((unsigned char)*strp) || *strp++ == '+')
     neg = 0;
   else
     return NULL; /* illegal offset */
@@ -558,7 +558,7 @@ getrule(const char *strp, struct rule * const rulep)
       return NULL;
     strp = getnum(strp, &rulep->r_day, 0, DAYSPERWEEK - 1);
   }
-  else if (isdigit(*strp))
+  else if (isdigit((unsigned char)*strp))
   {
     /*
      ** Day of year.

@@ -344,7 +344,7 @@ run_v2_coff(int argc, char **argv)
     fprintf (stderr, "Not enough DOS memory to pass args to %s\n", argv[0]);
     if (verbose)
       fprintf (stderr, "(Need %d bytes, only %d available)\n",
-	       (cmdlen + 15) & 0xfffffff0, max_dos_mem << 4);
+	       (cmdlen + 15) & 0xfffffff0U, max_dos_mem << 4);
     argv[0] = argv0;
     return -1;
   }
@@ -421,7 +421,7 @@ main(int argc, char **argv)
 
   /* Get past any whitespace in DOS command line.  */
   argv1_start = &DosCmdLine[1];
-  while (*argv1_start && isspace(*argv1_start))
+  while (*argv1_start && isspace((unsigned char)*argv1_start))
     argv1_start++;
 
   if (verbose)
@@ -439,7 +439,7 @@ main(int argc, char **argv)
     {
       fprintf (stderr, "Environ CmdTail: `%s\'\n", argv1_start);
     }
-    while (*argv1_start && isspace(*argv1_start))
+    while (*argv1_start && isspace((unsigned char)*argv1_start))
       argv1_start++;
   }
   else if (strncmp(argv1_start, PROXY_STRING, sizeof(PROXY_STRING)-1) == 0)

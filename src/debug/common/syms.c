@@ -551,7 +551,7 @@ unsigned long syms_name2val(const char *name)
   {
     name++;
   }
-  if (isdigit(name[0]))
+  if (isdigit((unsigned char)name[0]))
   {
     if (sign == -1)
       return -strtoul(name, 0, 0);	/* MW change from strtol */

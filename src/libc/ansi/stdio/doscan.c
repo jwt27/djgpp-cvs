@@ -69,7 +69,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       ch = *fmt++;
     len = 0;
     size = REGULAR;
-    while (isdigit(ch)) {
+    while (isdigit(ch & 0xff)) {
       len = len*10 + ch - '0';
       ch = *fmt++;
     }
@@ -94,7 +94,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       ch = *fmt++;
     } else if (ch=='[')
       fmt = _getccl((const unsigned char *)fmt);
-    if (isupper(ch)) {
+    if (isupper(ch & 0xff)) {
       /* ch = tolower(ch);
 	 gcc gives warning: ANSI C forbids braced
 	 groups within expressions */
@@ -151,7 +151,8 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   case '\r':
   case '\f':
   case '\v':
-    while (((nchars++, ch1 = scan_getc(iop))!=EOF) && (_sctab[ch1] & SPC))
+    while (((nchars++, ch1 = scan_getc(iop))!=EOF)
+	   && (_sctab[ch1 & 0xff] & SPC))
       ;
     if (ch1 != EOF)
     {
@@ -201,7 +202,8 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
   np = numbuf;
   expseen = 0;
   negflg = 0;
-  while (((nchars++, c = scan_getc(iop)) != EOF) && (_sctab[c] & SPC))
+  while (((nchars++, c = scan_getc(iop)) != EOF)
+	 && (_sctab[c & 0xff] & SPC))
     ;
   if (c == EOF) nchars--;
   if (c=='-') {
@@ -226,7 +228,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
       base = 16;
       continue;
     }
-    if (isdigit(c)
+    if (c != EOF && isdigit(c & 0xff)
 	|| (base==16 && (('a'<=c && c<='f') || ('A'<=c && c<='F')))) {
       ndigit++;
       if (base==8)
@@ -236,7 +238,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
       else
 	lcval <<= 4;
       c1 = c;
-      if (isdigit(c))
+      if (isdigit(c & 0xff))
 	c -= '0';
       else if ('a'<=c && c<='f')
 	c -= 'a'-10;
@@ -324,14 +326,14 @@ _instr(char *ptr, int type, int len, FILE *iop,
   ignstp = 0;
   if (type=='s')
     ignstp = SPC;
-  while ((nchars++, ch = scan_getc(iop)) != EOF && _sctab[ch] & ignstp)
+  while ((nchars++, ch = scan_getc(iop)) != EOF && _sctab[ch & 0xff] & ignstp)
     ;
   ignstp = SPC;
   if (type=='c')
     ignstp = 0;
   else if (type=='[')
     ignstp = STP;
-  while (ch!=EOF && (_sctab[ch]&ignstp)==0) {
+  while (ch!=EOF && (_sctab[ch & 0xff]&ignstp)==0) {
     if (ptr)
       *ptr++ = ch;
     if (--len <= 0)
@@ -389,13 +391,13 @@ _getccl(const unsigned char *s)
     else if (c == '-' && *s != ']' && s[-2] < *s) {
       for (c = s[-2] + 1; c < *s; c++)
 	if (t)
-	  _sctab[c] |= STP;
+	  _sctab[c & 0xff] |= STP;
 	else
-	  _sctab[c] &= ~STP;
+	  _sctab[c & 0xff] &= ~STP;
     } else if (t)
-      _sctab[c] |= STP;
+      _sctab[c & 0xff] |= STP;
     else
-      _sctab[c] &= ~STP;
+      _sctab[c & 0xff] &= ~STP;
   }
   return((const char *)s);
 }

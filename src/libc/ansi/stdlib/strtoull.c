@@ -26,7 +26,7 @@ strtoull(const char *nptr, char **endptr, int base)
    */
   do {
     c = *s++;
-  } while (isspace(c));
+  } while (isspace(c & 0xff));
   if (c == '-')
   {
     neg = 1;
@@ -45,7 +45,7 @@ strtoull(const char *nptr, char **endptr, int base)
     base = c == '0' ? 8 : 10;
   cutoff = (unsigned long long)ULLONG_MAX / base;
   cutlim = (unsigned long long)ULLONG_MAX % base;
-  for (acc = 0, any = 0;; c = *s++)
+  for (acc = 0, any = 0;; c = *s++, c &= 0xff)
   {
     if (isdigit(c))
       c -= '0';

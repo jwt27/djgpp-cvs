@@ -24,7 +24,7 @@ _strtold(const char *s, char **sret)
   e = ne = 0;
   esign = 1;
 
-  while(*s && isspace(*s))
+  while(*s && isspace((unsigned char)*s))
     s++;
 
   if (*s == '+')

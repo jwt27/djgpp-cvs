@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <limits.h>
 
-#define TOLOWER(c) (isascii(c) && isupper(c) ? tolower ((unsigned char)c) : (c))
+#define TOLOWER(c) (isascii(c) && isupper(c) ? tolower(c) : (c))
 
 long
 pathconf(const char *path, int name)
@@ -22,7 +22,7 @@ pathconf(const char *path, int name)
     {
       int name_max, path_max;
       int e = errno;
-      char *lfnenv = getenv ("LFN");
+      unsigned char *lfnenv = getenv ("LFN");
 
       if (!lfnenv || TOLOWER (*lfnenv) != 'n')
 	{

@@ -20,7 +20,7 @@ strtoll(const char *nptr, char **endptr, int base)
    */
   do {
     c = *s++;
-  } while (isspace(c));
+  } while (isspace(c & 0xff));
   if (c == '-')
   {
     neg = 1;
@@ -47,7 +47,7 @@ strtoll(const char *nptr, char **endptr, int base)
     cutlim = 0;
     cutoff++;
   }
-  for (acc = 0, any = 0;; c = *s++)
+  for (acc = 0, any = 0;; c = *s++, c &= 0xff)
   {
     if (isdigit(c))
       c -= '0';

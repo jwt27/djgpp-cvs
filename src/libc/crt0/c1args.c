@@ -119,7 +119,7 @@ parse_arg(char *bp, char *last, int unquote, size_t *len, int *was_quoted)
   char *ep = bp, *epp = bp;
   int quote=0;
 
-  while ((quote || !isspace(*ep)) && ep < last)
+  while ((quote || !isspace(*(unsigned char *)ep)) && ep < last)
   {
     if (quote && *ep == quote)
     {
@@ -168,7 +168,7 @@ parse_bytes(char *bytes, int length, int unquote)
   while (bp<last)
   {
     size_t arg_len;
-    while (isspace(*bp) && bp < last)
+    while (isspace(*(unsigned char *)bp) && bp < last)
       bp++;
     if (bp == last)
       break;
@@ -379,7 +379,7 @@ __crt0_setup_arguments(void)
         if (argv0[i] == '\\')
           argv0[i] = '/';
       if (!(_crt0_startup_flags & _CRT0_FLAG_PRESERVE_UPPER_CASE))
-        if (isupper(argv0[i]))
+        if (isupper((unsigned char)argv0[i]))
           argv0[i] = tolower((unsigned char)argv0[i]);
     }
     if (_crt0_startup_flags & _CRT0_FLAG_DROP_EXE_SUFFIX)

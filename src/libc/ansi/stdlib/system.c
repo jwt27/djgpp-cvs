@@ -284,7 +284,7 @@ check_for(const char *s, const char *cmd, int cmdl)
     cmdl--;
   }
 
-  if (isgraph (*s))
+  if (isgraph ((unsigned char)*s))
     return 0;
   return 1;
 }
@@ -410,7 +410,7 @@ get_sym (char *s, char **beg, char **end)
 {
   int in_a_word = 0;
 
-  while (isspace (*s))
+  while (isspace ((unsigned char)*s))
     s++;
 
   *beg = s;
@@ -534,7 +534,7 @@ system (const char *cmdline)
 
   /* Strip initial spaces (so that if the command is empty, we
      know it right here).  */
-  while (isspace(*cmdline))
+  while (isspace((unsigned char)*cmdline))
     cmdline++;
 
   /* Call the shell if:
@@ -686,8 +686,8 @@ system (const char *cmdline)
 	  }
 
 	  /* Remove extra whitespace at end of command.  */
-	  while (s > cmdstart && isspace (s[-1])) s--;
-	  while (t > s && isspace (t[-1])) t--;
+	  while (s > cmdstart && isspace ((unsigned char)s[-1])) s--;
+	  while (t > s && isspace ((unsigned char)t[-1])) t--;
 	  *t = 0;
 
 #ifdef TEST

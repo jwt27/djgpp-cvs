@@ -384,3 +384,11 @@ into the program.  This bug is now fixed.
 @code{rename} now sets @code{errno} to @code{EACCES} when an attempt is
 made to rename an open file.  Previously, @code{errno} was set to
 @code{ENOENT} in these cases.
+
+@cindex 8-bit characters, and string-related functions
+Library functions that process strings and file names, such as
+@code{strupr}, @code{stricmp}, @code{strtol}, @code{fnmatch}, and the
+functions from @code{printf} and @code{scanf} families, handle 8-bit
+characters correctly when they call @code{ctype}
+character-classification functions internally.
+

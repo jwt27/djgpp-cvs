@@ -99,7 +99,7 @@ unquote(const char *src, char *dst)
 {
   int quote=0;
 
-  while ((quote || !isspace(*src)) && *src)
+  while ((quote || !isspace((unsigned char)*src)) && *src)
   {
     if (quote && *src == quote)
     {
@@ -159,7 +159,7 @@ run_program(int argc, char *argv[], int skip)
        invoke via `spawn'.  */
     if (strstr(tail, __PROXY+1))
     {
-      while (isspace(*tp))
+      while (isspace((unsigned char)*tp))
 	tp++;
       if (strncmp(tp, __PROXY+1, __PROXY_LEN-1)==0)
       {

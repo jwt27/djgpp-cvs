@@ -31,7 +31,8 @@ fnsplit (const char *path, char *drive, char *dir,
 
   pp = path;
 
-  if ((isalpha(*pp) || strchr("[\\]^_`", *pp)) && (pp[1] == ':'))
+  if ((isalpha((unsigned char )*pp)
+       || strchr("[\\]^_`", *pp)) && (pp[1] == ':'))
   {
     flags |= DRIVE;
     if (drive)

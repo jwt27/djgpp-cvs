@@ -83,7 +83,7 @@ _truename(const char *file, char *buf)
      here (although my testing indicates that DOS can handle it itself).
   */
   for (name_end = file_name + strlen(file_name) - 1;
-       name_end >= file_name && isspace(*name_end); )
+       name_end >= file_name && isspace((unsigned char)*name_end); )
     *name_end-- = '\0';
 
   /* Transfer Buffer is always long enough to hold true name of the file. */
