@@ -396,3 +396,18 @@ that should have been reserved for the basic shift/rotate instructions.)
 Completed the support in @code{djasm} for the byte/word/double
 shift/rotate instructions.  This feature taken from a version of
 @code{djasm} maintained by @email{bill@@taniwha.org, Bill Currie}.
+
+@findex fopen@r{, append mode}
+@findex freopen@r{, append mode}
+@findex fputc@r{, append mode}
+@findex fprintf@r{, append mode}
+@findex fwrite@r{, append mode}
+@findex write@r{, append mode}
+@cindex libc/dosio.h@r{, append mode}
+The functions @code{fopen} and @code{freopen} improved to handle the
+append mode properly.
+The functions @code{fputc}, @code{fprintf}, @code{fwrite} and
+@code{write} always seek to end of file if the file has been opened in
+append mode.
+Type of @code{__file_handle_modes} extended to be able to hold the
+@code{O_APPEND} flag.
