@@ -478,3 +478,8 @@ Functions of the @code{scanf} family now use 16 as the base for
 converting pointer values read with the @code{%p} format.  Thus, reading
 back a pointer written with the @code{%p} format now yields the original
 value.
+
+@findex kill@r{, signals to other programs}
+@code{kill} now sets @code{errno} to @code{ENOSYS} when called with a
+@var{pid} argument that isn't the caller's PID, since DOS doesn't allow
+sending signals to other processes.
