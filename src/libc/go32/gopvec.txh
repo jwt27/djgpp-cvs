@@ -16,7 +16,7 @@ int _go32_dpmi_get_protected_mode_interrupt_vector(
 This function puts the selector and offset of the specified interrupt
 vector into the @code{pm_selector} and @code{pm_offset} fields of
 @var{info}.  This structure can be saved and later passed to
-@code{_go32_dpmi_get_protected_mode_interrupt_vector} to restore
+@code{_go32_dpmi_set_protected_mode_interrupt_vector} to restore
 a vector.
 
 @subheading Return Value

@@ -17,7 +17,13 @@ servicing function in the @code{pm_offset} field of @var{info} and call
 this function.  The @code{pm_field} will get replaced with the address
 of the wrapper function, which you pass to both
 @code{_go32_dpmi_set_protected_mode_interrupt_vector} and
-@code{_go32_dpmi_free_iret_wrapper}. 
+@code{_go32_dpmi_free_iret_wrapper}.
+
+@strong{Warning!} Because of the way DPMI works, you may @emph{not}
+@code{longjmp} out of an interrupt handler or perform any system calls
+(such as @code{printf}) from within an interrupt handler.
+
+Do not enable interrupts with @code{enable()} or "sti" in your function.
 
 See also @ref{_go32_dpmi_set_protected_mode_interrupt_vector},
 and @ref{_go32_dpmi_free_iret_wrapper}.
@@ -59,11 +65,13 @@ int _go32_dpmi_chain_protected_mode_interrupt_vector(
 
 This function is used to chain a protected mode interrupt.  It will
 build a suitable wrapper that will call your function and then jump to
-the next handler.  Your function need not perform any special handling. 
+the next handler.  Your function need not perform any special handling.
 
 @strong{Warning!} Because of the way DPMI works, you may @emph{not}
 @code{longjmp} out of an interrupt handler or perform any system calls
-(such as @code{printf}) from within an interrupt handler. 
+(such as @code{printf}) from within an interrupt handler.
+
+Do not enable interrupts with @code{enable()} or "sti" in your function.
 
 @subheading Return Value
 
@@ -93,7 +101,7 @@ int _go32_dpmi_free_iret_wrapper(_go32_dpmi_seginfo *info);
 
 This function frees the memory used by the wrapper created by
 @code{_go32_dpmi_allocate_iret_wrapper}.  You should not free a wrapper
-that is still in use. 
+that is still in use.
 
 @subheading Return Value
 
