@@ -29,6 +29,13 @@ unload (int code)
   word16 psp;
   char *patch;
 
+  if (special_transfer_buffer)
+    {
+      termination_regs.h.ah = DOS_DEALLOCATE_MEMORY;
+      termination_regs.x.es = transfer_buffer_seg;
+      server_int (INT_DOS, &termination_regs);
+    }
+
   /* Grab the prefix seg of the current process so we can replace its
      command line area with a small piece of code to unload the real
      mode part of the server.  */
