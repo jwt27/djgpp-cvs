@@ -2033,6 +2033,9 @@ static void fsqrt()
   int exp = (st().exp - EXP_BIAS - 1)/2 - 64;
   while (!(((long *)&result)[1] & 0x80000000))
   {
+    /* GCC between 2.8 and EGCS 1.1.1 optimizes this loop
+       all wrong; the asm works around it. */
+    asm volatile("" : : : "memory");
     left = (left << 2) + (((unsigned *)&val)[1] >> 30);
     djshld(&val);
     djshld(&val);
