@@ -20,7 +20,7 @@
 #include "fdlibm.h"
 #include <libc/ieee.h>
 
-#ifdef _HAVE_STDC
+#ifdef __STDC__
 	float acosf(float x)		/* wrapper acosf */
 #else
 	float acosf(x)			/* wrapper acosf */
