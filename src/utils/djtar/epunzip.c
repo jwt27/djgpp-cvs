@@ -35,6 +35,7 @@ int epcopy(char *, long);
 void
 epunzip_read(char *zipfilename)
 {
+  clear_bufs();
   errno = 0;
   ifd = oread_open(zipfilename);
   if(errno)
