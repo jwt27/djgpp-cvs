@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_sys_system_h__
 #define __dj_include_sys_system_h__
@@ -12,18 +13,52 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
-#define __system_redirect	      0x0001 /* redirect internally */
-#define __system_call_cmdproc	      0x0002 /* always call COMMAND/$SHELL */
-#define __system_use_shell	      0x0004 /* use $SHELL if set */
-#define __system_allow_multiple_cmds  0x0008 /* allow `cmd1; cmd2; ...' */
-#define __system_allow_long_cmds      0x0010 /* handle commands > 126 chars  */
-#define __system_handle_null_commands 0x1000 /* ignore cmds with no effect */
-#define __system_ignore_chdir	      0x2000 /* make `cd' be a null command */
-#define __system_emulate_chdir	      0x4000 /* handle `cd' internally */
+extern int _shell_command  (const char *_prog, const char *_cmdline);
+extern int _is_unixy_shell (const char *_prog);
+extern int _is_dos_shell   (const char *_prog);
 
-extern int __system_flags;
+/* Checking for special executable formats */
 
-extern int _shell_command (const char *_prog, const char *_cmdline);
+typedef struct {
+  char magic[16];
+  int struct_length;
+  char go32[16];
+  unsigned char buffer[0];
+} _v1_stubinfo;
+
+
+typedef struct {
+  union {
+    unsigned version:8; /* The version of DJGPP created that COFF exe */
+    struct {
+      unsigned minor:4; /* The minor version of DJGPP */
+      unsigned major:4; /* The major version of DJGPP */
+    } v;
+  } version;
+
+  unsigned object_format:4; /* What an object format */
+# define _V2_OBJECT_FORMAT_UNKNOWN 0x00
+# define _V2_OBJECT_FORMAT_COFF    0x01
+
+  unsigned exec_format:4; /* What an executable format */
+# define _V2_EXEC_FORMAT_UNKNOWN    0x00
+# define _V2_EXEC_FORMAT_COFF       0x01
+# define _V2_EXEC_FORMAT_STUBCOFF   0x02
+# define _V2_EXEC_FORMAT_EXE        0x03
+# define _V2_EXEC_FORMAT_UNIXSCRIPT 0x04
+
+  unsigned valid:1; /* Only when nonzero all the information is valid */
+
+  unsigned has_stubinfo:1; /* When nonzero the stubinfo info is valid */
+
+  unsigned unused:14;
+
+  _v1_stubinfo *stubinfo;
+} _v2_prog_type;
+
+/* When program == NULL you have to pass a valid file handle
+   in fd, otherwise the file is opened and closed by the function */
+const _v2_prog_type *_check_v2_prog(const char *program, int fd);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
