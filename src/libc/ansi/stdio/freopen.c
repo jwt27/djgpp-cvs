@@ -62,7 +62,7 @@ freopen(const char *file, const char *mode, FILE *f)
 
   if (*mode == 'a')
   {
-    llseek(fd, 0, SEEK_END);
+    llseek(fd, 0LL, SEEK_END);
   }
 
   f->_base = f->_ptr = NULL;
