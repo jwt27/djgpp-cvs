@@ -62,6 +62,16 @@ that use binary reads from the console will also want to get the
 function (@pxref{__djgpp_set_ctrl_c}) if you want @kbd{Ctrl-C} to
 generate interrupts while console is read in binary mode.
 
+@item O_NOFOLLOW
+
+@code{open} will fail with errno set to @code{ELOOP}, if the last patch 
+component in @var{file} is symlink.
+
+@item O_NOLINK
+
+If @var{file} is a symlink, @code{open} will open symlink file itself instead 
+of referred file.
+
 @end table
 
 If the file is created by this call, it will be given the read/write

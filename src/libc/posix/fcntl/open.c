@@ -1,9 +1,13 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <libc/symlink.h>
+#include <libc/unconst.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,11 +26,56 @@ int
 open(const char* filename, int oflag, ...)
 {
   int fd, dmode, bintext, dont_have_share;
+  char real_name[FILENAME_MAX + 1];
   int should_create = (oflag & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL);
+
+  /* Solve symlinks and honor O_NOLINK flag  */
+  if (oflag & O_NOLINK)
+      strcpy(real_name, filename);
+  else
+  {
+     if (!__solve_symlinks(filename, real_name))
+        return -1; /* errno from from __solve_symlinks() */
+  }
+
+  /* Honor O_NOFOLLOW flag. */
+  if (oflag & O_NOFOLLOW)
+  {
+      /* O_NOFOLLOW, as defined in glibc, requires open() to fail if the
+       * last path component is a symlink.  However, it still requires to 
+       * resolve all other path components.
+       * We check if there were any symlinks by comparing __solve_symlinks()
+       * input and output.  That function does not perform any path 
+       * canonicalization so it should be safe.  */
+      if (strcmp(filename, real_name))
+      {
+         /* Yes, there were symlinks in the path.  Now take all but the last
+          * path component from `real_name', add last path component from
+          * `filename', and try to resolve that mess. 
+          */
+         char   temp[FILENAME_MAX + 1];
+         char   resolved[2];
+         char * last_separator;
+         int    old_errno = errno;
+         strcpy(temp, real_name);
+         last_separator = basename(temp);
+         *last_separator = '\0';
+         last_separator = basename(filename);
+         strcat(temp, "/");
+         strcat(temp, last_separator);
+         if ((readlink(temp, resolved, 1) != -1) || (errno != EINVAL))
+         {
+            /* Yes, the last path component was a symlink. */
+            errno = ELOOP;
+            return -1;
+         }
+         errno = old_errno;
+      }
+  }
 
   /* Check this up front, to reduce cost and minimize effect */
   if (should_create)
-    if (__file_exists(filename))
+    if (__file_exists(real_name))
     {
       /* file exists and we didn't want it to */
       errno = EEXIST;
@@ -55,10 +104,10 @@ open(const char* filename, int oflag, ...)
     }
 
   if (should_create)
-    fd = _creatnew(filename, dmode, oflag & 0xff);
+    fd = _creatnew(real_name, dmode, oflag & 0xff);
   else
   {
-    fd = _open(filename, oflag);
+    fd = _open(real_name, oflag);
 
     if (fd == -1)
     {
@@ -67,7 +116,7 @@ open(const char* filename, int oflag, ...)
       if (errno == EMFILE || errno == ENFILE)
 	return fd;
 
-      if (__file_exists(filename))
+      if (__file_exists(real_name))
       {
 	/* Under multi-taskers, such as Windows, our file might be
 	   open by some other program with DENY-NONE sharing bit,
@@ -75,12 +124,12 @@ open(const char* filename, int oflag, ...)
 	   DENY-NONE bit set, unless some sharing bits were already
 	   set in the initial call.  */
 	if (dont_have_share)
-	  fd = _open(filename, oflag | SH_DENYNO);
+	  fd = _open(real_name, oflag | SH_DENYNO);
       }
       /* Don't call _creat on existing files for which _open fails,
          since the file could be truncated as a result.  */
       else if ((oflag & O_CREAT))
-	fd = _creat(filename, dmode);
+	fd = _creat(real_name, dmode);
     }
   }
 
@@ -102,3 +151,4 @@ open(const char* filename, int oflag, ...)
 
   return fd;
 }
+

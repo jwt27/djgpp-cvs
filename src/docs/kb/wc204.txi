@@ -98,10 +98,16 @@ granularity (55@dmn{msec} by default).
 @findex readlink@r{, added to the library}
 @findex S_ISLNK@r{, added to the library}
 @findex S_IFLNK@r{, added to the library}
-UNIX-style symbolic links are fully emulated by library. As a part of this,
+UNIX-style symbolic links are fully emulated by library.  As a part of this,
 new functions @code{__solve_symlinks}, @code{lstat} and @code{readlink};
 new macros @code{S_ISLNK} and @code{S_IFLNK} have been added to library.
 
-@findex symlink@r{, changed behaviour}
+@findex O_NOLINK@r{, new flag accepted by @code{open}}
+@findex O_NOFOLLOW@r{, new flag accepted by @code{open}}
+@findex open@r{, supports symlinks}
+@code{open} now follows symlinks when opening file.  Also, it honors two new 
+mode flags: @code{O_NOLINK} and @code{O_NOFOLLOW}.
+
+@findex symlink@r{, supports symlinks}
 As a part of symlink emulation, @code{symlink} no longer emulates symlinks
-to executables by creating stubs. It creates symlinks to all files instead.
+to executables by creating stubs.  It creates symlinks to all files instead.
