@@ -1,1 +1,2 @@
 s/sys\/sysmacro.h/sys\/sysmacros.h/
+/\/[Cc][Vv][Ss]\// d
