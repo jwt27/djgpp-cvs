@@ -184,7 +184,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
   char        *new_filename = NULL;
   int          open_mode    = 0;
   int          perm         = 0;
-  mode_t       creat_mode   = 0;  
+  mode_t       mode         = 0;
   void        *buf          = NULL;
   size_t       buflen       = 0;
   off_t        offset       = 0;
@@ -278,8 +278,8 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     break;
 
   case __FSEXT_creat:
-    filename   = va_arg(args, char *);
-    creat_mode = va_arg(args, mode_t);
+    filename = va_arg(args, char *);
+    mode     = va_arg(args, mode_t);
 
     /* Check the filename */
     if (   !match_dev_path(filename, DEV_ZERO_PATH)
@@ -549,6 +549,55 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     }
 
     /* Seek is meaningless */
+    *rv = 0;
+    break;
+
+  case __FSEXT_chmod:
+    filename = va_arg(args, char *);
+    mode     = va_arg(args, mode_t);
+
+    /* Check the filename */
+    if (   !match_dev_path(filename, DEV_ZERO_PATH)
+	&& !match_dev_path(filename, DEV_FULL_PATH))
+      break;
+
+    /* Check whether the zero/full device has been installed. */
+    if (match_dev_path(filename, DEV_ZERO_PATH) && !dev_zero_installed)
+      break;
+
+    if (match_dev_path(filename, DEV_FULL_PATH) && !dev_full_installed)
+      break;
+
+    /* This must be emulated, since the FSEXT has been called. */
+    emul = 1;
+
+    /* The zero device cannot have its mode changed. */
+    errno = EPERM;
+    *rv   = -1;
+    break;
+
+  case __FSEXT_chown:
+    filename = va_arg(args, char *);
+    owner    = va_arg(args, uid_t);
+    group    = va_arg(args, gid_t);
+
+    /* Check the filename */
+    if (   !match_dev_path(filename, DEV_ZERO_PATH)
+	&& !match_dev_path(filename, DEV_FULL_PATH))
+      break;
+
+    /* Check whether the zero/full device has been installed. */
+    if (match_dev_path(filename, DEV_ZERO_PATH) && !dev_zero_installed)
+      break;
+
+    if (match_dev_path(filename, DEV_FULL_PATH) && !dev_full_installed)
+      break;
+
+    /* This must be emulated, since the FSEXT has been called. */
+    emul = 1;
+
+    /* Behave like chown() does on a regular file - succeed whatever
+     * the uid, gid are. */
     *rv = 0;
     break;
 

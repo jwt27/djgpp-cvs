@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -372,6 +373,27 @@ main (int argc, char *argv[])
   }
 
   assert(errno == EPERM);
+
+  /* - Check chmod() fails - */
+  n = chmod(DEV_ZERO_PATH, S_IWUSR);
+  if (n >= 0) {
+    fprintf(stderr,
+	    "chmod() succeeded in changing permissions of %s -"
+	    "it should fail\n",
+	    DEV_ZERO_PATH);
+    return(EXIT_FAILURE);
+  }
+
+  assert(errno == EPERM);
+
+  /* - Check chown() succeeds - */
+  n = chown(DEV_ZERO_PATH, 2 * getuid(), 2 * getgid());
+  if (n < 0) {
+    fprintf(stderr,
+	    "chown() failed to change ownership of %s\n",
+	    DEV_ZERO_PATH);
+    return(EXIT_FAILURE);
+  }
 
   /* - Check lseek() - */
   fd = open(DEV_ZERO_PATH, O_RDWR);
