@@ -1,5 +1,8 @@
 @node getlogin, unix
 @findex getlogin
+@vindex USERNAME@r{ environment variable, and the user's login ID}
+@vindex LOGNAME@r{ environment variable, and the user's login ID}
+@vindex USER@r{ environment variable, and the user's login ID}
 @subheading Syntax
 
 @example

@@ -2,6 +2,7 @@
 @node getgrent, unix
 @findex getgrent
 @tindex group@r{ structure}
+@vindex GROUP@r{ environment variable, and group entries}
 @subheading Syntax
 
 @example
@@ -13,7 +14,7 @@ struct group *getgrent(void);
 @subheading Description
 
 This function returns the next available group entry.  Note that for
-MS-DOS, this is simulated.  If the environment variable GROUP is set,
+MS-DOS, this is simulated.  If the environment variable @code{GROUP} is set,
 that is the name of the only group returned, else the only group is
 "dos".  Thus, under DOS, @code{getgrent} will always fail on the
 second and subsequent calls.

@@ -1,6 +1,9 @@
 @node getpwent, unix
 @findex getpwent
 @tindex passwd@r{ structure}
+@vindex HOME@r{ environment variable, and password file entries}
+@vindex SHELL@r{ environment variable, and password file entries}
+@vindex COMSPEC@r{ environment variable, and password file entries}
 @subheading Syntax
 
 @example
@@ -41,8 +44,8 @@ If the environment variable @code{SHELL} is set, the value of
 @code{SHELL}.
 
 @item
-If @code{SHELL} is not set, but @code{COMSPEC} is, the value of
-@code{COMSPEC}.
+If @code{SHELL} is not set, but the environment variable @code{COMSPEC} is,
+the value of @code{COMSPEC}.
 
 @item
 If neither of the above variables is defined, @code{pw_shell} is set to

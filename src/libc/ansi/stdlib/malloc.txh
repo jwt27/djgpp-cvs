@@ -275,6 +275,7 @@ heap passes all tests, or zero of some of the tests failed.
 
 @node malloc_debug, memory
 @findex malloc_debug
+@vindex MALLOC_DEBUG@r{ environment variable}
 @subheading Syntax
 
 @example

@@ -50,6 +50,7 @@ rename("c:/path1/mydir", "c:/path2");
 
 @node _rename, file system
 @findex _rename
+@vindex LFN@r{ environment variable and }_rename
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node gethostname, misc
 @findex gethostname
+@vindex HOSTNAME@r{ environment variable}
 @subheading Syntax
 
 @example

@@ -58,6 +58,7 @@ with filenames which have embedded whitespace (on LFN filesystems).
 @c ----------------------------------------------------------------------
 @node __crt0_load_environment_file, startup
 @findex __crt0_load_environment_file
+@vindex DJGPP@r{ environment variable}
 @subheading Syntax
 
 @example
@@ -84,6 +85,8 @@ function that does nothing.
 @c ----------------------------------------------------------------------
 @node _crt0_startup_flags, startup
 @vindex _crt0_startup_flags
+@vindex LFN@r{ environment variable, how to disable at start-up}
+@vindex FNCASE@r{ environment variable, how to disable at start-up}
 @subheading Syntax
 
 @example

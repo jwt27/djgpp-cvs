@@ -32,6 +32,8 @@ if (_detect_80387())
 @c ----------------------------------------------------------------------
 @node _8087, cpu
 @vindex _8087
+@vindex 387@r{ environment variable, and numeric coprocessor detection}
+@vindex 387@r{ environment variable, and math coprocessor detection}
 @subheading Syntax
 
 @example

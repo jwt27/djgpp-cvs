@@ -2,6 +2,9 @@
 
 @node tempnam, file system
 @findex tempnam
+@vindex TMPDIR@r{ environment variable, and }tempnam
+@vindex TEMP@r{ environment variable, and }tempnam
+@vindex TMP@r{ environment variable, and }tempnam
 @subheading Syntax
 
 @example

@@ -1,6 +1,8 @@
 @node glob, shell
 @findex glob
 @tindex glob_t@r{ type}
+@vindex LFN@r{ environment variable, and file-name globbing}
+@vindex FNCASE@r{ environment variable, and file-name globbing}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node searchpath, file system
 @findex searchpath
+@vindex PATH@r{ environment variable, and finding files with }searchpath
 @subheading Syntax
  
 @example

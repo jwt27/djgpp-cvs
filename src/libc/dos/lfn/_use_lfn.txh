@@ -1,5 +1,6 @@
 @node _use_lfn, file system
 @findex _use_lfn
+@vindex LFN@r{ environment variable}
 @subheading Syntax
  
 @example
@@ -147,6 +148,8 @@ either @code{ENODEV} or @code{ENXIO}.
 
 @node _preserve_fncase, file system
 @findex _preserve_fncase
+@vindex FNCASE@r{ environment variable}
+@vindex LFN@r{ environment variable, and file-name case}
 @subheading Syntax
  
 @example

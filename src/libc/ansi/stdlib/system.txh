@@ -1,5 +1,9 @@
 @node system, process
 @findex system
+@vindex SHELL@r{ environment variable, and }system
+@vindex COMSPEC@r{ environment variable, and }system
+@vindex CMDLINE@r{ environment variable, and }system
+@vindex DJSYSFLAGS@r{ environment variable, and the behaviour of }system
 @subheading Syntax
 
 @example

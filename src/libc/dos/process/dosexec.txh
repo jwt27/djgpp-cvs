@@ -7,6 +7,9 @@
 @findex spawnve
 @findex spawnvp
 @findex spawnvpe
+@vindex COMSPEC@r{ environment variable, and }spawn*
+@vindex PATH@r{ environment variable, and }spawn*
+@vindex CMDLINE@r{ environment variable, and }spawn*
 @subheading Syntax
 
 @smallexample

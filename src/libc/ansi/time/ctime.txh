@@ -160,6 +160,7 @@ A pointer to a static structure which is overwritten with each call.
 @c ----------------------------------------------------------------------
 @node mktime, time
 @findex mktime
+@vindex TZ@r{ environment variable, and time since 1970}
 @subheading Syntax
 
 @example
@@ -211,6 +212,7 @@ in that format.
 @node tzset, time
 @vindex tzname
 @findex tzset
+@vindex TZ@r{ environment variable, and }tzname
 @subheading Syntax
 
 @example

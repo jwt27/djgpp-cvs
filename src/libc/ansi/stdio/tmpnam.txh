@@ -1,5 +1,8 @@
 @node tmpnam, stdio
 @findex tmpnam
+@vindex TMPDIR@r{ environment variable, and }tmpnam
+@vindex TEMP@r{ environment variable, and }tmpnam
+@vindex TMP@r{ environment variable, and }tmpnam
 @subheading Syntax
 
 @example
