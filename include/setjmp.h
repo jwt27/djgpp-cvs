@@ -4,7 +4,8 @@
 #define __dj_include_setjmp_h_
 
 #ifdef __cplusplus
-extern "C" {
+namespace std {
+  extern "C" {
 #endif
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
@@ -21,6 +22,7 @@ typedef struct __jmp_buf {
 
 void	longjmp(jmp_buf env, int val);
 int	setjmp(jmp_buf env);
+#define setjmp setjmp   /* required by C++ standard */
 
 #ifndef __STRICT_ANSI__
 
@@ -39,7 +41,28 @@ int	siglongjmp(sigjmp_buf env, int val);
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 
 #ifdef __cplusplus
+  }
 }
 #endif
 
 #endif /* !__dj_include_setjmp_h_ */
+
+
+#if defined(__cplusplus) && !defined(__dj_ENFORCE_ANSI_FREESTANDING)
+
+using std::setjmp;
+
+#ifndef __dj_via_cplusplus_header_
+
+using std::longjmp;
+using std::jmp_buf;
+
+#ifndef __STRICT_ANSI__
+
+using std::sigjmp_buf;
+using std::sigsetjmp;
+using std::siglongjmp;
+
+#endif /* !__STRICT_ANSI__ */
+#endif /* !__dj_via_cplusplus_header_ */
+#endif /* __cplusplus && !__dj_ENFORCE_ANSI_FREESTANDING */

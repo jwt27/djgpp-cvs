@@ -313,3 +313,7 @@ available.  These include @file{stdint.h}.
 When used in C@t{++} programs, the standard C header files now make
 their contents visible in namespace @code{std} as well as in the global
 namespace.
+
+@findex setjmp@r{, also a macro}
+@code{setjmp} is now a macro as well as a function.  This is required by
+the C@t{++} standard, and also recommended by the C standard.
