@@ -232,6 +232,10 @@ int pclose(FILE *pp)
 
     /* close duplicate stdin */
     close(fd);
+
+  exit:
+
+    free(l1->command);
   }
   /* if pipe was opened to read, return the exit status we saved */
   else if (l1->mode[0] == 'r')
@@ -244,11 +248,6 @@ int pclose(FILE *pp)
   else
     /* invalid mode */
     retval = -1;
-
- exit:
-
-  if (l1->command)
-    free(l1->command);
 
   free(l1);
 
