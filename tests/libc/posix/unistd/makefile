@@ -1,6 +1,7 @@
 TOP=../..
 
 SRC += access.c
+SRC += append.c
 SRC += chdr.c
 SRC += gcwd.c
 SRC += getpid.c
