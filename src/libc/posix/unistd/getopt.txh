@@ -12,7 +12,7 @@ extern int optind, opterr, optopt;
 @subheading Description
 
 Parse options from the command line.  The @var{options} are a string of
-valid option characters.  If a given option takes a parameter, that
+valid option characters.  If a given option takes an argument, that
 character should be followed by a colon.
 
 For each valid switch, this function sets @code{optarg} to the argument
@@ -22,11 +22,11 @@ returns the option letter found.
 
 If an unexpected option is found, @code{getopt} will return @code{?},
 and if @code{opterr} is nonzero, will print an error message to stderr. 
-The example below shows how @code{?} can be still be used as an option
+The example below shows how @samp{?} can still be used as an option
 (e.g., to request a summary of program usage) in addition to flagging
 an unexpected option.
 
-The special option @code{--} indicates that no more options follow on
+The special option @samp{--} indicates that no more options follow on
 the command line, and cause @code{getopt} to stop looking. 
 
 @subheading Return Value
