@@ -36,7 +36,7 @@ characters to use in the conversion.
 
 An optional conversion qualifier, which may be @code{h} to specify
 @code{short}, @code{l} to specify long ints, or @code{L} to specify
-long doubles.
+long doubles. Long long type can be specified by @code{L} or @code{ll}.
 
 @item
 
@@ -117,7 +117,8 @@ the actual conversions.
 
 @subheading Return Value
 
-The number of items successfully scanned.
+The number of items successfully matched and assigned. If input ends
+before first item is assigned, EOF is returned.
 
 @subheading Example
 
