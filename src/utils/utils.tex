@@ -69,7 +69,7 @@ come with DJGPP.
 @c -----------------------------------------------------------------------------
 @node bin2h, djecho, , Top
 @chapter @command{bin2h}
-@pindex @command{bin2h}
+@pindex bin2h
 
 @command{bin2h} allows a developer to embed a binary file into a source
 file, by converting the binary data to an array of integer values.
@@ -87,7 +87,7 @@ unsigned char symbol[] = @{
 @c -----------------------------------------------------------------------------
 @node djecho, djtar, bin2h, Top
 @chapter @command{djecho}
-@pindex @command{djecho}
+@pindex djecho
 
 This program simply echoes whatever is given to it on the command line.
 
@@ -136,7 +136,7 @@ package is built.
 @c -----------------------------------------------------------------------------
 @node djtar, dtou, djecho, Top
 @chapter @command{djtar}
-@pindex @command{djtar}
+@pindex djtar
 
 Usage: @code{djtar} [@code{-n} @file{changeFile}] [@code{-e} @file{dir}]
 [@code{-o} @file{dir}] [@code{-t}|@code{-x}] [@code{-i}] [@code{-v}] 
@@ -359,7 +359,7 @@ so that they won't get mixed with the files' data.
 @c -----------------------------------------------------------------------------
 @node dtou, utod, djtar, Top
 @chapter @command{dtou}
-@pindex @command{dtou}
+@pindex dtou
 
 Usage: @code{dtou} [@code{-b}] [@code{-h}] [@code{-r}] [@code{-s}] [@code{-t}]
 [@code{-v}] [@code{-vv}] @file{files}
@@ -457,7 +457,7 @@ no backup of the original file will be done.
 @c -----------------------------------------------------------------------------
 @node utod, gxx, dtou, Top
 @chapter @command{utod}
-@pindex @command{utod}
+@pindex utod
 
 Each file specified on the command line is converted from unix's NL text
 file mode to dos's CR/LF text file mode.
@@ -467,7 +467,7 @@ All djgpp wildcards are supported.  Timestamps of the files are preserved.
 @c -----------------------------------------------------------------------------
 @node gxx, redir, utod, Top
 @chapter @command{gxx}
-@pindex @command{gxx}
+@pindex gxx
 
 This program is exactly like @command{gcc} (in fact, it @i{calls} gcc), except
 that it provides the extra libraries required to link most C++ programs,
@@ -476,7 +476,7 @@ including the iostreams, stdc, and libg++ libraries.
 @c -----------------------------------------------------------------------------
 @node    redir, djsplit, gxx, Top
 @chapter @command{redir}
-@pindex @command{redir}
+@pindex redir
 
 DOS, in its many flavors and versions, lacks a decent I/O redirection
 mechanism.  Sure, it's got < and > and >>, but what about error
@@ -564,7 +564,7 @@ redir -eo -o prog.out command ... | pipe
 @c -----------------------------------------------------------------------------
 @node djsplit, djmerge, redir, Top
 @chapter @command{djsplit}
-@pindex @command{djsplit}
+@pindex djsplit
 
 The @command{djsplit} and @command{djmerge} programs are designed to assist in
 transporting files across unreliable channels or small media (like
@@ -596,7 +596,7 @@ bits, use the @samp{-t} switch.
 @c -----------------------------------------------------------------------------
 @node djmerge, texi2ps, djsplit, Top
 @chapter @command{djmerge}
-@pindex @command{djmerge}
+@pindex djmerge
 
 The @command{djsplit} and @command{djmerge} programs are designed to assist in
 transporting files across unreliable channels or small media (like
@@ -624,7 +624,7 @@ switch.
 @c -----------------------------------------------------------------------------
 @node texi2ps, update, djmerge, Top
 @chapter @command{texi2ps}
-@pindex @command{texi2ps}
+@pindex texi2ps
 
 @command{texi2ps} is a modified version of @command{makeinfo} that quickly turns
 texinfo files (such as info files are generated from) into crude
@@ -675,7 +675,7 @@ redirect the output to a file or a printer.
 @c -----------------------------------------------------------------------------
 @node update, getconf, texi2ps, Top
 @chapter @command{update}
-@pindex @command{update}
+@pindex update
 
 @command{update} is a fancy copy-if-needed program.  Basically, it compares
 the two files you give it, and if they differ, copies one to the other.
@@ -752,7 +752,7 @@ the above command strings.
 @c -----------------------------------------------------------------------------
 @node getconf, djasm, update, Top
 @chapter @command{getconf}
-@pindex @command{getconf}
+@pindex getconf
 
 @command{getconf} writes the value of configuration dependent variables to
 standard output.
@@ -794,7 +794,7 @@ getconf NAME_MAX c:/djgpp
 @c -----------------------------------------------------------------------------
 @node djasm, , getconf, Top
 @chapter @command{djasm}
-@pindex @command{djasm}
+@pindex djasm
 @lowersections
 
 @include djasm.txi
