@@ -326,3 +326,28 @@ letter, even if the file didn't actually exist.  This is now fixed:
 non-existent files always cause @code{searchpath} to return a
 @code{NULL} pointer.
 
+@cindex debug support, and signals
+The DJGPP debug support functions in @file{libdbg.a} now have the
+capability to debug programs that catch signals such as @code{SIGINT}.
+The signal interrupts the debuggee and is reported by the debugger,
+instead of aborting the debuggee.  Some limitations still exist:
+@code{SIGALRM} and @code{SIGQUIT} are reported as @code{SIGINT}.
+
+@cindex debug support, and floating-point code
+The DJGPP functions in @file{libdbg.a} support FP code much better now,
+especially when FP exceptions happen in the debugged program.  The full
+state of the numeric processor is saved and restored when the execution
+thread jumps from the debugger to the debuggee and back.
+
+@cindex debug support, and file redirection
+It is now possible to debug programs that redirect their standard
+handles, without the debugger losing those handles at the same time.
+Debuggers which want to use this feature need to call the new
+@code{redir_*} functions before and after jumping to the debuggee's
+code.  @xref{redir_debug_init, , Redirection in the debugger, libc.info,
+libc.a reference}.
+
+@cindex debug support, documentation
+The documentation for the debug support functions in @file{libdbg.a} is
+now part of the library reference.
+
