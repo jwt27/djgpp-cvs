@@ -1,0 +1,27 @@
+@node chdir, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int chdir(const char *new_directory);
+@end example
+
+@subheading Description
+
+This function changes the current directory to @var{new_directory}.
+If a drive letter is specified, the current directory for that drive
+is changed and the current disk is set to that drive, else the current
+directory for the current drive is changed.
+
+@subheading Return Value
+
+Zero if the new directory exists, else nonzero and @var{errno} set if error.
+
+@subheading Example
+
+@example
+if (chdir("/tmp"))
+  perror("/tmp");
+@end example
+
