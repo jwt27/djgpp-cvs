@@ -12,8 +12,10 @@ long double _strtold(const char *s, char **endp);
 
 This function converts as many characters of @var{s} that look like a
 floating point number into that number.  It also recognises
-(case-insensitively) ``Inf'', ``Infinity'', ``NaN'' and
-``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
+(case-insensitively) ``Inf'', ``Infinity'', ``NaN'',
+``NaN(@var{optional decimal-number})'',
+``NaN(@var{optional octal-number})''
+and ``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
 pointer, a pointer to the first unconverted character will be stored
 in the location pointed to by @var{endp}.  
 
@@ -34,9 +36,11 @@ optionally prefixed with ``+'' or ``-'', the return value is
 @code{(long double)NAN}.  If the prefix is ``-'' the sign bit in the
 NaN will be set to 1.  
 
-If @var{s} is ``NaN(@var{hex-number})'', with any variations of case
+If @var{s} is ``NaN(@var{decimal-number})'', ``NaN(@var{octal-number})''
+or ``NaN(@var{hex-number})'', with any variations of case
 and optionally prefixed with ``+'' or ``-'', the return value is a NaN
-with the mantissa bits set to the lower 63 bits of @var{hex-number}
+with the mantissa bits set to the lower 63 bits
+of @var{decimal-number}, @var{octal-number} or @var{hex-number}
 and the most significant bit to 1 (the mantissa for long 
 doubles consists of 64 bits where the most significant bit is the
 integer bit which must be set for NaNs).  Use at most 16 hexadecimal
@@ -55,9 +59,17 @@ mantissa).
 @subheading Example
 
 @example
-char *buf = "123ret";
+char buf[] = "123ret";
+char buf2[] = "0x123ret";
+char buf3[] = "NAN(123)";
+char buf4[] = "NAN(0x123)";
 char *bp;
-long double x = _strtold(buf, &bp);
+long double x, x2, x3, x4;
+
+x = _strtold(buf, &bp);
+x2 = _strtold(buf2, &bp);
+x3 = _strtold(buf3, &bp);
+x4 = _strtold(buf4, &bp);
 @end example
 
 @node strtold, string
@@ -74,8 +86,10 @@ long double strtold(const char *s, char **endp);
 
 This function converts as many characters of @var{s} that look like a
 floating point number into that number.  It also recognises
-(case-insensitively) ``Inf'', ``Infinity'', ``NaN'' and
-``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
+(case-insensitively) ``Inf'', ``Infinity'', ``NaN'',
+``NaN(@var{optional decimal-number}),
+``NaN(@var{optional octal-number})
+and ``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
 pointer, a pointer to the first unconverted character will be stored
 in the location pointed to by @var{endp}.  
 
@@ -93,9 +107,11 @@ optionally prefixed with ``+'' or ``-'', the return value is
 @code{(long double)NAN}.  If the prefix is ``-'' the sign bit in the
 NaN will be set to 1.  
 
-If @var{s} is ``NaN(@var{hex-number})'', with any variations of case
+If @var{s} is ``NaN(@var{decimal-number})'', ``NaN(@var{octal-number})''
+or ``NaN(@var{hex-number})'', with any variations of case
 and optionally prefixed with ``+'' or ``-'', the return value is a NaN
-with the mantissa bits set to the lower 63 bits of @var{hex-number}
+with the mantissa bits set to the lower 63 bits
+of @var{decimal-number}, @var{octal-number} or @var{hex-number}
 and the most significant bit to 1 (the mantissa for long 
 doubles consists of 64 bits where the most significant bit is the
 integer bit which must be set for NaNs).  Use at most 16 hexadecimal
@@ -117,7 +133,15 @@ mantissa).
 @subheading Example
 
 @example
-char *buf = "123ret";
+char buf[] = "123ret";
+char buf2[] = "0x123ret";
+char buf3[] = "NAN(123)";
+char buf4[] = "NAN(0x123)";
 char *bp;
-long double x = strtold(buf, &bp);
+long double x, x2, x3, x4;
+
+x = strtold(buf, &bp);
+x2 = strtold(buf2, &bp);
+x3 = strtold(buf3, &bp);
+x4 = strtold(buf4, &bp);
 @end example

@@ -85,7 +85,7 @@ strtold(const char *s, char **sret)
       unsigned long long mantissa_bits = 0;
       char *endptr = unconst((&s[4]), char *);
       
-      mantissa_bits = strtoull(&s[4], &endptr, 16);
+      mantissa_bits = strtoull(&s[4], &endptr, 0);
       if ( *endptr == ')' )
       {
 	mantissa_bits = mantissa_bits & 0x7fffffffffffffffULL; /* Ignore
@@ -103,7 +103,7 @@ strtold(const char *s, char **sret)
         return (t.ld);
       }
       
-      /* The subject sequence didn't match NAN(<hex-number>), so match
+      /* The subject sequence didn't match NAN(<number>), so match
 	 only NAN. */
     }
 

@@ -12,8 +12,10 @@ double strtod(const char *s, char **endp);
 
 This function converts as many characters of @var{s} as look like a
 floating point number into that number.  It also recognises
-(case-insensitively) ``Inf'', ``Infinity'', ``NaN'' and
-``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
+(case-insensitively) ``Inf'', ``Infinity'', ``NaN'',
+``NaN(@var{optional decimal-number})'',
+``NaN(@var{optional octal-number})''
+and ``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
 pointer, a pointer to the first unconverted character will be stored
 in the location pointed to by @var{endp}.
 
@@ -31,10 +33,12 @@ and optionally prefixed with ``+'' or ``-'', the return value is
 @code{(double)NAN}.  If the prefix is ``-'' the sign bit in the NaN
 will be set to 1.
 
-If @var{s} is ``NaN(@var{hex-number})'', with any variations of
+If @var{s} is ``NaN(@var{decimal-number})'', ``NaN(@var{octal-number})''
+or ``NaN(@var{hex-number})'', with any variations of
 case and optionally prefixed with ``+'' or ``-'', the return value is
-a NaN with the mantissa bits set to the lower 52 bits of
-@var{hex-number} (the mantissa for doubles consists of 52 bits).  Use
+a NaN with the mantissa bits set to the lower 52 bits
+of @var{decimal-number}, @var{octal-number} or @var{hex-number}
+(the mantissa for doubles consists of 52 bits).  Use
 at most 16 hexadecimal digits in @var{hex-number} or the internal
 conversion will overflow, which results in a mantissa with all bits
 set.  If the bit pattern given is 0 (which won't work as a
@@ -58,8 +62,16 @@ representable by the type @code{double}, the function returns either
 @subheading Example
 
 @example
-char *buf = "123ret";
+char buf[] = "123ret";
+char buf2[] = "0x123ret";
+char buf3[] = "NAN(123)";
+char buf4[] = "NAN(0x123)";
 char *bp;
-double x = strtod(buf, &bp);
+double x, x2, x3, x4;
+
+x = strtod(buf, &bp);
+x2 = strtod(buf2, &bp);
+x3 = strtod(buf3, &bp);
+x4 = strtod(buf4, &bp);
 @end example
 
