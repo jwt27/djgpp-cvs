@@ -2,6 +2,7 @@
 
 #include <libc/stubs.h>
 #include <libc/symlink.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -10,6 +11,21 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
 {
    char   path_copy[FILENAME_MAX];
    char * last_part;
+
+   /* Reject NULLs... */
+   if (!__symlink_path || !__real_path)
+   {
+      errno = EINVAL;
+      return -1;
+   }
+                                  
+   /* ...and empty strings */
+   if (__symlink_path[0] == '\0')
+   {
+      errno = ENOENT;
+      return -1;
+   }
+
    strcpy(path_copy, __symlink_path);
    last_part = basename(path_copy);
    if (*last_part == '\0')
