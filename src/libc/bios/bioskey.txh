@@ -19,20 +19,21 @@ argument @var{command} can accept the following values:
 
 Returns the next key pressed.  The value returned is a combination of
 the key's scan code in the high 8 bits and its ASCII code in the low 8
-bits.
+bits.  For non-alphanumeric keys, such as the arrow keys, the low 8
+bits are zeroed.
 
 @item @var{command} = 1
 
 Checks the keyboard, returns zero if no key pressed, else the key.  Does
 not dequeue the key from the keyboard buffer.  The value returned when a
 key was pressed is a combination of the key's scan code in the high 8
-bits and its ASCII code in the low 8 bits.
+bits and either its ASCII code or zero in the low 8 bits.
 
 If the @kbd{Ctrl-@key{BREAK}} key was pressed, returns -1.
 
 @item @var{command} = 2
 
-Returns the shift state:
+Returns the keyboard shift state:
 
 @example
 7654 3210  Meaning
@@ -53,7 +54,8 @@ Returns the next extended key pressed.  This works like the case of
 @var{command} = 0, but it recognizes additional keys from the AT-style
 extended 101-key keyboard, like the second @key{Alt} key and @key{F12}.
 If a key was pressed, returns the scan code and ASCII code packed in
-same way as for @var{command} = 0.
+same way as for @var{command} = 0, except that the extended keys have
+the @code{E0h} prefix in the low 8 bits.
 
 Almost every PC nowadays has an extended 101-key keyboard.
 
