@@ -27,10 +27,10 @@ struct mntent
   long mnt_time;
 };
 
-extern FILE		*setmntent(char *, char *);
+extern FILE		*setmntent(const char *, const char *);
 extern struct mntent	*getmntent(FILE *);
-extern int		addmntent(FILE *, struct mntent *);
-extern char		*hasmntopt(struct mntent *, char *);
+extern int		addmntent(FILE *, const struct mntent *);
+extern char		*hasmntopt(const struct mntent *, const char *);
 extern int		endmntent(FILE *);
 
 

@@ -1,0 +1,153 @@
+@c File: src/libc/posix/fcntl/ioctl.txh
+@c $Id: ioctl.txh,v 1.1 1996/08/12 23:10:08 dj Exp $
+@node ioctl (General description), io
+@code{ioctl} performs low level calls to communicate with device drivers. As
+there are lots of different device drivers, no really general description is
+possible.
+
+The DJGPP version tries to cope two different flavors of @code{ioctl}, a DOSish
+and a UNIXish way. To distinguish between DOS-like and UNIX-like calls, all
+valid DOS commands have the 3 MSB set to 0, the UNIX command have at least one
+of the 3 MSB set.
+
+
+@node ioctl (DOS), io
+The DOSish version of @code{ioctl} performs an
+interrupt 0x21, function 0x44. It takes care of supplying transfer buffers in
+low address regions, if they are needed. For an exhaustive description of the
+various commands and subcommands, see Ralph Browns interrupt list.
+
+It is highly recommended to use only the DOS_*
+functions listed in @file{sys/ioctl.h}.
+@subheading Syntax
+        ioctl(fd, cmd, ... );
+
+@example
+#include <sys/ioctl.h>
+int main(int argc, char **argv)@{
+   char buf[6];
+   short *s;
+
+   open(fd,"EMMQXXX0",O_RDONLY);
+   mybuf[0] = '\0';
+   s = mybuf;
+   ioctl(fd,DOS_SNDDATA,6, (int) &mybuf);
+   if(*s ==0x25 )printf("EMM386 >= 4.45\n");
+   mybuf[0]='\x02';
+   ioctl(fd,DOS_SNDDATA,2,(int )&mybuf);
+   printf("EMM Version %d.%d\n",(int )mybuf[0],(int) mybuf[1]);
+   close(fd);
+@}
+@end example
+
+@subheading Description
+The parameter @code{fd} must refer to a file descriptor for character device
+functions, or the number of a block device (usually current=0, A:=1, ...).
+
+The following constants can be used for the @code{cmd} parameter:
+@table @code
+@item DOS_GETDEVDATA
+Get device information. Returns the device information word from @code{DX}.
+@item DOS_SETDEVDATA
+Set device information. Returns the new device information word form @code{DX}
+or -1
+@item DOS_RCVDATA
+Read from character device control channel. After @code{cmd} must follow the
+number of requested bytes to read and a pointer to a buffer. Returns the number
+of bytes actually read or -1 on error.
+@item DOS_SNDDATA
+Write to character device control channel. After @code{cmd} must follow the
+number of bytes to write and a pointer to a buffer holding the data.
+Returns the number of bytes actually written.
+@item DOS_RCVCTLDATA
+Read from block device control channel. See @code{DOS_RCVDATA}.
+@item DOS_SNDCTLDATA
+Write to block device control channel. See @code{DOS_SNDDATA}.
+@item DOS_CHKINSTAT
+Check the input status of a file. Returns 0 if not ready of at EOF, @code{0xff}
+if file is ready.
+@item DOS_CHKOUTSTAT
+Check the output status of a file. Returns 0 if not ready of at EOF, @code{0xff}
+if file is ready.
+@item DOS_ISCHANGEABLE
+Check if a block device is changeable. Returns 0 for removable or 1 for fixed.
+@item DOS_ISREDIRBLK
+Check if a block device is remote o local.
+@item DOS_ISREDIRHND
+Check if a file handle refers to a local or remote device.
+@item DOS_SETRETRY
+Set the sharing retry count. the first extra parameter specifies the pause
+between retries, the second number of retries.
+@item DOS_GENCHARREQ
+Generic character device request.
+@item DOS_GENBLKREQ
+Generic block device request.
+@item DOS_GLDRVMAP
+Get logical drive map.
+@item DOS_SLDRVMAP
+Set logical drive map.
+@item DOS_QGIOCTLCAPH
+Query generic ioctl capability (handle). Test if a handle supports ioctl
+functions beyond those in the standard DOS 3.2 set.
+@item DOS_QGIOCTLCAPD
+Query generic ioctl capability (drive). Test if a drive supports ioctl
+functions beyond those in the standard DOS 3.2 set.
+@end table
+
+If your specific device driver requires different commands, they must be or'ed
+together with the flags listed in @file{ioctl.h} to tell the drive about
+transfer buffers and what to return.
+
+@subheading Return Value
+See description above.
+
+@subheading Device information word
+The bits of the device information word have the following meaning:\\
+Character device:
+@table @asis
+14  Device driver can process IOCTL request
+
+13  output until busy supported
+
+11  driver supports OPEN/CLOSE calls
+
+7   set (indicates device)
+
+6   EOF on input
+
+5   raw (binary) mode
+
+4   device is special (uses INT 29)
+
+3   clock device
+
+2   NUL device
+
+1   standard output
+
+0   standard input
+@end table
+
+Disk file:
+@table @asis
+15  file is remote (DOS 3.0+)
+
+14  don't set file date/time on closing (DOS 3.0+)
+
+11  media not removable
+
+8   (DOS 4 only) generate INT 24 if no disk space on write or read past end of file
+
+7   clear (indicates file)
+
+6   file has not been written
+
+5-0 drive number (0 = A:)
+@end table
+
+@node ioctl (UNIX), io
+The UNIX version first checks if an FSE handler is associated to the file
+descriptor. If so, it calls the handler in the usual way @ref{File System
+Extensions}. Otherwise it sets @var{errno} to @code{ENOTTY} and returns -1.
+
+As this part is still under development, it should not be used exhaustively.

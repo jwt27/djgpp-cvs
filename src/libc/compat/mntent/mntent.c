@@ -72,6 +72,7 @@ static          char dev_opts[] = "r ,dev=  ";
 
 static char NAME_dblsp[] = "dblsp";
 static char NAME_stac[] = "stac";
+static char NAME_jam[] = "jam";
 static char NAME_ram[] = "ram";
 static char NAME_cdrom[] = "cdrom";
 static char NAME_net[] = "net";
@@ -79,6 +80,7 @@ static char NAME_fd[] = "fd";
 static char NAME_hd[] = "hd";
 static char NAME_subst[] = "subst";
 static char NAME_join[] = "join";
+static char NAME_unknown[] = "???";
 
 int _is_remote_drive(int);
 
@@ -179,6 +181,7 @@ get_stacker_info(int drive_num)
 {
   __dpmi_regs r;
   unsigned long stac_driver_ptr;
+  unsigned char seq, host;
 
   /* Put a known DWORD into the Transfer Buffer.  If this drive
      isn't compressed with Stacker, it will remain unchanged.  */
@@ -201,28 +204,86 @@ get_stacker_info(int drive_num)
 
   /* Sanity check: real-mode addresses are only 20 bit-long, so we can
      safely reject anything that's larger than FFFFFh, lest we get an
-     illegal address abort when we try to peek at the signature below.  */
-  if (stac_driver_ptr > 0xfffff)
+     illegal address abort when we try to peek at the signature below.
+     Actually, it's enough to test for (FFFFFh - 55h - drive), because
+     we need to get the host drive number at that offset. */
+  if (stac_driver_ptr > 0x0000fffaa - drive_num)
     return 0;
 
   /* Stacker Anywhere returns pointer to 1 byte before the A55Ah
      signature (which is at offset 1Ah), while all other versions
      of Stacker point to the signature itself.  */
-  if (_farpeekw(dos_mem_base,   stac_driver_ptr) == 0xa55a ||
-      _farpeekw(dos_mem_base, ++stac_driver_ptr) == 0xa55a)
-    {
-      /* We have indeed Stacker device driver.  Get the volume
-         number (at offset 58h) and host drive (from the 26-byte
-         table beginning at offset 70h).  */
-      unsigned char seq  = _farpeekb(dos_mem_base, stac_driver_ptr + 0x3e);
-      unsigned char host = _farpeekb(dos_mem_base,
-                                     stac_driver_ptr + 0x55 + drive_num);
+  if (_farpeekw(dos_mem_base,   stac_driver_ptr) != 0xa55a &&
+      _farpeekw(dos_mem_base, ++stac_driver_ptr) != 0xa55a)
+    return 0;
+  stac_driver_ptr -= 0x1a; /* start of the device driver */
 
-      sprintf(mnt_fsname, "%c:\\STACVOL.%03u", 'A' + host, seq);
-      mnt_type = NAME_stac;
-      return 1;
-    }
-  return 0;
+  /* Check for the "SWAP" signature.  */                /*  P A W S  */
+  if (_farpeekl(dos_mem_base, stac_driver_ptr + 0x6c) != 0x50415753)
+    return 0;
+
+  /* We have indeed Stacker device driver.  Get the volume
+     number (at offset 58h) and host drive (from the 26-byte
+     table beginning at offset 70h).  */
+  seq  = _farpeekb(dos_mem_base, stac_driver_ptr + 0x58);
+  host = _farpeekb(dos_mem_base, stac_driver_ptr + 0x70 + drive_num - 1);
+  sprintf(mnt_fsname, "%c:\\STACVOL.%03u", 'A' + host, seq);
+  mnt_type = NAME_stac;
+  return 1;
+}
+
+/*
+ * For a drive compressed with Jam, get the full file name of
+ * the compressed archive file, fill MNT_FSNAME[] with its
+ * name and return non-zero.  If this drive isn't controlled by
+ * Jam, return 0.
+ *
+ * (JAM is a shareware disk compressor software.)
+ *
+ * Contributed by Markus F.X.J. Oberhumer <markus.oberhumer@jk.uni-linz.ac.at>
+ */
+static int
+get_jam_info(int drive_num)
+{
+  __dpmi_regs r;
+  unsigned jam_version, offset;
+
+  r.x.ax = 0x5200;              /* Jam Get Version */
+  __dpmi_int(0x2f, &r);
+  if (r.h.ah != 0x80)           /* JAM.SYS is not installed */
+    return 0;
+  jam_version = r.x.bx;         /* v1.25 == 0x125 */
+  if (jam_version < 0x110)      /* version sanity check */
+    return 0;
+  /* Sanity check of the size of the JAMINFO structure.  */
+  if (r.x.cx < 0x115 || r.x.cx > _go32_info_block.size_of_transfer_buffer)
+    return 0;
+  if (jam_version >= 0x120 && r.x.cx < 0x124)
+    return 0;
+
+  r.x.ax = 0x5201;              /* Jam Get Compressed Drive Information */
+  r.h.dl = drive_num;
+  r.x.ds = __tb >> 4;
+  r.x.bx = __tb & 15;
+  __dpmi_int(0x2f, &r);
+  if (r.h.ah != 0)              /* drive is not a Jam drive */
+    return 0;
+
+  /* Check that the drive is mounted (attached).  */
+  r.h.ah = 0x32;                /* Get Device Parameter Block function */
+  r.h.dl = drive_num;
+  __dpmi_int(0x21, &r);
+  if (r.h.al != 0)              /* drive is not mounted (or other error) */
+    return 0;
+       
+  /* Copy the full name of the Jam archive file.  */
+  offset = (jam_version >= 0x120) ? 0x38 : 0x2a;
+  movedata(dos_mem_base, __tb + offset,
+           our_mem_base, (unsigned) mnt_fsname, 127);
+  mnt_fsname[127] = 0;
+
+  mnt_type = NAME_jam;
+  return 1;
 }
 
 /*
@@ -318,7 +379,7 @@ cdrom_drive_ready(int drive_num)
 
   /* Int 2Fh/AX=1505h (Read Volume Table Of Contents) will return
      with error for empty drives or if the disk is an AUDIO disk.  */
-  r.x.es = __tb;
+  r.x.es = __tb >> 4;
   r.x.bx = __tb & 15;
   r.x.cx = drive_num - 1;   /* 0 = A: */
   r.x.dx = 0;   /* get the 1st descriptor (usually, the only one) */
@@ -354,9 +415,9 @@ is_ram_drive(int drive_num)
 
   if (r.h.al == 0)
     {
-      /* The pointer to DPB is in DS:DX.  The number of FAT copies is at
+      /* The pointer to DPB is in DS:BX.  The number of FAT copies is at
          offset 8 in the DPB.  */
-      char fat_copies = _farpeekb(dos_mem_base, MK_FOFF(r.x.ds, r.x.dx) + 8);
+      char fat_copies = _farpeekb(dos_mem_base, MK_FOFF(r.x.ds, r.x.bx) + 8);
 
       return fat_copies == 1;
     }
@@ -385,7 +446,7 @@ media_type(int drive_num)
 /* Exported library functions.  */
 
 FILE *
-setmntent(char *filename, char *type)
+setmntent(const char *filename, const char *type)
 {
   __dpmi_regs r;
   int cds_address_offset;
@@ -438,7 +499,6 @@ setmntent(char *filename, char *type)
   return (FILE *) 1;
 }
 
-static char NAME_unknown[] = "???";
 struct mntent *
 getmntent(FILE *filep)
 {
@@ -459,7 +519,7 @@ getmntent(FILE *filep)
   cds_drives = setdisk(0xffff);
 
   /* There may be a maximum of 32 block devices.  Novell Netware indeed
-     allows for 32 disks (A-Z plus 6 more characters from [ to ' */
+     allows for 32 disks (A-Z plus 6 more characters from '[' to '\'') */
   while (drive_number < 32)
     {
       unsigned char *p, *q;
@@ -524,9 +584,11 @@ getmntent(FILE *filep)
 
       /* For the ``File System Name'' we use one of the following:
 
-         * X:\DBLSPACE.NNN or X:\STACVOL.NNN for compressed drives,
-           where X: is the host drive of the compressed volume and NNN
-           is the volume sequence number;
+         * X:\DBLSPACE.NNN or X:\STACVOL.NNN for drives compressed with
+	   DblSpace or Stacker, where X: is the host drive of the
+	   compressed volume and NNN is the volume sequence number;
+         * The full filename of the compressed volume file for 
+           a drive that is compressed with Jam;
          * What _truename() returns for the root directory, in case
            it isn't the usual ``X:\'';
          * The name of the volume label;
@@ -555,6 +617,7 @@ getmntent(FILE *filep)
              hd     for hard disks
              dblsp  for disks compressed with DoubleSpace
              stac   for disks compressed with Stacker
+             jam    for disks compressed with Jam
              cdrom  for CD-ROM drives
              ram    for RAM disks
              subst  for SUBSTed directories
@@ -604,9 +667,11 @@ getmntent(FILE *filep)
             }
           else
             {
-              /* Check for DoubleSpace- or Stacker- compressed drive.  */
-              if ((got_fsname = get_doublespace_info(drive_number)) == 0)
-                got_fsname = get_stacker_info(drive_number);
+              /* Check for compressed drives (DoubleSpace, Stacker,
+		 or Jam).  */
+              got_fsname = get_doublespace_info(drive_number)
+			   || get_stacker_info(drive_number)
+			   || get_jam_info(drive_number);
             }
         }
       /* JOINed drives fail _truename().  I don't know how to check
@@ -724,13 +789,13 @@ getmntent(FILE *filep)
 }
 
 int
-addmntent(FILE *filep, struct mntent *mnt)
+addmntent(FILE *filep, const struct mntent *mnt)
 {
   return 1;
 }
 
 char *
-hasmntopt(struct mntent *mnt, char *opt)
+hasmntopt(const struct mntent *mnt, const char *opt)
 {
   return strstr(mnt->mnt_opts, opt);
 }
@@ -750,9 +815,17 @@ endmntent(FILE *filep)
 
 #ifdef  TEST
 
-int main()
+#if defined(MNT_MNTTAB)
+#define MNTTAB_FILE MNT_MNTTAB
+#elif defined(MNTTABNAME)
+#define MNTTAB_FILE MNTTABNAME
+#else
+#define MNTTAB_FILE "/etc/mnttab"
+#endif
+
+int main(void)
 {
-  FILE *mp = setmntent("", "r");
+  FILE *mp = setmntent(MNTTAB_FILE, "r");
   struct mntent *me;
   int i = 0;
 
@@ -763,8 +836,9 @@ int main()
     }
 
   while ((me = getmntent(mp)) != NULL)
-    printf("%d:  %s\t\t%s\t%s\t%s\n", i++,
+    printf("%d:  %-35s %s\t%s\t%s\n", i++,
            me->mnt_fsname, me->mnt_type, me->mnt_opts, me->mnt_dir);
+
   return 0;
 }
 

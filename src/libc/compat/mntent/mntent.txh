@@ -4,18 +4,39 @@
 @example
 #include <mntent.h>
 
-FILE *setmntent(char *filename, char *type);
+FILE *setmntent(char *filename, const char *mode);
 @end example
 
 @subheading Description
 
 This function returns an open FILE* pointer which can be used by
-getmntent (@pxref{getmntent}).
+getmntent (@pxref{getmntent}).  The arguments @var{filename} and
+@var{mode} are always ignored under MS-DOS, but for portability should
+be set, accordingly, to the name of the file which describes the mounted
+filesystems and the open mode of that file (like the @var{mode} argument
+to @code{fopen}, @xref{fopen}).  (There is no single standard for the
+name of the file that keeps the mounted filesystems, but it is usually,
+although not always, listed in the header @code{<mntent.h>}.)
 
 @subheading Return Value
 
 The FILE* pointer is returned.  For MS-DOS, this FILE* is not a real
 pointer and may only be used by @code{getmntent}.
+
+@subheading Example
+
+@example
+#include <mntent.h>
+#if defined(MNT_MNTTAB)
+#define MNTTAB_FILE MNT_MNTTAB
+#elif defined(MNTTABNAME)
+#define MNTTAB_FILE MNTTABNAME
+#else
+#define MNTTAB_FILE "/etc/mnttab"
+#endif
+
+  FILE *mnt_fp = setmntent (MNTTAB_FILE, "r");
+@end example
 
 @c ----------------------------------------------------------------------
 @node getmntent, unix
@@ -71,6 +92,9 @@ sequence number of the Compressed Volume File.
 For drives compressed with Stacker, the string "X:\STACVOL.NNN", where
 ``X'' and ``NNN'' are as for DoubleSpace drives.
 
+For drives compressed with Jam (a shareware disk compression software),
+the full name of the Jam archive file.
+
 For SUBSTed drives, the actual directory name that that was SUBSTed to
 emulate a drive.
 
@@ -97,6 +121,7 @@ depending on which drive letter was last used to reference that drive.
  "hd"     for hard disks
  "dblsp"  for disks compressed with DoubleSpace
  "stac"   for disks compressed with Stacker
+ "jam"    for disks compressed with Jam
  "cdrom"  for CD-ROM drives
  "ram"    for RAM disks
  "subst"  for SUBSTed directories
@@ -126,7 +151,7 @@ NULL if there are no more drives to report on.
 @example
 struct mntent *m;
 FILE *f;
-f = setmntent("", "");
+f = setmntent("/etc/mnttab", "r");
 while ((m = getmntent(f)))
   printf("Drive %s, name %s\n", m->mnt_dir, m->mnt_fsname);
 endmntent(f);
@@ -139,7 +164,7 @@ endmntent(f);
 @example
 #include <mntent.h>
 
-int addmntent(FILE *filep, struct mntent *mnt);
+int addmntent(FILE *filep, const struct mntent *mnt);
 @end example
 
 @subheading Description
@@ -158,7 +183,7 @@ This function always returns nonzero to signify an error.
 @example
 #include <mntent.h>
 
-char *hasmntopt(struct mntent *mnt, char *opt);
+char *hasmntopt(const struct mntent *mnt, const char *opt);
 @end example
 
 @subheading Description

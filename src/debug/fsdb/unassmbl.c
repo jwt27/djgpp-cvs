@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
 ** Copyright (C) 1993 DJ Delorie, 24 Kirsten Ave, Rochester NH 03867-2954
@@ -29,7 +30,7 @@ int seg_size=32;
 static word8 buf[20];
 static word32 vaddr;
 static int bufp, bufe;
-static char ubuf[100], *ubufp;
+static char ubuf[4000], *ubufp;
 static col;
 
 static void ua_str(char *s);
@@ -938,7 +939,7 @@ cache_fopen(char *name)
   while (f == NULL && s && *s)
     {
       t = index (s, ';');
-      l = t ? t - u - 1 : strlen (s);
+      l = t ? t - s : strlen (s);
       strncpy (u, s, l);
       if (l > 0 && u[l - 1] != '/' && u[l - 1] != '\\')
 	u[l++] = '/';
@@ -946,6 +947,7 @@ cache_fopen(char *name)
       strcat (u, name);
       f = myfopen1 (u);
       s = t;
+      if (s) s++;
     }
 #endif
   return f;

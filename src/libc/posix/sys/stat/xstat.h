@@ -32,9 +32,7 @@
 #define MK_FOFF(s,o) ((int)((((unsigned long)(s)) << 4) + (unsigned short)(o)))
 #endif
 
-/* Ralph Brown's Interrupt List says this should be the length
-   of the buffer for INT 21H AX=6000H.  */
-#define MAX_TRUE_NAME   128
+#define MAX_TRUE_NAME   FILENAME_MAX
 
 extern unsigned short   _osmajor, _osminor;
 extern const    char  * _os_flavor;
