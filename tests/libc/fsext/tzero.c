@@ -431,6 +431,25 @@ main (int argc, char *argv[])
 
   close(fd);
 
+  /* - Check fchmod() fails - */
+  fd = open(DEV_ZERO_PATH, O_RDWR);
+  if (fd == -1) {
+    fprintf(stderr,
+	    "Unable to open %s: %s\n", DEV_ZERO_PATH, strerror(errno));
+    return(EXIT_FAILURE);
+  }
+
+  n = fchmod(fd, S_IWUSR);
+  if (n >= 0) {
+    fprintf(stderr,
+	    "fchmod() succeeded in changing permissions of %s -"
+	    "it should fail\n",
+	    DEV_ZERO_PATH);
+    return(EXIT_FAILURE);
+  }
+
+  close(fd);
+
   /* - Check fchown() - */
 
   /* fchown() should behave the same way for /dev/zero as it does for

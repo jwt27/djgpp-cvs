@@ -576,6 +576,26 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     *rv   = -1;
     break;
 
+  case __FSEXT_fchmod:
+    fd    = va_arg(args, int);
+    mode  = va_arg(args, mode_t);
+
+    /* This must be emulated, since the FSEXT has been called. */
+    emul = 1;
+
+    /* Get context */
+    data = (DEV_DATA *) __FSEXT_get_data(fd);
+    if (data == NULL) {
+      errno = EBADF;
+      *rv   = -1;
+      break;
+    }
+
+    /* The zero device cannot have its mode changed. */
+    errno = EPERM;
+    *rv   = -1;
+    break;
+
   case __FSEXT_chown:
     filename = va_arg(args, char *);
     owner    = va_arg(args, uid_t);
