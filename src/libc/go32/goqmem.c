@@ -3,23 +3,13 @@
 #include <string.h>
 #include <dpmi.h>
 
-int _go32_dpmi_get_free_memory_information(_go32_dpmi_meminfo *info)
-{
-  __dpmi_free_mem_info dpmi_info;
-  int ret;
-
-  ret = __dpmi_get_free_memory_information(&dpmi_info);
-  memcpy(info, &dpmi_info, sizeof(*info));
-  return ret;
-}
-
 unsigned long _go32_dpmi_remaining_physical_memory(void)
 {
-   union a_union
- {
-   _go32_dpmi_meminfo go32info;
-   __dpmi_free_mem_info dpmiinfo;
- } info;
+  union a_union
+  {
+    _go32_dpmi_meminfo go32info;
+    __dpmi_free_mem_info dpmiinfo;
+  } info;
 
   _go32_dpmi_get_free_memory_information(&info.go32info);
   if (info.go32info.available_physical_pages)
@@ -29,11 +19,11 @@ unsigned long _go32_dpmi_remaining_physical_memory(void)
 
 unsigned long _go32_dpmi_remaining_virtual_memory(void)
 {
-   union a_union
- {
-   _go32_dpmi_meminfo go32info;
-   __dpmi_free_mem_info dpmiinfo;
- } info;
+  union a_union
+  {
+    _go32_dpmi_meminfo go32info;
+    __dpmi_free_mem_info dpmiinfo;
+  } info;
 
   _go32_dpmi_get_free_memory_information(&info.go32info);
   return info.go32info.available_memory;
