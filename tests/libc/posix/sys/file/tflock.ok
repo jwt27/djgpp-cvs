@@ -1,0 +1,130 @@
+LOCK_SH:retval=0
+LOCK_SH:Bypassed to avoid lockup in endless loop.
+LOCK_UN:retval=0
+LOCK_UN:retval=-1
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+LOCK_EX:retval=0
+LOCK_EX:Bypassed to avoid lockup in endless loop.
+LOCK_UN:retval=0
+Bad function code:retval=-1
+fd: 5
+errno: 14 : Invalid argument (EINVAL)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+LOCK_SH | LOCK_NB:retval=0
+LOCK_SH | LOCK_NB:retval=-1
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+LOCK_UN | LOCK_NB:retval=0
+LOCK_UN | LOCK_NB:retval=-1
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+LOCK_EX | LOCK_NB:retval=0
+LOCK_EX | LOCK_NB:retval=-1
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+LOCK_UN | LOCK_NB:retval=0
+Closed fd LOCK_UN:retval=-1
+fd: 5
+errno: 6 : Bad file descriptor (EBADF)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
+Closed fd LOCK_EX:retval=-1
+fd: 5
+errno: 6 : Bad file descriptor (EBADF)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
+Closed fd LOCK_UN:retval=-1
+fd: 5
+errno: 6 : Bad file descriptor (EBADF)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
+Closed fd LOCK_UN | LOCK_NB:retval=-1
+fd: 5
+errno: 6 : Bad file descriptor (EBADF)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
+Closed fd LOCK_EX | LOCK_NB:retval=-1
+fd: 5
+errno: 6 : Bad file descriptor (EBADF)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
+Closed fd LOCK_UN | LOCK_NB:retval=-1
+fd: 5
+errno: 6 : Bad file descriptor (EBADF)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
+Closed fd Bad function code:retval=-1
+fd: 5
+errno: 14 : Invalid argument (EINVAL)
+DOS errno: 6 : Invalid handle
+DOS extended error to errno: 6 : Bad file descriptor (EBADF)
+Extended DOS error information:
+Extended error: 6 : Invalid handle
+Class:          07 : Not found
+Action:         04 : Immediate abort
+Error Locus:    01 : Block device (disk error)
