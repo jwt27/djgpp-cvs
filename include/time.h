@@ -100,6 +100,16 @@ int		settimeofday(struct timeval *_tp, ...);
 void		tzsetwall(void);
 uclock_t	uclock(void);
 
+unsigned long long _rdtsc(void);
+
+extern __inline__ unsigned long long
+_rdtsc(void)
+{
+  unsigned long long result;
+  __asm__ __volatile__ ("rdtsc" : "=A"(result) );
+  return result;
+}
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
