@@ -2,5 +2,6 @@
 TOP=../..
 
 SRC += _exit.S
+SRC += strtof.c
 
 include $(TOP)/../makefile.inc
