@@ -2,11 +2,7 @@
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
-/*
- * tminit.c - initializer and main part of termios emulation.
- *   designed for DJGPP by Daisuke Aoyama <jack@st.rim.or.jp>
- *   special thanks to Ryo Shimizu
- */
+/* This file reads the keyboard when the termios emulation is active.  */
 
 #include <libc/stubs.h>
 #include <go32.h>
@@ -57,8 +53,6 @@ static void __libc_termios_fill_queue (void);
 static inline int __direct_keysense (void);
 static inline unsigned char __direct_keyinput (void);
 static inline int __direct_ctrlsense (void);
-static inline void __direct_output (unsigned char ch);
-static inline void __direct_outputs (const unsigned char *s);
 
 void
 __libc_termios_init_read(void)
@@ -149,24 +143,6 @@ __direct_ctrlsense (void)
   return 0;
 }
 
-static inline void
-__direct_output (unsigned char ch)
-{
-  __dpmi_regs r;
-
-  if (ch == 0xff)
-    return;
-
-  r.h.al = ch;
-  __dpmi_int (0x29, &r);
-}
-
-static inline void
-__direct_outputs (const unsigned char *s)
-{
-  while (*s)
-    __direct_output (*s++);
-}
 
 /******************************************************************************/
 /* special read function ******************************************************/
@@ -336,12 +312,9 @@ __libc_termios_maybe_erase1 (void)
   if (__libc_tty_p->t_lflag & ECHO)
     {
       /* eat prev. character by BS SPC BS */
-      __direct_output ('\010');
+      __tty_screen_intface->putch('\b');
       if (__libc_tty_p->t_lflag & ECHOE)
-	{
-	  __direct_output (' ');
-	  __direct_output ('\010');
-	}
+	  __tty_screen_intface->putch_at(' ');
     }
 }
 
@@ -418,7 +391,7 @@ __libc_termios_insert_editline (unsigned char ch)
     {
       /* detected over flow */
       if (__libc_tty_p->t_iflag & IMAXBEL)
-	__direct_output ('\007');
+	__tty_screen_intface->putch_at('\007');
       return;
     }
 
@@ -641,9 +614,9 @@ __libc_termios_fill_queue (void)
 
 		    for (i = 0; i < 5; i++)
 		      if ((fds[i] = fcntl (i, F_DUPFD, 20)) < 0)
-		        __direct_outputs ("Suspend: cannot save fds\r\n");
+		        __tty_screen_intface->puts("Suspend: cannot save fds\r\n");
 
-		    __direct_outputs ("\r\nSuspended\r\n");
+		    __tty_screen_intface->puts("\r\nSuspended\r\n");
 		    /* keep cwd on exec */
 		    getcwd (oldcwd, sizeof (oldcwd));
 		    system ("");
@@ -740,8 +713,8 @@ static void
 __libc_termios_echo_ctrl (unsigned char ch)
 {
   ch ^= 0x40;
-  __direct_output ('^');
-  __direct_output (ch);
+  __tty_screen_intface->putch('^');
+  __tty_screen_intface->putch(ch);
 }
 
 static void
@@ -760,8 +733,8 @@ __libc_termios_maybe_echo (unsigned char ch)
       if (ch == '\n' && (__libc_tty_p->t_lflag & ECHONL))
 	{
 	  if (__libc_tty_p->t_oflag & ONLCR)
-	    __direct_output ('\r');
-	  __direct_output ('\n');
+	    __tty_screen_intface->putch('\r');
+	  __tty_screen_intface->putch('\n');
 	}
       return;
     }
@@ -779,14 +752,14 @@ __libc_termios_maybe_echo (unsigned char ch)
       /* map NL to CRNL */
       if (ch == '\n' && (__libc_tty_p->t_oflag & ONLCR))
 	{
-	  __direct_output ('\r');
-	  __direct_output ('\n');
+	  __tty_screen_intface->putch('\r');
+	  __tty_screen_intface->putch('\n');
 	  return;
 	}
       /* map CR to NL */
       else if (ch == '\r' && (__libc_tty_p->t_oflag & OCRNL))
 	{
-	  __direct_output ('\n');
+	  __tty_screen_intface->putch('\n');
 	  return;
 	}
       /* discard EOT */
@@ -804,7 +777,7 @@ __libc_termios_maybe_echo (unsigned char ch)
     }
 
   /* no effect */
-  __direct_output (ch);
+  __tty_screen_intface->putch(ch);
 }
 
 /******************************************************************************/
