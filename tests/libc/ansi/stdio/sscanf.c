@@ -68,7 +68,7 @@ main(void)
 /*
    --------------------------------------------------------------------
    The following comment is no longer true, at least as of v2.02 (and I
-   suspect in v2.01 as well).  I leave it here for historical puproses,
+   suspect in v2.01 as well).  I leave it here for historical purposes,
    but the test program worked for me without any glitches.
 
    In general, doscan.c is much more stable now than it was in v2.00
