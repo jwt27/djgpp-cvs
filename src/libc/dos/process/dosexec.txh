@@ -4,10 +4,10 @@
 @example
 #include <process.h>
 
-int spawnl(int mode, const char *path, const char *argv0, ...);
-int spawnle(int mode, const char *path, const char *argv0, ... /*, const char **envp */);
-int spawnlp(int mode, const char *path, const char *argv0, ...);
-int spawnlpe(int mode, const char *path, const char *argv0, ... /*, const char **envp */);
+int spawnl(int mode, const char *path, const char *argv0, ..., NULL);
+int spawnle(int mode, const char *path, const char *argv0, ..., NULL /*, const char **envp */);
+int spawnlp(int mode, const char *path, const char *argv0, ..., NULL);
+int spawnlpe(int mode, const char *path, const char *argv0, ..., NULL /*, const char **envp */);
 
 int spawnv(int mode, const char *path, const char **argv);
 int spawnve(int mode, const char *path, const char **argv, const char **envp);
@@ -18,42 +18,58 @@ int spawnvpe(int mode, const char *path, const char **argv, const char **envp);
 @subheading Description
 
 These functions run other programs.  The @var{path} points to the
-program to run.  The extension is optional---if not given, and
-@var{path} is not found neither in the current directly nor along the
-@samp{PATH}, the extensions @file{.com}, @file{.exe}, @file{.bat},
-@file{.btm}, @file{.sh}, and @file{.ksh} are checked.  @file{.com}
+program to run, and may optionally include its extension.  These
+functions will look for a file @var{path} with the extensions
+@file{.com}, @file{.exe}, @file{.bat}, @file{.btm}, @file{.sh},
+@file{.ksh}, @file{.pl} and @file{.sed}; if none is found, neither in
+the current directly nor along the @samp{PATH}, they will look for
+@var{path} itself.
+
+@file{.com}
 programs are invoked via the usual DOS calls; DJGPP @file{.exe} programs
 are invoked in a way that allows long command lines to be passed; other
 @file{.exe} programs are invoked via DOS; @file{.bat} and @file{.btm}
 programs are invoked via the command processor given by the
 @samp{COMSPEC} environment variable; @file{.sh}, @file{.ksh} programs
 and programs with any other extensions that have @code{#!} as their
-first two caharacters are assumed to be Unix-style scripts and are
+first two characters are assumed to be Unix-style scripts and are
 invoked by calling a program whose pathname immediately follows the
 first two characters.  (If the name of that program is a Unix-style
 pathname, without a drive letter and without an extension, like
 @samp{/bin/sh}, the @code{spawn} functions will additionally look them
 up on the @samp{PATH}; this allows to run Unix scripts without editing,
-if you have a shell installed somewhere along your @samp{PATH}.)
+if you have a shell installed somewhere along your @samp{PATH}.)  Any
+non-recognizable files will be also invoked via DOS calls.
+
+@strong{WARNING!}  DOS is rather stupid in invoking programs: if the
+file doesn't have the telltale ``MZ'' signature of the @file{.exe} style
+programs, DOS assumes it is a @file{.com} style image and tries to
+execute it directly.  If the file is not really an executable program,
+your application will almost certainly crash.  Applications that need to
+be robust in such situations should test whether the program file is
+indeed an executable, e.g. with calls to @code{stat} (@pxref{stat}) or
+@code{_is_executable} (@pxref{_is_executable}) library functions.
 
 Note that built-in commands of the shells can @emph{not} be invoked via
-these functions; use @code{system} instead.
+these functions; use @code{system} instead, or invoke the appropriate
+shell with the built-in command as its argument.
 
 The programs are invoked with the arguments given.  The zeroth argument
-is normally not used, since MS-DOS cannot pass it separately.  There are
+is normally not used, since MS-DOS cannot pass it separately, but for
+compatibility it should be the name of the program.  There are
 two ways of passing arguments.  The @code{l} functions (like
-@code{spawnl}) take a list of arguments, with a zero at the end of the
+@code{spawnl}) take a list of arguments, with a @code{NULL} at the end of the
 list.  This is useful when you know how many argument there will be
 ahead of time.  The @code{v} functions (like @code{spawnv}) take a
-pointer to a list of arguments.  This is useful when you need to compute
-the number of arguments at runtime. 
+pointer to a list of arguments, which also must be @code{NULL}-terminated.  
+This is useful when you need to compute the number of arguments at runtime. 
 
 In either case, you may also specify @code{e} to indicate that you will
 be giving an explicit environment, else the current environment is used. 
 You may also specify @code{p} to indicate that you would like
-@code{spawn*} to search the PATH (in either the environment you pass or
-the current environment) for the executable, else it will only check the
-explicit path given. 
+@code{spawn*} to search the @code{PATH} (in either the environment you
+pass or the current environment) for the executable, else it will only
+check the explicit path given. 
 
 Note that these function understand about other DJGPP programs, and will
 call them directly, so that you can pass command lines longer than 126
@@ -86,6 +102,10 @@ accordingly.  Note that you must set the signal handler for
 @code{SIGINT} to @code{SIG_IGN}, or arrange for the handler to return,
 or else your program will be aborted before it will get chance to set
 the value of the return code.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
