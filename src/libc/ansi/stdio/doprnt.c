@@ -37,7 +37,7 @@ static char decimal = '.';
 		flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
 		va_arg(argp, int)
 
-static int nan = 0;
+static int nan_p = 0;
 
 static __inline__ int todigit(char c)
 {
@@ -271,9 +271,9 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        * will be shown, and we also print a sign for a NaN.  In
        * other words, "%+f" might print -0.000000, +NaN and -NaN.
        */
-      if (softsign || (sign == '+' && (neg_ldouble || nan == -1)))
+      if (softsign || (sign == '+' && (neg_ldouble || nan_p == -1)))
 	sign = '-';
-      nan = 0;
+      nan_p = 0;
       t = *buf ? buf : buf + 1;
       goto pforw;
     case 'n':
@@ -867,7 +867,7 @@ isspeciall(long double d, char *bufp)
     unsigned sign:1;
   } *ip = (struct IEEExp *)&d;
 
-  nan = 0;  /* don't assume the static is 0 (emacs) */
+  nan_p = 0;  /* don't assume the static is 0 (emacs) */
 
   /* Unnormals: the MSB of mantissa is non-zero, but the exponent is
      not zero either.  */
@@ -883,8 +883,8 @@ isspeciall(long double d, char *bufp)
   if ((ip->manh & 0x7fffffff) || ip->manl)
   {
     strcpy(bufp, "NaN");
-    nan = ip->sign ? -1 : 1; /* kludge: we don't need the sign,  it's not nice
-				but it should work */
+    nan_p = ip->sign ? -1 : 1; /* kludge: we don't need the sign, it's
+				not nice, but it should work */
   }
   else
     (void)strcpy(bufp, "Inf");
