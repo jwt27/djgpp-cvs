@@ -518,7 +518,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 		REQUIRE(starordinary, REG_BADRPT);
 		/* FALLTHROUGH */
 	default:
-		ordinary(p, c &~ BACKSL);
+		ordinary(p, (char)c);
 		break;
 	}
 
@@ -824,9 +824,9 @@ int ch;
 {
 	assert(isalpha(ch));
 	if (isupper(ch))
-		return(tolower((unsigned char)ch));
+		return(tolower(ch));
 	else if (islower(ch))
-		return(toupper((unsigned char)ch));
+		return(toupper(ch));
 	else			/* peculiar, but could happen */
 		return(ch);
 }

@@ -1,3 +1,6 @@
+New in alpha3.8:  Bug fix for signed/unsigned mixup, found and fixed
+by the FreeBSD folks.
+
 New in alpha3.7:  A bit of cleanup aimed at maximizing portability,
 possibly at slight cost in efficiency.  "ul" suffixes and "unsigned long"
 no longer appear, in particular.
