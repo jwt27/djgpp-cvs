@@ -351,7 +351,7 @@ handling of all the exceptions to their normal state.  You may also call
 it from your program, around the code fragments where you need to
 temporarily restore @strong{all} the exceptions to their default
 handling.  One example of such case might be a call to a library
-functions that spawn child programs, when you don't want to handle
+function that spawns a child program, when you don't want to handle
 signals generated while the child runs (by default, those signals are
 also passed to the parent).
 
