@@ -77,6 +77,7 @@ static void set_cursor_shape(int shape);
 
 /* Attribute helpers.  */
 static void set_blink_attrib(int enable_blink);
+static void restore_video_state(void);
 
 /* Initialize the screen portion of termios.  */
 void __libc_termios_init_write(void)
@@ -124,6 +125,7 @@ void __libc_termios_init_write(void)
   /* Allow the driver to perform initialization if it needs to.  */
   if (__tty_screen_intface->init)
     __tty_screen_intface->init();
+  atexit(restore_video_state);
 }
 
 /******************************************************************************/
@@ -782,7 +784,7 @@ set_blink_attrib(int enable_blink)
 }
 
 /* Restore the BIOS blinking bit to its original value.  Called at exit.  */
-static void __attribute__((destructor))
+static void
 restore_video_state(void)
 {
   __dpmi_regs r;
