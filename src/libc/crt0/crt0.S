@@ -36,6 +36,7 @@
 	.comm	___djgpp_base_address, 4
 	.comm	___djgpp_selector_limit, 4
 	.comm	___djgpp_stack_limit, 4
+	.comm	___djgpp_stack_top, 4
 	.comm	__crt0_startup_flags, 4
 	.comm	___djgpp_ds_alias, 2
 	.lcomm	sel_buf, 8
@@ -314,6 +315,7 @@ use_stubinfo_stack_size:
 	movw	%dx, %ss
 	andb	$0xf8, %al		/* align to 8-byte boundary */
 	movl	%eax, %esp
+	movl	%eax, ___djgpp_stack_top
 
 	xorl	%ebp, %ebp
 	pushl	$_frame_struct
