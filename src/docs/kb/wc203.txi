@@ -103,7 +103,7 @@ Handle error conditions in @file{bin2h}.
 Remove unneeded includes from @file{rand.c}.
 
 Call @code{system} properly in termios (Ctrl-Z).
-@findex system
+@findex system@r{, and Ctrl-Z in termios}
 @pindex termios
 
 Work around a gcc 2.8.1 bug in emu387.
@@ -119,6 +119,13 @@ describes most of the special features provided by DJGPP.
 @code{redir} no longer fails to run programs when the program name
 is a substring of the redirected I/O file(s).
 @pindex redir
+
+@findex glob@r{, and mixed-case letters in file names}
+@cindex command-line arguments, globbing
+@code{glob} correctly converts the letter-case of the file names when
+the pattern include mixed upper- and lower-case letters.  In particular,
+the letter-case of the command-line arguments expanded by the startup
+code in the @code{argv[]} array is now correct in these cases.
 
 @code{textcolor} and @code{textbackground} now support the 16 background
 colors mode (e.g., after a call to @code{intensevideo}).  Previously,
@@ -237,4 +244,17 @@ were due to this bug.
 Previously, when attempt was made to open a file, and all the available
 file handles were exhausted, @code{open} would sometimes truncate an
 existing file on Windows 9X.  This is now fixed.
+
+@cindex SIGFPE@r{, on Windows 9X}
+@cindex Crashes due to SIGFPE, on Windows 9X
+All DJGPP programs now clear the FPU exceptions when they exit.  This
+prevents the next DJGPP program that is run in the same DOS box on
+Windows 9X from crashing during startup code.
+
+@vindex _8087
+@vindex 387@r{, and the value of} _8087
+When the @code{387} environment variable overrides the FPU auto-detect
+code, the value of the global variable @code{_8087} is now set by the
+startup code according to the environment override: 3 if @code{387} is
+set to @samp{y}, 0 otherwise.
 
