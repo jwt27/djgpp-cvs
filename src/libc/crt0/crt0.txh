@@ -1,0 +1,120 @@
+@node brk, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int brk(void *ptr);
+@end example
+
+@subheading Description
+
+This function changes the @emph{break} for the program.  This is the
+first address that, if referenced, will cause a fault to occur.  The
+program asks for more memory by specifying larger values for @var{ptr}. 
+Normally, this is done transparently through the @code{malloc} function. 
+
+@subheading Return Value
+
+zero if the break was changed, -1 if not.  @var{errno} is set to the
+error. 
+
+@subheading Example
+
+@example
+if (brk(old_brk+1000))
+  printf("no memory\n");
+@end example
+
+@c ----------------------------------------------------------------------
+@node sbrk, memory
+@subheading Syntax
+
+@example
+#include <osfcn.h>
+
+void *sbrk(int delta)
+@end example
+
+@subheading Description
+
+This function changes the "break" of the program by adding @var{delta}
+to it.  This is the highest address that your program can access without
+causing a violation.  Since the heap is the region under the break, you
+can expand the heap (where @code{malloc} gets memory from) by increasing
+the break. 
+
+This function is normally accessed only bu @code{malloc} (@pxref{malloc}).
+
+@subheading Return Value
+
+The address of the first byte outside of the previous valid address
+range, or -1 if no more memory could be accessed.  In other words, a
+pointer to the chunk of heap you just allocated, if you had passed a
+positive number.
+
+@subheading Example
+
+@example
+char *buf;
+buf = sbrk(1000); /* allocate space */
+@end example
+
+@c ----------------------------------------------------------------------
+@node _stklen, startup
+@subheading Syntax
+
+@example
+extern int _stklen;
+@end example
+
+@subheading Description
+
+This variable sets the minimum stack length that the program requires. 
+Note that the stack may be much larger than this.  This value should be
+set statically, as it is only used at startup. 
+
+@subheading Example
+
+@example
+extern int _stklen = 256000;
+@end example
+
+@c ----------------------------------------------------------------------
+@node __djgpp_memory_handle_list, memory
+@subheading Syntax
+
+@example
+#include <crt0.h>
+
+extern __djgpp_sbrk_handle __djgpp_memory_handle_list[256];
+@end example
+
+@subheading Description
+
+This array contains a list of memory handles and program relative offsets
+allocated by sbrk() in addition to the handle allocated by the stub.  These 
+values are normally not needed unless you are doing low-level DPMI page 
+protection or memory mapping.
+
+@c ----------------------------------------------------------------------
+@node _exit, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void _exit(int exit_code);
+@end example
+
+@subheading Description
+
+This function exits the program, returning @var{exit_code} to the
+calling process.  No additional processing is done, and any
+@code{atexit} functions are not called.  This function is normally
+called only by @code{exit}.  Since this does not unhook hardware 
+interrupts, this can cause crashes after the program exits.
+
+@subheading Return Value
+
+This function does not return.
