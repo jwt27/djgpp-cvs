@@ -807,7 +807,7 @@ roundl(long double fract, int *expv, char *start, char *end, char ch,
     if (fract == 0.5L)
     {
       char *e = end;
-      if (*e == '.')
+      if (*e == decimal)
 	e--;
       if (*e == '0' || *e == '2' || *e == '4'
 	  || *e == '6' || *e == '8')

@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -23,6 +24,8 @@ static const char *Bfmt[] = {
   "January", "February", "March", "April", "May", "June", "July",
   "August", "September", "October", "November", "December",
 };
+char __dj_date_format[10] = "%m/%d/%y";
+char __dj_time_format[16] = "%H:%M:%S";
 
 static size_t gsize;
 static char *pt;
@@ -177,7 +180,6 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'T':
-      case 'X':
 	if (!_fmt("%H:%M:%S", t, upcase))
 	  return 0;
 	continue;
@@ -204,8 +206,12 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	if (!_conv(t->tm_wday, 1, pad))
 	  return 0;
 	continue;
+      case 'X':
+	if (!_fmt(__dj_time_format, t, upcase))
+	  return 0;
+	continue;
       case 'x':
-	if (!_fmt("%m/%d/%y", t, upcase))
+	if (!_fmt(__dj_date_format, t, upcase))
 	  return 0;
 	continue;
       case 'y':

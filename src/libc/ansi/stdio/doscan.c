@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <locale.h>
 #include <libc/file.h>
 #include <libc/local.h>
 
@@ -43,6 +44,7 @@ static char _sctab[256] = {
 };
 
 static int nchars = 0;
+static char decimal = '.';
 
 int 
 _doscan(FILE *iop, const char *fmt, va_list argp)
@@ -58,6 +60,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   int nmatch, len, ch1;
   int *ptr, fileended, size;
 
+  decimal = localeconv()->decimal_point[0];
   nchars = 0;
   nmatch = 0;
   fileended = 0;
@@ -275,7 +278,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
       lcval += c;
       c = c1;
       continue;
-    } else if (c=='.') {
+    } else if (c==decimal) {
       if (base!=10 || scale==INT)
 	break;
       ndigit++;

@@ -2,6 +2,7 @@ TOP=../..
 
 SRC += append.c
 SRC += bintext.c
+SRC += decimal.c
 SRC += fflush.c
 SRC += filbuf.c
 SRC += file.c

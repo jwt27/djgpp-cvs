@@ -6,6 +6,7 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <locale.h>
 #include <math.h>
 #include <stdlib.h>
 #include <float.h>
@@ -26,6 +27,7 @@ strtof(const char *s, char **sret)
   int i;
   int flags=0;
   int overflow=0;
+  char decimal = localeconv()->decimal_point[0];
 
   r = 0.0;
   sign = 1;
@@ -127,7 +129,7 @@ strtof(const char *s, char **sret)
     s++;
   }
 
-  if (*s == '.')
+  if (*s == decimal)
   {
     d = 0.1L;
     s++;

@@ -108,7 +108,6 @@ Short for @code{%I:%M:%S %p} (@code{03:30:35 PM})
 The seconds, zero padded to two characters (@code{35})
 
 @item %T
-@itemx %X
 
 Short for @code{%H:%M:%S} (@code{15:30:35})
 
@@ -136,7 +135,11 @@ The day of the week (0-6) (@code{5})
 
 @item %x
 
-Short for @code{%m/%d/%y} (@code{10/01/93})
+Date represented according to the current locale.
+
+@item %X
+
+Time represented according to the current locale.
 
 @item %y
 

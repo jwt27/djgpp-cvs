@@ -1013,3 +1013,22 @@ were added.
 @findex nanf@r{ added}
 @findex nanl@r{ added}
 The C99 functions @code{nan}, @code{nanf} and @code{nanl} were added.
+
+@findex _doprnt@r{, and the decimal point}
+@findex printf@r{, and the decimal point}
+@findex _doscan@r{, and the decimal point}
+@findex scanf@r{, and the decimal point}
+@findex strtod@r{, and the decimal point}
+@findex strtof@r{, and the decimal point}
+@findex strtold@r{, and the decimal point}
+@findex _strtold@r{, and the decimal point}
+The @code{_doprnt} and @code{_doscan} functions, the @code{printf}
+family of functions, the @code{scanf} family of functions
+and the @code{strto*} family of functions now honour the decimal point
+from the current locale.
+
+@findex strftime@r{, and the x type conversion}
+@findex strftime@r{, and the X type conversion}
+@code{strftime} now uses the date format (for @code{%x})
+and time format (for @code{%X}) from the current locale.
+This means that @code{%T} and @code{%X} are no longer equivalent.

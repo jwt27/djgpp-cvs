@@ -3,6 +3,7 @@
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <locale.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
@@ -25,6 +26,7 @@ strtold(const char *s, char **sret)
   int esign;
   int flags=0;
   int l2powm1;
+  char decimal = localeconv()->decimal_point[0];
 
   r = 0.0L;
   sign = 1;
@@ -123,7 +125,7 @@ strtold(const char *s, char **sret)
     s++;
   }
 
-  if (*s == '.')
+  if (*s == decimal)
   {
     s++;
     while ((*s >= '0') && (*s <= '9'))
