@@ -241,7 +241,7 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
   return exit_status;
 }
 
-void
+static void
 usage(char *progname)
 {
   printf ("Usage: %s [-b] [-h] [-r] [-s] [-t] [-v] [-vv] files...\n\n", progname);
