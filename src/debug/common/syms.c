@@ -1,4 +1,4 @@
-/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -19,7 +19,6 @@
 /* Modified by Charles Sandmann 1995 for DJGPP V2 (bug fixes) 
    incorporate changes by Morten Welinder, terra@diku.dk */
 
-#include <errno.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <string.h>
@@ -33,10 +32,6 @@
 #include <debug/syms.h>
 #include <debug/stab.h>
 #include <debug/wild.h>
-
-#include <assert.h>
-
-void *xmalloc (size_t);
 
 int undefined_symbol=0;
 int syms_printwhy=0;
@@ -133,7 +128,8 @@ static int syms_sort_bv(const void *a, const void *b)
 static char *symndup(char *s, int len)
 {
   char *rv;
-  rv = xmalloc(len+1);
+  if(!(rv = malloc(len+1)))
+    return (char *)NULL;
   memcpy(rv,s,len);
   rv[len] = 0;
   return rv;
@@ -155,93 +151,22 @@ static int valid_symbol(int i)
   return 1;
 }
 
-/* bail(): Print MSG to stderr and quit */
-static void __attribute__((noreturn)) bail(const char *msg)
-{
-  assert(msg);
-
-  if (errno)
-     fprintf(stderr, "Symify error: %s: %s\n", msg, strerror(errno));
-  else
-     fprintf(stderr, "Symify error: %s\n", msg);
-  exit(EXIT_FAILURE);
-}
-
-/* xfseek(): Move the file pointer for FILE according to MODE,
- * print an error message and bailout if the file operation fails.
- * Return: 0 (success) always.
- */
-static int xfseek(FILE *stream, long offset, int mode)
-{
-  assert(stream);
-  assert((mode==SEEK_SET) || (mode==SEEK_CUR) || (mode==SEEK_END));
-
-  /* Note that fseek's past the end of file will not fail in dos. */
-
-  if (fseek(stream, offset, mode))
-    bail("fseek failed");
-
-  return 0;
-}
-
-/* xfread(): Read NUMBER of objects, each of SIZE bytes, from FILE to BUFFER.
- * print an error message and bailout if the file operation fails, or if less
- * than NUMBER*SIZE bytes were read.
- * Return: NUMBER always.
- */
-static size_t xfread(void *buffer, size_t size, size_t number, FILE *stream)
-{
-  assert(buffer);
-  assert(stream);
-
-  if (fread(buffer, size, number, stream) == number)
-    return number;
-  else if (feof(stream))
-    bail("unexpected end of file");
-  else if (ferror(stream))
-    bail("error reading from file");
-  else
-    bail("fread failed");
-
-  return 0; /* dummy return */
-}
-
-/* xmalloc_fread(): Allocate a memory buffer to store NUMBER of objects,
- * each of SIZE bytes, then fill the buffer by reading from FILE.
- * print an error message and bailout if not enough memory available to
- * allocate the buffer, or if a file error occurs, or if not enough bytes
- * are read to fill the buffer.
- * Return: a pointer to the newly allocated buffer.
- */
-static void *xmalloc_fread(size_t size, size_t number, FILE *stream)
-{
-  void *buffer;
-
-  assert(stream);
-
-  buffer = xmalloc(size * number);
-
-  xfread(buffer, size, number, stream);
-
-  return buffer;
-}
-
 static void process_coff(FILE *fd, long ofs)
 {
-  unsigned int i;
-  int f, s, f_pending;
+  int i, f, s, f_pending;
   LINENO *l = NULL;		/* CWS note: uninitialized? */
   int l_pending;
   unsigned long strsize;
   char *name;
   int i2_max;
 
-  xfseek(fd, ofs, 0);
-  xfread(&f_fh, FILHSZ, 1, fd);
-  xfread(&f_ah, AOUTSZ, 1, fd);
-  f_sh = xmalloc_fread(SCNHSZ, f_fh.f_nscns, fd);
-  f_types = (char *)xmalloc(f_fh.f_nscns);
-  f_lnno = (LINENO **)xmalloc(f_fh.f_nscns * sizeof(LINENO *));
+  fseek(fd, ofs, 0);
+  fread(&f_fh, 1, FILHSZ, fd);
+  fread(&f_ah, 1, AOUTSZ, fd);
+  f_sh = (SCNHDR *)malloc(f_fh.f_nscns * SCNHSZ);
+  f_types = (char *)malloc(f_fh.f_nscns);
+  f_lnno = (LINENO **)malloc(f_fh.f_nscns * sizeof(LINENO *));
+  fread(f_sh, f_fh.f_nscns, SCNHSZ, fd);
 
   for (i=0; i<f_fh.f_nscns; i++)
   {
@@ -253,29 +178,25 @@ static void process_coff(FILE *fd, long ofs)
       f_types[i] = 'B';
     if (f_sh[i].s_nlnno)
     {
-      xfseek(fd, ofs + f_sh[i].s_lnnoptr, 0L);
-      f_lnno[i] = xmalloc_fread(LINESZ, f_sh[i].s_nlnno, fd);
+      fseek(fd, ofs + f_sh[i].s_lnnoptr, 0L);
+      f_lnno[i] = (LINENO *)malloc(f_sh[i].s_nlnno * LINESZ);
+      fread(f_lnno[i], LINESZ, f_sh[i].s_nlnno, fd);
     }
     else
       f_lnno[i] = 0;
   }
 
-  xfseek(fd, ofs + f_fh.f_symptr + f_fh.f_nsyms * SYMESZ, 0);
-  xfread(&strsize, 4, 1, fd);
-  f_string_table = (char *)xmalloc(strsize);
+  fseek(fd, ofs + f_fh.f_symptr + f_fh.f_nsyms * SYMESZ, 0);
+  fread(&strsize, 1, 4, fd);
+  f_string_table = (char *)malloc(strsize);
   /* CWS note: must zero or pukes below.  Does not fill from file. */
   memset(f_string_table,0,strsize);
-  /* Note: this is fread instead of xfread, because this fread fails
-     on a stripped program.  If we use xfread here, SYMIFY will bail out
-     with an error message, and worse, Edebug and FSDB will be unable to
-     debug stripped programs.  We can afford using fread here because we
-     have already zeroed out the entire string table, see above.  So
-     reading a partial table will never do any real harm.  */
   fread(f_string_table+4, 1, strsize-4, fd);
   f_string_table[0] = 0;
 
-  xfseek(fd, ofs+f_fh.f_symptr, 0);
-  f_symtab = xmalloc_fread(SYMESZ, f_fh.f_nsyms, fd);
+  fseek(fd, ofs+f_fh.f_symptr, 0);
+  f_symtab = (SYMENT *)malloc(f_fh.f_nsyms * SYMESZ);
+  fread(f_symtab, SYMESZ, f_fh.f_nsyms, fd);
   f_aux = (AUXENT *)f_symtab;
 
   num_syms = num_files = 0;
@@ -296,9 +217,9 @@ static void process_coff(FILE *fd, long ofs)
     i += f_symtab[i].e_numaux;
   }
 
-  files = (FileNode *)xmalloc(num_files * sizeof(FileNode));
+  files = (FileNode *)malloc(num_files * sizeof(FileNode));
 
-  syms = (SymNode *)xmalloc(num_syms * sizeof(SymNode));
+  syms = (SymNode *)malloc(num_syms * sizeof(SymNode));
 
   f = s = f_pending = l_pending = i2_max = 0;
   for (i=0; i<f_fh.f_nsyms; i++)
@@ -345,15 +266,14 @@ static void process_coff(FILE *fd, long ofs)
             /* No line number info can be at offset larger than 0xffff
                from f_lnno[scn], because COFF is limited to 64K
                line-number entries.  If they have more line entries
-               than that, they had line number overflow at link
-               time. */
+               than that, they had line number overflow at link time. */
             if (l_idx < 0xffffU)
-              {
-                l = f_lnno[scn] + l_idx;
-                l_pending = 1;
-                i2_max = f_sh[scn].s_nlnno - l_idx;
-                l->l_addr.l_paddr = f_symtab[i].e_value;
-              }
+            {
+              l = f_lnno[scn] + l_idx;
+              l_pending = 1;
+              i2_max = f_sh[scn].s_nlnno - l_idx;
+              l->l_addr.l_paddr = f_symtab[i].e_value;
+            }
           }
         }
 
@@ -365,7 +285,7 @@ static void process_coff(FILE *fd, long ofs)
           syms[s].name = symndup(f_symtab[i].e.e_name, 8);
         else
           syms[s].name = f_string_table + f_symtab[i].e.e.e_offset;
-
+        
         switch (f_symtab[i].e_scnum)
         {
           case 1 ... 10:
@@ -413,16 +333,17 @@ static void process_aout(FILE *fd, long ofs)
   unsigned long string_table_length;
   int nsyms, i, f, s, l;
 
-  xfseek(fd, ofs, 0);
-  xfread(&header, sizeof(header), 1, fd);
+  fseek(fd, ofs, 0);
+  fread(&header, 1, sizeof(header), fd);
 
-  xfseek(fd, ofs + sizeof(header) + header.tsize + header.dsize + header.txrel + header.dtrel, 0);
+  fseek(fd, ofs + sizeof(header) + header.tsize + header.dsize + header.txrel + header.dtrel, 0);
   nsyms = header.symsize / sizeof(SYM_ENTRY);
-  f_aoutsyms = xmalloc_fread(header.symsize, 1, fd);
+  f_aoutsyms = (SYM_ENTRY *)malloc(header.symsize);
+  fread(f_aoutsyms, 1, header.symsize, fd);
 
-  xfread(&string_table_length, 4, 1, fd);
-  f_string_table = (char *)xmalloc(string_table_length);
-  xfread(f_string_table+4, 1, string_table_length-4, fd);
+  fread(&string_table_length, 1, 4, fd);
+  f_string_table = (char *)malloc(string_table_length);
+  fread(f_string_table+4, 1, string_table_length-4, fd);
   f_string_table[0] = 0;
 
   num_files = num_syms = 0;
@@ -458,9 +379,9 @@ static void process_aout(FILE *fd, long ofs)
     }
   }
   
-  syms = (SymNode *)xmalloc(num_syms * sizeof(SymNode));
+  syms = (SymNode *)malloc(num_syms * sizeof(SymNode));
   memset(syms, 0, num_syms * sizeof(SymNode));
-  files = (FileNode *)xmalloc(num_files * sizeof(FileNode));
+  files = (FileNode *)malloc(num_files * sizeof(FileNode));
   memset(files, 0, num_files * sizeof(FileNode));
 
   f = s = 0;
@@ -541,7 +462,7 @@ static void process_aout(FILE *fd, long ofs)
       case N_SO:
         if (symn[strlen(symn)-1] == '/')
           break;
-        files[f].lines = (LINENO *)xmalloc(files[f].num_lines * sizeof(LINENO));
+        files[f].lines = (LINENO *)malloc(files[f].num_lines * sizeof(LINENO));
         f++;
         l = 0;
         break;
@@ -558,12 +479,12 @@ static void process_aout(FILE *fd, long ofs)
 static void process_file(FILE *fd, long ofs)
 {
   short s, exe[2];
-  xfseek(fd, ofs, 0);
-  xfread(&s, 2, 1, fd);
+  fseek(fd, ofs, 0);
+  fread(&s, 1, 2, fd);
   switch (s)
   {
-    case 0x5a4d:       /* .exe */
-      xfread(exe, 2, 2, fd);
+    case 0x5a4d:	/* .exe */
+      fread(exe, 2, 2, fd);
       ofs += (long)exe[1] * 512L;
       if (exe[0])
         ofs += (long)exe[0] - 512L;
@@ -584,13 +505,13 @@ void syms_init(char *fname)
   FILE *fd = fopen(fname, "rb");
   if (fd == 0)
   {
-    bail(fname);
+    perror(fname);
   }
   else
   {
     process_file(fd, 0);
 
-    syms_byname = (SymNode *)xmalloc(num_syms * sizeof(SymNode));
+    syms_byname = (SymNode *)malloc(num_syms * sizeof(SymNode));
     memcpy(syms_byname, syms, num_syms * sizeof(SymNode));
     qsort(syms_byname, num_syms, sizeof(SymNode), syms_sort_bn);
     qsort(syms, num_syms, sizeof(SymNode), syms_sort_bv);
