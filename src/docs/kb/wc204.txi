@@ -833,3 +833,6 @@ to avoid conflicts.
 @findex ctime@r{, and calls to @code{getenv}}
 Fix caching when environment variable @env{TZ} is not set.  Prevents many calls
 to @code{getenv} which are not needed.
+
+@findex strtof
+The function @code{strtof} was added.
