@@ -1,6 +1,5 @@
 -MD
 -O2
--fno-strength-reduce
 -mcpu=pentium
 -march=i386
 -Wall
@@ -13,5 +12,8 @@
 -Wshadow
 -Wstrict-prototypes
 -Wwrite-strings
+-Wundef
+-Wcast-align
+-Wsign-compare
 -nostdinc
 
