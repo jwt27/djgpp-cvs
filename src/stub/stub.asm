@@ -321,13 +321,11 @@ file_is_just_coff:			; cx:dx is offset
 	add	eax, ecx
 	mov	[text_foffset], eax
 
-	mov	eax, data_section[s_scnptr]
-	add	eax, ecx
-	mov	[data_foffset], eax
+	add	ecx, data_section[s_scnptr] ; Ok to destroy ecx now: last use.
+	mov	[data_foffset], ecx
 
 	mov	ebx, bss_section[s_vaddr]
-	mov	eax, bss_section[s_size]
-	add	ebx, eax
+	add	ebx, bss_section[s_size]
 	mov	eax, 0x00010001
 	cmp	ebx, eax
 	jae	@f1
