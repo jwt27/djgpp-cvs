@@ -1,0 +1,33 @@
+@c ----------------------------------------------------------------------
+@node _toupper, ctype
+@findex _toupper
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int _toupper(int c);
+@end example
+
+@subheading Description
+
+This function returns @var{c}, converting it to upper case.  For the reverse,
+use @code{_tolower} (@pxref{_tolower}).
+
+This function is like @code{toupper} (@pxref{toupper}), except that
+the caller should ensure that @var{c} is lower case.
+
+@subheading Return Value
+
+The upper case letter.
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+for (i=0; buf[i]; i++)
+  buf[i] = _toupper(buf[i]);
+@end example

@@ -1,0 +1,33 @@
+@c ----------------------------------------------------------------------
+@node _tolower, ctype
+@findex _tolower
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int _tolower(int c);
+@end example
+
+@subheading Description
+
+This function returns @var{c}, converting it to lower case.  For the reverse,
+use @code{_toupper} (@pxref{_toupper}).
+
+This function is like @code{tolower} (@pxref{tolower}), except that
+the caller should ensure that @var{c} is upper case.
+
+@subheading Return Value
+
+The lower case letter.
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+for (i=0; buf[i]; i++)
+  buf[i] = _tolower(buf[i]);
+@end example
