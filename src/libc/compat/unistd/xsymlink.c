@@ -74,7 +74,9 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
     */
    start = __real_path;
    end = strpbrk(__real_path, "/\\");
-   if (!end || (start == end))
+   if (start == end)
+      end = strpbrk(__real_path + 1, "/\\");
+   if (!end)
       end = __real_path + strlen(__real_path);
    while (start && *start)
    {
