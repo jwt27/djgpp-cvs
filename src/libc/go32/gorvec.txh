@@ -1,0 +1,50 @@
+@node _go32_dpmi_get_real_mode_interrupt_vector, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int _go32_dpmi_get_real_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+@end example
+
+@subheading Description
+
+@xref{DPMI Overview}
+
+This function gets the real-mode interrupt vector specified into the
+address in the @code{rm_segment} and @code{rm_offset} fields in
+@var{info}.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@xref{_go32_dpmi_allocate_real_mode_callback_iret}
+
+@c ----------------------------------------------------------------------
+@node _go32_dpmi_set_real_mode_interrupt_vector, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int _go32_dpmi_set_real_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
+@end example
+
+@subheading Description
+
+@xref{DPMI Overview}
+
+This function sets the real-mode interrupt vector specified to point to
+the address in the @code{rm_segment} and @code{rm_offset} fields in
+@var{info}.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+@subheading Example
+
+@xref{_go32_dpmi_allocate_real_mode_callback_iret}
+
