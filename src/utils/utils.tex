@@ -429,7 +429,8 @@ djsplit foo.tgz 1300k footgz
 would result in @code{footgz.000}, @code{footgz.001}, etc.
 
 The @code{chunksize} parameter can be expressed as bytes (NNN),
-kilobytes(NNNk) or megabytes (NNNm).
+kilobytes(NNNk) or megabytes (NNNm).  The number NNN @emph{must} be an
+integer; for example, @samp{1.1m} will @strong{not} work.
 
 @c -----------------------------------------------------------------------------
 @node djmerge, texi2ps, djsplit, Top
