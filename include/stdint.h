@@ -1,7 +1,15 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_stdint__h_
 #define __dj_stdint__h_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
 
 typedef signed char int_least8_t;
 typedef unsigned char uint_least8_t;
@@ -129,7 +137,14 @@ __extension__ typedef unsigned long long uintmax_t;
 
 #endif /* !__cplusplus || __STDC_CONSTANT_MACROS */
 
-#ifndef __dj_ENFORCE_ANSI_FREESTANDING
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
+
+#ifndef __dj_ENFORCE_ANSI_FREESTANDIGN
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
 #ifndef __STRICT_ANSI__
 
@@ -141,5 +156,9 @@ __extension__ typedef unsigned long long uintmax_t;
 
 #ifndef __dj_ENFORCE_FUNCTION_CALLS
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !__dj_stdint__h_ */
