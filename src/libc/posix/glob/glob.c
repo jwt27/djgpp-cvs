@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
@@ -5,9 +6,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <fnmatch.h>
 #include <dir.h>
 #include <glob.h>
+#include <crt0.h>
 
 typedef struct Save {
   struct Save *prev;
@@ -20,19 +23,28 @@ static int flags;
 static int (*errfunc)(const char *epath, int eerno);
 static char *pathbuf;
 static int wildcard_nesting;
-static char use_lower_case;
+static char use_lfn;
+static char preserve_case;
 static char slash;
 
-static int glob2(const char *pattern, char *epathbuf);
+static int glob2(const char *pattern, char *epathbuf, int lower, int caseless);
+static int glob_dirs(const char *rest, char *epathbuf, int first, int lower, int caseless);
 static int add(const char *path);
 static int str_compare(const void *va, const void *vb);
+
+/* `tolower' might depend on the locale.  We don't want to.  */
+static int
+msdos_tolower_fname (int c)
+{
+  return (c >= 'A' && c <= 'Z') ? c + 'a' - 'A' : c;
+}
 
 static int
 add(const char *path)
 {
   Save *sp;
   for (sp=save_list; sp; sp=sp->prev)
-    if (strcmp(sp->entry, path) == 0)
+    if (stricmp(sp->entry, path) == 0)
       return 0;
   sp = (Save *)malloc(sizeof(Save));
   if (sp == 0)
@@ -52,7 +64,8 @@ add(const char *path)
 }
 
 static int
-glob_dirs(const char *rest, char *epathbuf, int first) /* rest is ptr to null or ptr after slash, bp after slash */
+glob_dirs(const char *rest, char *epathbuf, int first, /* rest is ptr to null or ptr after slash, bp after slash */
+	  int lower, int caseless)
 {
   struct ffblk ff;
   int done;
@@ -64,7 +77,8 @@ glob_dirs(const char *rest, char *epathbuf, int first) /* rest is ptr to null or
   {
     if (*rest)
     {
-      glob2(rest, epathbuf);
+      if (glob2(rest, epathbuf, lower, caseless) == GLOB_NOSPACE)
+	return GLOB_NOSPACE;
     }
     else
     {
@@ -79,7 +93,8 @@ glob_dirs(const char *rest, char *epathbuf, int first) /* rest is ptr to null or
       else
 	epathbuf[-1] = 0;
       if (__file_exists(pathbuf))
-	add(pathbuf);
+	if (add(pathbuf))
+	  return GLOB_NOSPACE;
       epathbuf[-1] = sl;
     }
   }
@@ -88,15 +103,19 @@ glob_dirs(const char *rest, char *epathbuf, int first) /* rest is ptr to null or
   done = findfirst(pathbuf, &ff, FA_DIREC);
   while (!done)
   {
+    char short_name[13];
+
     if ((ff.ff_name[0] != '.') && (ff.ff_attrib & FA_DIREC))
     {
       int i;
       char *tp;
-      if (use_lower_case)
+      /* Long directory names are never lower-cased!  */
+      if (lower
+	  && !strcmp(ff.ff_name, _lfn_gen_short_fname(ff.ff_name, short_name)))
 	for (i=0; ff.ff_name[i] && i<13; i++)
-	  ff.ff_name[i] = tolower(ff.ff_name[i]);
+	  ff.ff_name[i] = msdos_tolower_fname(ff.ff_name[i]);
 
-/*      printf("found `%s' `%s'\n", pathbuf, ff.ff_name); */
+/*    printf("found `%s' `%s'\n", pathbuf, ff.ff_name); */
 
       strcpy(epathbuf, ff.ff_name);
       tp = epathbuf + strlen(epathbuf);
@@ -106,17 +125,20 @@ glob_dirs(const char *rest, char *epathbuf, int first) /* rest is ptr to null or
       wildcard_nesting++;
       if (*rest)
       {
-	glob2(rest, tp);
+	if (glob2(rest, tp, lower, caseless) == GLOB_NOSPACE)
+	  return GLOB_NOSPACE;
       }
       else
       {
 	if (!(flags & GLOB_MARK))
 	  tp[-1] = 0;
-	add(pathbuf);
+	if (add(pathbuf))
+	  return GLOB_NOSPACE;
 	tp[-1] = slash;
       }
       *tp = 0;
-      glob_dirs(rest, tp, 0);
+      if (glob_dirs(rest, tp, 0, lower, caseless) == GLOB_NOSPACE)
+	return GLOB_NOSPACE;
       wildcard_nesting--;
     }
     done = findnext(&ff);
@@ -125,7 +147,8 @@ glob_dirs(const char *rest, char *epathbuf, int first) /* rest is ptr to null or
 }
 
 static int
-glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
+glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
+      int lower, int caseless)
 {
   const char *pp, *pslash;
   char *bp;
@@ -135,12 +158,12 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
 
   if (strcmp(pattern, "...") == 0)
   {
-    return glob_dirs(pattern+3, epathbuf, 1);
+    return glob_dirs(pattern+3, epathbuf, 1, lower, caseless);
   }
   if (strncmp(pattern, "...", 3) == 0 && (pattern[3] == '\\' || pattern[3] == '/'))
   {
     slash = pattern[3];
-    return glob_dirs(pattern+4, epathbuf, 1);
+    return glob_dirs(pattern+4, epathbuf, 1, lower, caseless);
   }
 
   *epathbuf = 0;
@@ -178,10 +201,20 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
       break;
     }
 
-    else if (islower(*pp))
-      use_lower_case = 1;
-    else if (isupper(*pp))
-      use_lower_case = 0;
+    /* Upper-case or mixed-case patterns force case-sensitive
+       matches in `fnmatch' for LFN filesystems.  They also
+       suppress downcasing 8+3 filenames (on all filesystems).  */
+    else if (!preserve_case)
+    {
+      if (*pp >= 'A' && *pp <= 'Z')
+      {
+	if (use_lfn)
+	  caseless = 0;
+	lower = 0;
+      }
+      else if (*pp >= 'a' && *pp <= 'z')
+	lower = 1;
+    }
 
     *bp++ = *pp++;
   }
@@ -189,8 +222,22 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
 
   if (*pp == 0) /* end of pattern? */
   {
-    if (wildcard_nesting==0 || __file_exists(pathbuf))
-      add(pathbuf);
+    if (__file_exists(pathbuf))
+    {
+      if (flags & GLOB_MARK)
+      {
+        struct ffblk _ff;
+        findfirst(pathbuf, &_ff, FA_RDONLY|FA_SYSTEM|FA_DIREC|FA_ARCH);
+        if (_ff.ff_attrib & FA_DIREC)
+        {
+          char *_pathbuf = pathbuf + strlen(pathbuf);
+          *_pathbuf++ = '/';
+          *_pathbuf = 0;
+        }
+      }
+      if (add(pathbuf))
+	return GLOB_NOSPACE;
+    }
     return 0;
   }
 /*  printf("glob2: initial segment is `%s'\n", pathbuf); */
@@ -204,17 +251,23 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
   }
 
   for (pslash = pp; *pslash && *pslash != '\\' && *pslash != '/';  pslash++)
-  {
-    if (islower(*pslash))
-      use_lower_case = 1;
-    else if (isupper(*pslash))
-      use_lower_case = 0;
-  }
+    if (!preserve_case)
+    {
+      if (*pslash >= 'A' && *pslash <= 'Z')
+      {
+	if (use_lfn)
+	  caseless = 0;
+	lower = 0;
+      }
+      else if (*pslash >= 'a' && *pslash <= 'z')
+	lower = 1;
+    }
+
   if (*pslash)
     slash = *pslash;
   my_pattern = (char *)alloca(pslash - pp + 1);
   if (my_pattern == 0)
-    return 0;
+    return GLOB_NOSPACE;
   strncpy(my_pattern, pp, pslash - pp);
   my_pattern[pslash-pp] = 0;
 
@@ -222,7 +275,8 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
 
   if (strcmp(my_pattern, "...") == 0)
   {
-    glob_dirs(*pslash ? pslash+1 : pslash, bp, 1);
+    if (glob_dirs(*pslash ? pslash+1 : pslash, bp, 1, lower, caseless) == GLOB_NOSPACE)
+      return GLOB_NOSPACE;
     return 0;
   }
 
@@ -232,12 +286,17 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
   while (!done)
   {
     int i;
+    char fshort[13];
     if (ff.ff_name[0] != '.')
     {
-      if (use_lower_case)
+      /* Long filenames are never lower-cased!  */
+      if (lower
+	  && !strcmp(ff.ff_name, _lfn_gen_short_fname(ff.ff_name, fshort)))
 	for (i=0; ff.ff_name[i] && i<13; i++)
-	  ff.ff_name[i] = tolower(ff.ff_name[i]);
-      if (fnmatch(my_pattern, ff.ff_name, FNM_NOESCAPE|FNM_PATHNAME|FNM_NOCASE) == 0)
+	  ff.ff_name[i] = msdos_tolower_fname(ff.ff_name[i]);
+
+      if (fnmatch(my_pattern, ff.ff_name,
+		  FNM_NOESCAPE|FNM_PATHNAME|(caseless ? FNM_NOCASE : 0)) == 0)
       {
 	strcpy(bp, ff.ff_name);
 	if (*pslash)
@@ -247,19 +306,21 @@ glob2(const char *pattern, char *epathbuf) /* both point *after* the slash */
 	  *tp = 0;
 /*	  printf("nest: `%s' `%s'\n", pslash+1, pathbuf); */
 	  wildcard_nesting++;
-	  glob2(pslash+1, tp);
+	  if (glob2(pslash+1, tp, lower, caseless) == GLOB_NOSPACE)
+	    return GLOB_NOSPACE;
 	  wildcard_nesting--;
 	}
 	else
 	{
 /*	  printf("ffmatch: `%s' matching `%s', add `%s'\n",
 		 ff.ff_name, my_pattern, pathbuf); */
-	  if (ff.ff_attrib & FA_DIREC & (flags & GLOB_MARK))
+	  if (ff.ff_attrib & FA_DIREC && (flags & GLOB_MARK))
 	  {
-	    bp[strlen(bp)] = slash;
 	    bp[strlen(bp)+1] = 0;
+	    bp[strlen(bp)] = slash;
 	  }
-	  add(pathbuf);
+	  if (add(pathbuf))
+	    return GLOB_NOSPACE;
 	}
       }
     }
@@ -287,15 +348,22 @@ glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _
   wildcard_nesting = 0;
   save_count = 0;
   save_list = 0;
-  use_lower_case = 1;
+  use_lfn = _USE_LFN;
+  preserve_case = _preserve_fncase();
   slash = '/';
 
-  glob2(_pattern, pathbuf);
+  if (glob2(_pattern, pathbuf, preserve_case ? 0 : 1, preserve_case ? 0 : 1) == GLOB_NOSPACE)
+    {
+      return GLOB_NOSPACE;
+    }
 
   if (save_count == 0)
   {
     if (flags & GLOB_NOCHECK)
-      add(_pattern);
+    {
+      if (add(_pattern))
+	return GLOB_NOSPACE;
+    }
     else
       return GLOB_NOMATCH;
   }
@@ -309,14 +377,14 @@ glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _
   {
     _pglob->gl_pathv = (char **)realloc(_pglob->gl_pathv, (l_ofs + _pglob->gl_pathc + save_count + 1) * sizeof(char *));
     if (_pglob->gl_pathv == 0)
-      return GLOB_ERR;
+      return GLOB_NOSPACE;
     l_ptr = l_ofs + _pglob->gl_pathc;
   }
   else
   {
     _pglob->gl_pathv = (char* *)malloc((l_ofs + save_count + 1) * sizeof(char *));
     if (_pglob->gl_pathv == 0)
-      return GLOB_ERR;
+      return GLOB_NOSPACE;
     l_ptr = l_ofs;
     if (l_ofs)
       memset(_pglob->gl_pathv, 0, l_ofs * sizeof(char *));
