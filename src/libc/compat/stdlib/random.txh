@@ -1,0 +1,42 @@
+@node srandom, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int srandom(int seed);
+@end example
+
+@subheading Description
+
+This function initialized the random number generator (@pxref{random}). 
+Passing the same @var{seed} results in @code{random} returning predictable
+sequences of numbers. 
+
+@subheading Return Value
+
+Zero.
+
+@subheading Example
+
+@example
+srandom(45);
+@end example
+
+@c ----------------------------------------------------------------------
+@node random, random number
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+long random(void);
+@end example
+
+@subheading Description
+
+Returns a random number in the range 0..MAXINT.
+
+@subheading Return Value
+
+0 .. MAXINT
