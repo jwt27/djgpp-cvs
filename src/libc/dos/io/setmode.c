@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -19,16 +20,9 @@ setmode(int handle, int mode)
   __dpmi_regs regs;
   int oldmode, newmode;
 
-  regs.x.ax = 0x4400;
-  regs.x.bx = handle;
-  regs.x.dx = 0;		/* Clear upper e-word for return */
-  __dpmi_int(0x21, &regs);
-  if (regs.x.flags & 1)
-  {
-    errno = __doserr_to_errno(regs.x.ax);
-    return -1;
-  }
-  oldmode = newmode = regs.x.dx;
+  oldmode = newmode = _get_dev_info(handle);
+  if (oldmode == -1)
+     return -1;
 
   if (mode & O_BINARY)
     newmode |= 0x20;
