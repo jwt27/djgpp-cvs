@@ -17,7 +17,7 @@
 static int
 dtou(char *fname)
 {
-  int i, k, k2, sf, df, l, l2, err=0, isCR=0;
+  int i, k, k2, sf, df, l, l2=0, err=0, isCR=0;
   char buf[16384];
   char tfname[FILENAME_MAX], *bn, *w;
   struct stat st;
@@ -60,7 +60,7 @@ dtou(char *fname)
          	     else    buf[k++] = buf[i];
          isCR = 0;
       }
-    if (k>0) l2=write(df, buf, k);
+    l2=(k>0 ? write(df, buf, k) : 0);
     if (l2<0 || CtrlZ) break;
     if (l2!=k) { err=1; break; }
   }

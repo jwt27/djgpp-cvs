@@ -19,7 +19,7 @@
 static int
 utod(char *fname)
 {
-  int i, k, k2, sf, df, l, l2, err=0, iscr=0;
+  int i, k, sf, df, l, l2=0, err=0, iscr=0;
   char buf[16384], buf2[32768];
   char tfname[FILENAME_MAX], *bn, *w;
   struct stat st;
