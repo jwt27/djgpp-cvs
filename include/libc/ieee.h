@@ -49,7 +49,7 @@ typedef union
 {
   long double ld;
   long_double_t ldt;
-} longdouble_union_t;
+} _longdouble_union_t;
 
 typedef union
 {

@@ -275,7 +275,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       }
       else
       {
-	longdouble_union_t ip;
+	_longdouble_union_t ip;
 
 	ip.ld = _ldouble;
 

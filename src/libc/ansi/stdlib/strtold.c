@@ -70,7 +70,7 @@ strtold(const char *s, char **sret)
   /* Handle NAN and NAN(<whatever>). */
   if ( ! strnicmp( "NAN", s, 3 ) )
   {
- longdouble_union_t t;
+    _longdouble_union_t t;
 
     t.ld = NAN;
 
