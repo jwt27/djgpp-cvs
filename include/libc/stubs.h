@@ -27,6 +27,7 @@ extern "C" {
 #define lseek __lseek
 #define mkdir __mkdir
 #define open __open
+#define putenv __putenv
 #define read __read
 #define tzset __tzset
 #define write __write
@@ -53,7 +54,6 @@ extern "C" {
 #define movedata __movedata
 #define pow10 __pow10
 #define pow2 __pow2
-#define putenv __putenv
 #define readlink __readlink
 #define sbrk __sbrk
 #define setitimer __setitimer
