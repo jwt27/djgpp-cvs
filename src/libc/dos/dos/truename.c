@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
  * This is file TRUENAME.C
@@ -53,6 +54,7 @@ _truename(const char *file, char *buf)
   unsigned short  our_mem_selector = _my_ds();
   int             e                = errno;
   unsigned	  use_lfn	   = _USE_LFN;
+  int		  first_time	   = 1;
 
   char true_name[MAX_TRUE_NAME];
   char file_name[MAX_TRUE_NAME], *name_start = file_name, *name_end;
@@ -99,8 +101,7 @@ _truename(const char *file, char *buf)
       name_start[3] = '.';
       name_start[4] = '\0';
     }
-  movedata(our_mem_selector, (unsigned int)name_start,
-           dos_mem_selector, __tb, strlen(name_start) + 1);
+  _put_path(name_start);
 
   /* Call DOS INT 21H undocumented function 60h. */
   if(use_lfn) {
@@ -112,6 +113,7 @@ _truename(const char *file, char *buf)
   /* According to Ralph Brown's Interrupt List, can't make the input
      and output buffers be the same, because it doesn't work for early
      versions of DR-DOS.  */
+ lfn_retry:
   regs.x.ds = regs.x.es = __tb_segment;
   regs.x.si = __tb_offset;
   regs.x.di = __tb_offset + MAX_TRUE_NAME;
@@ -123,6 +125,15 @@ _truename(const char *file, char *buf)
 
   if (regs.x.flags & 1)
     {
+      if (use_lfn && first_time)
+	{
+	  /* If the file doesn't exist, 217160/CX=2 fails.  Try again
+	     with CX=0, so that this time it won't validate the path.  */
+	  first_time = 0;
+	  regs.x.ax = 0x7160;
+	  regs.x.cx = 0;
+	  goto lfn_retry;
+	}
       errno = __doserr_to_errno(regs.x.ax);
       return (char *)0;
     }
