@@ -12,6 +12,9 @@
 #include <libc/stdiohk.h>
 #include <io.h>
 
+#include <libc/dosio.h>
+#include <libc/ttyprvt.h>
+
 /* Note: We set _fillsize to 512, and use that for reading instead of
    _bufsize, for performance reasons.  We double _fillsize each time
    we read here, and reset it to 512 each time we call fseek.  That
@@ -71,24 +74,35 @@ _filbuf(FILE *f)
   if (fillsize == 1024 && f->_bufsiz >= 1536)
     fillsize = 1536;
 
-  f->_cnt = _read(fileno(f), f->_base,
-		   f->_flag & _IONBF ? 1 : fillsize);
+  size = f->_flag & _IONBF ? 1 : fillsize;
+  /* If termios hooked this handle, let it process the request.
+     Note that we only call the termios hook for the handles which
+     are marked by getc or fread to be hooked by termios.  This is
+     because termios converts CR+LF to NL for text-mode handles,
+     and thus getc and fread must know to treat the hooked handles
+     as if they were binary, i.e. not to strip away CR characters.  */
+  if ((f->_flag & _IOTERM) == 0
+      || __libc_read_termios_hook == NULL
+      || __libc_read_termios_hook(fileno(f), f->_base, size, &f->_cnt) == 0)
+  {
+    f->_cnt = _read(fileno(f), f->_base, size);
+
+    if(__is_text_file(f) && f->_cnt>0)
+    {
+      /* truncate text file at Ctrl-Z */
+      char *cz=memchr(f->_base, 0x1A, f->_cnt);
+      if(cz)
+      {
+	int newcnt = cz - f->_base;
+	lseek(fileno(f), -(f->_cnt - newcnt), SEEK_CUR);
+	f->_cnt = newcnt;
+      }
+    }
+  }
 
   /* Read more next time, if we don't seek */
   if (f->_fillsize < f->_bufsiz)
     f->_fillsize *= 2;
-
-  if(__is_text_file(f) && f->_cnt>0)
-  {
-    /* truncate text file at Ctrl-Z */
-    char *cz=memchr(f->_base, 0x1A, f->_cnt);
-    if(cz)
-    {
-      int newcnt = cz - f->_base;
-      lseek(fileno(f), -(f->_cnt - newcnt), SEEK_CUR);
-      f->_cnt = newcnt;
-    }
-  }
   f->_ptr = f->_base;
   if (f->_flag & _IONBF)
     f->_base = NULL;

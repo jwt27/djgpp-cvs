@@ -11,6 +11,16 @@ fwrite(const void *vptr, size_t size, size_t count, FILE *f)
   const char *ptr = (const char *)vptr;
   register int s;
 
+  if (__libc_write_termios_hook
+      && (f->_flag & (_IOTERM | _IONTERM)) == 0)
+  {
+    /* first time we see this handle--see if termios hooked it */
+    if (isatty(f->_file))
+      f->_flag |= _IOTERM;
+    else
+      f->_flag |= _IONTERM;
+  }
+
   s = size * count;
   if(!__is_text_file(f))
   {

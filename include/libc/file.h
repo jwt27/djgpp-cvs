@@ -3,8 +3,11 @@
 #ifndef __dj_include_libc_file_h__
 #define __dj_include_libc_file_h__
 
+#include <libc/stubs.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <libc/dosio.h>
+#include <libc/ttyprvt.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,6 +30,8 @@ extern "C" {
 #define _IORMONCL 004000  /* remove on close, for temp files */
 /* if _flag & _IORMONCL, ._name_to_remove needs freeing */
 #define _IOUNGETC 010000  /* there is an ungetc'ed character in the buffer */
+#define _IOTERM   020000  /* file's handle hooked by termios */
+#define _IONTERM  040000  /* file's handle not hooked by termios */
 
 int	_flsbuf(int, FILE*);
 int	_filbuf(FILE *);
@@ -54,12 +59,23 @@ static __inline__ int __putc_raw(int const x,FILE *const p)
 
 static __inline__ int __is_text_file(FILE *const p)
 {
-   return(!((p)->_flag&_IOSTRG) && (__file_handle_modes[(p)->_file]&O_TEXT));
+   return(!((p)->_flag & (_IOSTRG | _IOTERM))
+	  && (__file_handle_modes[(p)->_file]&O_TEXT));
 }
 
 static __inline__ int __getc(FILE *const p)
 {
-  int __c=__getc_raw(p);
+  int __c;
+  if (__libc_read_termios_hook
+      && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
+  {
+    /* first time we see this handle--see if termios hooked it */
+    if (isatty((p)->_file))
+      (p)->_flag |= _IOTERM;
+    else
+      (p)->_flag |= _IONTERM;
+  }
+  __c = __getc_raw(p);
   if (__c=='\r' && __is_text_file(p))
     return __getc_raw(p);
   return __c;
@@ -67,6 +83,15 @@ static __inline__ int __getc(FILE *const p)
 
 static __inline__ int __putc(const int x,FILE *const p)
 {
+  if (__libc_write_termios_hook
+      && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
+  {
+    /* first time we see this handle--see if termios hooked it */
+    if (isatty((p)->_file))
+      (p)->_flag |= _IOTERM;
+    else
+      (p)->_flag |= _IONTERM;
+  }
   if(x=='\n' && __is_text_file(p))
     __putc_raw('\r',p);
   return __putc_raw(x,p);

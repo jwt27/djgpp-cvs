@@ -4,6 +4,9 @@
 #include <termios.h>
 #include <libc/bss.h>
 #include <libc/ttyprvt.h>
+#include <libc/farptrgs.h>
+#include <dpmi.h>
+#include <go32.h>
 
 #define _DEV_STDIN  0x0001
 #define _DEV_STDOUT 0x0002
@@ -12,6 +15,26 @@
 #define _DEV_RAW    0x0020
 #define _DEV_CDEV   0x0080
 #define _DEV_IOCTRL 0x4000
+
+static int
+getkey_nowait (void)
+{
+  __dpmi_regs r;
+
+  /* If the head and tail of the keyboard buffer are the same, the
+     buffer is empty.  */
+  if (_farpeekw(_dos_ds, 0x41a) == _farpeekw(_dos_ds, 0x41c))
+    return 0;
+
+  r.h.ah = 0x11;
+  __dpmi_int(0x16, &r);
+  if (r.x.flags & 0x40) /* if Zero flag is set, no key is waiting */
+    return 0;
+
+  r.h.ah = 0x10;
+  __dpmi_int(0x16, &r);
+  return r.x.ax;
+}
 
 int
 tcflush (int handle, int which)
@@ -46,6 +69,9 @@ tcflush (int handle, int which)
 	  __libc_tty_p->t_rpos = __libc_tty_p->t_top;
 	  __libc_tty_p->t_wpos = __libc_tty_p->t_top;
 	}
+      /* now empty any keystrokes left in the keyboard buffer */
+      while (getkey_nowait ())
+	;
       break;
     case TCOFLUSH:
       /* nothing */

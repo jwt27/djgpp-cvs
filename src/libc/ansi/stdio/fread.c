@@ -1,10 +1,13 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <libc/file.h>
+#include <libc/ttyprvt.h>
 
 size_t
 fread(void *vptr, size_t size, size_t count, FILE *iop)
@@ -21,6 +24,16 @@ fread(void *vptr, size_t size, size_t count, FILE *iop)
     if (iop->_fillsize < 512)
       iop->_fillsize = 512;
     iop->_fillsize *= 2;
+  }
+
+  if (__libc_read_termios_hook
+      && (iop->_flag & (_IOTERM | _IONTERM)) == 0)
+  {
+    /* first time we see this handle--see if termios hooked it */
+    if (isatty(iop->_file))
+      iop->_flag |= _IOTERM;
+    else
+      iop->_flag |= _IONTERM;
   }
 
   s = size * count;

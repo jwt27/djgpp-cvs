@@ -181,3 +181,38 @@ on file names longer than 80 characters.
 @code{system} works when its argument uses redirection to/from quoted
 file names (e.g., when the file name includes embedded whitespace).
 
+@findex getc
+@findex putc
+@findex fread
+@findex fwrite
+@findex _filbuf
+@findex _flsbuf
+@cindex termios, and buffered stdio
+Buffered stdio functions, such as @code{getc}, @code{putc},
+@code{fread}, @code{printf}, and all their relatives pay attention to
+@code{termios} settings of the terminal device and behave accordingly.
+For example, you can get single-character, no-echo input with the
+following snippet:
+
+@example
+ struct termios charmode;
+
+ tcgetattr (0, &charmode);
+ charmode.c_lflag &= ~(ECHO | ICANON | ISIG);
+ tcsetattr (0, &charmode);
+@end example
+
+@findex tcsetattr
+If you reset the @code{ISIG} or @code{BRKINT} flags in the
+@code{termios} structure, or set the @code{IGNBRK} flag,
+@code{tcsetattr} now disables @code{SIGINT} generation by a
+@kbd{Ctrl-@key{C}} or @kbd{Ctrl-@key{BREAK}} keypress, and generation of
+@code{SIGQUIT} by pressing @kbd{Ctrl-@key{\}}.
+
+@findex tcflush
+A call like @samp{tcflush (0, TCIFLUSH);} now empties the BIOS keyboard
+buffer in addition to the internal buffer maintained by the
+@code{termios} input processing.  This is compatible with the Unix
+specification that @code{tcflush} should ``discard all data received but
+not read''.
+

@@ -50,7 +50,7 @@ tcsetattr (int handle, int action, const struct termios *termiosp)
     case TCSAFLUSH:
     case TCSADRAIN:
       /* enable or disable ^C */
-      if ((__libc_tty_p->t_lflag & ISIG) && ! (termiosp->c_iflag & IGNBRK)
+      if ((termiosp->c_lflag & ISIG) && ! (termiosp->c_iflag & IGNBRK)
 	  && (termiosp->c_iflag & BRKINT) && (termiosp->c_cc[VINTR] == 0x03))
 	__djgpp_set_ctrl_c (1);
       else
