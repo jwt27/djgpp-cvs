@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_fcntl_h_
@@ -21,6 +22,9 @@ extern "C" {
 #define F_SETFL		6
 #define F_SETLK		7
 #define F_SETLKW	8
+#define F_GETLK64	9
+#define F_SETLK64	10
+#define F_SETLKW64	11
 
 #define F_UNLCK		0
 #define F_RDLCK		1
@@ -50,6 +54,14 @@ struct flock {
   off_t	l_start;
   short	l_type;
   short	l_whence;
+};
+
+struct flock64 {
+  offset_t     l_len;
+  pid_t        l_pid;
+  offset_t     l_start;
+  short        l_type;
+  short        l_whence;
 };
 
 extern int _fmode; /* O_TEXT or O_BINARY */
