@@ -50,7 +50,6 @@ main(int argc, char **argv)
 
   while (scanf("%s", line) == 1)
   {
-    int skip = 0;
     unsigned char buf[4];
     int fd;
     char *cp;
