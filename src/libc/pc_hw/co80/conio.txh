@@ -596,3 +596,53 @@ the desired height.
 This function has a side effect of erasing the screen contents, so
 application programs which use it should make their own arrangements to
 redisplay it.
+@c ----------------------------------------------------------------------
+@node blinkvideo, conio
+
+@subheading Syntax
+
+@example
+#include <conio.h>
+void blinkvideo(void);
+@end example
+
+@subheading Description
+
+Bit 7 (@samp{MSB}) of the character attribute byte has two possible
+effects on EGA and VGA displays: it can either make the character blink
+or change the background color to bright (thus allowing for 16
+background colors as opposed to the usual 8).  This function sets that
+bit to display blinking characters.  After a call to this function,
+every character written to the screen with bit 7 of the attribute byte
+set, will blink.  The companion function @code{intensevideo}
+(@pxref{intensevideo}) has the opposite effect.
+
+Note that there is no BIOS function to get the current status of this
+bit, but bit 5 of the byte at @code{0040h:0065h} in the BIOS area
+indicates the current state: if it's 1 (the default), blinking
+characters will be displayed.
+@c ----------------------------------------------------------------------
+@node intensevideo, conio
+
+@subheading Syntax
+
+@example
+#include <conio.h>
+void intensevideo(void);
+@end example
+
+@subheading Description
+
+Bit 7 (@samp{MSB}) of the character attribute byte has two possible
+effects on EGA and VGA displays: it can either make the character blink
+or change the background color to bright (thus allowing for 16
+background colors as opposed to the usual 8).  This function sets that
+bit to display bright background colors.  After a call to this function,
+every character written to the screen with bit 7 of the attribute byte
+set, will have a bright background color.  The companion function
+@code{blinkvideo} (@pxref{blinkvideo}) has the opposite effect.
+
+Note that there is no BIOS function to get the current status of this
+bit, but bit 5 of the byte at @code{0040h:0065h} in the BIOS area
+indicates the current state: if it's 1 (the default), blinking
+characters will be displayed.

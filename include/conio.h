@@ -59,6 +59,7 @@ enum COLORS {
 
 #define BLINK   0x80    /*  blink bit   */
 
+void    blinkvideo(void);
 char *  cgets(char *_str); 
 void    clreol(void);
 void    clrscr(void);
@@ -75,6 +76,7 @@ void    gotoxy(int _x, int _y);
 void    gppconio_init(void);
 void    highvideo(void);
 void    insline(void);
+void	intensevideo(void);
 void    lowvideo(void);
 int     movetext(int _left, int _top, int _right, int _bottom, int _destleft, int _desttop);
 void    normvideo(void);
