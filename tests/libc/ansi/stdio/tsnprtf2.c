@@ -10,7 +10,7 @@
  * and vsnprintf() both invoke _doprnt(). */
 
 int
-_doprnt (const char *format, void *params, FILE *file)
+_doprnt (const char *format, va_list args, FILE *file)
 {
   return(-1);
 }
