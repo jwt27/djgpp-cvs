@@ -37,6 +37,14 @@ lseek(int handle, off_t offset, int whence)
   }
 
   has_props = __has_fd_properties(handle);
+
+  /* POSIX doesn't allow seek on a pipe.  */
+  if (has_props && (__fd_properties[handle]->flags & FILE_DESC_PIPE))
+  {
+    errno = ESPIPE;
+    return -1;
+  }
+
   if (!has_props ||
       (__fd_properties[handle]->flags & FILE_DESC_DONT_FILL_EOF_GAP) == 0)
   {
