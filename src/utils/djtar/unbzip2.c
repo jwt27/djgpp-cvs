@@ -135,7 +135,7 @@ int unbzip2 (void *f)
            stream and allocate all resources needed
            to processes it. */
 
-        int i;
+        size_t i;
         for (i = 0; i < data->avail_in; i++)
           inbuf[i] = data->next_in[i];
 

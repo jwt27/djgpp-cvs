@@ -2737,7 +2737,8 @@ void do_linkcoff (char *filename)
 /*  AOUTHDR f_ohdr;*/		/* Optional file header (a.out) */
   SYMENT *symbol;
   RELOC *rp;
-  int cnt, i;
+  int cnt;
+  size_t i;
   void *base;
   int textbase, database, bssbase/*, delta*/;
   char smallname[9];
