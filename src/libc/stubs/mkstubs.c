@@ -37,7 +37,9 @@ main(int argc, char **argv)
 
     sprintf(fn, "stub%04d.S", i);
     as = fopen(fn, "w");
-    fprintf(as, "\t.file \"%s.stub\"\n\t.global _%s\n_%s:\n\tjmp ___%s\n",
+    /* Blank line at start of output file is added to workaround gcc-3.0 preprocessor bug  */
+    /* See  http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view&pr=3081&database=gcc for details  */
+    fprintf(as, "\n\t.file \"%s.stub\"\n\t.global _%s\n_%s:\n\tjmp ___%s\n",
 	    buf, buf, buf, buf);
     fclose(as);
 
