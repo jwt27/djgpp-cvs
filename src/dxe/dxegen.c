@@ -96,20 +96,21 @@ int main(int argc, char **argv)
     strcpy(command, "ld");
 #endif
     strcat(command, " -X -S -r -o dxe__tmp.o -L");
-    libdir = getenv("TOP");
+    libdir = getenv("DXE_LD_LIBRARY_PATH");
     if (libdir)
-      strcat(command, "../../");
+      strcat(command, libdir);
     else
     {
       libdir = getenv("DJDIR");
       if (!libdir)
       {
-	fprintf(stderr, "Error: neither DJDIR nor TOP are set in environment\n");
+	fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
 	exit(1);
       }
+      strcat(command, libdir);
+      strcat(command, "/lib");
     }
-    strcat(command, libdir);
-    strcat(command, "/lib ");
+    strcat(command, " ");
     for(i=3;argv[i];i++)
     {
       strcat(command, argv[i]);

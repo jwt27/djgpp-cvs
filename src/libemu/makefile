@@ -1,7 +1,9 @@
+# Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=.
-export TOP
+DXE_LD_LIBRARY_PATH=$(TOP)/../../lib
+export DXE_LD_LIBRARY_PATH
 
 LIBNAME=emu
 
