@@ -160,7 +160,7 @@ Installation
 
      - Right-click "My Computer", then select "Properties";
      - Click the "Environment" tab;
-     - Edit the PATH system variable to add the top DJGPP directory;
+     - Edit the PATH system variable to add the DJGPP bin subdirectory;
      - Add a new variable DJGPP and set its value to the full path
        name of the DJGPP.ENV file as explained below.
 
@@ -192,9 +192,10 @@ Installation
 
    The actual numbers will vary according to amount of RAM installed
    on your system, the available disk space and the DPMI server.  If
-   go32-v2 reports less than 4 MBytes of DPMI memory, read section 3.8
-   of the FAQ.  (If you have more than that, but want to get the
-   optimal performance from your system, read that section anyway.)
+   the sum of the two numbers reported by go32-v2 is less than 4MB,
+   read section 3.8 of the FAQ.  (If you have more than that, but want
+   to get the optimal performance from your system, read that section
+   anyway.)
 
 
 Compilation
@@ -319,7 +320,95 @@ format used by the GNU project.  Each package brings its docs which
 are files with .iNN extension and are unzipped into the info/
 subdirectory of your main DJGPP installation directory.  To browse
 these docs, get and unzip the file txi*b.zip, then run info.exe.  If
-you don't know how to use Info, press `?'.
+you don't know how to use Info, read the next section.
+
+
+
+Reading the documentation, or A Crash Course in Info
+----------------------------------------------------
+
+The following is not supposed to be a complete guide to using Info,
+just a starting point, so you could move around the docs and search it
+for whatever you are looking for.
+
+To invoke Info to read a manual, type "info" followed by the manual
+name.  For example:
+
+  - type "info libc" to read the C library docs;
+  - type "info libc alphabetical printf" to read the documentation
+    of library function `printf';
+  - type "info gcc" to read the manual for GCC, the GNU C compiler;
+  - type "info faq" to read the DJGPP FAQ list;
+  - type "info make" to read the manual for the Make utility;
+
+To exit Info, press `q' (for Quit).
+
+Once inside Info, you can move around with the usual cursor motion
+keys: Up-arrow, Down-arrow, PageDown, PageUp, etc.  
+
+To read the entire manual in an orderly fashion, press SPACE every
+time you've completed reading a screenful.  This will take you through
+the entire sequence of chapters and sections of a manual.
+
+Menus are marked by a line that says "* Menu:".  Each line below the
+menu marker that begins with a "* " is a menu item.  To choose a menu
+item, position the cursor at the beginning of a line, right under the
+asterisk `*', and press [Enter].
+
+Hypertext links are marked by "* Note".  To follow the reference,
+position the cursor at the asterisk, then press [Enter].  To get back
+from the excursion, press `l' (that's a lower-case letter ell, not the
+digit one), for "Last".
+
+To quickly search for a certain subject in the index of a manual,
+press `i' (for Index), type the subject, then press [Enter].  You can
+type only part of the subject name and press TAB, to see whether the
+index includes any entries that begin with what you typed.  TAB causes
+Info to try to complete what you typed using the avialable index
+entries; if Info beeps on you or flashes the screen colors, you know
+that there are no index entries which begin with what you typed;
+delete what you have typed (using the BackSpace key) and try a
+different name for what you are looking.  If there are some index
+entries that begin with what you typed, Info will complete it.  If the
+completed entry looks like what you are looking for, press [Enter] to
+go to the section of the manual that discusses it; if not, press TAB
+again to see all the possible completions.  If any of the completions
+seem right, type enough text to make it uinque and press [Enter].  If
+none of the completions seem appropriate, delete what you typed and
+try a different subject name.
+
+For example, suppose you get the infamous message "ld.exe: cannot open
+-lstdcxx: No such file or directory" and you want to check what the
+FAQ has to say about that.  You start Info ("info faq"), then press
+`i' and type "can TAB".  The first TAB just capitalizes "can" into
+"Can", so you know there are some index entries which begin with
+"Can", and type TAB again.  Now you will see a list of potential
+completions.  Alas, none of them seems to be relevant for this
+problem, so you use BackSpace to delete "Can" and then type "-lstd"
+followed by TAB.  Now the the info program only has one choice so it
+completes your search and this time it's exactly what you are looking
+for!  Now press "RET" to go to that node and read what the FAQ has to
+say about this subject.
+
+If you prefer to look up the subject in the index yourself, page
+through the top-level menu of the manual until you find a menu entry
+that says something like "* Concept Index" or "* Command Index" or
+just "* Index", press [Enter] to go to the index, then browse it for
+any pertinent entries.  An index is just a huge menu sorted in an
+alphabetical order, so whenever you find an entry you are looking for,
+position the cursor at that line and press [Enter] to go to the
+relevant section.
+
+Sometimes the index search isn't good enough (because the indices
+cannot list everything).  In this case, press `s' (for Search) and
+type a string you want to find, then press [Enter].  Info will search
+the entire manual for this string and position you at the first
+occurrence.  To search for the next occurrence, press `s' again and
+then [Enter]: Info will repeat the search.
+
+Info has many more commands and options.  To find out, from the
+command line type "info info".  To find out even more, type
+"info info-standalone".
 
 
 
