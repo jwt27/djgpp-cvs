@@ -39,3 +39,9 @@ dos file descriptor
 char *_name_to_remove;
 
 If nonzero, the named file is removed when the file is fclosed.
+
+int   _fillsize;
+
+The number of bytes to read this time.  Used to slow-start the read,
+in case the program seeks a lot we won't waste time reading large
+blocks, but if you read a lot, we use bigger transfers.
