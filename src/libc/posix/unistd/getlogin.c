@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static char default_login[] = "user";
+static char default_login[] = "dosuser";
 
 char *
 getlogin(void)
