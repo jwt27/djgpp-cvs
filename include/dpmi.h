@@ -174,7 +174,7 @@ int	__dpmi_simulate_real_mode_interrupt(int _vector, __dpmi_regs *_regs);			/* D
 int	__dpmi_int(int _vector, __dpmi_regs *_regs); /* like above, but sets ss sp fl */	/* DPMI 0.9 AX=0300 */
 extern short __dpmi_int_ss, __dpmi_int_sp, __dpmi_int_flags; /* default to zero */
 int	__dpmi_simulate_real_mode_procedure_retf(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0301 */
-int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_bytes_to_copy, const void *stack_bytes); /* DPMI 0.9 AX=0301 */
+int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_words_to_copy, const void *stack_data); /* DPMI 0.9 AX=0301 */
 int	__dpmi_simulate_real_mode_procedure_iret(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0302 */
 int	__dpmi_allocate_real_mode_callback(void (*_handler)(void), __dpmi_regs *_regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
 int	__dpmi_free_real_mode_callback(__dpmi_raddr *_addr);					/* DPMI 0.9 AX=0304 */

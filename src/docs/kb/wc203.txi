@@ -358,4 +358,8 @@ length and the size of transfer buffer are now taken from the values
 used by the debugger.  This means that you can have predictable results
 by stubediting the debugger's executable.
 
-
+@findex __dpmi_simulate_real_mode_procedure_retf_stack
+@code{__dpmi_simulate_real_mode_procedure_retf_stack} no longer fills
+part of the real-mode stack with garbage.  The parameters specification
+was changed so that the second argument is now the number of 16-bit
+words to copy to the real-mode stack, like the DPMI spec requires.

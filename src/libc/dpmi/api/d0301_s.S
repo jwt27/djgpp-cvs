@@ -23,9 +23,9 @@
 	/* Copy the data. */
 	cld
 	rep
-	movsb
+	movsw
 
-	/* Reload %ecx with the number of bytes to transfer to RM stack. */
+	/* Reload %ecx with the number of words to transfer to RM stack. */
 	movl	ARG2, %ecx
 
 L_do_call:
