@@ -140,6 +140,7 @@ static int check_talloc(size_t amt)
 
 extern char   __PROXY[];	/* defined on crt0/crt1.c */
 extern size_t __PROXY_LEN;
+void __maybe_fix_w2k_ntvdm_bug(void);   /* prototype (not in v2.03 headers) */
 
 /* Functions that call `direct_exec_tail' after they've put
    some data into the transfer buffer, should set LFN parameter
@@ -337,6 +338,9 @@ direct_exec_tail_1 (const char *program, const char *args,
     __dpmi_free_dos_memory (tbuf_selector);
   tbuf_selector = 0;
 #endif
+  /* Work around the W2K NTVDM bug; see dpmiexcp.c for detailed
+     explanations.  */
+  __maybe_fix_w2k_ntvdm_bug();
   if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
