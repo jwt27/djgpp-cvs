@@ -1,8 +1,9 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
 
-   Redir 2.0 Copyright (C) 1995-1998 DJ Delorie (dj@delorie.com)
+   Redir 2.1 Copyright (C) 1995-1999 DJ Delorie (dj@delorie.com)
 
    Redir is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by
@@ -66,7 +67,7 @@ static void
 usage(void)
 {
   /*               ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8 */
-  fprintf(stderr, "Redir 2.0 Copyright (C) 1995 - 1998 DJ Delorie (dj@delorie.com)\n");
+  fprintf(stderr, "Redir 2.1 Copyright (C) 1995 - 1999 DJ Delorie (dj@delorie.com)\n");
   fprintf(stderr, "Distribute freely.  There is NO WARRANTY.\n");
   fprintf(stderr, "This program is protected by the GNU General Public License.\n\n");
   fprintf(stderr, "Usage: redir [-i file] [-o file] [-oa file] [-e file] [-ea file]\n");
@@ -140,7 +141,7 @@ extern char __PROXY[];	/* defined on crt1.c */
 extern size_t __PROXY_LEN;
 
 static int
-run_program(int argc, char *argv[])
+run_program(int argc, char *argv[], int skip)
 {
   char doscmd[128];
   char *tail = doscmd + 1, *tp = tail;
@@ -175,25 +176,40 @@ run_program(int argc, char *argv[])
 	  if (++i == 3)
 	  {
 	    gettimeofday(&startt, NULL);
-	    return spawnvp(P_WAIT, argv[1], argv+1);
+	    return spawnvp(P_WAIT, argv[skip], argv+skip);
 	  }
 	} while (*endarg);
       }
     }
     /* The DOS command tail is the actual command line.
        Get past our own options we've already parsed,
-       and pass the rest to the child via `system'.  */
-    tail = strstr(tail, argv[1]);
-    gettimeofday(&startt, NULL);
-    return system(tail);
+       and pass the rest to the child via `system'.
+       SKIP says how many argv[] elements to skip.  */
+    for (tp = tail; skip--; argv++)
+    {
+      tp = strstr(tp, argv[1]);
+      /* If, at some point, we don't find the next argv[] element,
+	 it's probably some disaster, because they all should be
+	 there.  Instead of screaming bloody murder, we fall back
+	 on using argv[] from our `main', as the last resort.  */
+      if (!tp)
+	break;
+      if (skip == 0)
+      {
+	/* We've come all the way to the child command line, invoke it.  */
+	gettimeofday(&startt, NULL);
+	return system(tp);
+      }
+      tp += strlen(argv[1]);	/* get past this arg */
+    }
   }
   /* We need to recreate the original command line as a single string,
      from its breakdown in argv[].  */
-  for (tail_len = 0, i = 1; i < argc; i++)
+  for (tail_len = 0, i = skip; i < argc; i++)
     tail_len += strlen(argv[i]) + 1;	/* +1 for the blank between args */
 
   tp = tail = (char *)xmalloc(tail_len + 1);
-  for (i = 1; i < argc; i++)
+  for (i = skip; i < argc; i++)
   {
     size_t len = strlen(argv[i]);
     memcpy(tp, argv[i], len);
@@ -210,6 +226,8 @@ int
 main(int argc, char **argv)
 {
   char *arg1 = NULL, *arg2 = NULL;
+  int ac = argc;
+  char **av = argv;
 
   /* Don't let us crash because some naughty program left
      the FPU in shambles.  */
@@ -312,7 +330,7 @@ main(int argc, char **argv)
      or crashes for any reason.  */
   _control87(0x033f, 0xffff);	/* mask all numeric exceptions */
   __djgpp_exception_toggle();
-  rv = run_program(argc, argv);
+  rv = run_program(ac, av, ac - argc + 1);
   gettimeofday(&endt, NULL);
   _clear87();			/* clean up after the child, just in case */
   _fpreset();

@@ -113,3 +113,7 @@ Linking with -lemu should obviate the need for emu387.dxe.
 The ``Hidden Features'' chapter of the Knowledge Base now actually
 describes most of the special features provided by DJGPP.
 @cindex hidden features, documentation
+
+@code{redir} no longer fails to run programs when the program name
+is a substring of the redirected I/O file(s).
+@pindex redir
