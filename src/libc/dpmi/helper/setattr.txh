@@ -1,0 +1,37 @@
+@node __djgpp_set_page_attributes, memory
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __djgpp_set_page_attributes(void *our_addr, unsigned long num_bytes,
+			        unsigned short attributes);
+@end example
+
+@subheading Description
+
+This function sets the DPMI page attributes for the pages in a range
+of memory.  @var{our_addr} and @var{num_bytes} must be page-aligned.
+If they are not page-aligned, @var{errno} will be set to @code{EINVAL}
+and the routine will fail.
+
+Consult DPMI documentation on function 0507H for the meaning of the
+@var{attributes} argument.  Note: since 0507H is a DPMI service new
+with DPMI 1.0, this call will fail on most DPMI 0.9 servers.  For your
+program to work on a wide range of systems, you should not assume this
+call will succeed.
+
+Even on failure, this routine may affect a subset of the pages specified.
+
+@subheading Return Value
+
+0 on success, -1 on failure.  On failure, @var{errno} will be set to
+@code{EINVAL} for illegal input parameters, or @code{EACCES} if the
+DPMI server rejected the attribute setting.
+
+@subheading Example
+
+@example
+if (__djgpp_set_page_attributes (my_page_aligned_memory, 16384, 0))
+  printf ("Failed to make pages uncommitted!\n");
+@end example

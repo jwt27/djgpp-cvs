@@ -1,0 +1,42 @@
+@node __djgpp_map_physical_memory, memory
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __djgpp_map_physical_memory(void *our_addr, unsigned long num_bytes,
+			        unsigned long phys_addr);
+@end example
+
+@subheading Description
+
+This function attempts to map a range of physical memory over the
+specified addresses.  One common use of this routine is to map device
+memory, such as a linear frame buffer, into the address space of the
+calling program.  @var{our_addr}, @var{num_bytes}, and @var{phys_addr}
+must be page-aligned.  If they are not page-aligned, @var{errno} will
+be set to @code{EINVAL} and the routine will fail.
+
+This routine properly handles memory ranges that span multiple DPMI
+handles, while @code{__dpmi_map_device_in_memory_block} does not.
+
+Consult DPMI documentation on function 0508H for details on how this
+function works.  Note: since 0508H is a DPMI service new with DPMI
+1.0, this call will fail on most DPMI 0.9 servers.  For your program
+to work on a wide range of systems, you should not assume this call
+will succeed.
+
+Even on failure, this routine may affect a subset of the pages specified.
+
+@subheading Return Value
+
+0 on success, -1 on failure.  On failure, @var{errno} will be set to
+@code{EINVAL} for illegal input parameters, or @code{EACCES} if the
+DPMI server rejected the mapping request.
+
+@subheading Example
+
+@example
+if (__djgpp_map_physical_memory (my_page_aligned_memory, 16384, 0x40000000))
+  printf ("Failed to map physical addresses!\n");
+@end example
