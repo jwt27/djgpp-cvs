@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -487,6 +489,7 @@ system (const char *cmdline)
   const char *envflags = getenv ("DJSYSFLAGS");
   const char *comspec  = getenv ("COMSPEC");
   const char *shell    = 0;
+  int call_shell;
 
   sys_flags = __system_flags;
   if (envflags && *envflags)
@@ -502,10 +505,31 @@ system (const char *cmdline)
     shell = getenv ("SHELL");
   if (!shell)
     shell = comspec;
+  if (!shell)
+    shell = command_com;
 
-  /* Special case: NULL means just exec the command interpreter.  */
+  call_shell =
+    (sys_flags & __system_call_cmdproc)
+    || (!(sys_flags & __system_emulate_command) && _is_unixy_shell (shell));
+
+  /* Special case: NULL means return non-zero if the command
+     interpreter is available.  This is ANSI C requirement.
+
+     If we will call the shell to do everything, we need to see
+     whether it exists.  But if most of the work will be done by us
+     anyway (like it usually is with stock DOS shell), return non-zero
+     without checking, since our emulation is always ``available''.  */
   if (cmdline == 0)
-    cmdline = "";
+  {
+    if (!call_shell)
+      return 1;
+    else
+    {
+      char full_path[FILENAME_MAX];
+
+      return __dosexec_find_on_path (shell, (char **)0, full_path) ? 1 : 0;
+    }
+  }
 
   /* Strip initial spaces (so that if the command is empty, we
      know it right here).  */
@@ -519,9 +543,7 @@ system (const char *cmdline)
 	they want to always do it via command processor
      or
 	$SHELL or $COMSPEC point to a unixy shell  */
-  if (!*cmdline
-      || (sys_flags & __system_call_cmdproc)
-      || (!(sys_flags & __system_emulate_command) && _is_unixy_shell (shell)))
+  if (!*cmdline || call_shell)
     return _shell_command ("", cmdline);
   else
   {
@@ -785,7 +807,18 @@ int main (int argc, char *argv[])
 	puts ("");
       return 0;
     }
-  return 1;
+  else
+    {
+      int i;
+      printf ("if system (NULL) returns non-zero, a shell is available:");
+      printf ("\n\nsystem() returned %d", (errno = 0, i = system ((char *)0)));
+      fflush (stdout);
+      if (errno)
+	perror ("");
+      else
+	puts ("");
+      return 1;
+    }
 }
 
 #endif
