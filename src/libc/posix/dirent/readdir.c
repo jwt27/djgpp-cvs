@@ -57,9 +57,9 @@ readdir(DIR *dir)
   dir->num_read ++;
   if (!(dir->flags & __OPENDIR_PRESERVE_CASE))
   {
-    char *cp, fsh[13];
+    char *cp;
 
-    if (!strcmp(_lfn_gen_short_fname(dir->ff.ff_name, fsh), dir->ff.ff_name))
+    if (_is_DOS83(dir->ff.ff_name))
       for (cp=dir->ff.ff_name; *cp; cp++)
 #if 1
 	{

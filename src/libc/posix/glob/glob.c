@@ -110,16 +110,13 @@ glob_dirs(const char *rest, char *epathbuf, int first, /* rest is ptr to null or
   done = findfirst(pathbuf, &ff, FA_DIREC);
   while (!done)
   {
-    char short_name[13];
-
     if ((ff.ff_attrib & FA_DIREC)
 	&& (strcmp(ff.ff_name, ".") && strcmp(ff.ff_name, "..")))
     {
       int i;
       char *tp;
       /* Long directory names are never lower-cased!  */
-      if (lower
-	  && !strcmp(ff.ff_name, _lfn_gen_short_fname(ff.ff_name, short_name)))
+      if (lower && _is_DOS83(ff.ff_name))
 	for (i=0; ff.ff_name[i] && i<13; i++)
 	  ff.ff_name[i] = msdos_tolower_fname(ff.ff_name[i]);
 
@@ -300,13 +297,11 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
   while (!done)
   {
     int i;
-    char fshort[13];
     if ((ff.ff_attrib & FA_DIREC) == 0
 	|| (strcmp(ff.ff_name, ".") && strcmp(ff.ff_name, "..")))
     {
       /* Long filenames are never lower-cased!  */
-      if (lower
-	  && !strcmp(ff.ff_name, _lfn_gen_short_fname(ff.ff_name, fshort)))
+      if (lower && _is_DOS83(ff.ff_name))
 	for (i=0; ff.ff_name[i] && i<13; i++)
 	  ff.ff_name[i] = msdos_tolower_fname(ff.ff_name[i]);
 

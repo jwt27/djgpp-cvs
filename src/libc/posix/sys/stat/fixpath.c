@@ -242,7 +242,7 @@ _fixpath(const char *in, char *out)
   /* switch FOO\BAR to foo/bar, downcase where appropriate */
   for (op = out + 3, name_start = op - 1; *name_start; op++)
   {
-    char long_name[FILENAME_MAX], short_name[13];
+    char long_name[FILENAME_MAX];
 
 #if 1
     /* skip multibyte character */
@@ -259,7 +259,7 @@ _fixpath(const char *in, char *out)
     {
       memcpy(long_name, name_start+1, op - name_start - 1);
       long_name[op - name_start - 1] = '\0';
-      if (!strcmp(_lfn_gen_short_fname(long_name, short_name), long_name))
+      if (_is_DOS83(long_name))
       {
 #if 0
 	while (++name_start < op)

@@ -853,14 +853,12 @@ stat_assist(const char *path, struct stat *statbuf)
 		     || (fname[1] == '.'
 			 && fname[2] == '\0'))))
 	    {
-	      char fn[13];
-
 	      nfiles++;
 	      if (ff_blk.ff_attrib & 0x10)
 		nsubdirs++;
 	      /* For each 13 characters of the long filename, a
 		 32-byte directory entry is used.  */
-	      if (add_extra && strcmp(_lfn_gen_short_fname(fname, fn), fname))
+	      if (add_extra && !_is_DOS83(fname))
 		extra += (strlen(fname) + 12) / 13;
 	    }
 	}

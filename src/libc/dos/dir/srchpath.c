@@ -67,7 +67,7 @@ searchpath(const char *file)
       /* switch FOO\BAR to foo/bar, downcase where appropriate */
       for (s = path + 2, name_start = s; *name_start; s++)
       {
-	char lname[FILENAME_MAX], sname[13];
+	char lname[FILENAME_MAX];
 
 	if (*s == '\\')
 	  *s = '/';
@@ -79,7 +79,7 @@ searchpath(const char *file)
 	{
 	  memcpy(lname, name_start+1, s - name_start - 1);
 	  lname[s - name_start - 1] = '\0';
-	  if (!strcmp(_lfn_gen_short_fname(lname, sname), lname))
+	  if (_is_DOS83(lname))
 	  {
 	    name_start++;
 	    while (name_start < s)
