@@ -48,6 +48,8 @@ extern "C" {
 #define lfilelength __lfilelength
 #define llseek __llseek
 #define modfl __modfl
+#define moncontrol __moncontrol
+#define monstartup __monstartup
 #define movedata __movedata
 #define pow10 __pow10
 #define pow2 __pow2

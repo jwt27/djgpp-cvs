@@ -1,0 +1,104 @@
+@c ----------------------------------------------------------------------
+@node monstartup, profiling
+@subheading Syntax
+
+@example
+#include <sys/gmon.h>
+
+int monstartup (unsigned long lowpc, unsigned long highpc);
+@end example
+
+@subheading Description
+
+This function allows to selectively collect profiling information for a
+specific range of addresses.  The arguments specify the address range
+that is to be sampled: the lowest address is given by @var{lowpc} and
+the highest is just below @var{highpc}.  @code{monstartup} arranges for
+the profiling data to be gathered and written at program exit time, and
+then calls the @code{moncontrol} function (@pxref{moncontrol}) to start
+profiling.
+
+The call graph printed by the
+@code{gprof} utility will only include functions in this range compiled
+with the @samp{-pg} option, but @code{EIP} sampling triggered by the
+timer tick will measure execution time of all the functions in the
+specified range.
+
+This function should be called by a program which was not linked with
+the @samp{-pg} linker switch.  If @samp{-pg} @emph{was} used during
+linking, @code{monstartup} is called automatically by the startup code
+with arguments which span the entire range of executable addresses in
+the program, from the program's entry point to the highest code segment
+address.
+
+Only the first call to this function has an effect; any further calls
+will do nothing and return a failure indication.  (In particular, in a
+program linked with @samp{-pg}, this function always fails, since the
+startup code already called it.)  This is because @code{monstartup} sets
+up some internal data structures which cannot be resized if a different
+address range is requested.
+
+Profiling begins on return from this function.  You can use
+@code{moncontrol} (@pxref{moncontrol}) to turn profiling off and on.
+
+@subheading Return Value
+
+Zero on success, non-zero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@xref{moncontrol}.
+
+@c ----------------------------------------------------------------------
+@node moncontrol, profiling
+@subheading Syntax
+
+@example
+#include <sys/gmon.h>
+
+int moncontrol (int mode);
+@end example
+
+@subheading Description
+
+This function allows to control collection of profiling information
+during the program run.  Profiling begins when a program linked with the
+@samp{-pg} option starts, or when @code{monstartup} is called
+(@pxref{monstartup}).  To stop the collection of histogram ticks and
+function call counts, call @code{moncontrol} with a zero argument
+@var{mode}; this stops the timer used to sample the program counter
+(@code{EIP}) values and disables the code which counts how many times
+each function compiled with @samp{-pg} was called.  To resume collection
+of profile data, call @code{moncontrol} with a non-zero argument.
+
+Note that the profiling output is always written to the file
+@file{gmon.out} at program exit time, regardless of whether profiling is
+on or off.
+
+@subheading Return Value
+
+@code{moncontrol} returns the previous state of profiling: zero if it
+was turned off, non-zero if it was on.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ extern void my_func();
+ extern void my_func_end();
+ /* Profile only one function.  */
+ monstartup((unsigned long)my_func, (unsigned long)my_func_end);
+ ...
+ /* Stop profiling.  */
+ moncontrol(0);
+ ...
+ /* Resume profiling.  */
+ moncontrol(1);
+@end example

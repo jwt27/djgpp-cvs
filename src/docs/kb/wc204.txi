@@ -425,3 +425,9 @@ The function @code{readdir} now includes the file's type in the
 used by some GNU packages, such as Fileutils, to make directory
 traversal more efficient.
 
+@findex moncontrol@r{, added}
+@findex monstartup@r{, added}
+Two new functions, @code{monstartup} and @code{moncontrol}, allow to
+control when profiling starts and ends, and what range of addresses is
+recorded in the profiling data.
+
