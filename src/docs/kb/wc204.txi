@@ -364,3 +364,9 @@ refuses to run batch files that contain UNIX-style EOLs.
 @findex pipe@r{, now implemented in the library}
 The function @code{pipe} is now implemented in the library.
 
+@findex spawn*@r{, invoking @file{.com} programs}
+@file{.com} programs are now invoked by the @code{spawn*} family of
+functions directly, thus making their exit status available to the
+parent DJGPP program.  Previously, when long file names were supported,
+@file{.com} programs were invoked through @file{COMMAND.COM}, which
+would lose the exit status.

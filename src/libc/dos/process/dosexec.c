@@ -778,7 +778,10 @@ static int go32_exec(const char *program, char **argv, char **envp)
   /* Non-DJGPP programs cannot be run by !proxy.  */
   else if (!is_coff)
   {
-    if (type->exec_format == _V2_EXEC_FORMAT_EXE)
+    const char *ext = strrchr(real_program, '.');
+
+    if (type->exec_format == _V2_EXEC_FORMAT_EXE
+	|| (ext && stricmp(ext, ".com") == 0))
     {
       if (type->object_format != _V2_OBJECT_FORMAT_PE_COFF)
 	return direct_exec(real_program, argv, envp);
@@ -1241,7 +1244,7 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
       {
 	/* If some of the `access' calls failed, `errno' will hold
 	   the reason for the failure which is irrelevant to the
-	   caller (we *did* find the execuatble).  Restore the value
+	   caller (we *did* find the executable).  Restore the value
 	   `errno' had when we were called.  */
 	errno = e;
 	return buf;
