@@ -14,7 +14,7 @@ size @var{size}.  The memory returned is initialized to all zeros.  The
 pointer returned should later be passed to free (@pxref{free}) so that
 the memory can be returned to the heap.
 
-You may use cfree (@pxref{xfree}) to free the pointer also; it just
+You may use cfree (@pxref{cfree}) to free the pointer also; it just
 calls free.
 
 @subheading Return Value
