@@ -69,8 +69,8 @@ static __inline__ char tochar(int n)
 
 static int cvtl(long double number, int prec, int flags, char *signp,
 	        unsigned char fmtch, char *startp, char *endp);
-static char *roundl(long double fract, int *expv, char *start, char *end,
-		    char ch, char *signp);
+static char *doprnt_roundl(long double fract, int *expv, char *start,
+			   char *end, char ch, char *signp);
 static char *exponentl(char *p, int expv, unsigned char fmtch);
 #ifdef __GO32__
 static int isspeciall(long double d, char *bufp);
@@ -615,8 +615,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
 	  *t++ = tochar((int)tmp);
 	} while (--prec && fract);
       if (fract)
-	startp = roundl(fract, (int *)NULL, startp,
-			t - 1, (char)0, signp);
+	startp = doprnt_roundl(fract, (int *)NULL, startp,
+			       t - 1, (char)0, signp);
     }
     for (; prec--; *t++ = '0');
     break;
@@ -639,8 +639,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
       if (!prec && ++p < endp)
       {
 	fract = 0;
-	startp = roundl((long double)0.0L, &expcnt,
-			startp, t - 1, *p, signp);
+	startp = doprnt_roundl((long double)0.0L, &expcnt,
+			       startp, t - 1, *p, signp);
       }
       /* adjust expcnt for digit in front of decimal */
       --expcnt;
@@ -701,8 +701,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
 	  *t++ = tochar((int)tmp);
 	} while (--prec && fract);
       if (fract)
-	startp = roundl(fract, &expcnt, startp,
-			t - 1, (char)0, signp);
+	startp = doprnt_roundl(fract, &expcnt, startp,
+			       t - 1, (char)0, signp);
     }
     /* if requires more precision */
     for (; prec--; *t++ = '0');
@@ -781,8 +781,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
       }
     }
     if (fract)
-      startp = roundl(fract, (int *)NULL, startp, t - 1,
-		      (char)0, signp);
+      startp = doprnt_roundl(fract, (int *)NULL, startp, t - 1,
+			     (char)0, signp);
     /* alternate format, adds 0's for precision, else trim 0's */
     if (flags&ALT)
       for (; prec--; *t++ = '0');
@@ -797,8 +797,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
 }
 
 static char *
-roundl(long double fract, int *expv, char *start, char *end, char ch,
-       char *signp)
+doprnt_roundl(long double fract, int *expv, char *start, char *end, char ch,
+	      char *signp)
 {
   long double tmp;
 
