@@ -42,6 +42,8 @@ From djdevNNN.zip
 * texi2ps: (utils)texi2ps.	Convert texinfo files to Postscript.
 * update: (utils)update.	Conditionally copy one file to another.
 
+* djasm: (djasm).
+	The DJGPP 16-bit assembler
 
 
 From faqNNNb.zip
