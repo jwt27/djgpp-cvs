@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 
@@ -34,10 +35,10 @@ statvfs (const char *path, struct statvfs *outbuf)
   outbuf->f_ffree  = sbuf.f_bfree;
   outbuf->f_favail = sbuf.f_bavail;
 
-  /* We pretend that the fundamental block size `f_frsize' for all devices
-   * is 512 bytes. This seems reasonable since many (if not most) devices
-   * have 512 byte sectors. */
-  outbuf->f_frsize = 512;
+  /* We pretend that the fundamental block size `f_frsize' is the same
+   * as the file system's block size ("clusters" for FAT file systems).
+   */
+  outbuf->f_frsize = outbuf->f_bsize;
 
   /* Set the flags. */
   outbuf->f_flag = ST_NOSUID;

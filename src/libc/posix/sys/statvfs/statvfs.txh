@@ -18,10 +18,10 @@ the structure below:
 struct statvfs @{
   unsigned long f_bsize;   /* FS block size */
   unsigned long f_frsize;  /* fundamental block size */
-  fsblkcnt_t    f_blocks;  /* # of blocks on filesystem */
-  fsblkcnt_t    f_bfree;   /* # of free blocks on FS */
-  fsblkcnt_t    f_bavail;  /* # of free blocks on FS for
-                            * unprivileged users */
+  fsblkcnt_t    f_blocks;  /* # of blocks on FS of size f_frsize */
+  fsblkcnt_t    f_bfree;   /* # of free blocks on FS of size f_frsize */
+  fsblkcnt_t    f_bavail;  /* # of free blocks on FS of size f_frsize
+                            * for unprivileged users */
   fsfilcnt_t    f_files;   /* # of file serial numbers */
   fsfilcnt_t    f_ffree;   /* # of free file serial numbers */
   fsfilcnt_t    f_favail;  /* # of free file serial numbers
@@ -43,10 +43,18 @@ to approximately 2GB.  TSRs that hook INT 21h include:
 
 These may be loaded by @file{autoexec.bat} or @file{config.sys}.
 
+The fundamental block size is considered to be a cluster.  Really
+the fundamental block is the sector of the physical media rather
+than the logical block of the filesystem, but the sector size
+cannot be determined in all cases.  So for consistency we return
+the cluster size.
+
 @subheading Return Value
 
 Zero on success, nonzero on failure (and @code{errno} set).
 
 @subheading Portability
+
+@port-note posix See the comments on the fundamental block size above.
 
 @portability !ansi, posix
