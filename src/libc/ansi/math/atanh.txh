@@ -14,7 +14,7 @@ This function computes the inverse hyperbolic tangent of @var{x}.
 
 @subheading Return Value
 
-The inverse hyperbolic tangent of @var{x}.  If the the absolute value of
+The inverse hyperbolic tangent of @var{x}.  If the the value of
 @var{x} is plus or minus 1, the return value is an @code{Inf} with the
 same sign as the argument @var{x}, and @code{errno} is set to
 @code{ERANGE}.  If the absolute value of @var{x} is greater than 1, the

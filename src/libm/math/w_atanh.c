@@ -44,7 +44,7 @@ RETURNS
 
 	If 
 	@ifinfo
-	|<[x]>|
+	@w{|<[x]>|}
 	@end ifinfo
 	@tex
 	$|x|$
@@ -54,7 +54,7 @@ RETURNS
 
 	If 
 	@ifinfo
-	|<[x]>|
+	@w{|<[x]>|}
 	@end ifinfo
 	@tex
 	$|x|$
