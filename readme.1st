@@ -119,6 +119,12 @@ possible if you are using a newer Windows release.
 Installation
 ------------
 
+A 'long file name' or 'long directory name' has path components that
+are longer than 8 characters in the portion before the extension
+and longer than 3 characters in the extension.  A long file name may
+also have multiple extensions and contain some characters that are
+invalid in short file names (not including the quotes: "+,;=[]").
+
 1. Create a directory for DJGPP, say C:\DJGPP.  (WARNING: do NOT
    install DJGPP in a directory C:\DEV, D:\DEV, etc., or in any of their
    subdirectories: it will not work!  See the FAQ for more details.)  Do
@@ -314,16 +320,13 @@ other free editors can serve as an IDE.  The only task that these
 editors (including Emacs) cannot do is to run a debugger in a
 full-screen session.
 
-A DJGPP-specific IDE called RHIDE has recently been released and is
-now available to all DJGPP users.  It features a Turbo C-style
+An IDE called RHIDE supports DJGPP.  It features a Turbo C-style
 interface, auto-indentation, color syntax highlighting, automatic
 invocation of the DJGPP compiler, automatic Makefile generation, and
 easy access to the DJGPP online documentation.  RHIDE also
 incorporates integrated and/or standalone debugging using the same
-functionality as the GNU Debugger (gdb).  Since RHIDE is brand new,
-there are still revisions and bugfixes being made; visit
-http://www.tu-chemnitz.de/~sho/rho/rhide.html for the latest
-information and updates.
+functionality as the GNU Debugger (gdb).  Visit http://www.rhide.com/
+for the latest information and updates.
 
 
 
@@ -490,20 +493,41 @@ command line type "info info".  To find out even more, type
 
 
 
-Compatibility with V2.00
-------------------------
+Compatibility with previous 2.x versions
+----------------------------------------
 
 If you are upgrading from version 2.00 of DJGPP, you should completely
 reinstall all the packages you need to use.  Because of the different
 methods used by versions 2.01 and later to handle long command lines
-(and long filenames under Win95), mixing V2.00 programs with those
-from later versions can cause very subtle and difficult to debug
-problems.  See the FAQ section 16.6 for more information.
+(and long file names under Windows '95, '98, ME, 2000 and XP),
+mixing V2.00 programs with those from later versions can cause
+very subtle and difficult to debug problems.  See the FAQ section 16.6
+for more information.
+
+DJGPP uses files of a special format, to support symbolic links
+between files.  Version 2.04 introduced a new format for symlinks,
+to improve symlink support.  Versions 2.00 through 2.03 do not
+understand the new format symlinks and cannot resolve them.
+Version 2.04 understands the old and new symlink formats.
+Subtle and difficult to debug problems may be experienced, if programs
+built with version 2.04 are mixed with programs built
+with an earlier version.
+
+If you are upgrading from version 2.00 through 2.02 of DJGPP
+on Windows 2000 or XP, you should reinstall all the DJGPP packages.
+Programs built with version 2.02 and earlier are likely to fail
+on Windows 2000 and XP.
+
+If you are upgrading from version 2.03 of DJGPP on Windows 2000 or XP,
+you should reinstall all DJGPP packages dated after December 2001.
+Programs dated before December 2001 are likely to fail
+on Windows 2000 and XP.
 
 
 
-Compatibility with V1.x
------------------------
+
+Compatibility with 1.x versions
+-------------------------------
 
 Existing binaries compiled under DJGPP V1.x can be used for
 applications for which there is no v2.x version.  V1 programs cannot
