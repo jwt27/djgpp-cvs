@@ -1,0 +1,83 @@
+@node __get_extended_key_string, bios
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+const unsigned char * __get_extended_key_string(int xkey_code);
+@end example
+
+@subheading Description
+
+Returns an @sc{ecma-48} compliant representation of an extended key's
+scan code in @var{xkey_code}.
+
+@xref{getkey}.
+@xref{getxkey}.
+
+@subheading Return Value
+
+A pointer to an @sc{ecma-48} compliant string if the scan code @var{xkey_code}
+has an encoding or @code{NULL} if there is not.
+
+@subheading Portability
+
+@port-note This function is DJGPP-specific.
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <pc.h>
+#include <stdio.h>
+
+int key;
+
+int main()
+@{
+  key = getxkey();
+  if (key < 0x100)
+  @{
+    putc(key, stdout);
+    putc('\r', stdout);
+  @}
+  else
+  @{
+    const unsigned char *str = __get_extended_key_string(key);
+    if (str)
+      puts(str);
+    else
+      puts("<unknown>");
+  @}
+  fflush(stdout);
+@}
+
+@end example
+
+@example
+#include <pc.h>
+#include <stdio.h>
+#include <dpmi.h>
+
+int main()
+@{
+  __dpmi_regs r;
+  const unsigned char *str;
+  int is_extended_key;
+
+  /* Wait for keypress. */
+  r.h.ah = 0x11;
+  __dpmi_int(0x16, &r);
+  /* Print the encoding for function keys (F1, F2, etc.)
+     and other extended keys (Home, End, etc.). */
+  is_extended_key = (r.h.al == 0x00 || r.h.al == 0xe0);
+  if (is_extended_key)
+  @{
+    str = __get_extended_key_string((int)r.h.ah)
+    printf("Key encoding: %s", str);
+  @}
+@}
+
+@end example
+
