@@ -51,7 +51,7 @@ int _rename(const char *old, const char *new)
 	  identical_but_for_case = 1;
 	}
       else
-	return 0;  /* no LFN; foo and Foo ar *always* the same file */
+	return 0;  /* no LFN; foo and Foo are *always* the same file */
     }
 
   r.x.dx = __tb_offset;
