@@ -507,3 +507,15 @@ failure, and @code{putenv}'s argument is now a @code{char*} instead of
 a @code{const char*}.
 A new function, @code{unsetenv}, which is also part of that standard, was
 added.
+
+@findex struct group@r{, added @code{gr_passwd} field}
+@code{struct group} has a new field, @code{gr_passwd}.  This helps out
+porters, as many Unixy apps expect it to exist.  Since @sc{dos} is
+basically an insecure environment, this field always contains the empty
+string.
+@findex struct passwd@r{, added @code{pw_gecos} field}
+@findex struct passwd@r{, added @code{pw_passwd} field}
+Similarly, @code{struct passwd} has two new fields, @code{pw_gecos} and
+@code{pw_passwd}.  @code{pw_gecos} gets the same value as @code{pw_name}
+(i.e. the value returned by @code{getlogin()}).  Like @code{gr_passwd},
+@code{pw_passwd} gets the empty string as value.
