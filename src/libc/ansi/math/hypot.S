@@ -69,7 +69,7 @@ bigarg:					/* least one arg is huge.  Proceed */
 	faddp
 	fsqrt
 	fcoml	DBL_MAX
-	fnstsww	%ax
+	fnstsw	%ax
 	sahf
 	ja	range_error
 	ret
