@@ -58,6 +58,15 @@ main(int argc, char **argv)
   if (argc != 4 && argc != 5)
     usage();
 
+  /* We used to call fstat, but that loses on NT, since the mode
+     bits come as if the file were read-only, and the split files
+     are then created read-only as well...  */
+  if (stat (argv[1], &stbuf))
+  {
+    perror("Couldn't stat, file's time and modes won't be preserved");
+    preserve_file_time = 0;
+  }
+
   inf = open(argv[1], O_RDONLY|O_BINARY);
   if (inf < 0)
     usage();
@@ -81,11 +90,6 @@ main(int argc, char **argv)
   {
     preserve_file_time = 0;
     ++argv;
-  }
-  else if (fstat(inf, &stbuf) != 0)
-  {
-    perror("Couldn't fstat, file's time and modes won't be preserved");
-    preserve_file_time = 0;
   }
 
   chunksize = strtol(argv[2], &endp, 0);
@@ -116,7 +120,8 @@ main(int argc, char **argv)
     {
       close(f);
       close(inf);
-      p_set_modes(argv[3], partnum, &stbuf);
+      if (preserve_file_time)
+	p_set_modes(argv[3], partnum, &stbuf);
       exit(0);
     }
     
@@ -126,7 +131,8 @@ main(int argc, char **argv)
     if (left == 0)
     {
       close(f);
-      p_set_modes(argv[3], partnum, &stbuf);
+      if (preserve_file_time)
+	p_set_modes(argv[3], partnum, &stbuf);
       partnum++;
       f = p_open(argv[3], partnum);
       left = chunksize;

@@ -60,6 +60,7 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
   struct stat st;
   struct utimbuf tim1;
 
+  stat (fname,&st);
   sf = open (fname, O_RDONLY|O_BINARY);
   if (sf < 1)
   {
@@ -67,7 +68,6 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
     return IO_ERROR;
   }
   
-  fstat (sf,&st);
   tim1.actime = st.st_atime;
   tim1.modtime = st.st_mtime;
   nbufs = st.st_size / BUF_SIZE;

@@ -25,10 +25,19 @@ usage(void)
 }
 
 static int
-p_open(char *ob, int p)
+p_open(char *ob, int p, struct stat *stbuf)
 {
   char partname[1024];
   sprintf(partname, "%s.%03d", ob, p);
+
+  /* We used to call fstat, but that loses on NT, since the mode
+     bits come as if the file were read-only, and the merged file
+     is then created read-only as well...  */
+  if (p == 0 && stat(partname, stbuf) != 0)
+  {
+    perror("Couldn't stat, file's time and modes won't be preserved");
+    stbuf->st_ino = -1;
+  }
   return open(partname, O_RDONLY|O_BINARY);
 }
 
@@ -56,17 +65,14 @@ main(int argc, char **argv)
     usage();
 
   partnum = 0;
-  f = p_open(argv[1], partnum);
+  f = p_open(argv[1], partnum, &stbuf);
+  if (stbuf.st_ino == -1)
+    preserve_file_time = 0;
   if (f < 0)
   {
     fprintf(stderr,"FATAL: Cannot open %s.000", argv[1]);
     perror("");
     exit(1);
-  }
-  else if (fstat(f, &stbuf) != 0)
-  {
-    perror("Couldn't fstat, file's time and modes won't be preserved");
-    preserve_file_time = 0;
   }
   while (1)
   {
@@ -76,7 +82,7 @@ main(int argc, char **argv)
     {
       close(f);
       partnum++;
-      f = p_open(argv[1], partnum);
+      f = p_open(argv[1], partnum, NULL);
 
       if (f < 0)
       {

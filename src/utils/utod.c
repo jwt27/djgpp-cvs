@@ -24,6 +24,8 @@ utod(char *fname)
   char tfname[FILENAME_MAX], *bn, *w;
   struct stat st;
   struct utimbuf tim1;
+
+  stat (fname,&st);
   sf = open(fname, O_RDONLY|O_BINARY);
   if (sf < 0)
   {
@@ -31,7 +33,6 @@ utod(char *fname)
     return 1;
   }
 
-  fstat (sf,&st);
   tim1.actime = st.st_atime;
   tim1.modtime = st.st_mtime;
 
