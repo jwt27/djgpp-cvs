@@ -12,8 +12,9 @@ native :: \
 	$(HOSTBIN)/dxegen.exe \
 	$E
 
-$(BIN)/dxegen.exe : dxegen.c $(L)
-	$(XLGCC) -s dxegen.c -o $@
+$(BIN)/dxegen.exe : $(C) dxegen.o $(L)
+	$(LINK)
+	$(EXE)
 
 $(HOSTBIN)/dxegen.exe : dxegen.c
 	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" dxegen.c -o $@
