@@ -1,5 +1,7 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <libc/symlink.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -9,6 +11,7 @@ int
 mkstemp (char *_template)
 {
   char tmp_name[FILENAME_MAX];
+  char real_path[FILENAME_MAX];
   int  fd = -1;
 
   /* Make sure we create a non-exisiting file, even
@@ -17,7 +20,8 @@ mkstemp (char *_template)
     strcpy(tmp_name, _template);
     errno = 0;
   } while (mktemp (tmp_name) != NULL
-	   && (fd = _creatnew(tmp_name, 0, SH_DENYRW)) == -1
+           && __solve_symlinks(tmp_name, real_path)
+	   && (fd = _creatnew(real_path, 0, SH_DENYRW)) == -1
 	   && errno == EEXIST);
 
   if (fd == -1)
