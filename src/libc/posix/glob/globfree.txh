@@ -4,12 +4,13 @@
 @example
 #include <glob.h>
 
-void globfree(glob_t *_pglob);
+void globfree(glob_t *pglob);
 @end example
 
 @subheading Description
 
-Frees the memory associated with @code{_pglob}.
+Frees the memory associated with @var{pglob}, which should have been
+allocated by a call to @code{glob} (@pxref{glob}).
 
 @subheading Portability
 

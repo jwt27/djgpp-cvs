@@ -48,7 +48,7 @@ as a simple character.
 @end table
 
 The variable @var{flags} controls certain options of the expansion
-process.  Possible values for @var{_flags} are as follows:
+process.  Possible values for @var{flags} are as follows:
 
 @table @code
 
@@ -120,6 +120,9 @@ the address of the array.  Thus, the filenames which match the pattern
 can be accessed as @code{gl_pathv[0]}, @code{gl_pathv[1]}, etc.  If
 @code{GLOB_DOOFFS} was set in @var{flags}, the new matches begin at
 offset given by @code{gl_offs}.
+
+@code{glob} allocates memory to hold the filenames.  This memory should be
+freed by calling @code{globfree} (@pxref{globfree}).
 
 @subheading Return Value
 
