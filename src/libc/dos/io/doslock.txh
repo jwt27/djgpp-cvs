@@ -4,7 +4,7 @@
 @example
 #include <io.h>
 
-int _dos_lock(int _fd, long _offset, long _length)
+int _dos_lock(int fd, long offset, long length);
 @end example
 
 @subheading Description

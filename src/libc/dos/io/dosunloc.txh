@@ -4,7 +4,7 @@
 @example
 #include <io.h>
 
-_dos_unlock(int _fd, long _offset, long _length)
+_dos_unlock(int fd, long offset, long length);
 @end example
 
 @subheading Description

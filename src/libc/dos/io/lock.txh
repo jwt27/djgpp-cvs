@@ -10,13 +10,13 @@ int lock(int fd, long offset, long length);
 @subheading Description
 Locks a region in file @var{fd} using MS-DOS file sharing interface.
 The region of @var{length} bytes, starting from @var{offset}, will
-become entirely inaccessible to other processes. If multiple locks
-are used on a single file they must be non-overlapping. The lock
+become entirely inaccessible to other processes.  If multiple locks
+are used on a single file they must be non-overlapping.  The lock
 must be removed before the file is closed.
 
-This function will fail unless SHARE, or a network software
-providing similar interface, is installed. This function is
-compatible with Borland C++ function of the same name.
+This function will fail unless @code{share}, or a network software
+providing similar interface, is installed.  This function is
+compatible with Borland C@t{++} function of the same name.
 
 @xref{unlock}.
 
