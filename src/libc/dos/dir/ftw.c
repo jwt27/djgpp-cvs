@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* ftw() for DJGPP.
  *
@@ -12,6 +13,7 @@
  */
 
 #include <libc/stubs.h>
+#include <libc/symlink.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -107,6 +109,7 @@ ftw(const char *dir, int (*func)(const char *, struct stat *, int),
 {
   int flag;
   unsigned char pathbuf[FILENAME_MAX];
+  unsigned char real_path[FILENAME_MAX];
   int dirattr;
   int len;
   int e = errno;
@@ -135,7 +138,18 @@ ftw(const char *dir, int (*func)(const char *, struct stat *, int),
 
   /* Fail for non-directories.  */
   errno = 0;
-  dirattr = _chmod(pathbuf, 0, 0);
+  /* __chmod() does not recognize symlinks,  */
+  /* so we give real name instead.          */
+  if (!__solve_symlinks(pathbuf, real_path))
+  {
+     /* The errno is set by __solve_symlinks() */
+     return -1;
+  }
+  /* Note that symlink-clean name is not used further: 
+   * functions that are called from here understand symlinks anyway.
+   */
+  
+  dirattr = _chmod(real_path, 0, 0);
   if (errno == ENOENT)
     return -1;
   else if ((dirattr & 0x10) != 0x10)
