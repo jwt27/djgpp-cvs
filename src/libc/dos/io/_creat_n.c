@@ -33,23 +33,9 @@ _creatnew(const char* filename, int attrib, int flags)
   r.x.dx = 0x0010;		/* Create, fail if exists */
   r.x.si = __tb_offset;
   if(use_lfn)
-  {
-    if (7 <= _osmajor && _osmajor < 10)
-    {
-      r.x.bx |= 0x1000; 	/* FAT32 extended size. */
-    }
     r.x.ax = 0x716c;
-  }
   else
   {
-    if (7 <= _osmajor && _osmajor < 10)
-    {
-      r.x.bx |= 0x1000; 	/* FAT32 extended size. */
-      /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
-	 seems it has a bug which only lets you create these big files
-	 if LFN is enabled. */
-    }
-
     if (_osmajor > 3)
       r.x.ax = 0x6c00;
     else
@@ -68,7 +54,7 @@ _creatnew(const char* filename, int attrib, int flags)
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
-  if(use_lfn && _os_trueversion == 0x532) {
+  if(use_lfn && _osmajor == 5 && _get_dos_version(1) == 0x532) {
     /* Windows 2000 or XP; or NT with LFN TSR.  Windows 2000 behaves
        badly when using IOCTL and write-truncate calls on LFN handles.
        We close the long name file and re-open it with _open.c (short)

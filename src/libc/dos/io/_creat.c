@@ -28,48 +28,32 @@ _creat(const char* filename, int attrib)
   if (__FSEXT_call_open_handlers(__FSEXT_creat, &rv, &filename))
     return rv;
 
+  _put_path(filename);
   if(use_lfn) {
     r.x.ax = 0x716c;
-    r.x.bx = 0x0002;		/* Open r/w. */
-    /* The FAT32 bit should _not_ be set on Windows 2000, because
-       that bit fails function 716Ch on W2K.  The test below is
-       based on the assumption that W2K returns DOS version 5.  */
-    if (7 <= _osmajor && _osmajor < 10) {
-      r.x.bx |= 0x1000; /* 0x1000 is FAT32 extended size. */
-    }
+    r.x.bx = 0x0002;		/* open r/w */
     r.x.dx = 0x0012;		/* Create, truncate if exists */
     r.x.si = __tb_offset;
   } else {
-    if (7 <= _osmajor && _osmajor < 10) {
-      r.x.ax = 0x6c00;
-      r.x.bx = 0x1002;           /* Open r/w with FAT32 extended size. */
-      /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
-	 seems it has a bug which only lets you create these big files
-	 if LFN is enabled. */
-      r.x.dx = 0x0012;           /* Create, truncate if exists */
-      r.x.si = __tb_offset;
-    } else {
-      r.h.ah = 0x3c;
-      r.x.dx = __tb_offset;
-    }
+    r.h.ah = 0x3c;
+    r.x.dx = __tb_offset;
   }
   r.x.cx = attrib;
   r.x.ds = __tb_segment;
-  _put_path(filename);
   __dpmi_int(0x21, &r);
   if(r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
-  if(use_lfn && _os_trueversion == 0x532) {
+  if(use_lfn && _osmajor == 5 && _get_dos_version(1) == 0x532) {
     /* Windows 2000 or XP; or NT with LFN TSR.  Windows 2000 behaves
        badly when using IOCTL and write-truncate calls on LFN handles.
        We close the long name file and re-open it with _open.c (short)
        to work around the bugs. */
-    rv = _open(filename, 2);	/* 2 is a read/write flag */
+    rv = _open(filename,2);	/* 2 is a read/write flag */
     if(rv != -1) {	/* Re-open failure, continue with LFN handle */
-      dup2(rv, r.x.ax);	/* Replace ax, put handle in first position (bugs) */
+      dup2(rv, r.x.ax);	/* Close ax, put handle in first position (bugs) */
       _close(rv);
     }
   }
