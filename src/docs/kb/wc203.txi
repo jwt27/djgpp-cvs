@@ -483,3 +483,11 @@ value.
 @code{kill} now sets @code{errno} to @code{ENOSYS} when called with a
 @var{pid} argument that isn't the caller's PID, since DOS doesn't allow
 sending signals to other processes.
+
+@cindex template instantiation, improved support
+@pindex crt0.S@r{, and long section names}
+@pindex djgpp.djl@r{, and long section names}
+The startup code and the linker script file @file{djgpp.djl} include
+support for long section names.  Long section names are required by the
+latest versions of GNU Binutils to support automatic template
+instantiation in C++ programs.
