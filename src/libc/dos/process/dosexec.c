@@ -157,7 +157,7 @@ size_t __cmdline_str_len = sizeof(__cmdline_str) - 1;
    if LFN is 2, there is a possiblity that the contents of the
    transfer buffer will be overrun!  */
 static int
-direct_exec_tail(const char *program, const char *args,
+direct_exec_tail_1 (const char *program, const char *args,
 		 char * const envp[], const char *proxy, int lfn,
 		 const char *cmdline_var)
 {
@@ -411,6 +411,146 @@ direct_exec_tail(const char *program, const char *args,
       return ( ((r.h.ah == 1 ? SIGINT : SIGABRT) << 8) | r.h.al );
     }
   return r.h.al;	/* AL holds the child exit code */
+}
+
+static int direct_exec_tail (const char *program, const char *args,
+		 char * const envp[], const char *proxy, int lfn,
+		 const char *cmdline_var)
+{
+  int i, ret;
+  int sel1, sel2;
+  static char first_call = 1;
+  static char workaround_descriptor_leaks = 0;
+  static unsigned char larbyte = 0;
+  static int how_deep = 100;		/* Tunable parameter */
+  char desc_map[how_deep];
+
+  sel1 = sel2 = 0;			/* Clear warnings */
+
+  if (first_call)			/* One time algorithm detection */
+  {
+    int flags;
+    char dpmi_vendor[128];
+    unsigned char desc_buf1[8], desc_buf2[8];
+
+    /* Disable descriptors leak workaround when CWSDPMI is being used */
+    /* since not needed.  Does not work with CWSDPMI versions before  */
+    /* r5 as corresponding DPMI call is supported beginning with v5.  */
+
+    ret = __dpmi_get_capabilities(&flags,dpmi_vendor);
+    if (ret == 0 && strcmp(dpmi_vendor+2,"CWSDPMI") == 0)
+      workaround_descriptor_leaks = 0;
+    else {
+
+      /* Test the DPMI provider to see how it behaves.  We allocate
+         a descriptor, get it's access rights and full 8 byte descriptor.
+         We then free it, and see what changed.  The present bit, run
+         ring and selector type (user) might change.  Algorithm 1: These
+         can be detected with a single hardware instruction (LAR).
+         __dpmi_get_descriptor_access_rights is actually not an interrupt
+         but just a wrapper around this instruction.  However, Win NT/2K
+         do something strange on the LAR, so once a selector is allocated
+         it stays visable.  Algorithm 2: Get the full descriptor and
+         compare extracted LAR nibble.  If the get descriptor call fails
+         we also know this descriptor is currently not user allocated. */
+
+      sel1 = __dpmi_allocate_ldt_descriptors(1);
+      larbyte = 0xf0 & __dpmi_get_descriptor_access_rights(sel1);
+      __dpmi_get_descriptor(sel1, &desc_buf1);
+      __dpmi_free_ldt_descriptor(sel1);
+      flags = __dpmi_get_descriptor_access_rights(sel1);	/* freed */
+
+      if (larbyte != (flags & 0xf0)) {	/* present+ring+sys changed */
+        workaround_descriptor_leaks = 1;
+
+      } else {				/* Win NT/2K/XP lie about lar */
+        larbyte = desc_buf1[5] & 0xf0;
+        ret = __dpmi_get_descriptor(sel1, &desc_buf2);
+        if (ret == -1 || (larbyte != (desc_buf2[5] & 0xf0))) {
+          workaround_descriptor_leaks = 2;
+        } else
+          workaround_descriptor_leaks = 0;	/* Don't do anything */
+      }
+    }
+    first_call = 0;
+  }
+
+  if (workaround_descriptor_leaks)		/* Create the unused map */
+  {
+    unsigned char desc_buf[8];
+    char * map = desc_map;
+
+    /* Create a map of the free descriptors in the probable range the
+       children will use.  We start by allocating a descriptor, assuming
+       it will be close to the start of what the children will use.  We
+       then scan an area "how_deep" beyond that.  Since a DJGPP app will
+       leak 4 descriptors if it's all cleaned up, we allocate 25 times that
+       much - maybe one of them is before this fix.  We use the algorithm
+       determined in the one pass identification. */
+
+    sel1 = __dpmi_allocate_ldt_descriptors(1);
+    if(sel1 < _dos_ds) {			/* Failure -1 also matches */
+      sel1 = _dos_ds;				/* Our last descriptor */
+      *map++ = 0;				/* don't free it */
+    } else
+      *map++ = 1;				/* sel1 always released */
+    sel2 = sel1 + 8 * how_deep - 8;		/* end of scan range inclusive */
+
+    if (workaround_descriptor_leaks == 1) {
+      for (i=sel1+8; i<=sel2; i+=8)
+        *map++ = (__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte;
+
+    } else if (workaround_descriptor_leaks == 2) {
+      for (i=sel1+8; i<=sel2; i+=8)
+        if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte)
+          *map++ = 1;				/* Never touched, free it */
+        else if (__dpmi_get_descriptor(i, &desc_buf) == -1)
+          *map++ = 1;				/* Means free on NT */
+        else
+          *map++ = (desc_buf[5] & 0xf0) != larbyte;
+    }
+  }
+
+  ret = direct_exec_tail_1 ( program, args, envp, proxy, lfn, cmdline_var );
+
+  if (workaround_descriptor_leaks)		/* Free the unused map */
+  {
+    int endsel;
+    char * map;
+
+    /* First, allocate a selector to estimate the end of the leaked range.
+       This is only used to determine if our "how_deep" range was adequate.
+       Use the map of the free descriptors created before the children
+       were spawned.  For algorithm 1 since the LAR instruction is fast
+       we check first to see if the selector is allocated before deallocating.
+       For algorithm 2, the check is a DPMI call and slow, so we just free
+       the descriptors which were free before we called the children and
+       touched according to the LAR byte.  Finally, if the "how_deep"
+       range was too small, we permanently lose the extra selectors, but
+       we double the range beyond what we saw this time.  If we lose a few
+       it's the price we pay for better performance.  */
+
+    map = desc_map + how_deep;
+
+    endsel = __dpmi_allocate_ldt_descriptors(1);
+    __dpmi_free_ldt_descriptor (endsel);
+
+    if (workaround_descriptor_leaks) {		/* Algorithms 1 & 2 */
+      for (i=sel2; i>=sel1; i-=8)
+        if (*--map)
+          if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) == larbyte)
+            __dpmi_free_ldt_descriptor(i);
+    }
+
+    if (endsel > sel2) {
+      how_deep = (endsel - sel1) / 4;		/* Twice what's needed */
+#if 0
+      for (i=endsel-8; i>=sel2; i-=8)		/* Unsafe free, no map */
+        __dpmi_free_ldt_descriptor(i);
+#endif
+    }
+  }
+  return ret;
 }
 
 int
