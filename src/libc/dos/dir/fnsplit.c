@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <dir.h>
 #include <ctype.h>
@@ -69,6 +70,10 @@ fnsplit (const char *path, char *drive, char *dir,
       len = pp - pe;
       strncpy(name, pe, len);
       name[len] = '\0';
+      /* advance name over '.'s so they don't get scragged later on when the
+       * rest of the name (if any) is copied (for files like .emacs). - WJC
+       */
+      name+=len;
     }
   }
 
