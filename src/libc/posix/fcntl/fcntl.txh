@@ -48,7 +48,7 @@ file.
 @item F_GETFL
 Get the open mode and status flags associated with the handle @var{fd}.
 The flags are those supported by @code{open} and @code{creat} functions,
-like @code{O_READONLY}, @code{O_APPEND}, etc.  Currently, this command
+like @code{O_RDONLY}, @code{O_APPEND}, etc.  Currently, this command
 always returns zero, with no flags set.
 
 @item F_SETFL
