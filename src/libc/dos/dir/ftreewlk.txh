@@ -22,7 +22,7 @@ file.
 
 This function always visits a directory before any of its siblings.  The
 argument @var{dir} must be a directory, or @code{__file_tree_walk} will fail
-and set @var{errno} to @code{ENOTDIR}.  The directory @var{dir} itself is
+and set @code{errno} to @code{ENOTDIR}.  The directory @var{dir} itself is
 never passed to @var{func}.
 
 The tree traversal continues until one of the following events:
@@ -36,7 +36,7 @@ success.
 @var{func} returned.
 
 (3)  An error is detected within @code{__file_tree_walk}.  In that case,
-@code{ftw} returns -1 and sets @var{errno} (@pxref{errno}) to a suitable
+@code{ftw} returns -1 and sets @code{errno} (@pxref{errno}) to a suitable
 value.
 
 @subheading Return Value

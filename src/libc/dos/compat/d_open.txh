@@ -81,7 +81,7 @@ Posix-standard.
 @subheading Return Value
 
 Returns 0 if successful or DOS error code on error (and sets
-@var{errno} to EACCES, EINVAL, EMFILE or ENOENT).
+@code{errno} to EACCES, EINVAL, EMFILE or ENOENT).
 
 @subheading Portability
 

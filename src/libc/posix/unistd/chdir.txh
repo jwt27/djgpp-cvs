@@ -17,7 +17,7 @@ directory for the current drive is changed.
 
 @subheading Return Value
 
-Zero if the new directory exists, else nonzero and @var{errno} set if error.
+Zero if the new directory exists, else nonzero and @code{errno} set if error.
 
 @subheading Portability
 

@@ -281,7 +281,7 @@ handler.
 @subheading Return Value
 
 If successful, a new file descriptor is returned. On error, a negative number
-is returned and @var{errno} is set to indicate the error.
+is returned and @code{errno} is set to indicate the error.
 
 @subheading Portability
 

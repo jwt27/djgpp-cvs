@@ -28,7 +28,8 @@ int execvpe(const char *path, char *const argv[], char *const envp[]);
 @subheading Description
 
 These functions operate by calling @code{spawn*} with a type of
-@code{P_OVERLAY}.  Refer to @ref{spawn*} for a full description. 
+@code{P_OVERLAY}.  Refer to @code{spawn*} (@pxref{spawn*})
+for a full description. 
 
 @subheading Return Value
 

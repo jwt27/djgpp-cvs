@@ -12,12 +12,13 @@ long long lfilelength(int fhandle);
 
 This function returns the size, in bytes, of a file whose handle is
 specified in the argument @var{fhandle}.  To get the handle of a file
-opened by @ref{fopen} or @ref{freopen}, you can use @ref{fileno} macro.
+opened by @code{fopen} (@pxref{fopen}) or @code{freopen} (@pxref{freopen}),
+you can use @code{fileno} macro (@pxref{fileno}).
 
 @subheading Return Value
 
 The size of the file in bytes, or (if any error occured) -1LL and
-@var{errno} set to a value describing the cause of the failure.
+@code{errno} set to a value describing the cause of the failure.
 
 The return value is of type @code{long long} which allows file sizes of
 @math{2^63-1} bytes to be returned.  Note that FAT16 limits files to near

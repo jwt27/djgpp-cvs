@@ -56,7 +56,7 @@ with similar functionality see @ref{_chmod}.  Also see @ref{chmod},
 @subheading Return Value
 
 Returns with 0 if successful and DOS error value on error (and sets
-@var{errno}=ENOENT).
+@code{errno}=ENOENT).
 
 @subheading Portability
 

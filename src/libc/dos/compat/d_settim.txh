@@ -26,7 +26,7 @@ struct dostime_t @{
 
 @subheading Return Value
 
-Returns 0 if successful and non-zero on error (and sets @var{errno}=EINVAL).
+Returns 0 if successful and non-zero on error (and sets @code{errno}=EINVAL).
 
 @subheading Portability
 

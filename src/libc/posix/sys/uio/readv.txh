@@ -29,7 +29,7 @@ struct iovec @{
 @subheading Return Value
 
 On successful completion the function returns the number of bytes read.
-Otherwise, a value of -1 is returned and @var{errno} is set appropriately.
+Otherwise, a value of -1 is returned and @code{errno} is set appropriately.
 
 @table @samp
 

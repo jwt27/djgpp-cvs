@@ -30,7 +30,7 @@ described in @ref{_djstat_flags}.
 
 @subheading Return Value
 
-Zero on success, nonzero on failure (and @var{errno} set). 
+Zero on success, nonzero on failure (and @code{errno} set). 
 
 @subheading Portability
 

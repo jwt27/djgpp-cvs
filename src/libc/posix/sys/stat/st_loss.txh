@@ -10,8 +10,9 @@ void _djstat_describe_lossage(FILE *fp);
 
 @subheading Description
 
-Accesses the global variable @ref{_djstat_fail_bits} and prints to the
-stream given by @var{fp} a human-readable description of the undocumented
+Accesses the global variable @code{_djstat_fail_bits}
+(@pxref{_djstat_fail_bits}) and prints to the stream
+given by @var{fp} a human-readable description of the undocumented
 DOS features which the last call to @code{stat()} or @code{fstat()} failed
 to use.  (If @var{fp} is zero, the function prints to stderr.)  If the
 last call to @code{f?stat()} didn't set any failure bits, an ``all's

@@ -11,9 +11,9 @@ int __dpmi_get_segment_base_address(int _selector,
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
-information.
+Please refer to the DPMI Specification (@pxref{DPMI Specification})
+for details on DPMI function call operation.  Also see
+the DPMI Overview (@pxref{DPMI Overview}) for general information.
 
 DPMI function AX = 0x0006
 

@@ -10,9 +10,9 @@ int __dpmi_mark_page_as_demand_paging_candidate(__dpmi_meminfo *_info);
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
-information.
+Please refer to the DPMI Specification (@pxref{DPMI Specification})
+for details on DPMI function call operation.  Also see
+the DPMI Overview (@pxref{DPMI Overview}) for general information.
 
 DPMI function AX = 0x0702
 

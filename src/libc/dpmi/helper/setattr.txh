@@ -13,7 +13,7 @@ int __djgpp_set_page_attributes(void *our_addr, unsigned long num_bytes,
 
 This function sets the DPMI page attributes for the pages in a range
 of memory.  @var{our_addr} and @var{num_bytes} must be page-aligned.
-If they are not page-aligned, @var{errno} will be set to @code{EINVAL}
+If they are not page-aligned, @code{errno} will be set to @code{EINVAL}
 and the routine will fail.
 
 Consult DPMI documentation on function 0507H for the meaning of the
@@ -26,7 +26,7 @@ Even on failure, this routine may affect a subset of the pages specified.
 
 @subheading Return Value
 
-0 on success, -1 on failure.  On failure, @var{errno} will be set to
+0 on success, -1 on failure.  On failure, @code{errno} will be set to
 @code{EINVAL} for illegal input parameters, or @code{EACCES} if the
 DPMI server rejected the attribute setting.
 

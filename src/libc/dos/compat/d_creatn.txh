@@ -51,7 +51,7 @@ see @ref{creat}, and @ref{open}, which are Posix-standard.
 
 @subheading Return Value
 
-Returns 0 if successful or DOS error code on error (and sets @var{errno}).
+Returns 0 if successful or DOS error code on error (and sets @code{errno}).
 
 @subheading Portability
 

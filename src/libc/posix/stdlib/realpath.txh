@@ -32,7 +32,7 @@ caller should ensure there is enough space in the buffer pointed to by
 @subheading Return Value
 
 If successful, a pointer to the result buffer is returned. Otherwise,
-@code{NULL} is returned and @var{errno} is set to indicate which error
+@code{NULL} is returned and @code{errno} is set to indicate which error
 was detected.
 
 @subheading Portability

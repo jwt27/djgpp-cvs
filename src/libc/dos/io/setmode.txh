@@ -35,7 +35,7 @@ operation.
 @subheading Return Value
 
 When successful, the function will return the previous mode of the
-given @var{file}.  In case of failure, -1 is returned and @var{errno}
+given @var{file}.  In case of failure, -1 is returned and @code{errno}
 is set.
 
 @subheading Portability

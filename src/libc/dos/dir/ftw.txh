@@ -51,7 +51,7 @@ garbled.
 
 This function always visits a directory before any of its siblings.  The
 argument @var{dir} must be a directory, or @code{ftw} will fail and set
-@var{errno} to @code{ENOTDIR}.  The function @var{func} is called with
+@code{errno} to @code{ENOTDIR}.  The function @var{func} is called with
 @var{dir} as its argument before the recursive descent begins.
 
 The @var{depth} argument has no meaning in the DJGPP implementation and is
@@ -67,7 +67,7 @@ processed).  In this case, @code{ftw} returns 0, meaning a success.
 returned.
 
 (3)  An error is detected within @code{ftw}.  In that case, @code{ftw}
-returns -1 and sets @var{errno} (@pxref{errno}) to a suitable value.
+returns -1 and sets @code{errno} (@pxref{errno}) to a suitable value.
 
 @subheading Return Value
 

@@ -10,9 +10,9 @@ int __dpmi_set_page_attributes(__dpmi_meminfo *info, short *buffer);
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
-information.
+Please refer to the DPMI Specification (@pxref{DPMI Specification})
+for details on DPMI function call operation.  Also see
+the DPMI Overview (@pxref{DPMI Overview}) for general information.
 
 DPMI function AX = 0x0507 (DPMI 1.0 only).  Supported by CWSDPMI, but
 not by Windows.

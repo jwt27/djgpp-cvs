@@ -23,7 +23,7 @@ See also @ref{_dos_open}, @ref{_dos_creat}, @ref{_dos_creatnew},
 
 @subheading Return Value
 
-Returns 0 if successful or DOS error code on error (and sets @var{errno}
+Returns 0 if successful or DOS error code on error (and sets @code{errno}
 to EACCES or EBADF)
 
 @subheading Portability

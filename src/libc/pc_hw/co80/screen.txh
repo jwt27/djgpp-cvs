@@ -21,7 +21,7 @@ The first two variables (actually, they are #define'd aliases to fields in
 the @var{_go32_info_block} structure @pxref{_go32_info_block}) allow
 access to the video memory of the primary and secondary screens as if they
 were arrays.  To reference them, you must use dosmemget()/dosmemput()
-functions (@ref{dosmemget}, @ref{dosmemput}) or any one of the far
+functions (@ref{dosmemget}, @pxref{dosmemput}) or any one of the far
 pointer functions (@pxref{_far*}), as the video memory is @emph{not} mapped
 into your default address space.
 
@@ -432,8 +432,8 @@ void  ScreenRetrieve(void *buf);
 This function stores a replica of the current primary screen contents in
 the buffer pointed to by @var{buf}.  It assumes without checking that
 @var{buf} has enough storage to hold the data.  The required storage can
-be computed as @code{ScreenRows()*ScreenCols()*2} (@ref{ScreenRows},
-@ref{ScreenCols}).
+be computed as @code{ScreenRows()*ScreenCols()*2} (@pxref{ScreenRows},
+@pxref{ScreenCols}).
 
 @subheading Return Value
 

@@ -303,8 +303,8 @@ int ungetch(int);
 
 @subheading Description
 
-Puts a character back, so that @ref{getch} will return it instead of
-actually reading the console.
+Puts a character back, so that @code{getch} (@pxref{getch}) will return
+it instead of actually reading the console.
 
 @subheading Return Value
 
@@ -342,8 +342,8 @@ int _conio_kbhit(void);
 
 Determines whether or not a character is waiting at the keyboard.  If
 there is an ungetch'd character, this function returns true.  Note
-that if you include @code{conio.h}, the @ref{kbhit} function is
-redefined to be this function instead.
+that if you include @code{conio.h}, the @code{kbhit} (@pxref{kbhit})
+function is redefined to be this function instead.
 
 @subheading Return Value
 
@@ -437,12 +437,13 @@ int     gettext(int _left, int _top, int _right, int _bottom,
 
 Retrieve a block of screen characters into a buffer.
 @code{gettext} is a macro defined in @code{conio.h} that will expand
-into @ref{_conio_gettext}. This is needed to resolve the name conflict
-existing between the @code{gettext} function from @code{libintl.a}
-defined in @code{libintl.h} and this one defined in @code{conio.h}.
+into @code{_conio_gettext} (@pxref{_conio_gettext}). This is needed
+to resolve the name conflict existing between the @code{gettext} function
+from @code{libintl.a} defined in @code{libintl.h} and this one defined
+in @code{conio.h}.
 If you want to use both @code{gettext} functions in the same source file
-you must use @ref{_conio_gettext} to get the @code{gettext} function from
-@code{conio.h}.
+you must use @code{_conio_gettext} (@pxref{_conio_gettext})
+to get the @code{gettext} function from @code{conio.h}.
 This means that if both headers are included in the same source file the
 @code{gettext} keyword will always be reserved for the @code{gettext} function
 defined in @code{libintl.h} and indeed will always make reference to the

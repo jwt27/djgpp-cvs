@@ -55,7 +55,7 @@ is Posix-standard.
 @subheading Return Value
 
 Returns with 0 if successful and DOS error value on error (and sets
-@var{errno} to ENOENT or EACCES).
+@code{errno} to ENOENT or EACCES).
 
 @subheading Portability
 

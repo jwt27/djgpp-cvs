@@ -59,7 +59,8 @@ void srand(unsigned seed);
 
 Initializes the random number generator for @code{rand()}.  If you
 pass the same seed, @code{rand()} will return the same sequence of
-numbers.  You can seed from @ref{time} or @ref{rawclock}.
+numbers.  You can seed from @code{time} (@pxref{time})
+or @code{rawclock} (@pxref{rawclock}).
 
 @subheading Portability
 

@@ -12,9 +12,9 @@ int __dpmi_allocate_real_mode_callback(void (*_handler)(void),
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
-information.
+Please refer to the DPMI Specification (@pxref{DPMI Specification})
+for details on DPMI function call operation.  Also see
+the DPMI Overview (@pxref{DPMI Overview}) for general information.
 
 DPMI function AX = 0x0303
 

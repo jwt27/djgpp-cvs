@@ -36,7 +36,8 @@ execute access bit.
 @item _STAT_EXEC_MAGIC
 
 Tells @code{stat} and @code{fstat} to compute the execute access bit from
-magic signature (the first two bytes of the file), see @ref{_is_executable},
+magic signature (the first two bytes of the file).  Use
+@code{_is_executable} (@pxref{_is_executable}),
 if the file-name extension is not enough for this.
 
 Computing the execute access bit from the magic signature is by far the
@@ -101,10 +102,11 @@ As proper operation of @code{stat} (@pxref{stat}) and @code{fstat}
 some incompatible environment or a future DOS version.  If they do, the
 @code{_djstat_fail_bits} variable will have some of its bits set.  Each
 bit describes a single feature which was used and failed.  The function
-@ref{_djstat_describe_lossage} may be called to print a human-readable
-description of the bits which were set by the last call to
-@code{f?stat}.  This should make debugging @code{f?stat} failures in
-an unanticipated environment a lot easier.
+@code{_djstat_describe_lossage} (@pxref{_djstat_describe_lossage})
+may be called to print a human-readable description of the bits
+which were set by the last call to @code{f?stat}.  This should make
+debugging @code{f?stat} failures in an unanticipated environment
+a lot easier.
 
 The following bits are currently defined:
 

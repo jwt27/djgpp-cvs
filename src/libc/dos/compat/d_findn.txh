@@ -20,7 +20,7 @@ Also see @ref{opendir}, and @ref{readdir}, which are Posix-standard.
 
 @subheading Return Value
 
-Zero if a match is found, DOS error code if not found (and sets @var{errno}).
+Zero if a match is found, DOS error code if not found (and sets @code{errno}).
 
 @subheading Portability
 

@@ -15,7 +15,7 @@ This function attempts to map a range of physical memory over the
 specified addresses.  One common use of this routine is to map device
 memory, such as a linear frame buffer, into the address space of the
 calling program.  @var{our_addr}, @var{num_bytes}, and @var{phys_addr}
-must be page-aligned.  If they are not page-aligned, @var{errno} will
+must be page-aligned.  If they are not page-aligned, @code{errno} will
 be set to @code{EINVAL} and the routine will fail.
 
 This routine properly handles memory ranges that span multiple DPMI
@@ -31,7 +31,7 @@ Even on failure, this routine may affect a subset of the pages specified.
 
 @subheading Return Value
 
-0 on success, -1 on failure.  On failure, @var{errno} will be set to
+0 on success, -1 on failure.  On failure, @code{errno} will be set to
 @code{EINVAL} for illegal input parameters, or @code{EACCES} if the
 DPMI server rejected the mapping request.
 

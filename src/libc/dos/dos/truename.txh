@@ -33,13 +33,13 @@ Upon success, the function will place the result in @var{true_path},
 if that's non-NULL; the buffer should be large enough to contain the
 largest possible pathname (PATH_MAX characters).  If @var{true_path}
 is a NULL pointer, the space to hold the result will be allocated by
-calling @ref{malloc}; it is up to the caller to release the buffer by
-calling @ref{free}.
+calling @code{malloc} (@pxref{malloc}); it is up to the caller to release
+the buffer by calling @code{free} (@pxref{free}).
 
 @subheading Return Value
 
 The function returns the pointer to the result.  In case of any failure,
-a NULL pointer is returned, and @var{errno} is set.
+a NULL pointer is returned, and @code{errno} is set.
 
 @subheading Portability
 

@@ -15,7 +15,7 @@ short _get_dev_info(int handle);
 Given a file handle in @var{handle}, this function returns the info word
 from DOS IOCTL function 0 (Int 21h/AX=4400h).  @var{handle} must refer
 to an open file or device, otherwise the call will fail (and set
-@var{errno} to @code{EBADF}).
+@code{errno} to @code{EBADF}).
 
 In case of success, the returned value is the coded information from the
 system about the character device or the file which is referenced by the
@@ -137,7 +137,7 @@ characters has been read.
 @subheading Return Value
 
 The device information word described above.  In case of error, -1 is
-returned and @var{errno} is set to @code{EBADF}.
+returned and @code{errno} is set to @code{EBADF}.
 
 @subheading Portability
 

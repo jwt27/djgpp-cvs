@@ -49,7 +49,7 @@ get the other two times.  Also see @ref{fstat}, which is Posix-standard.
 @subheading Return Value
 
 Returns 0 if successful and return DOS error on error (and sets
-@var{errno}=EBADF).
+@code{errno}=EBADF).
 
 @subheading Portability
 

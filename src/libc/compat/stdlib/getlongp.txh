@@ -19,7 +19,7 @@ cause the calling program to @code{exit(1)}.
 
 @subheading Return Value
   
-Zero if successful, -1 on error (and @var{errno} is set to an
+Zero if successful, -1 on error (and @code{errno} is set to an
 appropriate value).
 
 @subheading Portability
