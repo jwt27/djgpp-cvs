@@ -701,4 +701,8 @@ Previoulsy, the stored value was always chopped (truncated) at the last
 stored bit of the mantissa.
 @end itemize
 
+@cindex @code{wchar_t} type, and Windows programs
+The @code{wchar_t} data type is changed so that DJGPP now supports
+16-bit wide characters.  This is required for @sc{rsxntdj} programs to
+be compatible with Windows implementation of Unicode.
 
