@@ -401,7 +401,7 @@ __crt0_setup_arguments(void)
     char *cmdline;
 
     movedata(_stubinfo->psp_selector, 128, ds, (int)doscmd, 128);
-    if ((doscmd[0] & 0x7f) != 127 || ((cmdline = getenv("CMDLINE")) == NULL))
+    if (doscmd[0] != 127 || ((cmdline = getenv("CMDLINE")) == NULL))
       arglist = parse_bytes(doscmd + 1, doscmd[0] & 0x7f,
 			    (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES)==0);
     else
