@@ -66,6 +66,6 @@ _dos_getdate(&d);
 _dos_gettime(&t);
 date = ((d.year - 1980) << 9) | (d.month << 5) | d.day;
 time = (t.hour << 11) | (t.minute << 5) | (t.second / 2);
-_dos_settime(handle, date, time);
+_dos_setftime(handle, date, time);
 _dos_close(handle);
 @end example
