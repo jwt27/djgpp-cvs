@@ -128,6 +128,7 @@ extern int __libc_termios_hook_common_count;
 
 /* functions */
 void __libc_termios_init (void);
+extern int __libc_termios_exist_queue (void);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

@@ -52,7 +52,6 @@ static void __libc_termios_maybe_erase1 (void);
 static void __libc_termios_erase_editline (void);
 static void __libc_termios_kill_editline (void);
 static void __libc_termios_insert_editline (unsigned char ch);
-static int __libc_termios_exist_queue (void);
 static void __libc_termios_clear_queue (void);
 static int __libc_termios_get_queue (void);
 static int __libc_termios_put_queue (unsigned char ch);
@@ -815,7 +814,7 @@ __libc_termios_insert_editline (unsigned char ch)
 /******************************************************************************/
 /* queued input routines ******************************************************/
 
-static int
+int
 __libc_termios_exist_queue (void)
 {
   return __libc_tty_p->t_count;

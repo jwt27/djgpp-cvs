@@ -370,3 +370,8 @@ functions directly, thus making their exit status available to the
 parent DJGPP program.  Previously, when long file names were supported,
 @file{.com} programs were invoked through @file{COMMAND.COM}, which
 would lose the exit status.
+
+@findex select@r{, and termios emulation}
+File handles connected to the console device are no longer reported by
+the @code{select} function as not ready for input when termios functions
+are used to read those handles in cooked mode.

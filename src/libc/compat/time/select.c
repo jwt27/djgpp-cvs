@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* An implementation of select()
@@ -21,6 +22,8 @@
 #include <libc/file.h>
 #include <libc/local.h>
 #include <libc/dosio.h>
+#include <libc/getdinfo.h>
+#include <libc/ttyprvt.h>
 #include <sys/fsext.h>
 
 inline static int
@@ -94,6 +97,11 @@ fd_input_ready(int fd)
     return -1;
   }
   if ((regs.x.dx & 0x80) == 0)	/* if not a character device */
+    return 1;
+  /* If it's a STDIN device, and termios buffers some characters, say
+     it's ready for input.  */
+  else if ((regs.x.dx & _DEV_STDIN) == 1
+	   && __libc_read_termios_hook && __libc_termios_exist_queue ())
     return 1;
 
   regs.x.ax = 0x4406;
