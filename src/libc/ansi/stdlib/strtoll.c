@@ -10,9 +10,9 @@
 long long
 strtoll(const char *nptr, char **endptr, int base)
 {
-  const char *s = nptr;
+  const unsigned char *s = (const unsigned char *) nptr;
   unsigned long long acc;
-  int c;
+  unsigned char c;
   unsigned long long cutoff;
   int neg = 0, any, cutlim;
 
@@ -21,7 +21,7 @@ strtoll(const char *nptr, char **endptr, int base)
    */
   do {
     c = *s++;
-  } while (isspace(c & 0xff));
+  } while (isspace(c));
   if (c == '-')
   {
     neg = 1;
@@ -48,7 +48,7 @@ strtoll(const char *nptr, char **endptr, int base)
     cutlim = 0;
     cutoff++;
   }
-  for (acc = 0, any = 0, c &= 0xff;; c = *s++, c &= 0xff)
+  for (acc = 0, any = 0; ; c = *s++)
   {
     if (isdigit(c))
       c -= '0';

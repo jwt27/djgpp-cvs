@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <float.h>
 #include <errno.h>
+#include <ctype.h>
 #include <libc/unconst.h>
 
 double
@@ -27,7 +28,7 @@ strtod(const char *s, char **sret)
   if (sret)
     *sret = unconst(s, char *);
 
-  while ((*s == ' ') || (*s == '\t'))
+  while (isspace((unsigned char) *s))
     s++;
 
   if (*s == '+')
