@@ -11,11 +11,19 @@
 #include <libc/farptrgs.h>
 #include <pc.h>
 #include <libc/bss.h>
+#include <fcntl.h>
+#include <libc/environ.h>
 
 /* Global variables */
 
 #define ds _my_ds()
 
+/* This gets incremented each time the program is started.
+   Programs (such as Emacs) which dump their code to create
+   a new executable, cause this to be larger than 2.  Library
+   functions that cache info in static variables should check
+   the value of `__bss_count' if they need to reinitialize
+   the static storage.  */
 int __bss_count = 1;
 
 char **environ;
@@ -37,7 +45,7 @@ setup_core_selector(void)
   }
   _dos_ds = c;
 
-  __dpmi_set_segment_limit(_dos_ds, 16 * 1024 * 1024 - 1);
+  __dpmi_set_segment_limit(_dos_ds, -1);
 }
 
 static void
@@ -63,10 +71,6 @@ static void
 setup_go32_info_block(void)
 {
   __dpmi_version_ret ver;
-  __dpmi_regs r;
-
-  r.x.ax = 0x1687;
-  __dpmi_int(0x2f, &r);
 
   __dpmi_get_version(&ver);
 
@@ -77,9 +81,10 @@ setup_go32_info_block(void)
   _go32_info_block.master_interrupt_controller_base = ver.master_pic;
   _go32_info_block.slave_interrupt_controller_base = ver.slave_pic;
   _go32_info_block.linear_address_of_stub_info_structure = 0xffffffffU; /* force error */
-  _go32_info_block.linear_address_of_original_psp = _stubinfo->ds_segment * 16 - 256;
+  __dpmi_get_segment_base_address(_stubinfo->psp_selector,
+    &_go32_info_block.linear_address_of_original_psp);
   _go32_info_block.run_mode = _GO32_RUN_MODE_DPMI;
-  _go32_info_block.run_mode_info = r.x.dx;
+  _go32_info_block.run_mode_info = (ver.major << 8) | (ver.minor);
 }
 
 char *__dos_argv0;
@@ -124,6 +129,9 @@ extern void __main(void);
 extern int  main(int, char **, char **);
 extern void _crt0_init_mcount(void);	/* For profiling */
 
+char __PROXY[] = " !proxy";
+size_t __PROXY_LEN = sizeof(__PROXY)-1;
+
 void
 __crt1_startup(void)
 {
@@ -135,9 +143,13 @@ __crt1_startup(void)
   setup_go32_info_block();
   __djgpp_exception_setup();
   setup_environment();
+  __environ_changed++;
+  /* Make so rest of startup could use LFN.  */
+  (void)_USE_LFN;
   __crt0_setup_arguments();
   pn = __crt0_argv ? __crt0_argv[0] : __dos_argv0;
   __crt0_load_environment_file(pn);
+  (void)_USE_LFN;	/* DJGPP.ENV might have set $LFN */
   _npxsetup(pn);
   _crt0_init_mcount();
   __main();
