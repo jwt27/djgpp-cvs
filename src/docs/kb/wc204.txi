@@ -675,3 +675,17 @@ case lowering.  This replaces the functionality used from @code{_lfn_gen_short_f
 which is hopelessly buggy on Windows 2000 and XP.  New function used in
 @file{srchpath.c}, @file{readdir.c}, @file{glob.c}, @file{fixpath.c},
 @file{lstat.c} and @file{getcwd.c}.
+
+@findex stat@r{, and block size}
+@findex lstat@r{, and block size}
+@findex fstat@r{, and block size}
+The functions @code{stat}, @code{lstat} and @code{fstat} now fill
+the @code{st_blksize} member of @code{struct stat} with the correct block
+size for the device where the file is located.
+
+@tindex blksize_t
+@tindex blkcnt_t
+@tindex struct stat@r{, and }blksize_t
+The types @code{blksize_t} and @code{blkcnt_t} were added.
+@code{blksize_t} is now used for the @code{st_blksize} member of
+@code{struct stat}.
