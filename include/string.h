@@ -1,3 +1,5 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -62,6 +64,8 @@ char *  rindex(const char *_string, int _c);
 char *	stpcpy(char *_dest, const char *_src);
 char *	stpncpy(char *_dest, const char *_src, size_t _n);
 char *	strdup(const char *_s);
+size_t	strlcat(char *_dest, const char *_src, size_t _size);
+size_t	strlcpy(char *_dest, const char *_src, size_t _size);
 char *	strlwr(char *_s);
 int	strcasecmp(const char *_s1, const char *_s2);
 int	stricmp(const char *_s1, const char *_s2);

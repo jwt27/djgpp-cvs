@@ -1,0 +1,50 @@
+@node strlcpy, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+size_t strlcpy (char *dest, const char *src, size_t size);
+@end example
+
+@subheading Description
+
+Copy characters from @var{src} to @var{dest} and nul-terminate
+the resulting string.  Up to @code{@var{size} - 1} characters are
+copied to @var{dest}.
+
+@var{size} should be the size of the destination string buffer @var{dest}
+plus the space for the nul-terminator.  @var{size} may be computed
+in many cases using the @code{sizeof} operator.
+
+@code{strlcpy} is a less ambiguous version of @code{strncpy}
+(@pxref{strncpy}).  Unlike @code{strncpy}, @code{strlcpy} @emph{always}
+nul-terminates the destination @var{dest} for non-zero sizes @var{size}.
+
+If @var{dest} and @var{src} are overlapping buffers, the behavior
+is undefined.  One possible result is a buffer overrun - accessing
+out-of-bounds memory.
+
+@subheading Return Value
+
+The length of the string that @code{strlcpy} tried to create is returned,
+whether or not @code{strlcpy} could store it in @var{dest}.  If all
+of @var{src} was copied, the return value will be less than @var{size}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+The following example shows how you can check that
+the destination string buffer was large enough to store the source string.
+In this case @code{somestring} is truncated to fit into @code{buf}.
+
+@example
+const char somestring[] = "foo";
+char buf[3];
+
+if (strlcpy(buf, somestring, sizeof(buf)) >= sizeof(buf))
+  puts("somestring was truncated, when copying to buf.");
+@end example
