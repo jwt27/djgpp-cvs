@@ -333,7 +333,7 @@ The signal interrupts the debuggee and is reported by the debugger,
 instead of aborting the debuggee.  You can also deliver signals to
 the debuggee, even if they didn't actually happen.  Most of the work
 that made this possible was done by @email{muller@@cerbere.u-strasbg.fr,
-Pierre Muller} and @email{pavenis@lanet.lv, Andris Pavenis}.
+Pierre Muller} and @email{pavenis@@lanet.lv, Andris Pavenis}.
 
 @cindex debug support, and floating-point code
 The DJGPP functions in @file{libdbg.a} support FP code much better now,
