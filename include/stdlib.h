@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_stdlib_h_
 #define __dj_include_stdlib_h_
@@ -10,6 +11,9 @@ extern "C" {
 
 #include <sys/djtypes.h>
   
+/* Some programs think they know better... */
+#undef NULL
+
 #define EXIT_FAILURE	1
 #define EXIT_SUCCESS	0
 #define MB_CUR_MAX	__dj_mb_cur_max
@@ -79,6 +83,11 @@ void *		alloca(size_t _size);
 long double	_atold(const char *_s);
 long long	atoll(const char *_s);
 void		cfree(void *_ptr);
+char *		ecvtbuf(double _val, int _nd, int *_dp, int *_sn, char *_bf);
+char *		ecvt(double _val, int _nd, int *_dp, int *_sn);
+char *		fcvtbuf(double _val, int _nd, int *_dp, int *_sn, char *_bf);
+char *		fcvt(double _val, int _nd, int *_dp, int *_sn);
+char *		gcvt(double _val, int _nd, char *_buf);
 char *		getpass(const char *_prompt);
 int		getlongpass(const char *_prompt, char *_buffer, int _max_len);
 char *		itoa(int value, char *buffer, int radix);
@@ -86,6 +95,7 @@ long long	llabs(long long _i);
 lldiv_t		lldiv(long long _numer, long long _denom);
 int		putenv(const char *_val);
 int		setenv(const char *_var, const char *_val, int _replace);
+int		stackavail(void);
 long double	_strtold(const char *_s, char **_endptr);
 long long	strtoll(const char *_s, char **_endptr, int _base);
 unsigned long long strtoull(const char *_s, char **_endptr, int _base);
@@ -118,10 +128,6 @@ void *		xrealloc(void *ptr, size_t _size);
 #define __system_emulate_chdir	      0x4000 /* handle `cd' internally */
 
 extern int __system_flags;
-
-extern int _shell_command  (const char *_prog, const char *_cmdline);
-extern int _is_unixy_shell (const char *_prog);
-extern int _is_dos_shell   (const char *_prog);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

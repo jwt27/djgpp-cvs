@@ -1,3 +1,5 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
+# Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
@@ -8,9 +10,16 @@ SRC += getpass.c
 SRC += itoa.c
 SRC += putenv.c
 SRC += random.c
+SRC += stkavail.c
 SRC += swab.c
 SRC += xfree.c
 SRC += xmalloc.c
 SRC += xrealloc.c
+SRC += ecvtbuf.c
+SRC += ecvt.c
+SRC += fcvtbuf.c
+SRC += fcvt.c
+SRC += gcvt.c
+
 
 include $(TOP)/../makefile.inc
