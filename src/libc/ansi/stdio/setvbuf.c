@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +28,7 @@ int setvbuf(FILE *f, char *buf, int type, size_t len)
       free(f->_base);
     f->_cnt = 0;
 
-    f->_flag &= ~(_IONBF|_IOFBF|_IOLBF);
+    f->_flag &= ~(_IONBF|_IOFBF|_IOLBF|_IOUNGETC);
     f->_flag |= type;
     if (type != _IONBF)
     {
