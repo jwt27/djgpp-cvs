@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_stdarg_h_
@@ -18,6 +19,15 @@ extern "C" {
 __DJ_va_list
 #undef __DJ_va_list
 #define __DJ_va_list
+
+/* New va_list builtins from GCC 2.96 or later */
+#if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
+
+#define va_arg                  __builtin_va_arg
+#define va_end                  __builtin_va_end
+#define va_start(ap, last_arg)  __builtin_stdarg_start((ap), (last_arg))
+
+#else /* #if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3) */
   
 #define __dj_va_rounded_size(T)  \
   (((sizeof (T) + sizeof (int) - 1) / sizeof (int)) * sizeof (int))
@@ -30,6 +40,8 @@ __DJ_va_list
 
 #define va_start(ap, last_arg) \
  (ap = ((va_list) __builtin_next_arg (last_arg)))
+
+#endif /* #if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3) */
   
 #ifndef __STRICT_ANSI__
 

@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_vararg_h_
 #define __dj_include_vararg_h_
@@ -18,6 +19,18 @@ __DJ_va_list
 #undef __DJ_va_list
 #define __DJ_va_list
 
+/* For GCC 2.96 or later we use its builtin va_list */
+#if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
+
+#define va_alist     __builtin_va_alist
+#define va_dcl int __builtin_va_alist __attribute__((__mode__(__word__))); ...
+#define va_start(ap) __builtin_varargs_start((ap))
+#define va_end       __builtin_va_end
+#define va_arg       __builtin_va_arg
+
+
+#else /* #if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3) */
+
 #define va_alist __dj_last_arg
 
 #define va_dcl int __dj_last_arg;
@@ -32,6 +45,8 @@ __DJ_va_list
 #define va_end(ap)
 
 #define va_start(ap)  (ap=(char *)(&__dj_last_arg))
+
+#endif /* #if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3) */
   
 #ifndef __STRICT_ANSI__
 

@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
@@ -12,7 +13,13 @@
 #define __DJ_ssize_t	typedef int ssize_t;
 #define __DJ_time_t	typedef unsigned int time_t;
 #define __DJ_uid_t	typedef int uid_t;
+
+/* Under GCC 2.96 or later, we use its builtin va_list management.  */
+#if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
+#define __DJ_va_list    typedef __builtin_va_list va_list
+#else
 #define __DJ_va_list	typedef void *va_list;
+#endif
 
 #if defined(__cplusplus) && ( (__GNUC_MINOR__ >= 8 && __GNUC__ == 2 ) || __GNUC__ >= 3 )
 /* wchar_t is now a keyword in C++ */
