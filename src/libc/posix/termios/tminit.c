@@ -35,7 +35,7 @@ __libc_termios_fflushall(void)
   fflush(NULL);
 }
 
-void __attribute__((constructor))
+void
 __libc_termios_init(void)
 {
   if (__libc_termios_hook_common_count != __bss_count)
