@@ -50,6 +50,10 @@ _put_path2(const char *path, int offset)
       path = "nul";
     else if (strcmp(p+5, "tty") == 0)
       path = "con";
+    else if (strcmp(p+5, "env") == 0)
+      /* Keep it as is to avoid referencing an 'env' directory in the
+	 current directory */
+      ;
     else if (((p[5] >= 'a' && p[5] <= 'z')
 	      || (p[5] >= 'A' && p[5] <= 'Z'))
 	     && (p[6] == '/' || p[6] == '\\' || p[6] == '\0'))

@@ -212,3 +212,10 @@ The @code{djsplit} and @code{djmerge} utilities now preserve the
 original file's time stamp and mode bits.  The @samp{-t} switch to those
 programs restores the old behavior, where each file was created with the
 current time stamp and default attribute bits.
+
+@findex _put_path@r{, and the @file{/dev/env} directory}
+The low-level function @code{_put_path} was changed to avoid referencing
+an @file{env} directory in the current working directory when library
+functions are passed the @file{/dev/env} file name.  This avoids
+creating spurious @file{env} directories in any directory where the
+standard GNU @code{mkinstalldirs} script is run.
