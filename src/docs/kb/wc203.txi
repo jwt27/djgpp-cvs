@@ -380,3 +380,7 @@ programs linked with @samp{-lemu} to require the dynamically-loaded
 emulator, @file{emu387.dxe}, even though the emulation code was linked
 into the program.  This bug is now fixed.
 
+@findex rename@r{,} errno@r{ value when the file is open}
+@code{rename} now sets @code{errno} to @code{EACCES} when an attempt is
+made to rename an open file.  Previously, @code{errno} was set to
+@code{ENOENT} in these cases.

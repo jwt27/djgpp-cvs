@@ -374,6 +374,12 @@ rename(const char *old, const char *new)
       else if (errno)
 	return -1;
     }
+  else if (target_attr == -1)
+    {
+      /* Target doesn't exist, and source is not a directory:
+	 _rename() must be good enough.  */
+      simple_should_do = 1;
+    }
 
   /* On to some REAL work for a change.  Let DOS do the simple job:
      moving a regular file, or renaming a directory.  Note that on
