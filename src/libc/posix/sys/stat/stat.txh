@@ -21,7 +21,7 @@ struct  stat @{
         ino_t    st_ino;       /* starting cluster or a unique identifier */
         mode_t   st_mode;      /* file mode - S_IF* and S_IRUSR/S_IWUSR */
         time_t   st_mtime;     /*            ''             */
-        nlink_t  st_nlink;     /* 1 */
+        nlink_t  st_nlink;     /* 2 + number of subdirs, or 1 for files */
         off_t    st_size;      /* size of file in bytes */
         off_t    st_blksize;   /* the size of transfer buffer */
         uid_t    st_uid;       /* getuid() */
@@ -66,7 +66,10 @@ which can be executed from the DOS prompt (batch files, .com, .dll and .exe
 executables) or run by go32 extender.
 
 4. Size of directories is reported as the number of its files (sans `.' and
-`..' entries) multiplied by 32 bytes (the size of directory entry).
+`..' entries) multiplied by 32 bytes (the size of directory entry).  On FAT
+filesystems that support the LFN API (such as Windows 9x), the reported
+size of the directory accounts for additional space used to store the long
+filenames.
 
 5. Time stamp for root directories is taken from the volume label entry,
 if that's available; otherwise, it is reported as 1-Jan-1980.
@@ -78,3 +81,8 @@ if that's available; otherwise, it is reported as 1-Jan-1980.
 which is open and has been written to, because @code{stat()} will only
 return correct data after the file is closed.  Use @ref{fstat} while the
 file is open.
+
+8. The number of links @code{st_nlink} is always 1 for files other than
+directories.  For directories, it is the number of subdirectories plus
+2.  This is so that programs written for Unix that depend on this to
+optimize recursive traversal of the directory tree, will still work.

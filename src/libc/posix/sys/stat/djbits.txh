@@ -10,7 +10,7 @@ extern unsigned short   _djstat_flags;
 This variable contains bits for some fields of struct stat which are
 expensive to compute under DOS.  Any such computation is only done by
 @ref{stat} or @ref{fstat} if the corresponding bit in
-@code{_djstat_flags} is cleared.  By default, all the bits are
+@code{_djstat_flags} is @emph{cleared}.  By default, all the bits are
 cleared, so applications which don't care, automagically get a full
 version, possibly at a price of performance.  To get the fastest
 possible @code{f?stat()} for your application, clear only the bits
@@ -43,7 +43,8 @@ is_exec.c file.
 
 Causes @code{stat} to compute directory size by counting the number of its
 entries (unless some friendly network redirector brought a true directory
-size with it).
+size with it).  Also computes the number of subdirectories and sets the
+number of links @code{st_nlink} field.
 
 @item _STAT_ROOT_TIME
 
@@ -144,7 +145,7 @@ Below are some explanations of terminology and abbreviations used by the
 printed messages, which will further clarify the meaning of the above bits
 and their descriptions printed by @ref{_djstat_describe_lossage}.
 
-  SDA (Swappable DOS Area) -- this is an internal DOS structure.
+  SDA (Swappable Data Area) -- this is an internal DOS structure.
 @code{stat()} uses it to get the full directory entry (including the
 starting cluster number) of a file.  The pointer to SDA found by
 @code{stat()} is trusted only if we find the pathname of our file at a
@@ -160,4 +161,8 @@ specifically to Novell.
 
   Hashing -- the fall-back method of returning a unique inode number for
 each file.  It is used whenever the starting cluster of a file couldn't be
-reliably determined.
+reliably determined.  The full pathname of the file is looked up in a
+table of files seen earlier (hashing is used to speed the lookup
+process).  If found, the inode from the table is returned; this ensures
+that a given file will get the same inode number.  Otherwise a new inode
+number is invented, recorded in the table and returned to caller.
