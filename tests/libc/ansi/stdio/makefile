@@ -14,6 +14,7 @@ SRC += fseek2.c
 SRC += hello.c
 SRC += mktemp.c
 SRC += printf.c
+SRC += printf2.c
 SRC += sscanf.c
 SRC += tmpnam.c
 SRC += tscanf.c
