@@ -18,6 +18,9 @@ void (*__stdio_cleanup_hook)(void);
    This does not force them to be linked in. */
 void (*__FSEXT_exit_hook)(void) = NULL;
 
+/* A hook to close those file descriptors with properties. */
+void (*__fd_properties_cleanup_hook)(void) = NULL;
+
 typedef void (*FUNC)(void);
 extern FUNC djgpp_first_dtor[] __asm__("djgpp_first_dtor");
 extern FUNC djgpp_last_dtor[] __asm__("djgpp_last_dtor");
@@ -47,6 +50,9 @@ exit(int status)
      during shutdown */
   if (__stdio_cleanup_hook)
     __stdio_cleanup_hook();
+
+  if (__fd_properties_cleanup_hook)
+    __fd_properties_cleanup_hook();
 
   /* Do this after the stdio cleanup to let it close off the fopen'd files */
   if (__FSEXT_exit_hook)

@@ -7,8 +7,10 @@
 #include <sys/stat.h>
 #include <libc/bss.h>
 #include <fcntl.h>
-
+#include <unistd.h>
 #include <libc/fd_props.h>
+
+extern void (*__fd_properties_cleanup_hook);
 
 static void open_fd(fd_properties *fd, int open_flags);
 static void close_fd(fd_properties *fd);
@@ -17,6 +19,7 @@ static fd_properties * alloc_fd_properties(void);
 static void free_fd_properties(fd_properties *);
 static void insert_list(fd_properties **, fd_properties *);
 static void remove_list(fd_properties **, fd_properties *);
+static void exit_cleanup(void);
 
 /* Array of pointers to fd_properties objects associated
    with a file descriptor.  */
@@ -72,6 +75,7 @@ __set_fd_properties(int fd, const char *file, int open_flags)
     if (__fd_properties == NULL)
       return -1;
     memset(__fd_properties, 0, size);
+    __fd_properties_cleanup_hook = exit_cleanup;
   }
 
   /* This function may be called twice for the same fd,
@@ -210,3 +214,23 @@ remove_list(fd_properties **head_ptr, fd_properties *item)
 
   *head_ptr = head;
 }
+
+/* Close all known file descriptors to ensure all files marked
+   as temporary are deleted at exit.  */
+static void
+exit_cleanup(void)
+{
+  int fd;
+
+  if (__fd_properties == NULL || active_fds == NULL)
+    return;
+
+  fd = 0;
+  while (fd < 255)
+  {
+    if (__fd_properties[fd])
+      close(fd);
+    ++fd;
+  }
+}
+
