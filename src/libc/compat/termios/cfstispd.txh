@@ -1,0 +1,21 @@
+@node cfsetspeed, termios
+@subheading Syntax
+
+@example
+#include <termios.h>
+
+int cfsetspeed (struct termios *termiosp, speed_t speed);
+@end example
+
+@subheading Description
+
+This function sets the input and output line speed stored in the
+structure @var{termiosp} to @var{speed}.  It is provided for
+compatibility only.  Note that the termios emulation handles console
+only.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+

@@ -1,0 +1,20 @@
+@node setrlimit, unix
+@subheading Syntax
+
+@example
+#include <sys/resource.h>
+
+int setrlimit (int rltype, const struct rlimit *rlimitp);
+@end example
+
+@subheading Description
+
+This function sets new limit pointed to by @var{rlimitp} on the
+resourece limit specified by @var{rltype}.  Note that currently it
+always fail.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+

@@ -1,0 +1,26 @@
+@node getrlimit, unix
+@subheading Syntax
+
+@example
+#include <sys/resource.h>
+
+int getrlimit (int rltype, struct rlimit *rlimitp);
+@end example
+
+@subheading Description
+
+This function gets the resource limit specified by @var{rltype} and
+stores it in the buffer pointed to by @var{rlimitp}.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+struct rlimit rlimitbuf;
+int rc = getrlimit (RLIMIT_STACK, &rlimitbuf);
+@end example
+
+

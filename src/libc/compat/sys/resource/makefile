@@ -2,5 +2,7 @@
 TOP=../../..
 
 SRC += resource.c
+SRC += gtrlimit.c
+SRC += strlimit.c
 
 include $(TOP)/../makefile.inc
