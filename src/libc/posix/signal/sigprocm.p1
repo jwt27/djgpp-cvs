@@ -1,0 +1,77 @@
+From eliz@is.elta.co.il  Tue Feb  4 06:07:06 1997
+Date: Tue, 4 Feb 1997 13:06:23 +0200 (IST)
+From: Eli Zaretskii <eliz@is.elta.co.il>
+X-Sender: eliz@is
+To: DJ Delorie <dj@delorie.com>
+cc: djgpp-workers@delorie.com
+Subject: Re: POSIX signal functions (1/2)
+In-Reply-To: <199702040213.VAA06243@delorie.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+
+On Mon, 3 Feb 1997, DJ Delorie wrote:
+
+> libc can't be built with -posix or -ansi anyway, so you will always
+> have the full header specs available.  Please use them.
+
+Here's the patch relative to the original file I mailed the other day:
+
+diff -c src/libc/posix/signal/sigprocm.c~1 src/libc/posix/signal/sigprocm.c
+*** src/libc/posix/signal/sigprocm.c~1	Thu Jan 23 18:00:06 1997
+--- src/libc/posix/signal/sigprocm.c	Tue Feb  4 11:29:54 1997
+***************
+*** 16,22 ****
+  
+  /* Previous handlers to restore when the blocked signals are unblocked.  */
+  typedef void (*sighandler_t)(int);
+! static sighandler_t prev_handlers[320];
+  
+  /* A signal handler which just records that a signal occured
+     (it will be raised later, if and when the signal is unblocked).  */
+--- 16,22 ----
+  
+  /* Previous handlers to restore when the blocked signals are unblocked.  */
+  typedef void (*sighandler_t)(int);
+! static sighandler_t prev_handlers[SIGMAX];
+  
+  /* A signal handler which just records that a signal occured
+     (it will be raised later, if and when the signal is unblocked).  */
+***************
+*** 38,44 ****
+        sigprocmask_count = __bss_count;
+        sigemptyset (&pending_signals);
+        sigemptyset (&current_mask);
+!       for (signo = 0; signo < 320; signo++)
+  	prev_handlers[signo] = SIG_ERR;
+      }
+  
+--- 38,44 ----
+        sigprocmask_count = __bss_count;
+        sigemptyset (&pending_signals);
+        sigemptyset (&current_mask);
+!       for (signo = 0; signo < SIGMAX; signo++)
+  	prev_handlers[signo] = SIG_ERR;
+      }
+  
+***************
+*** 56,64 ****
+  
+    sigemptyset (&new_mask);
+  
+!   /* DJGPP supports upto 320 signals.
+!      FIXME: we shouldn't need to say 320 explicitly.  */
+!   for (signo = 0; signo < 320; signo++)
+      {
+        if (sigismember (&current_mask, signo))
+  	sigaddset (&new_mask, signo);
+--- 56,62 ----
+  
+    sigemptyset (&new_mask);
+  
+!   for (signo = 0; signo < SIGMAX; signo++)
+      {
+        if (sigismember (&current_mask, signo))
+  	sigaddset (&new_mask, signo);
+
+

@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* ------------------------- rename() for DJGPP -------------------------- */
@@ -357,6 +358,20 @@ rename(const char *old, const char *new)
           /* They both are files, _rename() must be enough.  */
           simple_should_do = 1;
         }
+    }
+  else if ((source_attr & 0x10) == 0x10)
+    {
+      /* Fail to rename OLD -> OLD/whatever.  */
+      char new_true[FILENAME_MAX], old_true[FILENAME_MAX];
+
+      errno = 0;
+      if (is_parent(_truename(old, old_true), _truename(new, new_true)))
+	{
+	  errno = EINVAL;
+	  return -1;
+	}
+      else if (errno)
+	return -1;
     }
 
   /* On to some REAL work for a change.  Let DOS do the simple job:
