@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 
 char buf[] = "line1\nline2\ncr\rcr\n";
 

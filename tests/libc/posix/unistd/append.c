@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 
 #define FILE_NAME "append.dat"
 char str[] = "hello, there\n";
