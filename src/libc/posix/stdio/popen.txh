@@ -23,7 +23,9 @@ the output in a temporary file.  @code{pclose} then removes that file.
 Similarly, when you open a program for writing, a temp file holds the
 data and @code{pclose} runs the entire program.
 
-The @var{mode} is the same as for @code{fopen} (@pxref{fopen}). 
+The @var{mode} is the same as for @code{fopen} (@pxref{fopen}), except
+that you are not allowed to open a pipe for both reading and writing.  A
+pipe can be open  either for reading or for writing.
 
 @subheading Return Value
 
