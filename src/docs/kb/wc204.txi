@@ -71,3 +71,7 @@ The series produced by @code{rand} have a longer period.
 @findex erand48@r{, increased speed}
 The execution speed of @code{drand48} and @code{erand48} has been improved.
 
+@findex __dpmi_simulate_real_mode_procedure_retf_stack@r{, stack corruption}
+@code{__dpmi_simulate_real_mode_procedure_retf_stack} no longer corrupts
+the caller's stack.
+

@@ -18,6 +18,7 @@
 
 	/* Set up %esi, %edi to copy data to the PM stack. */
 	subl	%ecx, %esp
+	subl	%ecx, %esp
 	movl	%esp, %edi
 	movl	ARG3, %esi
 
@@ -37,5 +38,5 @@ L_do_call:
 
 	xorl	%eax, %eax
 
-#define RESTORE_ESP	addl ARG2, %esp	 /* comma confuses LEAVEP macro. */
+#define RESTORE_ESP	addl ARG2, %esp ; addl ARG2, %esp  /* comma confuses LEAVEP macro. */
 	LEAVEP(RESTORE_ESP ; popl %es)
