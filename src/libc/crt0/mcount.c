@@ -39,7 +39,7 @@ static int mcount_skip = 1;
 static int histlen;
 static MTAB *mtab=0;
 
-extern int etext;
+extern int etext __asm__("etext");
 
 /* called by functions.  Use the pointer it provides to cache
 ** the last used MTABE, so that repeated calls to/from the same
