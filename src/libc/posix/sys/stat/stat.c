@@ -330,7 +330,7 @@ get_inode_from_sda(const char *basename)
 
   /* Restore failure bits set by last call to init_dirent_table(), so
      they will be reported as if it were called now.  */
-  _djstat_fail_bits = init_dirent_table_bits;
+  _djstat_fail_bits |= init_dirent_table_bits;
 
   /* Force reinitialization in restarted programs (emacs).  */
   if (stat_count != __bss_count)
@@ -343,10 +343,11 @@ get_inode_from_sda(const char *basename)
      our file.  */
   if (!dirent_count && !init_dirent_table())
     {
-      init_dirent_table_bits = _djstat_fail_bits;
+      /* Don't save the truename failure bit.  */
+      init_dirent_table_bits = (_djstat_fail_bits & ~_STFAIL_TRUENAME);
       return 0;
     }
-  init_dirent_table_bits = _djstat_fail_bits;
+  init_dirent_table_bits = (_djstat_fail_bits & ~_STFAIL_TRUENAME);
   if (dirent_count == -1)
     return 0;
 
@@ -406,16 +407,9 @@ stat_assist(const char *path, struct stat *statbuf)
   statbuf->st_blksize = _go32_info_block.size_of_transfer_buffer;
 #endif
 
-  /* Get the drive number.
-     If no explicit drive, assume current drive.
-     This might fail, if the name is of the form \\machine\path
-     (which means, it's on a networked drive), but we don't
-     consider such names legal here.  In other words, DON'T call
-     stat() on a canonicalized name!  */
-  if (path[1] == ':')       /* explicit drive letter */
-    drv_no = toupper(*path) - 'A';
-  else
-    drv_no = __getdisk();
+  /* Get the drive number.  It is always explicit, since we
+     called `_fixpath' on the original pathname.  */
+  drv_no = toupper(*path) - 'A';
 
   /* Produce canonical pathname, with all the defaults resolved and
      all redundant parts removed.  This calls undocumented DOS
@@ -471,7 +465,7 @@ stat_assist(const char *path, struct stat *statbuf)
 
           return 0;
         }
-      else if (isalpha(canon_path[0]) &&
+      else if (canon_path[0] >= 'A' && canon_path[0] <= 'z' &&
                canon_path[1] == ':' && canon_path[2] == '\\')
         {
           /* _truename() returned a name with a drive letter.  (This is
@@ -482,8 +476,7 @@ stat_assist(const char *path, struct stat *statbuf)
              means the drive is remote), it cannot be SUBSTed or JOINed,
              because SUBST.EXE and JOIN.EXE won't let you do it; so, for
              these cases, there is no problem in believing the drive
-             number we've got from the original path or from __getdisk().
-             Or is there?...  */
+             number we've got from the original path (or is there?).  */
           drv_no = toupper(canon_path[0]) - 'A';
         }
     }
@@ -507,18 +500,7 @@ stat_assist(const char *path, struct stat *statbuf)
       _djstat_fail_bits |= _STFAIL_TRUENAME;
     }
 
-  /* Call DOS FindFirst function, which will bring us most of the info.
-     Note the use of PATH instead of CANON_PATH.  This is because
-     for networked drives _truename() changes the drive letter to a
-     redirector-specific string (called the UNC notation), which might
-     include the machine name, and several parent directories above the
-     root of our mounted filesystem.  E.g., under Novell we might have
-     \\MACHINE\ROOTDIR\OURDIR, where our tree on that drive starts with
-     OURDIR; Tsoft NFS (0.24Beta) gets us NFS.X:\OURDIR, where X is the
-     original drive letter; other redirectors will probably do their
-     weird things.  This could totally confuse FindFirst; it is safer
-     just to use PATH.
-   */
+  /* Call DOS FindFirst function, which will bring us most of the info.  */
   if (!__findfirst(path, &ff_blk, ALL_FILES))
     {
       /* Time fields. */
@@ -550,6 +532,15 @@ stat_assist(const char *path, struct stat *statbuf)
               statbuf->st_ino =
                 _invent_inode(canon_path, dos_ftime, ff_blk.ff_fsize);
             }
+	  else if (toupper (canon_path[0]) != toupper (path[0])
+		   && canon_path[1] == ':'
+		   && canon_path[2] == '\\'
+		   && canon_path[3] == '\0')
+	    /* The starting cluster in SDA for the root of JOINed drive
+	       actually belongs to the directory where that drive is
+	       ``mounted''.  This can potentially be the cluster of
+	       another file on the JOINed drive.  We cannot allow this.  */
+	    statbuf->st_ino = 1;
         }
 
       /* File size. */
@@ -572,7 +563,7 @@ stat_assist(const char *path, struct stat *statbuf)
           /* Set regular file bit.  */
           statbuf->st_mode |= S_IFREG;
 
-          if ( (_djstat_flags & _STAT_EXECBIT) == 0 )
+          if ((_djstat_flags & _STAT_EXECBIT) != _STAT_EXECBIT)
             {
               /* Set execute bits based on file's extension and
                  first 2 bytes. */
@@ -583,57 +574,24 @@ stat_assist(const char *path, struct stat *statbuf)
             }
         }
     }
-
-#ifdef  S_IFLABEL
-  /* Check for volume label on local drives.  Net drives may not support
-     this properly. */
-  else if (!_is_remote_drive(drv_no) && !__findfirst(path, &ff_blk, FA_LABEL))
+  else if ((_djstat_fail_bits & _STFAIL_TRUENAME))
     {
-      statbuf->st_mode = READ_ACCESS | S_IFLABEL;
-      statbuf->st_ino = 1;
-      statbuf->st_size = 0;
-      dos_ftime = ( (unsigned)ff_blk.ff_fdate << 16 ) + ff_blk.ff_ftime;
+      /* If both `findfirst' and `_truename' failed, this must
+	 be a non-existent file or an illegal/inaccessible drive.  */
+      if (errno == ENMFILE)
+	errno = ENODEV;
+      return -1;
     }
-#endif
-
-  /* Detect root directories.  These are special because, unlike
-     subdirectories, FindFirst fails for them.  If you think the
-     simple test of the string returned by _truename() to have
-     ":\\" at its end will suffice, think again.  A network
-     redirector could tweak what _truename() returns to be
-     utterly unrecognizable as root directory.  */
-  else
+  else if (path[3] == '\0')
     {
-      static char root_dir_pat[] = " :\\";
-      char root_dir[sizeof(root_dir_pat)];
-
-      /* Construct "X:\", where X is the drive letter. */
-      strcpy(root_dir, root_dir_pat);
-      root_dir[0] = drv_no + 'A';
-
-      if (strcmp(canon_path + 1, ":\\"))
-        {
-
-          /* The simple test of having "X:\" in canonical pathname
-             failed.  Feed _truename() with root directory on that
-             drive and see if it returns identical to our CANON_PATH.  */
-          char root_path[MAX_TRUE_NAME];
-          char *p;
-
-          if (!(p = _truename(root_dir, root_path)) || strcmp(p, canon_path))
-            {
-              /* The root is different, or the drive is inaccessible.
-                 This must be a non-existing file/directory.  */
-              errno = ENOENT;   /* FindFirst sets it to ENMFILE */
-              return -1;
-            }
-        }
-
-      /* Still here, so this is root directory.  Assemble the information
-         for stat_buf.  */
+      /* Detect root directories.  These are special because, unlike
+	 subdirectories, FindFirst fails for them.  We look at PATH
+	 because a network redirector could tweak what `_truename'
+	 returns to be utterly unrecognizable as root directory.
+	 PATH always begins with "d:/", so it is root if PATH[3] = 0.  */
 
       /* Mode bits. */
-      statbuf->st_mode |= (S_IFDIR | READ_ACCESS | WRITE_ACCESS | EXEC_ACCESS);
+      statbuf->st_mode |= (S_IFDIR|READ_ACCESS|WRITE_ACCESS|EXEC_ACCESS);
 
       /* Root directory will have an inode = 1.  Valid cluster numbers
          for real files under DOS start with 2. */
@@ -649,17 +607,60 @@ stat_assist(const char *path, struct stat *statbuf)
          a volume label entry, and use its time if it has. */
 
       if ( (_djstat_flags & _STAT_ROOT_TIME) == 0 )
-        {
-          char buf[7];
+	{
+	  char buf[7];
 
-          strcpy(buf, root_dir);
-          strcat(buf, "*.*");
-          if (!__findfirst(buf, &ff_blk, FA_LABEL))
-            dos_ftime = ( (unsigned)ff_blk.ff_fdate << 16 ) + ff_blk.ff_ftime;
-          else
-            _djstat_fail_bits |= _STFAIL_LABEL;
-        }
-              
+	  strcpy(buf, path);
+	  strcat(buf, "*.*");
+	  if (!__findfirst(buf, &ff_blk, FA_LABEL))
+	    dos_ftime = ( (unsigned)ff_blk.ff_fdate << 16 ) + ff_blk.ff_ftime;
+	  else
+	    _djstat_fail_bits |= _STFAIL_LABEL;
+	}
+    }
+  else
+    {
+      int i = 0;
+      int j = strlen (path) - 1;
+
+      /* Check for volume labels.  We did not mix FA_LABEL with
+	 other attributes in the call to `__findfirst' above,
+	 because some environments will return bogus info in
+	 that case.  For instance, Win95 and WinNT seem to
+	 ignore `path' and return the volume label even if it
+	 doesn't fit the name in `path'.  This fools us to
+	 think that a non-existent file exists and is a volume
+	 label.  Hence we test the returned name to be PATH.  */
+      if (!__findfirst(path, &ff_blk, FA_LABEL))
+	{
+	  i = strlen (ff_blk.ff_name) - 1;
+
+	  if (j >= i)
+	    {
+	      for ( ; i >= 0 && j >= 0; i--, j--)
+		if (toupper (ff_blk.ff_name[i]) != toupper (path[j]))
+		  break;
+	    }
+	}
+
+      if (i < 0 && path[j] == '/')
+	{
+	  /* Indeed a label.  */
+	  statbuf->st_mode = READ_ACCESS;
+#ifdef  S_IFLABEL
+	  statbuf->st_mode |= S_IFLABEL;
+#endif
+	  statbuf->st_ino = 1;
+	  statbuf->st_size = 0;
+	  dos_ftime = ( (unsigned)ff_blk.ff_fdate << 16 ) + ff_blk.ff_ftime;
+	}
+      else
+	{
+	  /* FindFirst might set errno to ENMFILE; correct that.  */
+	  if (errno == ENMFILE)
+	    errno = ENOENT;
+	  return -1;
+	}
     }
 
   /* Device code. */
@@ -683,13 +684,13 @@ stat_assist(const char *path, struct stat *statbuf)
         statbuf->st_atime = _file_time_stamp(xtime);
     }
 
-  if ( (statbuf->st_mode & S_IFMT) == S_IFDIR && statbuf->st_size == 0 &&
-       (_djstat_flags & _STAT_DIRSIZE) == 0 )
+  if ( (statbuf->st_mode & S_IFMT) == S_IFDIR
+       && (_djstat_flags & _STAT_DIRSIZE) == 0 )
     {
       /* Under DOS, directory entries for subdirectories have
          zero size.  Therefore, FindFirst brings us zero size
          when called on a directory.  (Some network redirectors
-         might do a better job, thus above we also test for zero size
+         might do a better job, thus below we also test for zero size
          actually being returned.)  If we have zero-size directory,
          we compute here the actual directory size by reading its
          entries, then multiply their number by 32 (the size of a
@@ -699,6 +700,11 @@ stat_assist(const char *path, struct stat *statbuf)
          the disk pool.  Still, it is a good approximation of the
          actual directory size.
 
+         We also take this opportunity to return the number of links
+         for directories as Unix programs expect it to be: the number
+         of subdirectories, plus 2 (the directory itself and the ``.''
+         entry).
+
          The (max) size of the root directory could also be taken from
          the disk BIOS Parameter Block (BPB) which can be obtained
          by calling IOCTL (INT 21/AH=44H), subfunction 0DH, minor
@@ -706,27 +712,59 @@ stat_assist(const char *path, struct stat *statbuf)
          even at performance cost, because it's more robust for
          networked drives.  */
 
-      size_t pathlen = strlen(path);
+      size_t pathlen = strlen (path);
       char   lastc   = path[pathlen - 1];
-      char  *search_spec = (char *)alloca(pathlen + 10); /* need only +5 */
-      int i = 0;
+      char  *search_spec = (char *)alloca (pathlen + 10); /* need only +5 */
+      int nfiles = 0, nsubdirs = 0, done;
+      size_t extra = 0;
+      int add_extra = 0;
 
       strcpy(search_spec, path);
-      if (lastc == '/' || lastc == '\\' || lastc == ':')
+      if (lastc == '/')
         strcat(search_spec, "*.*");
       else
-        strcat(search_spec, "\\*.*");
+        strcat(search_spec, "/*.*");
 
-      if (!__findfirst(search_spec, &ff_blk, ALL_FILES))
-        for (i = 1; !__findnext(&ff_blk); ++i)
-          ;
+      if (statbuf->st_size == 0 && _USE_LFN)
+	{
+	  /* VFAT filesystems use additional directory entries to
+	     store the long filenames.  */
+	  char fstype[40];
 
-      /* In non-root directories, don't count the ``.'' and ``..''
-         entries, so that empty directories will be shown as such.  */
-      if (statbuf->st_ino != 1)
-        i -= 2;
+	  if ((_get_volume_info(path, 0, 0, fstype) & _FILESYS_LFN_SUPPORTED)
+	      && strncmp(fstype, "FAT", 4) == 0)
+	    add_extra = 1;
+	}
 
-      statbuf->st_size = i * sizeof(struct full_dirent);
+      /* Count files and subdirectories.  */
+      for (done = __findfirst(search_spec, &ff_blk, ALL_FILES);
+	   !done;
+	   done = __findnext(&ff_blk))
+	{
+	  register char *fname = ff_blk.ff_name;
+
+	  /* Don't count "." and ".." entries.  This will show empty
+	     directories as size 0.  */
+	  if (! (fname[0] == '.'
+		 && (fname[1] == '\0'
+		     || (fname[1] == '.'
+			 && fname[2] == '\0'))))
+	    {
+	      char fn[13];
+
+	      nfiles++;
+	      if (ff_blk.ff_attrib & 0x10)
+		nsubdirs++;
+	      /* For each 13 characters of the long filename, a
+		 32-byte directory entry is used.  */
+	      if (add_extra && strcmp(_lfn_gen_short_fname(fname, fn), fname))
+		extra += (strlen(fname) + 12) / 13;
+	    }
+	}
+
+      statbuf->st_nlink = nsubdirs + 2;
+      if (statbuf->st_size == 0)
+	statbuf->st_size  = (nfiles + extra) * sizeof(struct full_dirent);
     }
 
   return 0;
@@ -738,8 +776,9 @@ stat_assist(const char *path, struct stat *statbuf)
 int
 stat(const char *path, struct stat *statbuf)
 {
-  int            e = errno;
-  char pathname[MAX_TRUE_NAME], *p;
+  int  e = errno;
+  char pathname[MAX_TRUE_NAME];
+  int  pathlen;
 
   if (!path || !statbuf)
     {
@@ -747,25 +786,26 @@ stat(const char *path, struct stat *statbuf)
       return -1;
     }
 
-  strcpy(pathname, path);
-  p = pathname + strlen(pathname) - 1;
-  /* Get rid of trailing slash.  It confuses FindFirst and also causes
-     the inode-inventing mechanism think d:/path/ and d:/path are
-     different, because _truename() retains one trailing slash.  But
-     leave alone a trailing slash if it's a root directory, like in
-     "/" or "d:/" */
-  while (p > pathname && p[-1] != ':' && (*p == '/' || *p == '\\'))
-    *p-- = '\0';
-
-  /* Under DOS it is customary to use "X:" for the CURRENT directory
-     of drive X.  But FindFirst doesn't like this, so we convert it
-     to "X:." which works.  This eliminates multiple #ifdef's in
-     many Unix-born programs.  */
-  if (*p++ == ':')
+  if ((pathlen = strlen (path)) >= MAX_TRUE_NAME)
     {
-      *p++ = '.';
-      *p   = '\0';
+      errno = ENAMETOOLONG;
+      return -1;
     }
+
+  /* Fail if PATH includes wildcard characters supported by FindFirst.  */
+  if (memchr(path, '*', pathlen) || memchr(path, '?', pathlen))
+    {
+      errno = ENOENT;	/* since no such filename is possible */
+      return -1;
+    }
+
+  /* Make the path explicit.  This makes the rest of our job much
+     easier by getting rid of some constructs which, if present,
+     confuse `_truename' and/or `findfirst'.  In particular, it
+     deletes trailing slashes, makes "d:" explicit, and allows us
+     to make an illusion of having a ".." entry in root directories.  */
+  _fixpath (path, pathname);
+
   if (stat_assist(pathname, statbuf) == -1)
     {
       return -1;      /* errno set by stat_assist() */
@@ -793,8 +833,10 @@ main(int argc, char *argv[])
       exit(0);
     }
 
-  stat(*argv, &stat_buf);
-  fprintf(stderr, "DOS %d.%d (%s)\n", _osmajor, _osminor, _os_flavor);
+  if (stat(*argv, &stat_buf) != 0)
+    perror ("stat failed on argv[0]");
+  else
+    fprintf(stderr, "DOS %d.%d (%s)\n", _osmajor, _osminor, _os_flavor);
   argc--; argv++;
 
   _djstat_flags = (unsigned short)strtoul(*argv, &endp, 0);
@@ -829,3 +871,4 @@ main(int argc, char *argv[])
 }
 
 #endif
+
