@@ -895,3 +895,9 @@ will inline to a single instruction when compiled with optimization.
 @cindex File System Extensions, and @code{chmod}
 @cindex File System Extensions, and @code{chown}
 @code{chmod} and @code{chown} can now be hooked by File System Extensions.
+
+@findex isatty@r{, and invalid file descriptors}
+
+The function @code{isatty} now checks whether the file descriptor
+passed to it is a valid.  If not, it will fail and set @code{errno}
+to @code{EBADF}.
