@@ -59,6 +59,12 @@ III.How to run the tests
     examination, and a one-line summary of the test is printed on the
     standard error stream.
 
+    If you wish to run the tests on alternate libraries, define the
+    LIBS variable on the Make command line.  For example, the command
+    "make LIBS='-lc -lm'" will build a test suite where math functions
+    from libc.a are tested (except those functions which only exist in
+    libm.a).
+
     Since some library functions are not accurate to the last bit,
     some tests will trigger inaccuracy reports.  The test suite is set
     up so that it requires 62 accurate bits for functions that return
@@ -71,3 +77,15 @@ III.How to run the tests
     test suite with the latest DJGPP libraries.  By comparing
     `mtest.results' with this file you could find out which messages
     are ``normal'' and which indicate problems.
+
+    Two additional files with results of running the test suite are
+    provided: the file `std-v202.results' was produced with the
+    libraries of DJGPP v2.02, the version where this test suite was
+    first introduced; and std-libc.results was produced with a test
+    suite that used the math functions from libc.a introduced with
+    DJGPP v2.03 (it was compiled with "make LIBS='-lc -lm'").
+
+    Note that, as the file `std-libc.results' shows, math functions
+    from libc.a behave differently for abnormal arguments, and use a
+    different bit pattern for NaN.  The behavior of functions from
+    libc.a is documented in the library reference for each function.

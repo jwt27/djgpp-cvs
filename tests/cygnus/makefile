@@ -86,6 +86,8 @@ GEN_VEC_FILES := $(foreach name,$(GEN_VEC_NAMES),$($(name)VEC_FILES))
 
 VEC_OFILES = $(GEN_VEC_FILES:.c=.o)
 
+$(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g
+
 all: check
 
 check: mtest.exe

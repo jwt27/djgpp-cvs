@@ -46,10 +46,25 @@ testing bcopy
 testing bzero
 testing bcmp
 testing acos
+acos:71, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+acos:72, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+acos:73, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In acos() using acos_vec.c:73, errno wrong:  0  1
+acos:74, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
 testing acosf
 testing acosh
+acosh:151, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+acosh:152, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+acosh:153, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In acosh() using acosh_vec.c:153, errno wrong:  0  1
+acosh:154, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
 testing acoshf
 testing asin
+asin:55, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+asin:56, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+asin:57, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In asin() using asin_vec.c:57, errno wrong:  0  1
+asin:58, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
 testing asinf
 asinf:20, inaccurate answer: bit 33 (bfee598560000000 bfee5985a0000000) (-0.948428 -0.948428)
 asinf:21, inaccurate answer: bit 33 (bfeb235320000000 bfeb235360000000) (-0.848062 -0.848062)
@@ -68,33 +83,104 @@ asinf:42, inaccurate answer: bit 33 (3fe841dec0000000 3fe841df00000000) (0.75804
 asinf:43, inaccurate answer: bit 33 (3feb235320000000 3feb235360000000) (0.848062 0.848062)
 asinf:44, inaccurate answer: bit 33 (3fee598560000000 3fee5985a0000000) (0.948428 0.948428)
 testing asinh
+asinh:120, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In asinh() using asinh_vec.c:120, errno wrong:  0  1
 testing asinhf
 testing atan
+atan:136, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atan() using atan_vec.c:136, errno wrong:  0  1
+In atan() using atan_vec.c:137, errno wrong:  0  1
 testing atan2
+atan2:268, inaccurate answer: bit 2 (c002d97c7f3321d2 fff8000000000000) (-2.35619 NaN)
+In atan2() using atan2_vec.c:268, errno wrong:  0  1
+atan2:269, inaccurate answer: bit 1 (bfe921fb54442d18 fff8000000000000) (-0.785398 NaN)
+In atan2() using atan2_vec.c:269, errno wrong:  0  1
+atan2:270, inaccurate answer: bit 0 (3fe921fb54442d18 fff8000000000000) (0.785398 NaN)
+In atan2() using atan2_vec.c:270, errno wrong:  0  1
+atan2:271, inaccurate answer: bit 0 (4002d97c7f3321d2 fff8000000000000) (2.35619 NaN)
+In atan2() using atan2_vec.c:271, errno wrong:  0  1
+atan2:276, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atan2() using atan2_vec.c:276, errno wrong:  0  1
+atan2:277, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atan2() using atan2_vec.c:277, errno wrong:  0  1
+atan2:278, inaccurate answer: bit 0 (3fe921fb54442d18 fff8000000000000) (0.785398 NaN)
+In atan2() using atan2_vec.c:278, errno wrong:  0  1
+atan2:279, inaccurate answer: bit 1 (bfe921fb54442d18 fff8000000000000) (-0.785398 NaN)
+In atan2() using atan2_vec.c:279, errno wrong:  0  1
 testing atan2f
 atan2f:273, inaccurate answer: bit 33 (bff921fb60000000 bff921fb20000000) (-1.5708 -1.5708)
 testing atanf
 testing atanh
+atanh:130, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atanh() using atanh_vec.c:131, errno wrong:  1  2
+atanh:132, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atanh() using atanh_vec.c:133, errno wrong:  1  2
+atanh:134, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+atanh:135, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atanh() using atanh_vec.c:136, errno wrong:  0  1
+atanh:137, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In atanh() using atanh_vec.c:137, errno wrong:  0  1
 testing atanhf
 testing ceil
+ceil:154, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In ceil() using ceil_vec.c:154, errno wrong:  0  1
+In ceil() using ceil_vec.c:155, errno wrong:  0  1
 testing ceilf
 testing cos
+cos:35, inaccurate answer: bit 31 (bced72cece675d20 bced72d000000000) (-3.26944e-15 -3.26944e-15)
+cos:99, inaccurate answer: bit 30 (3cd51a62633145c0 3cd51a6000000000) (1.17146e-15 1.17145e-15)
+cos:132, inaccurate answer: bit 12 (3fe0be2cef01c8f4 3ff0000000000000) (0.523215 1)
+In cos() using cos_vec.c:133, errno wrong:  0  1
+In cos() using cos_vec.c:134, errno wrong:  0  1
+cos:135, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In cos() using cos_vec.c:135, errno wrong:  0  1
+In cos() using cos_vec.c:136, errno wrong:  0  1
 testing cosf
 testing cosh
+In cosh() using cosh_vec.c:124, errno wrong:  2  0
+In cosh() using cosh_vec.c:125, errno wrong:  2  0
+cosh:126, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In cosh() using cosh_vec.c:126, errno wrong:  0  1
+In cosh() using cosh_vec.c:127, errno wrong:  0  1
 testing coshf
 testing erf
 testing erfc
 testing erfcf
 testing erff
 testing exp
+In exp() using exp_vec.c:199, errno wrong:  0  2
+exp:202, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In exp() using exp_vec.c:202, errno wrong:  0  1
+In exp() using exp_vec.c:203, errno wrong:  0  1
 testing expf
 testing fabs
+fabs:154, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In fabs() using fabs_vec.c:154, errno wrong:  0  1
+fabs:155, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In fabs() using fabs_vec.c:155, errno wrong:  0  1
 testing fabsf
 testing floor
+floor:154, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In floor() using floor_vec.c:154, errno wrong:  0  1
+In floor() using floor_vec.c:155, errno wrong:  0  1
 testing floorf
 testing fmod
+fmod:1224, inaccurate answer: bit 1 (7ff8000000000000 0000000000000000) (NaN 0)
+In fmod() using fmod_vec.c:1224, errno wrong:  1  0
+fmod:1227, inaccurate answer: bit 1 (7ff8000000000000 0000000000000000) (NaN 0)
+In fmod() using fmod_vec.c:1227, errno wrong:  1  0
+In fmod() using fmod_vec.c:1230, errno wrong:  0  1
+In fmod() using fmod_vec.c:1231, errno wrong:  0  1
+fmod:1232, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In fmod() using fmod_vec.c:1232, errno wrong:  0  1
+fmod:1233, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In fmod() using fmod_vec.c:1233, errno wrong:  0  1
 testing fmodf
 testing frexp
+frexp:206, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In frexp() using frexp_vec.c:206, errno wrong:  0  1
+frexp:207, inaccurate answer: bit 0 (7ff0000000000000 fff8000000000000) (Inf NaN)
+In frexp() using frexp_vec.c:207, errno wrong:  0  1
 testing frexpf
 testing gamma
 gamma:34, inaccurate answer: bit 58 (3f7261e6d250cf63 3f7261e6d250cf83) (0.0044879 0.0044879)
@@ -104,6 +190,11 @@ gammaf:34, inaccurate answer: bit 33 (3f7261e6e0000000 3f7261e680000000) (0.0044
 gammaf:35, inaccurate answer: bit 31 (bfaccbfa00000000 bfaccbf900000000) (-0.0562437 -0.0562437)
 gammaf:51, inaccurate answer: bit 33 (3ff5776f20000000 3ff5776f60000000) (1.34166 1.34166)
 testing hypot
+In hypot() using hypot_vec.c:592, errno wrong:  2  0
+hypot:593, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In hypot() using hypot_vec.c:593, errno wrong:  0  1
+hypot:594, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In hypot() using hypot_vec.c:594, errno wrong:  0  1
 testing hypotf
 testing j0
 j0:80, inaccurate answer: bit 60 (bf483a04fad8027b bf483a04fad8026e) (-0.000739338 -0.000739338)
@@ -166,6 +257,7 @@ jn:887, inaccurate answer: bit 61 (3f73ea6c4f518bf5 3f73ea6c4f518bef) (0.0048622
 jn:906, inaccurate answer: bit 59 (bf58a9b766aa1eaa bf58a9b766aa1ebb) (-0.00150531 -0.00150531)
 jn:923, inaccurate answer: bit 61 (bf5172d3dba28ab8 bf5172d3dba28ab2) (-0.00106497 -0.00106497)
 jn:987, inaccurate answer: bit 59 (3f46a76442a3db15 3f46a76442a3dafc) (0.000691341 0.000691341)
+jn:1050, inaccurate answer: bit 61 (3f6c50768b942c5d 3f6c50768b942c63) (0.00345634 0.00345634)
 jn:1066, inaccurate answer: bit 61 (3f652fc6f006f8aa 3f652fc6f006f8a3) (0.00258626 0.00258626)
 testing jnf
 jnf:343, inaccurate answer: bit 33 (3fd84fc360000000 3fd84fc3c0000000) (0.379868 0.379868)
@@ -267,9 +359,26 @@ jnf:1059, inaccurate answer: bit 33 (3fab366e20000000 3fab366e60000000) (0.05314
 jnf:1060, inaccurate answer: bit 33 (3fb51c9840000000 3fb51c9880000000) (0.0824676 0.0824676)
 jnf:1071, inaccurate answer: bit 33 (3fa87e1f60000000 3fa87e1fa0000000) (0.0478372 0.0478372)
 testing ldexp
+In ldexp() using ldexp_vec.c:239, errno wrong:  0  2
+In ldexp() using ldexp_vec.c:240, errno wrong:  0  2
+In ldexp() using ldexp_vec.c:241, errno wrong:  0  2
+In ldexp() using ldexp_vec.c:242, errno wrong:  0  2
+ldexp:243, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In ldexp() using ldexp_vec.c:243, errno wrong:  0  1
+In ldexp() using ldexp_vec.c:244, errno wrong:  0  1
 testing ldexpf
 testing log
+log:136, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
+log:141, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
+log:143, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In log() using log_vec.c:143, errno wrong:  0  1
+In log() using log_vec.c:144, errno wrong:  0  1
 testing log10
+log10:206, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
+log10:211, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
+log10:213, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In log10() using log10_vec.c:213, errno wrong:  0  1
+In log10() using log10_vec.c:214, errno wrong:  0  1
 testing log10f
 testing log1p
 log1p:3, inaccurate answer: bit 61 (3f944723d272a7f6 3f944723d272a7f1) (0.0198026 0.0198026)
@@ -278,6 +387,11 @@ log1p:5, inaccurate answer: bit 61 (3fadd56c1d883ee6 3fadd56c1d883edf) (0.058268
 log1p:6, inaccurate answer: bit 61 (3fb3b3b802beeb94 3fb3b3b802beeb8f) (0.076961 0.076961)
 log1p:7, inaccurate answer: bit 61 (3fb8663f793c46cc 3fb8663f793c46c7) (0.0953102 0.0953102)
 log1p:8, inaccurate answer: bit 61 (3fbd031bd5179e02 3fbd031bd5179dfc) (0.113329 0.113329)
+log1p:206, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
+log1p:211, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
+log1p:213, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In log1p() using log1p_vec.c:213, errno wrong:  0  1
+In log1p() using log1p_vec.c:214, errno wrong:  0  1
 testing log1pf
 testing log2
 log2:139, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
@@ -288,18 +402,63 @@ In log2() using log2_vec.c:147, errno wrong:  0  1
 testing log2f
 testing logf
 testing modf
+modf:102, inaccurate answer: bit 0 (8000000000000000 0000000000000000) (0 0)
+modf:206, inaccurate answer: bit 0 (0000000000000000 fff8000000000000) (0 NaN)
+modf:206, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In modf() using modf_vec.c:206, errno wrong:  0  1
+modf:207, inaccurate answer: bit 0 (0000000000000000 fff8000000000000) (0 NaN)
+In modf() using modf_vec.c:207, errno wrong:  0  1
 testing modff
 testing pow
+pow:300, inaccurate answer: bit 0 (8000000000000000 0000000000000000) (0 0)
+pow:301, inaccurate answer: bit 0 (fff0000000000000 7ff0000000000000) (-Inf Inf)
+In pow() using pow_vec.c:301, errno wrong:  1  0
+In pow() using pow_vec.c:304, errno wrong:  0  1
+pow:305, inaccurate answer: bit 0 (7ff0000000000000 fff8000000000000) (Inf NaN)
+In pow() using pow_vec.c:305, errno wrong:  0  1
+In pow() using pow_vec.c:306, errno wrong:  0  1
+pow:307, inaccurate answer: bit 0 (7ff0000000000000 fff8000000000000) (Inf NaN)
+In pow() using pow_vec.c:307, errno wrong:  0  1
+pow:308, inaccurate answer: bit 0 (0000000000000000 fff8000000000000) (0 NaN)
+In pow() using pow_vec.c:308, errno wrong:  0  1
+pow:315, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In pow() using pow_vec.c:315, errno wrong:  0  1
+pow:316, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In pow() using pow_vec.c:316, errno wrong:  0  1
 testing powf
 testing sin
+sin:3, inaccurate answer: bit 26 (bca1a62633145c07 bca1a60000000000) (-1.22465e-16 -1.22461e-16)
+sin:131, inaccurate answer: bit 31 (3cf48d313198a2e0 3cf48d3000000000) (4.56336e-15 4.56335e-15)
+sin:132, inaccurate answer: bit 0 (bfeb453ab76bf397 0000000000000000) (-0.852201 0)
+In sin() using sin_vec.c:133, errno wrong:  0  1
+sin:134, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In sin() using sin_vec.c:134, errno wrong:  0  1
+In sin() using sin_vec.c:135, errno wrong:  0  1
 testing sinf
 testing sinh
+In sinh() using sinh_vec.c:126, errno wrong:  0  1
+sinh:127, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In sinh() using sinh_vec.c:127, errno wrong:  0  1
 testing sinhf
 testing sqrt
+sqrt:135, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In sqrt() using sqrt_vec.c:135, errno wrong:  0  1
+In sqrt() using sqrt_vec.c:136, errno wrong:  0  1
 testing sqrtf
 testing tan
+tan:3, inaccurate answer: bit 61 (3edaa22168c3be5a 3edaa22168c3be55) (6.34988e-06 6.34988e-06)
+tan:131, inaccurate answer: bit 61 (bedaa22168c3be5a bedaa22168c3be55) (-6.34988e-06 -6.34988e-06)
+tan:132, inaccurate answer: bit 0 (bfeb06fbbe995394 0000000000000000) (-0.844602 0)
+In tan() using tan_vec.c:133, errno wrong:  0  1
+In tan() using tan_vec.c:134, errno wrong:  0  1
+tan:135, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In tan() using tan_vec.c:135, errno wrong:  0  1
+In tan() using tan_vec.c:136, errno wrong:  0  1
 testing tanf
 testing tanh
+tanh:124, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
+In tanh() using tanh_vec.c:124, errno wrong:  0  1
+In tanh() using tanh_vec.c:125, errno wrong:  0  1
 testing tanhf
 testing y0
 testing y0f
@@ -323,8 +482,9 @@ y0f:212, inaccurate answer: bit 33 (bfb8a468e0000000 bfb8a46920000000) (-0.09625
 y0f:215, inaccurate answer: bit 33 (bf8dab6140000000 bf8dab6180000000) (-0.014487 -0.014487)
 testing y1
 y1:70, inaccurate answer: bit 61 (bfac32ea37e86b17 bfac32ea37e86b1d) (-0.0550759 -0.0550759)
+y1:72, inaccurate answer: bit 60 (bf9601df787fb166 bf9601df787fb158) (-0.0214915 -0.0214915)
 y1:73, inaccurate answer: bit 59 (bf749c6e3dd329bc bf749c6e3dd329d4) (-0.005032 -0.005032)
-y1:74, inaccurate answer: bit 61 (3f86eeebe987ae9e 3f86eeebe987ae9a) (0.0111979 0.0111979)
+y1:74, inaccurate answer: bit 60 (3f86eeebe987ae9e 3f86eeebe987aea8) (0.0111979 0.0111979)
 testing y1f
 y1f:67, inaccurate answer: bit 33 (bfbb667a40000000 bfbb667a80000000) (-0.107032 -0.107032)
 y1f:70, inaccurate answer: bit 32 (bfac32ec60000000 bfac32ebe0000000) (-0.055076 -0.055076)
@@ -393,6 +553,7 @@ yn:880, inaccurate answer: bit 61 (3f75c4b9b364ed56 3f75c4b9b364ed5a) (0.0053145
 yn:932, inaccurate answer: bit 61 (3f7d956aec4fc025 3f7d956aec4fc029) (0.00722257 0.00722257)
 yn:957, inaccurate answer: bit 59 (bf6efed64182e08c bf6efed64182e09f) (-0.00378363 -0.00378363)
 yn:1016, inaccurate answer: bit 61 (bf98d90899633801 bf98d908996337fd) (-0.0242654 -0.0242654)
+yn:1049, inaccurate answer: bit 61 (bf58978921d80da3 bf58978921d80d9e) (-0.00150097 -0.00150097)
 testing ynf
 ynf:346, inaccurate answer: bit 33 (c01e6ecd80000000 c01e6ecdc0000000) (-7.60821 -7.60821)
 ynf:359, inaccurate answer: bit 33 (bfedd03240000000 bfedd03280000000) (-0.931665 -0.931665)
@@ -550,4 +711,4 @@ testing fpsetsticky/fpgetsticky
 testing fpsetroundtoi/fpgetroundtoi
 fpsetroundtoi/fpgetroundtoi:2, inacurate answer: (00000000 should be 00000001)
 testing fpsetround
-Tested 63223 functions, 398 errors detected
+Tested 63223 functions, 478 errors detected

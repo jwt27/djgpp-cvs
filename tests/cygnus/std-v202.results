@@ -280,11 +280,6 @@ log1p:7, inaccurate answer: bit 61 (3fb8663f793c46cc 3fb8663f793c46c7) (0.095310
 log1p:8, inaccurate answer: bit 61 (3fbd031bd5179e02 3fbd031bd5179dfc) (0.113329 0.113329)
 testing log1pf
 testing log2
-log2:139, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
-log2:144, inaccurate answer: bit 12 (fff0000000000000 fff8000000000000) (-Inf NaN)
-log2:146, inaccurate answer: bit 0 (7ff8000000000000 fff8000000000000) (NaN NaN)
-In log2() using log2_vec.c:146, errno wrong:  0  1
-In log2() using log2_vec.c:147, errno wrong:  0  1
 testing log2f
 testing logf
 testing modf
@@ -550,4 +545,4 @@ testing fpsetsticky/fpgetsticky
 testing fpsetroundtoi/fpgetroundtoi
 fpsetroundtoi/fpgetroundtoi:2, inacurate answer: (00000000 should be 00000001)
 testing fpsetround
-Tested 63223 functions, 398 errors detected
+Tested 63223 functions, 395 errors detected
