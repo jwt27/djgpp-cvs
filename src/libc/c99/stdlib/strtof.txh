@@ -19,7 +19,7 @@ character.
 The value the represented by @var{s}.
 
 If a number represented by @var{s} doesn't fit into the range of values
-representable by the type @code{double}, the function returns either
+representable by the type @code{float}, the function returns either
 @code{-HUGE_VAL} (if @var{s} begins with the character @code{-}) or
 @code{+HUGE_VAL}, and sets @code{errno} to @code{ERANGE}.
 
