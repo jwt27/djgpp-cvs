@@ -27,6 +27,10 @@ _creatnew(const char* filename, int attrib, int flags)
 
   _put_path(filename);
   r.x.bx =
+    0x1000 |                   /* FAT32 extended size. */
+    /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
+       seems it has a bug which only lets you create these big files
+       if LFN is enabled. */
     0x2002 | (flags & 0xfff0);	/* r/w, no Int 24h, use caller-defined flags */
   r.x.dx = 0x0010;		/* Create, fail if exists */
   r.x.si = __tb_offset;

@@ -368,26 +368,6 @@ get_netredir_entry(int drive_num)
 }
 
 /*
- * Return 1 if this drive is a CD-ROM drive, 0 otherwise.  Works
- * with MSCDEX 2.x, but what about other CD-ROM device drivers?
- */
-static int
-is_cdrom_drive(int drive_num)
-{
-  __dpmi_regs r;
-
-  r.x.ax = 0x150b;      /* CD-ROM Drive Check function */
-  r.x.cx = drive_num - 1; /* 0 = A: */
-  __dpmi_int(0x2f, &r);
-
-  /* If MSCDEX installed, BX will hold ADADh; AX will be non-zero
-     if this drive is supported by MSCDEX.  */
-  if (r.x.bx == 0xadad && r.x.ax != 0)
-    return 1;
-  return 0;
-}
-
-/*
  * Return 1 if a CD-ROM drive DRIVE_NUM is ready, i.e. there
  * is a disk in the drive and the tray door is closed.
  */
@@ -445,51 +425,6 @@ cdrom_drive_ready(int drive_num)
   return 0;
 }
 
-/*
- * Detect a RAM disk.  We do this by checking if the number of FAT
- * copies (in the Device Parameter Block) is 1, which is typical of
- * RAM disks.  [This doesn't _have_ to be so, but if it's good
- * enough for Andrew Schulman et al (Undocumented DOS, 2nd edition),
- * we can use this as well.]
- */
-static int
-is_ram_drive(int drive_num)
-{
-  __dpmi_regs r;
-
-  r.h.ah = 0x32;        /* Get Device Parameter Block function */
-  r.h.dl = drive_num;
-  __dpmi_int(0x21, &r);
-
-  if (r.h.al == 0)
-    {
-      /* The pointer to DPB is in DS:BX.  The number of FAT copies is at
-         offset 8 in the DPB.  */
-      char fat_copies = _farpeekb(dos_mem_base, MK_FOFF(r.x.ds, r.x.bx) + 8);
-
-      return fat_copies == 1;
-    }
-  return 0;
-}
-
-/*
- * Check if the media in this disk drive is fixed or removable.
- * Should only be called after we're sure this ain't CD-ROM or
- * RAM disk, since these might fool you with this call.
- */
-static int
-media_type(int drive_num)
-{
-  __dpmi_regs r;
-
-  r.x.ax = 0x4408;
-  r.h.bl = drive_num;
-  __dpmi_int(0x21, &r);
-
-  if (r.x.flags & 1)
-    return -1;
-  return r.x.ax;    /* returns 1 for fixed disks, 0 for removable */
-}
 
 /* Exported library functions.  */
 
@@ -700,11 +635,11 @@ getmntent(FILE *filep)
           */
           if (mnt_type[0] == '?')
             {
-              int disk_type = media_type(drive_number);
+              int disk_type = _media_type(drive_number);
 
-              if (is_ram_drive(drive_number))
+              if (_is_ram_drive(drive_number))
                 mnt_type = NAME_ram;
-              else if (is_cdrom_drive(drive_number))
+              else if (_is_cdrom_drive(drive_number))
 		{
 		  /* Empty CD-ROM drives do NOT fail _truename(),
 		     so we must see if there is a disk in the drive.  */

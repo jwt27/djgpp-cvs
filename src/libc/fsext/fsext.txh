@@ -84,6 +84,10 @@ A file ioctl handler.
 
 A file lseek handler (@pxref{lseek}).
 
+@item __FSEXT_llseek
+
+A file llseek handler (@pxref{llseek}).
+
 @item __FSEXT_link
 
 A file link handler (@pxref{link}).  This is most relevant to file

@@ -10,8 +10,16 @@ int _open(const char *path, int attrib);
 @subheading Description
 
 This is a direct connection to the MS-DOS open function call, int 0x21,
-%ah = 0x3d.  (When long file names are supported, @code{_open} calls
-function 0x716c of Int 0x21.)  The file is set to binary mode.
+%ah = 0x3d, on versions of DOS earlier than 7.0. On DOS version 7.0 or
+later @code{_open} calls function int 0x21, %ax = 0x6c00. When long
+file names are supported, @code{_open} calls function 0x716c of Int
+0x21.
+
+On FAT32 file systems file sizes up to 2^32-2 are supported. Note
+that WINDOWS 98 has a bug which only lets you create these big files
+if LFN is enabled. In plain DOS mode it plainly works.
+
+The file is set to binary mode.
 
 This function can be hooked by the @dfn{File System Extensions}
 (@pxref{File System Extensions}).  If you don't want this, you should

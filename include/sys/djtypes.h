@@ -8,6 +8,7 @@
 #define __DJ_clock_t	typedef int clock_t;
 #define __DJ_gid_t	typedef int gid_t;
 #define __DJ_off_t	typedef int off_t;
+#define __DJ_offset_t	typedef long long offset_t;
 #define __DJ_pid_t	typedef int pid_t;
 #define __DJ_size_t	typedef long unsigned int size_t;
 #define __DJ_ssize_t	typedef int ssize_t;

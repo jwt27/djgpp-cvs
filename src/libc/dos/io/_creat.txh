@@ -10,14 +10,23 @@ int _creat(const char *path, int attrib);
 @subheading Description
 
 This is a direct connection to the MS-DOS creat function call, int 0x21,
-%ah = 0x3c.  The file is set to binary mode.  This function can be
-hooked by the @dfn{File System Extensions}, see @ref{File System
-Extensions}.  If you don't want this, you should use @code{_dos_creat}
-(@pxref{_dos_creat}) or @code{_dos_creatnew} (@pxref{_dos_creatnew}).
+%ah = 0x3c, on versions of DOS earlier than 7.0. On DOS version
+7.0 or later @code{_creat} calls function int 0x21, %ax = 0x6c00
 
 On platforms where the LFN API (@pxref{_use_lfn, LFN}) is available,
 @code{_creat} calls function 0x716C of Interrupt 21h, to support long
 file names.
+
+On FAT32 file systems file sizes up to 2^32-2 are supported. Note
+that WINDOWS 98 has a bug which only lets you create these big files
+if LFN is enabled. In plain DOS mode it plainly works.
+
+The file is set to binary mode.  
+
+This function can be hooked by the @dfn{File System Extensions}, see
+@ref{File System Extensions}.  If you don't want this, you should use
+@code{_dos_creat} (@pxref{_dos_creat}) or @code{_dos_creatnew}
+(@pxref{_dos_creatnew}).
 
 @subheading Return Value
 

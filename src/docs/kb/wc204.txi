@@ -1,10 +1,42 @@
 @node Changes in 2.04, , Changes in 2.03, What Changed
 @section Changes in 2.04
 
-Here is a list of changes from DJGPP V2.03 to V2.04.
+Here is a list of changes from DJGPP V2.03 to V2.04.  
 
 @findex uname@r{, CPU type detection}
-Ability to report the exact CPU type in @code{uname}.
+Ability to report the exact CPU type in @code{uname}.  
+
+@findex _creat@r{, and FAT32}
+@findex _creatnew@r{, and FAT32}
+@findex _open@r{, and FAT32}
+The functions @code{_creat}, @code{_creatnew} and @code{_open} now set
+extended size flag in DOS calls to be able to create files with size up
+to 2^32-1, supported on FAT32 volumes.  
+
+@findex llseek@r{, and FAT32}
+The function @code{llseek} added with type @code{offset_t} to support
+file seeks up to 2^32-2.  
+
+@findex statfs@r{, and FAT32}
+The function @code{statfs} have been made to report correct values >
+2^31 on FAT32 partitions.  
+
+@findex _invent_inode@r{, and FAT32}
+The function @code{_invent_inode} has been changed to start numbering
+invented inodes from @code{USHRT_MAX+1} to @code{2^28+1}.  
+
+@findex _is_cdrom_drive
+@findex _is_ram_drive
+@findex _media_type
+Functions @code{_is_cdrom_drive}, @code{_is_ram_drive} and
+@code{_media_type} has been taken out of @file{mntent.c} and made
+externally callable.   
+
+@findex _get_fat_size
+@findex _get_fs_type
+@findex _is_fat32
+New functions @code{_get_fat_size}, @code{_get_fs_type} and
+@code{_is_fat32} added.
 
 @cindex stdarg.h@r{, GCC 2.96}
 @cindex varargs.h@r{, GCC 2.96}

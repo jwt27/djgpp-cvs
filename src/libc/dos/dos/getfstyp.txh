@@ -1,0 +1,69 @@
+@ignore
+ * Copyright (C) 2000 Martin Str@"omberg <ams@ludd.luth.se>.
+ *
+ * This software may be used freely so long as this copyright notice is
+ * left intact. There is no warranty on this software.
+ *
+@end ignore
+
+@node _get_fs_type, file system
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int _get_fs_type( const int drive,
+                  char *const result_str );
+@end example
+
+@subheading Description
+
+This function tries to extract the file system type of the drive
+number @var{drive}, 1 == A:, 2 == B:, etc., 0 == default drive.  It
+does this by calling INT21, AX=0x6900, Get Disk Serial Number (sic!),
+which returns, among other things, an eight character field which is
+set while formatting the drive. Now, this field can be set to whatever
+the formatting program wishes, but so far every FAT formatted drive
+has returned a string starting with "FAT".  
+
+If successful the result is put in @var{result_str} which must be at 
+least 9 characters long.  If unsuccessful @code{errno} is set.  
+
+This function will not succeed on DOS version < 4, setting
+@code{errno} to @code{ENOSYS}.  It is also known to have trouble
+detecting the file system type of disks formatted with a later version
+of DOS than the version it is run on.  E. g. floppies with LFN
+entries can cause this function to fail or detect the floppy as
+FAT16 if used in plain DOS.  
+
+If you are interested in which kind of FAT file system that is in use
+try the function @code{_get_fat_size} (@pxref{_get_fat_size}) which
+will reliably detect the right kind of FAT file system.  
+
+@subheading Return Value
+
+0 if the file system type was extracted successfully; otherwise -1.  
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <stdio.h>
+#include <dos.h>
+
+int main(void)
+@{
+  char buffer[9];
+
+  if( ! _get_fs_type( 3, buffer ) )
+  @{
+    printf("The file system on C: is '%s'.\n", buffer);
+  @}
+
+  exit(0);
+@}
+
+@end example

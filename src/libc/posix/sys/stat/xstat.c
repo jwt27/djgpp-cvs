@@ -159,25 +159,16 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
 {
   static struct name_list  *name_list[256];
 
-  /* If the st_inode is wider than a short int, we will count up
-   * from USHRT_MAX+1 and thus ensure there will be no clashes with
-   * actual cluster numbers.
-   * Otherwise, we must count downward from USHRT_MAX, which could
-   * yield two files with identical inode numbers: one from actual
-   * DOS cluster number, and another from this function.  In the
-   * latter case, we still have at least 80 inode numbers before
-   * we step into potentially used numbers, because some FAT entries
-   * are reserved to mean EOF, unused entry and other special codes,
-   * and the FAT itself uses up some clusters which aren't counted.
+  /* We count upwards from 2^28+1, which can't yield two files with
+   * identical inode numbers: FAT16 uses maximum ~2^16 and FAT32 uses
+   * maximum ~2^28. 
    */
-  static int         dir = (sizeof(ino_t) > 2 ? 1 : -1);
+#define INVENTED_INODE_START ( (1 << 28) + 1 )
 
   /* INODE_COUNT is declared LONG and not ino_t, because some DOS-based
    * compilers use short or unsigned short for ino_t.
    */
-  static long        inode_count = (sizeof(ino_t) > 2
-                                    ? (long)USHRT_MAX + 1L
-                                    : USHRT_MAX);
+  static long        inode_count = INVENTED_INODE_START;
 
   struct name_list  *name_ptr, *prev_ptr;
   const char        *p;
@@ -187,7 +178,7 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
   if (xstat_count != __bss_count)
     {
       xstat_count = __bss_count;
-      inode_count = (sizeof(ino_t) > 2 ? (long)USHRT_MAX + 1L : USHRT_MAX);
+      inode_count = INVENTED_INODE_START;
       memset (name_list, 0, sizeof name_list);
     }
 
@@ -219,7 +210,7 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
     {
       ino_t retval = inode_count;
 
-      inode_count += dir;
+      inode_count++;
       return retval;
     }
 
@@ -270,7 +261,7 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
       else
         name_list[hash] = name_ptr;
       retval = inode_count;
-      inode_count += dir; /* increment or decrement as appropriate */
+      inode_count++; /* Increment for next call. */
 
       return retval;
     }

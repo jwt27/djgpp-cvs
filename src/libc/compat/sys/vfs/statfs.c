@@ -6,6 +6,7 @@
 #include <string.h>
 #include <dpmi.h>
 #include <go32.h>
+#include <dos.h>
 #include <libc/farptrgs.h>
 #include <errno.h>
 #include <unistd.h>
@@ -13,13 +14,19 @@
 #include <sys/vfs.h>
 #include <libc/dosio.h>
 
+#if 0
+#include <stdio.h>
+#endif
+
 int
 statfs(const char *path, struct statfs *buf)
 {
   __dpmi_regs regs;
   int drive_number;
   int cdrom_calls_used = 0;
-  int blocks = 0;
+  long blocks = 0;
+  long free = 0;
+  long bsize = 0;
 
   /* Get the drive number, including the case of magic
      names like /dev/c/foo.  */
@@ -46,7 +53,7 @@ statfs(const char *path, struct statfs *buf)
   if ((regs.x.flags & 1) == 0 && regs.x.bx == 0xadad && regs.x.ax != 0)
   {
     unsigned char request_header[0x14];
-    int status, i = 2, bsize = 0;
+    int status, i = 2;
 
     /* Construct the request header for the CD-ROM device driver.  */
     memset (request_header, 0, sizeof request_header);
@@ -91,9 +98,8 @@ statfs(const char *path, struct statfs *buf)
       if (_farpeekw (_dos_ds, __tb + 8) == 0x100
 	  && _farpeekw (_dos_ds, __tb + 5 + 0x12) == 5)
       {
-	regs.x.ax = 1;		/* fake: sectors per cluster */
-	regs.x.cx = bsize;
-	regs.x.bx = 0;		/* no free space: cannot add data to CD-ROM */
+	/* bsize has been set some lines above. */
+	free = 0;		/* no free space: cannot add data to CD-ROM */
 	blocks  = _farpeekl (_dos_ds, __tb + 1);
 	cdrom_calls_used = 1;
       }
@@ -113,15 +119,72 @@ statfs(const char *path, struct statfs *buf)
       errno = ENODEV;
       return -1;
     }
+    bsize = regs.x.cx * regs.x.ax;
+    free = regs.x.bx;
     blocks = regs.x.dx;
+#if 0
+    printf("First: bsize = %ld, free = %ld, blocks = %ld.\n"
+	 , bsize
+	 , free
+         , blocks
+	   );
+#endif
+
+    if( 7 <= (_get_dos_version(1) >> 8) /* Is FAT32 supported? */
+     && _is_fat32(drive_number + 1) /* Is it a FAT32 drive? */
+       )
+    {
+      /* Get free space info from Extended Drive Parameter Block. */
+      regs.x.ax = 0x7302;
+      regs.h.dl = drive_number + 1;
+      regs.x.es = __tb_segment;
+      regs.x.di = __tb_offset;
+      regs.x.cx = 0x100; /* 256 bytes should be enough (RBIL says 0x3f). */
+      __dpmi_int(0x21, &regs);
+      
+      /* Errors? */
+      if( regs.x.flags & 1 )
+      {
+	errno = ENODEV;
+	return( -1 );
+      }
+
+      /* We trust previous int21 call more if free hasn't maxed out. */
+      if( free < blocks )
+      {
+	/* Previous bsize is a multiple of this bsize, so the multiplication
+	   and division here is really a rescaling of the previous free
+	   value. */
+	free *= bsize;
+	bsize = _farpeekw (_dos_ds, __tb + 0x2 + 0x2) *
+	  ( _farpeekb (_dos_ds, __tb + 0x2 + 0x4) + 1 );
+	free /= bsize;
+      }
+      else
+      {
+	free = _farpeekw (_dos_ds, __tb + 0x2 + 0x1f) +
+	  65536 * _farpeekw (_dos_ds, __tb + 0x2 + 0x21);
+	bsize = _farpeekw (_dos_ds, __tb + 0x2 + 0x2) *
+	  ( _farpeekb (_dos_ds, __tb + 0x2 + 0x4) + 1 );
+      }
+      
+      blocks = _farpeekl( _dos_ds, __tb + 0x2 + 0x2d);
+#if 0
+      printf("Second: bsize = %ld, free = %ld, blocks = %ld.\n"
+	   , bsize
+	   , free
+          , blocks
+	     );
+#endif
+    }
   }
 
   /* Fill in the structure */
-  buf->f_bavail = regs.x.bx;
-  buf->f_bfree = regs.x.bx;
+  buf->f_bavail = free;
+  buf->f_bfree = free;
   buf->f_blocks = blocks;
-  buf->f_bsize = regs.x.cx * regs.x.ax;
-  buf->f_ffree = regs.x.bx;
+  buf->f_bsize = bsize;
+  buf->f_ffree = free;
   buf->f_files = blocks;
   buf->f_type = 0;
   buf->f_fsid[0] = drive_number;

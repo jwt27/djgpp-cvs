@@ -10,6 +10,7 @@ SRC += getdtabl.c
 SRC += gethostn.c
 SRC += getpages.c
 SRC += getwd.c
+SRC += llseek.c
 SRC += nice.c
 SRC += sync.c
 SRC += truncate.c

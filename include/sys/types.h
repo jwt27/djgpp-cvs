@@ -25,6 +25,9 @@ __DJ_gid_t
 __DJ_off_t
 #undef __DJ_off_t
 #define __DJ_off_t
+__DJ_offset_t
+#undef __DJ_offset_t
+#define __DJ_offset_t
 __DJ_pid_t
 #undef __DJ_pid_t
 #define __DJ_pid_t
