@@ -17,5 +17,6 @@ SRC += putpath.c
 SRC += setmode.c
 SRC += tell.c
 SRC += unlock.c
+SRC += flushdc.c
 
 include $(TOP)/../makefile.inc

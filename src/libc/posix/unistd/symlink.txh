@@ -1,0 +1,41 @@
+@node symlink, io
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int symlink(const char *exists, const char *new);
+@end example
+
+@subheading Description
+MSDOS doesn't support symbolic links.  However, DJGPP supports
+``symlinks'' to DJGPP programs.  This function simulates a symlink
+between two @file{.exe} files in the DJGPP style.  It creates a program
+whose name is given by @var{*new} which, when run, will actually execute
+the program @var{*exists} passing it @var{*new} in @code{argv[0]} (some
+programs change their behavior depending on what's passed in
+@code{argv[0]}).  The file referred to by @var{exists} doesn't really
+have to exist when this function is called.  Both @var{*new} and
+@var{*exists} can point to a name with or without the @file{.exe}
+extension.
+
+Note that both @var{*exists} and @var{*new} must reside in the same
+directory (this is a restriction of the DJGPP ``symlinks''); the
+function will fail and set @code{errno} to @code{EXDEV} if they aren't.
+Also note that this function does nothing to ensure that @var{*exists}
+is actually a DJGPP program.
+
+This functions runs the @samp{stubify} and @samp{stubedit} programs, so
+they should be somewhere on your @samp{PATH} for the function to
+succeed.  (These programs come with the DJGPP development distribution.)
+
+@subheading Return Value
+
+Zero in case of success, -1 in case of failure (and @code{errno} set to
+the appropriate error code).
+
+@subheading Example
+
+@example
+symlink ("c:/djgpp/bin/grep", "c:/djgpp/bin/fgrep");
+@end example

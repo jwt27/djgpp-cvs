@@ -30,6 +30,7 @@ int		_dos_unlock(int _fd, long _offset, long _length);
 int		unlock(int _fd, long _offset, long _length);
 ssize_t		_write(int _fd, const void *_buf, size_t _nbyte);
 int	        _chmod(const char *_path, int _func, ...);
+void		_flush_disk_cache(void);
 
 #define sopen(path, access, shflag, mode) \
 	open((path), (access)|(shflag), (mode))

@@ -14,19 +14,74 @@ Each extension must provide one or two handler functions.  All handler
 functions take the same arguments:
 
 @example
-  int function(__FDEXT_Fnumber func_number, int *rv, va_args *args);
+  int function(__FSEXT_Fnumber func_number, int *rv, va_list args);
 @end example
 
 The @var{func_number} identifies which function is to be emulated.
-The file @code{<sys/fsext.h>} lists the function numbers.  @var{rv}
-points to a temporary return value pointer.  If the function is
-emulated, the return value should be stored here, and the function
-should return a nonzero value.  If the function returns zero, it is
-assumed to have not emulated the call, and the regular DOS I/O
-function will happen.  The @var{args} represent the arguments passed
-to the original function; these point to the actual arguments on the
-stack, so the emulation may choose to modify them and return zero to
-the regular function, which will then act on the modified arguments.
+The file @code{<sys/fsext.h>} defines the function numbers as follows:
+
+@table @code
+@item __FSEXT_nop
+
+A no-op.  This is currently unused by the library functions.
+
+@item __FSEXT_open
+
+An open handler.  This is called just before the library is about to
+issue the DOS OpenFile call on behalf of your program.
+
+@item __FSEXT_creat
+
+A create handler.  Called when a file needs to be created.  Note that
+the handler should both create the ``file'' and open it.
+
+@item __FSEXT_read
+
+A read handler.  Called when data should be read from a ``file''.
+
+@item __FSEXT_write
+
+A write handler.  Called to write data to a ``file''.
+
+@item __FSEXT_read
+
+A ready handler.  It is called by @code{select} library function
+(@pxref{select}) when it needs to know whether a handle used to
+reference the ``file'' is ready for reading or writing, or has an error
+condition set.  The handler should return an OR'ed bit mask of the
+following bits (defined on @code{<sys/fsext.h>}):
+
+@table @code
+
+@item __FSEXT_ready_read
+
+The ``file'' is ready for reading.
+
+@item __FSEXT_ready_write
+
+The ``file'' is ready for writing.
+
+@item __FSEXT_ready_error
+
+The ``file'' has an error condition set.
+
+@end table
+
+@item __FSEXT_close
+
+A close handler.  Called when the ``file'' should be closed.
+
+@end table
+
+
+@var{rv} points to a temporary return value pointer.  If the function is
+emulated by the handler, the return value should be stored here, and the
+handler should return a nonzero value.  If the handler returns zero, it is
+assumed to have not emulated the call, and the regular DOS I/O function
+will happen.  The @var{args} represent the arguments passed to the
+original function; these point to the actual arguments on the stack, so
+the emulation may choose to modify them and return zero to the regular
+function, which will then act on the modified arguments.
 
 A normal extension would provide these parts:
 
@@ -68,9 +123,9 @@ int __FSEXT_alloc_fd(__FSEXT_Function *_function);
 
 This function is part of the @ref{File System Extensions}.  It is used
 by extensions that fully emulate the I/O functions, and thus don't
-have a corresponding DOS file handle.  This function opens DOS's "nul"
-device, so as to allocate a handle that DOS won't then reuse.  It also
-assigns the handler function for that descriptor.
+have a corresponding DOS file handle.  This function opens DOS's
+@samp{NUL} device, so as to allocate a handle that DOS won't then reuse.
+It also assigns the handler function for that descriptor.
 
 The module is responsible for calling @code{_close} on the descriptor
 after setting the handler function to zero in the extended close
@@ -103,8 +158,54 @@ int __FSEXT_set_function(int _fd, __FSEXT_Function *_function);
 
 This function is part of the @ref{File System Extensions}.  It is used
 to set the handler function for those extensions that use DOS files
-for I/O.  I can't think of any examples where you'd want to do this,
-but it's here in case you do.
+for I/O.  One situation where you might need this is when you must catch
+output to the terminal and play some tricks with it, like colorize it or
+redirect it to another device.
+
+@subheading Return Value
+
+Zero in case of success, non-zero in case of failure (like if @var{_fd}
+is negative).
+
+@subheading Example
+
+@example
+
+#include <sys/fsext.h>
+#include <conio.h>
+
+/* A simple example of a write handler which converts DOS I/O to the
+   screen into direct writes to video RAM.  */
+static int
+my_screen_write (__FSEXT_Fnumber func, int *retval, va_list rest_args)
+@{
+  char *buf, *mybuf;
+  size_t buflen;
+  int fd = va_arg (rest_args, int);
+
+  if (func != __FSEXT_write || !isatty (fd))
+    return 0;  /* and the usual DOS call will be issued */
+
+  buf = va_arg (rest_args, char *);
+  buflen = va_arg (rest_args, size_t);
+  mybuf = alloca (buflen + 1);
+  memcpy (mybuf, buf, buflen);
+  mybuf[buflen] = '\0';
+  cputs (mybuf);
+  *retval = buflen;
+  return 1;  /* meaning that we handled the call */
+@}
+
+/* Install our handler.  The `attribute constructor' causes this
+   function to be called by the startup code.  */
+static void __attribute__((constructor))
+install_screen_write_handler (void)
+@{
+  __FSEXT_set_function (fileno (stdout), my_screen_write);
+@}
+
+@end example
+
 
 @c ----------------------------------------------------------------------
 @node __FSEXT_get_function, file system

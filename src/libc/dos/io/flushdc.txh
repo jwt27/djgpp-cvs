@@ -1,0 +1,17 @@
+@node _flush_disk_cache, dos
+@subheading Syntax
+
+@example
+#include <io.h>
+
+void _flush_disk_cache (void);
+@end example
+
+@subheading Description
+
+Attempts to update the disk with the data cached in the write-behind
+disk cache.
+
+@subheading Return Value
+
+None.
