@@ -28,6 +28,7 @@ static char sccsid[] = "@(#)logwtmp.c	5.2 (Berkeley) 9/20/88";
 #endif /* defined LIBC_SCCS */
 #endif /* !defined lint */
 
+#ifndef __MSDOS__
 #include <sys/types.h>
 #include <utmp.h>
 
@@ -69,3 +70,4 @@ logwtmp(line, name, host)
 }
 
 #endif /* !defined OLD_TIME */
+#endif /* !__MSDOS__ */
