@@ -17,12 +17,44 @@ this format:
 struct dirent @{
   unsigned short d_namlen;  /* The length of the name (like strlen) */
   char d_name[MAXNAMLEN+1]; /* The name */
+  mode_t d_type;            /* The file's type */
 @};
 @end example
 
 Note that some directory entries might be skipped by @code{readdir},
 depending on the bits set in the global variable
 @code{__opendir_flags}.  @xref{opendir, __opendir_flags, opendir}.
+
+The possible values of the @code{d_type} member are:
+
+@table @code
+@item DT_REG
+This is a regular file.
+@item DT_BLK
+The file is a block device.
+@item DT_CHR
+The file is a character device.
+@item DT_DIR
+The file is a directory.
+@item DT_FIFO
+This is a pipe (never happens in DJGPP).
+@item DT_LABEL
+The file is a volume label.
+@item DT_LNK
+The file is a symlink.
+@item DT_SOCK
+The file is a socket.
+@item DT_UNKNOWN
+The file's type is unknown.  This value is put into the @code{d_type}
+member if the exact file's type is too expensive to compute.  If the
+@code{__OPENDIR_NO_D_TYPE} flag is set in the global variable
+@code{__opendir_flags}, @emph{all} files get marked with
+@code{DT_UNKNOWN}.
+@end table
+
+The macro @code{DTTOIF} (@pxref{DTTOIF}) can be used to convert the
+@code{d_type} member to the equivalent value of the @code{st_mode}
+member of @code{struct stat}, see @ref{stat}.
 
 @subheading Return Value
 
@@ -31,6 +63,7 @@ A pointer to a static buffer that is overwritten with each call.
 @subheading Portability
 
 @port-note posix The @code{__opendir_flags} variable is DJGPP-specific.
+@port-note posix The @code{d_type} member is an extension available on some systems such as GNU/Linux.
 @portability !ansi, posix
 
 @subheading Example
@@ -43,3 +76,32 @@ while (de = readdir(d))
 closedir(d);
 @end example
 
+@c -------------------------------------------------
+@node DTTOIF, file system
+@subheading Syntax
+
+@example
+#include <dirent.h>
+
+struct dirent *de;
+mode_t file_mode = DTTOIF(de->d_type)
+@end example
+
+@subheading Description
+
+This macro converts the @code{d_type} member of a @code{struct dirent}
+variable to an equivalent value of the @code{st_mode} member of a
+@code{struct stat} variable (@pxref{stat}).
+
+Note that the access rights are not set in the result returned by this
+macro.  Only the file-type information is copied.
+
+@subheading Return Value
+
+The file's mode bits are returned.  If the argument has the value
+@code{DT_UNKNOWN}, the result will be @code{S_IFREG}.
+
+@subheading Portability
+
+@port-note posix This macro is available on systems which support the @code{d_type} member in @code{struct dirent}.
+@portability !ansi, !posix

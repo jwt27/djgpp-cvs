@@ -415,4 +415,13 @@ Type of @code{__file_handle_modes} extended to be able to hold the
 @findex getopt@r{, enhanced for POSIX compliance}
 When the first character in the valid options string is a colon @samp{:},
 @code{getopt} will now return a colon when a missing option argument is
-detected and will not print error messages even when @code{opterr} is non-zero.
+detected and will not print error messages even when @code{opterr} is
+non-zero.
+
+@findex readdir@r{, reports file types}
+@cindex @code{struct dirent}, @code{d_type} member
+The function @code{readdir} now includes the file's type in the
+@code{d_type} member of @code{struct dirent} it returns.  This member is
+used by some GNU packages, such as Fileutils, to make directory
+traversal more efficient.
+
