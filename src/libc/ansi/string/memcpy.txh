@@ -9,7 +9,10 @@ void *memcpy(void *dest, const void *src, int num);
 
 @subheading Description
 
-This function copies @var{num} bytes from @var{source} to @var{dest}. 
+This function copies @var{num} bytes from @var{source} to @var{dest}.
+It assumes that the source and destination regions don't overlap; if you
+need to copy overlapping regions, use @code{memove} instead.
+@xref{memove}.
 
 @subheading Return Value
 
