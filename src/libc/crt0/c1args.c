@@ -398,11 +398,34 @@ __crt0_setup_arguments(void)
   */
   {
     char doscmd[128];
+    char *cmdline;
+
     movedata(_stubinfo->psp_selector, 128, ds, (int)doscmd, 128);
-    arglist = parse_bytes(doscmd+1, doscmd[0] & 0x7f,
-			  (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES) == 0);
+    if ((doscmd[0] & 0x7f) != 127 || ((cmdline = getenv("CMDLINE")) == NULL))
+      arglist = parse_bytes(doscmd + 1, doscmd[0] & 0x7f,
+			    (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES)==0);
+    else
+    {
+      /* Command line is in the environment variable CMDLINE.  */
+      char stop_token;
+
+      /* Skip over the name of the program.  */
+      if ((*cmdline == '\"') || (*cmdline == '\''))
+        stop_token = *cmdline;
+      else
+        stop_token = ' ';
+
+      /* FIXME: what about the case of 'foo\'bar'?  */
+      while (*cmdline != stop_token)
+        ++cmdline;
+
+      ++cmdline; /* Skip over the stop token.  */
+
+      arglist = parse_bytes(cmdline, strlen(cmdline),
+                            (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES) == 0);
+    }
   }
-  
+
   /*
   ** Check for !proxy.
   **

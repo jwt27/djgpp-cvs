@@ -146,3 +146,21 @@ header files compatible with GCC provided ones.
 @pindex djtar@r{, support for unpacking @code{bzip2} archives}
 The @code{djtar} program can now unpack @file{.tar.bz2} archives
 compressed with the @code{bzip2} program.
+
+@findex system@r{, invokes Windows programs with long command lines}
+@findex spawn*@r{ functions, invoke Windows programs with long command lines}
+@cindex startup code, supports long command lines passed by Windows programs
+@vindex CMDLINE@r{, environment variable}
+@pindex 4DOS@r{, support for long command lines}
+@pindex NDOS@r{, support for long command lines}
+The functions @code{system} and @code{spawn*} can invoke Windows
+programs and advanced shells, such as @code{4DOS} and @code{NDOS}, with
+command lines longer than 126 characters.  For Windows programs, the
+command line can be up to 1015 characters long; @code{4DOS} and
+@code{NDOS} can be passed up to 247 characters.  This is done by
+defining the @code{CMDLINE} environment variable whose value is the
+command line.  The DJGPP startup code also supports @code{CMDLINE}
+method of passing long command lines, so DJGPP programs can now be
+invoked with long command lines from the @file{COMMAND.COM}'s prompt,
+and also from other Windows programs which support @code{CMDLINE}.
+

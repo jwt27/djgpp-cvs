@@ -12,7 +12,7 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
-int _dos_exec(const char *program, const char *args, char *const _envp[]);
+int _dos_exec(const char *program, const char *args, char *const _envp[], const char *_lcmd);
 
 int execl(const char *_path, const char *_argv0, ...);
 int execle(const char *_path, const char *_argv0, ... /*, char *const _envp[] */);

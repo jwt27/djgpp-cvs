@@ -238,7 +238,7 @@ run_v1_coff(int argc, char **argv)
       {
 	if (verbose)
 	  fprintf (stderr, "Exec: `%s %s\'\n", tmp, argv1_start);
-	return _dos_exec(tmp, argv1_start, environ);
+	return _dos_exec(tmp, argv1_start, environ, NULL);
       }
       else
       {
@@ -293,7 +293,7 @@ run_v1_coff(int argc, char **argv)
 	if (verbose)
 	  fprintf (stderr, "Exec: `%s %s\'\n", tmp, cmdbuf);
 
-	return _dos_exec(tmp, cmdbuf, environ);
+	return _dos_exec(tmp, cmdbuf, environ, NULL);
       }
     }
   }

@@ -11,8 +11,8 @@ const _v2_prog_type *_check_v2_prog(const char *program, int fd);
 @subheading Description
 
 This function checks a given program for various known types of
-executables and/or other things. This function povides two differnt
-entry points. One is to call the function with a not @code{NULL}
+executables and/or other things.  This function povides two differnt
+entry points.  One is to call the function with a not @code{NULL}
 pointer as @code{program} (in this case @code{fd} is ignored),
 then the file named by @code{program} is opened and closed by
 @code{_check_v2_prog}.
@@ -46,6 +46,7 @@ typedef struct @{
   unsigned object_format:4; /* What an object format */
 # define _V2_OBJECT_FORMAT_UNKNOWN 0x00
 # define _V2_OBJECT_FORMAT_COFF    0x01
+# define _V2_OBJECT_FORMAT_PE_COFF 0x02
 
   unsigned exec_format:4; /* What an executable format */
 # define _V2_EXEC_FORMAT_UNKNOWN    0x00
@@ -71,7 +72,7 @@ structure for known values.
 @strong{Warning:} Do not modify any of the data in this structure.
 
 After calling @code{_check_v2_prog} you should check at first the member
-@code{valid}. Only if this is nonzero you can be sure that all the other
+@code{valid}.  Only if this is nonzero you can be sure that all the other
 information in the struct is valid.
 
 The same is for the @code{stubinfo} member of the above struct, it is

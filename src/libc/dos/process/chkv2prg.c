@@ -77,7 +77,32 @@ const _v2_prog_type *_check_v2_prog_internal (int pf)
     char go32stub[9];
     unsigned long coff_start = (unsigned long)header[2]*512L;
     unsigned long exe_start;
+    unsigned long real_exe_start;
     type.exec_format = _V2_EXEC_FORMAT_EXE;
+
+    if (lseek(pf, 0x3c, SEEK_SET) != 0x3c)
+      return NULL;
+    if (read(pf, &real_exe_start, 4) != 4)
+      return NULL;
+
+    /* Detect if EXE is really a PE-COFF EXE.  */
+    if (real_exe_start != 0)
+    {
+      unsigned long magic;
+
+      /* This logic should NOT fail if real_exe_start is something
+	 preposterously large.  The reason is that DJGPP stubbed
+	 executables do NOT have a zero dword at offset 3Ch, contrary
+	 to what RBIL says.  You *have* been warned!  */
+      if (lseek(pf, real_exe_start, SEEK_SET) == real_exe_start
+	  && read(pf, &magic, 4) == 4
+	  && magic == 0x00004550) /* PE */
+      {
+        type.object_format = _V2_OBJECT_FORMAT_PE_COFF;
+        return &type;
+      }
+    }
+
     if (header[1])
       coff_start += (long)header[1] - 512L;
     exe_start = (unsigned long)header[4]*16L;

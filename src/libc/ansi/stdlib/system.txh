@@ -22,6 +22,12 @@ When calling programs compiled by DJGPP this function will not use
 @file{COMMAND.COM} and so will not be subject to its 126 character limit
 on command lines.
 
+When the calling program runs on Windows 9X or Windows 2000 and calls
+the system shell to run the child program, or if the child program is a
+native Windows program (in @code{PE-COFF} format), or when the system
+shell is @file{4DOS} or @file{NDOS}, command lines longer than 126
+characters are passed via the environment variable @code{CMDLINE}.
+
 Command lines and pipes (i.e., the use of @samp{<}, @samp{>}, @samp{>>},
 and @samp{|}) will be simulated internally in this function; this means
 that you can have both long command lines and redirection/pipes when

@@ -15,6 +15,8 @@
 #include <ctype.h>
 #include <errno.h>
 #include <process.h>
+#include <dos.h>
+#include <libc/bss.h>
 #include <libc/dosexec.h>
 #include <libc/unconst.h>
 #include <libc/file.h> /* for fileno() */
@@ -88,14 +90,15 @@ _shell_command (const char *prog, const char *cmdline)
   {
     /* Special case: zero or empty command line means just invoke
        the command interpreter and let the user type ``exit''.  */
-    return _dos_exec (shell, "", environ);
+    return _dos_exec (shell, "", environ, 0);
   }
   else if (_is_dos_shell (shell))
   {
-    char *cmd_tail = (char *)alloca (3 + strlen (prog) + 1
-				     + strlen (cmdline) + 1);
+    int cmd_tail_alloc = 3 + strlen(prog) + 1 + strlen (cmdline) + 1;
+    char *cmd_tail = (char *)alloca(cmd_tail_alloc);
     const char *s = prog;
     char *d = cmd_tail + 3;
+    int cmd_tail_len;
 
     strcpy (cmd_tail, "/c ");
     while ((*d = *s++) != 0)
@@ -114,16 +117,62 @@ _shell_command (const char *prog, const char *cmdline)
     }
 
     /* [4N]DOS.COM can support upto 255 chars per command line.
-       They lose that feature here, because there's no simple
-       way to pass long command lines to DOS function 4Bh (Exec)
-       which `_dos_exec' summons.  */
-    if (strlen (cmd_tail) > 126)
+       Windows PE-COFF executables support long command lines
+       passed through the CMDLINE environment variable, which
+       can handle up to 1024 characters.  */
+    if ((cmd_tail_len = strlen (cmd_tail)) > 126)
     {
-      errno = E2BIG;
-      return emiterror ("Command line too long.", 0);
+      size_t cmd_len_limit;
+      size_t shell_len = strlen (shell);
+
+      cmd_len_limit = _shell_cmdline_limit (shell);
+      if (cmd_len_limit == 0) /* unknown shell */
+	cmd_len_limit = 126;
+
+      if (cmd_tail_len > cmd_len_limit)
+      {
+        errno = E2BIG;
+        return emiterror ("Command line too long.", 0);
+      }
+      else
+      {
+	extern char __cmdline_str[];
+	extern size_t __cmdline_str_len;
+	char *cmdline_var = (char *)alloca (shell_len + 3 + cmd_tail_len
+					    + __cmdline_str_len);
+	char *ptr = cmdline_var;
+
+	/* Dump into CMDLINE the shell to execute and the entire
+	   command line.  */
+	strcpy (cmdline_var, __cmdline_str);
+	ptr += __cmdline_str_len;
+	if (memchr (shell, ' ', shell_len))
+	{
+	  *ptr++ = '"';
+	  memcpy (ptr, shell, shell_len);
+	  ptr += shell_len;
+	  *ptr++ = '"';
+	}
+	else
+	{
+	  memcpy (ptr, shell, shell_len);
+	  ptr += shell_len;
+	}
+
+	*ptr++ = ' ';
+	strcpy (ptr, cmd_tail);
+
+	if (strlen (cmdline_var) > cmd_len_limit)
+	{
+	  errno = E2BIG;
+	  return emiterror ("Command line too long.", 0);
+	}
+	else
+	  return _dos_exec(shell, cmd_tail, environ, cmdline_var);
+      }
     }
     else
-      return _dos_exec (shell, cmd_tail, environ);
+      return _dos_exec (shell, cmd_tail, environ, 0);
   }
   else
   {
@@ -158,7 +207,7 @@ _shell_command (const char *prog, const char *cmdline)
       fclose (respf);
       strcpy (cmd_tail, " ");
       strcat (cmd_tail, atfile);
-      retval = _dos_exec (shell, cmd_tail, environ);
+      retval = _dos_exec (shell, cmd_tail, environ, 0);
       remove (atfile);
       return retval;
     }
@@ -199,13 +248,13 @@ plainsystem(const char *prog, char *args)
 	return emiterror ("Command line too long.", 0);
       }
 
-      return _dos_exec (found_at, args, environ);
+      return _dos_exec (found_at, args, environ, 0);
     }
   
     /* Pass 1: how many arguments do we have?  */
     while (*pcmd)
     {
-      /* Only words and the terminating 0 are legal at this point.  */
+      /* Only words and the terminating 0 are valid at this point.  */
       if (get_sym (pcmd, &b, &e2) == WORD)
 	pargc++;
       else if (*b)

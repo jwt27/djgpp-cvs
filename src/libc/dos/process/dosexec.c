@@ -16,17 +16,21 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <ctype.h>
+#include <dos.h>
 #include <sys/system.h>
 #include <sys/movedata.h>
+#include <libc/bss.h>
 #include <libc/dosexec.h>
 #include <libc/unconst.h>
 #include <libc/dosio.h>
 #include <libc/farptrgs.h>
 #include <libc/symlink.h>
 
-/* FIXME: this is not LFN-clean.  Win95 has a way to
-   pass long command lines, but we don't support it here.  */
-#define CMDLEN_LIMIT 125
+/* Maximum length of the command-line tail Int 21h/AH=4Bh can handle.  */
+#define CMDLEN_LIMIT 126
+
+/* Maximum length of the command we can pass through CMDLINE=.  */
+#define CMDLINE_MAX  1023
 
 extern char **environ;
 
@@ -143,6 +147,9 @@ static int check_talloc(size_t amt)
 extern char   __PROXY[];	/* defined on crt0/crt1.c */
 extern size_t __PROXY_LEN;
 
+char __cmdline_str[] = "CMDLINE=";
+size_t __cmdline_str_len = sizeof(__cmdline_str) - 1;
+
 /* Functions that call `direct_exec_tail' after they've put
    some data into the transfer buffer, should set LFN parameter
    to either 0 (no LFN support) or 1 (LFN supported), but NOT 2!
@@ -150,7 +157,8 @@ extern size_t __PROXY_LEN;
    transfer buffer will be overrun!  */
 static int
 direct_exec_tail(const char *program, const char *args,
-		 char * const envp[], const char *proxy, int lfn)
+		 char * const envp[], const char *proxy, int lfn,
+		 const char *cmdline_var)
 {
   __dpmi_regs r;
   unsigned long program_la;
@@ -158,14 +166,19 @@ direct_exec_tail(const char *program, const char *args,
   unsigned long parm_la;
   unsigned long env_la, env_e_la;
   size_t proxy_len = proxy ? strlen(proxy)+1 : 0;
-  int seen_proxy = 0;
+  int seen_proxy = 0, seen_cmdline = 0;
   char arg_header[3];
   char short_name[FILENAME_MAX];
   const char *progname;
   unsigned proglen;
   int i;
   unsigned long fcb1_la, fcb2_la, fname_la;
-  
+  int arg_len;
+  int long_args_via_cmdline = 0;
+  /* The funky +1 below is because we need to copy the environment
+     variables with their terminating null characters.  */
+  size_t cmdline_var_len = cmdline_var ? strlen(cmdline_var)+1 : 0;
+
   /* This used to just call sync().  But `sync' flushes the disk
      cache nowadays, and that can slow down the child tremendously,
      since some caches (e.g. SmartDrv) invalidate all of their
@@ -208,11 +221,25 @@ direct_exec_tail(const char *program, const char *args,
   dosmemput(progname, proglen, program_la);
 
   /* The command-line tail.  */
-  arg_header[0] = strlen(args);
+  arg_len = strlen(args);
+  if (arg_len > CMDLEN_LIMIT)
+  {
+    arg_len = CMDLEN_LIMIT;
+    if (cmdline_var)
+      {
+	arg_header[0] = 127;
+	long_args_via_cmdline = 1;
+      }
+    else
+      arg_header[0] = CMDLEN_LIMIT; /* truncate the command tail */
+  }
+  else
+    arg_header[0] = arg_len;
   arg_header[1] = '\r';
-  dosmemput(arg_header, 1, arg_la);
-  dosmemput(args, strlen(args), arg_la+1);
-  dosmemput(arg_header+1, 1, arg_la+1+strlen(args));
+
+  dosmemput(arg_header, 1, arg_la); /* command tail length byte */
+  dosmemput(args, arg_len, arg_la+1); /* command tail itself */
+  dosmemput(arg_header+1, 1, arg_la+1+arg_len); /* terminating CR */
 
   /* The 2 FCBs.  Some programs (like XCOPY from DOS 6.x) need them.  */
   fcb1_la = talloc(16);	       /* allocate space for 1st FCB */
@@ -266,7 +293,8 @@ direct_exec_tail(const char *program, const char *args,
 
   /* The environment.  Replace the !proxy variable, if there is
      one (for nested programs) if we are called from `system',
-     or skip it, if we are called from `spawnXX'.  */
+     or skip it, if we are called from `spawnXX'.
+     Similar treatment is given the CMDLINE variable.  */
   for (i=0; envp[i]; i++)
   {
     const char *ep = envp[i];
@@ -283,6 +311,13 @@ direct_exec_tail(const char *program, const char *args,
       else
 	continue;
     }
+    else if (long_args_via_cmdline
+	     && strncmp(ep, __cmdline_str, __cmdline_str_len) == 0)
+      {
+	seen_cmdline = 1;
+	ep = cmdline_var;
+	env_len = cmdline_var_len;
+      }
     if (!check_talloc(env_len))
       return -1;
     env_e_la = talloc(env_len);
@@ -296,6 +331,15 @@ direct_exec_tail(const char *program, const char *args,
       return -1;
     env_e_la = talloc(proxy_len);
     dosmemput(proxy, proxy_len, env_e_la);
+  }
+
+  /* If no CMDLINE variable was found, and we need it, create one.  */
+  if (long_args_via_cmdline && !seen_cmdline)
+  {
+    if (!check_talloc(cmdline_var_len))
+      return -1;
+    env_e_la = talloc(cmdline_var_len);
+    dosmemput(cmdline_var, cmdline_var_len, env_e_la);
   }
 
   /* Terminate by an extra NULL char.  */
@@ -366,42 +410,93 @@ direct_exec_tail(const char *program, const char *args,
 }
 
 int
-_dos_exec(const char *program, const char *args, char * const envp[])
+_dos_exec(const char *program, const char *args, char * const envp[],
+	  const char *cmdline_var)
 {
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = _go32_info_block.size_of_transfer_buffer;
   tbuf_end = tbuf_beg + tbuf_len - 1;
-  return direct_exec_tail(program, args, envp, 0, 2);
+  return direct_exec_tail(program, args, envp, 0, 2, cmdline_var);
 }
 
 static char GO32_V2_STRING[] = "go32-v2.exe";
 static char GO32_STRING[]    = "go32.exe";
 
+struct __shell_data {
+  const char *name;		/* shell basename */
+  unsigned int cmdline_limit;	/* command-line length limit; -1 if no limit */
+};
+
 /* A list of known shells which require we DON'T quote command
    lines that are passed to them with the /c or -c switch.  */
-static const char *shell_brokets[] = {
-  "COMMAND.COM",
-  "4DOS.COM",
-  "NDOS.COM",
-  0
+static struct __shell_data shell_brokets[] = {
+  { "COMMAND.COM", (unsigned int)-2 },	/* -2 is special, see below */
+  { "4DOS.COM",    255 },
+  { "NDOS.COM",    255 },
+  { 0,             0 }
 };
 
 /* A list of Unix-like shells and other non-DJGPP programs
    which treat single quote specially.  */
-static const char *unix_shells[] = {
-  "SH.EXE",
-  "-SH.EXE", /* people create `-sh.exe' and `-bash.exe' to have login shells */
-  "SH16.EXE",
-  "SH32.EXE",
-  "TCSH.EXE",
-  "-TCSH.EXE",
-  "BASH.EXE",
-  "-BASH.EXE",
-  0
+static struct __shell_data unix_shells[] = {
+  { "SH.EXE",    (unsigned int)-1 },
+  /* People create `-sh.exe' and `-bash.exe' to have login shells.  */
+  { "-SH.EXE",   (unsigned int)-1 },
+  { "SH16.EXE",  CMDLEN_LIMIT }, /* assuming Stewartson's ms_sh or its ilk */
+  { "SH32.EXE",  CMDLEN_LIMIT },
+  { "TCSH.EXE",  CMDLINE_MAX }, /* assuming a Windows port */
+  { "-TCSH.EXE", CMDLINE_MAX },
+  { "BASH.EXE",  (unsigned int)-1 },
+  { "-BASH.EXE", (unsigned int)-1 },
+  { 0, 0}
 };
 
+unsigned int
+_shell_cmdline_limit (const char *program)
+{
+  const char *p = program, *ptail = program;
+  struct __shell_data *program_list;
+  int i;
+
+  while (*p)
+  {
+    if (*p == '/' || *p == ':' || *p == '\\')
+      ptail = p + 1;
+    p++;
+  }
+
+  for (i = 0, program_list = shell_brokets; program_list[i].name; i++)
+    if (!stricmp (ptail, program_list[i].name))
+    {
+      if (program_list[i].cmdline_limit == (unsigned int)-2)
+      {
+	if (_osmajor >= 7 && _osmajor < 10) /* OS/2 reports v10 */
+	  return (unsigned int)-1;
+	return CMDLEN_LIMIT;
+      }
+      return program_list[i].cmdline_limit;
+    }
+
+  for (i = 0, program_list = unix_shells; program_list[i].name; i++)
+    if (!stricmp (ptail, program_list[i].name))
+    {
+      if (program_list[i].cmdline_limit == (unsigned int)-2)
+      {
+	/* FIXME: Do we need to see if we run on Windows?  */
+	if (_osmajor >= 7
+	    && _osmajor < 10  /* OS/2 reports v10 */
+	    && stricmp(_os_flavor, "ms-dos") == 0)
+	  return CMDLINE_MAX;
+	return CMDLEN_LIMIT;
+      }
+      return program_list[i].cmdline_limit;
+    }
+
+  return 0;
+}
+
 static int
-list_member (const char *program, const char *program_list[])
+list_member (const char *program, struct __shell_data program_list[])
 {
   const char *p = program, *ptail = program;
   int i;
@@ -413,8 +508,8 @@ list_member (const char *program, const char *program_list[])
     p++;
   }
 
-  for (i = 0; program_list[i]; i++)
-    if (!stricmp (ptail, program_list[i]))
+  for (i = 0; program_list[i].name; i++)
+    if (!stricmp (ptail, program_list[i].name))
       return 1;
 
   return 0;
@@ -432,12 +527,26 @@ _is_dos_shell (const char *shellpath)
   return list_member (shellpath, shell_brokets);
 }
 
+static int direct_pe_exec(const char *, char **, char **);
+
 static int direct_exec(const char *program, char **argv, char **envp)
 {
-  int i, arglen;
-  char *args, *argp;
+  int i;
+  char args[CMDLEN_LIMIT+1], *argp = args;
   int need_quote = !__dosexec_in_system;
   int unescape_quote = __dosexec_in_system;
+  int dos_shell = _is_dos_shell(program);
+  int unix_shell = _is_unixy_shell(program);
+
+  /* Shells on Windows are normally EXE-style programs (even
+     COMMAND.COM is a .EXE program in disguise: it has the telltale MZ
+     signature).  So they usually will end up in direct_exec, unless
+     they are DJGPP programs.  However, direct_exec is limited to
+     126-char command lines.  So we pass shell commands to
+     direct_pe_exec, which can handle longer commands.  */
+  if ((dos_shell || unix_shell)
+      && _shell_cmdline_limit(program) > (unsigned) CMDLEN_LIMIT)
+    return direct_pe_exec(program, argv, envp);
 
   /* PROGRAM can be a shell which expects a single argument
      (beyond the /c or -c switch) that is the entire command
@@ -450,19 +559,13 @@ static int direct_exec(const char *program, char **argv, char **envp)
   if (need_quote
       && argv[1] && !strcmp (argv[1], "/c")
       && argv[2] && !argv[3]
-      && _is_dos_shell (program))
+      && dos_shell)
     need_quote = 0;
 
-  if (unescape_quote && _is_unixy_shell (program))
+  if (unescape_quote && unix_shell)
     unescape_quote = 0;
 
-  arglen = 0;
-  for (i=1; argv[i]; i++)
-    arglen += 2*strlen(argv[i]) + 1 + 2;
-
-  args = (char *)alloca(arglen+1);
-  argp = args;
-  for (i=1; argv[i]; i++)
+  for (i = 1; argv[i]; i++)
   {
     int quoted = 0;
     const char *p = argv[i];
@@ -483,6 +586,8 @@ static int direct_exec(const char *program, char **argv, char **envp)
        escape the quotes himself.  */
     if (need_quote && strpbrk(p, " \t") != 0)
     {
+      if (argp - args > CMDLEN_LIMIT)
+	break;
       *argp++ = '"';
       quoted = 1;
     }
@@ -497,6 +602,8 @@ static int direct_exec(const char *program, char **argv, char **envp)
 	 we should undo the quoting here.  */
       else if (*p == '\\' && p[1] == '\'' && unescape_quote)
 	p++;
+      if (argp - args > CMDLEN_LIMIT)
+        break;
       *argp++ = *p++;
     }
     if (quoted && argp - args <= CMDLEN_LIMIT)
@@ -510,7 +617,128 @@ static int direct_exec(const char *program, char **argv, char **envp)
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = _go32_info_block.size_of_transfer_buffer;
   tbuf_end = tbuf_beg + tbuf_len - 1;
-  return direct_exec_tail(program, args, envp, 0, 2);
+  return direct_exec_tail(program, args, envp, 0, 2, 0);
+}
+
+static int direct_pe_exec(const char *program, char **argv, char **envp)
+{
+  int i;
+  size_t arglen;
+  char *args, *argp, *varp, *vp;
+  int need_quote = !__dosexec_in_system;
+  int unescape_quote = __dosexec_in_system;
+  size_t proglen = strlen(program);
+  int dos_shell = _is_dos_shell (program);
+
+  /* PROGRAM can be a shell which expects a single argument
+     (beyond the /c or -c switch) that is the entire command
+     line.  With some shells, we must NOT quote that command
+     line, because that will confuse the shell.
+
+     The hard problem is to know when PROGRAM names a shell
+     that doesn't like its command line quoted...  */
+
+  if (need_quote
+      && argv[1] && !strcmp (argv[1], "/c")
+      && argv[2] && !argv[3]
+      && dos_shell)
+    need_quote = 0;
+
+  if (unescape_quote && _is_unixy_shell (program))
+    unescape_quote = 0;
+
+  arglen = 0;
+  /* For each element in argv[], we allocate twice its length, for the
+     extreme case where each character is a quote that needs to be
+     escaped, plus 2 for two outer quotes, plus 1 for the delimiting
+     blank.  */
+  for (i=1; argv[i]; i++)
+    arglen += 2*strlen(argv[i]) + 1 + 2;
+
+  /* Assumption: PROGRAM does not include quotes (DOS/Windows do not
+     allow them in file names).  +2 is for possible quotes that we
+     might need if PROGRAM includes whitespace characters.  */
+  varp = (char *)alloca(__cmdline_str_len + proglen + 2 + arglen + 1);
+  strcpy(varp, __cmdline_str);
+  argp = varp + __cmdline_str_len;
+  if (memchr(program, ' ', proglen) != NULL)
+  {
+    *argp++ = '"';
+    memcpy(argp, program, proglen);
+    argp += proglen;
+    *argp++ = '"';
+  }
+  else
+  {
+    memcpy(argp, program, proglen);
+    argp += proglen;
+  }
+  args = argp;	/* ARGS should point to the command tail */
+
+  /* Non-DJGPP programs might not like forward slashes in their full
+     path name.  */
+  for (vp = varp + __cmdline_str_len; vp < argp; vp++)
+    if (*vp == '/')
+      *vp = '\\';
+
+  for (i = 1; argv[i]; i++)
+  {
+    int quoted = 0;
+    const char *p = argv[i];
+
+    if (argp - varp > CMDLINE_MAX)
+      break;
+    *argp++ = ' ';
+    /* If invoked by `spawnXX' or `execXX' functions, we need to
+       quote arguments which include whitespace, so they end up
+       as a single argument on the child side.
+       We will invoke PROGRAM directly by DOS Exec function (not
+       through COMMAND.COM), therefore no need to quote characters
+       special only to COMMAND.COM.
+       We also assume that DJGPP programs aren't invoked through
+       here, so a single quote `\'' is also not special.  The only
+       programs other than DJGPP that treat a single quote specially
+       are Unix-like shells, but whoever uses them should know to
+       escape the quotes himself.  */
+    if (need_quote && strpbrk(p, " \t") != 0)
+    {
+      if (argp - varp > CMDLINE_MAX)
+	break;
+      *argp++ = '"';
+      quoted = 1;
+    }
+    while (*p)
+    {
+      if (argp - varp > CMDLINE_MAX)
+	break;
+      if (*p == '"' && (quoted || need_quote))
+	*argp++ = '\\';
+      /* Most non-DJGPP programs don't treat `\'' specially,
+	 but our `system' requires we always escape it, so
+	 we should undo the quoting here.  */
+      else if (*p == '\\' && p[1] == '\'' && unescape_quote)
+	p++;
+      if (argp - varp > CMDLINE_MAX)
+	break;
+      *argp++ = *p++;
+    }
+    if (quoted && argp - varp <= CMDLINE_MAX)
+      *argp++ = '"';
+  }
+  *argp = 0;
+
+  if (argp - varp > CMDLINE_MAX)
+    errno = E2BIG;
+  
+  tbuf_beg = tbuf_ptr = __tb;
+  tbuf_len = _go32_info_block.size_of_transfer_buffer;
+  tbuf_end = tbuf_beg + tbuf_len - 1;
+
+  /* If the command line is too long to pass directly, put the entire
+     contents of the command line into the CMDLINE variable.
+     direct_exec_tail will take care of the final details. */
+  return direct_exec_tail(program, args, envp, 0, 2,
+			  argp - args > CMDLEN_LIMIT ? varp : 0);
 }
 
 static int go32_exec(const char *program, char **argv, char **envp)
@@ -526,7 +754,6 @@ static int go32_exec(const char *program, char **argv, char **envp)
   int si_la=0, si_off=0, rm_off, argv_off;
   char cmdline[CMDLEN_LIMIT+2], *cmdp = cmdline;
   char *pcmd = cmdline, *pproxy = 0, *proxy_cmdline = 0;
-  int retval;
   int lfn = 2;	/* means don't know yet */
 
   if (!__solve_symlinks(program, real_program))
@@ -548,10 +775,15 @@ static int go32_exec(const char *program, char **argv, char **envp)
   }
 
   /* Non-DJGPP programs cannot be run by !proxy.  */
-  if (!is_coff)
+  else if (!is_coff)
   {
     if (type->exec_format == _V2_EXEC_FORMAT_EXE)
-      return direct_exec(real_program, argv, envp);
+    {
+      if (type->object_format != _V2_OBJECT_FORMAT_PE_COFF)
+	return direct_exec(real_program, argv, envp);
+      else
+	return direct_pe_exec(real_program, argv, envp);
+    }
     else
       return __dosexec_command_exec (real_program, argv, envp);
   }
@@ -672,10 +904,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   argv_off += sizeof(short);
 
   argv[0] = save_argv0;
-  /* Environment variables are all malloced.  */
-  proxy_cmdline = (char *)malloc (34);
-  if (!proxy_cmdline)
-    return -1;
+  proxy_cmdline = (char *)alloca (34);
   
   sprintf(proxy_cmdline, "%s=%04x %04x %04x %04x %04x",
     __PROXY, argc,
@@ -696,10 +925,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
     pcmd = proxy_cmdline;
   }
 
-  retval = direct_exec_tail(rpath, pcmd, envp, pproxy, lfn);
-  if (proxy_cmdline)
-    free(proxy_cmdline);
-  return retval;
+  return direct_exec_tail(rpath, pcmd, envp, pproxy, lfn, 0);
 }
 
 int
@@ -711,6 +937,8 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   int i;
   int was_quoted = 0;	/* was the program name quoted? */
   char real_program[FILENAME_MAX];
+  int cmdline_len;
+  char *cmdline_var = NULL;
 
   if (!__solve_symlinks(program, real_program))
      return -1;
@@ -721,8 +949,6 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
     cmdlen += 2*strlen(argv[i]) + 1;
   cmdline = (char *)alloca(cmdlen);
 
-  /* FIXME: is this LFN-clean?  What special characters can
-     the program name have and how should they be quoted?  */
   strcpy(cmdline, "/c ");
   if (strchr(real_program, ' ') || strchr(real_program, '\t'))
   {
@@ -799,18 +1025,55 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   if (!comspec)
     comspec = "c:\\command.com";
 
-  /* FIXME: 126-char limit below isn't LFN-clean.  */
-  if (strlen(cmdline) > CMDLEN_LIMIT + 1)
+  if ((cmdline_len = strlen(cmdline)) > CMDLEN_LIMIT)
   {
-    cmdline[CMDLEN_LIMIT+1] = '\0';
-    errno = E2BIG;
+    unsigned int cmdline_limit;
+
+    cmdline_limit = _shell_cmdline_limit(comspec);
+    if (cmdline_limit == 0)	/* unknown shell */
+      cmdline_limit = CMDLEN_LIMIT;
+
+    if (cmdline_len > cmdline_limit)
+    {
+      cmdline[CMDLEN_LIMIT] = '\0';
+      errno = E2BIG;
+    }
+    else
+    {
+      int comspec_len = strlen(comspec);
+      char *ptr;
+
+      cmdline_var = (char *)alloca(__cmdline_str_len
+				   + comspec_len + 3 + cmdline_len + 1);
+      ptr = cmdline_var;
+
+      /* Dump into CMDLINE the name of the shell to execute and the
+         entire command line.  */
+      strcpy(cmdline_var, __cmdline_str);
+      ptr += __cmdline_str_len;
+
+      if (memchr(comspec, ' ', comspec_len) != NULL)
+      {
+	*ptr++ = '"';
+	memcpy(ptr, comspec, comspec_len);
+	ptr += comspec_len;
+	*ptr++ = '"';
+      }
+      else
+      {
+	memcpy(ptr, comspec, comspec_len);
+	ptr += comspec_len;
+      }
+
+      *ptr++ = ' ';
+      strcpy (ptr, cmdline);
+    }
   }
 
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = _go32_info_block.size_of_transfer_buffer;
   tbuf_end = tbuf_ptr + tbuf_len - 1;
-  i = direct_exec_tail(comspec, cmdline, envp, 0, 2);
-  return i;
+  return direct_exec_tail(comspec, cmdline, envp, 0, 2, cmdline_var);
 }
 
 static int script_exec(const char *program, char **argv, char **envp)
@@ -923,8 +1186,8 @@ static struct {
   { ".btm", __dosexec_command_exec, 0 },
   { ".sh",  script_exec, INTERP_FLAG_SKIP_SEARCH },  /* Bash */
   { ".ksh", script_exec, INTERP_FLAG_SKIP_SEARCH },
-  { ".pl", script_exec, INTERP_FLAG_SKIP_SEARCH },   /* Perl */
-  { ".sed", script_exec, INTERP_FLAG_SKIP_SEARCH }, /* Sed */
+  { ".pl",  script_exec, INTERP_FLAG_SKIP_SEARCH },  /* Perl */
+  { ".sed", script_exec, INTERP_FLAG_SKIP_SEARCH },  /* Sed */
   { "",     go32_exec, 0 },
   { 0,      script_exec, 0 },  /* every extension not mentioned above calls it */
   { 0,      0 },

@@ -82,6 +82,13 @@ these functions will @emph{not} glob the arguments passed to them; other
 programs also won't glob the arguments if they suppress expansion when
 given quoted filenames.
 
+When the calling program runs on Windows 9X or Windows 2000 and calls
+the system shell to run the child program, or if the child program is a
+native Windows program (in @code{PE-COFF} format), or when the system
+shell is @file{4DOS} or @file{NDOS} and the shell is called to run the
+command, command lines longer than 126 characters are passed via the
+environment variable @code{CMDLINE}.
+
 @xref{exec*}.
 
 @subheading Return Value

@@ -16,6 +16,7 @@ extern "C" {
 extern int _shell_command  (const char *_prog, const char *_cmdline);
 extern int _is_unixy_shell (const char *_prog);
 extern int _is_dos_shell   (const char *_prog);
+extern unsigned int _shell_cmdline_limit (const char *_prog);
 
 /* Checking for special executable formats */
 
@@ -39,6 +40,7 @@ typedef struct {
   unsigned object_format:4; /* What an object format */
 # define _V2_OBJECT_FORMAT_UNKNOWN 0x00
 # define _V2_OBJECT_FORMAT_COFF    0x01
+# define _V2_OBJECT_FORMAT_PE_COFF 0x02
 
   unsigned exec_format:4; /* What an executable format */
 # define _V2_EXEC_FORMAT_UNKNOWN    0x00
