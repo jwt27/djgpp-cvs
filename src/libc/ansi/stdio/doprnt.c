@@ -15,7 +15,6 @@
 #include <string.h>
 #include <math.h>
 #include <libc/file.h>
-#include <libc/stdiohk.h>
 #include <libc/local.h>
 
 static char decimal = '.';

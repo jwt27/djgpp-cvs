@@ -10,6 +10,7 @@
 #include <dos.h>
 #include <io.h>
 #include <libc/atexit.h>
+#include <libc/stdiohk.h>
 
 struct __atexit *__atexit_ptr = 0;
 

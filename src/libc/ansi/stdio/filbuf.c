@@ -11,7 +11,6 @@
 #include <string.h>
 #include <go32.h>
 #include <libc/file.h>
-#include <libc/stdiohk.h>
 #include <io.h>
 
 #include <libc/dosio.h>
