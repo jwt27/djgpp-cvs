@@ -2,8 +2,8 @@
 TOP=..
 
 SRC += emu387.cc
+SRC += npxsetup.o
 
 EXTRA_OBJS += emudummy.o
-EXTRA_OBJS += npxsetup.o
 
 include $(TOP)/../makefile.inc
