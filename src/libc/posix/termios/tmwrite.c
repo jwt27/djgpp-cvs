@@ -7,7 +7,9 @@
  *   designed for DJGPP by Daisuke Aoyama <jack@st.rim.or.jp>
  *   special thanks to Ryo Shimizu
  */
-/* ECMA-48 commands implemented by Mark E. <snowball3@softhome.net>.  */
+/* ECMA-48 commands implemented by Mark E. <snowball3@softhome.net>
+   except color support ported from the version in GNU ls
+   by Eli Zaretskii and Richard Dawe.  */
 
 #include <libc/stubs.h>
 #include <go32.h>
@@ -32,7 +34,11 @@ struct screen_info
   unsigned char active_page;
   unsigned long video_buffer;
   unsigned int is_mono : 1;
+  unsigned int norm_blink : 1;
+  unsigned int cur_blink : 1;
 };
+
+static struct screen_info screen;
 
 /* Console command parser */
 
@@ -41,8 +47,30 @@ enum cmd_parser_states { need_esc = 0, have_esc, have_lbracket,
 
 static enum cmd_parser_states cmd_state;
 
-static struct screen_info screen;
+/* Color values. From conio.h.  */
+enum COLORS {
+    /*  dark colors     */
+    BLACK,
+    BLUE,
+    GREEN,
+    CYAN,
+    RED,
+    MAGENTA,
+    BROWN,
+    LIGHTGRAY,
+    /*  light colors    */
+    DARKGRAY, /* "light black" */
+    LIGHTBLUE,
+    LIGHTGREEN,
+    LIGHTCYAN,
+    LIGHTRED,
+    LIGHTMAGENTA,
+    YELLOW,
+    WHITE
+};
 
+static enum COLORS screen_color[] = {BLACK, RED, GREEN, BROWN,
+                                     BLUE, MAGENTA, CYAN, LIGHTGRAY};
 /* static functions */
 static ssize_t __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv);
 static ssize_t __libc_termios_write_tty(int handle, const void *buffer, size_t count, int cooked);
@@ -50,9 +78,8 @@ static size_t parse_console_command(const unsigned char *buf, size_t count);
 static void execute_console_command(const unsigned char cmd, unsigned char argc, unsigned int args[NPAR]);
 
 /* direct I/O functions */
-static inline void __direct_output (unsigned char ch);
-static inline void __direct_outputs (const unsigned char *s);
 static inline unsigned long get_video_offset(int col, int row);
+static void __termios_write_ch(unsigned char ch, int *col, int *row);
 
 /* Screen manipulation functions.  */
 static void set_cursor(int col, int row);
@@ -61,6 +88,9 @@ static void get_cursor(int *col, int *row);
 static void clear_screen(int x1, int y1, int x2, int y2);
 static void scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst);
 static void scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst);
+
+/* Color helpers.  */
+static void set_blink_attrib(int enable_blink);
 
 /* Initialize the screen portion of termios.  */
 void __libc_termios_init_write(void)
@@ -76,12 +106,13 @@ void __libc_termios_init_write(void)
   screen.max_row = (int)_farnspeekb(0x484);
   screen.max_col = (int)_farnspeekw(0x44a) - 1;
 
-  /* Use the current mode to determine
-     if the screen is in monochrome mode.  */
-  screen.is_mono = (_farnspeekb(0x449) == 7);
+  /* Does it normally blink when bg has its 3rd bit set?  */
+  screen.norm_blink = (_farnspeekb(0x465) & 0x20) ? 1 : 0;
+  screen.cur_blink = screen.norm_blink;
 
   /* Determine the video offset.  */
-  screen.video_buffer = screen.is_mono ? 0xb000 * 16 : 0xb800 * 16;
+  screen.video_buffer = _go32_info_block.linear_address_of_primary_screen;
+  screen.is_mono = (screen.video_buffer == 0xb000 * 16);
 
   r.h.ah = 0x08;
   r.h.bh = screen.active_page;
@@ -109,22 +140,55 @@ is_command_char(unsigned char ch)
 /* direct I/O function (inlined) **********************************************/
 
 static inline void
-__direct_output (unsigned char ch)
+__bios_output(unsigned char ch)
 {
   __dpmi_regs r;
 
   if (ch == 0xff)
     return;
 
+  r.h.ah = 0x0e;
   r.h.al = ch;
-  __dpmi_int (0x29, &r);
+  r.h.bh = screen.active_page;
+  __dpmi_int (16, &r);
 }
 
-static inline void
-__direct_outputs (const unsigned char *s)
+static void
+__termios_write_ch(unsigned char ch, int *col, int *row)
 {
-  while (*s)
-    __direct_output (*s++);
+  if (ch == '\n')
+    ++(*row);
+  else if (ch == '\r')
+    *col = 0;
+  else if (ch == '\b')
+  {
+    if (*col > 0)
+      --(*col);
+    else if (*row > 0)
+    {
+      --(*row);
+      *col = screen.max_col;
+    }
+  }
+  else if (ch == 0x07)
+    __bios_output((unsigned char)ch);
+  else
+  {
+    unsigned long ptr = get_video_offset(*col, *row);
+    _farpokew(_dos_ds, ptr, ch | (screen.attrib << 8));
+    ++(*col);
+  }
+
+  if (*col > screen.max_col)
+  {
+    *col = 0;
+    ++(*row);
+  }
+  if (*row > screen.max_row)
+  {
+    scroll_backward(0, 1, screen.max_col, screen.max_row, 0, 0);
+    --(*row);
+  }
 }
 
 /******************************************************************************/
@@ -171,8 +235,11 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
   const unsigned char *rp;
   unsigned char ch;
   ssize_t n;
+  int col, row;
 
   bytes = count;
+
+  get_cursor(&col, &row);
 
   rp = buffer;
   n = count;
@@ -185,7 +252,20 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
     if (ch == '\e' || cmd_state != need_esc)
     {
       size_t delta;
+
+      if (ch == '\e')
+      {
+        int crsr_col, crsr_row;
+
+        get_cursor(&crsr_col, &crsr_row);
+        if (crsr_col != col || crsr_row != row)
+          set_cursor(col, row);
+      }
+
       delta = parse_console_command(rp, n);
+
+      /* Cursor may have moved.  */
+      get_cursor(&col, &row);
 
       /* Skip the characters parsed.  */
       n -= delta;
@@ -199,17 +279,9 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
     /* produce spaces until the next TAB stop */
     if (ch == '\t')
     {
-      int col;
-
-      /* current column (cursor position) on the active page */
-      col = _farpeekw(_dos_ds, 0x450 + screen.active_page) & 0xff;
-
-      for (__direct_output(' '), col += 1; col % 8; col++)
-      {
-        if (col >= screen.max_col)
-          col = -1;
-        __direct_output(' ');
-      }
+      __termios_write_ch(' ', &col, &row);
+      while ((col % 8) != 0)
+        __termios_write_ch(' ', &col, &row);
       continue;
     }
 
@@ -218,13 +290,15 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
       /* NOTE: multibyte character don't contain control character */
       /* map NL to CRNL */
       if (ch == '\n' && (__libc_tty_p->t_oflag & ONLCR))
-        __direct_output('\r');
+        __termios_write_ch('\r', &col, &row);
       /* map CR to NL */
       else if (ch == '\r' && (__libc_tty_p->t_oflag & OCRNL))
         ch = '\n';
     }
-    __direct_output(ch);
+    __termios_write_ch(ch, &col, &row);
   }
+
+  set_cursor(col, row);
 
   return bytes;
 }
@@ -500,6 +574,111 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
       clear_screen(col, row, col + GET_ARG(0, 1),  row);
       break;
 
+    /* Color */
+
+    /* SGR: Set Graphic Rendition */
+    case 'm':
+    {
+      int i;
+      unsigned char fg, bg;
+
+      if (argc == 0)
+      {
+        screen.attrib = screen.init_attrib;
+        break;
+      }
+
+      fg = screen.attrib & 0x0f;
+      bg = (screen.attrib >> 4) & 0x0f;
+
+      i = 0;
+      while (i < argc)
+      {
+        switch(args[i])
+        {
+          case 0:
+            fg = screen.init_attrib & 0x0f;
+            bg = (screen.init_attrib >> 4) & 0x0f;
+            break;
+
+          case 1:	/* intensity on */
+            fg |= 8;
+            break;
+
+          case 2:	/* intensity off */
+            fg &= ~8;
+
+          case 4:	/* underline on.  */
+            fg |= 8;	/* We can't, so make it bold instead.  */
+            break;
+
+          case 5:	/* blink */
+            if (screen.cur_blink == 0)
+            {
+              /* Ensure blinking is enabled.  */
+              set_blink_attrib(1);
+              screen.cur_blink = 1;
+            }
+            bg |= 8;
+            break;
+
+          case 7:	/* reverse video */
+          {
+            unsigned char t = fg;
+            fg = bg;
+            bg = t;
+
+            /* If it was blinking before, let it blink after.  */
+            if (fg & 8)
+              bg |= 8;
+
+            /* If the fg was bold, let the background be bold.  */
+            if ((t & 8) && screen.cur_blink != 0)
+            {
+              set_blink_attrib(0);
+              screen.cur_blink = 0;
+            }
+            break;
+          }
+
+          case 8:	/* concealed on */
+            fg = (bg & 7) | 8;	/* make fg be like bg, only bright */
+            break;
+
+          case 25:	/* no blink */
+            if (screen.cur_blink != 0)
+            {
+              /* Ensure we aren't in blink mode.  */
+              set_blink_attrib(0);
+              screen.cur_blink = 0;
+            }
+            bg &= ~8;
+            break;
+
+          case 30: case 31: case 32: case 33: /* foreground color */
+          case 34: case 35: case 36: case 37:
+            fg = (fg & 8) | (screen_color[args[i] - 30] & 15);
+            break;
+
+          case 40: case 41: case 42: case 43: /* background color */
+          case 44: case 45: case 46: case 47:
+            bg = (bg & 8) | (screen_color[args[i] - 40] & 15);
+            break;
+
+          default:
+            break;
+        }
+        ++i;
+      }
+
+     /* They don't *really* want it invisible, do they?  */
+     if (fg == (bg & 7))
+        fg |= 8;  /* make it concealed instead */
+
+      /* Construct the text attribute and set it.  */
+      screen.attrib = (bg << 4) | fg;
+    }
+
     /* Unrecognized command. Do nothing.  */
     default:
       break;
@@ -768,17 +947,41 @@ scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
     return;
   }
 
-  dst_end += 2;
+  /* Align fill on 4-byte boundary. */
+  if ((dst_end % 4) != 0)
+  {
+    _farnspokew(dst_end, fill);
+    dst_end += 2;
+  }
 
   /* Fill 4-bytes or 2 characters at a time.  */
-  while (dst_end <= src_end)
+  while (dst_end < src_end)
   {
     _farnspokel(dst_end, fill_l);
      dst_end += 4;
   }
 
   /* Special handling when last character isn't on a 4-byte boundary.  */
-  if (dst_end - src_end == 2)
+  if (dst_end == src_end)
     _farnspokew(src_end, fill);
+}
+
+static void
+set_blink_attrib(int enable_blink)
+{
+  __dpmi_regs r;
+
+  r.h.bh = 0;
+  r.h.bl = (enable_blink) ? 1 : 0;
+  r.x.ax = 0x1003;
+  __dpmi_int(0x10, &r);
+}
+
+/* Restore the BIOS blinking bit to its original value.  Called at exit.  */
+static void __attribute__((destructor))
+restore_blink_bit(void)
+{
+  if (screen.cur_blink != screen.norm_blink)
+    set_blink_attrib(screen.norm_blink);
 }
 
