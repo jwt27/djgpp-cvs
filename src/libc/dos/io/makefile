@@ -17,6 +17,7 @@ SRC += doslk64.c
 SRC += doslock.c
 SRC += dosunl64.c
 SRC += dosunloc.c
+SRC += fd_props.c
 SRC += fmode.c
 SRC += lock.c
 SRC += lock64.c
