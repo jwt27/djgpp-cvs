@@ -145,10 +145,15 @@ space, because DOS implements pipes as temporary disk files.)
 available with some versions of @code{compress}), or Huffman compression
 (by @code{pack}).
 
-@code{djtar} can also decompress files compressed with @code{zip} or
-@code{pkzip}, but only if the @file{.zip} file contains only files
-compressed with either the @code{deflation} or @code{stored} (i.e.,
-uncompressed, like with @samp{pkzip -e0}) methods.
+@code{djtar} can decompress @file{.tar} archive files compressed with
+@code{bzip2}, even if several of such @code{bzip2}-compressed
+@file{*.tar.bz2} or @file{*.tbz} archive files have been concatenated
+into a single file.
+
+@code{djtar} can decompress files compressed with @code{zip} or
+@code{pkzip} as well, but only if the @file{.zip} file contains only
+files compressed with either the @code{deflation} or @code{stored}
+(i.e., uncompressed, like with @samp{pkzip -e0}) methods.
 
 @code{djtar} can also read tar archives (compressed or otherwise) written
 on a Unix machine to a diskette as a raw device (i.e., without DOS

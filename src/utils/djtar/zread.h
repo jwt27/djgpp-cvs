@@ -31,7 +31,8 @@ typedef unsigned long  ulg;
 #define LZHED       3
 /* methods 4 to 7 reserved */
 #define DEFLATED    8
-#define MAX_METHODS 9
+#define BZIP2ED     9
+#define MAX_METHODS 10
 extern int method;        /* compression method */
 
 extern FILE *log_out;     /* the stream to output messages */
@@ -86,7 +87,8 @@ extern int  pkzip;          /* set for a pkzip file */
 #define	GZIP_MAGIC     "\037\213" /* Magic header for gzip files, 1F 8B */
 #define	OLD_GZIP_MAGIC "\037\236" /* Magic header for gzip 0.5 = freeze 1.x */
 #define	LZH_MAGIC      "\037\240" /* Magic header for SCO LZH Compress files*/
-#define PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
+#define	PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
+#define	BZIP2_MAGIC    "\102\132\150" /* Magic header for bzip2 files, BZh */
 
 /* gzip flag byte */
 #define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */
@@ -184,6 +186,9 @@ extern int unpack        (void *);
 
 	/* in unlzh.c */
 extern int unlzh         (void *);
+
+	/* in unbzip2.c */
+extern int unbzip2       (void *);
 
 	/* in util.c: */
 extern int  copy         (void *);

@@ -16,6 +16,12 @@ EOBJS = \
 	crypt.o \
 	util.o \
 	zmethod.o \
+	unbzip2.o \
+	bzlib.o \
+	decompress.o \
+	huffman.o \
+	randtable.o \
+	crctable.o \
 	$E
 
 EXTRA_FILES += $(BIN)/djtarx.exe

@@ -321,7 +321,8 @@ static const char *zip_description[] = {
   "compressed by unknown method (5)",
   "compressed by unknown method (6)",
   "compressed by unknown method (7)",
-  "deflated by "
+  "deflated by ",
+  "BZIP2'ed"
 };
 
 void

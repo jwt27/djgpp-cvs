@@ -190,6 +190,12 @@ get_method(void *in)
 	method = LZHED;
 	last_member = 1;
 
+     } else if (memcmp(magic, BZIP2_MAGIC, 2) == 0 && inptr == 2
+ 	    && memcmp((char*)inbuf, BZIP2_MAGIC, 3) == 0) {
+ 	decompressor = unbzip2;
+ 	method = BZIP2ED;
+ 	last_member = 1;
+
     } else if (part_nb == 1) { /* pass input unchanged by default */
 	method = STORED;
 	decompressor = copy;

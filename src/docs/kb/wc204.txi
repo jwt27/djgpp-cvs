@@ -141,3 +141,8 @@ system.
 The protection against multiple redefinitions of various
 types like @code{size_t} has been rewriten to make DJGPP
 header files compatible with GCC provided ones.
+
+@cindex @code{bzip2} archives
+@pindex djtar@r{, support for unpacking @code{bzip2} archives}
+The @code{djtar} program can now unpack @file{.tar.bz2} archives
+compressed with the @code{bzip2} program.
