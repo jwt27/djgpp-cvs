@@ -535,6 +535,10 @@ the emulation of the WAIT/FWAIT instructions caused the emulator to get
 stuck in an endless loop on Windows.  (On MS-DOS, these two instructions
 don't generate an FP exception, and so don't get into the emulator.)
 
+@pindex redir@r{, and FP emulation}
+@code{redir} no longer crashes when floating-point instructions are
+emulated.
+
 @cindex FP emulation, and @code{SIGFPE}
 @cindex @code{SIGFPE} and FP emulation
 The emulator setup in the startup code now correctly masks all FP
