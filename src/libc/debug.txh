@@ -338,7 +338,7 @@ the limits of the debuggee's code segment.
 @example
 #include <debug/dbgcom.h>
 
-void read_child (unsigned offset, void *buf, unsigned len, unsigned sel);
+void read_sel_addr (unsigned offset, void *buf, unsigned len, unsigned sel);
 @end example
 
 @subheading Description
@@ -351,7 +351,7 @@ buffer pointed to by @var{buf}.  @xref{write_sel_addr}.
 
 The function return zero if it has successfully transferred the data,
 non-zero otherwise (e.g., if the address in @var{offset} is outside
-the limits of the segment whose selector is @var{sel}.
+the limits of the segment whose selector is @var{sel}).
 
 @subheading Portability
 
@@ -381,7 +381,7 @@ to save the original contents, if needed.
 
 The function return zero if it has successfully transferred the data,
 non-zero otherwise (e.g., if the address in @var{offset} is outside
-the limits of the @var{sel}s segment.
+the limits of the @var{sel}s segment).
 
 @subheading Portability
 

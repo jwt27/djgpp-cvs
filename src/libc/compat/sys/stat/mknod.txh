@@ -9,11 +9,22 @@ int mknod(const char *path, mode_t mode, dev_t dev);
 
 @subheading Description
 
-This function is provided only to assist in porting from Unix.  It
-always returns an error condition. 
+This function is provided to assist in porting from Unix.  If @var{mode}
+specifies a regular file, @code{mknod} creates a file using @var{path}
+as its name.  If @var{mode} specifies a character device, and if the
+device whose name is given by @var{path} exists and its device
+specification as returned by @code{stat} or @code{fstat} is equal to
+@var{dev}, @code{mknod} returns -1 and sets @code{errno} to
+@code{EEXIST}.  In all other cases, -1 is returned @code{errno} is set
+to @code{EACCES}.
 
+The argument @var{dev} is ignored if @var{mode} does not specify a
+character device.
+
+@subheading Return Value
+
+Zero on success, -1 on failure.
 
 @subheading Portability
 
 @portability !ansi, !posix
-

@@ -1,4 +1,4 @@
-@node setenv, stdlib
+@node setenv, environment
 @subheading Syntax
 
 @example

@@ -9,8 +9,10 @@ int fpurge(FILE *file);
 
 @subheading Description
 
-This function purges the buffer for @var{file} without writing it to
-disk. 
+If @var{file} designates a buffered stream open for writing or for both
+reading and writing, this function purges the stream's buffer without
+writing it to disk.  Otherwise, it does nothing (so it has no effect on
+read-only streams such as @code{stdin}).
 
 @subheading Return Value
 
