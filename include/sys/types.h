@@ -13,7 +13,9 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #include <sys/djtypes.h>
-  
+
+typedef int             blkcnt_t;
+typedef int             blksize_t;
 typedef int		dev_t;
 typedef int		ino_t;
 typedef int		mode_t;
