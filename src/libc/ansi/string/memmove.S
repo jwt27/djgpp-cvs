@@ -10,18 +10,14 @@ _memmove:
 	movl	12(%ebp),%esi
 	movl	16(%ebp),%ecx
 	jecxz	L2
-	cld
+
 	cmpl	%esi,%edi
 	jb	L3
 
-	std
-	addl	%ecx,%esi
-	addl	%ecx,%edi
-	decl	%esi
-	decl	%edi
+	call    ___dj_movedata_rev
+	jmp     L2
 L3:
-	rep
-	movsb
+	call    ___dj_movedata
 
 L2:
 	cld
@@ -30,4 +26,3 @@ L2:
 	movl	8(%ebp),%eax
 	leave
 	ret
-
