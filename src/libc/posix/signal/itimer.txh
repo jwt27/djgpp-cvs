@@ -63,7 +63,7 @@ Each process has two interval timers, @code{ITIMER_REAL} and
 
 This function changes the current value of the interval timer specified by
 @var{which} to the values in structure @var{value}.  The previous value
-of the timer is returned if @var{ovalue} if it is not a @code{NULL}
+of the timer is returned in @var{ovalue} if it is not a @code{NULL}
 pointer.  When the timer expires, the appropriate signal is raised.
 
 If @var{value} is a @code{NULL} pointer, @code{setitimer} stores the
@@ -124,3 +124,20 @@ Windows 9X.
 Also, debuggers compiled with DJGPP v2.02 and earlier cannot cope with
 timers and report @code{SIGSEGV} or @code{SIGABRT}, since signals were
 not supported in a debugged program before DJGPP v2.03.
+
+@subheading Example
+
+@example
+/* Find out what is the system clock granularity.  */
+
+  struct itimerval tv;
+
+  tv.it_interval.tv_sec = 0;
+  tv.it_interval.tv_usec = 1;
+  tv.it_value.tv_sec = 0;
+  tv.it_value.tv_usec = 0;
+  setitimer (ITIMER_REAL, &tv, 0);
+  setitimer (ITIMER_REAL, 0, &tv);
+  printf ("System clock granularity: %ld microseconds.\n",
+	  tv.it_interval.tv_usec);
+@end example

@@ -214,7 +214,7 @@ void tzset(void);
 
 @subheading Description
 
-This function initializes the gloabl variable @code{tzname} according to
+This function initializes the global variable @code{tzname} according to
 environment variable @code{TZ}.  After the call, @code{tzname} holds the
 specifications for the time zone for the standard and daylight-saving
 times.

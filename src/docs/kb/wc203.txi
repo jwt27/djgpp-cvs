@@ -335,6 +335,11 @@ the debuggee, even if they didn't actually happen.  Most of the work
 that made this possible was done by @email{muller@@cerbere.u-strasbg.fr,
 Pierre Muller} and @email{pavenis@@lanet.lv, Andris Pavenis}.
 
+@cindex debuggers, and @code{SIGQUIT}
+The debugging support functions in @file{libdbg.a} now correctly handle
+the @code{SIGQUIT} signal that happens while the debuggee runs.
+Previously, a debugger would crash or report @code{SIGINT} in such cases.
+
 @cindex debug support, and floating-point code
 The DJGPP functions in @file{libdbg.a} support FP code much better now,
 especially when FP exceptions happen in the debugged program.  The full
