@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -20,6 +21,7 @@
 #include <debug/v2load.h>
 #include <libc/farptrgs.h>
 #include <sys/stat.h>
+#include <ctype.h>
 #define SIMAGIC "go32stub"
 
 #define __tb_size _go32_info_block.size_of_transfer_buffer
@@ -53,6 +55,126 @@ static int read_section(int pf, unsigned ds, unsigned foffset, unsigned soffset,
   return 0;
 }
 
+static inline unsigned char
+__strnlen(const char *str, size_t max)
+{
+  const char *ptr = str;
+  while (*ptr && (ptr - str) < max)
+    ++ptr;
+  return ptr - str;
+}
+
+static inline int
+is_quote(const char ch)
+{
+  return (ch == '"' || ch == '\'');
+}
+
+static
+const char *get_arg(const char *ptr, const char **beg, const char **end)
+{
+  char in_quotes;
+  while (*ptr && isspace(*ptr))
+    ++ptr;
+
+  *beg = ptr;
+  in_quotes = 0;
+
+  while (*ptr)
+  {
+    if (!in_quotes && isspace(*ptr))
+      break;
+    if (*ptr == '\\' && is_quote(ptr[1]))
+      ++ptr;
+    if (is_quote(*ptr))
+    {
+      if (!in_quotes)
+        in_quotes = *ptr;
+      else if (*ptr == in_quotes)
+        in_quotes = 0;
+    }
+    ++ptr;
+  }
+
+  *end = ptr;
+  return ptr;
+}
+
+static char proxy_string[] = " !proxy";
+
+static int
+make_proxy_var(const char *program, const char *cmdline,
+               unsigned long tbuf, size_t tb_len,
+               size_t *proxy_argc, size_t *tb_space)
+{
+  size_t argc;
+  const char *beg, *end;
+  char proxy[48];
+
+  /* Include the program name, a null terminator, and offset pointer
+     in the argument count.  */  
+  argc = 1;
+  *tb_space = strlen(program) + 1 + sizeof(short);
+
+  /* Got arguments? */
+  while (*cmdline && (*tb_space <= tb_len))
+  {
+    cmdline = get_arg(cmdline, &beg, &end);
+    /* Add in the space needed for the command, a null terminator
+       and offset pointer.  */
+    *tb_space += (end - beg) + 1 + sizeof(short);
+    ++argc;
+  }
+  /* If the last arg would cause an overrun, don't include it.  */
+  if (*tb_space > tb_len)
+  {
+    --argc;
+    *tb_space -= (end - beg) - 1 - sizeof(short);
+  }
+
+  *proxy_argc = argc;
+
+  sprintf(proxy, "%s=%04x %04lx %04lx", proxy_string, (unsigned int)argc,
+                                          tbuf / 16, tbuf & 0x0f);
+  putenv(proxy);
+
+  return 1;
+}
+
+static void
+make_proxy_buffer(const char *prog, const char *cmdline, size_t argc,
+                  unsigned long tbuf, size_t tb_len)
+{
+  const char *ptr, *beg, *end;
+  unsigned long argv_ptr;
+  unsigned long tbuf_end;
+  int i;
+  size_t arg_len;
+
+  tbuf_end = tbuf + tb_len;
+  argv_ptr = tbuf + (argc + 1) * sizeof(short);
+  ptr = cmdline;
+
+  /* Insert the program name into argv[0].  */
+  arg_len = strlen(prog) + 1;
+  dosmemput(prog, arg_len, argv_ptr);
+  _farpokew(_dos_ds, tbuf + 0, (argv_ptr - tbuf) & 0xffff);
+  argv_ptr += arg_len;
+
+  /* Now insert the command line into argv[].  */
+  i = 1;
+  while (i < argc)
+  {
+    ptr = get_arg(ptr, &beg, &end);
+    arg_len = end - beg;
+    dosmemput(beg, arg_len, argv_ptr);
+    _farpokeb(_dos_ds, argv_ptr + arg_len, 0);
+    _farpokew(_dos_ds, tbuf + i * sizeof(short), (argv_ptr - tbuf) & 0xffff);
+    argv_ptr += arg_len + 1;
+    ++i;
+  }
+}
+
 int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
 {
   unsigned short header[5];
@@ -66,6 +188,8 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   __dpmi_meminfo memblock;
   unsigned new_env_selector;
   char true_name[FILENAME_MAX];
+  size_t proxy_argc, proxy_space;
+  int proxy_mode;
 
   _truename(program, true_name);
 
@@ -137,6 +261,18 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   si.initial_size += 0xffff;
   si.initial_size &= 0xffff0000U;
 
+  /* If the len byte in the command tail is 0xff, then the
+     debugger has a command line that's too long to pass using
+     the psp so it must be done with the proxy method.
+     The long command line is zero terminated.  */
+  proxy_mode = ((unsigned char)cmdline[0] == 0xff);
+
+  /* Create the proxy variable now so the child's environment
+     has the correct size.  */
+  if (proxy_mode)
+    make_proxy_var(program, cmdline + 1, __tb, __tb_size,
+                   &proxy_argc, &proxy_space);
+
   si.env_size = 0;
   for (i=0; environ[i]; i++)
     si.env_size += strlen(environ[i])+1;
@@ -158,6 +294,15 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   _farpokeb(new_env_selector, envp++, 1);
   _farpokeb(new_env_selector, envp++, 0);
   movedata(_my_ds(), (unsigned)true_name, new_env_selector, envp, strlen(true_name)+1);
+
+  /* Now that the proxy variable is in the child's environment,
+     remove it from the parent's environment.  */
+  if (proxy_mode)
+  {
+    char proxy[32];
+    sprintf(proxy, "%s=", proxy_string);
+    putenv(proxy);
+  }
 
   /* Allocate the dos memory for the transfer buffer.  This nukes si.cs_selector,
    but that's OK since we set it next. */
@@ -256,8 +401,24 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
 
   _farpokew(si.psp_selector, 0x2c, new_env_selector);
 
-  /* copy command arguments into debug process */
-  movedata(my_ds, (unsigned)cmdline, si.psp_selector, 128, 128);
+  if (proxy_mode)
+  {
+    unsigned char cmd_len;
+
+    /* Setup the transfer buffer with proxy arguments.  */
+    make_proxy_buffer(program, cmdline + 1, proxy_argc, __tb, __tb_size);
+
+    /* Provide a fallback command line in case the debugee has disabled
+       the proxy method.  */
+    cmd_len = __strnlen(cmdline + 1, 126);
+    _farpokeb(my_ds, si.psp_selector + 128, cmd_len);
+    movedata(my_ds, (unsigned)(cmdline + 1), si.psp_selector, 128 + 1, cmd_len);
+    _farpokeb(my_ds, si.psp_selector + 128 + 1 + cmd_len, '\r');
+  }
+  else
+    /* copy command arguments into debug process */
+    movedata(my_ds, (unsigned)cmdline, si.psp_selector, 128, 128);
+
   /* copy si we built into debug process */
   movedata(my_ds, (unsigned)&si, si.ds_selector, 0, sizeof(si));
   load_state->__ds = client_ds;
