@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <process.h>
 #include <pc.h>
 #include <debug/syms.h>
 #include <debug/tss.h>
@@ -20,6 +21,7 @@ int main(int argc, char **argv)
   int r, c;
   short *sc;
   char *buf = NULL;
+  char **sub_argv;
   size_t bufsize = 0;
   int i, lineno;
   unsigned v;
@@ -34,6 +36,26 @@ int main(int argc, char **argv)
     fprintf(stderr, "This program adds debug information to DJGPP program call frame tracebacks\n");
     return 1;
   }
+
+  /* Try to run bfdsymify. */
+  sub_argv = malloc(sizeof(char *)*(argc+1));
+  if( sub_argv )
+  {
+    sub_argv[0] = "bfdsymify";
+    for(i = 1; i < argc; i++)
+    {
+      sub_argv[i] = argv[i];
+    }
+    sub_argv[argc] = NULL;
+    r = spawnvp(P_WAIT, "bfdsymify", sub_argv);
+    if (! (r & 0xffffff00) )
+    {
+      free(sub_argv);
+      return r;
+    }
+    free(sub_argv);
+  }
+
   while (argv[1][0] == '-')
   {
     if ((strcmp(argv[1], "-o") == 0) && (argc > 3))
