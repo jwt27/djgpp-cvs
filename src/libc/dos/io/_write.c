@@ -15,9 +15,6 @@
 #include <libc/getdinfo.h>
 
 
-int _write_fill_seek_gap(int fd);
-int _write_int(int fd, const char *buffer, size_t count);
-
 int
 _write(int handle, const void* buffer, size_t count)
 {
@@ -114,7 +111,7 @@ _write_fill_seek_gap(int fd)
    transfer buffer and written out. Otherwise, the data already in the
    transfer buffer is written out. */
 int
-_write_int(int fd, const char *buffer, size_t write_count)
+_write_int(int fd, const char *buffer, unsigned long long write_count)
 {
   unsigned long buf_size, tb_size;
   unsigned long chunk_count;
