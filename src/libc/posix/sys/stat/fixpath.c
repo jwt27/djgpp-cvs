@@ -2,12 +2,18 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>		/* For FILENAME_MAX */
+#include <stdlib.h>
 #include <errno.h>		/* For errno */
+#include <ctype.h>		/* For tolower */
 #include <string.h>		/* For strlen() */
+#include <fcntl.h>		/* For LFN stuff */
 #include <go32.h>
-#include <dpmi.h>		/* FOR dpmisim */
+#include <dpmi.h>		/* For dpmisim */
+#include <crt0.h>		/* For crt0 flags */
 #include <sys/stat.h>
 #include <libc/dosio.h>
+
+static unsigned use_lfn;
 
 static char *__get_current_directory(char *out, int drive_number);
 
@@ -18,7 +24,7 @@ __get_current_directory(char *out, int drive_number)
   char tmpbuf[FILENAME_MAX];
 
   memset(&r, 0, sizeof(r));
-  if(_USE_LFN)
+  if(use_lfn)
     r.x.ax = 0x7147;
   else
     r.h.ah = 0x47;
@@ -72,7 +78,11 @@ _fixpath(const char *in, char *out)
 {
   int		drive_number;
   const char	*ip = in;
-  char	*op = out;
+  char		*op = out;
+  int		preserve_case = _preserve_fncase();
+  char		*name_start;
+
+  use_lfn = _USE_LFN;
 
   /* Add drive specification to output string */
   if (((*ip >= 'a' && *ip <= 'z') ||
@@ -80,10 +90,19 @@ _fixpath(const char *in, char *out)
       && (*(ip + 1) == ':'))
   {
     if (*ip >= 'a' && *ip <= 'z')
+    {
       drive_number = *ip - 'a';
+      *op++ = *ip++;
+    }
     else
+    {
       drive_number = *ip - 'A';
-    *op++ = *ip++;
+      if (*ip <= 'Z')
+	*op++ = drive_number + 'a';
+      else
+	*op++ = *ip;
+      ++ip;
+    }
     *op++ = *ip++;
   }
   else
@@ -92,7 +111,7 @@ _fixpath(const char *in, char *out)
     r.h.ah = 0x19;
     __dpmi_int(0x21, &r);
     drive_number = r.h.al;
-    *op++ = drive_number + 'a';
+    *op++ = drive_number + (drive_number < 26 ? 'a' : 'A');
     *op++ = ':';
   }
 
@@ -139,8 +158,42 @@ _fixpath(const char *in, char *out)
   /* Null terminate the output */
   *op = '\0';
 
-  /* convert slashes (else we miss some) */
-  for (op=out; *op; op++)
+  /* switch FOO\BAR to foo/bar, downcase where appropriate */
+  for (op = out + 3, name_start = op - 1; *name_start; op++)
+  {
+    char long_name[FILENAME_MAX], short_name[13];
+
     if (*op == '\\')
       *op = '/';
+    if (!preserve_case && (*op == '/' || *op == '\0'))
+    {
+      memcpy(long_name, name_start+1, op - name_start - 1);
+      long_name[op - name_start - 1] = '\0';
+      if (!strcmp(_lfn_gen_short_fname(long_name, short_name), long_name))
+      {
+	while (++name_start < op)
+	  if (*name_start >= 'A' && *name_start <= 'Z')
+	    *name_start += 'a' - 'A';
+      }
+      else
+	name_start = op;
+    }
+    else if (*op == '\0')
+      break;
+  }
 }
+
+#ifdef TEST
+
+int main (int argc, char *argv[])
+{
+  char fixed[FILENAME_MAX];
+  if (argc > 1)
+    {
+      _fixpath (argv[1], fixed);
+      printf ("You mean %s?\n", fixed);
+    }
+  return 0;
+}
+
+#endif

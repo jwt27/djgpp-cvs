@@ -22,8 +22,8 @@ int uname(struct utsname *u)
   dos_version = _get_dos_version(1);
   strncpy(u->sysname, _os_flavor, sizeof(u->sysname) - 1);
   u->sysname[sizeof(u->sysname) - 1] = '\0';
-  sprintf(u->version, "%d", dos_version >> 8);
-  sprintf(u->release, "%02d", dos_version & 0xff);
+  sprintf(u->release, "%d", dos_version >> 8);
+  sprintf(u->version, "%02d", dos_version & 0xff);
   strcpy(u->machine, "pc");
 
   r.x.ax = 0x5e00;
