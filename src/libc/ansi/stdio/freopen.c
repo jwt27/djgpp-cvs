@@ -26,7 +26,7 @@ freopen(const char *file, const char *mode, FILE *f)
 
   switch (*mode) {
   case 'a':
-    oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY) | O_APPEND;
+    oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY);
     break;
   case 'r':
     oflags = rw ? O_RDWR : O_RDONLY;
@@ -58,6 +58,9 @@ freopen(const char *file, const char *mode, FILE *f)
     fd = fdo;
   }
 
+  if (*mode == 'a')
+    lseek(fd, 0, SEEK_END);
+
   f->_cnt = 0;
   f->_file = fd;
   f->_bufsiz = 0;
@@ -67,11 +70,6 @@ freopen(const char *file, const char *mode, FILE *f)
     f->_flag = _IOREAD;
   else
     f->_flag = _IOWRT;
-
-  if (*mode == 'a')
-  {
-    llseek(fd, 0LL, SEEK_END);
-  }
 
   f->_base = f->_ptr = NULL;
   return f;
