@@ -16,6 +16,15 @@ There is no other reason why a function would get listed in stubs.
 The @dfn{stubbed name} (@samp{__foo}) is @strong{not} part of
 the published API.
 
+@subsection Far pointers usage
+@cindex @code{_far*} functions in the library
+
+If a library function uses one of the @code{_far*} far pointer
+functions, it should include @file{libc/farptrgs.h} instead of
+@file{sys/farptr.h}.  The inline functions in @file{farptrgs.h} use the
+@sc{gs} register instead of @sc{fs}, to avoid clobbering @sc{fs} which
+might be used by the application.
+
 @section Texinfo documentation
 
 @subsection Formatting
