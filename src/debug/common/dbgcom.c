@@ -21,7 +21,6 @@
 #include <io.h>
 
 extern char __libdbg_ident_string[];
-static char *id = __libdbg_ident_string;
 
 #define MEM_HANDLE_COUNT	256
 #define DESCRIPTOR_COUNT	128
@@ -95,7 +94,6 @@ void save_npx (void)
 {
 #ifdef SAVE_FP
   int i;
-  int valid_nb = 0;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
   asm ("inb	$0xa0, %%al
@@ -279,7 +277,7 @@ void _clear_break_DPMI(void)
 
 static __dpmi_paddr old_i31,old_i21,user_i31,user_i21;
 static int user_int_set = 0;
-static __dpmi_paddr my_i9,user_i9,hook_i9,my_i8,user_i8;
+static __dpmi_paddr my_i9,user_i9,my_i8,user_i8;
 
 static void hook_dpmi(void)
 {
