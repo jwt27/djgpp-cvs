@@ -3,11 +3,13 @@
 #include <libc/stubs.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include "dirstruc.h"
 
 DIR *
@@ -26,15 +28,29 @@ opendir(const char *name)
   }
 
   dir->flags = __opendir_flags;
+  if (!(__opendir_flags & __OPENDIR_PRESERVE_CASE) && _preserve_fncase())
+    dir->flags |= __OPENDIR_PRESERVE_CASE;
 
   /* Make absolute path */
-  _fixpath (name, dir->name);
+  _fixpath(name, dir->name);
+
+  /* If we're doing opendir of the root directory, we need to
+     fake out the . and .. entries, as some unix programs (like
+     mkisofs) expect them and fail if they don't exist */
+  dir->need_fake_dot_dotdot = 0;
+  if (dir->name[1] == ':' && dir->name[2] == '/' && dir->name[3] == 0)
+  {
+    /* see if findfirst finds "." anyway */
+    int done = findfirst(dir->name, &dir->ff, FA_ARCH|FA_RDONLY|FA_DIREC|FA_SYSTEM);
+    if (done || strcmp(dir->ff.ff_name, "."))
+      dir->need_fake_dot_dotdot = 2;
+  }
 
   /* Ensure that directory to be accessed exists */
   if (access(dir->name, D_OK))
   {
-    free (dir->name);
-    free (dir);
+    free(dir->name);
+    free(dir);
     return 0;
   }
 

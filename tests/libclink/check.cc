@@ -12,7 +12,9 @@
 
 //-----------------------------------------------------------------------------
 
-char *predefs[] = { "main", "edata", "end", "etext", "environ", 0 };
+char *predefs[] = { "main", "edata", "end", "etext", "environ",
+		    "__udivdi3", "__umoddi3", "__divdi3", "__moddi3",
+		    0 };
 
 char *ansi_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "atan", "atan2", "atexit", "atof", "atoi", "atol", "bsearch",
@@ -283,11 +285,11 @@ main()
   char line[1000];
   char sym[1000];
   Object *obj = new Object("");
-  int is_stub;
+  int is_stub, i;
 
   StringList all_defs, all_refs, weak_defs;
 
-  for (int i=0; predefs[i]; i++)
+  for (i=0; predefs[i]; i++)
   {
     obj->defs.add(predefs[i]);
     all_defs.add(predefs[i]);
