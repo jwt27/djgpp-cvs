@@ -106,7 +106,6 @@ void	rewind(FILE *_stream);
 int	scanf(const char *_format, ...);
 void	setbuf(FILE *_stream, char *_buf);
 int	setvbuf(FILE *_stream, char *_buf, int _mode, size_t _size);
-int	snprintf(char *str, size_t n, const char *fmt, ...);
 int	sprintf(char *_s, const char *_format, ...);
 int	sscanf(const char *_s, const char *_format, ...);
 FILE *	tmpfile(void);
@@ -114,8 +113,18 @@ char *	tmpnam(char *_s);
 int	ungetc(int _c, FILE *_stream);
 int	vfprintf(FILE *_stream, const char *_format, va_list _ap);
 int	vprintf(const char *_format, va_list _ap);
-int	vsnprintf(char *str, size_t n, const char *fmt, va_list ap);
 int	vsprintf(char *_s, const char *_format, va_list _ap);
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+int	snprintf(char *str, size_t n, const char *fmt, ...);
+int	vfscanf(FILE *_stream, const char *_format, va_list _ap);
+int	vscanf(const char *_format, va_list _ap);
+int	vsnprintf(char *str, size_t n, const char *fmt, va_list ap);
+int	vsscanf(const char *_s, const char *_format, va_list _ap);
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
 #ifndef __STRICT_ANSI__
 
@@ -129,9 +138,6 @@ int	mkstemp(char *_template);
 int	pclose(FILE *_pf);
 FILE *	popen(const char *_command, const char *_mode);
 char *	tempnam(const char *_dir, const char *_prefix);
-int	vfscanf(FILE *_stream, const char *_format, va_list _ap);
-int	vscanf(const char *_format, va_list _ap);
-int	vsscanf(const char *_s, const char *_format, va_list _ap);
 
 #ifndef _POSIX_SOURCE
 
