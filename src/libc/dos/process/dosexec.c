@@ -687,7 +687,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   /* Non-DJGPP programs cannot be run by !proxy.  */
   if (!is_coff)
   {
-    const char *ext = strrchr(real_program, '.');
+    const char *ext = strrchr(program, '.');
 
     if (type->exec_format == _V2_EXEC_FORMAT_EXE
 	|| (ext && stricmp(ext, ".com") == 0))
