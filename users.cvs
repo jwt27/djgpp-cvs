@@ -1,10 +1,11 @@
 This is a list of all DJGPP's CVS accounts.
 
-cvsid	email			Full Name
+cvsid		email			Full Name
 
-dj	dj@delorie.com		DJ Delorie
-eliz	eliz@is.elta.co.il	Eli Zaretskii
-rho	robert.hoehne@gmx.net	Robert Hoehne
-ams	ams@ludd.luth.se	Martin Str|mberg
-lauras	lauras@softhome.net	Laurynas Biveinis
-jtw	jeffw@darwin.sfbr.org	Jeff Williams
+dj		dj@delorie.com		DJ Delorie
+eliz		eliz@is.elta.co.il	Eli Zaretskii
+rho		robert.hoehne@gmx.net	Robert Hoehne
+ams		ams@ludd.luth.se	Martin Str|mberg
+lauras		lauras@softhome.net	Laurynas Biveinis
+jtw		jeffw@darwin.sfbr.org	Jeff Williams
+snowball	snowball3@bigfoot.com	Mark Elbrecht
