@@ -29,8 +29,9 @@ debug_file(FILE *f, const char *remarks)
   putchar(f->_flag & 001000  ? 'M' : ' ');
   putchar(f->_flag & 000020  ? 'W' : ' ');
   putchar(f->_flag & 000010  ? 'R' : ' ');
-  printf("  %5d %7p %8p %8lu",
-	 f->_cnt, f->_ptr, f->_base, (unsigned long) f->_bufsiz);
+  printf("  %5lu %7p %8p %8lu",
+	 (unsigned long) f->_cnt, f->_ptr, f->_base,
+	 (unsigned long) f->_bufsiz);
 #endif
   printf("  %s\n", remarks);
 }
