@@ -39,7 +39,9 @@ If the file does exist, it is truncated to zero bytes.
 @item O_EXCL
 
 If the file exists, and @code{O_CREAT} is also specified, the
-@code{open} call will fail. 
+@code{open} call will fail.  If the file is a symlink and @code{O_CREAT}
+is also specified, then the contents of the symlink are ignored -
+the @code{open} call will fail.
 
 @item O_APPEND
 

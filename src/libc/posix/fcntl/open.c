@@ -113,17 +113,19 @@ open(const char* filename, int oflag, ...)
   int fd, dmode, bintext, dont_have_share;
   char real_name[FILENAME_MAX + 1];
   int should_create = (oflag & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL);
+  int dirs_solved = 0; /* Only directories resolved in real_name? */
 
   /* Solve symlinks and honor O_NOLINK flag  */
   if (oflag & O_NOLINK)
   {
      if (!__solve_dir_symlinks(filename, real_name))
         return -1; /* errno from from __solve_dir_symlinks() */
+     dirs_solved = 1;
   }
   else
   {
      if (!__solve_symlinks(filename, real_name))
-        return -1; 
+        return -1; /* errno from from __solve_symlinks() */
   }
 
   /* Honor O_NOFOLLOW flag. */
@@ -163,12 +165,49 @@ open(const char* filename, int oflag, ...)
 
   /* Check this up front, to reduce cost and minimize effect */
   if (should_create)
+  {
+    /* Symlink: We're not allowed to follow a symlink, when creating a file
+     * with the same name as the symlink.
+     */
+    char temp_name[FILENAME_MAX + 1];
+#define IRD_BUF_SIZE FILENAME_MAX + 1
+    char ird_buf[IRD_BUF_SIZE];
+    const size_t ird_bufsize = IRD_BUF_SIZE;
+#undef IRD_BUF_SIZE
+
+    if (!dirs_solved)
+    {
+      if (!__solve_dir_symlinks(filename, temp_name))
+        return -1; /* errno from from __solve_dir_symlinks() */
+    }
+    else
+    {
+      strcpy(temp_name, real_name);
+    }
+
+    if (__internal_readlink(temp_name, 0, ird_buf, ird_bufsize) < 0)
+    {
+      /* If the error is something other than "doesn't exist"
+       * or "isn't a symlink", return it.
+       */
+      if ((errno != ENOENT) && (errno != EINVAL))
+	return -1; /* errno from __internal_readlink() */
+    }
+    else
+    {
+      /* It's a symlink. */
+      errno = EEXIST;
+      return -1;
+    }
+
+    /* Normal file */
     if (__file_exists(real_name))
     {
       /* file exists and we didn't want it to */
       errno = EEXIST;
       return -1;
     }
+  }
 
   /* figure out what mode we're opening the file in */
   bintext = oflag & (O_TEXT | O_BINARY);
