@@ -28,10 +28,11 @@ static char decimal = '.';
 
 #define	PUTC(ch)	(void) putc(ch, fp)
 
-#define ARG(basetype) \
-	_ulong = flags&LONGINT ? va_arg(argp, long basetype) : \
-	    flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
-	    va_arg(argp, int)
+#define ARG(basetype) _ulonglong = \
+		flags&LONGDBL ? va_arg(argp, long long basetype) : \
+		flags&LONGINT ? va_arg(argp, long basetype) : \
+		flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
+		va_arg(argp, int)
 
 static int nan = 0;
 
@@ -79,7 +80,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char *t;			/* buffer pointer */
   long double _ldouble;		/* double and long double precision arguments
 				   %L.[eEfgG] */
-  unsigned long _ulong;		/* integer arguments %[diouxX] */
+  unsigned long long _ulonglong; /* integer arguments %[diouxX] */
   int base;			/* base for [diouxX] conversion */
   int dprec;			/* decimal precision in [diouxX] */
   int fieldsz;			/* field size expanded by sign, etc */
@@ -108,23 +109,12 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   digs = "0123456789abcdef";
   for (cnt = 0;; ++fmt)
   {
-    n = fp->_cnt;
-    for (t = (char *)fp->_ptr; (ch = *fmt) && ch != '%';
-	 ++cnt, ++fmt)
-      if ((--n < 0
-	   && (!(fp->_flag & _IOLBF) || -n >= fp->_bufsiz))
-	  || (ch == '\n' && fp->_flag & _IOLBF))
-      {
-	fp->_cnt = n;
-	fp->_ptr = t;
-	(void) _flsbuf((unsigned char)ch, fp);
-	n = fp->_cnt;
-	t = (char *)fp->_ptr;
-      }
-      else
-	*t++ = ch;
-    fp->_cnt = n;
-    fp->_ptr = t;
+    while ((ch = *fmt) && ch != '%')
+    {
+      PUTC (ch);
+      fmt++;
+      cnt++;
+    }
     if (!ch)
       return cnt;
     flags = 0; dprec = 0; fpprec = 0; width = 0;
@@ -198,7 +188,10 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       flags |= SHORTINT;
       goto rflag;
     case 'l':
-      flags |= LONGINT;
+      if (flags&LONGINT)
+	flags |= LONGDBL; /* for 'll' - long long */
+      else
+	flags |= LONGINT;
       goto rflag;
     case 'c':
       *(t = buf) = va_arg(argp, int);
@@ -211,9 +204,9 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
     case 'd':
     case 'i':
       ARG(int);
-      if ((long)_ulong < 0)
+      if ((long long)_ulonglong < 0)
       {
-	_ulong = -_ulong;
+        _ulonglong = -_ulonglong;
 	sign = '-';
       }
       base = 10;
@@ -269,7 +262,9 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       t = *buf ? buf : buf + 1;
       goto pforw;
     case 'n':
-      if (flags & LONGINT)
+      if (flags & LONGDBL)
+        *va_arg(argp, long long *) = cnt;
+      else if (flags & LONGINT)
 	*va_arg(argp, long *) = cnt;
       else if (flags & SHORTINT)
 	*va_arg(argp, short *) = cnt;
@@ -292,7 +287,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        *	-- ANSI X3J11
        */
       /* NOSTRICT */
-      _ulong = (unsigned long)va_arg(argp, void *);
+      _ulonglong = (unsigned long)va_arg(argp, void *);
       base = 16;
       goto nosign;
     case 's':
@@ -334,18 +329,20 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       ARG(unsigned);
       base = 16;
       /* leading 0x/X only if non-zero */
-      if (flags & ALT && _ulong != 0)
+      if (flags & ALT && _ulonglong != 0)
 	flags |= HEXPREFIX;
 
+    nosign:
       /* unsigned conversions */
-    nosign:			sign = '\0';
+      sign = '\0';
+    number:
       /*
        * ``... diouXx conversions ... if a precision is
        * specified, the 0 flag will be ignored.''
        *	-- ANSI X3J11
        */
-    number:			if ((dprec = prec) >= 0)
-      flags &= ~ZEROPAD;
+      if ((dprec = prec) >= 0)
+	flags &= ~ZEROPAD;
 
       /*
        * ``The result of converting a zero value with an
@@ -353,16 +350,29 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        *	-- ANSI X3J11
        */
       t = buf + BUF;
-      if (_ulong != 0 || prec != 0)
+
+      if (_ulonglong != 0 || prec != 0)
       {
-	do {
-	  *--t = digs[_ulong % base];
-	  _ulong /= base;
-	} while (_ulong);
-	digs = "0123456789abcdef";
-	if (flags & ALT && base == 8 && *t != '0')
-	  *--t = '0';		/* octal leading 0 */
+        /* conversion is done separately since operations
+	  with long long are much slower */
+#define CONVERT(type) \
+	{ \
+	  register type _n = (type)_ulonglong; \
+	  do { \
+	    *--t = digs[_n % base]; \
+	    _n /= base; \
+	  } while (_n); \
+	}
+	if (flags&LONGDBL)
+	  CONVERT(unsigned long long) /* no ; */
+	else
+	  CONVERT(unsigned long) /* no ; */
+#undef CONVERT
+        if (flags & ALT && base == 8 && *t != '0')
+          *--t = '0';		/* octal leading 0 */
       }
+
+      digs = "0123456789abcdef";
       size = buf + BUF - t;
 
     pforw:
@@ -412,16 +422,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	PUTC('0');
 
       /* the string or number proper */
-      n = size;
-      if (fp->_cnt - n >= 0 && (fp->_flag & _IOLBF) == 0)
-      {
-	fp->_cnt -= n;
-	memcpy((char *)fp->_ptr, t, n);
-	fp->_ptr += n;
-      }
-      else
-	while (--n >= 0)
-	  PUTC(*t++);
+      for (n = size; n > 0; n--)
+        PUTC(*t++);
       /* trailing f.p. zeroes */
       while (--fpprec >= 0)
 	PUTC('0');
@@ -839,4 +841,3 @@ isspeciall(long double d, char *bufp)
     (void)strcpy(bufp, "Inf");
   return(3);
 }
-

@@ -1,12 +1,15 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <go32.h>
 #include <libc/file.h>
 #include <libc/stdiohk.h>
+#include <io.h>
 
 int
 _filbuf(FILE *f)
@@ -21,30 +24,46 @@ _filbuf(FILE *f)
     return EOF;
   if (f->_flag&(_IOSTRG|_IOEOF))
     return EOF;
- tryagain:
-  if (f->_base==NULL) {
-    if (f->_flag&_IONBF) {
-      f->_base = &c;
-      goto tryagain;
-    }
+  f->_flag &= ~_IOUNGETC;
+
+  if (f->_base==NULL && (f->_flag&_IONBF)==0) {
     size = _go32_info_block.size_of_transfer_buffer;
-    if ((f->_base = malloc(size)) == NULL) {
+    if ((f->_base = malloc(size)) == NULL)
+    {
       f->_flag |= _IONBF;
-      goto tryagain;
+      f->_flag &= ~(_IOFBF|_IOLBF);
     }
-    f->_flag |= _IOMYBUF;
-    f->_bufsiz = size;
+    else
+    {
+      f->_flag |= _IOMYBUF;
+      f->_bufsiz = size;
+    }
   }
+
+  if (f->_flag&_IONBF)
+    f->_base = &c;
+
   if (f == stdin) {
     if (stdout->_flag&_IOLBF)
       fflush(stdout);
     if (stderr->_flag&_IOLBF)
       fflush(stderr);
   }
-  f->_cnt = read(fileno(f), f->_base,
+  f->_cnt = _read(fileno(f), f->_base,
 		   f->_flag & _IONBF ? 1 : f->_bufsiz);
+  if(__is_text_file(f) && f->_cnt>0)
+  {
+    /* truncate text file at Ctrl-Z */
+    char *cz=memchr(f->_base, 0x1A, f->_cnt);
+    if(cz)
+    {
+      int newcnt = cz - f->_base;
+      lseek(fileno(f), -(f->_cnt - newcnt), SEEK_CUR);
+      f->_cnt = newcnt;
+    }
+  }
   f->_ptr = f->_base;
-  if (f->_flag & _IONBF && f->_base == &c)
+  if (f->_flag & _IONBF)
     f->_base = NULL;
   if (--f->_cnt < 0) {
     if (f->_cnt == -1) {
