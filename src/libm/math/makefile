@@ -83,7 +83,6 @@ SRC += s_tanh.c
 SRC += s_infinity.c
 SRC += s_isinf.c
 SRC += s_nan.c
-#SRC += s_infconst.c
 SRC += s_signgam.c
 SRC += kf_rem_pio2.c
 SRC += kf_cos.c
