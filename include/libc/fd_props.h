@@ -60,6 +60,11 @@ static __inline__ void __clear_fd_flags(int _fd, unsigned long _flags)
   __fd_properties[_fd]->flags &= ~_flags;
 }
 
+static __inline__ unsigned long __get_fd_flags(int _fd)
+{
+  return __fd_properties[_fd]->flags;
+}
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
