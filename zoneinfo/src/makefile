@@ -302,9 +302,9 @@ ALL:		all date.exe tzselect
 zdump.exe:	$(TZDOBJS)
 		$(CC) $(CFLAGS) $(LFLAGS) $(TZDOBJS) $(LDLIBS) -o $@
 
-host-zic:	$(TZCOBJS) yearistype
+host-zic:	$(TZCSRCS) yearistype
 		$(GCC) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\" \
-		 $(CFLAGS) $(LFLAGS) $(TZCOBJS) $(LDLIBS) -o $@
+		 $(CFLAGS) $(LFLAGS) $(TZCSRCS) $(LDLIBS) -o $@
 
 zic.exe:	$(TZCOBJS) yearistype
 		$(CC) $(CFLAGS) $(LFLAGS) $(TZCOBJS) $(LDLIBS) -o $@
