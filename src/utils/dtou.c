@@ -263,7 +263,13 @@ usage(char *progname)
   printf ("are given at all. In this case, an occurrence of Cntl-Z will truncate the file,\n");
   printf ("MSDOS-style EOL (CRLF) are transformed into UNIX-style EOL (LF) and CR sequence\n");
   printf ("stripping will not happen at all. Also the timestamp will not be alterated and\n");
-  printf ("no backup of the original file will be done.\n");
+  printf ("no backup of the original file will be done.%s",
+#if defined(__MSDOS__) || defined(_WIN32)
+	  ""
+#else
+	  "\n"
+#endif
+	  );
 }
 
 int
