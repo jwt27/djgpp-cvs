@@ -18,6 +18,21 @@ in @var{buf}.  @var{name} is one of the following:
 
 Returns a path to the standard POSIX utilities.
 
+@item _CS_POSIX_V6_ILP32_OFF32_CFLAGS
+
+Returns the compile-time flags required to build an application using 32-bit
+@code{int}, @code{long}, pointer, and @code{off_t} types.
+
+@item _CS_POSIX_V6_ILP32_OFF32_LDFLAGS
+
+Returns the link-time flags required to build an application using 32-bit
+@code{int}, @code{long}, pointer, and @code{off_t} types.
+
+@item _CS_POSIX_V6_ILP32_OFF32_LIBS
+
+Returns the set of libraries required to build an application using 32-bit
+@code{int}, @code{long}, pointer, and @code{off_t} types.
+
 @end table
 
 If @var{len} is not zero and @var{name} has a defined value, that value
