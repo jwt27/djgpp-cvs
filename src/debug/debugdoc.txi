@@ -1,0 +1,121 @@
+
+@c -----------------------------------------------------------------------------
+@node symify, edebug32, , Top
+@chapter @command{symify}
+@pindex symify
+@pindex bfdsymify
+
+Usage: @kbd{symify [-o output.dmp] [-i input.dmp] progname.exe}
+
+@command{symify} is a utility that adds procedure names and source line
+numbers to the call frame traceback displayed on the screen when a program
+aborts.  The default behavior is to add the extra information to the
+screen, but input or output from files can be specified with the
+@option{-o} and @option{-i} switches.  @command{symify} can only interpret
+debug information in @acronym{COFF} format.  If @command{bfdsymify} is
+installed @command{symify} will pass the arguments to @command{bfdsymify},
+which can handle additional debug formats.  @command{bfdsymify} is
+included in the @command{gdb} (GNU debugger) package.
+
+@cindex Call frame traceback EIPs
+@cindex traceback
+
+The call frame traceback EIPs are displayed in hexadecimal address
+values.  These values show the addresses where one procedure calls
+another and has pushed its return information onto the stack.  The
+values at the top are the most recently called procedures.
+@command{symify} reads the debug information from the executable you
+specify on the command line (with @file{.exe} extension) and puts it
+after the hexadecimal numbers.  If the image is stripped there is no
+additional information which can be added.  If you compiled the modules
+with the @option{-g} switch to @command{gcc} you can also display
+source line numbers (without @option{-g} you will only get procedure
+names and offsets into those procedures).
+
+@strong{Options:}
+
+@table @code
+
+@item -o @var{output-file}
+
+Output to the specified file @var{output-file}.  @command{symify}
+copies the traceback plus symbolic names and puts it into the file name
+you specify after the @option{-o} option.  This allows you to save it
+(for sending to the author, or examination while fixing the bug).  If
+@option{-o} is specified the screen buffer is not changed.
+
+@item -i @var{input-file}
+
+Input from the specified file @var{input-file}.  @command{symify} reads
+the stack trace from the file name you specify after the @option{-i}
+option.  This file could be created by @code{redir} (@pxref{redir}) or
+redirecting handle 2 to a file.
+
+@end table
+
+Known compatibility problem (Windows NT, Windows 2000, Windows XP):
+
+Sometimes @code{symify} cannot read the screen buffer to get the traceback
+information.  In that case you must copy the screen buffer manually and
+save it to a file, and use the @option{-i} option.
+
+
+@c -----------------------------------------------------------------------------
+@node edebug32, fsdb, symify, Top
+@chapter @command{edebug32}
+@pindex edebug32
+
+Usage: @kbd{edebug32 debug-image.exe [args to debug-image]}
+
+@command{edebug32} is a simple debugger for DJGPP images.  See the
+internal help (@kbd{h} at the command prompt) for more information on
+usage.  @command{edebug32} is an expert's debugger and does not support
+newer debugging formats.  @command{debug32} can only interpret debug
+information in @acronym{COFF} format, which can be generated at
+compile time using the @option{-gcoff} option to @command{gcc}.  It is
+recommended that new users try one of the other more powerful or
+easy-to-use debuggers such as @command{gdb}.
+
+
+@c -----------------------------------------------------------------------------
+@node fsdb, , edebug32, Top
+@chapter @command{fsdb}
+@pindex fsdb
+
+Usage: @kbd{fsdb [-p path] [-d] [-s setup] debug-image.exe [args]}
+
+@command{fsdb} is a full screen debugger for DJGPP images.  See the
+internal help (press F1 key) for more information on usage.
+@command{fsdb} is not actively maintained and does not support newer
+debugging formats.  @command{fsdb} can only interpret debug
+information in @acronym{COFF} format, which can be generated at
+compile time using the @option{-gcoff} option to @command{gcc}.  It is
+recommended that new users try one of the newer debuggers such as
+@command{rhgdb}.
+
+@strong{Options:}
+
+@table @code
+
+@item -p @var{source-path}
+
+@vindex FSDBPATH
+Specify source path as @var{source-path} to find source files used to
+build this image.  The source path can also be set as an environment
+variable @env{FSDBPATH}, but the command line option will override the
+environment variable.
+
+@item -d
+
+@vindex FSDBDUAL
+Dual monitors.  Enable dual monitor display using monochrome graphics
+card.  Useful when debugging graphics images but requires special hardware.
+Dual monitors can also be requested by setting the environment variable
+@env{FSDBDUAL}.
+
+@item -s @var{setup-file}
+
+Specify setup file as @var{setup-file}.  The default is @file{fsdb.dsk} in
+the current directory.
+
+@end table
