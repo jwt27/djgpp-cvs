@@ -36,7 +36,7 @@ lldiv_t l = lldiv(42, 3);
 printf("42 = %lld x 3 + %lld\n", l.quot, l.rem);
 
 lldiv(+40, +3) = @{ +13, +1 @}
-lldiv(+40, -3) = @{ -13, -1 @}
+lldiv(+40, -3) = @{ -13, +1 @}
 lldiv(-40, +3) = @{ -13, -1 @}
 lldiv(-40, -3) = @{ +13, -1 @}
 
