@@ -1,0 +1,29 @@
+#
+# DSM for sources to DJGPP timezone support files for 2.04
+# Written by Richard Dawe <richdawe@bigfoot.com> 2002-10-17
+#
+
+dsm-file-version: 1.0
+dsm-version: 0.6.0
+dsm-name: djtzs204
+
+dsm-author: Richard Dawe
+dsm-author-email: richdawe@bigfoot.com
+dsm-author-web-site: http://www.bigfoot.com/~richdawe/
+
+name: djtzs
+version: 2.04 alpha 1
+type: sources
+binaries-dsm: djtzn204
+manifest: djtzs204
+
+short-description: Timezone sources and utils
+license: Various: public domain, BSD
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
+
+simtelnet-path: v2/
+zip: djtzs204.zip
+
+replaces: djtzs < 2.04 alpha 1

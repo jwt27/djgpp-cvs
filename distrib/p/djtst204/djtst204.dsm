@@ -1,0 +1,34 @@
+#
+# DSM for DJGPP test sources for 2.04
+# Written by Richard Dawe <richdawe@bigfoot.com> 2002-10-17
+#
+
+dsm-file-version: 1.0
+dsm-name: djtst204
+dsm-version: 0.6.0
+
+dsm-author: Richard Dawe
+dsm-author-email: richdawe@bigfoot.com
+dsm-author-web-site: http://www.bigfoot.com/~richdawe/
+
+name: djtest
+version: 2.04 alpha 1
+type: sources
+manifest: djtst204
+
+short-description: DJGPP test suite sources
+license: Mostly the GNU General Public License with modifications
+author: DJ Delorie
+author-email: dj@delorie.com
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
+
+simtelnet-path: v2/
+zip: djtst204.zip
+
+requires: djdev 2.04 alpha 1
+requires: gcc
+requires: g++
+requires: binutils
+requires: make

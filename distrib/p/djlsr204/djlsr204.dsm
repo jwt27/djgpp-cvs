@@ -1,0 +1,43 @@
+#
+# DSM for DJGPP library sources for 2.04
+# Constructed by Richard Dawe <richdawe@bigfoot.com> 2002-10-17
+#
+
+dsm-file-version: 1.0
+dsm-version: 0.6.0
+dsm-name: djlsr204
+
+dsm-author: Richard Dawe
+dsm-author-email: richdawe@bigfoot.com
+dsm-author-web-site: http://www.bigfoot.com/~richdawe/
+
+name: djlsr
+version: 2.04 alpha 1
+type: sources
+binaries-dsm: djdev204
+manifest: djlsr204
+
+short-description: DJGPP base library sources
+license: Mostly the GNU General Public License with modifications
+author: DJ Delorie
+author-email: dj@delorie.com
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+
+simtelnet-path: v2/
+zip: djlsr204.zip
+
+#builtin-post-install-script: echo Welcome to the world of DJGPP!
+
+pre-install-readme: readme.1st
+
+replaces: djlsr < 2.04 alpha 1
+
+requires: djdev
+requires: gcc
+requires: g++
+requires: binutils
+requires: make
+requires: sed
+requires: bison
+requires: texinfo
