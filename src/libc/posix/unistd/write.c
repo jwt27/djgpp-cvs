@@ -40,6 +40,13 @@ write(int handle, const void* buffer, size_t count)
   if (count == 0)
     return 0; /* POSIX.1 requires this */
 
+  /* Directory? If so, fail. */
+  if (__get_fd_flags(handle) & FILE_DESC_DIRECTORY)
+  {
+    errno = EBADF;
+    return -1;
+  }
+
   if ( __has_fd_properties(handle)
   && ( __fd_properties[handle]->flags & FILE_DESC_APPEND ) )
   {
