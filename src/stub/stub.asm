@@ -1,3 +1,4 @@
+; Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 ; Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 ; -*- asm -*-
 ;
@@ -165,6 +166,7 @@ scan_environment:
 	jne	not_path
 	inc	di			; Point to PATH contents
 	mov	[path_off], di		; save for later
+	dec	di			; in case the PATH is empty
 not_path:
 	scasb
 	jne	scan_environment	; no, still environment
@@ -474,8 +476,8 @@ read_section:
 	mov	eax, esi		; sector alignment by default
 	and	eax, 0x1ff
 	add	ecx, eax
-	and	si, 0xfe00		; page align
-	and	di, 0xfe00
+	sub	si, ax			; sector align disk offset (can't carry)
+	sub	edi, eax		; memory maybe not aligned!
 
 	mov	[read_size], ecx	; store for later reference
 	mov	[read_soffset], edi
@@ -788,9 +790,9 @@ msg_no_progfile:
 msg_not_exe:
 	.db	": not EXE$"
 msg_not_coff:
-	.db	": not COFF$"
+	.db	": not COFF (Check for viruses)$"
 msg_no_dpmi:
-	.db	"no DPMI$"
+	.db	"no DPMI - Get csdpmi*b.zip$"
 msg_no_dos_memory:
 	.db	"no DOS memory$"
 msg_bad_dos:
