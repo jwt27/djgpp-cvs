@@ -1,9 +1,20 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* exception handling support by Pierre Muller */
+
+#if    (GAS_MAJOR == 2) \
+    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
+#define LJMP(there) "ljmp    " #there
+#define LCALL(there) "lcall  " #there
+#else
+#define LJMP(there) "ljmp    *" #there
+#define LCALL(there) "lcall   *" #there
+#endif
+
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -459,7 +470,7 @@ _get_exception_handler:                                                 \n\
         pushl   %eax                                                    \n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
         popl   %eax                                                     \n\
 	jc	Lc31_set_flags_and_iret					\n\
         pushl   %eax                                                    \n\
@@ -488,7 +499,7 @@ _app_exception_not_set:                                                 \n\
         pop   %es                                                       \n\
         popl  %eax                                                      \n\
         .byte 0x2e                                                      \n\
-        ljmp _old_i31                                                   \n\
+        " LJMP(_old_i31) "                                              \n\
         ret                                                             \n"
 ); 
 
@@ -563,7 +574,7 @@ _add_descriptors:							\n\
 	movw	$0x0003,%ax						\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	movw	%ax,%bx							\n\
 	popl	%eax							\n\
 	pushl	%eax							\n\
@@ -692,7 +703,7 @@ _i31_hook:								\n\
 	je	Lc31_resize_mem						\n\
 L_jmp_to_old_i31:                                                       \n\
         .byte	0x2e							\n\
-	ljmp	_old_i31						\n\
+	" LJMP(_old_i31) "						\n\
 Lc31_set_flags_and_iret:                                                \n\
         pushl	%eax				                        \n\
 	pushf								\n\
@@ -733,7 +744,7 @@ Lc31_set_selector_base_address:                                         \n\
 	jne	L_jmp_to_old_i31					\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	call	___djgpp_save_interrupt_regs				\n\
 	call	__clear_break_DPMI					\n\
 	call	__set_break_DPMI					\n\
@@ -754,7 +765,7 @@ Lc31_set_protected_mode_interrupt:                                      \n\
 Lc31_alloc_mem:								\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	pushf								\n\
 	pushl	%edx							\n\
@@ -772,7 +783,7 @@ Lc31_free_mem:								\n\
 	pushw	%di							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	jc	Lc31_resize_mem_error					\n\
 	popl	%eax							\n\
 	push	%edx							\n\
@@ -786,7 +797,7 @@ Lc31_resize_mem:							\n\
 	pushw	%di							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	jnc	Lc31_resize_mem_ok					\n\
 Lc31_resize_mem_error:							\n\
 	addl	$4,%esp							\n\
@@ -804,7 +815,7 @@ Lc31_alloc_descriptors:							\n\
 	pushl	%ecx							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	popl	%ecx							\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	call	_add_descriptors					\n\
@@ -814,7 +825,7 @@ Lc31_free_descriptor:							\n\
 	pushl	%ebx							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	popl	%eax							\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	push	%edx							\n\
@@ -826,7 +837,7 @@ Lc31_free_descriptor:							\n\
 Lc31_create_alias_descriptor:						\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	pushl	%eax							\n\
 	push	%edx							\n\
@@ -840,7 +851,7 @@ Lc31_create_alias_descriptor:						\n\
 Lc31_allocate_dos_memory:						\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	pushl	%eax							\n\
 	xorl	%eax,%eax						\n\
@@ -852,7 +863,7 @@ Lc31_free_dos_memory:							\n\
 	pushl	%edx							\n\
 	pushf								\n\
 	.byte	0x2e							\n\
-	lcall	_old_i31						\n\
+	" LCALL(_old_i31) "						\n\
 	popl	%eax							\n\
 	jc	Lc31_set_flags_and_iret					\n\
 	xorw	%dx,%dx							\n\
@@ -866,7 +877,7 @@ Lc31_set_exception_handler:                                             \n\
         pushl  %edx                                                     \n\
         pushf                                                           \n\
         .byte  0x2e                                                     \n\
-        lcall   _old_i31                                                \n\
+        " LCALL(_old_i31) "                                             \n\
         popl   %edx                                                     \n\
         popl   %ecx                                                     \n\
         popl   %ebx                                                     \n\
@@ -875,7 +886,7 @@ Lc31_set_exception_handler:                                             \n\
         call   _change_exception_handler                                \n\
         pushf                                                           \n\
         .byte  0x2e                                                     \n\
-        lcall   _old_i31                                                \n\
+        " LCALL(_old_i31) "                                             \n\
         jmp Lc31_set_flags_and_iret                                     \n\
 	.balign  16,,7							\n\
         .globl  _dbgcom_hook_i21                                        \n\
@@ -885,7 +896,7 @@ _i21_hook:								\n\
 	je	Lc21							\n\
 Lc21_jmp_to_old:                                                        \n\
         .byte	0x2e							\n\
-	ljmp	_old_i21						\n\
+	" LJMP(_old_i21) "						\n\
 Lc21:	push	%eax							\n\
 	movl	8(%esp),%eax						\n\
 	cs								\n\
@@ -1003,7 +1014,7 @@ _dbgcom_exception_return_to_here:       /* remove errorcode from stack */
 asm (".text
         .global ___dbgcom_kbd_hdlr
 ___dbgcom_kbd_hdlr:
-        ljmp    %cs:___djgpp_old_kbd");
+        " LJMP(%cs:___djgpp_old_kbd) "");
         
     
     

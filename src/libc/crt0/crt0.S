@@ -16,6 +16,19 @@
 
 #include "stubinfo.h"
 
+#if    (GAS_MAJOR == 2) \
+    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
+#define LJMP(there) \
+        ljmp    there
+#define LCALL(there) \
+        lcall   there
+#else
+#define LJMP(there) \
+        ljmp    *there
+#define LCALL(there) \
+        lcall   *there
+#endif
+
 	.comm	__stklen, 4
 	.comm	__stubinfo, 4
 	.comm	___djgpp_base_address, 4
@@ -366,7 +379,7 @@ exit:
 	movw	%cs, %bx
 /* Call exit procedure with BX=32-bit CS; SI+DI=32-bit handle; DL=exit status */
 	.byte 0x2e
-	ljmp	sbrk16_api_ofs
+	LJMP(sbrk16_api_ofs)
 
 /*-----------------------------------------------------------------------------*/
 
@@ -455,7 +468,8 @@ brk_common:
 	int	$0x31
 	pushl	%eax
 
-	lcall	sbrk16_api_ofs
+	LCALL(sbrk16_api_ofs)
+
 	setc	%dl						/* Save carry */
 
 	popl	%eax					/* restore interrupts */

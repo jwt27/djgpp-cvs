@@ -2,6 +2,19 @@
  * This file maybe freely distributed and modified as long as copyright remains.
  */
 
+#if    (GAS_MAJOR == 2) \
+    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
+#define LJMP(there) \
+	ljmp	there
+#define LCALL(there) \
+	lcall	there
+#else
+#define LJMP(there) \
+	ljmp	*there
+#define LCALL(there) \
+	lcall	*there
+#endif
+
 #define EAX 0
 #define EBX 4
 #define ECX 8
@@ -348,7 +361,7 @@ Lkbd_chain:
 	popl	%ds
 	popl	%ebx
 	popl	%eax
-	ljmp	%cs:___djgpp_old_kbd
+	LJMP(%cs:___djgpp_old_kbd)
 
 	.balign 16,,7
 	.global	___djgpp_kbd_hdlr_pc98
@@ -400,7 +413,7 @@ ___djgpp_timer_hdlr:
    	.byte	0x2e				/* CS: */
 	testb	$4, ___djgpp_hwint_flags	/* IRET or chain? */
 	jne	2f
-	ljmp	%cs:___djgpp_old_timer
+	LJMP(%cs:___djgpp_old_timer)
 2:
 	pushl	%eax
 	movb	$0x20,%al			/* EOI the interrupt */

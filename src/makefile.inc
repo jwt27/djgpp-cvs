@@ -1,3 +1,4 @@
+# Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # -*- makefile -*-
 
@@ -7,12 +8,58 @@ MAKEFLAGS := --no-print-directory
 
 .SUFFIXES: .o .i .c .cc .s
 
+# Set $(GCC{L}_OPT) here so they are defined before first use
+#
+ifeq ($(CROSS_BUILD),1)
+GCC_OPT := $(shell cat $(TOP)/../gcc.opt)
+GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
+endif
+
+# Set $(AS) before first use
+#
+AS := $(shell $(CROSS_GCC) $(GCC_OPT) -print-prog-name=as)
+AS := $(subst \,/,$(AS))
+
+# These were suggested by Tim Van Holder <tim.van.holder@pandora.be>
+# but since $(CROSS_LD) is set in makefile.def and $(LD) is not used
+# anywhere, they seem not very useful at this time.
+#
+#LD := $(shell $(CROSS_GCC) $(GCC_OPT) -print-prog-name=ld)
+#LD := $(subst \,/,$(LD))
+
+# Figure out GAS version for use in *.S and inline asm compile flags
+#
+GAS_VERSION    := $(subst ., ,$(shell $(AS) --version))
+GAS_MAJOR      := $(word 3,$(GAS_VERSION))
+GAS_MINOR      := $(word 4,$(GAS_VERSION))
+GAS_MINORMINOR := $(word 5,$(GAS_VERSION))
+
+# Defaults for GAS version numbers
+ifeq ($(GAS_MAJOR),)
+GAS_MAJOR := 0
+endif
+ifeq ($(GAS_MINOR),)
+GAS_MINOR := 0
+endif
+ifeq ($(GAS_MINORMINOR),)
+GAS_MINORMINOR := 0
+endif
+
+# Pass defines as compiler/assembler switches
+CFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
+CFLAGS += -DGAS_MINOR=$(GAS_MINOR)
+CFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
+
+ASFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
+ASFLAGS += -DGAS_MINOR=$(GAS_MINOR)
+ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
+
+# Moved setting of $(GCC{L}_OPT) to top of file
+#
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I. -I- -I$(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I. -I- -I$(TOP)/../../include $(CFLAGS)
 else
-GCC_OPT := $(shell cat $(TOP)/../gcc.opt)
-GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
 XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -I$(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -I$(TOP)/../../include $(CFLAGS)
 endif
@@ -59,13 +106,13 @@ C = $(LIB)/crt0.o
 L = $(LIB)/libc.a
 
 ifeq ($(LIBGCCA),)
-LIBGCCA := $(shell $(CROSS_GCC) -print-file-name=libgcc.a)
+LIBGCCA := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=libgcc.a)
 LIBGCCA := $(subst \,/,$(LIBGCCA))
 export LIBGCCA
 endif
 
 ifeq ($(DJGPP_DJL),)
-DJGPP_DJL := $(shell $(CROSS_GCC) -print-file-name=djgpp.djl)
+DJGPP_DJL := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=djgpp.djl)
 DJGPP_DJL := $(subst \,/,$(DJGPP_DJL))
 export DJGPP_DJL
 endif
