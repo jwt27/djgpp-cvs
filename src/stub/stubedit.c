@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -10,6 +11,10 @@
 
 #ifdef __DJGPP__
 #include <io.h>
+#endif
+
+#ifndef SEEK_SET
+#define SEEK_SET 0
 #endif
 
 #include "../../include/stubinfo.h"
@@ -34,7 +39,7 @@ void find_info(char *filename)
     exit(1);
   }
 
-  if (fseek(f, 8L, 0) != 0 ||
+  if (fseek(f, 8L, SEEK_SET) != 0 ||
       fread(&buf, 1, 2, f) != 2)
   {
     printf("Error: %s could not read\n", filename);
@@ -43,7 +48,7 @@ void find_info(char *filename)
 
   exe_start = buf[0]*16 + buf[1]*16*256;
 
-  if (fseek(f, exe_start, 0) != 0 ||
+  if (fseek(f, exe_start, SEEK_SET) != 0 ||
       fread(test_magic, 1, 16, f) != 16 ||
       memcmp(test_magic, "go32stub", 8) != 0)
   {
@@ -55,7 +60,7 @@ void find_info(char *filename)
   size_of_stubinfo = (header[0]) | (header[1]<<8)
                    | (header[2])<<16 | (header[3]<<24);
 
-  fseek(f, exe_start, 0);
+  fseek(f, exe_start, SEEK_SET);
   client_stub_info = (char *)malloc(size_of_stubinfo);
   fread(client_stub_info, size_of_stubinfo, 1, f);
 
@@ -74,7 +79,7 @@ void store_info(char *filename)
     perror(buf);
     exit(1);
   }
-  fseek(f, exe_start, 0);
+  fseek(f, exe_start, SEEK_SET);
   fwrite(client_stub_info, 1, size_of_stubinfo, f);
   fclose(f);
 }
