@@ -233,3 +233,10 @@ that OS.
 The function @code{lfilelength} added with return type @code{long long}
 to support file sizes of up to @math{2^64-2}.
 
+@pindex djasm@r{, ISO dates}
+The dates inserted into the object file by @code{djasm} now follow ISO
+format.
+
+@pindex djasm@r{, new executable header offset}
+@code{djasm} now sets the offset of new executable field in the header
+of executables to zero (meaning not used).
