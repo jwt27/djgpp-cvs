@@ -10,8 +10,11 @@ int cfsetispeed (struct termios *termiosp, speed_t speed);
 @subheading Description
 
 This function sets the input line speed stored in the structure
-@var{termiosp} to @var{speed}.  It is provided for compatibility only.
-Note that the termios emulation handles console only.
+@var{termiosp} to @var{speed}.  @xref{Termios functions}, for more
+details about this structure and the baudrate values it supports.
+
+Note that the termios emulation handles console only, and that the
+baudrate values have no effect in this implementation.
 
 @subheading Return Value
 

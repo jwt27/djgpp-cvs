@@ -9,9 +9,26 @@ int tcflow (int fd, int action);
 
 @subheading Description
 
-This function performs flow control specified by @var{action} on
-@var{fd}.  It is provided for compatibility only.  Note that the
-termios emulation handles console only.
+This function suspends transmission of data to, or reception of data
+from, the device/file open on handle @var{fd}.  The @var{action}
+argument can take one of these values:
+
+@table @code
+@item TCOOFF
+the output is suspended
+@item TCOON
+the output is resumed
+@item TCIOFF
+the STOP character is transmitted
+@item TCION
+the START character is transmitted
+@end table
+
+The current START and STOP characters are stored in the @code{termios}
+structure that is currently in effect.  @xref{Termios functions}, for
+more details about that.
+
+Note that the DJGPP termios emulation handles console only.
 
 @subheading Return Value
 

@@ -9,9 +9,20 @@ int tcflush (int fd, int which);
 
 @subheading Description
 
-This function clears the input and/or output queues on @var{fd}. It is
-provided for compatibility only.  Note that the termios emulation
-handles console only.
+This function clears the input and/or output queues on for the
+device/file open on handle @var{fd}.  The @var{which} argument can take
+these values:
+
+@table @code
+@item TCIFLUSH
+the unprocessed characters in the input buffer are discarded
+@item TCOFLUSH
+no effect (provided for compatibility)
+@item TCIOFLUSH
+has the combined effect of @code{TCIFLUSH} and @code{TCOFLUSH}
+@end table
+
+Note that the termios emulation handles console only.
 
 @subheading Return Value
 

@@ -1,3 +1,154 @@
+@node Termios functions, termios
+
+The @code{termios} functions allow to control terminals and asynchronous
+communications ports.  The DJGPP implementation currently supports the
+@code{termios} functionality for console devices only.  It does that by
+reading the keyboard via the BIOS Int 16h and writes to the screen via
+the direct output interrupt 29h.  This I/O redirection is performed by
+the special hook internal to the library.
+
+Many of the @code{termios} functions accept a @var{termiosp} argument
+which is a pointer to a @code{struct termios} variable.  Here's the
+description of this structure:
+
+@example
+ #define NCCS 12
+ struct termios @{
+   cc_t	        c_cc[NCCS];  /* control characters */
+   tcflag_t     c_cflag;     /* control modes */
+   tcflag_t     c_iflag;     /* input modes */
+   tcflag_t     c_lflag;     /* local modes */
+   tcflag_t     c_oflag;     /* output modes */
+   speed_t      c_ispeed;    /* input baudrate */
+   speed_t      c_ospeed;    /* output baudrate */
+ @}
+@end example
+
+The array @code{c_cc[]} defines the special control characters.  the
+following table lists the supported control functions the default
+characters which invoke those functions, and the default values for MIN
+and TIME parameters:
+
+@multitable {Index} {VERASE} {Delete previous character} {Backspase}
+@item Index @tab Name @tab Function @tab Default Value
+@item 1 @tab VEOF @tab Signal End-Of-Input @tab Ctrl-D
+@item 2 @tab VEOL @tab Erase till end of line @tab [Disabled]
+@item 3 @tab VERASE @tab Delete previous character @tab Backspase
+@item 4 @tab VINTR @tab Generate SIGINT @tab Ctrl-C
+@item 5 @tab VKILL @tab Erase current line @tab Ctrl-U
+@item 6 @tab VMIN @tab The MIN value @tab 1
+@item 7 @tab VQUIT @tab Generate SIGQUIT @tab Ctrl-\
+@item 8 @tab VSTART @tab Resume output @tab Ctrl-Q
+@item 9 @tab VSTOP @tab Suspend output @tab Ctrl-S
+@item 10 @tab VSUSP @tab Suspend program @tab Ctrl-Z
+@item 11 @tab VTIME @tab TIME value @tab 0
+@end multitable
+
+Note that the values of @code{VMIN} and @code{VTIME} are currently
+ignored.  Other functions are supported (for console devices only),
+except that VSTOP and VSTART characters are not inserted to the input,
+but otherwise produce no effect.
+
+The @code{c_cflag} member of @code{struct termios} describes the
+hardware terminal control, as follows:
+
+@multitable {Symbol} {If set, send two stop bits}
+@item Symbol @tab Function
+@item B0 @tab Hang up
+@item B50 @tab 50 baud
+@item B75 @tab 75 baud
+@item B110 @tab 110 baud
+@item B134 @tab 134.5 baud
+@item B150 @tab 150 baud
+@item B200 @tab 200 baud
+@item B300 @tab 300 baud
+@item B600 @tab 600 baud
+@item B1200 @tab 1200 baud
+@item B1800 @tab 1800 baud
+@item B2400 @tab 2400 baud
+@item B4800 @tab 4800 baud
+@item B9600 @tab 9600 baud
+@item B19200 @tab 19200 baud
+@item B38400 @tab 38400 baud
+@item CSIZE @tab Character size:
+@item CS5 @tab 5-bit characters
+@item CS6 @tab 6-bit characters
+@item CS7 @tab 7-bit characters
+@item CS8 @tab 8-bit characters
+@item CSTOPB @tab If set, send two stop bits
+@item CREAD @tab Enable reading
+@item PARENB @tab Enable parity
+@item PARODD @tab If set, use odd parity
+@item HUPCL @tab Hang up on last close
+@item CLOCAL @tab If set, line is local
+@end multitable
+
+Note that since the DOS terminal doesn't use asynchronous ports, the
+above parameters are always ignored by the implementation.  The default
+value of @code{c_cflag} is @code{(CS8|CREAD|CLOCAL)}.
+
+The @code{c_lflag} member of @code{struct termios} defines the local
+modes that control the terminal functions:
+
+@multitable {Symbol} {Canonical input (erase and kill processing)}
+@item Symbol @tab Function
+@item ISIG @tab If set, enable signals SIGINT and SIGQUIT
+@item ICANON @tab If set, enable canonical input processing
+@item ECHO @tab If set, enable echoing
+@item ECHOE @tab Erase character deletes
+@item ECHOK @tab Output newline after the kill character
+@item ECHONL @tab Echo the newline
+@item NOFLSH @tab [Ignored]
+@item TOSTOP @tab [Ignored]
+@item ECHOCTL @tab Echo control characters as ^X
+@item ECHOKE @tab Erase killed line
+@item IEXTEN @tab [Ignored]
+@end multitable
+
+The default value of @code{c_lflag} is
+@code{(ISIG|ICANON|ECHO|IEXTEN|ECHOE|ECHOKE|ECHOCTL)}.
+
+The @code{c_iflag} member of @code{struct termios} describes the input
+control:
+
+@multitable {Symbol} {Map upper-case to lower-case on input}
+@item Symbol @tab Function
+@item IGNBRK @tab Ignore Ctrl-BREAK
+@item BRKINT @tab Generate SIGINT on Ctrl-BREAK
+@item IGNPAR @tab [Ignored]
+@item PARMRK @tab [Ignored]
+@item INPCK @tab [Ignored]
+@item ISTRIP @tab Strip the 8th bit from input
+@item INLCR @tab Map NL to CR on input
+@item IGNCR @tab Ignore CR characters
+@item ICRNL @tab Map CR to NL on input
+@item IXON @tab [Ignored]
+@item IXOFF @tab Enable start/stop input control
+@item IMAXBEL @tab Ring the bell if input line too long
+@end multitable
+
+The default value of @code{c_iflag} is @code{(BRKINT|ICRNL|IMAXBEL)}.
+
+The @code{c_oflag} member of @code{struct termios} specifies the output
+handling:
+
+@multitable {Symbol} {Map lower case to upper on output}
+@item Symbol @tab Function
+@item OPOST @tab If not set, output characters verbatim
+@item ONLCR @tab Map newline to CR-LF pair on output
+@item OCRNL @tab Map CR to NL on output
+@item ONOEOT @tab Don't output EOT characters
+@end multitable
+
+Note that if the @code{OPOST} bit is not set, all the other flags are
+ignored and the characters are output verbatim.  The default value of
+@code{c_oflag} is @code{(OPOST|ONLCR|ONOEOT)}.
+
+The @code{c_ispeed} and @code{c_ospeed} members specify, respectively,
+the input and output baudrate of the terminal.  They are set by default
+to 9600 baud, but the value is always ignored by this implementation,
+since no asynchronous ports are used.
+
 @node tcsetattr, termios
 @subheading Syntax
 
@@ -9,9 +160,25 @@ int tcsetattr (int fd, int action, const struct termios *termiosp);
 
 @subheading Description
 
-This function sets termios structure for device @var{fd} from the
-structure @var{termiosp}.  Note that the termios emulation handles
-console only.
+This function sets termios structure for device open on the handle
+@var{fd} from the structure @var{termiosp}.  Note that the termios
+emulation handles console only.
+
+The @var{action} argument can accept the following values:
+
+@table @code
+@item TCSANOW
+
+@item TCSADRAIN
+
+@item TCSAFLUSH
+@end table
+
+Currently, any of these values causes the values in @var{termiosp} to
+take effect immediately.
+
+@xref{Termios functions}, for the description of the @code{struct
+termios} structure.
 
 @subheading Return Value
 

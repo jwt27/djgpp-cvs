@@ -1,0 +1,508 @@
+@node Features,     DJGPP.ENV,     , Hidden Features
+@comment node-name, next,      prev, up
+@section Features provided by @sc{djgpp}
+
+This section describes some advanced features provided by @sc{djgpp}.
+Most of these features are built into the C library, but some are
+provided by the basic development utilities which are part of the
+@sc{djgpp} development environment.  Since @sc{djgpp} is a
+Posix-compliant environment, many of these features are motivated by
+Unix compatibility.
+
+@itemize @bullet{}
+@item Compatible headers and libraries.
+
+@cindex Header files, compatibility
+@cindex Library, compatibility
+@cindex Unix compatibility
+The @sc{djgpp} header files and library functions are highly compatible
+with other popular environments.  In addition to full ANSI and Posix
+compliance, @sc{djgpp} also offers compatibility to many PC and Unix
+libraries.  For example, @sc{djgpp} provides library functions that are
+usually absent from other DOS- and Windows-based libraries, like
+@code{popen}, @code{glob}, @code{statfs}, @code{getmntent},
+@code{getpwnam}, @code{select}, and @code{ftw}.  Other functions,
+although they exist in DOS/Windows libraries, are incompatible with
+Posix in subtle ways.  For example, the ANSI-standard function
+@code{rename} typically fails in DOS/Windows implementations if the
+target file already exists (because the underlying OS call fails).
+@sc{djgpp} makes a point of sticking to Posix or Unix behavior in such
+cases, even if it means more processing (like removing the target file
+in the case of @code{rename}).
+
+A case in point is library functions @code{stat} and @code{fstat}.  Unix
+programs make extensive use of the inode number and the mode bits
+returned by these functions.  For example, GNU @code{diff} examines the
+inode numbers of the files it is about to compare, and if they are
+equal, exits immediately on the assumption that both file names point to
+the same file.  However, DOS and Windows don't support inodes, and most
+other DOS/Windows implementations return zero in the @code{st_inode}
+member of @code{struct stat}, which of course breaks @code{diff}.  Also,
+the mode bits returned by @code{fstat} are usually incorrect.  In
+contrast, the @sc{djgpp} implementation of these functions goes out of
+its way to provide compatible implementations for these functions, and
+in particular returns meaningful inode numbers, even though it takes
+quite a lot of code (for example, @code{stat} code compiled totals about
+17KB, together with other library functions it calls).
+
+Such high compatibility makes porting programs very easy.
+
+@item Long command lines.
+
+@cindex Long command lines
+@cindex Command lines, longer than 126 characters
+When DOS invokes programs, it limits the length of the command line to
+126 characters (excluding the program's name).  This is a ridiculously
+small limit; it doesn't even allow to compile GCC, since many commands
+in GCC @file{Makefile}s are much longer.
+
+Therefore, @sc{djgpp} provides a mechanism to pass long command lines to
+child programs.  The actual command is stored in the transfer buffer,
+and a pointer to that buffer is passed to the child program instead of
+the command line itself.  The startup code of the child program then
+retrieves the actual command-line arguments and puts them into the
+@code{argv[]} array passed to @code{main}.
+
+@sc{djgpp} also supports the so-called @dfn{response file} method of
+passing long command lines, whereby the command line is stored on a disk
+file, and the name of that file is passed as @samp{@@response-file}.
+For example:
+
+@example
+ ar cq libmylib.a @@files-list
+@end example
+
+@item Unix-style file-name globbing.
+
+@cindex Globbing
+@cindex Wildcards
+All Unix programs assume that any file-name wildcards on their command
+line were already expanded by the shell, to yield normal file names.
+But DOS shells don't provide this functionality, so the wildcards would
+wind up verbatim in the @code{argv[]} array.  To avoid the need to have
+special code in every ported program that expands the wildcards, the
+@sc{djgpp} startup code expands the wildcards automatically.  The
+expansion follows the Unix conventions, so @samp{*} expands to all file
+names, unlike the DOS conventions where it excludes file names with
+extensions.
+
+The globbing code supports Unix-style quoting with the @samp{'} and
+@samp{"} characters (most other DOS/Windows compilers and shells only
+support @samp{"}).  Escaping special characters with @samp{\} is limited
+to the quote characters themselves, since @samp{\} serves as a directory
+separator in DOS/Windows file names.
+
+@sc{djgpp} also provides a special extension: the @samp{...} wildcard
+expands recursively to all the subdirectories.  Thus, the following
+command would search all files in all the subdirectories, recursively:
+
+@example
+ grep foo .../*
+@end example
+
+@noindent
+(This was hard to achieve even on Unix, until the recent release of the
+GNU Grep package introduced the @samp{--recursive} option.)
+
+@item Extending the shell via the @code{system} function.
+
+@cindex @code{system} function, extended functionality
+Traditionally, the @code{system} library function calls the shell to
+process its argument.  However, stock DOS shell @file{COMMAND.COM} is
+too dumb to be useful in many cases.  For example, it doesn't support
+long command lines, even though @sc{djgpp} programs do; it doesn't
+understand forward slashes in file names; and it doesn't return the exit
+code of the child program to the parent.
+
+Therefore, the @sc{djgpp} version of @code{system} usually doesn't call
+@file{COMMAND.COM} at all.  Instead, it internally emulates its
+functionality, including redirection and pipes, and invokes the programs
+directly.  This allows to provide the following important features:
+
+@itemize @minus{}
+@item Long command lines.
+
+This is described under ``Long command lines'' above, but here it means
+that shell commands can have arbitrary length, even though the shell
+itself doesn't support that!
+
+@item Unix-style file names.
+
+File names which are targets of redirection can be given in the Unix
+@file{/foo/bar} style.  Unix devices, such as @file{/dev/null}, are also
+supported (see ``Transparent conversion of special file names'', below).
+
+@item Multiple commands in a single command line.
+
+The emulation code supports the @samp{foo ; bar} feature of several
+commands separated by a semi-colon.
+
+@item Improved emulation of internal shell commands.
+
+The emulation of the shell command @samp{cd} allows Unix-style forward
+slashes in its argument, and also changes the drive if the argument
+includes the drive letter.
+
+@item Support for Unix-style shells.
+
+If the environment variable @code{SHELL} points to a name like @file{sh}
+or @file{bash}, @code{system} invokes the shell to do everything, since
+the internal shell emulation is not sophisticated enough to cover Unix
+shell functionality.
+
+@item Direct invocation of Unix shell scripts.
+
+Shell scripts can be invoked even if the @code{SHELL} environment
+variable doesn't point to a Unix-style shell, provided that the
+interpreter whose name appears on the first script line after the
+@samp{#!} signature can be found somewhere along the @code{PATH}.
+
+@item Exit code of the child program is returned to the caller.
+@end itemize
+
+@file{COMMAND.COM} is only invoked by @code{system} to run batch files
+or commands internal to the shell.  However, @code{system} always looks
+for external programs first, so if you have e.g. a port of the GNU
+@code{echo} program installed, @code{system} will call it even though
+@file{COMMAND.COM} has an internal (and very much inferior) command by
+that name.
+
+@cindex @code{make}, support for Unix features
+These features come in especially handy in the @sc{djgpp} port of GNU
+@code{make}.  Where the original Unix code of @code{make} invokes the
+shell, the @sc{djgpp} port simply calls @code{system} to execute the
+commands in rules, and automatically gets support for long command lines
+and Unix-style shells required to run many @file{Makefile}s of Unix
+origin.
+
+The above extended functionality also means that whenever a Unix program
+calls @code{system}, in most cases the same call will work without any
+changes when compiled with @sc{djgpp}.  The result is not only ease of
+porting, but also less probability to leave subtle bugs in the ported
+program due to an overlooked fragment which assumes a Unix shell.
+
+@item Transparent conversion of special file names.
+
+@cindex Device names, Unix
+@cindex Unix device names
+All @sc{djgpp} library functions pass file names to DOS via a single
+low-level function.  This allows to remap some special file names to
+their DOS equivalents.  For example, Unix-standard device names
+@file{/dev/null} and @file{/dev/tty} are converted to their DOS
+equivalents @file{NUL} and @file{CON}, respectively.  File names which
+begin with @file{/dev/@var{x}/}, where @var{x} is a drive letter, are
+converted to the DOS @file{@var{x}:/} form; this is required for running
+some Unix shell scripts which take apart the @code{PATH} variable where
+colons separate directories.
+
+@item Filesystem extensions.
+
+@cindex Filesystem extensions facility
+This feature is built into the low-level file-oriented library
+functions.  It allows the application to install a handler for certain
+filesystem calls, like @code{open}, @code{read}, @code{fstat},
+@code{dup}, @code{close}, etc.  If installed, such a handler is called
+just before the appropriate primitive is invoked to pass the call to
+DOS.  If the handler returns a non-zero value, it is assumed to have
+handled the call, and the usual primitive call is bypassed.  Otherwise,
+the library proceeds with calling DOS as usual.
+
+@cindex Device I/O, emulation
+This facility provides an easy way of handling special files and devices
+which DOS and Windows don't support directly.  For example, a program
+can install a handler for special file names like @file{/dev/ptyp0} and
+emulate these non-existent devices via an async communications library.
+
+@cindex @code{ioctl}, emulation
+Another way of putting filesystem extensions to a good use is when
+there's a need to emulate functionality that DOS file I/O doesn't
+support, even though the associated devices do exist.  For example,
+suppose you need to port code which sends special commands to the
+terminal device via @code{termcap} functions.  DOS supports a terminal
+device, but doesn't support @code{termcap}.  However, it is possible to
+achieve the same effects if direct screen writes are used instead of
+file I/O.  By installing a filesystem extension handler for the standard
+output handle, you could redirect all terminal I/O to direct screen
+writes and implement all the necessary @code{termcap} functionality,
+without any changes to the program's source code.  This is how the
+@sc{djgpp} port of GNU @code{ls} supports the @samp{--color} option
+without forcing users to install @file{ANSI.SYS}, which is a special
+terminal driver that interprets ANSI escape sequences (and also has
+several nasty side-effects).
+
+@item Support for long file names.
+
+@cindex LFN API
+DOS system calls are limited to file names in the so-called @dfn{8+3
+format}: maximum 8 characters for the basename and maximum 3 characters
+for the extension.  Therefore, it is impossible to access the long file
+names, offered by Windows 9X and Windows NT, via the DOS system calls.
+However, Windows 9X provides a special API (a bunch of special functions
+of software interrupt 21h) that allows DOS programs to access long file
+names.  This API is widely known as the @dfn{LFN API}, where @dfn{LFN}
+is an acronym for @dfn{Long File Names}.  For each file-oriented DOS
+system call, the LFN API includes a replacement that supports long file
+names.  For example, there are functions to open files, list the files
+in a directory, create a directory, etc. using long names.  The LFN API
+also adds several functions to access extended functionality supported
+by the Windows filesystems.  For example, it is possible to get and set
+3 times for each file, like on Unix, instead of only one time supported
+by DOS.
+
+@cindex Long file name support
+The @sc{djgpp} library features transparent and automatic support for
+long file names on Windows 9X@footnote{Windows NT does not include this
+API, therefore @sc{djgpp} programs cannot access long file names on NT
+systems.  However, a beta version of a free LFN driver for NT is
+available.}.  The @sc{djgpp} startup code queries the system for the
+availability of the LFN API, and if it's available, all low-level
+file-oriented primitives are automatically switched to using the special
+LFN-aware functions.  This run-time detection of the LFN support means
+that the same executable will run on DOS and on Windows, and will
+automatically support long file names when it runs on Windows 9X.
+
+@item Emulation of links.
+
+@cindex Links, emulation
+@cindex Symlinks, emulation
+DOS doesn't support hard and symbolic links.  However, @sc{djgpp}
+emulates them to some extent.  The @code{link} library function
+simulates hard links by copying.  The @code{symlink} library function
+simulates a symbolic link for executable programs only, by creating a
+2KB stub which is set up to run the COFF image from the target of the
+link.  Thus, @samp{ln -s grep fgrep} does what you'd expect.
+
+@item Emacs compatibility.
+
+@cindex Emacs dumping, and library functions
+Emacs is special because when it dumps itself during the build process,
+static and global variables are frozen in the dumped image with the last
+value they had at the time the program was dumped.  @sc{djgpp} has a
+special facility in the library through which library functions can
+detect that the program was dumped and restarted.  All library functions
+that need static variables, use this facility to reinitialize them.
+This allows Emacs to be built with @sc{djgpp} without the need to
+analyze whether each library function called by Emacs is dump-safe.
+
+@item Special-purpose utilities.
+
+@cindex @sc{djgpp} utilities
+@cindex utilities, @sc{djgpp}-specific
+In addition to relying on GNU development tool-chain, @sc{djgpp}
+introduces several utilities written specifically for the project.
+These utilities are meant to assist the developer in solving specific
+tasks common for the @sc{djgpp} environment.  Some of these utilities
+are listed below:
+
+@itemize @minus{}
+@item @b{djtar}
+
+@cindex Unpacking compressed archives
+@code{djtar} is a program that unpacks archives (but cannot create
+them).  It was originally written to unpack files created by @code{tar},
+because DOS and Windows lack standard programs for that.  Since the
+original release, @code{djtar} functionality was significantly extended,
+and now it can unpack @file{.tar.gz} and @file{.zip} files as well.  It
+also can unpack archives from floppy disks written as raw
+@code{/dev/rfd0a} devices on Unix systems, and it uncompresses and
+untars @code{.tar.gz} files on the fly, by feeding the untar code with
+output of the unzip code.  The latter feature is very important when
+unpacking large distributions, such as @file{emacs-XX.YY.tar.gz},
+because pipes are implemented as temporary disk files on DOS/Windows,
+and so on-the-fly decompression avoids creating huge temporary disk
+files.
+
+The ability to unzip @file{.zip} archives makes @code{djtar} the only
+free program which does that, since it turns out that InfoZip's
+@code{UnZip} license does not comply with FSF's definition of free
+software (according to Richard Stallman).
+
+In addition, @code{djtar} offers several features designed to prevent
+problems due to DOS/Windows file-name restrictions, see ``DOS file names
+handling'', below.
+
+@item @b{djsplit} and @b{djmerge}
+
+@cindex Splitting large files
+These two programs come in handy when you need to carry a large file
+(usually, a compressed archive of a large distribution) on floppies.
+@code{djsplit} splits a file into smaller chunks whose size is
+user-defined, and @code{djmerge} splices the chunks back together.
+
+@item @b{dtou} and @b{utod}
+
+@cindex Converting text files
+These programs are close cousins of @code{dos2unix} and @code{unix2dos},
+respectively, but they have several clever tricks up their sleeves.
+First, they take file names from the command-line arguments and rewrite
+each file, instead of reading @code{stdin} and writing @code{stdout};
+thus, they can convert many files in a single run.  And second, they
+preserve the time stamps of the converted files, to keep utilities like
+@code{make} happy.  With these programs, you can convert the entire
+directory tree of C source files to the DOS CR-LF format with a single
+command:
+
+@example
+ utod .../*.[ch]
+@end example
+
+@noindent
+This uses the @sc{djgpp} wildcard expansion and the special @file{...}
+wildcard mentioned above.
+
+@item @b{update}
+
+@cindex Updating files
+This is a replacement for the well-known @file{move-if-changed} shell
+script.  It is very handy in @file{Makefile}s which should run on
+systems that don't have Bash installed.  Since it understands Unix-style
+forward slashes (like all @sc{djgpp} programs do), it is also widely
+used in @file{Makefile}s for copying files, instead of the shell's
+internal @code{COPY} command, since @code{make} doesn't live well with
+backslashes in file names.
+
+@item @b{redir}
+
+@cindex Redirecting stderr
+@cindex Exit status reporting
+@cindex Timing programs
+As its name implies, @code{redir} redirects standard handles.  It was
+originally written to allow redirection of @code{stderr}, which stock
+DOS shell @file{COMMAND.COM} cannot do.  You need this redirection,
+e.g., when GCC spits out a long list of error messages which scroll off
+the screen.  @code{redir} can also append redirected handled (a-la
+@samp{>>}) and redirect @code{stderr} to the same place as @code{stdout}
+or vice versa, like what @samp{>&} does in Unix shells.
+
+In addition, @code{redir} reports the exit status of the program it
+runs, and print the elapsed time used by the child.  These features are
+provided because, unlike on Unix, there are no standard utilities to do
+that.
+
+@item @b{symify}
+
+@cindex Core dumps
+@cindex Debugging, post-mortem
+@cindex Post-mortem debugging
+@sc{djgpp} debugging support doesn't include Unix-style core files which
+allow post-mortem debugging of a crashed program.  To compensate for
+this deficiency, when a program crashes, a special library module prints
+the values stored in the CPU registers and the traceback of the function
+calls that led to the crash, as stored in the call frames pushed onto
+the stack.
+
+However, the stack traceback, as printed, is hard to interpret, because
+it only includes numeric addresses of the functions.  The @code{symify}
+program solves this problem.  It reads the traceback directly from the
+video memory, and uses the debug info recorded in the program's
+executable file to convert the addresses into file names and line
+numbers of the source files.  It then adds the file names and line
+numbers information near the corresponding addresses, thus making the
+traceback easy to comprehend.
+@end itemize
+
+@item @sc{djgpp}-specific extensions to GNU utilities.
+
+Besides the library functions and @sc{djgpp}-specific programs, a lot of
+special code went into the utilities ported to @sc{djgpp}, so that these
+utilities could work together smoothly and have the effect a user would
+expect.  Some of these extensions are listed below:
+
+@itemize @minus{}
+@item Bash supports Unix-style @code{PATH} format.
+Unix uses @samp{:} to separate directory names in the value of
+environment variables such as @code{PATH}.  Many shell scripts rely on
+this feature to look for programs along the @code{PATH}.  For example,
+the GNU-standard @file{configure} scripts do that to find @code{gcc},
+@code{ranlib} and other programs, as part of the auto-configuration
+process.
+
+However, DOS and Windows use @samp{;} to separate directories in
+@code{PATH} (because absolute file names include a drive letter, like in
+@file{d:/foo/bar}).  This breaks shell scripts which search along the
+@code{PATH}.
+
+@cindex @code{PATH} separator, Unix-style
+To allow these scripts to run without changes, the @sc{djgpp} port of
+Bash introduces a special variable @code{PATH_SEPARATOR}.  If this
+variable is set to @samp{:}, Bash converts the value of @code{PATH} to
+pseudo-Unix form.  For example, if the original value of @code{PATH} is
+like this:
+
+@example
+ PATH=c:\djgpp\bin;d:\gnu\emacs\bin
+@end example
+
+@noindent
+then setting @samp{PATH_SEPARATOR=:} converts it to this:
+
+@example
+ PATH=/dev/c/djgpp/bin:/dev/d/gnu/emacs/bin
+@end example
+
+This lets Unix shell scripts run unaltered.  However, to prevent the
+external commands from breaking (because they don't know anything about
+@code{PATH_SEPARATOR}), Bash converts the value of @code{PATH} back to
+its usual DOS style in the environment it passes to child programs.
+
+The @sc{djgpp} library supports the special @file{/dev/x/} file names by
+converting them to the usual DOS @file{x:/} format, before it issues DOS
+calls, so all @sc{djgpp}-compiled utilities can be safely run by a
+script when @code{PATH_SEPARATOR} is set to @samp{:}.
+
+@item @samp{test -x foo} looks for @file{foo.exe}, @file{foo.com},
+@file{foo.bat}, etc.  This is important e.g. in GNU @file{configure}
+scripts which look for programs along the @code{PATH}.
+
+@item @samp{install foo /bin/foo} actually installs @file{foo.exe} in
+the target directory.  Similarly, @samp{gcc -o foo} creates both
+@file{foo} and @file{foo.exe}; the first causes @code{make} to be happy
+when Unix @file{Makefile} is in use (since the target names are usually
+extension-less on Unix), while the second can be run from the DOS
+command prompt, since stock DOS shell refuses to run a program without
+one of the executable extensions (@file{.exe}, @file{.com} or
+@file{.bat}) it knows about.  Both of these features are intended for
+using Unix @file{Makefile}s without changes.
+
+@item Shell specifications such as @file{/bin/sh} cause the shell to be
+looked for along the @code{PATH} as well, so that users won't need to
+have a @file{/bin} directory.
+
+@item Programs which should pipe text to @code{lpr}, write to the local
+printer device instead, if @code{lpr} could not be located.  Emacs and
+@code{dvips} are two examples of programs that offer this feature.
+
+@item DOS file names handling: programs which unpack file archives
+rename files whose names are invalid on DOS/Windows.  The @sc{djgpp}
+ports of GNU @code{tar} and @code{cpio} programs, and the @code{djtar}
+utility supplied with the @sc{djgpp} development kit are examples of
+such programs.  They replace characters which aren't allowed in file
+names, like @samp{+} on MS-DOS or @samp{"} on MS-Windows, and rename
+files whose names are reserved on DOS/Windows by character devices (and
+therefore writing to them could have unexpected results).
+
+Another potential problems in unpacking file archives is that several
+different file names can map to the same name after truncation to the
+DOS 8+3 limits or as result of the automatic renaming I just described.
+For this reason, @code{djtar} refuses to overwrite existing files, and
+requires the user to type in another name under which the file will be
+extracted.  If the user presses @key{RET}, the file is skipped.
+
+This interactive, one-by-one renaming might be tedious and error-prone,
+when there's a lot of files to rename.  A case in point is the test
+suite in the GNU Textutils distribution with a lot of names like
+@file{n+4b2l10f-0FF}, @file{njml17f-lmlmlo}, etc.  For these cases,
+@code{djtar} has a command-line option which can be used to submit a
+file with a mapping between original and DOS names; @code{djtar} will
+automatically rename every file mentioned there and will leave all other
+file names intact.  An example of putting this feature to use can be
+seen in the latest versions of Textutils (look for the file
+@file{djgpp/fnchange.lst} and the instructions to use it in
+@file{djgpp/README}).
+@end itemize
+@end itemize
+
+The features mentioned above are mostly small niceties.  But can you
+imagine the amount of hacking needed to get Unix Makefiles and shell
+scripts to work on DOS and Windows machines, if these tidbits didn't
+exist?

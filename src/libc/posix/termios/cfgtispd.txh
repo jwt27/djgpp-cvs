@@ -10,8 +10,11 @@ speed_t cfgetispeed (const struct termios *termiosp);
 @subheading Description
 
 This function gets the input line speed stored in the structure
-@var{termiosp}.  It is provided for compatibility only.  Note that the
-termios emulation handles console only.
+@var{termiosp}.  @xref{Termios functions}, for more details about this
+structure and the baudrate values it supports.
+
+Note that the termios emulation handles console only, and that the input
+baudrate value is ignored by this implementation.
 
 @subheading Return Value
 

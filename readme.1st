@@ -144,14 +144,41 @@ Installation
 3. After unzipping all the zip files, set the DJGPP environment
    variable to point to the file DJGPP.ENV in the main DJGPP
    installation directory and add its BIN subdirectory to your PATH.
-   Assuming your DJGPP installation is rooted at C:\DJGPP, put these
-   two lines into your autoexec.bat file:
+
+   The exact way how these variables should be set depends on your
+   operating system:
+
+   * For Windows 98 systems:
+
+     - Click START;
+     - Choose Programs->Accessories->System Tools->System Information;
+     - Click Tools in the menu-bar, then choose "System Confuguration";
+     - Use the tab provided there for editing your AUTOEXEC.BAT as
+       explained below.
+
+   * For Windows NT systems:
+
+     - Right-click "My Computer", then select "Properties";
+     - Click the "Environment" tab;
+     - Edit the PATH system variable to add the top DJGPP directory;
+     - Add a new variable DJGPP and set its value to the full path
+       name of the DJGPP.ENV file as explained below.
+
+   * For all other systems (DOS, Windows 3.X and Windows 95): use any
+     text editor, e.g. the standard EDIT, to edit the file
+     AUTOEXEC.BAT in the root directory of the boot drive (usually,
+     C:).
+
+   No matter which method you use, assuming your DJGPP installation is
+   rooted at C:\DJGPP, the values of the two environment variables
+   DJGPP and PATH should be set like this:
 
 	set DJGPP=C:\DJGPP\DJGPP.ENV
 	set PATH=C:\DJGPP\BIN;%PATH%
 
 4. Reboot.  This makes sure the two lines you added to autoexec.bat
-   will take effect.
+   will take effect.  (On Windows NT, the changes take effect
+   immediately, so you you don't need to reboot there.)
 
 5. Run the go32-v2.exe program without arguments:
 

@@ -4,18 +4,76 @@
 @example
 #include <io.h>
 
-short _get_dev_info(int arg);
+short _get_dev_info(int handle);
 @end example
 
 @subheading Description
 
-Given drive_number (A: = 0, B: = 1, etc.) or a file handle in @var{arg},
-this function returns the device info word which is returned by DOS IOCTL
-function 0 (Int 21h/AX=4400h).  In case of error, -1 is returned and
-@var{errno} is set.
+Given a file handle in @var{handle}, this function returns the info word
+from DOS IOCTL function 0 (Int 21h/AX=4400h).  @var{handle} must refer
+to an open file or device, otherwise the call will fail (and set
+@var{errno} to @code{EBADF}).
 
+In case of success, the returned value is the coded information from the
+system about the character device or the file which is referenced by the
+file handle @var{handle}.  The following table shows the meaning of the
+individual bits in the return value:
+
+For a character device:
+
+@multitable {Bit(s)} {Device can process IOCTL functions 02h and 03h}
+@item Bit(s) @tab Description
+@item 14 @tab Device can process IOCTL functions 02h and 03h
+@item 13 @tab Device supports output-until-busy
+@item 11 @tab Device supports OPEN/CLOSE calls
+@item 8  @tab Unknown; set by MS-DOS 6.2x @file{KEYB@var{xx}.COM}
+@item 7  @tab Always set for character devices
+@item 6  @tab End of file on input
+@item 5  @tab Device is in @strong{raw} (binary) mode
+@item 4  @tab Device uses Int 29h
+@item 3  @tab Clock device
+@item 2  @tab NUL device
+@item 1  @tab Standard output device
+@item 0  @tab Standard input device
+@end multitable
+
+For a block device (a disk file):
+
+@multitable {Bit(s)} {Generate Int 24h if full disk or read past EOF}
+@item Bit(s) @tab Description
+@item 15 @tab Device is remote (networked drive)
+@item 14 @tab Don't set file time stamp on close
+@item 11 @tab If set, non-removable media
+@item 11 @tab If clear, media is removable (e.g. floppy disk)
+@item 8  @tab Generate Int 24h if full disk or read past EOF
+@item 7  @tab Always clear for disk files
+@item 6  @tab File has not been written to
+@item 5-0 @tab Drive number (0 = A:)
+@end multitable
+
+Note that the functionality indicated by bit 8 for the block devices is
+only supported by DOS version 4.
+
+@dfn{Cooked} mode means that on input @kbd{C-@key{C}}, @kbd{C-@key{P}},
+@kbd{C-@key{S}} and @kbd{C-@key{Z}} are processed, on output @samp{TAB}s
+are expanded into spaces and @samp{CR} character is added before each
+@samp{LF}, and input is terminated when the @key{RET} key is pressed.
+In contrast, in @dfn{raw} mode, all the special characters are passed
+verbatim, and the read operation waits until the specified number of
+characters has been read.
+
+@subheading Return Value
+
+The device information word described above.  In case of error, -1 is
+returned and @var{errno} is set to @code{EBADF}.
 
 @subheading Portability
 
 @portability !ansi, !posix
 
+@subheading Example
+
+@example
+ int fd = open ("CLOCK$", O_RDONLY | O_BINARY);
+ int clock_info = _get_dev_info (fd);
+@end example

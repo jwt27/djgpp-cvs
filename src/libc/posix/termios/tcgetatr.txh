@@ -9,9 +9,12 @@ int tcgetattr (int fd, struct termios *termiosp);
 
 @subheading Description
 
-This function gets termios structure from device @var{fd} and stores
-it in the structure @var{termiosp}.  Note that the termios emulation
-handles console only.
+This function gets the parameters associated with the file/device
+referred to by the handle @var{fd} and stores them in the termios
+structure @var{termiosp}.  @xref{Termios functions}, for the full
+description of @code{struct termios} and its members.
+
+Note that the termios emulation handles console only.
 
 @subheading Return Value
 
