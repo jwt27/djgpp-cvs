@@ -96,6 +96,32 @@ correctly:
 @end itemize
 
 @item
+Under the subheading @samp{Portability}, @samp{@@portability} should be
+used to indicate whether a feature is specified in the ANSI C and POSIX
+standards.  For example:
+
+@example
+@@subheading Portability
+
+@@portability !ansi, posix
+@end example
+
+Please note that @samp{@@portability} is not used to indicate whether
+the DJGPP implementation complies with the standards listed.  Instead,
+@samp{@@port-note} may be used to describe implementation-specific details:
+
+@example
+@@port-note ansi The buffer size limit is imposed by DJGPP.
+@end example
+
+@samp{@@portability} and @samp{@@port-note} are DJGPP-specific extensions
+of texinfo (@pxref{Top, , texinfo, texinfo}) that are expanded into normal
+texinfo by @code{mkdoc}.  @code{mkdoc} is part of the DJGPP sources.  It is
+used to build the C library documentation (@pxref{Top, , libc, libc}).
+Therefore, @samp{@@portability} and @samp{@@port-note} should only be used
+in DJGPP's C library documentation.
+
+@item
 Finally, for some relevant texinfo technique, look at the source
 of this page in the DJGPP sources---@file{src/docs/kb/contrib.txi}.
 @end itemize
