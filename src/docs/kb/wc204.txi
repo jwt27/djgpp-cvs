@@ -478,3 +478,13 @@ system-dependent configuration in strings.
 @cindex @file{djgpp.env}, @code{ls} color settings for symlinks added
 Colors for symlinks were added to the @samp{LS_COLORS} environment variable
 in @file{djgpp.env}.
+
+@pindex djasm@r{, double-precision shift reinstated}
+
+Double-precision shift instructions reinstated in @code{djasm},
+using a simplified form of the implementation suggested by
+@email{bill@@taniwha.org, Bill Currie}.  The new mnemonics are
+@code{dshl} and @code{dshr}, and no memory operand-size suffix
+is required.  Obsolete usage of @code{shld} and @code{shrd}
+for double-precision shifts is flagged.
+
