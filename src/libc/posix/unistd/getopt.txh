@@ -1,0 +1,56 @@
+@node getopt, misc
+@subheading Syntax
+
+@example
+int getopt(int argc, char * const *argv, const char *options);
+extern char *optarg;
+extern int optind, opterr;
+extern char optopt;
+@end example
+
+@subheading Description
+
+Parse options from the command line.  The @var{options} are a string of
+valid option characters.  If a given option takes a parameter, that
+character should be followed by a colon.
+
+For each valid switch, this function sets @code{optarg} to the argument
+(if the switch takes one), sets @code{optind} to the index in @var{argv}
+that it is using, sets @code{optopt} to the option letter found, and
+returns the option letter found.
+
+If an unexpected option is found, @code{getopt} will return @code{?},
+and if @code{opterr} is nonzero, will print an error message to stderr. 
+
+The special option @code{--} indicates that no more options follow on
+the command line, and cause @code{getopt} to stop looking. 
+
+@subheading Return Value
+
+The option found, or -1 if no more options.
+
+@subheading Example
+
+@example
+int c;
+opterr = 0;
+while ((c=getopt(argc, argv, "vbf:")) != -1)
+@{
+  switch (c)
+  @{
+    case 'v':
+      verbose_flag ++;
+      break;
+    case 'b':
+      binary_flag ++;
+      break;
+    case 'f':
+      output_filename = optarg;
+      break;
+    case '?':
+      printf("Unknown option %c\n", c);
+      usage();
+      exit(1);
+  @}
+@}
+@end example

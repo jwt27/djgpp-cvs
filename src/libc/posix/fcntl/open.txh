@@ -54,6 +54,14 @@ specified by the @code{_fmode} variable @ref{_fmode}.
 
 The file is opened in binary mode.
 
+When called to open the console in binary mode, @code{open} will disable
+the generation of @code{SIGINT} when you press @kbd{Ctrl-C}
+(@kbd{Ctrl-Break} will still cause @code{SIGINT}), because many programs
+that use binary reads from the console will also want to get the
+@samp{^C} characters.  You can use the @code{__djgpp_set_ctrl_c} library
+function (@pxref{__djgpp_set_ctrl_c}) if you want @kbd{Ctrl-C} to
+generate interrupts while console is read in binary mode.
+
 @end table
 
 If the file is created by this call, it will be given the read/write

@@ -15,6 +15,15 @@ is either @code{O_TEXT} or @code{O_BINARY}.  It will also set the file
 into either cooked or raw mode accordingly, and set any @code{FILE*}
 objects that use this file into text or binary mode. 
 
+When called to put @var{file} that refers to the console into binary
+mode, @code{setmode} will disable the generation of @code{SIGINT} when
+you press @kbd{Ctrl-C} (@kbd{Ctrl-Break} will still cause
+@code{SIGINT}), because many programs that use binary reads from the
+console will also want to get the @samp{^C} characters.  You can use the
+@code{__djgpp_set_ctrl_c} library function (@pxref{__djgpp_set_ctrl_c})
+if you want @kbd{Ctrl-C} to generate interrupts while console is read in
+binary mode.
+
 Note that, for buffered streams (@code{FILE*}), you must call
 @code{fflush} (@pxref{fflush}) before @code{setmode}, or call
 @code{setmode} before writing anything to the file, for proper

@@ -37,6 +37,14 @@ Followed by any of these characters:
 
 Force the file to be open in binary mode instead of the default mode.
 
+When called to open the console in binary mode, @code{fopen} will
+disable the generation of @code{SIGINT} when you press @kbd{Ctrl-C}
+(@kbd{Ctrl-Break} will still cause @code{SIGINT}), because many programs
+that use binary reads from the console will also want to get the
+@samp{^C} characters.  You can use the @code{__djgpp_set_ctrl_c} library
+function (@pxref{__djgpp_set_ctrl_c}) if you want @kbd{Ctrl-C} to
+generate interrupts while console is read in binary mode.
+
 @item t
 
 Force the file to be open in text mode instead of the default mode.
