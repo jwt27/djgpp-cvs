@@ -246,25 +246,24 @@ Allow one to allocate space in @code{djasm} using @code{.union}
 (instead of @code{.struct}) when using a union.  As there is no
 checking, @code{.struct} and @code{.union} are interchangeable.
 
-
-@findex fcntl
 The @code{fcntl} function has been significantly enhanced.  In
 particular:
 
 @itemize @minus{}
 @item
 @cindex file locking functions
+@findex fcntl@r{, added file locking}
 File locking functions (which were missing in every version up to
 v2.03) now work, with some exceptions relating to the absence of any
-read locking in DOS/Win9x environments.
+read locking in DOS/Windows 9X environments.
 
 @item
-@findex fcntl@r{ commands }F_GETFD@r{ and }F_SETFD
+@findex fcntl@r{ commands @code{F_GETFD} and @code{F_SETFD}}
 These functions now interrogate and use the value of the DOS flag
 @code{_DEV_NO_INHERIT} to implement the @code{FD_CLOEXEC} flag;
 
 @item
-@findex fcntl@r{ commands }F_GETFL@r{ and }F_SETFL
+@findex fcntl@r{ commands @code{F_GETFL} and @code{F_SETFL}}
 These functions are still effective no-ops, since DOS/Windows does not
 allow flags to be modified on an open file.  A small exception is made
 for @code{F_SETFL}:  You may use @code{F_SETFL} to remove the
@@ -274,6 +273,7 @@ it does no harm to allow this functionality.
 @item
 Documentation has been updated to reflect the new functionality and
 test programs have been provided for most new or changed functions.
+@end itemize
 
 @findex flock
 @findex lockf
@@ -300,5 +300,4 @@ want to print messages when errors occur.
 New functions @code{_dos_lk64} and @code{_dos_unlk64} have been added to
 provide a FAT32-compatible interface to the DOS locking code.
 Compatible functions @code{lock64} and @code{unlock64} are direct
-interfaces to these two new "_dos" functions.
-@end itemize
+interfaces to these two new @code{_dos_*} functions.
