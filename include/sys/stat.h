@@ -79,6 +79,7 @@ mode_t	umask(mode_t _cmask);
 void	        _fixpath(const char *, char *);
 unsigned short  _get_magic(const char *, int);
 int             _is_executable(const char *, int, const char *);
+int             lstat(const char * _path, struct stat * _buf);
 int		mknod(const char *_path, mode_t _mode, dev_t _dev);
 char          * _truename(const char *, char *);
 
