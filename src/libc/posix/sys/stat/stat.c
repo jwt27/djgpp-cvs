@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdio.h>
+#include <libc/symlink.h>
 
 #ifdef TEST
 #include "xstat.h"
@@ -20,7 +21,12 @@
 int
 stat(const char *path, struct stat *statbuf)
 {
-   return lstat(path, statbuf);
+   char name_copy[FILENAME_MAX];
+   
+   if (!__solve_symlinks(path, name_copy))
+      return -1;
+   
+   return lstat(name_copy, statbuf); /* Real file */
 }
 
 #ifdef  TEST
