@@ -4,14 +4,19 @@
 @example
 #include <fcntl.h>
 
-int fcntl(int fd, int cmd, ...);
+int fcntl (int fd, int cmd, ...);
 @end example
 
 @subheading Description
 
-This function   currently only  supports @var{cmd}  of @code{F_DUPFD},
-which acts like @code{dup(fd)} (@pxref{dup}).
+This function performs the operation specified by @var{cmd} on
+@var{fd}.  Note that it only supports @code{F_DUPFD} which acts like
+@code{dup(fd)} (@pxref{dup}) but searches empty descriptor from
+additional argument.
 
 @subheading Return Value
 
-Varies.
+If invalid @var{cmd} or @var{fd} was passed, it returns -1.
+In case F_DUPFD, it returns new descriptor or -1 for error.
+
+
