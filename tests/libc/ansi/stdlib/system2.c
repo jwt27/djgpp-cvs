@@ -8,8 +8,8 @@ main (int argc, char **argv)
 
   if (argc <= 1)
     {
-      /* Assuming we have an echo.exe: */
-      res = system ("echo
+      /* Assuming we have a djecho.exe: */
+      res = system ("djecho
 		William Safire's Rules for Writers:
 
 Remember to never split an infinitive. The passive voice should never be used.
