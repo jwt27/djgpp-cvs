@@ -4,15 +4,11 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
-#include <libc/symlink.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <go32.h>
 #include <dpmi.h>
-#include <stdio.h>
-#include <limits.h>
 #include <libc/dosio.h>
 #include <libc/farptrgs.h>
 
@@ -21,26 +17,20 @@ __chdir (const char *mydirname)
 {
   __dpmi_regs r;
   int drv_no = -1;
-  char real_name[FILENAME_MAX];
-  char path[FILENAME_MAX];
 
-  if (!__solve_symlinks(mydirname, real_name))
-     return -1;
-  _fixpath(real_name, path);
-
-  if (path == 0)
+  if (mydirname == 0)
   {
     errno = EINVAL;
     return -1;
   }
 
-  if (path[0] == 0)
+  if (mydirname[0] == 0)
   {
     errno = ENOENT;
     return -1;
   }
 
-  _put_path(path);
+  _put_path(mydirname);
 
   /* _put_path performs some magic conversions of file names, so
      the path in the transfer buffer can include a drive even though
