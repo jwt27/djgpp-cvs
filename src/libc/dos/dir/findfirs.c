@@ -1,8 +1,10 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <dir.h>
@@ -13,6 +15,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
 {
   __dpmi_regs r;
   int pathlen;
+  int use_lfn = _USE_LFN;
 
   if (pathname == 0 || ffblk == 0)
   {
@@ -23,7 +26,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
   pathlen = strlen(pathname) + 1;
 
   _put_path(pathname);
-  if(_USE_LFN) {
+  if(use_lfn) {
 
     /* si = 1 indicates DOS style dates, 0 means Win32 type dates.
        DOS style dates are broken in some Win95 betas, build for either.

@@ -8,7 +8,7 @@
  * is closely modeled on ftw(), but uses DOS directory search
  * functions and structures instead of opendir()/readdir()/stat().
  *
- * Copyright (c) 1995 Eli Zaretskii <eliz@is.elta.co.il>
+ * Copyright (c) 1995, 1996 Eli Zaretskii <eliz@is.elta.co.il>
  *
  * This software may be used freely as long as this copyright notice is
  * left intact.  There is no warranty on this software.
@@ -83,7 +83,6 @@ __file_tree_walk(const char *dir,
   do
     {
       int func_result;
-      unsigned char *p = dir_end;
 
       /* Skip `.' and `..' entries.  */
       if (ff.ff_name[0] == '.' &&
@@ -92,11 +91,6 @@ __file_tree_walk(const char *dir,
 
       /* Construct full pathname in FOUND[].  */
       strcpy(dir_end, ff.ff_name);
-
-      /* Convert name of found file to lower-case.  Cannot use
-         strlwr() because it's non-ANSI.  Sigh... */
-      while (*p)
-        *p++ = tolower(*p);
 
       /* Invoke FUNC() on this file.  */
       if ((func_result = (*func)(found, &ff)) != 0)

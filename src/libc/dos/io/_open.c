@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <string.h>
@@ -14,6 +15,7 @@ _open(const char* filename, int oflag)
 {
   __dpmi_regs r;
   int rv;
+  int use_lfn = _USE_LFN;
 
   if (filename == 0)
   {
@@ -25,9 +27,9 @@ _open(const char* filename, int oflag)
     return rv;
 
   _put_path(filename);
-  if(_USE_LFN) {
+  if(use_lfn) {
     r.x.ax = 0x716c;
-    r.x.bx = oflag;
+    r.x.bx = oflag & 0xff;
     r.x.dx = 1;			/* Open existing file */
     r.x.si = __tb_offset;
   } else {

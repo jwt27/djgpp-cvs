@@ -2,6 +2,7 @@
 #include <libc/stubs.h>
 #include <errno.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/dosio.h>

@@ -2,13 +2,14 @@
 #include <libc/stubs.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <go32.h>
 #include <ctype.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
 
 int
-chdir (const char *dirname)
+__chdir (const char *dirname)
 {
   __dpmi_regs r;
 

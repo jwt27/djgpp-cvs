@@ -5,16 +5,18 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <libc/dosio.h>
  
 int
 mkdir(const char *dirname, mode_t mode)
 {
   __dpmi_regs r;
+  int use_lfn = _USE_LFN;
 
   _put_path(dirname);
  
-  if(_USE_LFN)
+  if(use_lfn)
     r.x.ax = 0x7139;
   else
     r.h.ah = 0x39;

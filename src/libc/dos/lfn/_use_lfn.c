@@ -1,52 +1,193 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <dos.h>
 #include <dpmi.h>
 #include <go32.h>
 #include <crt0.h>
-#include <libc/dosio.h>
+#include <sys/movedata.h>
 #include <libc/bss.h>
+#include <libc/environ.h>
+#include <libc/farptrgs.h>
 
-static int use_lfn_bss_count = -1;
-static char use_lfn = 2;	/* 0 = no, 1 = yes, 2 = find out */
+static int      use_lfn_bss_count = -1;	/* if we are restarted (emacs) */
+static unsigned filesystem_flags  = _FILESYS_UNKNOWN;
+static unsigned last_env_changed = 0;
+static int	last_drive; /* drive *letter*, not *number*! */
 
-char _use_lfn(void)
+/* Return the parameters of the filesystem where PATH resides.  */
+unsigned
+_get_volume_info (const char *path, int *maxfile, int *maxpath, char *fsystype)
 {
-  if (use_lfn_bss_count != __bss_count)
+  __dpmi_regs r;
+  unsigned long tbuf_la  = __tb & 0xfffff;
+  unsigned long tbuf_seg = tbuf_la >> 4;
+  unsigned	retval;
+
+  if (path && *path)
   {
-    __dpmi_regs r;
+    if (path[1] == ':')
+    {
+      dosmemput (path, 3, tbuf_la);
+      tbuf_la += 3;
+      if (path[2] != '\\')
+	_farpokeb(_dos_ds, tbuf_la - 1, '\\');
+      _farpokeb(_dos_ds, tbuf_la++, '\0');
+    }
+    else if (*path == '\\' && path[1] == '\\')
+    {
+      int plen = strlen (path) + 1;
+
+      /* FIXME: what should we do with the UNC pathnames like
+	 "\\machine\vol\path"?  We need to know either their
+	 DOS drive letter or where does the root directory path
+	 ends.  For now, we assume the entire path is the root path.  */
+      dosmemput (path, plen, tbuf_la);
+      tbuf_la += plen + 1;
+    }
+  }
+
+  /* No explicit drive, use default drive.  */
+  if (tbuf_la == __tb)
+  {
+    unsigned drv_no;
+
+    /* FIXME: can `_dos_getdrive' fail (e.g. no floppy in drive)?  */
+    _dos_getdrive(&drv_no);
+    _farpokeb(_dos_ds, tbuf_la++, 'A' + drv_no - 1);
+    _farpokeb(_dos_ds, tbuf_la++, ':');
+    _farpokeb(_dos_ds, tbuf_la++, '\\');
+    _farpokeb(_dos_ds, tbuf_la++, '\0');
+  }
+
+  r.x.ax = 0x71a0;	/* Get Volume Information function */
+  r.x.ds = tbuf_seg;	/* DS:DX points to root directory name */
+  r.x.dx = 0;
+  r.x.es = tbuf_seg;	/* ES:DI points to a buffer for filesys name */
+  r.x.di = (tbuf_la - __tb) & 0xffff;
+  r.x.cx = 32;		/* max size of filesystem name (Interrupt List) */
+  __dpmi_int(0x21, &r);
+
+  if ((r.x.flags & 1) == 0 && r.x.ax != 0x7100)
+  {
+    char *p = fsystype, c;
+
+    retval   = r.x.bx;
+    if (maxfile)
+      *maxfile = r.x.cx;
+    if (maxpath)
+      *maxpath = r.x.dx;
+
+    if (fsystype)
+    {
+      /* Only copy as much as required, in case the
+	 buffer isn't large enough for 32 bytes.  */
+      _farsetsel (_dos_ds);
+      while ((c = _farnspeekb (tbuf_la++)))
+	*p++ = c;
+      *p = '\0';
+    }
+  }
+  else
+  {
+    errno = ENOSYS;
+    retval = 0;	/* meaning none of the features supported */
+    if (maxfile)
+      *maxfile = 13;
+    if (maxpath)
+      *maxpath = 80;
+    if (fsystype)
+      *fsystype = '\0';
+  }
+
+  return retval;
+}
+
+char
+_use_lfn (const char *path)
+{
+  int same_drive_as_last_time;
+
+  if (_crt0_startup_flags & _CRT0_FLAG_NO_LFN)
+  {
+    /* Don't update the static counters, so the first time
+       after NO_LFN flag is reset, the environment and the
+       filesystem will be queried.  */
+    return 0;
+  }
+
+  same_drive_as_last_time = 1;
+  if (path)
+  {
+    /* FIXME: a UNC PATH will always force a call to `_get_volume_info'.  */
+    if ((path[1] == ':' && toupper (*path) != last_drive)
+	|| (*path == '\\' && path[1] == '\\'))
+      same_drive_as_last_time = 0;
+    else
+    {
+      unsigned drv_no;
+
+      _dos_getdrive(&drv_no);
+      if (drv_no - 1 + 'A' != last_drive)
+	same_drive_as_last_time = 0;
+    }
+  }
+
+  if (same_drive_as_last_time
+      && last_env_changed  == __environ_changed
+      && use_lfn_bss_count == __bss_count
+      && filesystem_flags  != _FILESYS_UNKNOWN)	/* paranoia */
+    return (filesystem_flags & _FILESYS_LFN_SUPPORTED) != 0;
+  else
+  {
     char *lfnenv;
 
     use_lfn_bss_count = __bss_count;
+    last_env_changed  = __environ_changed;
 
-    if(_crt0_startup_flags & _CRT0_FLAG_NO_LFN) {
-      use_lfn = 0;
+    lfnenv = getenv ("LFN");
+    if(lfnenv && (tolower (lfnenv[0]) == 'n'))
+    {
+      filesystem_flags &= ~_FILESYS_LFN_SUPPORTED;
+      last_drive = 0;
       return 0;
     }
-
-    lfnenv = getenv("LFN");
-    if(lfnenv && (tolower(lfnenv[0]) == 'n'))
-    {
-      _crt0_startup_flags |= _CRT0_FLAG_NO_LFN;
-      use_lfn = 0;
-      return 0;
-    }
-     
-    r.x.ax = 0x7147;
-    r.x.dx = 0;						/* Current drive */
-    r.x.si = __tb_offset + _go32_info_block.size_of_transfer_buffer - FILENAME_MAX;	/* end */
-    r.x.ds = __tb_segment;
-    r.x.ss = r.x.sp = 0;
-    r.x.flags = 1;		/* Set the carry */
-    __dpmi_simulate_real_mode_interrupt(0x21, &r);
-    if(r.x.ax == 0x7100 || r.x.flags & 1)
-    {
-      _crt0_startup_flags |= _CRT0_FLAG_NO_LFN;
-      use_lfn = 0;
-    } else
-      use_lfn = 1;
   }
-  return use_lfn;
+
+  if (!same_drive_as_last_time || filesystem_flags == _FILESYS_UNKNOWN)
+    filesystem_flags = _get_volume_info (path, 0, 0, 0);
+
+  return (filesystem_flags & _FILESYS_LFN_SUPPORTED) != 0;
 }
+
+#ifdef TEST
+
+int main (int argc, char *argv[])
+{
+  char *path = ".";
+  unsigned flags;
+  char fsname[32];
+  int  maxfile, maxpath;
+
+  printf ("_USE_LFN reports %d at startup\n", _USE_LFN);
+  if (argc > 1)
+    path = argv[1];
+  flags = _get_volume_info (path, &maxfile, &maxpath, fsname);
+  printf ("Flags: %x, MaxFile: %d, MaxPath: %d, FSName: %s\n",
+	  flags, maxfile, maxpath, fsname);
+  _crt0_startup_flags |= _CRT0_FLAG_NO_LFN;
+  printf ("_USE_LFN reports %d when _CRT0_FLAG_NO_LFN is set\n", _USE_LFN);
+  _crt0_startup_flags &= ~_CRT0_FLAG_NO_LFN;
+  putenv ("LFN=y");
+  printf ("_USE_LFN reports %d when LFN is set to Y\n", _USE_LFN);
+  putenv ("LFN=n");
+  printf ("_USE_LFN reports %d when LFN is set to N\n", _USE_LFN);
+  return 0;
+}
+
+#endif

@@ -13,6 +13,7 @@ _creat(const char* filename, int attrib)
 {
   __dpmi_regs r;
   int rv;
+  unsigned use_lfn = _USE_LFN;
 
   if (filename == 0)
   {
@@ -24,7 +25,7 @@ _creat(const char* filename, int attrib)
     return rv;
 
   _put_path(filename);
-  if(_USE_LFN) {
+  if(use_lfn) {
     r.x.ax = 0x716c;
     r.x.bx = 0x0002;		/* open r/w */
     r.x.dx = 0x0012;		/* Create, truncate if exists */

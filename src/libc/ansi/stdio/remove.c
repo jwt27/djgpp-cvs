@@ -2,6 +2,7 @@
 #include <libc/stubs.h>
 #include <io.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <dpmi.h>
 #include <go32.h>
@@ -13,6 +14,7 @@ remove(const char *fn)
   __dpmi_regs r;
   unsigned attr;
   int directory_p;
+  int use_lfn = _USE_LFN;
  
   /* Get the file attribute byte.  */
   attr = _chmod(fn, 0);
@@ -22,12 +24,12 @@ remove(const char *fn)
      in addition to the Read-Only bit, or else 214301 will fail.  */
   _chmod(fn, 1, attr & 0xffe0);
 
-  /* Now delete it.  Note, _chmod leave dir name in tranfer buffer. */
+  /* Now delete it.  Note, _chmod leaves dir name in tranfer buffer. */
   if (directory_p)
     r.h.ah = 0x3a;		/* DOS Remove Directory function */
   else
     r.h.ah = 0x41;		/* DOS Remove File function */
-  if(_USE_LFN) {
+  if(use_lfn) {
     r.h.al = r.h.ah;
     r.h.ah = 0x71;
     r.x.si = 0;			/* No Wildcards */

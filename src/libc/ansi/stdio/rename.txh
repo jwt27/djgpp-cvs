@@ -41,3 +41,41 @@ rename("c:/mydir/some.doc", "c:/yourdir/some.sav");
 rename("c:/path1/mydir", "c:/path2");
 @end example
 
+@c -------------------------------------------------------------------------
+
+@node _rename, file system
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int _rename(const char *oldname, const char *newname);
+@end example
+
+@subheading Description
+
+This function renames an existing file or directory @var{oldname} to
+@var{newname}.  It is much smaller that @code{rename} (@pxref{rename}),
+but it can only rename a directory so it stays under the same perent, it
+cannot move directories between different branches of the directory
+tree.  This means that in the following example, the first call will
+succeed, while the second will fail:
+
+@example
+_rename("c:/path1/mydir", "c:/path1/yourdir");
+_rename("c:/path1/mydir", "c:/path2");
+@end example
+
+On systems that support long filenames (@pxref{_use_lfn}),
+@code{_rename} can also move directories (so that both calls in the
+above example succeed there), unless the @samp{LFN} environment variable
+is set to @kbd{n}, or the @code{_CRT0_FLAG_NO_LFN} is set in the
+@code{_crt0_startup_flags} variable, @xref{_crt0_startup_flags}.
+
+If you don't need the extra functionality offered by @code{rename}
+(which usually is only expected by Unix-born programs), you can use
+@code{_rename} instead and thus make your program a lot smaller.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.

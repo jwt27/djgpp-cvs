@@ -6,6 +6,7 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <dir.h>
+#include <fcntl.h>
 #include <libc/dosio.h>
 
 int

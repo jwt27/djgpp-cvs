@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <io.h>
@@ -110,53 +111,66 @@ delete_arglist(ArgList *al)
   free(al);
 }
 
+static char *
+parse_arg(char *bp, char *last, size_t *len, int *was_quoted)
+{
+  char *ep = bp, *epp = bp;
+  int quote=0;
+
+  while ((quote || !isspace(*ep)) && ep < last)
+  {
+    if (quote && *ep == quote)
+    {
+      quote = 0;
+      ep++;
+    }
+    else if (!quote && (*ep == '\'' || *ep == '"'))
+    {
+      quote = *ep;
+      ep++;
+    }
+    else if (*ep == '\\' && strchr("'\"", ep[1]) && ep < last-1)
+    {
+      ep++;
+      *epp++ = *ep++;
+      /* *was_quoted = 1;  - This makes no sense. */
+    }
+    else
+    {
+      if (quote && (strchr("[?*", *ep) || strncmp(ep, "...", 3) == 0))
+	*was_quoted = 1;
+      *epp++ = *ep++;
+    }
+  }
+
+  *len = epp - bp;
+  return ep;
+}
+
 static ArgList *
 parse_bytes(char *bytes, int length)
 {
-  int largc, quote=0, i;
+  int largc, i;
   Arg *a, **anext, *afirst;
   ArgList *al;
-  char *bp=bytes, *ep, *epp, *last=bytes+length;
+  char *bp=bytes, *ep, *last=bytes+length;
 
   anext = &afirst;
   largc = 0;
   while (bp<last)
   {
+    size_t arg_len;
     while (isspace(*bp) && bp < last)
       bp++;
     if (bp == last)
       break;
-    ep = epp = bp;
     *anext = a = new_arg();
-    while ((quote || !isspace(*ep)) && ep < last)
-    {
-      if (quote && *ep == quote)
-      {
-        quote = 0;
-        ep++;
-      }
-      else if (!quote && (*ep == '\'' || *ep == '"'))
-      {
-        quote = *ep;
-        ep++;
-        a->was_quoted = 1;
-      }
-      else if (*ep == '\\' && strchr("'\"", ep[1]) && ep < last-1)
-      {
-        ep++;
-        *epp++ = *ep++;
-        a->was_quoted = 1;
-      }
-      else
-      {
-        *epp++ = *ep++;
-      }
-    }
+    ep = parse_arg(bp, last, &arg_len, &(a->was_quoted));
     anext = &(a->next);
     largc++;
-    a->arg = (char *)c1xmalloc(epp-bp+1);
-    memcpy(a->arg, bp, epp-bp);
-    a->arg[epp-bp] = 0;
+    a->arg = (char *)c1xmalloc(arg_len+1);
+    memcpy(a->arg, bp, arg_len);
+    a->arg[arg_len] = 0;
     bp = ep+1;
   }
   al = new_arglist(largc);
@@ -254,12 +268,17 @@ expand_wildcards(ArgList *al)
   }
 }
 
+extern char __PROXY[]; /* defined on crt0/crt1.c */
+extern size_t __PROXY_LEN;
+
 void
 __crt0_setup_arguments(void)
 {
   ArgList *arglist;
   char *argv0;
   int prepend_argv0 = 1;
+  int should_expand_wildcards = 1;
+  char *proxy_v = 0;
 
   /*
   ** first, figure out what to pass for argv[0]
@@ -268,7 +287,7 @@ __crt0_setup_arguments(void)
     int i;
     char *ap, *ls, *fc;
 /*    char newbase[14]; */
-    
+
     if (_crt0_startup_flags & _CRT0_FLAG_DROP_DRIVE_SPECIFIER)
       if (__dos_argv0[1] == ':')
         __dos_argv0 += 2;
@@ -334,9 +353,24 @@ __crt0_setup_arguments(void)
   }
   
   /*
-  ** Check for !proxy
+  ** Check for !proxy.
+  **
+  ** If there is " !proxy" (note the leading blank!) in the environ,
+  ** use it instead of what DOS command line tells.  This is the method
+  ** v2.01 and later uses to pass long command lines from `system';
+  ** these should be passed through wildcard expansion unless quoted.
   */
-  if (arglist->argc > 3 && strcmp(arglist->argv[0]->arg, "!proxy") == 0)
+  if ((proxy_v = getenv(__PROXY)))
+  {
+    char proxy_line[50];	/* need only 34 */
+    size_t plen = strlen(proxy_v);
+    strncpy(proxy_line, __PROXY, __PROXY_LEN + 1); /* copy " !proxy" */
+    proxy_line[__PROXY_LEN] = ' ';
+    strncpy(proxy_line + __PROXY_LEN+1, proxy_v, plen+1); /* copy value */
+    delete_arglist(arglist);
+    arglist = parse_bytes(proxy_line, plen+__PROXY_LEN+1);
+  }
+  if (arglist->argc > 3 && strcmp(arglist->argv[0]->arg, __PROXY+1) == 0)
   {
     int argv_seg, argv_ofs, i;
     unsigned short *rm_argv;
@@ -349,6 +383,11 @@ __crt0_setup_arguments(void)
     movedata(_dos_ds, argv_seg*16+argv_ofs, ds, (int)rm_argv, __crt0_argc*sizeof(unsigned short));
 
     arglist = new_arglist(__crt0_argc);
+    if (proxy_v)
+      should_expand_wildcards = 1;
+    else
+      should_expand_wildcards = 0;
+
     
     for (i=0; i<__crt0_argc; i++)
     {
@@ -356,9 +395,20 @@ __crt0_setup_arguments(void)
       arglist->argv[i] = new_arg();
       arglist->argv[i]->arg = (char *)c1xmalloc(al+1);
       movedata(_dos_ds, argv_seg*16 + rm_argv[i], ds, (int)(arglist->argv[i]->arg), al+1);
+      if (proxy_v)
+      {
+	size_t ln;
+	char *lastc = arglist->argv[i]->arg + al;
+	parse_arg(arglist->argv[i]->arg, lastc,
+		  &ln, &(arglist->argv[i]->was_quoted));
+	arglist->argv[i]->arg[ln] = '\0';
+      }
     }
     prepend_argv0 = 0;
   }
+#if 0
+  /* This method will break under DPMI 1.0, because descriptor
+     tables are private to a process there.  Disabled.  */
   else if (arglist->argc > 3 && strcmp(arglist->argv[0]->arg, "!proxy2") == 0)
   {
     int argv_sel, argv_ofs, i;
@@ -381,7 +431,9 @@ __crt0_setup_arguments(void)
       movedata(argv_sel, pm_argv[i], ds, (int)(arglist->argv[i]->arg), al+1);
     }
     prepend_argv0 = 0;
+    should_expand_wildcards = 0;
   }
+#endif
 
   /*
   **  Now, expand response files
@@ -392,7 +444,9 @@ __crt0_setup_arguments(void)
   /*
   **  Now, expand wildcards
   */
-  expand_wildcards(arglist);
+
+  if (should_expand_wildcards)
+    expand_wildcards(arglist);
 
   __crt0_argc = prepend_argv0 + count_args(arglist);
   __crt0_argv = (char **)c1xmalloc((__crt0_argc+1) * sizeof(char *));

@@ -9,13 +9,17 @@ void _fixpath(const char *in_path, char *out_path);
 
 @subheading Description
 
-This function canonacalizes the input path @var{in_path} and stores the
+This function canonicalizes the input path @var{in_path} and stores the
 result in the buffer pointed to by @var{out_path}.
 
 The path is fixed by removing consecutive and trailing slashes, making
 the path absolute if it's relative, removing "." components, collapsing
 ".." components, adding a drive specifier if needed, and converting all
-slashes to '/'. 
+slashes to '/'.  DOS-style 8+3 names of directories which are part of
+the pathname, as well as its final filename part, are returned
+lower-cased in @var{out_path}, but long filenames are left intact.
+@xref{_preserve_fncase}, for more details on letter-case conversions in
+filenames.
 
 @subheading Return Value
 

@@ -16,6 +16,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <dos.h>
@@ -47,10 +48,11 @@
 char *
 _truename(const char *file, char *buf)
 {
-  __dpmi_regs          regs;
-  unsigned short       dos_mem_selector = _dos_ds;
-  unsigned short       our_mem_selector = _my_ds();
-  int                  e                = errno;
+  __dpmi_regs     regs;
+  unsigned short  dos_mem_selector = _dos_ds;
+  unsigned short  our_mem_selector = _my_ds();
+  int             e                = errno;
+  unsigned	  use_lfn	   = _USE_LFN;
 
   char true_name[MAX_TRUE_NAME];
   char file_name[MAX_TRUE_NAME], *name_start = file_name, *name_end;
@@ -101,9 +103,9 @@ _truename(const char *file, char *buf)
            dos_mem_selector, __tb, strlen(name_start) + 1);
 
   /* Call DOS INT 21H undocumented function 60h. */
-  if(_USE_LFN) {
+  if(use_lfn) {
     regs.x.ax = 0x7160;
-    regs.x.cx = 2;		/* Get Long Path Name */
+    regs.x.cx = 2;		/* Get Long Path Name (if there is one) */
   } else
     regs.x.ax = 0x6000;
 

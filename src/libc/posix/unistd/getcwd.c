@@ -2,18 +2,26 @@
 #include <libc/stubs.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <dpmi.h>
 #include <go32.h>
+#include <crt0.h>
 #include <libc/farptrgs.h>
 #include <libc/dosio.h>
 
 char *
-getcwd(char *buf, size_t size)
+__getcwd(char *buf, size_t size)
 {
   char *bp;
   __dpmi_regs r;
   int needed_length, c;
+  unsigned use_lfn = _USE_LFN;
+  int preserve_case = _preserve_fncase();
+  char *name_start;
 
   if (!size)
   {
@@ -35,7 +43,7 @@ getcwd(char *buf, size_t size)
     size = _go32_info_block.size_of_transfer_buffer;
 
   /* get the path into the transfer buffer at least */
-  if(_USE_LFN)
+  if(use_lfn)
     r.x.ax = 0x7147;
   else
     r.h.ah = 0x47;
@@ -67,22 +75,47 @@ getcwd(char *buf, size_t size)
   }
   buf[needed_length+3] = 0;
 
-  /* switch FOO\BAR to foo/bar */
-  for (bp = buf+3; *bp; bp++)
+  /* switch FOO\BAR to foo/bar, downcase where appropriate */
+  buf[1] = ':';
+  buf[2] = '/';
+  for (bp = buf+3, name_start = bp - 1; *name_start; bp++)
   {
+    char long_name[FILENAME_MAX], short_name[13];
+
     if (*bp == '\\')
       *bp = '/';
-    if (*bp >= 'A' && *bp <= 'Z')
-      *bp += 'a' - 'A';
+    if (!preserve_case && (*bp == '/' || *bp == '\0'))
+    {
+      memcpy(long_name, name_start+1, bp - name_start - 1);
+      long_name[bp - name_start - 1] = '\0';
+      if (!strcmp(_lfn_gen_short_fname(long_name, short_name), long_name))
+      {
+	while (++name_start < bp)
+	  if (*name_start >= 'A' && *name_start <= 'Z')
+	    *name_start += 'a' - 'A';
+      }
+      else
+	name_start = bp;
+    }
+    else if (*bp == '\0')
+      break;
   }
 
   /* get current drive */
   r.h.ah = 0x19;
   __dpmi_int(0x21, &r);
 
-  buf[0] = r.h.al + 'a';
-  buf[1] = ':';
-  buf[2] = '/';
+  buf[0] = r.h.al + (r.h.al < 26 ? 'a' : 'A');
 
   return buf;
 }
+
+#ifdef TEST
+
+int main(void)
+{
+  printf (getcwd ((char *)0, FILENAME_MAX + 10));
+  return 0;
+}
+
+#endif

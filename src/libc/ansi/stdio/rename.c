@@ -188,7 +188,15 @@ pop_dir(void)
 static int
 is_parent(const char *dir1, const char *dir2)
 {
-  return dir1 != 0 && dir2 != 0 && *dir1 != 0 && strstr(dir2, dir1) == dir2;
+  if (dir1 == 0 || dir2 == 0 || *dir1 == 0)
+    return 0;
+  while (*dir1 && *dir2 && tolower(*dir1) == tolower(*dir2))
+    {
+      dir1++;
+      dir2++;
+    }
+
+  return *dir1 == '\0' && (*dir2 == '/' || *dir2 == '\\');
 }
 
 /*
@@ -352,7 +360,9 @@ rename(const char *old, const char *new)
     }
 
   /* On to some REAL work for a change.  Let DOS do the simple job:
-     moving a regular file, or renaming a directory.  */
+     moving a regular file, or renaming a directory.  Note that on
+     Windows 95 this will also move a directory to a subtree of
+     another parent directory.  */
   if ((status = _rename(old, new)) == 0)
     {
       errno = e;    /* restore errno we inherited */

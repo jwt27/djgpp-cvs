@@ -23,10 +23,6 @@ int __doserr_to_errno(int doserr);
 void _put_path(const char *_path);
 void _put_path2(const char *_path, int _offset);
 
-/* Long file name support (Win95).  May make _USE_LFN a variable or disable */
-extern char _use_lfn(void);
-#define _USE_LFN _use_lfn()
-
 /* Convenience functions for setting up transfers */
 
 #define __tb_offset 0	/* (__tb & 15) Always paragraph aligned */

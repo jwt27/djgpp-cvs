@@ -140,6 +140,19 @@ extern int _crt0_startup_flags;
 
 #define _CRT0_FLAG_LOCK_MEMORY			0x1000
 
+/* If set, disables all filename letter-case conversion in functions that
+** traverse directories (except findfirst/findnext which always return the
+** filenames exactly as found in the directory entry).  When reset, all
+** filenames on 8+3 MSDOS filesystems and DOS-style 8+3 filenames on LFN
+** systems are converted to lower-case by functions such as `readdir',
+** `getcwd', `_fixpath' and `srchpath'.  Note that when this flag is set,
+** ALL filenames on MSDOS systems will appear in upper-case, which is
+** both ugly and will break many Unix-born programs.  Use only if you know
+** exactly what you are doing!
+*/
+
+#define _CRT0_FLAG_PRESERVE_FILENAME_CASE	0x2000
+
 /*****************************************************************************\
  *  Access to the memory handles used by the non-move sbrk algorithm.  
  *  The handle is the SI:DI DPMI handle; the address is the offset relative 

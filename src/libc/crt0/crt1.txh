@@ -10,12 +10,13 @@ char **__crt0_glob_function(char *_argument);
 @subheading Description
 
 If the application wishes to provide a wildcard expansion function, it
-should define a __crt0_glob_function function.  It should return a
-list of the expanded values, or 0 if no expansion will occur.  The
+should define a @code{__crt0_glob_function} function.  It should return
+a list of the expanded values, or 0 if no expansion will occur.  The
 startup code will free the returned pointer if it is nonzero.
 
 If no expander function is provided, wildcards will be expanded in the
-POSIX.1 style.  To disable expansion, provide a __crt0_glob_function
+POSIX.1 style by the default @code{__crt0_glob_function} from the C
+library.  To disable expansion, provide a @code{__crt0_glob_function}
 that always returns 0.
 
 @c ----------------------------------------------------------------------
@@ -35,6 +36,12 @@ provide the two arguments passed to main() (usually @code{argc} and
 @code{argv}).  If main() does not use these arguments, the programmer
 can reduce the size of the program image by providing a version of
 this function that does nothing.
+
+Note that since the default @code{__crt0_setup_arguments_function} will
+@emph{not} expand wildcards inside quotes (@kbd{"} or @kbd{'}), but you
+can quote a part of the argument that doesn't include wildcards and
+still have them expanded.  This is so you could use wildcard expansion
+with filenames which have embedded whitespace (on LFN filesystems).
 
 @xref{__crt0_load_environment_file}.
 
@@ -136,7 +143,8 @@ leave NMIs alone and pass through to real mode code.  You decide.
 If set, disable usage of long file name functions even on systems
 (such as Win95) which support them.  This might be needed to work
 around program assumptions on file name format on programs written
-specifically for DOS.
+specifically for DOS.  Note that this flag overrides the value of the
+environment variable @samp{LFN}.
 
 @item _CRT0_FLAG_NONMOVE_SBRK
 
@@ -165,5 +173,20 @@ is sbrk()ed, so the locking may fail.  This bit may be set or cleared
 during execution.  When sbrk() uses multiple memory zones, it can be
 difficult to lock all memory since the memory block size and location is
 impossible to determine.
+
+@item _CRT0_FLAG_PRESERVE_FILENAME_CASE
+
+If set, disables all filename letter-case conversions in functions that
+traverse directories (except findfirst/findnext which always return the
+filenames exactly as found in the directory entry).  When reset, all
+filenames on 8+3 MSDOS filesystems and DOS-style 8+3 filenames on LFN
+systems are converted to lower-case by functions such as `readdir',
+@code{getcwd}, @code{_fixpath} and others.  Note that when this flag is
+set, ALL filenames on MSDOS systems will appear in upper-case, which is
+both ugly and will break many Unix-born programs.  Use only if you know
+exactly what you are doing!
+
+This flag overrides the value of the environment variable @samp{FNCASE},
+@xref{_preserve_fncase}.
 
 @end table
