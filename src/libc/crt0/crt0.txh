@@ -113,6 +113,56 @@ protection or memory mapping.
 
 @portability !ansi, !posix
 
+@subheading Example
+
+@example
+#include <crt0.h>
+
+  for(i=0; i<256; i++) @{
+    int h, a, s;
+    h = __djgpp_memory_handle_list[i].handle;
+    a = __djgpp_memory_handle_list[i].address;
+    s = __djgpp_memory_handle_size[i];    
+    if(a == 0 && i != 0) break;
+    printf("handle[%d]=0x%x base=0x%x size=0x%x\n",i,h,a,s);
+  @}
+@end example
+
+@c ----------------------------------------------------------------------
+@node __djgpp_memory_handle_size, memory
+@subheading Syntax
+
+@example
+#include <crt0.h>
+
+extern unsigned __djgpp_memory_handle_size[256];
+@end example
+
+@subheading Description
+
+This array contains a list of the sizes of the memory regions allocated 
+by sbrk() in addition to the memory region allocated by the stub.  These 
+values are normally not needed unless you are dumping the memory blocks.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <crt0.h>
+
+  for(i=0; i<256; i++) @{
+    int h, a, s;
+    h = __djgpp_memory_handle_list[i].handle;
+    a = __djgpp_memory_handle_list[i].address;
+    s = __djgpp_memory_handle_size[i];    
+    if(a == 0 && i != 0) break;
+    printf("handle[%d]=0x%x base=0x%x size=0x%x\n",i,h,a,s);
+  @}
+@end example
+
 @c ----------------------------------------------------------------------
 @node _exit, process
 @subheading Syntax
