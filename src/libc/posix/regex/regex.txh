@@ -1,0 +1,551 @@
+@node regcomp, string
+@subheading Syntax
+
+@example
+#include <sys/types.h>
+#include <regex.h>
+
+int regcomp(regex_t *preg, const char *pattern, int cflags);
+@end example
+
+@subheading Description
+
+This function is part of the implementation of POSIX 1003.2 regular
+expressions (@dfn{RE}s).
+
+@code{regcomp} compiles the regular expression contained in the
+@var{pattern} string, subject to the flags in @var{cflags}, and places
+the results in the @code{regex_t} structure pointed to by @var{preg}.
+(The regular expression syntax, as defined by POSIX 1003.2, is described
+below.)
+
+The parameter @var{cflags} is the bitwise OR of zero or more of the
+following flags:
+
+@table @code
+
+@item REG_EXTENDED
+
+Compile modern (@dfn{extended}) REs, rather than the obsolete
+(@dfn{basic}) REs that are the default.
+
+@item REG_BASIC
+
+This is a synonym for 0, provided as a counterpart to
+@code{REG_EXTENDED} to improve readability.
+
+@item REG_NOSPEC
+
+Compile with recognition of all special characters turned off.  All
+characters are thus considered ordinary, so the RE in @var{pattern} is a
+literal string.  This is an extension, compatible with but not specified
+by POSIX 1003.2, and should be used with caution in software intended to
+be portable to other systems.  @code{REG_EXTENDED} and @code{REG_NOSPEC}
+may not be used in the same call to @code{regcomp}.
+
+@item REG_ICASE
+
+Compile for matching that ignores upper/lower case distinctions.  See
+the description of regular expressions below for details of
+case-independent matching.
+
+@item REG_NOSUB
+
+Compile for matching that need only report success or failure, not what
+was matched.
+
+@item REG_NEWLINE
+
+Compile for newline-sensitive matching.  By default, newline is a
+completely ordinary character with no special meaning in either REs or
+strings.  With this flag, @samp{[^} bracket expressions and @samp{.}
+never match newline, a @samp{^} anchor matches the null string after any
+newline in the string in addition to its normal function, and the
+@samp{$} anchor matches the null string before any newline in the string
+in addition to its normal function.
+
+@item REG_PEND
+
+The regular expression ends, not at the first NUL, but just before the
+character pointed to by the @code{re_endp} member of the structure
+pointed to by @var{preg}.  The @code{re_endp} member is of type
+@samp{const char *}.  This flag permits inclusion of NULs in the RE;
+they are considered ordinary characters.  This is an extension,
+compatible with but not specified by POSIX 1003.2, and should be used
+with caution in software intended to be portable to other systems.
+
+@end table
+
+When successful, @code{regcomp} returns 0 and fills in the structure
+pointed to by @var{preg}.  One member of that structure (other than
+@code{re_endp}) is publicized: @code{re_nsub}, of type @code{size_t},
+contains the number of parenthesized subexpressions within the RE
+(except that the value of this member is undefined if the
+@code{REG_NOSUB} flag was used).
+
+Note that the length of the RE does matter; in particular, there is a
+strong speed bonus for keeping RE length under about 30 characters,
+with most special characters counting roughly double.
+
+@subheading Return Value
+
+If @code{regcomp} succeeds, it returns zero; if it fails, it returns a
+non-zero error code, which is one of these:
+
+@table @code
+
+@item REG_BADPAT
+
+invalid regular expression
+
+@item REG_ECOLLATE
+
+invalid collating element
+
+@item REG_ECTYPE
+
+invalid character class
+
+@item REG_EESCAPE
+
+@samp{\} applied to unescapable character
+
+@item REG_ESUBREG
+
+invalid backreference number (e.g., larger than the number of
+parenthesized subexpressions in the RE)
+
+@item REG_EBRACK
+
+brackets [ ] not balanced
+
+@item REG_EPAREN
+
+parentheses ( ) not balanced
+
+@item REG_EBRACE
+
+braces @{ @} not balanced
+
+@item REG_BADBR
+
+invalid repetition count(s) in @{ @}
+
+@item REG_ERANGE
+
+invalid character range in [ ]
+
+@item REG_ESPACE
+
+ran out of memory (an RE like, say,
+@samp{((((a@{1,100@})@{1,100@})@{1,100@})@{1,100@})@{1,100@}'} will
+eventually run almost any existing machine out of swap space)
+
+@item REG_BADRPT
+
+?, *, or + operand invalid
+
+@item REG_EMPTY
+
+empty (sub)expression
+
+@item REG_ASSERT
+
+``can't happen'' (you found a bug in @code{regcomp})
+
+@item REG_INVARG
+
+invalid argument (e.g. a negative-length string)
+
+@end table
+
+@subheading Regular Expressions' Syntax
+
+Regular expressions (@dfn{RE}s), as defined in POSIX 1003.2, come in two
+forms: modern REs (roughly those of @code{egrep}; 1003.2 calls these
+@emph{extended} REs) and obsolete REs (roughly those of @code{ed};
+1003.2 @emph{basic} REs).  Obsolete REs mostly exist for backward
+compatibility in some old programs; they will be discussed at the end.
+1003.2 leaves some aspects of RE syntax and semantics open; `(*)' marks
+decisions on these aspects that may not be fully portable to other
+1003.2 implementations.
+
+A (modern) RE is one(*) or more non-empty(*) @emph{branches}, separated
+by @samp{|}.  It matches anything that matches one of the branches.
+
+A branch is one(*) or more @emph{pieces}, concatenated.  It matches a
+match for the first, followed by a match for the second, etc.
+
+A piece is an @emph{atom} possibly followed by a single(*) `*', `+',
+`?', or @emph{bound}.
+An atom followed by `*' matches a sequence of 0 or more matches of the atom.
+An atom followed by `+' matches a sequence of 1 or more matches of the atom.
+An atom followed by `?' matches a sequence of 0 or 1 matches of the atom.
+
+A @emph{bound} is `@{' followed by an unsigned decimal integer, possibly
+followed by `,' possibly followed by another unsigned decimal integer,
+always followed by `@}'.  The integers must lie between 0 and
+@code{RE_DUP_MAX} (255(*)) inclusive, and if there are two of them, the
+first may not exceed the second.  An atom followed by a bound containing
+one integer @samp{i} and no comma matches a sequence of exactly @samp{i}
+matches of the atom.  An atom followed by a bound containing one integer
+@samp{i} and a comma matches a sequence of @samp{i} or more matches of
+the atom.  An atom followed by a bound containing two integers @samp{i}
+and @samp{j} matches a sequence of @samp{i} through @samp{j} (inclusive)
+matches of the atom.
+
+An atom is a regular expression enclosed in `()' (matching a match for the
+regular expression), an empty set of `()' (matching the null string(*)),
+a @emph{bracket expression} (see below), `.' (matching any single
+character), `^' (matching the null string at the beginning of a line),
+`$' (matching the null string at the end of a line), a `\\' followed by
+one of the characters `^.[$()|*+?@{\\' (matching that character taken as
+an ordinary character), a `\\' followed by any other character(*)
+(matching that character taken as an ordinary character, as if the `\\'
+had not been present(*)), or a single character with no other
+significance (matching that character).  A `@{' followed by a character
+other than a digit is an ordinary character, not the beginning of a
+bound(*).  It is illegal to end an RE with `\\'.
+
+A @emph{bracket expression} is a list of characters enclosed in `[]'.
+It normally matches any single character from the list (but see below).
+If the list begins with `^', it matches any single character (but see
+below) @emph{not} from the rest of the list.  If two characters in the
+list are separated by `-', this is shorthand for the full @emph{range}
+of characters between those two (inclusive) in the collating sequence,
+e.g. `[0-9]' in ASCII matches any decimal digit.  It is illegal(*) for
+two ranges to share an endpoint, e.g. `a-c-e'.  Ranges are very
+collating-sequence-dependent, and portable programs should avoid relying
+on them.
+
+To include a literal `]' in the list, make it the first character
+(following a possible `^').  To include a literal `-', make it the
+first or last character, or the second endpoint of a range.  To use a
+literal `-' as the first endpoint of a range, enclose it in `[.' and
+`.]' to make it a collating element (see below).  With the exception of
+these and some combinations using `[' (see next paragraphs), all other
+special characters, including `\\', lose their special significance
+within a bracket expression.
+
+Within a bracket expression, a collating element (a character, a
+multi-character sequence that collates as if it were a single character,
+or a collating-sequence name for either) enclosed in `[.' and `.]'
+stands for the sequence of characters of that collating element.  The
+sequence is a single element of the bracket expression's list.  A
+bracket expression containing a multi-character collating element can
+thus match more than one character, e.g. if the collating sequence
+includes a `ch' collating element, then the RE @samp{[[.ch.]]*c} matches
+the first five characters of ``chchcc''.
+
+Within a bracket expression, a collating element enclosed in `[=' and
+`=]' is an equivalence class, standing for the sequences of characters
+of all collating elements equivalent to that one, including itself.
+(If there are no other equivalent collating elements, the treatment is
+as if the enclosing delimiters were `[.' and `.]'.)  For example, if o
+and \o'o^' are the members of an equivalence class, then `[[=o=]]',
+`[[=\o'o^'=]]', and `[o\o'o^']' are all synonymous.  An equivalence
+class may not\(dg be an endpoint of a range.
+
+Within a bracket expression, the name of a @emph{character class}
+enclosed in `[:' and `:]' stands for the list of all characters
+belonging to that class.
+Standard character class names are:
+
+@example
+alnum	digit	punct
+alpha	graph	space
+blank	lower	upper
+cntrl	print	xdigit
+@end example
+
+These stand for the character classes defined by @code{isalnum}
+(@pxref{isalnum}), @code{isdigit} (@pxref{isdigit}), @code{ispunct}
+(@pxref{ispunct}), @code{isalpha} (@pxref{isalpha}), @code{isgraph}
+(@pxref{isgraph}), @code{isspace} (@pxref{isspace}) (@code{blank} is the
+same as @code{space}), @code{islower} (@pxref{islower}), @code{isupper}
+(@pxref{isupper}), @code{iscntrl} (@pxref{iscntrl}), @code{isprint}
+(@pxref{isprint}), and @code{isxdigit} (@pxref{isxdigit}),
+respectively.  A locale may provide others.  A character class may not
+be used as an endpoint of a range.
+
+There are two special cases(*) of bracket expressions: the bracket
+expressions `[[:<:]]' and `[[:>:]]' match the null string at the
+beginning and end of a word respectively.  A word is defined as a
+sequence of word characters which is neither preceded nor followed by
+word characters.  A word character is an @code{alnum} character (as
+defined by @code{isalnum} library function) or an underscore.  This is
+an extension, compatible with but not specified by POSIX 1003.2, and
+should be used with caution in software intended to be portable to other
+systems.
+
+In the event that an RE could match more than one substring of a given
+string, the RE matches the one starting earliest in the string.  If the
+RE could match more than one substring starting at that point, it
+matches the longest.  Subexpressions also match the longest possible
+substrings, subject to the constraint that the whole match be as long as
+possible, with subexpressions starting earlier in the RE taking priority
+over ones starting later.  Note that higher-level subexpressions thus
+take priority over their lower-level component subexpressions.
+
+Match lengths are measured in characters, not collating elements.  A
+null string is considered longer than no match at all.  For example,
+@samp{bb*} matches the three middle characters of @samp{abbbc}, 
+@samp{(wee|week)(knights|nights)} matches all ten characters of
+@samp{weeknights}, when @samp{(.*).*} is matched against @samp{abc} the
+parenthesized subexpression matches all three characters, and when
+@samp{(a*)*} is matched against `bc' both the whole RE and the
+parenthesized subexpression match the null string.
+
+If case-independent matching is specified, the effect is much as if all
+case distinctions had vanished from the alphabet.  When an alphabetic
+that exists in multiple cases appears as an ordinary character outside a
+bracket expression, it is effectively transformed into a bracket
+expression containing both cases, e.g. `x' becomes `[xX]'.  When it
+appears inside a bracket expression, all case counterparts of it are
+added to the bracket expression, so that (e.g.) `[x]' becomes `[xX]' and
+`[^x]' becomes `[^xX]'.
+
+No particular limit is imposed on the length of REs(*).  Programs
+intended to be portable should not employ REs longer than 256 bytes,
+as an implementation can refuse to accept such REs and remain
+POSIX-compliant.
+
+Obsolete (@emph{basic}) regular expressions differ in several respects.
+`|', `+', and `?' are ordinary characters and there is no equivalent
+for their functionality.  The delimiters for bounds are `\\@{' and
+`\\@}', with `@{' and `@}' by themselves ordinary characters.  The
+parentheses for nested subexpressions are `\(' and `\)', with `(' and
+`)' by themselves ordinary characters.  `^' is an ordinary character
+except at the beginning of the RE or(*) the beginning of a parenthesized
+subexpression, `$' is an ordinary character except at the end of the RE
+or(*) the end of a parenthesized subexpression, and `*' is an ordinary
+character if it appears at the beginning of the RE or the beginning of a
+parenthesized subexpression (after a possible leading `^').
+Finally, there is one new type of atom, a @emph{back reference}:
+`\\' followed by a non-zero decimal digit @emph{d} matches the same
+sequence of characters matched by the @emph{d}th parenthesized
+subexpression (numbering subexpressions by the positions of their
+opening parentheses, left to right), so that (e.g.) @samp{\\([bc]\\)\\1}
+matches `bb' or `cc' but not `bc'.
+
+@c -------------------------------------------------------------------------
+
+@node regexec, string
+@subheading Syntax
+
+@example
+#include <sys/types.h>
+#include <regex.h>
+
+int regexec(const regex_t *preg, const char *string,
+            size_t nmatch, regmatch_t pmatch[], int eflags);
+@end example
+
+
+@subheading Description
+
+@code{regexec} matches the compiled RE pointed to by @var{preg} against
+the @var{string}, subject to the flags in @var{eflags}, and reports
+results using @var{nmatch}, @var{pmatch}, and the returned value.  The
+RE must have been compiled by a previous invocation of @code{regcomp}
+(@pxref{regcomp}).  The compiled form is not altered during execution of
+@code{regexec}, so a single compiled RE can be used simultaneously by
+multiple threads.
+
+By default, the NUL-terminated string pointed to by @var{string} is
+considered to be the text of an entire line, minus any terminating
+newline.
+
+The @var{eflags} argument is the bitwise OR of zero or more of the
+following flags:
+
+@table @code
+
+@item REG_NOTBOL
+
+The first character of the string is not the beginning of a line, so the
+`^' anchor should not match before it.  This does not affect the
+behavior of newlines under @code{REG_NEWLINE} (REG_NEWLINE,
+@pxref{regcomp}).
+
+@item REG_NOTEOL
+
+The NUL terminating the string does not end a line, so the `$' anchor
+should not match before it.  This does not affect the behavior of
+newlines under @code{REG_NEWLINE} (REG_NEWLINE, @pxref{regcomp}).
+
+@item REG_STARTEND
+
+The string is considered to start at @var{@w{string + pmatch[0].rm_so}}
+and to have a terminating @code{NUL} located at
+@var{@w{string + pmatch[0].rm_eo}} (there need not actually be a
+@code{NUL} at that location), regardless of the value of @var{nmatch}.
+See below for the definition of @var{pmatch} and @var{nmatch}.  This is
+an extension, compatible with but not specified by POSIX 1003.2, and
+should be used with caution in software intended to be portable to other
+systems.  Note that a non-zero @code{rm_so} does not imply
+@code{REG_NOTBOL}; @code{REG_STARTEND} affects only the location of the
+string, not how it is matched.
+
+@item REG_TRACE
+
+trace execution (printed to stdout)
+
+@item REG_LARGE
+
+force large representation
+
+@item REG_BACKR
+
+force use of backref code
+
+@end table
+
+Regular Expressions' Syntax, @xref{regcomp}, for a discussion of what is
+matched in situations where an RE or a portion thereof could match any
+of several substrings of @var{string}.
+
+If @code{REG_NOSUB} was specified in the compilation of the RE
+(REG_NOSUB, @pxref{regcomp}), or if @var{nmatch} is 0, @code{regexec}
+ignores the @var{pmatch} argument (but see below for the case where
+@code{REG_STARTEND} is specified).  Otherwise, @var{pmatch} should point
+to an array of @var{nmatch} structures of type @code{regmatch_t}.  Such
+a structure has at least the members @code{rm_so} and @code{rm_eo}, both
+of type @code{regoff_t} (a signed arithmetic type at least as large as
+an @code{off_t} and a @code{ssize_t}, containing respectively the offset
+of the first character of a substring and the offset of the first
+character after the end of the substring.  Offsets are measured from the
+beginning of the @var{string} argument given to @code{regexec}.  An
+empty substring is denoted by equal offsets, both indicating the
+character following the empty substring.
+
+When @code{regexec} returns, the 0th member of the @var{pmatch} array is
+filled in to indicate what substring of @var{string} was matched by the
+entire RE.  Remaining members report what substring was matched by
+parenthesized subexpressions within the RE; member @code{i} reports
+subexpression @code{i}, with subexpressions counted (starting at 1) by
+the order of their opening parentheses in the RE, left to right.  Unused
+entries in the array---corresponding either to subexpressions that did
+not participate in the match at all, or to subexpressions that do not
+exist in the RE (that is, @code{@w{i > preg->re_nsub}}---have both
+@code{rm_so} and @code{rm_eo} set to @code{-1}.  If a subexpression
+participated in the match several times, the reported substring is the
+last one it matched.  (Note, as an example in particular, that when the
+RE @samp{(b*)+} matches @samp{bbb}, the parenthesized subexpression
+matches each of the three `b's and then an infinite number of empty
+strings following the last `b', so the reported substring is one of the
+empties.)
+
+If @code{REG_STARTEND} is specified in @var{eflags}, @var{pmatch} must
+point to at least one @code{regmatch_t} variable (even if @var{nmatch}
+is 0 or @code{REG_NOSUB} was specified in the compilation of the RE,
+REG_NOSUB, @pxref{regcomp}), to hold the input offsets for
+@code{REG_STARTEND}.  Use for output is still entirely controlled by
+@var{nmatch}; if @var{nmatch} is 0 or @code{REG_NOSUB} was specified,
+the value of @code{pmatch[0]} will not be changed by a successful
+@code{regexec}.
+
+@var{nmatch} exceeding 0 is expensive; @var{nmatch} exceeding 1 is
+worse.  Back references are massively expensive.
+
+@subheading Return Value
+
+Normally, @code{regexec} returns 0 for success and the non-zero code
+@code{REG_NOMATCH} for failure.  Other non-zero error codes may be
+returned in exceptional situations.  The list of possible error return
+values is below:
+
+@table @code
+
+@item REG_ESPACE
+
+ran out of memory
+
+@item REG_BADPAT
+
+the passed argument @var{preg} doesn't point to an RE compiled by
+@code{regcomp}
+
+@item REG_INVARG
+
+invalid argument(s) (e.g., @var{@w{string + pmatch[0].rm_eo}} is less
+than @var{@w{string + pmatch[0].rm_so}})
+
+@end table
+
+@c ----------------------------------------------------------------------
+
+@node regerror, string
+@subheading Syntax
+
+@example
+
+#include <sys/types.h>
+#include <regex.h>
+
+size_t regerror(int errcode, const regex_t *preg,
+                char *errbuf, size_t errbuf_size);
+
+@end example
+
+@subheading Description
+
+@code{regerror} maps a non-zero value of @var{errcode} from either
+@code{regcomp} (Return Value, @pxref{regcomp}) or @code{regexec}
+(Return Value, @pxref{regexec}) to a human-readable, printable message.
+
+If @var{preg} is non-@code{NULL}, the error code should have arisen from
+use of the variable of the type @code{regex_t} pointed to by @var{preg},
+and if the error code came from @code{regcomp}, it should have been the
+result from the most recent @code{regcomp} using that @code{regex_t}
+variable.  (@code{regerror} may be able to supply a more detailed
+message using information from the @code{regex_t} than from
+@var{errcode} alone.)  @code{regerror} places the @code{NUL}-terminated
+message into the buffer pointed to by @var{errbuf}, limiting the length
+(including the @code{NUL}) to at most @var{errbuf_size} bytes.  If the
+whole message won't fit, as much of it as will fit before the
+terminating @code{NUL} is supplied.  In any case, the returned value is
+the size of buffer needed to hold the whole message (including
+terminating @code{NUL}).  If @var{errbuf_size} is 0, @var{errbuf} is
+ignored but the return value is still correct.
+
+If the @var{errcode} given to @code{regerror} is first ORed with
+@code{REG_ITOA}, the ``message'' that results is the printable name of
+the error code, e.g. ``REG_NOMATCH'', rather than an explanation
+thereof.  If @var{errcode} is @code{REG_ATOI}, then @var{preg} shall be
+non-NULL and the @code{re_endp} member of the structure it points to
+must point to the printable name of an error code
+(e.g. ``REG_ECOLLATE''); in this case, the result in @var{errbuf} is the
+decimal representation of the numeric value of the error code (0 if the
+name is not recognized).  @code{REG_ITOA} and @code{REG_ATOI} are
+intended primarily as debugging facilities; they are extensions,
+compatible with but not specified by POSIX 1003.2, and should be used
+with caution in software intended to be portable to other systems.  Be
+warned also that they are considered experimental and changes are
+possible.
+
+@subheading Return Value
+
+The size of buffer needed to hold the message (including terminating
+@code{NUL}) is always returned, even if @var{errbuf_size} is zero.
+
+@c --------------------------------------------------------------------------
+
+@node regfree, string
+@subheading Syntax
+
+@example
+
+#include <sys/types.h>
+#include <regex.h>
+
+void regfree(regex_t *preg);
+
+@end example
+
+@subheading Description
+
+@code{regfree} frees any dynamically-allocated storage associated with
+the compiled RE pointed to by @var{preg}.  The remaining @code{regex_t}
+is no longer a valid compiled RE and the effect of supplying it to
+@code{regexec} or @code{regerror} is undefined.
