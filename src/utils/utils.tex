@@ -176,13 +176,20 @@ tar format.
 An additional bonus of using @code{djtar} is that it can convert
 Unix-style text files to DOS-style text files, and vice versa.  By
 default, it will write all files exactly as found in the archive, but the
-@samp{-u} and @samp{-d} options can change that.
+@samp{-u} and @samp{-d} options can change that.  @code{djtar} will
+always convert DOS batch files to DOS-style text files, if they
+have been stored as UNIX-style text files.  This is because
+@file{command.com} refuses to run batch files that contain
+UNIX-style EOLs.
 
 @code{djtar} performs a number of file name conversions in an attempt
 to make the files fit into MS-DOS's restricted file names.  Any file
 ending in @file{.info-@var{n}}, where @var{n} is a number, becomes
 @file{.i@var{n}}.  Any file ending in @file{.tar.gz} becomes
-@file{.tgz}.  Any @file{++} string within a file name becomes @file{xx}.
+@file{.tgz}.  Any file ending in @file{.tar.bzip2}, @file{.tar.bz2}
+or @file{.tar.bz} becomes @file{.tbz} and any file ending in
+@file{.bzip2} becomes @file{.bz2}.  Any @file{++} string within
+a file name becomes @file{xx}.
 Any leading dots are changed to underscores (but current and parent
 directories, @file{./} and @file{../} are left alone).  Any remaining
 multiple dots are changed to dashes, unless the part before the dot is

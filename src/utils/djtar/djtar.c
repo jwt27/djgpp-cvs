@@ -306,9 +306,13 @@ get_new_name(char *name_to_change, int *should_be_written)
   if (*should_be_written && !to_stdout && NO_LFN(changed_name))
   {
     static char info_[] = ".info-";
+    static char _bzip2[] = ".bzip2", _bz2[] = ".bz2";
+    static char *_tar_bz_extension[] = { ".tar.bz", ".tar.bz2", ".tar.bzip2", NULL};
+    static char _tbz[] = ".tbz";
     static char _tar_gz[] = ".tar.gz", _tgz[] = ".tgz";
     static char xx[] = "++";
-    char *info, *tgz, *plus;
+    char *bz2, *info, *tbz, *tgz, *plus;
+    int i = 0;
 
     strcpy(new, changed_name);
     info = strstr(new, info_);
@@ -321,6 +325,22 @@ get_new_name(char *name_to_change, int *should_be_written)
     if (tgz && tgz[sizeof(_tar_gz)-1] == '\0')
     {
       strcpy(tgz, _tgz);
+      fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
+    }
+    while (_tar_bz_extension[i])
+    {
+      tbz = strstr(new, _tar_bz_extension[i]);
+      if (tbz && tbz[strlen(_tar_bz_extension[i])] == '\0')
+      {
+        strcpy(tbz, _tbz);
+        fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
+      }
+      i++;
+    }
+    bz2 = strstr(new, _bzip2);
+    if (bz2 && bz2[sizeof(_bzip2)-1] == '\0')
+    {
+      strcpy(bz2, _bz2);
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
     }
     plus = strstr(new, xx);

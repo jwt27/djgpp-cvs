@@ -62,7 +62,7 @@ extern char new[];
 int
 tarread(char *buf, long buf_size)
 {
-  int should_be_written;
+  int should_be_written, batch_file_processing = 0;
 
   while (buf_size)
   {
@@ -91,6 +91,7 @@ tarread(char *buf, long buf_size)
 
     if (looking_for_header)
     {
+      char *extension;
       int head_csum = 0;
       int i;
       size_t nlen;
@@ -107,6 +108,13 @@ tarread(char *buf, long buf_size)
       first_block = 1;
       file_type = DOS_BINARY;
       looking_for_header = 0;
+
+      /* command.com refuses to run batch files
+         that have been stored with UNIX-style EOL,
+         so we will extract them with DOS-style EOL. */
+      extension = strrchr(basename(header.name), '.');
+      if (extension && !stricmp(extension, ".bat"))
+        batch_file_processing = 1;  /* LF -> CRLF */
 
       sscanf(header.operm, " %lo", &perm);
       sscanf(header.ouid, " %lo", &uid);
@@ -225,7 +233,7 @@ open_file:
 
     while (size)
     {
-      char tbuf[512];
+      char tbuf[1024];
       char *wbuf = buf;
 
       if (buf_size <= 0)    /* this buffer exhausted */
@@ -236,34 +244,54 @@ open_file:
         dsize = buf_size;
       else
         dsize = 512;
-      if (first_block && (text_dos || text_unix || to_tty))
+      if (batch_file_processing && !to_tty)
       {
-        file_type = guess_file_type(buf, dsize);
-        first_block = 0;
-        if (file_type == UNIX_TEXT && text_dos)
-          setmode(r, O_TEXT);   /* will add CR chars to each line */
-      }
-      if ((text_unix || to_tty) && file_type == DOS_TEXT)
-      {
-        /* If they asked for text files to be written Unix style, or
-           we are writing to console, remove the CR and ^Z characters
-           from DOS text files.
-           Note that we don't alter the original uncompressed data so
-           as not to screw up the CRC computations.  */
-        char *s=buf, *d=tbuf;
-        while (s-buf < dsize)
+        /* LF -> CRLF.
+           Note that we don't alter the original uncompressed
+           data so as not to screw up the CRC computations.  */
+        char *src = buf, *dest = tbuf;
+        int buflen = 0;
+        while (buflen < dsize)
         {
-          if (*s != '\r' && *s != 26)
-            *d++ = *s;
-          s++;
+          if (buflen && *src == '\n' && src[-1] != '\r')
+            *dest++ = '\r';
+          *dest++ = *src++;
+          buflen = src - buf;
         }
-        wsize = d - tbuf;
+        wsize = dest - tbuf;
         wbuf = tbuf;
       }
       else
       {
-        wbuf = buf;
-        wsize = dsize;
+        if (first_block && (text_dos || text_unix || to_tty))
+        {
+          file_type = guess_file_type(buf, dsize);
+          first_block = 0;
+          if (file_type == UNIX_TEXT && text_dos)
+            setmode(r, O_TEXT);   /* will add CR chars to each line */
+        }
+        if ((text_unix || to_tty) && file_type == DOS_TEXT)
+        {
+          /* If they asked for text files to be written Unix style, or
+             we are writing to console, remove the CR and ^Z characters
+             from DOS text files.
+             Note that we don't alter the original uncompressed data so
+             as not to screw up the CRC computations.  */
+          char *s=buf, *d=tbuf;
+          while (s-buf < dsize)
+          {
+            if (*s != '\r' && *s != 26)
+              *d++ = *s;
+            s++;
+          }
+          wsize = d - tbuf;
+          wbuf = tbuf;
+        }
+        else
+        {
+          wbuf = buf;
+          wsize = dsize;
+        }
       }
       errno = 0;
       if (write(r, wbuf, wsize) < wsize)
@@ -295,6 +323,7 @@ open_file:
       close(r);
       chmod(changed_name, perm);
     }
+    batch_file_processing = 0;
     looking_for_header = 1;
     if (write_errno == ENOSPC)  /* target disk full: quit early */
     {

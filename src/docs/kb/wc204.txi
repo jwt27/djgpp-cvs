@@ -354,3 +354,8 @@ When @code{write} and @code{_write} detect that a file pointer is past EOF,
 that space will now be filled with zeroes to increase POSIX compliance
 and plug a security hole on disks containing sensitive information.
 
+@pindex djtar@r{, DOS batch file conversion}
+If a tar archive contains DOS batch files that have been stored with
+UNIX-style LF-only EOLs, @code{djtar} will now convert them
+automatically to DOS-style EOLs.  This is because @file{COMMAND.COM}
+refuses to run batch files that contain UNIX-style EOLs.
