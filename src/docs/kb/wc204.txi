@@ -200,3 +200,8 @@ the functions from the @code{spawn*} family.
 The DOS standard extensions @file{.com}, @file{.exe}, @file{.bat}, and
 @file{.btm} are still included in the search @emph{before} looking for
 the file name itself, for compatibility with stock DOS/Windows shells.
+
+@findex valloc@r{, added to the library}
+@findex memalign@r{, added to the library}
+The functions @code{valloc} and @code{memalign} have been added to the
+library to support allocating memory at power of 2 addresses.
