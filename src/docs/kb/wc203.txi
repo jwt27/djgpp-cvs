@@ -612,8 +612,8 @@ Undefined operations, such as division of zero by zero or of @code{Inf}
 by an @code{Inf}, produce a @code{NaN}.
 
 @item
-@cindex FST/FSTS instructions, emulation of, over/underflow
-Emulation of @code{FST} and @code{FSTS} instructions avoids overflowing
+@cindex FST/FSTP instructions, emulation of, over/underflow
+Emulation of @code{FST} and @code{FSTP} instructions avoids overflowing
 of the exponent when it is too large for the destination format; it
 stores an @code{Inf} or a maximum finite number instead.  Operands that
 are too small for the destination format cause either a denormal or a
@@ -691,6 +691,14 @@ The emulations of @code{FSINCOS}, @code{FSIN} and @code{FCOS} return a
 Operation exception for an @code{Inf} argument; this is what the Intel
 manuals require.  This affects functions @code{sin}, @code{cos},
 @code{sincos}, and @code{tan}.
+
+@item
+@cindex FST/FSTP instructions, emulation of, rounding
+The emulation of instructions @code{FST} and @code{FSTP} that store
+FP registers into @code{float} or @code{double} variables, now correctly
+round the stored value according to the current rounding mode.
+Previoulsy, the stored value was always chopped (truncated) at the last
+stored bit of the mantissa.
 @end itemize
 
 

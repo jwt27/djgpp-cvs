@@ -155,7 +155,9 @@ static int nan_type(reg& r)
     return NAN_NONE;
   if (r.sigh & 0x40000000)
     return NAN_QNAN;
-  return NAN_SNAN;
+  if ((r.sigh & 0x3fffffff) || r.sigl)
+    return NAN_SNAN;
+  return NAN_NONE;	// Inf
 }
 
 static int compare(reg& a, reg& b)
@@ -571,7 +573,13 @@ static void r_sub(reg& a, reg& b, reg& d)
   }
   if (a.tag == TW_S)
   {
-    d = a;
+    if (b.tag == TW_S && nan_type(b) == NAN_NONE && a.sign == b.sign)
+    {
+      exception(EX_I);
+      d = CONST_NAN;
+    }
+    else
+      d = a;
     return;
   }
   if (b.tag == TW_S)
@@ -620,6 +628,8 @@ static void r_add(reg& a, reg& b, reg& s)
   if (a.tag == TW_Z)
   {
     s = b;
+    if (b.tag == TW_Z && a.sign != b.sign)
+      s.sign = 0;
     return;
   }
   if (b.tag == TW_Z)
@@ -629,7 +639,16 @@ static void r_add(reg& a, reg& b, reg& s)
   }
   if (a.tag == TW_S)
   {
-    s = a;
+    // "If both operands are infinities of opposite signs, an
+    // invalid-operation exception is generated."--Intel manual
+    if (a.sign != b.sign
+	&& nan_type(a) == NAN_NONE && nan_type(b) == NAN_NONE)
+    {
+      exception(EX_I);
+      s = CONST_NAN;
+    }
+    else
+      s = a;
     return;
   }
   if (b.tag == TW_S)
@@ -686,11 +705,25 @@ static void r_mul(reg& a, reg& b, reg& s)
 {
   if (a.tag == TW_Z)
   {
-    s = CONST_Z;
+    if (b.tag == TW_S
+      && (val_same(b, CONST_PINF) || val_same(b, CONST_NINF)))
+    {
+      exception(EX_I);
+      s = CONST_NAN;
+    }
+    else
+      s = CONST_Z;
   }
   else if (b.tag == TW_Z)
   {
-    s = CONST_Z;
+    if (a.tag == TW_S
+      && (val_same(a, CONST_PINF) || val_same(a, CONST_NINF)))
+    {
+      exception(EX_I);
+      s = CONST_NAN;
+    }
+    else
+      s = CONST_Z;
   }
   else if (a.tag == TW_S)
   {
@@ -755,7 +788,10 @@ static void r_div(reg& a, reg& b, reg& q)
     if (val_same(a, CONST_PINF) || val_same(a, CONST_NINF))
     {
       if (val_same(b, CONST_PINF) || val_same(b, CONST_NINF))
+      {
+	exception(EX_I);
 	q = CONST_NAN;
+      }
       else
 	q = a;
     }
@@ -774,7 +810,10 @@ static void r_div(reg& a, reg& b, reg& q)
   else if (a.tag == TW_Z)
   {
     if (b.tag == TW_Z)
+    {
+      exception(EX_I);
       q = CONST_NAN;
+    }
     else
       q = a;
   }
@@ -1066,18 +1105,36 @@ static void r_mov(reg& s, double *d)
   }
   else
   {
-    short unbiased_exp = s.exp - EXP_BIAS;
-    l[0] = (s.sigl >> 11) | (s.sigh << 21);
-    l[1] = (s.sigh >> 11) & 0xfffff;
-    if (s.exp == 0x7fff)	// NaN or Inf
+    reg t = s;
+    int rmode = (control_word & CW_RC);
+    short unbiased_exp = t.exp - EXP_BIAS;
+    unsigned lbit = 1 << 10; // mask for highest bit shifted out of sigl
+    unsigned lbits = 0x000003ff; // mask for rest of bits shifted out of sigl
+    reg ulp = {t.sign, TW_V, t.exp, lbit, 0}; // the ULP
+    // Round the number if necessary
+    if (t.exp <= EXP_MAX && unbiased_exp <= 1023)
+    {
+      if ((rmode == RC_RND
+	   && (t.sigl & lbit) && (t.sigl & lbits))
+	  || (rmode == RC_UP && t.sign == SIGN_POS
+	      && (t.sigl & (lbit | lbits)))
+	  || (rmode == RC_DOWN && t.sign == SIGN_NEG
+	      && (t.sigl & (lbit | lbits))))
+      {
+	r_add(s, ulp, t);
+	unbiased_exp = t.exp - EXP_BIAS;
+      }
+    }
+    l[0] = (t.sigl >> 11) | (t.sigh << 21);
+    l[1] = (t.sigh >> 11) & 0xfffff;
+    if (t.exp == 0x7fff)	// NaN or Inf
       l[1] |= 0x7ff00000;
     else if (unbiased_exp > 1023) // overflow
     {
       // If Overflow is unmasked, longjmp without storing anything.
       exception(EX_O);
-      int rmode = (control_word & CW_RC);
-      if ((rmode == RC_DOWN && s.sign == 0)
-	  || (rmode == RC_UP && s.sign)
+      if ((rmode == RC_DOWN && t.sign == 0)
+	  || (rmode == RC_UP && t.sign)
 	  || rmode == RC_CHOP)
       {
 	l[0] = 0xffffffff;	// max finite number
@@ -1126,17 +1183,35 @@ static void r_mov(reg& s, float *d)
   }
   else
   {
-    short unbiased_exp = s.exp - EXP_BIAS;
-    f = (s.sigh >> 8) & 0x007fffff;
-    if (s.exp == 0x7fff)	// NaN or Inf
+    reg t = s;
+    int rmode = (control_word & CW_RC);
+    short unbiased_exp = t.exp - EXP_BIAS;
+    unsigned lbit = 1 << 7; // mask for highest bit shifted out of sigh
+    unsigned lbits = 0x0000007f; // mask for rest of bits shifted out of sigh
+    reg ulp = {t.sign, TW_V, t.exp, 0, lbit}; // the ULP
+    // Round the number if necessary
+    if (t.exp <= EXP_MAX && unbiased_exp <= 127)
+    {
+      if ((rmode == RC_RND
+	   && (t.sigh & lbit) && ((t.sigh & lbits) || t.sigl))
+	  || (rmode == RC_UP && t.sign == SIGN_POS
+	      && ((t.sigh & (lbit | lbits)) || t.sigl))
+	  || (rmode == RC_DOWN && t.sign == SIGN_NEG
+	      && ((t.sigh & (lbit | lbits)) || t.sigl)))
+      {
+	r_add(s, ulp, t);
+	unbiased_exp = t.exp - EXP_BIAS;
+      }
+    }
+    f = (t.sigh >> 8) & 0x007fffff;
+    if (t.exp == 0x7fff)	// NaN or Inf
       f |= 0x7f800000;
     else if (unbiased_exp > 127) // overflow
     {
       // If Overflow is unmasked, longjmp without storing anything.
       exception(EX_O);
-      int rmode = (control_word & CW_RC);
-      if ((rmode == RC_DOWN && s.sign == 0)
-	  || (rmode == RC_UP && s.sign)
+      if ((rmode == RC_DOWN && t.sign == 0)
+	  || (rmode == RC_UP && t.sign)
 	  || rmode == RC_CHOP)
 	f = 0x7f7fffff;		// max finite number
       else
@@ -1163,6 +1238,14 @@ static void r_mov(reg& s, long long *d)
 {
   reg t;
   t = s;
+  if (t.tag == TW_S
+      && (val_same(t, CONST_PINF) || val_same(t, CONST_NINF)))
+  {
+    exception(EX_I);
+    ((long *)d)[0] = 0;
+    ((long *)d)[1] = 0x80000000;
+    return;
+  }
   round_to_int(t);
   ((long *)d)[0] = t.sigl;
   ((long *)d)[1] = t.sigh;
@@ -1174,6 +1257,13 @@ static void r_mov(reg& s, long *d)
 {
   reg t;
   t = s;
+  if (t.tag == TW_S
+      && (val_same(t, CONST_PINF) || val_same(t, CONST_NINF)))
+  {
+    exception(EX_I);
+    *d = 0x80000000;
+    return;
+  }
   round_to_int(t);
   if (t.sigh || (t.sigl & 0x80000000))
     *d = -1;
@@ -1185,6 +1275,13 @@ static void r_mov(reg& s, short *d)
 {
   reg t;
   t = s;
+  if (t.tag == TW_S
+      && (val_same(t, CONST_PINF) || val_same(t, CONST_NINF)))
+  {
+    exception(EX_I);
+    *d = -32767;
+    return;
+  }
   round_to_int(t);
   if (t.sigh || (t.sigl & 0xFFFF8000))
     *d = -1;
@@ -1790,12 +1887,37 @@ static void fyl2x()
   reg CONST_SQRT2 = { SIGN_POS, TW_V, EXP_BIAS, 0xf9de6000, 0xb504f333 };
 
   z = st();
-  if ((z.tag != TW_V) || (z.sign != SIGN_POS))
+  if ((z.tag != TW_V) || (z.sign != SIGN_POS)
+      || (val_same(z, CONST_1)
+	  && (val_same(st(1), CONST_NINF) || val_same(st(1), CONST_PINF))))
   {
-    exception(EX_I); // not valid, zero or negative
+    char sign = st(1).sign;
+    if (val_same(z, CONST_NINF)
+	|| (z.sign == SIGN_NEG && z.tag == TW_V)
+	|| (z.tag == TW_Z && st(1).tag == TW_Z)
+	|| (val_same(z, CONST_PINF) && st(1).tag == TW_Z)
+	|| (val_same(z, CONST_1)
+	    && (val_same(st(1), CONST_NINF) || val_same(st(1), CONST_PINF))))
+    {
+      exception(EX_I);
+      st(1) = CONST_NAN;
+    }
+    else if (z.tag == TW_Z && st(1).tag == TW_Z)
+    {
+      exception(EX_Z);
+      st(1) = CONST_PINF;
+      if (sign == SIGN_POS)
+	st(1).sign = SIGN_NEG;
+    }
+    else if (nan_type(z) != NAN_NONE)
+      st(1) = z;
+    else if (nan_type(st(1)) == NAN_NONE && z.tag == TW_S)
+    {
+      st(1) = CONST_PINF;
+      st(1).sign = sign;
+    }
     st().tag = TW_E;
     top++;
-    st() = CONST_NAN;	// FIXME!
     return;
   }  
   exponent = (long)(z.exp - EXP_BIAS);
@@ -1974,11 +2096,21 @@ static void fpatan()
 {
   if (empty(1))
     return;
+  if (nan_type(st()) != NAN_NONE || nan_type(st(1)) != NAN_NONE)
+  {
+    st(1) = CONST_NAN;
+    st().tag = TW_E;
+    top++;
+    return;
+  }
   if (is_zero(st()))
   {
     // Propagate sign of numerator
     char num_sign = st(1).sign;
-    st(1) = CONST_PI2;
+    if (is_zero(st(1)))
+      st(1) = CONST_PI;
+    else
+      st(1) = CONST_PI2;
     st(1).sign = num_sign;
     st().tag = TW_E;
     top++;
@@ -1989,7 +2121,42 @@ static void fpatan()
   {
     // Check for sign of denominator
     // st(1) = CONST_Z;
+    char st1_sign = st(1).sign;
     st(1) = (st(0).sign == SIGN_NEG) ? CONST_PI : CONST_Z;
+    st(1).sign = st1_sign;
+    st().tag = TW_E;
+    top++;
+    return;
+  }
+  if (st().tag == TW_S
+      && (val_same(st(), CONST_NINF) || val_same(st(), CONST_PINF)))
+  {
+    char sign = st(1).sign;
+    char tag  = st(1).tag;
+    reg tmp, pi_4, two;
+    long i = 2;
+    st(1) = (st().sign == SIGN_NEG) ? CONST_PI : CONST_Z;
+    if (tag != TW_V)
+    {
+      r_mov(&i, two);
+      r_div(CONST_PI2, two, pi_4);
+      if (st().sign == SIGN_NEG)
+	r_sub(st(1), pi_4, tmp);
+      else
+	r_add(st(1), pi_4, tmp);
+      st(1) = tmp;
+    }
+    st(1).sign = sign;
+    st().tag = TW_E;
+    top++;
+    return;
+  }
+  if (st(1).tag == TW_S
+      && val_same(st(1), CONST_NINF) || val_same(st(1), CONST_PINF))
+  {
+    char nsign = st(1).sign;
+    st(1) = CONST_PI2;
+    st(1).sign = nsign;
     st().tag = TW_E;
     top++;
     return;
@@ -2094,11 +2261,13 @@ static void fprem1()
 
 static void fdecstp()
 {
+  status_word &= ~SW_C1;
   top--;
 }
 
 static void fincstp()
 {
+  status_word &= ~SW_C1;
   top++;
 }
 
@@ -2144,6 +2313,10 @@ void fyl2x();
 static void fyl2xp1()
 {
   reg newx;
+  // FIXME: this is inaccurate when the argument is near zero, which
+  // defeats the purpose of the FYL2XP1 instruction.  Instead, compute
+  // the same series as in FYL2X, but for x/(x+2) instead of
+  // (x-1)/(x+1).
   r_add(st(), CONST_1, newx);
   st() = newx;
   fyl2x();
@@ -2155,7 +2328,8 @@ static void fsqrt()
     return;
   if (st().tag == TW_Z)
     return;
-  if (st().exp == EXP_MAX + 1)
+  if (st().exp > EXP_MAX
+      && (nan_type(st()) != NAN_NONE || st().sign == SIGN_POS))
     return;
   if (st().sign == SIGN_NEG)
   {
@@ -2221,12 +2395,15 @@ static void frndint()
 
 static void fscale()
 {
-  long scale1;
-  if (empty(1))
+  long long scale1;
+  int old_cw = control_word;
+  if (empty(1) || st().exp > EXP_MAX || st(1).exp > EXP_MAX)
     return;
+  control_word &= ~CW_RC;
+  control_word |= RC_CHOP;
   r_mov(st(1), &scale1);
-  scale1 += st().exp;
-  if (scale1 > EXP_MAX)
+  control_word = old_cw;
+  if (scale1 > EXP_MAX - st().exp)
   {
     int sign = st().sign;
     exception(EX_O);
@@ -2234,7 +2411,7 @@ static void fscale()
     st().sign = sign;
   }
   else
-    st().exp = scale1;
+    st().exp += scale1;
 }
 
 static void fsin()
