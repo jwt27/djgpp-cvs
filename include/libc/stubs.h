@@ -60,8 +60,11 @@ extern "C" {
 #define setmode __setmode
 #define spawnve __spawnve
 #define spawnvpe __spawnvpe
+#define statfs __statfs
 #define stricmp __stricmp
 #define sync __sync
+#define tell __tell
+#define uclock __uclock
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
