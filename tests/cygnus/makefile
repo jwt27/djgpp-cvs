@@ -125,7 +125,7 @@ $(OFILES) $(VEC_OFILES) : test.h
 
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
-	$(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results
+	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results
 
 .SECONDARY: $(GEN_PROGS) $(GEN_VEC_FILES)
 .PHONY: all check clean mostlyclean
