@@ -1,0 +1,47 @@
+*asm:
+
+
+*asm_final:
+
+
+*cpp:
+%{posix:-D_POSIX_SOURCE}
+
+*cc1:
+-fno-strength-reduce
+
+*cc1plus:
+-fno-strength-reduce
+
+*endfile:
+
+
+*link:
+
+
+*link_command:
+%{!c:%{!M:%{!MM:%{!E:%{!S:ld %l %X %{o*} %{A} %{d} %{e*} %{m} %{N} %{n} \
+	%{r} %{s} %{t} %{u*} %{x} %{z}\
+	%{!A:%{!nostartfiles:%{!nostdlib:%S}}} %{static:}\
+	%{L*} %D %{T*} %o -Tdjgpp.lnk\
+	%{!nostdlib:-lgcc %L -lgcc %{!A:%E}}}}}}}
+%{!c:%{!M:%{!MM:%{!E:%{!S:stubify %{v} %{o*:%*} %{!o*:a.out}}}}}} 
+
+*lib:
+-lc
+
+*startfile:
+%{pg:gcrt0.o%s}%{!pg:%{p:mcrt0.o%s}%{!p:crt0.o%s}}
+
+*switches_need_spaces:
+
+
+*signed_char:
+%{funsigned-char:-D__CHAR_UNSIGNED__}
+
+*predefines:
+-Dunix -Di386 -DGO32 -DMSDOS -DDJGPP=2 -DDJGPP_MINOR=0
+
+*cross_compile:
+0
+
