@@ -1309,21 +1309,79 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
   }
 }
 
-int __spawnve(int mode, const char *path, char *const argv[], char *const envp[])
+static int
+find_interpreter (const char *path, char *ext)
+{
+  int i;
+  int is_dir = 0;
+
+  for (i = 0; interpreters[i].extension; ++i)
+  {
+    if (stricmp(ext, interpreters[i].extension) == 0)
+      break;
+  }
+
+  if (access(path, F_OK) == 0 && (is_dir = access(path, D_OK)) != 0)
+    return i;
+
+  errno = is_dir ? EISDIR : ENOENT;
+  return -1;
+}
+
+static int
+find_extension (const char *path, char *ext)
+{
+  int i;
+  int is_dir = 0;
+
+  for (i = 0; interpreters[i].extension; ++i)
+  {
+    if (interpreters[i].flags & INTERP_FLAG_SKIP_SEARCH)
+      continue;
+    strcpy(ext, interpreters[i].extension);
+    if (access(path, F_OK) == 0 && (is_dir = access(path, D_OK)) != 0)
+      return i;
+  }
+
+  *ext = 0;
+  errno = is_dir ? EISDIR : ENOENT;
+  return -1;
+}
+
+
+#define SPAWN_SEARCH_FLAGS \
+  (SPAWN_EXTENSION_SRCH | SPAWN_INTERP_ONLY_SRCH)
+
+int __djgpp_spawn(int mode, const char *path, char *const argv[],
+                  char *const envp[], unsigned long flags);
+
+int __spawnve(int mode, const char *path, char *const argv[],
+              char *const envp[])
+{
+  return __djgpp_spawn(mode, path, argv, envp, SPAWN_EXTENSION_SRCH);
+}
+
+int __djgpp_spawn(int mode, const char *path, char *const argv[],
+                     char *const envp[], unsigned long flags)
 {
   /* This is the one that does the work! */
   union { char *const *x; char **p; } u;
-  int i = -1;
+  const int no_interp_found = -1;
+  int i = no_interp_found;
   char **argvp;
   char **envpp;
-  char rpath[FILENAME_MAX], *rp, *rd=0;
+  char rpath[FILENAME_MAX + 4], *rp_end, *rp_ext = 0;
   int e = errno;
-  int is_dir = 0;
-  int found = 0;
+  int ret_code;
 
   if (path == 0 || argv[0] == 0)
   {
     errno = EINVAL;
+    return -1;
+  }
+  if (mode == P_NOWAIT)
+  {
+    errno = ENOSYS;
     return -1;
   }
   if (strlen(path) > FILENAME_MAX - 1)
@@ -1335,70 +1393,64 @@ int __spawnve(int mode, const char *path, char *const argv[], char *const envp[]
   u.x = argv; argvp = u.p;
   u.x = envp; envpp = u.p;
 
+  /* Set defaults for the environment and search method.  */
+  if (envpp == NULL)
+    envpp = environ;
+
+  if ((flags & SPAWN_SEARCH_FLAGS) == 0)
+    flags |= SPAWN_EXTENSION_SRCH;
+
+  /* Copy the path to rpath and also mark where the extension is.  */
   fflush(stdout); /* just in case */
-  for (rp=rpath; *path; *rp++ = *path++)
+  for (rp_end=rpath; *path; *rp_end++ = *path++)
   {
     if (*path == '.')
-      rd = rp;
+      rp_ext = rp_end;
     if (*path == '\\' || *path == '/')
-      rd = 0;
+      rp_ext = 0;
   }
-  *rp = 0;
+  *rp_end = 0;
 
-  /* If LFN is supported on the volume where rpath resides, we
+  /* Perform an extension search when the flag SPAWN_INTERP_SEARCH is not
+     present.  If LFN is supported on the volume where rpath resides, we
      might have something like foo.bar.exe or even foo.exe.com.
-     If so, look for RPATH.ext before even trying RPATH itself. */
-  if (_use_lfn(rpath) || !rd)
+     If so, look for RPATH.ext before even trying RPATH itself.
+     Otherwise, try to add an extension to a file without one.  */
+  if (flags & SPAWN_EXTENSION_SRCH)
   {
-    for (i=0; interpreters[i].extension; i++)
+    if (_use_lfn(path) || !rp_ext)
     {
-      if ((interpreters[i].flags & INTERP_FLAG_SKIP_SEARCH) == 0)
-      {
-        strcpy(rp, interpreters[i].extension);
-        if (access(rpath, F_OK) == 0 && !(is_dir = (access(rpath, D_OK) == 0)))
-        {
-	  found = 1;
-	  break;
-        }
-      }
+      i = find_extension(rpath, rp_end);
+      /* When LFN is supported and an extension search fails, the go32_exec
+         interpreter will be selected instead of none.  In this case,
+         set the interpreter to none so the interpreter will be selected
+         from the existing extension.  */
+      if ((i != no_interp_found) && rp_ext && *rp_end == 0)
+        i = no_interp_found;
     }
   }
-  *rp = 0;
-  
-  if (!found)
-  {
-    const char *rpath_ext;
 
-    if (rd)
-    {
-      i = 0;
-      rpath_ext = rd;
-    }
-    else
-    {
-      i = INTERP_NO_EXT;
-      rpath_ext = "";
-    }
-    for ( ; interpreters[i].extension; i++)
-      if (stricmp(rpath_ext, interpreters[i].extension) == 0
-	  && access(rpath, F_OK) == 0
-	  && !(is_dir = (access(rpath, D_OK) == 0)))
-      {
-	found = 1;
-        break;
-      }
-    if (!found && access(rpath, F_OK) == 0 &&
-        !(is_dir = (access(rpath, D_OK) == 0)))
-      found = 1;
-  }
-  if (!found)
+  /* If no interpreter has already been detected, find one based on the
+     extension in rpath.  */
+  if (i == no_interp_found)
+    i = find_interpreter(rpath, rp_ext ? rp_ext : rp_end);
+
+  /* The file does not exist. Return with errno set either by find_extension
+     or find_interpreter to indicate the error.  */
+  if (i == no_interp_found)
+    return -1;
+
+  /* If adding an extension makes the path longer than FILENAME_MAX,
+     reject the path as too long.  */
+  if (*rp_end && (rp_end - rpath + strlen(rp_end)) > FILENAME_MAX - 1)
   {
-    errno = is_dir ? EISDIR : ENOENT;
+    errno = ENAMETOOLONG;
     return -1;
   }
+
   errno = e;
-  i = interpreters[i].interp(rpath, argvp, envpp);
+  ret_code = interpreters[i].interp(rpath, argvp, envpp);
   if (mode == P_OVERLAY)
-    exit(i);
-  return i;
+    exit(ret_code);
+  return ret_code;
 }
