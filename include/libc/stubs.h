@@ -33,6 +33,7 @@ extern "C" {
 #define putenv __putenv
 #define read __read
 #define statvfs __statvfs
+#define strtok_r __strtok_r
 #define tzset __tzset
 #define write __write
 

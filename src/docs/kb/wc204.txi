@@ -1053,3 +1053,6 @@ fails, if that function is compiled with C99 features enabled.
 @cindex @file{stdbool.h} added
 @cindex C99 compliance, @file{stdbool.h}
 The C99 file @file{stdbool.h} was added.
+
+@findex strtok_r@r{ added}
+The POSIX function @code{strtok_r} was added.

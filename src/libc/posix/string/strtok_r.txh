@@ -1,0 +1,50 @@
+@node strtok_r, string
+@findex strtok_r
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *strtok_r(char *s1, const char *s2, char **s3);
+@end example
+
+@subheading Description
+
+This function retrieves tokens from @var{s1} which are delimited by
+characters from @var{s2}.  It uses @var{s3} to track how far in
+@var{s1} the search has progressed.  
+
+To initiate the search, pass the string to be searched as @var{s1}.  For
+the remaining tokens, pass @code{NULL} instead.  
+
+@subheading Return Value
+
+A pointer to the token, or @code{NULL} if no more are found.
+
+@subheading Portability
+
+@portability posix
+
+@subheading Example
+
+@example
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+@{
+  char buf[] = "Hello there, stranger";
+  char *tok, *where;
+  for (tok = strtok(buf, " ,", &where);
+       tok;
+       tok=strtok(NULL, " ,", &where))
+    printf("tok = `%s'\n", tok);
+
+  return 0;
+@}
+
+tok = `Hello'
+tok = `there'
+tok = `stranger'
+@end example
+
