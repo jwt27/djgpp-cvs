@@ -10,6 +10,8 @@
  *   4. Open symlink in a symlink subdir with O_NOFOLLOW flag. Should fail with
  *        ELOOP. 
  *   5. Open a symlink with O_NOLINK but with symlinks in leading dirs.
+ *   6. Open a symlink file in a simple subdir. Check if we really have opened
+ *        the referred file. 
  */
 #include <errno.h>
 #include <fcntl.h>
@@ -19,7 +21,7 @@
 #include <unistd.h>
 
 static void test_success(int testnum, const char * fn, int flags,
-                         int data_size, const char * data);
+                         const char * data);
 
 int main(void)
 {
@@ -30,9 +32,9 @@ int main(void)
       fprintf(stderr, "Required data file is missing\n");
       exit(1);
    }
-   test_success(1, "test1", O_RDONLY, 5, "file1");
-   test_success(2, "test1", O_RDONLY | O_NOLINK, 10, "!<symlink>");
-   test_success(3, "test2/file1", O_RDONLY | O_NOFOLLOW, 5, "file1");
+   test_success(1, "test1", O_RDONLY, "file1");
+   test_success(2, "test1", O_RDONLY | O_NOLINK, "!<symlink>");
+   test_success(3, "test2/file1", O_RDONLY | O_NOFOLLOW, "file1");
    fd = open("test2/test1", O_RDONLY | O_NOFOLLOW);
    if (fd != -1)
    {
@@ -45,17 +47,19 @@ int main(void)
       exit(1);
    }
    printf("Test 4 passed\n");
-   test_success(5, "test2/test1", O_RDONLY | O_NOLINK, 10, "!<symlink>");
+   test_success(5, "test2/test1", O_RDONLY | O_NOLINK, "!<symlink>");
+   test_success(6, "dir/test2", O_RDONLY, "tstlink2");
    return 0;
 } 
 
-static void test_success(int testnum, const char * fn, int flags,
-                         int data_size, const char * data)
+static void test_success(int testnum, const char * fn, int flags, 
+                         const char * data)
 {
    char err_buf[50];
    int bytes_read;
    char buffer[100];
    int fd = open(fn, flags);
+   int data_size = strlen(data);
    if (fd == -1)
    {            
       sprintf(err_buf, "Test %d failed - unexpected open() failure ", testnum);
