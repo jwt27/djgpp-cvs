@@ -16,7 +16,8 @@ cache).
 Note that this does @strong{not} flushes the DOS buffers.  You need to
 call @code{fsync} (@pxref{fsync}) or @code{close} (@pxref{close}) to
 force DOS to commit the file data to the disk; @code{sync}
-(@pxref{sync}) does that for all open files.
+(@pxref{sync}) does that for all open files, and also calls
+@code{_flush_disk_cache}.
 
 @subheading Return Value
 
@@ -29,7 +30,8 @@ None.
 @subheading Example
 
 @example
-  /* Make sure all files are actually written to disk.  */
-  sync ();
+  /* Make sure all cached data for a handle FD is actually
+     written to disk.  */
+  fsync (fd);
   _flush_disk_cache ();
 @end example
