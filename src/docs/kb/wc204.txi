@@ -175,3 +175,25 @@ the letter case of a file name, like in this snippet:
 
 @noindent
 (This only works when the LFN support is available, of course.)
+
+@cindex search for executables, some extensions omitted
+@cindex @file{.sh}, @file{.ksh}, @file{.pl}, @file{.sed} extensions
+@findex __dosexec_find_on_path@r{, some extensions excluded from search}
+@findex system@r{, some extensions excluded from @code{PATH} search}
+@findex popen@r{, some extensions excluded from @code{PATH} search}
+@findex pclose@r{, some extensions excluded from @code{PATH} search}
+@findex spawn@r{, some extensions excluded from @code{PATH} search}
+The function @code{__dosexec_find_on_path} no longer looks for files
+with the @file{.sh}, @file{.ksh}, @file{.pl}, and @file{.sed} extensions
+before the files without those extensions.  This is so e.g.@: @file{foo}
+is found @emph{before} @file{file.sh} if both of them are present in the
+same directory.  The previous code was known to cause Bash to run the
+wrong script in some cases.
+
+This change affects all library functions which search for executables
+along the @code{PATH}: @code{system}, @code{popen}, @code{pclose}, and
+the functions from the @code{spawn*} family.
+
+The DOS standard extensions @file{.com}, @file{.exe}, @file{.bat}, and
+@file{.btm} are still included in the search @emph{before} looking for
+the file name itself, for compatibility with stock DOS/Windows shells.
