@@ -23,8 +23,8 @@ effective limit of 24 hours.  Casting to a 32-bit integer limits its
 usefulness to about an hour before 32 bits will wrap.
 
 Note that @code{printf} will only print a value of type @code{uclock_t}
-correctly if you use format specifiers for @code{long long} data, such
-as @code{%Ld} or @code{%lld}, because @code{uclock_t} is a 64-bit integer.
+correctly if you use the format specifier for @code{long long} data,
+@code{%lld}, because @code{uclock_t} is a 64-bit integer.
 @xref{printf}.
 
 Also note that @code{uclock} reprograms the interval timer in your PC
@@ -48,7 +48,7 @@ The number of tics.
 @subheading Example
 
 @example
-printf("%Ld ticks have elapsed\n", (long long)(uclock()));
+printf("%lld ticks have elapsed\n", (long long)(uclock()));
 printf("%f second have elapsed\n",
        ((double)uclock()/UCLOCKS_PER_SEC));
 @end example
