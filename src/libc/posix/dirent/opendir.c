@@ -1,8 +1,11 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <libc/symlink.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -52,7 +55,13 @@ DIR *
 opendir(const char *name)
 {
   int length;
-  DIR *dir = (DIR *)malloc(sizeof(DIR));
+  DIR *dir;
+  char name_copy[FILENAME_MAX + 1];
+
+  if (!__solve_symlinks(name, name_copy))
+     return NULL;
+  
+  dir = (DIR *)malloc(sizeof(DIR));
   if (dir == 0)
     return 0;
   dir->num_read = 0;
@@ -68,7 +77,7 @@ opendir(const char *name)
     dir->flags |= __OPENDIR_PRESERVE_CASE;
 
   /* Make absolute path */
-  _fixpath(name, dir->name);
+  _fixpath(name_copy, dir->name);
 
   /* Ensure that directory to be accessed exists */
   if (access(dir->name, D_OK))
