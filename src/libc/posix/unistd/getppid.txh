@@ -1,0 +1,23 @@
+@node getppid, unix
+@findex getppid
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int getppid(void);
+@end example
+
+@subheading Description
+
+Get the parent process ID.  Currently this is always 1, indicating that
+the parent process is no longer running. 
+
+@subheading Return Value
+
+The parent process ID.
+
+@subheading Portability
+
+@portability !ansi, posix
+
