@@ -108,15 +108,20 @@ main (int argc, char *argv[])
 {
   char           buf[32768];
   char           filename[PATH_MAX];
-  int            fd         = 0;
-  int            new_fd     = 0;
+  int            fd           = 0;
+  int            new_fd       = 0;
   fd_set         readfds, writefds;
   struct timeval tv;
   struct stat    sbuf;
-  off_t          offset     = 0;
-  off_t          ret_offset = 0;
-  int            n          = 0;
-  size_t         i          = 0;
+  off_t          offset       = 0;
+  offset_t       lloffset     = 0;
+  off_t          ret_offset   = 0;
+  offset_t       ret_lloffset = 0;
+  uid_t          owner        = 0;
+  gid_t          group        = 0;
+  int            ret          = 0;
+  int            n            = 0;
+  size_t         i            = 0;
 
   if (!__install_dev_zero()) {
     fprintf(stderr, "__install_dev_zero() failed\n");
@@ -386,6 +391,62 @@ main (int argc, char *argv[])
 
   close(fd);
 
+  /* - Check llseek() - */
+  fd = open(DEV_ZERO_PATH, O_RDWR);
+  if (fd == -1) {
+    fprintf(stderr,
+	    "Unable to open %s: %s\n", DEV_ZERO_PATH, strerror(errno));
+    return(EXIT_FAILURE);
+  }
+
+  for (i = 0; i < 1000; i++) {
+    lloffset     = (offset_t) random();
+    ret_lloffset = llseek(fd, offset, SEEK_SET);
+
+    if (ret_lloffset < 0)
+      fprintf(stderr, "llseek() to position %Lu failed\n", lloffset);
+  }
+
+  close(fd);
+
+  /* - Check fchown() - */
+
+  /* fchown() should behave the same way for /dev/zero as it does for
+   * regular files - it should always succeed. */
+  fd = open(DEV_ZERO_PATH, O_RDWR);
+  if (fd == -1) {
+    fprintf(stderr,
+	    "Unable to open %s: %s\n", DEV_ZERO_PATH, strerror(errno));
+    return(EXIT_FAILURE);
+  }
+
+  /* Try the current uid, gid. */
+  owner = getuid();
+  group = getgid();
+
+  ret = fchown(fd, owner, group);
+  if (ret < 0) {
+    fprintf(stderr,
+	    "fchown() on %s failed unexpectedly, when changing ownership "
+	    "to current owner: %s\n", DEV_ZERO_PATH, strerror(errno));
+    close(fd);
+    return(EXIT_FAILURE);
+  }
+
+  /* Try a non-existent uid, gid. */
+  owner *= 2, group *= 2;
+
+  ret = fchown(fd, owner, group);
+  if (ret < 0) {
+    fprintf(stderr,
+	    "fchown() on %s failed unexpectedly, when changing ownership: "
+	    "%s\n", DEV_ZERO_PATH, strerror(errno));
+    close(fd);
+    return(EXIT_FAILURE);
+  }
+
+  close(fd);
+
   /* - Check dup works - */
 #ifdef DJGPP_SUPPORTS_FSEXT_DUP_NOW
   fd = open(DEV_ZERO_PATH, O_RDWR);
@@ -532,6 +593,9 @@ main (int argc, char *argv[])
   /* - Check fstat() works - */
   test_fstat(DEV_ZERO_PATH);
   test_fstat(DEV_FULL_PATH);
+
+  /* Success!*/
+  printf("SUCCESS\n");
 
   return(EXIT_SUCCESS);
 }

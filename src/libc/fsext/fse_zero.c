@@ -176,22 +176,26 @@ match_dev_path (const char *filename, const char *dev_path)
 static int
 dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 {
-  int          emul       = 0; /* Emulated call? 1 => yes, 0 = no. */
-  int          fd         = 0;
-  DEV_DATA    *data       = NULL;
-  char        *filename   = NULL;
-  int          open_mode  = 0;
-  int          perm       = 0;
-  mode_t       creat_mode = 0;  
-  void        *buf        = NULL;
-  size_t       buflen     = 0;
-  off_t        offset     = 0;
-  int          whence     = 0;
-  struct stat *sbuf       = NULL;
-  int          cmd        = 0;
-  int          iparam     = 0;
+  int          emul         = 0; /* Emulated call? 1 => yes, 0 = no. */
+  int          fd           = 0;
+  DEV_DATA    *data         = NULL;
+  char        *filename     = NULL;
+  char        *new_filename = NULL;
+  int          open_mode    = 0;
+  int          perm         = 0;
+  mode_t       creat_mode   = 0;  
+  void        *buf          = NULL;
+  size_t       buflen       = 0;
+  off_t        offset       = 0;
+  offset_t     lloffset     = 0;
+  uid_t        owner        = 0;
+  gid_t        group        = 0;
+  int          whence       = 0;
+  struct stat *sbuf         = NULL;
+  int          cmd          = 0;
+  int          iparam       = 0;
 #ifdef DJGPP_SUPPORTS_FIONBIO_NOW
-  int         *piparam    = NULL;
+  int         *piparam      = NULL;
 #endif /* DJGPP_SUPPORTS_FIONBIO_NOW */
 
   switch(n) {
@@ -478,6 +482,14 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;    
 
+    /* Get context */
+    data = (DEV_DATA *) __FSEXT_get_data(fd);
+    if (data == NULL) {
+      errno = EBADF;
+      *rv   = -1;
+      break;
+    }
+
     switch(cmd) {
       /* */
 #ifdef DJGPP_SUPPORTS_FIONBIO_NOW
@@ -502,15 +514,68 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
   case __FSEXT_lseek:
     fd     = va_arg(args, int);
     offset = va_arg(args, off_t);
-    whence = va_arg(args, int);    
+    whence = va_arg(args, int);
 
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
 
+    /* Get context */
+    data = (DEV_DATA *) __FSEXT_get_data(fd);
+    if (data == NULL) {
+      errno = EBADF;
+      *rv   = -1;
+      break;
+    }
+
+    /* Seek is meaningless */
+    *rv = 0;
+    break;
+
+  case __FSEXT_llseek:
+    fd       = va_arg(args, int);
+    lloffset = va_arg(args, offset_t);
+    whence   = va_arg(args, int);    
+
+    /* This must be emulated, since the FSEXT has been called. */
+    emul = 1;
+
+    /* Get context */
+    data = (DEV_DATA *) __FSEXT_get_data(fd);
+    if (data == NULL) {
+      errno = EBADF;
+      *rv   = -1;
+      break;
+    }
+
+    /* Seek is meaningless */
+    *rv = 0;
+    break;
+
+  case __FSEXT_fchown:
+    fd    = va_arg(args, int);
+    owner = va_arg(args, uid_t);
+    group = va_arg(args, gid_t);
+
+    /* This must be emulated, since the FSEXT has been called. */
+    emul = 1;
+
+    /* Get context */
+    data = (DEV_DATA *) __FSEXT_get_data(fd);
+    if (data == NULL) {
+      errno = EBADF;
+      *rv   = -1;
+      break;
+    }
+
+    /* Behave like fchown() does on a regular file - succeed whatever
+     * the uid, gid are. */
     *rv = 0;
     break;
 
   case __FSEXT_link:
+    filename     = va_arg(args, char *);
+    new_filename = va_arg(args, char *);
+
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
 
@@ -519,7 +584,9 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     *rv   = -1;
     break;
 
-  case __FSEXT_unlink:    
+  case __FSEXT_unlink:
+    filename = va_arg(args, char *);
+
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
 
@@ -534,6 +601,14 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
+
+    /* Get context */
+    data = (DEV_DATA *) __FSEXT_get_data(fd);
+    if (data == NULL) {
+      errno = EBADF;
+      *rv   = -1;
+      break;
+    }
 
     /* Done */
     *rv = internal_dup(fd);
