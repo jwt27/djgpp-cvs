@@ -340,7 +340,7 @@ static void hook_dpmi(void)
   __djgpp_app_DS = app_ds;
 }
 
-/* The instructions in forced_test[] MUST MATCH the expansion of:
+/* The instructions in __dj_forced_test[] MUST MATCH the expansion of:
 
    EXCEPTION_ENTRY($13)
    EXCEPTION_ENTRY($14)
@@ -362,7 +362,7 @@ static void hook_dpmi(void)
    the time.  So most DPMI servers don't support it, and our code will
    never be called if we tie it to exception 17.  In contrast, exception
    13 is GPF, and *any* DPMI server will support that!  */
-static unsigned char forced_test[] = {
+unsigned char __dj_forced_test[] = {
   0x6a,0x0d,			/* pushl $0x0d */
   0xeb,0x10,			/* jmp relative +0x10 */
   0x6a,0x0e,			/* pushl $0x0e */
@@ -378,7 +378,7 @@ static unsigned char forced_test[] = {
   0x2e,0x80,0x3d		/* (beginning of) %cs:cmpb $0,forced */
 }; /* four next bytes contain the address of the `forced' variable */
 
-static int forced_test_size = sizeof (forced_test);
+static int forced_test_size = sizeof (__dj_forced_test);
 
 static int forced_address_known = 0;
 static unsigned int forced_address = 0;
@@ -417,7 +417,7 @@ _change_exception_handler:                                              \n\
         cld                                                             \n\
         movw  %cx,%es                                                   \n\
         movl  %edx,%edi                                                 \n\
-        movl  $_forced_test,%esi                                        \n\
+        movl  $___dj_forced_test,%esi                                   \n\
         movl  _forced_test_size,%ecx                                    \n\
         repe                                                            \n\
         cmpsb                                                           \n\
@@ -1492,7 +1492,7 @@ void cleanup_client(void)
   /* Invalidate the info about the `forced' variable.  */
   forced_address_known = 0;
   forced_address = 0;
-  forced_test_size = sizeof (forced_test); /* pacify the compiler */
+  forced_test_size = sizeof (__dj_forced_test); /* pacify the compiler */
   /* Set the flag, that the user interrupt vectors are no longer valid */
   user_int_set = 0;
 
