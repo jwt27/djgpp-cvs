@@ -15,6 +15,7 @@ SRC += lchown.c
 SRC += llseek.c
 SRC += nice.c
 SRC += readlink.c
+SRC += sdirlink.c
 SRC += symlink.c
 SRC += sync.c
 SRC += truncate.c
