@@ -1,0 +1,156 @@
+F_SETLK/F_RDLCK/BOF:retval=0,fl.l_start=0
+F_SETLK/F_UNLCK/BOF:retval=0,fl.l_start=0
+F_SETLK/F_RDLCK/EOF:retval=0,fl.l_start=0
+F_SETLK/F_UNLCK/EOF:retval=0,fl.l_start=0
+F_SETLK/F_RDLCK/2*EOF:retval=0,fl.l_start=0
+F_SETLK/F_UNLCK/2*EOF:retval=0,fl.l_start=0
+F_SETLK64/F_RDLCK/BOF:retval=0,fl64.l_start=0
+F_SETLK64/F_UNLCK/BOF:retval=0,fl64.l_start=0
+F_SETLK64/F_RDLCK/EOF:retval=0,fl64.l_start=0
+F_SETLK64/F_UNLCK/EOF:retval=0,fl64.l_start=0
+F_SETLK64/F_RDLCK/2*EOF:retval=0,fl64.l_start=0
+F_SETLK64/F_UNLCK/2*EOF:retval=0,fl64.l_start=0
+F_SETLK/F_RDLCK/BOF:retval=0,fl.l_start=2386
+F_SETLK/F_UNLCK/BOF:retval=0,fl.l_start=2386
+F_SETLK/F_RDLCK/EOF:retval=0,fl.l_start=2386
+F_SETLK/F_UNLCK/EOF:retval=0,fl.l_start=2386
+F_SETLK/F_RDLCK/2*EOF:retval=0,fl.l_start=2386
+F_SETLK/F_UNLCK/2*EOF:retval=0,fl.l_start=2386
+F_SETLK64/F_RDLCK/BOF:retval=0,fl64.l_start=2386
+F_SETLK64/F_UNLCK/BOF:retval=0,fl64.l_start=2386
+F_SETLK64/F_RDLCK/EOF:retval=0,fl64.l_start=2386
+F_SETLK64/F_UNLCK/EOF:retval=0,fl64.l_start=2386
+F_SETLK64/F_RDLCK/2*EOF:retval=0,fl64.l_start=2386
+F_SETLK64/F_UNLCK/2*EOF:retval=0,fl64.l_start=2386
+F_SETLK/F_RDLCK/BOF:retval=-1,fl.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK/F_UNLCK/BOF:retval=-1,fl.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK/F_RDLCK/EOF:retval=-1,fl.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK/F_UNLCK/EOF:retval=-1,fl.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK/F_RDLCK/2*EOF:retval=-1,fl.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK/F_UNLCK/2*EOF:retval=-1,fl.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK64/F_RDLCK/BOF:retval=-1,fl64.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK64/F_UNLCK/BOF:retval=-1,fl64.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK64/F_RDLCK/EOF:retval=-1,fl64.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK64/F_UNLCK/EOF:retval=-1,fl64.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK64/F_RDLCK/2*EOF:retval=-1,fl64.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK64/F_UNLCK/2*EOF:retval=-1,fl64.l_start=4772
+fd: 5
+errno: 4 : Permission denied (EACCES)
+DOS errno: 33 : Lock violation
+DOS extended error to errno: 4 : Permission denied (EACCES)
+Extended DOS error information:
+Extended error: 33 : Lock violation
+Class:          0A : Media error
+Action:         02 : Prompt user to reenter input
+Error Locus:    02 : Network related
+F_SETLK/F_RDLCK/BOF:retval=0,fl.l_start=9544
+F_SETLK/F_UNLCK/BOF:retval=0,fl.l_start=9544
+F_SETLK/F_RDLCK/EOF:retval=0,fl.l_start=9544
+F_SETLK/F_UNLCK/EOF:retval=0,fl.l_start=9544
+F_SETLK/F_RDLCK/2*EOF:retval=0,fl.l_start=9544
+F_SETLK/F_UNLCK/2*EOF:retval=0,fl.l_start=9544
+F_SETLK64/F_RDLCK/BOF:retval=0,fl64.l_start=9544
+F_SETLK64/F_UNLCK/BOF:retval=0,fl64.l_start=9544
+F_SETLK64/F_RDLCK/EOF:retval=0,fl64.l_start=9544
+F_SETLK64/F_UNLCK/EOF:retval=0,fl64.l_start=9544
+F_SETLK64/F_RDLCK/2*EOF:retval=0,fl64.l_start=9544
+F_SETLK64/F_UNLCK/2*EOF:retval=0,fl64.l_start=9544
