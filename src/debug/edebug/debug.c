@@ -24,7 +24,6 @@
 #include "debug.h"
 #include "unassmbl.h"
 #include <debug/syms.h>
-#include <debug/dbgcom.h>
 
 static char char32spc[] = "xxxúxxxúxxxúxxxùxxxúxxxúxxxúxxx ";
 
@@ -214,7 +213,6 @@ static int print_reason(void)
       printf("Keyboard interrupt\n");
     else if (i == 0x75)
     {
-      save_npx();
       printf("Numeric Exception (");
       if ((npx.status & 0x0241) == 0x0241)
         printf("stack overflow");
@@ -234,7 +232,6 @@ static int print_reason(void)
         printf("loss of precision");
       printf(") at eip=0x%08lx\n", npx.eip);
       unassemble(npx.eip, 0);
-      load_npx();
     }
     else
     {
@@ -742,7 +739,6 @@ void debugger(void)
         }
         break;
       case XNPX:
-        save_npx();
         printf("Control: 0x%04lx  Status: 0x%04lx  Tag: 0x%04lx\n",
                npx.control & 0xffff, npx.status & 0xffff, npx.tag & 0xffff);
         for (i=0; i<8; i++)
@@ -791,7 +787,6 @@ void debugger(void)
               break;
           }
         }
-        load_npx();
         break;
 
       case QUIT:

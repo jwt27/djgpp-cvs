@@ -86,6 +86,7 @@ static int redir_excp_count;
 #endif
 
 NPX npx;
+NPX debugger_npx;
 
 /* ------------------------------------------------------------------------- */
 /* Store the contents of the NPX in the global variable `npx'.  */
@@ -145,9 +146,8 @@ void save_npx (void)
    {
     npx.mmx[i]= * (long double *) &(npx.reg[i]);
    }
-   
-  /* asm("frstor %0" : :"m" (npx)); */
-  /* if we do this in mmx mode the fpu will be unusable */
+ /* Restore debugger's FPU state.  */
+ asm("frstor %0" : :"m" (debugger_npx));
 #endif
 }
 /* ------------------------------------------------------------------------- */
@@ -155,11 +155,23 @@ void save_npx (void)
 
 void load_npx (void)
 {
-  int i;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
+  /* Save debugger's FPU state.  */
+  asm ("fnsave %0" : :"m" (debugger_npx));
+#if 0
+  /* This code is disabled because npx.mmx[] and npx.st[] are supposed
+     to be read-only, they exist to make it easier for a debugger to
+     display the FP registers either as long doubles or as 64-bit MMX
+     registers.  If the debugger wants to *change* the values, it
+     should always change in npx.reg[].  Otherwise, we will need a
+     whole slew of flags to know which one of the different views
+     should be used to restore child's FPU state, or else the debugger
+     will be forced to handle the extra burden of copying the same
+     value into each one of the three views of the same registers.  */
   if (npx.in_mmx_mode)
    {
+     int i;
     /* change reg to mmx */
     for (i=0;i<8;i++)
      if (npx.mmx[i]!= * (long double *) &(npx.reg[i]))
@@ -169,6 +181,7 @@ void load_npx (void)
    }
   else
    {
+     int i;
     /* change reg to st */
     for (i=0;i<8;i++)
       {
@@ -178,6 +191,7 @@ void load_npx (void)
          }
       }
    }
+#endif
   asm ("frstor %0" : "=m" (npx));
 }
 
@@ -1255,8 +1269,12 @@ void edi_init(jmp_buf start_state)
   app_ds = a_tss.tss_ds;
   app_cs = a_tss.tss_cs;
   edi.app_base = 0;
+  /* Save debugger's FPU state.  */
+  asm ("fnsave %0" : :"m" (debugger_npx));
+  /* Fill the debuggee's FPU state with the default values, taken from
+     the equivalent of FNINIT performed by FNSAVE above.  */
   memset(&npx,0,sizeof(npx));
-  save_npx();	/* FIXME!! */
+  save_npx();
   /* Save all the changed signal handlers */
   oldTRAP = signal(SIGTRAP, dbgsig);
   oldSEGV = signal(SIGSEGV, dbgsig);

@@ -1615,8 +1615,7 @@ redraw (int first)
 	    if (abs (exp) < 1000)
 	      {
 		d = *((long double*)(npx.reg + i));
-		/* sprintf does not (djgpp 1.11m3) handle long doubles.	 */
-		sprintf(dstr,"%+.16g", (double) d);
+		sprintf(dstr,"%+.19Lg", (double) d);
 	      }
 	    else
 	      sprintf (dstr, "Valid, %s, and %s",
@@ -3013,7 +3012,7 @@ npx_pane_command (int key)
 	if (regp)
 	  {
 	    char s[2], *endp, *p;
-	    double d;
+	    long double d;
 
 	    s[0] = key; s[1] = '\0';
 	    if (!read_string (key == '=' ? "" : s) && read_buffer[0] != '\0')
@@ -3038,13 +3037,13 @@ npx_pane_command (int key)
 		  }
 		else
 		  {
-		    d = strtod (p, &endp);
+		    d = _strtold (p, &endp);
 		    if (*p != '\0' && *endp)
 		      message (CL_Error, "Expression not understood");
 		    else
 		      {
 			tag = (d == 0.0);
-			*((long double *)(npx.reg + reg)) = (long double) d;
+			*((long double *)(npx.reg + reg)) = d;
 			npx.reg[reg].sign = (*p == '-'); /* for -Zero */
 		      }
 		  }
