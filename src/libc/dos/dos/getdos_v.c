@@ -50,6 +50,7 @@ static struct _oem_info {
     {0x99, "GenSoft"},
     {0xee, "DR-DOS"},
     {0xef, "NovelDOS"},
+    {0xfd, "FreeDOS"},
     {0xff, "MS-DOS"},
     {0,    (char *)0}
 };

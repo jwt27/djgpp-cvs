@@ -317,3 +317,8 @@ namespace.
 @findex setjmp@r{, also a macro}
 @code{setjmp} is now a macro as well as a function.  This is required by
 the C@t{++} standard, and also recommended by the C standard.
+
+@findex _get_dos_version@r{, recognise FreeDOS}
+@code{_get_dos_version} now recognises @acronym{OEM} number @code{0xfd}
+as FreeDOS.
+
