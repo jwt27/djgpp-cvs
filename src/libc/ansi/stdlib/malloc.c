@@ -352,6 +352,8 @@ realloc(void *ptr, size_t size)
   printf("realloc %u %u/%08x %08x->%08, %u\n",
 	 size, b->size & ~1, b, ptr, newptr, copysize);
 #endif
+  if (!newptr)
+    return NULL;
   memcpy(newptr, ptr, copysize);
   free(ptr);
   return newptr;
