@@ -180,6 +180,7 @@ void __libc_termios_init(void);
 void __libc_termios_init_read(void);
 void __libc_termios_init_write(void);
 extern int __libc_termios_exist_queue (void);
+int __libc_termios_puts_queue (const unsigned char *_str);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
