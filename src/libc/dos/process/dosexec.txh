@@ -11,12 +11,12 @@ int spawnlp(int mode, const char *path, const char *argv0, ..., NULL);
 int spawnlpe(int mode, const char *path, const char *argv0, ...,
              NULL /*, const char **envp */);
 
-int spawnv(int mode, const char *path, const char **argv);
-int spawnve(int mode, const char *path, const char **argv,
-            const char **envp);
-int spawnvp(int mode, const char *path, const char **argv);
-int spawnvpe(int mode, const char *path, const char **argv,
-             const char **envp);
+int spawnv(int mode, const char *path, char *const argv[]);
+int spawnve(int mode, const char *path, char *const argv[],
+            char *const envp[]);
+int spawnvp(int mode, const char *path, char *const argv[]);
+int spawnvpe(int mode, const char *path, char *const argv[],
+             char *const envp[]);
 @end smallexample
 
 @subheading Description
