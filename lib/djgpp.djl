@@ -4,6 +4,8 @@ SECTIONS
 {
   .text  0x1000+SIZEOF_HEADERS : {
     *(.text)
+    *(.gnu.linkonce.t*)
+    *(.gnu.linkonce.r*)
     etext  =  . ; _etext = .;
     . = ALIGN(0x200);
   }
@@ -15,9 +17,10 @@ SECTIONS
     *(.dtor)
     djgpp_last_dtor = . ;
     *(.data)
-    *(.gcc_exc)
+    *(.gnu.linkonce.d*)
+    *(.gcc_exc*)
     ___EH_FRAME_BEGIN__ = . ;
-    *(.eh_fram)
+    *(.eh_fram*)
     ___EH_FRAME_END__ = . ;
     LONG(0)
      edata  =  . ; _edata = .;
