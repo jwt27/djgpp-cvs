@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
@@ -12,6 +13,7 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
 {
    char   path_copy[FILENAME_MAX];
    char * last_part;
+   int    is_root = 0;
 
    /* Reject NULLs... */
    if (!__symlink_path || !__real_path)
@@ -28,8 +30,17 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
    }
 
    /* Handle root directories */
-   if ((__symlink_path[1] == '\0') && 
-      ((__symlink_path[0] == '/') || (__symlink_path[0] == '\\')))
+   if (   ((__symlink_path[0] == '/') || (__symlink_path[0] == '\\'))
+       && (__symlink_path[1] == '\0'))
+     is_root = 1;
+
+   if (   __symlink_path[0]
+       && (__symlink_path[1] == ':')
+       && ((__symlink_path[2] == '/') || (__symlink_path[2] == '\\'))
+       && (__symlink_path[3] == '\0'))
+     is_root = 1;
+
+   if (is_root)
    {
       strcpy(__real_path, __symlink_path);
       return 1;
@@ -72,3 +83,22 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
    strcat(__real_path, last_part);
    return 1;
 }
+
+#ifdef TEST
+
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+  char buf[FILENAME_MAX];
+  int i;
+
+  puts("User requested tests:");
+  for (i = 1; i < argc; i++) {
+    __solve_dir_symlinks(argv[i], buf);
+    printf("%s -> %s\n", argv[i], buf);
+  }
+
+  return EXIT_SUCCESS;
+}
+#endif
