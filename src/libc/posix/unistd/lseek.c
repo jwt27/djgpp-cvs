@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -7,11 +8,14 @@
 #include <dpmi.h>
 #include <sys/fsext.h>
 #include <libc/dosio.h>
+#include <libc/fd_props.h>
 
 off_t
 lseek(int handle, off_t offset, int whence)
 {
   __dpmi_regs r;
+  int has_props;
+  
   __FSEXT_Function *func = __FSEXT_get_function(handle);
   if (func)
   {
@@ -30,6 +34,21 @@ lseek(int handle, off_t offset, int whence)
   {
     errno = __doserr_to_errno(r.x.ax);
     return -1;
+  }
+
+  has_props = __has_fd_properties(handle);
+  if (!has_props ||
+      (__fd_properties[handle]->flags & FILE_DESC_DONT_FILL_EOF_GAP) == 0)
+  {
+    if (offset > 0)
+    {
+      if (!has_props)
+        has_props = (__set_fd_properties(handle, NULL, 0) == 0);
+      if (has_props)
+        __set_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
+    }
+    else if (has_props && (whence == SEEK_SET || whence == SEEK_END))
+      __clear_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
   }
   return (r.x.dx << 16) + r.x.ax;
 }
