@@ -118,6 +118,7 @@
 #include <libc/farptrgs.h>
 #include <libc/bss.h>
 #include <libc/dosio.h>
+#include <libc/symlink.h>
 
 #include "xstat.h"
 
@@ -879,6 +880,7 @@ lstat(const char *path, struct stat *statbuf)
 {
   int  e = errno;
   int  pathlen, ret;
+  char real_path[FILENAME_MAX];
 
   if (!path || !statbuf)
     {
@@ -892,19 +894,23 @@ lstat(const char *path, struct stat *statbuf)
       return -1;
     }
 
+  /* Handle symlinks */
+  if (!__solve_dir_symlinks(path, real_path))
+    return -1;
+
   /* Fail if PATH includes wildcard characters supported by FindFirst,
      or if it is empty.  */
-  if (memchr(path, '*', pathlen) || memchr(path, '?', pathlen)
-      || path[0] == '\0')
+  if (memchr(real_path, '*', pathlen) || memchr(real_path, '?', pathlen)
+      || real_path[0] == '\0')
     {
       errno = ENOENT;	/* since no such filename is possible */
       return -1;
     }
 
-  if (__FSEXT_call_open_handlers(__FSEXT_stat, &ret, &path))
+  if (__FSEXT_call_open_handlers(__FSEXT_stat, &ret, &real_path))
    return ret;
 
-  if (stat_assist(path, statbuf) == -1)
+  if (stat_assist(real_path, statbuf) == -1)
     {
       return -1;      /* errno set by stat_assist() */
     }
