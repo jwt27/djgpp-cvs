@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_io_h_
 #define __dj_include_io_h_
@@ -17,6 +18,7 @@ extern "C" {
 int		chsize(int handle, long size);
 int		_close(int _fd);
 int		_creat(const char *_path, int _attrib);
+int		_creatnew(const char *_path, int _attrib, int _mode);
 ssize_t		crlf2nl(char *_buffer, ssize_t _length);
 int		_dos_lock(int _fd, long _offset, long _length);
 long		filelength(int _handle);

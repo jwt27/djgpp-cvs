@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -14,6 +16,8 @@
 #include <sys/exceptn.h>
 #include <stubinfo.h>
 #include <sys/farptr.h>
+#include <sys/fsext.h>
+#include <io.h>
 
 extern char __libdbg_ident_string[];
 static char *id = __libdbg_ident_string;
@@ -142,6 +146,8 @@ void _clear_break_DPMI(void)
 }
 
 static __dpmi_paddr old_i31,old_i21;
+static int user_int_set = 0;
+static __dpmi_paddr my_i9,user_i9,my_i8,user_i8;
 
 static void hook_dpmi(void)
 {
@@ -150,12 +156,23 @@ static void hook_dpmi(void)
 
   __dpmi_get_protected_mode_interrupt_vector(0x21, &old_i21);
   __dpmi_get_protected_mode_interrupt_vector(0x31, &old_i31);
+  /* Save our current interrupt vectors for the keyboard and the timer */
+  __dpmi_get_protected_mode_interrupt_vector(0x09, &my_i9);
+  __dpmi_get_protected_mode_interrupt_vector(0x08, &my_i8);
 
   asm("mov %%cs,%0" : "=g" (new_int.selector) );
   new_int.offset32 = (unsigned long)i21_hook;
   __dpmi_set_protected_mode_interrupt_vector(0x21, &new_int);
   new_int.offset32 = (unsigned long)i31_hook;
   __dpmi_set_protected_mode_interrupt_vector(0x31, &new_int);
+
+  /* If we have called already unhook_dpmi, the user interrupt
+     vectors for the keyboard and the timer are valid. */
+  if (user_int_set)
+  {
+    __dpmi_set_protected_mode_interrupt_vector(0x09, &user_i9);
+    __dpmi_set_protected_mode_interrupt_vector(0x08, &user_i8);
+  }
 }
 
 /* Change a handle in the list: EAX is the old handle, EDX is the new */
@@ -278,11 +295,8 @@ CL7:									\n\
 );
 
 /* BUGS: We ignore the exception handlers for the child process, so signals
-   do not work.  We also disable the hooking of HW interrupts that might
-   cause the HW-interrupt-to-limit exceptions, since they can never be fixed.
-   Byproduct:  You can't debug code which hooks int 9, since it's keyboard
-   routine never gets called.  Eventually, we should save the exception and
-   interrupt hooks and then chain to them on the next execution.  Someday. */
+   do not work.  We also disable the hooking of the numeric coprocessor
+   HW interrupt. */
 
 /* Watch set selector base, if it is __djgpp_app_DS then reset breakpoints */
 
@@ -347,9 +361,7 @@ Lc31b:	.byte	0x2e							\n\
 	pushl	(%eax)							\n\
 	pushl	%eax							\n\
 	call	_longjmp						\n\
-Lc31d:	cmpb	$9,%bl							\n\
-	je	Lc31a							\n\
-	cmpb	$0x75,%bl						\n\
+Lc31d:	cmpb	$0x75,%bl						\n\
 	je	Lc31a							\n\
 	jmp	Lc31c							\n\
 Lc31_alloc_mem:								\n\
@@ -487,6 +499,18 @@ static void unhook_dpmi(void)
 {
   __dpmi_set_protected_mode_interrupt_vector(0x31, &old_i31);
   __dpmi_set_protected_mode_interrupt_vector(0x21, &old_i21);
+
+  /* Save the interrupt vectors for the keyboard and the the
+     time, because the debuggee may have changed it. */
+  __dpmi_get_protected_mode_interrupt_vector(0x09, &user_i9);
+  __dpmi_get_protected_mode_interrupt_vector(0x08, &user_i8);
+
+  /* And remember it for hook_dpmi */
+  user_int_set = 1;
+
+  /* Now restore our interrupt vectors */
+  __dpmi_set_protected_mode_interrupt_vector(0x09, &my_i9);
+  __dpmi_set_protected_mode_interrupt_vector(0x08, &my_i8);
 }
 
 static void dbgsig(int sig)
@@ -553,7 +577,10 @@ static int invalid_addr(unsigned a, unsigned len)
 
   unsigned limit;
   limit = __dpmi_get_segment_limit(__djgpp_app_DS);
-  if(a >= 4096 && (a+len-1) <= limit)
+  if(4096 <= a             /* First page is used for NULL pointer detection. */
+  && a <= limit            /* To guard against limit < len. */
+  && a - 1 <= limit - len  /* To guard against limit <= a + len - 1. */
+     )
     return 0;
 /*  printf("Invalid access to child, address %#x length %#x  limit: %#x\n", a, len, limit);
   if (can_longjmp)
@@ -605,6 +632,7 @@ void edi_init(jmp_buf start_state)
   __djgpp_app_DS = a_tss.tss_ds;
   app_cs = a_tss.tss_cs;
   edi.app_base = 0;
+  /* Save all the changed signal handlers */
   oldTRAP = signal(SIGTRAP, dbgsig);
   oldSEGV = signal(SIGSEGV, dbgsig);
   oldFPE = signal(SIGFPE, dbgsig);
@@ -622,9 +650,17 @@ void edi_init(jmp_buf start_state)
   dos_descriptors[1] = si.psp_selector; 
 }
 
+static void close_handles(void); /* Forward declaration */
+
 void cleanup_client(void)
 {
   int i;
+
+  /* Set the flag, that the user interrupt vectors are no longer valid */
+  user_int_set = 0;
+
+  /* Close all handles, which may be left open */
+  close_handles();
   for (i=0;i<DOS_DESCRIPTOR_COUNT;i++)
   {
     if (dos_descriptors[i])
@@ -655,8 +691,165 @@ void cleanup_client(void)
       __dpmi_free_ldt_descriptor(descriptors[i]);
     }
   }
+  /* Restore all changed signal handlers */
   signal(SIGTRAP, oldTRAP);
   signal(SIGSEGV, oldSEGV);
   signal(SIGFPE, oldFPE);
   signal(SIGINT, oldINT);
+}
+
+/*
+   Now the FSEXT function for watching files being opened. This is needed,
+   because the debuggee can open files which are not closed and if you
+   do this multiple times, the limit of max opened files is reached.
+
+   The watching is done by the FSEXT function by hooking the _open(),
+   _creat() and _close() calls from the libc functions. The only things
+   which are added is recording files which are opened (and closed) by
+   the debugger. When cleanup_client() is called, this list is compared
+   with actual open files and every file, which was not seen by dbg_fsext()
+   is closed.
+
+   This technique does not work correctly when the debugger uses the lowest
+   routines for opening/creating/closing files which are
+   _dos_open(), _dos_creat(), _dos_creatnew() and _dos_close().
+*/
+
+static unsigned char handles[256];
+static int in_dbg_fsext = 0;
+
+static void close_handles(void)
+{
+  __dpmi_regs r;
+  int psp_la;
+  int jft_ofs;
+  int jft_count;
+  int handle;
+
+  /* Get our PSP address.  */
+  r.x.ax = 0x6200;
+  __dpmi_int (0x21, &r);
+  psp_la = ( (int)r.x.bx ) << 4;
+
+  /* Get the offset of the JFT table by (seg << 4) + offset */
+  jft_ofs = (_farpeekw(_dos_ds, psp_la + 0x36) << 4) +
+            _farpeekw(_dos_ds, psp_la + 0x34);
+
+  /* Number of used entries in the JFT table */
+  jft_count = _farpeekw(_dos_ds, psp_la + 0x32);
+
+  /* Disable the fsext function */
+  in_dbg_fsext++;
+
+  for (handle=0;handle<jft_count;handle++)
+  {
+    if (_farpeekb(_dos_ds,jft_ofs++) != 0xff /* it is an opened handle */
+        && handles[handle] == 0xff /* but not recorded by the fsext function */
+       )
+    { /* it was opened by the debuggee */
+#ifdef DEBUG_DBGCOM
+      fprintf(stderr,"closing %d\n",handle);
+#endif
+      _close(handle);
+    }
+  }
+
+  /* Enable the fsext function */
+  in_dbg_fsext--;
+}
+
+
+static int dbg_fsext(__FSEXT_Fnumber _function_number,
+                      int *_rv, va_list _args)
+{
+  int attrib,oflag,retval = 0,handle;
+  const char *filename;
+  /* We are called from this function */
+  if (in_dbg_fsext) return 0;
+  switch (_function_number)
+  {
+    default:
+      return 0;
+    case __FSEXT_creat:
+      filename = va_arg(_args,const char *);
+      attrib = va_arg(_args,int);
+      in_dbg_fsext++;
+      retval = _creat(filename,attrib);
+#ifdef DEBUG_DBGCOM
+      fprintf(stderr,"_creat() => %d\n",retval);
+#endif
+      in_dbg_fsext--;
+      if (retval != -1)
+      {
+        handles[retval] = retval;
+        __FSEXT_set_function(retval,dbg_fsext);
+      }
+      break;
+    case __FSEXT_open:
+      filename = va_arg(_args,const char *);
+      oflag = va_arg(_args,int);
+      in_dbg_fsext++;
+      retval = _open(filename,oflag);
+#ifdef DEBUG_DBGCOM
+      fprintf(stderr,"_open(%s) => %d\n",filename,retval);
+#endif
+      in_dbg_fsext--;
+      if (retval != -1)
+      {
+        handles[retval] = retval;
+        __FSEXT_set_function(retval,dbg_fsext);
+      }
+      break;
+    case __FSEXT_close:
+      handle = va_arg(_args,int);
+      in_dbg_fsext++;
+#ifdef DEBUG_DBGCOM
+      fprintf(stderr,"_close(%d)\n",handle);
+#endif
+      retval = _close(handle);
+      in_dbg_fsext--;
+      if (retval == 0)
+      {
+        handles[handle] = 0xff;
+        __FSEXT_set_function(handle,NULL);
+      }
+      break;
+  }
+  *_rv = retval;
+  return 1;
+}
+
+/* With attribute constructor to be called automaticaly before main */
+
+static void __attribute__((__constructor__))
+_init_dbg_fsext(void)
+{
+  __dpmi_regs r;
+  int psp_la;
+  int jft_ofs;
+  int jft_count;
+
+  /* Get our PSP address.  */
+  r.x.ax = 0x6200;
+  __dpmi_int (0x21, &r);
+  psp_la = ( (int)r.x.bx ) << 4;
+
+  /* Get the offset of the JFT table by (seg << 4) + offset */
+  jft_ofs = (_farpeekw(_dos_ds, psp_la + 0x36) << 4) +
+            _farpeekw(_dos_ds, psp_la + 0x34);
+
+  /* Number of used entries in the JFT table */
+  jft_count = _farpeekw(_dos_ds, psp_la + 0x32);
+
+  /* Add the handler for opening/creating files */
+  __FSEXT_add_open_handler(dbg_fsext);
+
+  /* Initialize all the handles to 0xff */
+  memset(handles,0xff,sizeof(handles));
+
+  /* Get a copy of all already opened handles */
+  movedata(_dos_ds,jft_ofs,_my_ds(),(int)handles,jft_count);
+
+  /* enable the fsext function */
+  in_dbg_fsext = 0;
 }
