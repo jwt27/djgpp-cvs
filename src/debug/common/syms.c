@@ -157,6 +157,7 @@ static void process_coff(FILE *fd, long ofs)
   int l_pending;
   unsigned long strsize;
   char *name;
+  int i2_max;
 
   fseek(fd, ofs, 0);
   fread(&f_fh, 1, FILHSZ, fd);
@@ -219,7 +220,7 @@ static void process_coff(FILE *fd, long ofs)
 
   syms = (SymNode *)malloc(num_syms * sizeof(SymNode));
 
-  f = s = f_pending = l_pending = 0;
+  f = s = f_pending = l_pending = i2_max = 0;
   for (i=0; i<f_fh.f_nsyms; i++)
   {
     switch (f_symtab[i].e_sclass)
@@ -252,9 +253,19 @@ static void process_coff(FILE *fd, long ofs)
         if (ISFCN(f_symtab[i].e_type))
         {
           int scn = f_symtab[i].e_scnum - 1;
-          l = f_lnno[scn] + ((f_aux[i+1].x_sym.x_fcnary.x_fcn.x_lnnoptr - f_sh[scn].s_lnnoptr)/LINESZ);
-          l_pending = 1;
-          l->l_addr.l_paddr = f_symtab[i].e_value;
+
+          /* For some weird reason, sometimes x_lnnoptr is less than
+             s_lnnoptr.  We just punt for such cases, rather than
+             crash.  */
+          if (f_aux[i+1].x_sym.x_fcnary.x_fcn.x_lnnoptr >= f_sh[scn].s_lnnoptr)
+          {
+            l = f_lnno[scn]
+              + ((f_aux[i+1].x_sym.x_fcnary.x_fcn.x_lnnoptr
+                  - f_sh[scn].s_lnnoptr)/LINESZ);
+            l_pending = 1;
+            i2_max = f_sh[scn].s_nlnno - (l - f_lnno[scn]);
+            l->l_addr.l_paddr = f_symtab[i].e_value;
+          }
         }
 
         if (!valid_symbol(i))
@@ -297,7 +308,7 @@ static void process_coff(FILE *fd, long ofs)
           int i2;
           l->l_lnno = lbase;
           l++;
-          for (i2=0; l[i2].l_lnno; i2++)
+          for (i2 = 0; i2 < i2_max && l[i2].l_lnno; i2++)
             l[i2].l_lnno += lbase;
           l_pending = 0;
         }
@@ -360,9 +371,9 @@ static void process_aout(FILE *fd, long ofs)
   }
   
   syms = (SymNode *)malloc(num_syms * sizeof(SymNode));
-  memset(syms, num_syms * sizeof(SymNode), 0);
+  memset(syms, 0, num_syms * sizeof(SymNode));
   files = (FileNode *)malloc(num_files * sizeof(FileNode));
-  memset(files, num_files * sizeof(FileNode), 0);
+  memset(files, 0, num_files * sizeof(FileNode));
 
   f = s = 0;
   for (i=0; i<nsyms; i++)
