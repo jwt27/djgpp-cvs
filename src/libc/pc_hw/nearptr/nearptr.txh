@@ -1,0 +1,61 @@
+@c ----------------------------------------------------------------------
+@node __djgpp_nearptr_enable, memory
+@subheading Syntax
+
+@example
+#include <sys/nearptr.h>
+
+int __djgpp_nearptr_enable(void);
+@end example
+
+@subheading Description
+
+This function enables "near pointers" to be used to access the DOS
+memory arena.  Sort of.  When you call this function, it will return
+nonzero if it has successfully enabled near pointers.  If so, you must
+add the value @code{__djgpp_conventional_base} to the linear address
+of the physical memory.  For example:
+
+@example
+if (__djgpp_nearptr_enable())
+@{
+  short *screen = (short *)(__djgpp_conventional_base + 0xb8000);
+  for (i=0; i<80*24*2; i++)
+    screen[i] = 0x0720;
+  __djgpp_nearptr_disable();
+@}
+@end example
+
+The variable @code{__djgpp_base_address} contains the linear base
+address of the application's data segment.  You can subtract this
+value from other linear addresses that DPMI functions might return
+in order to obtain a near pointer to those linear regions as well.
+
+If using the Unix-like sbrk algorithm, near pointers are only valid 
+until the next @code{malloc}, @code{system}, @code{spawn*}, or 
+@code{exec*} function call, since the linear base address of the 
+application may be changed by these calls.
+
+WARNING: When you enable near pointers, you disable all the protection
+that the system is providing.  If you are not careful, your
+application may destroy the data in your computer.  USE AT YOUR OWN
+RISK!
+
+@subheading Return Value
+
+Returns 0 if near pointers are not available, or nonzero if they are.
+
+@c ----------------------------------------------------------------------
+@node __djgpp_nearptr_disable, memory
+@subheading Syntax
+
+@example
+#include <sys/nearptr.h>
+
+void __djgpp_nearptr_disable(void);
+@end example
+
+@subheading Description
+
+This function disables near pointers, and re-enables protection.
+@xref{__djgpp_nearptr_enable}.
