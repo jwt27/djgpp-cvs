@@ -4,13 +4,15 @@
 @example
 #include <time.h>
 
-size_t strftime(char *buf, size_t n, const char *format, const struct tm *time);
+size_t strftime(char *buf, size_t n, const char *format,
+                const struct tm *time_info);
 @end example
 
 @subheading Description
 
-This function formats the given @var{time} according to the given
-@var{format} and stores it in @var{buf}, not exceeding @var{n} bytes. 
+This function formats the time data in @var{time_info} according to the
+given @var{format} and stores it in @var{buf}, not exceeding @var{n}
+bytes.
 
 The format string is like @code{printf} in that any character other than
 @code{%} is added to the output string, and for each character following
@@ -164,8 +166,10 @@ The number of characters stored.
 @subheading Example
 
 @example
-struct tm t;
+time_t now = time (NULL);
+struct tm *t = localtime (&now);
 char buf[100];
-strftime(buf, 100, "%B %d, %Y", &t);
+/* Print today's date e.g. "January 31, 2001".  */
+strftime (buf, 100, "%B %d, %Y", t);
 @end example
 
