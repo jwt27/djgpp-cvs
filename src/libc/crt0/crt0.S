@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -19,14 +20,14 @@
 #if    (GAS_MAJOR == 2) \
     && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
 #define LJMP(there) \
-        ljmp    there
+	ljmp	there
 #define LCALL(there) \
-        lcall   there
+	lcall	there
 #else
 #define LJMP(there) \
-        ljmp    *there
+	ljmp	*there
 #define LCALL(there) \
-        lcall   *there
+	lcall	*there
 #endif
 
 	.comm	__stklen, 4
@@ -45,6 +46,7 @@
 ___djgpp_memory_handle_pointer:
 	.long	___djgpp_memory_handle_list+8		/* Next free, first for stub */
 	.comm	___djgpp_memory_handle_list, 2048	/* Enough for 256 handles */
+	.comm	___djgpp_memory_handle_size, 1024	/* Enough for 256 handles */
 #endif
 
 sbrk16_first_byte:
@@ -57,7 +59,7 @@ sbrk16_api_seg:
 	.word	0
 zero:
 	.long	0
-        
+
 /* normally this should be a
 struct object {
   void *pc_begin;
@@ -72,8 +74,8 @@ but a placeholder of the same size does it also */
    versions of gcc, remember this here !!! The struct is declared
    in the file frame.h from the gcc sources */
 _frame_struct:
-        .long   0,0,0,0,0,0
-        .long   0,0,0,0,0,0 /* DJ - more zeros, just in case */
+	.long	0,0,0,0,0,0
+	.long	0,0,0,0,0,0 /* DJ - more zeros, just in case */
 .section .eh_frame
 _CRT0_EH_FRAME_BEGIN_:
 
@@ -144,23 +146,26 @@ ds_alias_ok:
 	orw	$0xc093, %cx
 	int	$0x31		/* set access rights for alias */
 
-/* Maybe set our DS limit to 4Gb in size if flag set */
-	testb	$0x80, __crt0_startup_flags		/* include/crt0.h */
-	jz	2f
+/* Test set the limit on the alias to 4Gb (it may be reset on stack malloc) */
 	movw	$0xffff, %cx
 	movl	%ecx, %edx
 	movw	$0x0008, %ax				/* reset alias limit to -1 */
 	int	$0x31
+	lsl	%ebx, %ebx				/* Should be -1 */
+	incl	%ebx
+	jz	16f
+	andb	$0x7f, __crt0_startup_flags		/* clear it if failure */
+	orb	$0x80, __crt0_startup_flags+1		/* Wrap is *BAD* */
+	jmp	2f
+/* Maybe set our DS limit to 4Gb in size if flag set */
+16:	testb	$0x80, __crt0_startup_flags		/* include/crt0.h */
+	jz	2f
 	movw	%cs, %bx
 	movw	$0x0008, %ax				/* reset CS limit to -1 */
 	int	$0x31
 	movw	%ds, %bx
 	movw	$0x0008, %ax				/* reset DS limit to -1 */
 	int	$0x31
-	lsl	%ebx, %ebx				/* Should be -1 */
-	incl	%ebx
-	jz	2f
-	andb	$0x7f, __crt0_startup_flags		/* clear it if failure */
 2:
 #ifdef MULTIBLOCK
 	testb	$0x8, __crt0_startup_flags+1		/* include/crt0.h */
@@ -233,6 +238,7 @@ dos_alloc_ok:
 	.byte 0x64 /* fs: */
 	movl	STUBINFO_INITIAL_SIZE, %eax
 	movl	%eax, __what_size_dpmi_thinks_we_are
+	movl	%eax, ___djgpp_memory_handle_size
 
 /* Maybe lock the initial block, expects BX:CX */
 	movl	%ecx,%ebx
@@ -306,10 +312,10 @@ use_stubinfo_stack_size:
 	movl	%eax, %esp
 
 	xorl	%ebp, %ebp
-        pushl   $_frame_struct
-        pushl   $_CRT0_EH_FRAME_BEGIN_
-        call    ___register_frame_info
-        addl    $8, %esp
+	pushl	$_frame_struct
+	pushl	$_CRT0_EH_FRAME_BEGIN_
+	call	___register_frame_info
+	addl	$8, %esp
 	call	___crt1_startup		/* run program */
 	jmp	exit
 
@@ -481,6 +487,7 @@ brk_common:
 
 	movl	%edi, ___djgpp_memory_handle_list		/* store new handle */
 	movw	%si, ___djgpp_memory_handle_list+2
+	movl	%edx, ___djgpp_memory_handle_size
 	movl	%ecx, ___djgpp_base_address			/* store new base address */
 	movw	%bx, ___djgpp_base_address+2
 
@@ -499,9 +506,24 @@ brk_common:
 	jmp	5f
 /* Current allocation not large enough, get another block */
 10:	movl	%ecx, %eax					/* Add amt */
-	pushl	%eax						/* Save orig */
-	addl	$0x0000ffff, %eax				/* round up to 64K block */
-	andl	$0xffff0000, %eax
+14:	pushl	%eax						/* Save orig */
+
+/* Prevent handle exhaustion:  Block size of later allocated handles is larger.
+   Block Size = 2^(16+handle#/32) which allows 512Mb on default 256 handles. */
+
+	movl	___djgpp_memory_handle_pointer, %ecx
+	xorl	%edx, %edx
+	subl	$___djgpp_memory_handle_list, %ecx		/* 8*hand# */
+	shrl	$8, %ecx	/* hand#/32, tuneable, big shifts = old way */
+	incl	%edx						/* EDX = 1 */
+	addb	$16, %cl					/* 2^16=64K */
+	shll	%cl, %edx
+	decl	%edx
+	movl	%edx, %ecx
+	notl	%edx
+	addl	%ecx, %eax				/* Round up to block */
+	andl	%edx, %eax
+
 	movl	%eax, %edx					/* Save size */
 	movl	%eax, %ecx
 	movl	%eax, %ebx
@@ -511,12 +533,17 @@ brk_common:
 	popl	%eax						/* Orig size */
 	jc	brk_error
 
-	pushl	%edx						/* Size */
-	call	lock_memory
-
 	pushw	%bx
 	pushw	%cx
 	popl	%ecx						/* Linear address */
+	cmpl	___djgpp_base_address, %ecx			/* New dpmi size */
+	jns	15f						/* No wrap so blk is OK */
+	testb	$0x80, __crt0_startup_flags+1		/* is wrap allowed? crt0.h */
+	jnz	14b					/* Wrap block - ignore */
+15:
+	pushl	%edx						/* Size */
+	call	lock_memory
+
 	subl	___djgpp_base_address, %ecx			/* New dpmi size */
 	cmpl	%ecx, __what_size_dpmi_thinks_we_are		/* Back to back ? */
 	je	4f
@@ -531,6 +558,12 @@ brk_common:
 	movl	%edi, (%ebx)
 	movw	%si, 2(%ebx)
 	movl	%ecx, 4(%ebx)
+/* Handle Offset / 2 = Offset into Size Array */
+	movl	%ebx, %edi
+	subl	$___djgpp_memory_handle_list, %edi
+	shrl	$1, %edi
+	addl	$___djgpp_memory_handle_size, %edi
+	movl	%edx, (%edi)
 	addl	$8, %ebx
 	cmpl	$___djgpp_memory_handle_list+2040, %ebx		/* At end? */
 	je	11f
