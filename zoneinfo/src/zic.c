@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef NOID
-static char	elsieid[] = "@(#)zic.c	7.77";
+static char	elsieid[] = "@(#)zic.c	7.94";
 #endif /* !defined NOID */
 #endif /* !defined lint */
 
@@ -9,44 +9,22 @@ static char	elsieid[] = "@(#)zic.c	7.77";
 #include "tzfile.h"
 #ifdef unix
 #include "sys/stat.h"			/* for umask manifest constants */
+#include "sys/wait.h"
+#ifndef WEXITSTATUS
+#define WEXITSTATUS(x)	(((x) >> 8) & 0xff)
+#endif
 #endif /* defined unix */
 
-FILE *
-dj_fopen(const char *fn, char *mode)
-{
-  char *cp;
-  FILE *f;
-  char *fn2 = (char *)alloca(strlen(fn)+1);
-  strcpy(fn2, fn);
-  for (cp=fn2; *cp; cp++)
-    if (*cp == '+')
-      *cp = '%';
-  f = fopen(fn2, mode);
-  return f;
-}
-#define fopen dj_fopen
+/*
+** Portable testing for absolute file names.
+*/
 
-int dj_link(char *from, char *to)
-{
-  FILE *f, *t;
-  char buf[4096];
-  int b;
-  f = fopen(from, "rb");
-  if (f == 0)
-    return -1;
-  t = fopen(to, "wb");
-  if (t == 0)
-  {
-    fclose(f);
-    return -1;
-  }
-  while ((b=fread(buf, 1, 4096, f))>0)
-    fwrite(buf, 1, b, t);
-  fclose(f);
-  fclose(t);
-  return 0;
-}
-#define link dj_link
+#ifndef IS_SLASH
+#define IS_SLASH(c)	((c) == '/')
+#endif
+#ifndef IS_ABSOLUTE
+#define IS_ABSOLUTE(n)	(IS_SLASH((n)[0]))
+#endif
 
 /*
 ** On some ancient hosts, predicates like `isspace(C)' are defined
@@ -116,15 +94,9 @@ struct zone {
 
 extern int	getopt P((int argc, char * const argv[],
 			const char * options));
-extern char *	icatalloc P((char * old, const char * new));
-extern char *	icpyalloc P((const char * string));
-extern void	ifree P((char * p));
-extern char *	imalloc P((int n));
-extern void *	irealloc P((void * old, int n));
-/*extern int	link P((const char * fromname, const char * toname)); */
+extern int	link P((const char * fromname, const char * toname));
 extern char *	optarg;
 extern int	optind;
-extern char *	scheck P((const char * string, const char * format));
 
 static void	addtt P((time_t starttime, int type));
 static int	addtype P((long gmtoff, const char * abbr, int isdst,
@@ -173,9 +145,9 @@ static void	usage P((void));
 static void	writezone P((const char * name));
 static int	yearistype P((int year, const char * type));
 
-#if !HAVE_STRERROR
+#if !(HAVE_STRERROR - 0)
 static char *	strerror P((int));
-#endif /* !HAVE_STRERROR */
+#endif /* !(HAVE_STRERROR - 0) */
 
 static int		charcnt;
 static int		errors;
@@ -184,8 +156,10 @@ static int		leapcnt;
 static int		linenum;
 static time_t		max_time;
 static int		max_year;
+static int		max_year_representable;
 static time_t		min_time;
 static int		min_year;
+static int		min_year_representable;
 static int		noise;
 static const char *	rfilename;
 static int		rlinenum;
@@ -396,6 +370,7 @@ char * const	ptr;
 {
 	if (ptr == NULL) {
 		const char *e = strerror(errno);
+
 		(void) fprintf(stderr, _("%s: Memory exhausted: %s\n"),
 			progname, e);
 		(void) exit(EXIT_FAILURE);
@@ -412,19 +387,18 @@ char * const	ptr;
 ** Error handling.
 */
 
-#if ! HAVE_STRERROR
+#if !(HAVE_STRERROR - 0)
 static char *
 strerror(errnum)
 int	errnum;
 {
-	extern char *sys_errlist[];
-	extern int sys_nerr;
+	extern char *	sys_errlist[];
+	extern int	sys_nerr;
 
-	if (errnum > 0 && errnum <= sys_nerr)
-		return sys_errlist[errnum];
-	return "Unknown system error";
+	return (errnum > 0 && errnum <= sys_nerr) ?
+		sys_errlist[errnum] : "Unknown system error";
 }
-#endif /* ! HAVE_STRERROR */
+#endif /* !(HAVE_STRERROR - 0) */
 
 static void
 eats(name, num, rname, rnum)
@@ -473,7 +447,7 @@ const char * const	string;
 
 	cp = ecpyalloc("warning: ");
 	cp = ecatalloc(cp, string);
-	error(string);
+	error(cp);
 	ifree(cp);
 	--errors;
 }
@@ -513,7 +487,7 @@ char *	argv[];
 	(void) textdomain(TZ_DOMAIN);
 #endif /* HAVE_GETTEXT - 0 */
 	progname = argv[0];
-	while ((c = getopt(argc, argv, "d:l:p:L:vsy:")) != EOF)
+	while ((c = getopt(argc, argv, "d:l:p:L:vsy:")) != EOF && c != -1)
 		switch (c) {
 			default:
 				usage();
@@ -621,20 +595,35 @@ const char * const	tofile;
 	register char *	fromname;
 	register char *	toname;
 
-	if (fromfile[0] == '/')
+	if (IS_ABSOLUTE(fromfile))
 		fromname = ecpyalloc(fromfile);
 	else {
 		fromname = ecpyalloc(directory);
 		fromname = ecatalloc(fromname, "/");
 		fromname = ecatalloc(fromname, fromfile);
 	}
-	if (tofile[0] == '/')
+	if (IS_ABSOLUTE(tofile))
 		toname = ecpyalloc(tofile);
 	else {
 		toname = ecpyalloc(directory);
 		toname = ecatalloc(toname, "/");
 		toname = ecatalloc(toname, tofile);
 	}
+#ifdef __MSDOS__
+	/* Some zone names use `+' as part of their names, but DOS
+	   doesn't allow `+' in file names.  Replace with a `%'.  */
+	{
+		char *p;
+
+		for (p = fromname; *p; p++)
+			if (*p == '+')
+				*p = '%';
+		for (p = toname; *p; p++)
+			if (*p == '+')
+				*p = '%';
+	}
+
+#endif
 	/*
 	** We get to be careful here since
 	** there's a fair chance of root running us.
@@ -642,10 +631,21 @@ const char * const	tofile;
 	if (!itsdir(toname))
 		(void) remove(toname);
 	if (link(fromname, toname) != 0) {
+		int	result;
+
 		if (mkdirs(toname) != 0)
 			(void) exit(EXIT_FAILURE);
-		if (link(fromname, toname) != 0) {
+		result = link(fromname, toname);
+#if (HAVE_SYMLINK - 0) 
+		if (result != 0) {
+			result = symlink(fromname, toname);
+			if (result == 0)
+warning(_("hard link failed, symbolic link used"));
+		}
+#endif
+		if (result != 0) {
 			const char *e = strerror(errno);
+
 			(void) fprintf(stderr,
 				_("%s: Can't link from %s to %s: %s\n"),
 				progname, fromname, toname, e);
@@ -691,19 +691,28 @@ setboundaries P((void))
 	}
 	min_year = TM_YEAR_BASE + gmtime(&min_time)->tm_year;
 	max_year = TM_YEAR_BASE + gmtime(&max_time)->tm_year;
+	min_year_representable = min_year;
+	max_year_representable = max_year;
 }
 
 static int
 itsdir(name)
 const char * const	name;
 {
-	register char *	myname;
 	register int	accres;
+
+#ifdef D_OK
+	/* MS-DOS/MS-Windows normalize "foo/." to "foo" before testing,
+	   so we think foo is a directory.  Use D_OK instead.  */
+	accres = access(name, D_OK);
+#else
+	register char *	myname;
 
 	myname = ecpyalloc(name);
 	myname = ecatalloc(myname, "/.");
 	accres = access(myname, F_OK);
 	ifree(myname);
+#endif
 	return accres == 0;
 }
 
@@ -818,6 +827,7 @@ const char *	name;
 		fp = stdin;
 	} else if ((fp = fopen(name, "r")) == NULL) {
 		const char *e = strerror(errno);
+
 		(void) fprintf(stderr, _("%s: Can't open %s: %s\n"),
 			progname, name, e);
 		(void) exit(EXIT_FAILURE);
@@ -886,6 +896,7 @@ _("%s: panic: Invalid l_value %d\n"),
 	}
 	if (fp != stdin && fclose(fp)) {
 		const char *e = strerror(errno);
+
 		(void) fprintf(stderr, _("%s: Error closing %s: %s\n"),
 			progname, filename, e);
 		(void) exit(EXIT_FAILURE);
@@ -1056,7 +1067,7 @@ const int		iscont;
 	}
 	z.z_filename = filename;
 	z.z_linenum = linenum;
-	z.z_gmtoff = gethms(fields[i_gmtoff], _("invalid GMT offset"), TRUE);
+	z.z_gmtoff = gethms(fields[i_gmtoff], _("invalid UTC offset"), TRUE);
 	if ((cp = strchr(fields[i_format], '%')) != 0) {
 		if (*++cp != 's' || strchr(cp, '%') != 0) {
 			error(_("invalid abbreviation format"));
@@ -1258,6 +1269,7 @@ const char * const		timep;
 				rp->r_todisstd = FALSE;
 				rp->r_todisgmt = FALSE;
 				*ep = '\0';
+				break;
 			case 'g':	/* Greenwich */
 			case 'u':	/* Universal */
 			case 'z':	/* Zulu */
@@ -1289,6 +1301,11 @@ const char * const		timep;
 	} else if (sscanf(cp, scheck(cp, "%d"), &rp->r_loyear) != 1) {
 		error(_("invalid starting year"));
 		return;
+	} else if (noise) {
+		if (rp->r_loyear < min_year_representable)
+			warning(_("starting year too low to be represented"));
+		else if (rp->r_loyear > max_year_representable)
+			warning(_("starting year too high to be represented"));
 	}
 	cp = hiyearp;
 	if ((lp = byword(cp, end_years)) != NULL) switch ((int) lp->l_value) {
@@ -1309,6 +1326,11 @@ const char * const		timep;
 	} else if (sscanf(cp, scheck(cp, "%d"), &rp->r_hiyear) != 1) {
 		error(_("invalid ending year"));
 		return;
+	} else if (noise) {
+		if (rp->r_loyear < min_year_representable)
+			warning(_("starting year too low to be represented"));
+		else if (rp->r_loyear > max_year_representable)
+			warning(_("starting year too high to be represented"));
 	}
 	if (rp->r_loyear > rp->r_hiyear) {
 		error(_("starting year greater than ending year"));
@@ -1323,6 +1345,8 @@ const char * const		timep;
 		}
 		rp->r_yrtype = ecpyalloc(typep);
 	}
+	if (rp->r_loyear < min_year && rp->r_loyear > 0)
+		min_year = rp->r_loyear;
 	/*
 	** Day work.
 	** Accept things such as:
@@ -1431,8 +1455,10 @@ const char * const	name;
 
 		toi = 0;
 		fromi = 0;
+		while (fromi < timecnt && attypes[fromi].at < min_time)
+			++fromi;
 		if (isdsts[0] == 0)
-			while (attypes[fromi].type == 0)
+			while (fromi < timecnt && attypes[fromi].type == 0)
 				++fromi;	/* handled by default rule */
 		for ( ; fromi < timecnt; ++fromi) {
 			if (toi != 0
@@ -1459,12 +1485,37 @@ const char * const	name;
 	}
 	fullname = erealloc(fullname,
 		(int) (strlen(directory) + 1 + strlen(name) + 1));
+#ifdef __MSDOS__
+	/* Some zone names use `+' as part of their names, but DOS
+	   doesn't allow `+' in file names.  Replace with a `%'.  */
+	{
+		char new_name[FILENAME_MAX + 1], *p;
+
+		strcpy(new_name, name);
+		for (p = new_name; *p; p++)
+			if (*p == '+')
+				*p = '%';
+		(void) sprintf(fullname, "%s/%s", directory, new_name);
+	}
+#else  /* !__MSDOS__ */
 	(void) sprintf(fullname, "%s/%s", directory, name);
+#endif /* __MSDOS__ */
+	/*
+	** Remove old file, if any, to snap links.
+	*/
+	if (!itsdir(fullname) && remove(fullname) != 0 && errno != ENOENT) {
+		const char *e = strerror(errno);
+
+		(void) fprintf(stderr, _("%s: Can't remove %s: %s\n"),
+			progname, fullname, e);
+		(void) exit(EXIT_FAILURE);
+	}
 	if ((fp = fopen(fullname, "wb")) == NULL) {
 		if (mkdirs(fullname) != 0)
 			(void) exit(EXIT_FAILURE);
 		if ((fp = fopen(fullname, "wb")) == NULL) {
 			const char *e = strerror(errno);
+
 			(void) fprintf(stderr, _("%s: Can't create %s: %s\n"),
 				progname, fullname, e);
 			(void) exit(EXIT_FAILURE);
@@ -1476,7 +1527,9 @@ const char * const	name;
 	convert(eitol(timecnt), tzh.tzh_timecnt);
 	convert(eitol(typecnt), tzh.tzh_typecnt);
 	convert(eitol(charcnt), tzh.tzh_charcnt);
+	(void) strncpy(tzh.tzh_magic, TZ_MAGIC, sizeof tzh.tzh_magic);
 #define DO(field)	(void) fwrite((void *) tzh.field, (size_t) sizeof tzh.field, (size_t) 1, fp)
+	DO(tzh_magic);
 	DO(tzh_reserved);
 	DO(tzh_ttisgmtcnt);
 	DO(tzh_ttisstdcnt);
@@ -1640,7 +1693,7 @@ const int			zonecount;
 				INITIALIZE(ktime);
 				if (useuntil) {
 					/*
-					** Turn untiltime into GMT
+					** Turn untiltime into UTC
 					** assuming the current gmtoff and
 					** stdoff values.
 					*/
@@ -1720,7 +1773,7 @@ const int			zonecount;
 					(void) strcpy(startbuf, zp->z_format);
 			eat(zp->z_filename, zp->z_linenum);
 			if (*startbuf == '\0')
-error(_("can't determine time zone abbrevation to use just after until time"));
+error(_("can't determine time zone abbreviation to use just after until time"));
 			else	addtt(starttime,
 					addtype(startoff, startbuf,
 						startoff != zp->z_gmtoff,
@@ -1746,8 +1799,22 @@ error(_("can't determine time zone abbrevation to use just after until time"));
 static void
 addtt(starttime, type)
 const time_t	starttime;
-const int	type;
+int		type;
 {
+	if (starttime <= min_time ||
+		(timecnt == 1 && attypes[0].at < min_time)) {
+		gmtoffs[0] = gmtoffs[type];
+		isdsts[0] = isdsts[type];
+		ttisstds[0] = ttisstds[type];
+		ttisgmts[0] = ttisgmts[type];
+		if (abbrinds[type] != 0)
+			(void) strcpy(chars, &chars[abbrinds[type]]);
+		abbrinds[0] = 0;
+		charcnt = strlen(chars) + 1;
+		typecnt = 1;
+		timecnt = 0;
+		type = 0;
+	}
 	if (timecnt >= TZ_MAX_TIMES) {
 		error(_("too many transitions?!"));
 		(void) exit(EXIT_FAILURE);
@@ -1872,29 +1939,18 @@ const char * const	type;
 
 	if (type == NULL || *type == '\0')
 		return TRUE;
-#if 0
 	buf = erealloc(buf, (int) (132 + strlen(yitcommand) + strlen(type)));
 	(void) sprintf(buf, "%s %d %s", yitcommand, year, type);
 	result = system(buf);
 	if (result == 0)
 		return TRUE;
-	if (result == (1 << 8))
+	if (WEXITSTATUS(result) == 1)
 		return FALSE;
 	error(_("Wild result from command execution"));
 	(void) fprintf(stderr, _("%s: command was '%s', result was %d\n"),
 		progname, buf, result);
 	for ( ; ; )
 		(void) exit(EXIT_FAILURE);
-#else
-	if (strcmp(type, "even") == 0)
-	  return (year % 2) == 0;
-	if (strcmp(type, "odd") == 0)
-	  return (year % 2) != 0;
-	if (strcmp(type, "pres") == 0)
-	  return (year % 4) == 0;
-	if (strcmp(type, "nonpres") == 0)
-	  return (year % 4) != 0;
-#endif
 }
 
 static int
@@ -1953,10 +2009,11 @@ register const struct lookup * const	table;
 	*/
 	foundlp = NULL;
 	for (lp = table; lp->l_word != NULL; ++lp)
-		if (itsabbr(word, lp->l_word))
+		if (itsabbr(word, lp->l_word)) {
 			if (foundlp == NULL)
 				foundlp = lp;
 			else	return NULL;	/* multiple inexact matches */
+		}
 	return foundlp;
 }
 
@@ -2145,32 +2202,37 @@ char * const	argname;
 	if (argname == NULL || *argname == '\0')
 		return 0;
 	cp = name = ecpyalloc(argname);
-	while ((cp = strchr(cp + 1, '/')) != 0) {
-		*cp = '\0';
-#ifndef unix
-		/*
-		** DOS drive specifier?
-		*/
-		if (isalpha((unsigned char) name[0]) &&
-			name[1] == ':' && name[2] == '\0') {
-				*cp = '/';
-				continue;
-		}
-#endif /* !defined unix */
-		if (!itsdir(name)) {
-			/*
-			** It doesn't seem to exist, so we try to create it.
-			*/
-			if (mkdir(name, 0755) != 0) {
-				const char *e = strerror(errno);
-				(void) fprintf(stderr,
-				    _("%s: Can't create directory %s: %s\n"),
-				    progname, name, e);
-				ifree(name);
-				return -1;
+	/*
+	** Get past a DOS-style drive specifier, if any.
+	*/
+	if (HAS_DEVICE(name))
+		cp += 2;
+	while (*cp++) {
+		if (IS_SLASH(*cp)) {
+			*cp = '\0';
+			if (!itsdir(name)) {
+				/*
+				** It doesn't seem to exist, so we try to
+				** create it.  Creation may fail because
+				** of the directory being created by some
+				** other multiprocessor, so we get to do
+				** extra checking.
+				*/
+				if (mkdir(name, S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH) != 0) {
+					const char *e = strerror(errno);
+
+					if (errno != EEXIST || !itsdir(name)) {
+						(void) fprintf(stderr,
+_("%s: Can't create directory %s: %s\n"),
+							       progname,
+							       name, e);
+						ifree(name);
+						return -1;
+					}
+				}
 			}
+			*cp = '/';
 		}
-		*cp = '/';
 	}
 	ifree(name);
 	return 0;

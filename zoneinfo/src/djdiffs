@@ -1,0 +1,795 @@
+*** date.c~0	Thu May 28 16:56:10 1998
+--- date.c	Fri Jul 17 13:07:06 1998
+*************** static char sccsid[] = "@(#)date.c	4.23 
+*** 39,45 ****
+--- 39,47 ----
+  #include "sys/time.h"	/* for struct timeval, struct timezone */
+  #endif /* HAVE_ADJTIME || HAVE_SETTIMEOFDAY */
+  #include "locale.h"
++ #ifdef OLD_TIME
+  #include "utmp.h"	/* for OLD_TIME (or its absence) */
++ #endif
+  #if HAVE_UTMPX_H
+  #include "utmpx.h"
+  #endif
+*************** static void		errensure P((void));
+*** 77,83 ****
+--- 79,87 ----
+  static void		iffy P((time_t, time_t, const char *, const char *));
+  int			main P((int, char**));
+  static const char *	nondigit P((const char *));
++ #ifndef __MSDOS__
+  static void		oops P((const char *));
++ #endif
+  static void		reset P((time_t, int));
+  static void		timeout P((FILE *, const char *, const struct tm *));
+  static void		usage P((void));
+*************** const int	nflag;
+*** 431,442 ****
+--- 435,448 ----
+  #endif /* !defined BSD4_4 */
+  #endif /* !defined TIME_NAME */
+  
++ #ifdef TSP_SETDATE
+  #include "syslog.h"
+  #include "sys/socket.h"
+  #include "netinet/in.h"
+  #include "netdb.h"
+  #define TSPTYPES
+  #include "protocols/timed.h"
++ #endif /* TSP_SETDATE */
+  
+  extern int		logwtmp();
+  
+*************** const int	nflag;
+*** 462,467 ****
+--- 468,474 ----
+  	if (username == NULL || *username == '\0') /* single-user or no tty */
+  		username = "root";
+  	tv.tv_sec = newt;
++ #ifndef __MSDOS__
+  #ifdef TSP_SETDATE
+  	if (nflag || !netsettime(tv))
+  #endif /* defined TSP_SETDATE */
+*************** const int	nflag;
+*** 476,481 ****
+--- 483,489 ----
+  				username);
+  		} else	oops("settimeofday");
+  	}
++ #endif /* !__MSDOS__ */
+  }
+  
+  #endif /* !defined OLD_TIME */
+*************** usage P((void))
+*** 517,522 ****
+--- 525,531 ----
+  	(void) exit(retval);
+  }
+  
++ #ifndef __MSDOS__
+  static void
+  oops(string)
+  const char * const	string;
+*************** const char * const	string;
+*** 529,534 ****
+--- 538,544 ----
+  	errensure();
+  	display((char *) NULL);
+  }
++ #endif /* !__MSDOS__ */
+  
+  static void
+  display(format)
+*************** const time_t			t;
+*** 646,652 ****
+  	}
+  
+  	cp = value;
+! 	switch (dotp - cp) {
+  		default:
+  			wildinput(_("time"), value, _("main part is wrong length"));
+  		case 12:
+--- 656,662 ----
+  	}
+  
+  	cp = value;
+! 	switch ((int)(dotp - cp)) {
+  		default:
+  			wildinput(_("time"), value, _("main part is wrong length"));
+  		case 12:
+*************** const time_t			t;
+*** 696,702 ****
+  	tm.tm_isdst = -1;
+  	outtm = tm;
+  	outt = mktime(&outtm);
+! 	return (comptm(&tm, &outtm) == 0) ? outt : -1;
+  }
+  
+  /*
+--- 706,712 ----
+  	tm.tm_isdst = -1;
+  	outtm = tm;
+  	outt = mktime(&outtm);
+! 	return (comptm(&tm, &outtm) == 0) ? outt : (time_t)-1;
+  }
+  
+  /*
+*** localtime.c~0	Mon Jun  1 17:18:30 1998
+--- localtime.c	Fri Jul 17 13:53:10 1998
+*************** static char	elsieid[] = "@(#)localtime.c
+*** 22,27 ****
+--- 22,38 ----
+  #include "fcntl.h"
+  
+  /*
++ ** Portable testing for absolute file names.
++ */
++ 
++ #ifndef IS_SLASH
++ #define IS_SLASH(c)	((c) == '/')
++ #endif
++ #ifndef IS_ABSOLUTE
++ #define IS_ABSOLUTE(n)	(IS_SLASH((n)[0]))
++ #endif
++ 
++ /*
+  ** SunOS 4.1.1 headers lack O_BINARY.
+  */
+  
+*************** register struct state * const	sp;
+*** 279,285 ****
+  
+  		if (name[0] == ':')
+  			++name;
+! 		doaccess = name[0] == '/';
+  		if (!doaccess) {
+  			if ((p = TZDIR) == NULL)
+  				return -1;
+--- 290,296 ----
+  
+  		if (name[0] == ':')
+  			++name;
+! 		doaccess = IS_ABSOLUTE(name);
+  		if (!doaccess) {
+  			if ((p = TZDIR) == NULL)
+  				return -1;
+*************** const time_t * const	timep;
+*** 1043,1054 ****
+   * Re-entrant version of localtime
+   */
+  struct tm *
+! localtime_r(timep, tm)
+  const time_t * const	timep;
+! struct tm *		tm;
+  {
+! 	localsub(timep, 0L, tm);
+! 	return tm;
+  }
+  
+  /*
+--- 1054,1065 ----
+   * Re-entrant version of localtime
+   */
+  struct tm *
+! localtime_r(timep, tm_p)
+  const time_t * const	timep;
+! struct tm *		tm_p;
+  {
+! 	localsub(timep, 0L, tm_p);
+! 	return tm_p;
+  }
+  
+  /*
+*************** const time_t * const	timep;
+*** 1103,1114 ****
+   * Re-entrant version of gmtime
+   */
+  struct tm *
+! gmtime_r(timep, tm)
+  const time_t * const	timep;
+! struct tm *		tm;
+  {
+! 	gmtsub(timep, 0L, tm);
+! 	return tm;
+  }
+  
+  #ifdef STD_INSPIRED
+--- 1114,1125 ----
+   * Re-entrant version of gmtime
+   */
+  struct tm *
+! gmtime_r(timep, tm_p)
+  const time_t * const	timep;
+! struct tm *		tm_p;
+  {
+! 	gmtsub(timep, 0L, tm_p);
+! 	return tm_p;
+  }
+  
+  #ifdef STD_INSPIRED
+*************** ctime_r(timep, buf)
+*** 1243,1251 ****
+  const time_t * const	timep;
+  char *			buf;
+  {
+! 	struct tm	tm;
+  
+! 	return asctime_r(localtime_r(timep, &tm), buf);
+  }
+  
+  /*
+--- 1254,1262 ----
+  const time_t * const	timep;
+  char *			buf;
+  {
+! 	struct tm	tms;
+  
+! 	return asctime_r(localtime_r(timep, &tms), buf);
+  }
+  
+  /*
+*************** char *			buf;
+*** 1259,1265 ****
+  */
+  
+  #ifndef WRONG
+! #define WRONG	(-1)
+  #endif /* !defined WRONG */
+  
+  /*
+--- 1270,1276 ----
+  */
+  
+  #ifndef WRONG
+! #define WRONG	((time_t)-1)
+  #endif /* !defined WRONG */
+  
+  /*
+*** Makefile.~0	Thu May 28 16:55:58 1998
+--- Makefile	Fri Jul 17 17:06:50 1998
+***************
+*** 9,15 ****
+  #	make zonenames
+  # to get a list of the values you can use for LOCALTIME.
+  
+! LOCALTIME=	Factory
+  
+  # If you want something other than Eastern United States time as a template
+  # for handling POSIX-style time zone environment variables,
+--- 9,15 ----
+  #	make zonenames
+  # to get a list of the values you can use for LOCALTIME.
+  
+! LOCALTIME=	US/Eastern
+  
+  # If you want something other than Eastern United States time as a template
+  # for handling POSIX-style time zone environment variables,
+***************
+*** 31,43 ****
+  
+  # Everything gets put in subdirectories of. . .
+  
+! TOPDIR=		/usr/local
+  
+  # "Compiled" time zone information is placed in the "TZDIR" directory
+  # (and subdirectories).
+  # Use an absolute path name for TZDIR unless you're just testing the software.
+  
+! TZDIR=		$(TOPDIR)/etc/zoneinfo
+  
+  # The "zic" and "zdump" commands get installed in. . .
+  
+--- 31,43 ----
+  
+  # Everything gets put in subdirectories of. . .
+  
+! TOPDIR=		../..
+  
+  # "Compiled" time zone information is placed in the "TZDIR" directory
+  # (and subdirectories).
+  # Use an absolute path name for TZDIR unless you're just testing the software.
+  
+! TZDIR=		$(TOPDIR)/zoneinfo
+  
+  # The "zic" and "zdump" commands get installed in. . .
+  
+***************
+*** 45,55 ****
+  
+  # If you "make INSTALL", the "date" command gets installed in. . .
+  
+! BINDIR=		$(TOPDIR)/bin
+  
+  # Manual pages go in subdirectories of. . .
+  
+! MANDIR=		$(TOPDIR)/man
+  
+  # Library functions are put in an archive in LIBDIR.
+  
+--- 45,56 ----
+  
+  # If you "make INSTALL", the "date" command gets installed in. . .
+  
+! BINDIR=		$(TOPDIR)/etc
+! 
+  
+  # Manual pages go in subdirectories of. . .
+  
+! MANDIR=		$(TOPDIR)/info
+  
+  # Library functions are put in an archive in LIBDIR.
+  
+***************
+*** 72,78 ****
+  # POSIX mandates that leap seconds not be counted; for compatibility with it,
+  # use either "posix_only" or "posix_right".
+  
+! REDO=		posix_right
+  
+  # Since "." may not be in PATH...
+  
+--- 73,79 ----
+  # POSIX mandates that leap seconds not be counted; for compatibility with it,
+  # use either "posix_only" or "posix_right".
+  
+! REDO=		posix_only
+  
+  # Since "." may not be in PATH...
+  
+***************
+*** 199,205 ****
+  # before the first Monday in January when a "%V" format is used and January 1
+  # falls on a Friday, Saturday, or Sunday.
+  
+! CFLAGS=
+  
+  # If you want zic's -s option used when installing, uncomment the next line
+  # ZFLAGS=	-s
+--- 200,209 ----
+  # before the first Monday in January when a "%V" format is used and January 1
+  # falls on a Friday, Saturday, or Sunday.
+  
+! CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
+! 		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 \
+! 		-DTM_GMTOFF=__tm_gmtoff -DTM_ZONE=__tm_zone -DSTD_INSPIRED \
+! 		-DLOCALE_HOME=\"c:/djgpp/locale\" $(GCC_DEBUG_FLAGS) -O2
+  
+  # If you want zic's -s option used when installing, uncomment the next line
+  # ZFLAGS=	-s
+***************
+*** 208,219 ****
+  ZIC=		$(zic) $(ZFLAGS)
+  
+  # The name of a Posix-compliant `awk' on your system.
+! AWK=		awk
+  
+  ###############################################################################
+  
+! cc=		cc
+! CC=		$(cc) -DTZDIR=\"$(TZDIR)\"
+  
+  TZCSRCS=	zic.c localtime.c asctime.c scheck.c ialloc.c
+  TZCOBJS=	zic.o localtime.o asctime.o scheck.o ialloc.o
+--- 212,223 ----
+  ZIC=		$(zic) $(ZFLAGS)
+  
+  # The name of a Posix-compliant `awk' on your system.
+! AWK=		gawk
+  
+  ###############################################################################
+  
+! cc=		gcc
+! CC=		$(cc) -DTZDIR=\"c:/djgpp/zoneinfo\"
+  
+  TZCSRCS=	zic.c localtime.c asctime.c scheck.c ialloc.c
+  TZCOBJS=	zic.o localtime.o asctime.o scheck.o ialloc.o
+***************
+*** 238,244 ****
+  TDATA=		$(YDATA) $(NDATA) $(SDATA)
+  TABDATA=	iso3166.tab zone.tab
+  DATA=		$(YDATA) $(NDATA) $(SDATA) $(TABDATA) leapseconds yearistype.sh
+! MISC=		usno1988 usno1989 usno1989a usno1995 usno1997 usno1998 \
+  			Arts.htm WWW.htm gccdiffs checktab.awk
+  ENCHILADA=	$(DOCS) $(SOURCES) $(DATA) $(MISC)
+  
+--- 242,248 ----
+  TDATA=		$(YDATA) $(NDATA) $(SDATA)
+  TABDATA=	iso3166.tab zone.tab
+  DATA=		$(YDATA) $(NDATA) $(SDATA) $(TABDATA) leapseconds yearistype.sh
+! MISC=		usno1988 usno1989.orig usno1989 usno1995 usno1997 usno1998 \
+  			Arts.htm WWW.htm gccdiffs checktab.awk
+  ENCHILADA=	$(DOCS) $(SOURCES) $(DATA) $(MISC)
+  
+***************
+*** 315,338 ****
+  
+  $(TZLIB):	$(LIBOBJS)
+  		-mkdir $(TOPDIR) $(LIBDIR)
+! 		ar ru $@ $(LIBOBJS)
+! 		if [ -x /usr/ucb/ranlib -o -x /usr/bin/ranlib ] ; \
+! 			then ranlib $@ ; fi
+  
+  # We use the system's logwtmp in preference to ours if available.
+  
+  date:		$(DATEOBJS)
+! 		ar r ,lib.a logwtmp.o
+! 		if [ -x /usr/ucb/ranlib -o -x /usr/bin/ranlib ] ; \
+! 			then ranlib ,lib.a ; fi
+  		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
+! 			$(LDLIBS) -lc ,lib.a -o $@
+! 		rm -f ,lib.a
+  
+  tzselect:	tzselect.ksh
+  		sed \
+  			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
+! 			-e 's|TZDIR=[^}]*|TZDIR=$(TZDIR)|' \
+  			<$? >$@
+  		chmod +x $@
+  
+--- 319,338 ----
+  
+  $(TZLIB):	$(LIBOBJS)
+  		-mkdir $(TOPDIR) $(LIBDIR)
+! 		ar rus $@ $(LIBOBJS)
+  
+  # We use the system's logwtmp in preference to ours if available.
+  
+  date:		$(DATEOBJS)
+! 		ar rs logwtmpl.a logwtmp.o
+  		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
+! 			$(LDLIBS) -lc logwtmpl.a -o $@
+! 		rm -f logwtmpl.a
+  
+  tzselect:	tzselect.ksh
+  		sed \
+  			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
+! 			-e 's|TZDIR=[^}]*|TZDIR=$(DJDIR)/zoneinfo|' \
+  			<$? >$@
+  		chmod +x $@
+  
+***************
+*** 341,347 ****
+  
+  clean:
+  		rm -f core *.o *.out tzselect zdump zic yearistype date \
+! 			,* *.tar.gz
+  
+  names:
+  		@echo $(ENCHILADA)
+--- 341,347 ----
+  
+  clean:
+  		rm -f core *.o *.out tzselect zdump zic yearistype date \
+! 			logwtmpl* *.tar.gz
+  
+  names:
+  		@echo $(ENCHILADA)
+*** private.h~0	Thu May 28 16:56:04 1998
+--- private.h	Fri Jul 17 19:00:16 1998
+*************** void	icfree P((char * pointer));
+*** 188,193 ****
+--- 188,213 ----
+  void	ifree P((char * pointer));
+  char *	scheck P((const char *string, const char *format));
+  
++ /*
++ ** Declarations for functions which shut up GCC $(GCC_DEBUG_FLAGS).
++ */
++ #ifndef STD_INSPIRED
++ static
++ #endif /* !defined STD_INSPIRED */
++ void tzsetwall P((void));
++ struct tm * localtime_r P((const time_t * const __timep, struct tm * __tmp));
++ struct tm * gmtime_r P((const time_t * const __tp, struct tm * __tm));
++ char * ctime_r P((const time_t * const __tp, char * __buf));
++ char * asctime_r P((const struct tm *, char *));
++ #ifdef STD_INSPIRED
++ struct tm * offtime P((const time_t * const __tp, const long __off));
++ time_t timelocal P((struct tm * const __tmp));
++ time_t timegm P((struct tm * const __tmp));
++ time_t timeoff P((struct tm * const __tmp, const long __off));
++ time_t time2posix P((time_t));
++ time_t posix2time P((time_t));
++ #endif /* defined STD_INSPIRED */
++ 
+  
+  /*
+  ** Finally, some convenience items.
+*************** char *	scheck P((const char *string, con
+*** 243,248 ****
+--- 263,276 ----
+  #define INITIALIZE(x)
+  #endif /* !defined GNUC_or_lint */
+  #endif /* !defined INITIALIZE */
++ 
++ #ifdef __MSDOS__
++ #define IS_SLASH(c)	((c) == '/' || (c) == '\\')
++ #define HAS_DEVICE(n)	((n)[0] && (n)[1] == ':')
++ #define IS_ABSOLUTE(n)	(IS_SLASH((n)[0]) || HAS_DEVICE(n))
++ #undef TZDIR
++ #define TZDIR (getenv("TZDIR")?getenv("TZDIR"):"c:/djgpp/zoneinfo")
++ #endif /* __MSDOS__ */
+  
+  /*
+  ** For the benefit of GNU folk...
+*** logwtmp.c~0	Thu May 28 16:56:10 1998
+--- logwtmp.c	Fri Jul 17 12:38:58 1998
+*************** static char sccsid[] = "@(#)logwtmp.c	5.
+*** 28,33 ****
+--- 28,34 ----
+  #endif /* defined LIBC_SCCS */
+  #endif /* !defined lint */
+  
++ #ifndef __MSDOS__
+  #include <sys/types.h>
+  #include <utmp.h>
+  
+*************** logwtmp(line, name, host)
+*** 69,71 ****
+--- 70,73 ----
+  }
+  
+  #endif /* !defined OLD_TIME */
++ #endif /* !__MSDOS__ */
+*** zdump.c~0	Thu May 28 16:56:08 1998
+--- zdump.c	Fri Jul 17 13:02:06 1998
+*************** int	v;
+*** 352,358 ****
+  	if (v) {
+  		(void) printf(" isdst=%d", tmp->tm_isdst);
+  #ifdef TM_GMTOFF
+! 		(void) printf(" gmtoff=%ld", tmp->TM_GMTOFF);
+  #endif /* defined TM_GMTOFF */
+  	}
+  	(void) printf("\n");
+--- 352,358 ----
+  	if (v) {
+  		(void) printf(" isdst=%d", tmp->tm_isdst);
+  #ifdef TM_GMTOFF
+! 		(void) printf(" gmtoff=%ld", (long)tmp->TM_GMTOFF);
+  #endif /* defined TM_GMTOFF */
+  	}
+  	(void) printf("\n");
+*** zic.c~0	Thu May 28 16:56:06 1998
+--- zic.c	Fri Jul 17 19:22:14 1998
+*************** static char	elsieid[] = "@(#)zic.c	7.94"
+*** 9,17 ****
+--- 9,32 ----
+  #include "tzfile.h"
+  #ifdef unix
+  #include "sys/stat.h"			/* for umask manifest constants */
++ #include "sys/wait.h"
++ #ifndef WEXITSTATUS
++ #define WEXITSTATUS(x)	(((x) >> 8) & 0xff)
++ #endif
+  #endif /* defined unix */
+  
+  /*
++ ** Portable testing for absolute file names.
++ */
++ 
++ #ifndef IS_SLASH
++ #define IS_SLASH(c)	((c) == '/')
++ #endif
++ #ifndef IS_ABSOLUTE
++ #define IS_ABSOLUTE(n)	(IS_SLASH((n)[0]))
++ #endif
++ 
++ /*
+  ** On some ancient hosts, predicates like `isspace(C)' are defined
+  ** only if isascii(C) || C == EOF.  Modern hosts obey the C Standard,
+  ** which says they are defined only if C == ((unsigned char) C) || C == EOF.
+*************** const char * const	tofile;
+*** 580,599 ****
+  	register char *	fromname;
+  	register char *	toname;
+  
+! 	if (fromfile[0] == '/')
+  		fromname = ecpyalloc(fromfile);
+  	else {
+  		fromname = ecpyalloc(directory);
+  		fromname = ecatalloc(fromname, "/");
+  		fromname = ecatalloc(fromname, fromfile);
+  	}
+! 	if (tofile[0] == '/')
+  		toname = ecpyalloc(tofile);
+  	else {
+  		toname = ecpyalloc(directory);
+  		toname = ecatalloc(toname, "/");
+  		toname = ecatalloc(toname, tofile);
+  	}
+  	/*
+  	** We get to be careful here since
+  	** there's a fair chance of root running us.
+--- 595,629 ----
+  	register char *	fromname;
+  	register char *	toname;
+  
+! 	if (IS_ABSOLUTE(fromfile))
+  		fromname = ecpyalloc(fromfile);
+  	else {
+  		fromname = ecpyalloc(directory);
+  		fromname = ecatalloc(fromname, "/");
+  		fromname = ecatalloc(fromname, fromfile);
+  	}
+! 	if (IS_ABSOLUTE(tofile))
+  		toname = ecpyalloc(tofile);
+  	else {
+  		toname = ecpyalloc(directory);
+  		toname = ecatalloc(toname, "/");
+  		toname = ecatalloc(toname, tofile);
+  	}
++ #ifdef __MSDOS__
++ 	/* Some zone names use `+' as part of their names, but DOS
++ 	   doesn't allow `+' in file names.  Replace with a `%'.  */
++ 	{
++ 		char *p;
++ 
++ 		for (p = fromname; *p; p++)
++ 			if (*p == '+')
++ 				*p = '%';
++ 		for (p = toname; *p; p++)
++ 			if (*p == '+')
++ 				*p = '%';
++ 	}
++ 
++ #endif
+  	/*
+  	** We get to be careful here since
+  	** there's a fair chance of root running us.
+*************** static int
+*** 669,681 ****
+  itsdir(name)
+  const char * const	name;
+  {
+- 	register char *	myname;
+  	register int	accres;
+  
+  	myname = ecpyalloc(name);
+  	myname = ecatalloc(myname, "/.");
+  	accres = access(myname, F_OK);
+  	ifree(myname);
+  	return accres == 0;
+  }
+  
+--- 699,718 ----
+  itsdir(name)
+  const char * const	name;
+  {
+  	register int	accres;
+  
++ #ifdef D_OK
++ 	/* MS-DOS/MS-Windows normalize "foo/." to "foo" before testing,
++ 	   so we think foo is a directory.  Use D_OK instead.  */
++ 	accres = access(name, D_OK);
++ #else
++ 	register char *	myname;
++ 
+  	myname = ecpyalloc(name);
+  	myname = ecatalloc(myname, "/.");
+  	accres = access(myname, F_OK);
+  	ifree(myname);
++ #endif
+  	return accres == 0;
+  }
+  
+*************** const char * const	name;
+*** 1448,1454 ****
+--- 1485,1505 ----
+  	}
+  	fullname = erealloc(fullname,
+  		(int) (strlen(directory) + 1 + strlen(name) + 1));
++ #ifdef __MSDOS__
++ 	/* Some zone names use `+' as part of their names, but DOS
++ 	   doesn't allow `+' in file names.  Replace with a `%'.  */
++ 	{
++ 		char new_name[FILENAME_MAX + 1], *p;
++ 
++ 		strcpy(new_name, name);
++ 		for (p = new_name; *p; p++)
++ 			if (*p == '+')
++ 				*p = '%';
++ 		(void) sprintf(fullname, "%s/%s", directory, new_name);
++ 	}
++ #else  /* !__MSDOS__ */
+  	(void) sprintf(fullname, "%s/%s", directory, name);
++ #endif /* __MSDOS__ */
+  	/*
+  	** Remove old file, if any, to snap links.
+  	*/
+*************** const char * const	type;
+*** 1893,1899 ****
+  	result = system(buf);
+  	if (result == 0)
+  		return TRUE;
+! 	if (result == (1 << 8))
+  		return FALSE;
+  	error(_("Wild result from command execution"));
+  	(void) fprintf(stderr, _("%s: command was '%s', result was %d\n"),
+--- 1944,1950 ----
+  	result = system(buf);
+  	if (result == 0)
+  		return TRUE;
+! 	if (WEXITSTATUS(result) == 1)
+  		return FALSE;
+  	error(_("Wild result from command execution"));
+  	(void) fprintf(stderr, _("%s: command was '%s', result was %d\n"),
+*************** char * const	argname;
+*** 2151,2188 ****
+  	if (argname == NULL || *argname == '\0')
+  		return 0;
+  	cp = name = ecpyalloc(argname);
+! 	while ((cp = strchr(cp + 1, '/')) != 0) {
+! 		*cp = '\0';
+! #ifndef unix
+! 		/*
+! 		** DOS drive specifier?
+! 		*/
+! 		if (isalpha((unsigned char) name[0]) &&
+! 			name[1] == ':' && name[2] == '\0') {
+! 				*cp = '/';
+! 				continue;
+! 		}
+! #endif /* !defined unix */
+! 		if (!itsdir(name)) {
+! 			/*
+! 			** It doesn't seem to exist, so we try to create it.
+! 			** Creation may fail because of the directory being
+! 			** created by some other multiprocessor, so we get
+! 			** to do extra checking.
+! 			*/
+! 			if (mkdir(name, S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH) != 0) {
+! 				const char *e = strerror(errno);
+  
+! 				if (errno != EEXIST || !itsdir(name)) {
+! 					(void) fprintf(stderr,
+  _("%s: Can't create directory %s: %s\n"),
+! 						progname, name, e);
+! 					ifree(name);
+! 					return -1;
+  				}
+  			}
+  		}
+- 		*cp = '/';
+  	}
+  	ifree(name);
+  	return 0;
+--- 2202,2238 ----
+  	if (argname == NULL || *argname == '\0')
+  		return 0;
+  	cp = name = ecpyalloc(argname);
+! 	/*
+! 	** Get past a DOS-style drive specifier, if any.
+! 	*/
+! 	if (HAS_DEVICE(name))
+! 		cp += 2;
+! 	while (*cp++) {
+! 		if (IS_SLASH(*cp)) {
+! 			*cp = '\0';
+! 			if (!itsdir(name)) {
+! 				/*
+! 				** It doesn't seem to exist, so we try to
+! 				** create it.  Creation may fail because
+! 				** of the directory being created by some
+! 				** other multiprocessor, so we get to do
+! 				** extra checking.
+! 				*/
+! 				if (mkdir(name, S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH) != 0) {
+! 					const char *e = strerror(errno);
+  
+! 					if (errno != EEXIST || !itsdir(name)) {
+! 						(void) fprintf(stderr,
+  _("%s: Can't create directory %s: %s\n"),
+! 							       progname,
+! 							       name, e);
+! 						ifree(name);
+! 						return -1;
+! 					}
+  				}
+  			}
++ 			*cp = '/';
+  		}
+  	}
+  	ifree(name);
+  	return 0;
