@@ -402,7 +402,7 @@ void cleanup_client (void);
 
 @subheading Description
 
-This functions is typically called when the debugged process exits or is
+This function is typically called when the debugged process exits or is
 aborted.  It restores segment descriptors, closes file handles that were
 left open by the debuggee, frees protected-mode and conventional memory
 and any segment descriptors allocated by the debuggee, and restores the
@@ -492,7 +492,7 @@ characters @samp{?} and @samp{*}, meaning, respectively, any single
 character and any string of characters.  The function returns non-zero
 if the string matches the pattern, zero otherwise.
 
-This functions is meant to be used for simple matching of patterns, such
+This function is meant to be used for simple matching of patterns, such
 as if a debugger needs to allow specification of symbols using
 wildcards.
 
