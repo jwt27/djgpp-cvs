@@ -1,4 +1,4 @@
-This is dir, produced by makeinfo version 4.0 from dir.txi.
+This is dir, produced by makeinfo version 4.1 from dir.txi.
 
 
 File: dir,  Node: Top,  Next: (dir),  Prev: (dir),  Up: (dir)
@@ -121,14 +121,18 @@ From txiNNNb.zip
 * Info-Standalone: (info-stnd).
 	This topic helps you use the standalone Info-Program (info.exe)
 
-* Makeinfo: (texinfo)makeinfo options.
+* infokey: (info-stnd)Invoking infokey.
+        Compile Info key customizations.
+
+* Makeinfo: (texinfo)Invoking makeinfo.
 	Convert a .texinfo file (.txi) to an info file suitable	for the
-	info reader or Emacs, into plain ASCII, or into HTML.
+	info reader or Emacs, into plain ASCII, into HTML, into XML,
+        or into DocBook.
 
 * Texinfo: (texinfo).
 	With one source file, make either a printed manual (through TeX)
-        or an Info file (through makeinfo).  This topic includes a full
-        description of the Texinfo language and related facilities,
+        or an on-line manual (through makeinfo).  This topic includes a
+        full description of the Texinfo language and related facilities,
         including Emacs commands to work with Texinfo files.
 
 * install-info: (texinfo)Invoking install-info.
