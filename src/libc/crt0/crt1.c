@@ -185,11 +185,13 @@ extern void __setup_file_rec_list(void);
 
 char __PROXY[] = " !proxy";
 size_t __PROXY_LEN = sizeof(__PROXY)-1;
+unsigned short _os_trueversion;
 
 static void
 setup_os_version(void)
 {
   unsigned short v;
+  _os_trueversion = _get_dos_version(1);
   v = _get_dos_version(0); /* Get the reported version */
   _osmajor = (v >> 8) & 0xff; /* paranoia */
   _osminor = v & 0xff;
