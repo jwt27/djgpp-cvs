@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -19,7 +18,8 @@ __getcwd(char *buf, size_t size)
 {
   char *bp;
   __dpmi_regs r;
-  int needed_length, c;
+  size_t needed_length;
+  int c;
   unsigned use_lfn = _USE_LFN;
   int preserve_case = _preserve_fncase();
   char *name_start;
