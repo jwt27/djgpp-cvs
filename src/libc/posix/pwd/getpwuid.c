@@ -3,8 +3,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static char slash[] = "/";
-static char shell[] = "sh";
+static char passwd[] = "";
+static char slash [] = "/";
+static char shell [] = "sh";
 
 struct passwd *
 getpwuid(uid_t uid)
@@ -23,5 +24,7 @@ getpwuid(uid_t uid)
     rv.pw_shell = getenv("COMSPEC");
   if (rv.pw_shell == 0)
     rv.pw_shell = shell;
+  rv.pw_gecos = getlogin();
+  rv.pw_passwd = passwd;
   return &rv;
 }
