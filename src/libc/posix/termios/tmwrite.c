@@ -48,7 +48,7 @@ struct termios_screen_driver
   void (*scroll_down)(int y1, int y2, int delta);
   void (*scroll_forward)(int x1, int y1, int x2, int y2, int xdst, int ydst);
   void (*scroll_backward)(int x1, int y1, int x2, int y2, int xdst, int ydst);
-  void (*clear_range)(int x1, int y1, int x2, int y2);
+  void (*clear)(int x1, int y1, int x2, int y2);
 };
 
 
@@ -108,7 +108,7 @@ static void set_blink_attrib(int enable_blink);
 /* Functions to output directly to the video buffer.  */
 static inline unsigned long get_video_offset(int col, int row);
 static void direct_write_ch(unsigned char ch, int *col, int *row);
-static void direct_clear_range(int x1, int y1, int x2, int y2);
+static void direct_clear(int x1, int y1, int x2, int y2);
 static void direct_scroll_up(int y1, int y2, int delta);
 static void direct_scroll_down(int y1, int y2, int delta);
 static void direct_scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst);
@@ -117,7 +117,7 @@ static void direct_scroll_backward(int x1, int y1, int x2, int y2, int xdst, int
 /* This driver outputs directly to the video buffer.  */
 static struct termios_screen_driver direct_screen_driver =
   { direct_write_ch, direct_scroll_up, direct_scroll_down,
-    direct_scroll_forward, direct_scroll_backward, direct_clear_range };
+    direct_scroll_forward, direct_scroll_backward, direct_clear };
 
 
 /* Initialize the screen portion of termios.  */
@@ -387,7 +387,8 @@ static void
 execute_console_command(const unsigned char cmd, unsigned char argc,
                         unsigned int args[NPAR])
 {
-  int row, col;
+  int col, row;
+  int col_arg, row_arg;
 
   switch (cmd)
   {
@@ -469,18 +470,18 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
         /* Erase from cursor to end of screen.  */
         case 0:
           get_cursor(&col, &row);
-          screen_driver->clear_range(col, row, screen.max_col, screen.max_row);
+          screen_driver->clear(col, row, screen.max_col, screen.max_row);
           break;
 
         /* Erase from start of screen to cursor.  */
         case 1:
           get_cursor(&col, &row);
-          screen_driver->clear_range(0, 0, col, row);
+          screen_driver->clear(0, 0, col, row);
           break;
 
         /* Erase the whole screen.  */
         case 2:
-          screen_driver->clear_range(0, 0, screen.max_col, screen.max_row);
+          screen_driver->clear(0, 0, screen.max_col, screen.max_row);
           break;
       }
 
@@ -491,63 +492,88 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
         /* Clear from cursor to end of line.  */
         case 0:
           get_cursor(&col, &row);
-          screen_driver->clear_range(col, row, screen.max_col, row);
+          screen_driver->clear(col, row, screen.max_col, row);
           break;
 
         /* Clear from start of line to cursor.  */
         case 1:
           get_cursor(&col, &row);
-          screen_driver->clear_range(0, row, col, row);
+          screen_driver->clear(0, row, col, row);
           break;
 
         /* Clear the whole line.  */
         case 2:
           get_cursor(&col, &row);
-          screen_driver->clear_range(0, row, screen.max_col, row);
+          screen_driver->clear(0, row, screen.max_col, row);
           break;
       }
 
     /* IL: Insert Line */
     case 'L':
       get_cursor(&col, &row);
-      screen_driver->scroll_down(row, screen.max_row, row + GET_ARG(0, 1));
+      row_arg = row + GET_ARG(0, 1);
+      if (row_arg <= screen.max_row)
+        screen_driver->scroll_down(row, screen.max_row, row_arg);
+      else
+        screen_driver->clear(0, row, screen.max_col, screen.max_row);
       break;
 
     /* DL: Delete Line */
     case 'M':
       get_cursor(&col, &row);
-      screen_driver->scroll_up(row + GET_ARG(0, 1), screen.max_row, row);
+      row_arg = GET_ARG(0, 1);
+      if (row_arg <= screen.max_row)
+        screen_driver->scroll_up(row_arg, screen.max_row, row);
       break;
 
     /* SU: Scroll Up */
     case 'S':
-      screen_driver->scroll_up(GET_ARG(0, 1), screen.max_row, 0);
+      row_arg = GET_ARG(0, 1);
+      if (row_arg <= screen.max_row)
+        screen_driver->scroll_up(row_arg, screen.max_row, 0);
+      else
+        screen_driver->clear(0, 0, screen.max_col, screen.max_row);
       break;
 
     /* ST: Scroll Down */
     case 'T':
-      screen_driver->scroll_down(0, screen.max_row, GET_ARG(0,1));
+      row_arg = GET_ARG(0, 1);
+      if (row_arg <= screen.max_row)
+        screen_driver->scroll_down(0, screen.max_row, row_arg);
+      else
+        screen_driver->clear(0, 0, screen.max_col, screen.max_row);
       break;
 
     /* ICH: Insert Character */
     case '@':
       get_cursor(&col, &row);
-      screen_driver->scroll_forward(col, row, screen.max_col, row,
-                                    col + GET_ARG(0, 1), row);
+      col_arg = col + GET_ARG(0, 1);
+      if (col_arg <= screen.max_col)
+        screen_driver->scroll_forward(col, row, screen.max_col, row,
+                                      col_arg, row);
+      else
+        screen_driver->clear(col, row, screen.max_col, row);
       break;
 
     /* DCH: Delete Character */
     case 'P':
       get_cursor(&col, &row);
-      screen_driver->scroll_backward(col + GET_ARG(0, 1), row,
-                                     screen.max_col, row,
-                                     col, row);
+      col_arg = col + GET_ARG(0, 1);
+      if (col_arg <= screen.max_col)
+        screen_driver->scroll_backward(col_arg, row,
+                                       screen.max_col, row,
+                                       col, row);
+      else
+        screen_driver->clear(col, row, screen.max_col, row);
       break;
 
     /* ECH: Erase Character */
     case 'X':
       get_cursor(&col, &row);
-      screen_driver->clear_range(col, row, col + GET_ARG(0, 1),  row);
+      col_arg = col + GET_ARG(0, 1);
+      if (col_arg > screen.max_col)
+        col_arg = screen.max_col;
+      screen_driver->clear(col, row, col_arg,  row);
       break;
 
     /* Color */
@@ -785,7 +811,7 @@ direct_write_ch(unsigned char ch, int *col, int *row)
 
 /* Clear from (x1, y1) to (x2, y2).  */
 static void
-direct_clear_range(int x1, int y1, int x2, int y2)
+direct_clear(int x1, int y1, int x2, int y2)
 {
   unsigned long ptr, ptr_end;
   unsigned short fill;
@@ -825,7 +851,6 @@ direct_scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   unsigned short fill;
   unsigned long fill_l;
   unsigned long dst_ptr, src_ptr, dst_end, src_end;
-  unsigned long screen_end;
 
   int xdst2, ydst2;
 
@@ -837,25 +862,6 @@ direct_scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   src_ptr = get_video_offset(x2, y2);
   dst_end = get_video_offset(xdst, ydst);
   src_end = get_video_offset(x1, y1);
-  screen_end = get_video_offset(screen.max_col, screen.max_row);
-
-  /* Quit if the start of the source area is off the screen.  */
-  if (src_end > screen_end)
-    return;
-
-  /* Clear area if all of the destination area is off the screen.  */
-  if (dst_end > screen_end)
-  {
-    screen_driver->clear_range(x1, y1, screen.max_col, screen.max_row);
-    return;
-  }
-
-  /* Adjust pointers if part of destination area is past end of screen.  */
-  if (dst_ptr > screen_end)
-  {
-    src_ptr -= (dst_ptr - screen_end);
-    dst_ptr = screen_end;
-  }
 
   fill = ' ' | (screen.attrib << 8);
   fill_l = fill | (fill << 16);
@@ -914,7 +920,6 @@ direct_scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   unsigned short fill;
   unsigned long fill_l;
   unsigned long dst_ptr, src_ptr, dst_end, src_end;
-  unsigned long screen_end;
   int xdst2, ydst2;
 
   xdst2 = xdst + (x2 - x1);
@@ -925,22 +930,6 @@ direct_scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   src_ptr = get_video_offset(x1, y1);
   dst_end = get_video_offset(xdst2, ydst2);
   src_end = get_video_offset(x2, y2);
-  screen_end = get_video_offset(screen.max_col, screen.max_row);
-
-  /* Quit if the start of the source area is off the screen.  */
-  if (src_ptr > screen_end)
-    return;
-
-  /* Quit if the end of the destination area is off the screen.  */
-  if (dst_end < screen.video_buffer)
-    return;
-
-  /* Don't bother with copying outside the video buffer area.  */
-  if (dst_ptr < screen.video_buffer)
-  {
-    src_ptr += (screen.video_buffer - dst_ptr);
-    dst_ptr = screen.video_buffer;
-  }
 
   /* On to business.  */
   fill = ' ' | (screen.attrib << 8);
