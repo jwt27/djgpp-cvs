@@ -62,7 +62,7 @@ typedef struct
 typedef struct __dxe_handle
 {
   struct __dxe_handle *next;		/* Pointer to next module in chain */
-  char fname[FILENAME_MAX + 1];		/* Full module pathname */
+  char fname[FILENAME_MAX];		/* Full module pathname */
   int mode;				/* Module open mode */
   int inuse;				/* In-use counter */
   int n_exp_syms;			/* Number of entries in export table */
@@ -104,8 +104,8 @@ void *dlopen (const char *filename, int mode)
   int i, j, fh;				/* Miscelaneous variables */
   int hdrsize;				/* Resident header size */
   char *scan;				/* Work variable */
-  char realfn [FILENAME_MAX + 1];	/* Real module filename */
-  char tempfn [FILENAME_MAX + 1];	/* Temporary filename */
+  char realfn [FILENAME_MAX];		/* Real module filename */
+  char tempfn [FILENAME_MAX];		/* Temporary filename */
   int discardsize;
   char *discardable;
 
@@ -124,24 +124,27 @@ void *dlopen (const char *filename, int mode)
   {
     char *nextscan;
     size_t fnl = strlen (filename) + 1;
-    for (scan = getenv ("LD_LIBRARY_PATH"); scan && *scan;
-         scan = nextscan + strspn (nextscan, "; \t"))
-    {
-      char *name;
-      nextscan = strchr (scan, ';');
-      if (!nextscan) nextscan = strchr (scan, 0);
-      if (nextscan - scan > FILENAME_MAX - 12)
-        continue;
-      memcpy (tempfn, scan, nextscan - scan);
-      name = tempfn + (nextscan - scan);
-      if (name [-1] != '/' && name [-1] != '\\')
-        *name++ = '/';
-      memcpy (name, filename, fnl);
-      if (ACCESS(tempfn))
-      {
-        filename = tempfn;
-        goto found;
-      }
+    /* LD_LIBRARY_PATH is scanned only for relative paths */
+    if ((filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':')) {
+       for (scan = getenv ("LD_LIBRARY_PATH"); scan && *scan;
+            scan = nextscan + strspn (nextscan, "; \t"))
+       {
+         char *name;
+         nextscan = strchr (scan, ';');
+         if (!nextscan) nextscan = strchr (scan, 0);
+         if (nextscan - scan > FILENAME_MAX - 12)
+           continue;
+         memcpy (tempfn, scan, nextscan - scan);
+         name = tempfn + (nextscan - scan);
+         if (name [-1] != '/' && name [-1] != '\\')
+           *name++ = '/';
+         memcpy (name, filename, fnl);
+         if (ACCESS(tempfn))
+         {
+           filename = tempfn;
+           goto found;
+         }
+       }
     }
     errno = ENOENT;
     return NULL;
@@ -192,12 +195,15 @@ found:
   /* Read DXE tables and the data section */
   hdrsize = dxehdr.symbol_offset - sizeof (dxehdr);
   discardsize = dxehdr.dep_size + dxehdr.unres_size + dxehdr.nrelocs * sizeof(long);
-  dxe.header = malloc (hdrsize + dxehdr.sec_size);
-  discardable = malloc (discardsize);
-  if (!dxe.header || !discardable) {
+  if ((dxe.header = malloc (hdrsize + dxehdr.sec_size)) == NULL) {
     errno = ENOMEM;
     CLOSE (fh);
     return NULL;
+  }
+  if ((discardable = malloc (discardsize)) == NULL) {
+    errno = ENOMEM;
+    CLOSE (fh);
+    goto midwayerror;
   }
   /* [dBorca]
    * the resident header and actual section share the same block
@@ -275,7 +281,10 @@ found:
 
   /* Parse the header again and fill the exported names table */
   scan = dxe.header;
-  dxe.exp_table = malloc (dxehdr.n_exp_syms * sizeof (void *));
+  if ((dxe.exp_table = malloc (dxehdr.n_exp_syms * sizeof (void *))) == NULL) {
+     errno = ENOMEM;
+     goto midwayerror;
+  }
   for (i = 0; i < dxehdr.n_exp_syms; i++)
   {
     dxe.exp_table [i] = (exp_table_entry *)scan;
@@ -290,7 +299,11 @@ found:
 
   /* Put the dxe module in loaded modules chain */
   dxe.next = dxe_chain;
-  dxe_chain = malloc(sizeof(dxe_handle));
+  if ((dxe_chain = malloc(sizeof(dxe_handle))) == NULL) {
+     free(dxe.exp_table);
+     errno = ENOMEM;
+     goto midwayerror;
+  }
   memcpy(dxe_chain, &dxe, sizeof(dxe_handle));
 
 #ifndef __GNUC__
@@ -303,8 +316,9 @@ found:
   return dxe_chain;
 
 unrecoverable:
-  free (dxe.header);
   free (discardable);
+midwayerror:
+  free (dxe.header);
   return NULL;
 }
 

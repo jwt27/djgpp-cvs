@@ -19,15 +19,20 @@ extern int _dl_nsymtab, _dl_nmaxsymtab;
 /* Desc: register symbol table
  *
  * In  : symbol table
- * Out : 0 if success
+ * Out : negative number if error
  *
  * Note: -
  */
 int dlregsym (const dxe_symbol_table *symtab)
 {
  if (_dl_nsymtab >= _dl_nmaxsymtab) {
+    const dxe_symbol_table **p;
+    p = realloc(_dl_symtabs, (_dl_nmaxsymtab + 8) * sizeof(dxe_symbol_table *));
+    if (p == NULL) {
+       return -1;
+    }
     _dl_nmaxsymtab += 8;
-    _dl_symtabs = realloc(_dl_symtabs, _dl_nmaxsymtab * sizeof(dxe_symbol_table *));
+    _dl_symtabs = p;
  }
  _dl_symtabs[_dl_nsymtab] = symtab;
  return _dl_nsymtab++;
