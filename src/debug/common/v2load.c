@@ -42,7 +42,7 @@ static int read_section(int pf, unsigned ds, unsigned foffset, unsigned soffset,
   foffset &= 0xfffffe00U;
   soffset &= 0xfffffe00U;
   lseek(pf, foffset, 0);
-  asm("mov %%ss,%w0" : "=g" (my_ss) );
+  asm volatile ("mov %%ss,%w0" : "=g" (my_ss) );
   while(size) {
     read_size = (size > sizeof(buffer)) ? sizeof(buffer) : size;
     nr = read(pf, buffer, read_size);

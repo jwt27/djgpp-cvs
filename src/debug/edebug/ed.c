@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -27,12 +28,14 @@ void ansi(int fg)
 void ansidetect(void)	/* Idea from DJ's install program */
 {
   word16 oldp, newp;
-  asm("movb $3,%%ah;movb $0,%%bh;int $0x10;movw %%dx,%0" : "=g" (oldp) :
-    : "ax", "bx", "cx", "dx");
+  asm volatile ("movb $3,%%ah;movb $0,%%bh;int $0x10;movw %%dx,%0"
+		: "=g" (oldp) :
+		: "ax", "bx", "cx", "dx");
   printf("\033[0m");
   fflush(stdout);
-  asm("movb $3,%%ah;movb $0,%%bh;int $0x10;movw %%dx,%0" : "=g" (newp) :
-    : "ax", "bx", "cx", "dx");
+  asm volatile ("movb $3,%%ah;movb $0,%%bh;int $0x10;movw %%dx,%0"
+		: "=g" (newp) :
+		: "ax", "bx", "cx", "dx");
   if (newp == oldp)
     ansi_mode = 1;
   else {

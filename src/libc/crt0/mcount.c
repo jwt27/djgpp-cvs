@@ -63,7 +63,8 @@ void mcount(int _to)
   int mtabi;
   MTABE **cache;
 
-  asm("movl %%edx,%0" : "=g" (cache)); /* obtain the cached pointer */
+  /* obtain the cached pointer */
+  __asm__ __volatile__ ("movl %%edx,%0" : "=g" (cache));
 
   mcount_skip = 1;
   /* Do nothing if profiling is disabled.  */

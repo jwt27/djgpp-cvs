@@ -194,7 +194,7 @@ do_faulting_finish_message(int fake_exception)
   
   /* check video mode for original here and reset (not if PC98) */
   if(ScreenPrimary != 0xa0000 && _farpeekb(_dos_ds, 0x449) != old_video_mode) {
-    asm("pusha;movzbl _old_video_mode,%eax; int $0x10;popa;nop");
+    asm volatile ("pusha;movzbl _old_video_mode,%eax; int $0x10;popa;nop");
   }
   en = (signum >= EXCEPTION_COUNT) ? 0 : 
   exception_names[signum];
@@ -533,8 +533,8 @@ __djgpp_exception_setup(void)
     signal_list[i] = (SignalHandler)SIG_DFL;
 
   /* app_DS only used when converting HW interrupts to exceptions */
-  asm("mov %ds,___djgpp_app_DS");
-  asm("mov %ds,___djgpp_our_DS");
+  asm volatile ("mov %ds,___djgpp_app_DS");
+  asm volatile ("mov %ds,___djgpp_our_DS");
   __djgpp_dos_sel = _dos_ds;
 
   /* lock addresses which may see HW interrupts */
@@ -543,7 +543,7 @@ __djgpp_exception_setup(void)
 		  - (unsigned) &__djgpp_hw_lock_start);
   __dpmi_lock_linear_region(&lockmem);
   
-  asm("mov %%cs,%0" : "=g" (except.selector) );
+  asm volatile ("mov %%cs,%0" : "=g" (except.selector) );
   except.offset32 = (unsigned) &__djgpp_exception_table;
   for(i=0; i < EXCEPTION_COUNT; i++)
   {

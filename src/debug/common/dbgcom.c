@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -110,7 +111,8 @@ void save_npx (void)
   int i;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
-  asm ("movb	$0x0b, %%al					\n\
+  asm volatile
+      ("movb	$0x0b, %%al					\n\
 	outb	%%al, $0xa0					\n\
 	inb	$0xa0, %%al					\n\
 	testb	$0x20, %%al					\n\
@@ -158,7 +160,7 @@ void save_npx (void)
     npx.mmx[i]= * (long double *) &(npx.reg[i]);
    }
  /* Restore debugger's FPU state.  */
- asm("frstor %0" : :"m" (debugger_npx));
+ asm volatile ("frstor %0" : :"m" (debugger_npx));
 #endif
 }
 /* ------------------------------------------------------------------------- */
@@ -169,7 +171,7 @@ void load_npx (void)
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
   /* Save debugger's FPU state.  */
-  asm ("fnsave %0" : :"m" (debugger_npx));
+  asm volatile ("fnsave %0" : :"m" (debugger_npx));
 #if 0
   /* This code is disabled because npx.mmx[] and npx.st[] are supposed
      to be read-only, they exist to make it easier for a debugger to
@@ -203,7 +205,7 @@ void load_npx (void)
       }
    }
 #endif
-  asm ("frstor %0" : "=m" (npx));
+  asm volatile ("frstor %0" : "=m" (npx));
 }
 
 static int _DPMIsetBreak(unsigned short sizetype, unsigned vaddr)
@@ -328,7 +330,7 @@ static void hook_dpmi(void)
       __dpmi_get_processor_exception_handler_vector(i,&our_handler[i]);
     }
 
-  asm("mov %%cs,%0" : "=g" (new_int.selector) );
+  asm volatile ("mov %%cs,%0" : "=g" (new_int.selector) );
   new_int.offset32 = (unsigned long)i21_hook;
   __dpmi_set_protected_mode_interrupt_vector(0x21, &new_int);
   new_int.offset32 = (unsigned long)i31_hook;
@@ -505,7 +507,7 @@ _app_exception_not_set:                                                 \n\
 
 /* Change a handle in the list: EAX is the old handle, EDX is the new */
 /* for changing a value, we need our ds, because cs has no write access */
-asm(						       			"\n\
+asm(								       "\n\
 	.text								\n\
 	.balign  16,,7							\n\
 _change_handle:								\n\
@@ -923,7 +925,7 @@ Lc21_exit:                                                              \n\
 	);
 
 /* complete code to return from an exception */
-asm (  ".text								\n\
+asm ( ".text								\n\
        .balign 16,,7							\n\
        .globl    _dbgcom_exception_return_to_debuggee			\n\
 _dbgcom_exception_return_to_debuggee:       /* remove errorcode from stack */\n\
@@ -992,7 +994,7 @@ static jmp_buf here;
 
 /* simple code to return from an exception */
 /* don't forget to increment cur_pos       */
-asm (  ".text								\n\
+asm ( ".text								\n\
        .balign 16,,7							\n\
        .globl    _dbgcom_exception_return_to_here			\n\
 _dbgcom_exception_return_to_here:       /* remove errorcode from stack */\n\
@@ -1049,8 +1051,8 @@ static void unhook_dpmi(void)
         __dpmi_set_processor_exception_handler_vector(i,&our_handler[i]);
     }
 
-  asm ("sti");   /* This improve stability under Win9X after SIGINT */
-		 /* Why? (AP) */
+  asm volatile ("sti");   /* This improve stability under Win9X after SIGINT */
+			  /* Why? (AP) */
 }
 
 #define RETURN_TO_HERE 0
@@ -1108,7 +1110,8 @@ static void dbgsig(int sig)
 {
   unsigned int ds_size;
   int signum =  __djgpp_exception_state->__signum;
-  asm ("movl _app_ds,%%eax					\n\
+  asm volatile
+      ("movl _app_ds,%%eax					\n\
         lsl  %%eax,%%eax					\n\
         movl %%eax,%0"
         : "=g" (ds_size) );
@@ -1325,7 +1328,8 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
   char read_allowed = 0;
   char write_allowed = 0;
   
-  asm("										\n\
+  asm volatile
+    ("										\n\
       movw  %2,%%ax								\n\
       verr  %%ax								\n\
       jnz   .Ldoes_not_has_read_right						\n\
@@ -1391,9 +1395,9 @@ void edi_init(jmp_buf start_state)
 {
   int i;
   my_ds = 0;
-  asm("mov %%ds,%0" : "=g" (my_ds) );
+  asm volatile ("mov %%ds,%0" : "=g" (my_ds) );
   my_cs = 0;
-  asm("mov %%cs,%0" : "=g" (my_cs) );
+  asm volatile ("mov %%cs,%0" : "=g" (my_cs) );
 
   for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
     {
@@ -1417,7 +1421,7 @@ void edi_init(jmp_buf start_state)
   if (__dpmi_get_segment_base_address(app_ds, &edi.app_base) == -1)
     abort ();
   /* Save debugger's FPU state.  */
-  asm ("fnsave %0" : :"m" (debugger_npx));
+  asm volatile ("fnsave %0" : :"m" (debugger_npx));
   /* Fill the debuggee's FPU state with the default values, taken from
      the equivalent of FNINIT performed by FNSAVE above.  */
   memset(&npx,0,sizeof(npx));
