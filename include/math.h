@@ -123,6 +123,12 @@ double		nan(const char *);
 float		nanf(const char *);
 long double	nanl(const char *);
 
+#define MATH_ERRNO     1
+#define MATH_ERREXCEPT 2
+
+int __get_math_errhandling(void);
+#define math_errhandling (__get_math_errhandling())
+
 double	acosh(double);
 double	asinh(double);
 double	atanh(double);

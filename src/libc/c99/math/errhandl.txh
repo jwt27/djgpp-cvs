@@ -1,0 +1,37 @@
+@c ----------------------------------------------------------------------
+@node math_errhandling, math
+@vindex math_errhandling
+@subheading Syntax
+
+@example
+#include <math.h>
+@end example
+
+@subheading Description
+
+@code{math_errhandling} evaluates to an integer expression describing
+the floating-point error reporting methods used by the C library.
+
+If @code{math_errhandling} returns the bit @code{MATH_ERRNO} set,
+then errors are reported using @code{errno} (@pxref{errno}).
+
+If @code{math_errhandling} returns the bit @code{MATH_ERREXCEPT} set,
+then errors are reported by raising ``exceptions''.
+
+The library may support both methods of error reporting. Currently
+DJGPP only supports reporting errors using @code{errno}.
+
+@subheading Return Value
+
+Which floating-point error reporting methods are available.
+
+@subheading Portability
+
+@portability ansi-c99, posix-1003.1-2001
+
+@subheading Example
+
+@example
+if (math_errhandling & MATH_ERRNO)
+  perror("myprogram");
+@end example

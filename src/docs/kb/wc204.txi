@@ -1036,3 +1036,6 @@ This means that @code{%T} and @code{%X} are no longer equivalent.
 @vindex __djgpp_stack_overflow_eip@r{ added}
 @findex __djgpp_stack_overflow_exit@r{ added}
 A stack overflow handler was added.
+
+@vindex math_errhandling@r{ added}
+@code{math_errhandling} was added.
