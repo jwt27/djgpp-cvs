@@ -38,13 +38,18 @@ int main(int argc, char **argv)
       argc -= 2;
       argv += 2;
     }
-    if ((strcmp(argv[1], "-i") == 0) && (argc > 3))
+    else if ((strcmp(argv[1], "-i") == 0) && (argc > 3))
     {
       ifile = fopen(argv[2], "r");
       if (ifile == 0)
         fprintf(stderr, "Error: unable to open file %s\n", argv[2]);
       argc -= 2;
       argv += 2;
+    }
+    else
+    {
+      fprintf(stderr, "Invalid option %s - type `symify' for help\n", argv[1]);
+      exit(1);
     }
   }
   syms_init(argv[1]);
