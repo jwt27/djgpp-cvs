@@ -411,3 +411,8 @@ The functions @code{fputc}, @code{fprintf}, @code{fwrite} and
 append mode.
 Type of @code{__file_handle_modes} extended to be able to hold the
 @code{O_APPEND} flag.
+
+@findex getopt@r{, enhanced for POSIX compliance}
+When the first character in the valid options string is a colon @samp{:},
+@code{getopt} will now return a colon when a missing option argument is
+detected and will not print error messages even when @code{opterr} is non-zero.
