@@ -1,0 +1,117 @@
+@node lockf, unistd
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int lockf (int fildes, int function, off_t size);
+@end example
+
+@subheading Description
+
+The @code{lockf} function is a simplified interface to the locking
+facilities of @code{fcntl} (see @ref{fcntl} for more detailed
+information).
+
+@var{fildes} is an open file descriptor.
+
+@var{function} is a control value which specifies the action to be
+taken.  The permissible values for function are defined in <unistd.h> as
+follows:
+
+@example
+#define   F_ULOCK   0   /* Unlock a previously locked section */
+#define   F_LOCK    1   /* Lock a section for exclusive use */
+#define   F_TLOCK   2   /* Test and lock a section for exclusive use */
+#define   F_TEST    3   /* Test section for other locks */
+@end example
+
+All other values of @var{function} are reserved for future extensions
+and will result in an error return if not implemented, with @code{errno}
+set to @code{EINVAL}.
+
+@var{size} is the number of contiguous bytes to be locked or unlocked.
+The resource to be locked starts at the current offset in the file and
+extends forward for a positive @var{size} and backward for a negative
+@var{size} (the preceding bytes up to but not including the current
+offset).  If @var{size} is zero, the section from the current offset
+through the largest file offset is locked (i.e., from the current offset
+through the end-of-file).
+
+The functions defined for @code{lockf} are as follows:
+
+@table @code
+@item F_TEST
+This function is used to detect if the specified section is already
+locked.
+
+@itemx F_LOCK
+@itemx F_TLOCK
+@code{F_LOCK} and @code{F_TLOCK} both lock a section of a file, if the
+section is available.  These two function requests differ only by the
+action taken if the resource is not available.  @code{F_LOCK} will cause
+the calling program to wait until the resource is available.
+@code{F_TLOCK} will cause the function to return a -1 and set
+@code{errno} to error @code{EACCES} if the section is already locked.
+
+@itemx F_ULOCK
+@code{F_ULOCK} removes locks from a section of the file. This function
+will release locked sections controlled by the program.
+@end table
+
+The @code{lockf} function will fail, returning -1 and setting
+@code{errno} to the following error values if the associated condition
+is true:
+
+@table @code
+@item EBADF
+Parameter @var{fildes} is not a valid open file.
+
+@itemx EACCES
+Parameter @var{function} is @code{F_TLOCK} or @code{F_TEST} and the
+section is already locked.
+
+@itemx EINVAL
+Parameter @var{function} is not one of the implemented functions.
+@end table
+
+All lock requests in this implementation are coded as exclusive locks
+(i.e., all locks use the @code{fcntl} request @code{F_WRLCK}).
+
+It is therefore wise to code @code{lockf} by using function
+@code{F_TLOCK} with all lock requests, and to test the return value to
+determine if the lock was obtained or not.  Using @code{F_TLOCK} will
+cause the implementation to use @code{F_SETLK} instead of
+@code{F_SETLKW}, which will return an error if the lock cannot be
+obtained.
+
+
+@subheading Return Value
+
+On success, zero is returned.  On error, -1 is returned, and
+@code{errno} is set appropriately, as described above.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ /* Request a lock on file handle fd from the current position to
+    the end of the file */
+  errno = 0;
+  retval = lockf(fd, F_LOCK, 0);
+
+ /* Request a non-blocking lock on file handle fd */
+  errno = 0;
+  retval = lockf(fd, F_TLOCK, 0);
+
+ /* Test a lock on file handle fd */
+  errno = 0;
+  retval = lockf(fd, F_TEST, 0);
+
+ /* Release a lock on file handle fd */
+  errno = 0;
+  retval = lockf(fd, F_ULOCK, 0);
+@end example
