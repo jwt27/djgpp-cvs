@@ -1,9 +1,10 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdlib.h>
 
-long long
-llabs(long long j)
+long long int
+llabs(long long int j)
 {
   return j<0 ? -j : j;
 }

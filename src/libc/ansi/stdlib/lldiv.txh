@@ -4,7 +4,7 @@
 @example
 #include <stdlib.h>
 
-lldiv_t lldiv(long long numerator, long long denominator);
+lldiv_t lldiv(long long int numerator, long long int denominator);
 @end example
 
 @subheading Description
@@ -14,8 +14,8 @@ divided by @var{denominator}.  The return type is as follows:
 
 @example
 typedef struct @{
-  long long quot;
-  long long rem;
+  long long int quot;
+  long long int rem;
 @} lldiv_t;
 @end example
 
@@ -25,7 +25,7 @@ The results of the division are returned.
 
 @subheading Portability
 
-@portability !ansi, !posix
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
 
 @subheading Example
 
