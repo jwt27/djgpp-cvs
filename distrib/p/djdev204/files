@@ -11,6 +11,8 @@ bin/djtart.exe
 bin/djtarx.exe
 bin/dtou.exe
 bin/dxegen.exe
+bin/dxe3gen.exe
+bin/dxe3res.exe
 bin/edebug32.exe
 bin/emu387.dxe
 bin/exe2coff.exe
