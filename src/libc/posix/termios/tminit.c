@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
+#include <sys/exceptn.h>
 #include <libc/bss.h>
 #include <libc/file.h>
 #include <libc/dosio.h>
@@ -879,10 +880,18 @@ __libc_termios_fill_queue (void)
 	    {
 	      if (! (__libc_tty_p->t_iflag & IGNBRK) && _CC_EQU (VINTR, ch))
 		{
+		  /* Only raise the signal if SIGINT generation by the
+		     INTR key is disabled; otherwise the signal was
+		     already raised and what we see here is the key
+		     which generated it that wasn't removed from the
+		     keyboard buffer.  */
 		  if (__libc_tty_p->t_iflag & BRKINT)
 		    {
-		      __libc_termios_maybe_echo_ctrl (ch);
-		      kill (getpid (), SIGINT);
+		      if (__djgpp_set_ctrl_c (-1) == 0)
+			{
+			  __libc_termios_maybe_echo_ctrl (ch);
+			  kill (getpid (), SIGINT);
+			}
 		      continue;
 		    }
 		  else
@@ -891,10 +900,14 @@ __libc_termios_fill_queue (void)
 		      goto proc_skip;
 		    }
 		}
+	      /* See the commentary about SIGINT above.  */
 	      else if (_CC_EQU (VQUIT, ch))
 		{
-		  __libc_termios_maybe_echo_ctrl (ch);
-		  kill (getpid(), SIGQUIT);
+		  if (__djgpp_set_ctrl_c (-1) == 0)
+		    {
+		      __libc_termios_maybe_echo_ctrl (ch);
+		      kill (getpid(), SIGQUIT);
+		    }
 		  continue;
 		}
 	      else if (_CC_EQU (VSUSP, ch))

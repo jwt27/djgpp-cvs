@@ -296,3 +296,14 @@ The termios emulation now uses raw input/output only if the file handle
 referring to a device is put into binary mode, and the device itself is
 in raw mode.
 
+@cindex termios, input and @code{SIGINT} and @code{SIGQUIT}
+The termios input routines no longer generate the @code{SIGINT} and
+@code{SIGQUIT} signals twice when @kbd{Ctrl-@key{C}} or
+@kbd{Ctrl-@key{\}} are pressed.
+
+@findex __djgpp_set_ctrl_c@r{, non-destructive query}
+A call to @code{__djgpp_set_ctrl_c} with a negative argument returns the
+current state of @code{SIGINT} and @code{SIGQUIT} generation without
+altering it.
+
+

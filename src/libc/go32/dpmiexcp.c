@@ -573,10 +573,13 @@ int
 __djgpp_set_ctrl_c(int enable_sigs)
 {
   int oldenable = !(__djgpp_hwint_flags & 1);
-  if (enable_sigs)
-    __djgpp_hwint_flags &= ~1;
-  else
-    __djgpp_hwint_flags |= 1;
+  if (enable_sigs >= 0)
+  {
+    if (enable_sigs)
+      __djgpp_hwint_flags &= ~1;
+    else
+      __djgpp_hwint_flags |= 1;
+  }
   return oldenable;
 }
 

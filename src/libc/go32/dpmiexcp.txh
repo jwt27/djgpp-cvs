@@ -273,10 +273,12 @@ programs want to get the @samp{^C} and @samp{^\} characters as any other
 character and handle them by themselves.
 
 @code{__djgpp_set_ctrl_c} lets you explicitly determine the effect of
-INTR and QUIT keys.  When called with non-zero value of
+INTR and QUIT keys.  When called with a non-zero, positive value of
 @var{enable}, it arranges for @code{SIGINT} and @code{SIGQUIT} signals
 to be generated when the appropriate key is pressed; if you call it with
-a zero in @var{enable}, these keys are treated as normal characters.
+a zero in @var{enable}, these keys are treated as normal characters.  If
+@var{enable} is negative, @code{__djgpp_set_ctrl_c} returns the current
+state of the signal generation, but doesn't change it.
 
 For getting similar effects via the POSIX @code{termios} functions, see
 @ref{tcsetattr}.
@@ -294,8 +296,9 @@ returns.
 
 @subheading Return Value
 
-The previous state of @code{SIGINT} and @code{SIGQUIT} generation: 0 if
-it was disabled, 1 if it was enabled.
+The state of @code{SIGINT} and @code{SIGQUIT} generation before the
+call: 0 if it was disabled, 1 if it was enabled.  If the argument
+@var{enable} is negative, the state is not altered.
 
 @subheading Portability
 
