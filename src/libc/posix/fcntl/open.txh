@@ -64,7 +64,7 @@ generate interrupts while console is read in binary mode.
 
 @item O_NOFOLLOW
 
-@code{open} will fail with errno set to @code{ELOOP}, if the last patch 
+@code{open} will fail with @code{errno} set to @code{ELOOP}, if the last path 
 component in @var{file} is symlink.
 
 @item O_NOLINK
