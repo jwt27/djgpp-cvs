@@ -1,0 +1,94 @@
+@node dlopen, misc
+@findex dlopen
+@subheading Syntax
+
+@example
+#include <dlfcn.h>
+
+void *dlopen (const char *filename, int mode);
+@end example
+
+@subheading Description
+
+This function loads a dynamic executable image, whose file name is
+pointed to by @var{filename}, into memory and returns a handle 
+associated with the image for use with the @code{dlsym} (@pxref{dlsym})
+and @code{dlclose} (@pxref{dlclose}) functions.  
+
+@vindex LD_LIBRARY_PATH
+
+If @var{filename} contains a path it is used, else it searches the path
+specified by the environment variable @env{LD_LIBRARY_PATH}.  The typical
+extension used is @file{.DXE}, and these dynamic loadable images are created 
+using @command{dxe3gen} (@pxref{dxe3gen, , dxe3gen, utils}).
+
+The @var{mode} field is a combination of @code{RTLD_xxx} flags, of which
+only @code{RTLD_GLOBAL} works (others are defined in @file{dlfcn.h} for
+Unix compatibility).  The @code{RDLD_GLOBAL} flag means all symbols in 
+this module are made public and subsequently loaded modules
+with unresolved symbols will `see' them and will try to find the unresolved
+references through them.
+
+@subheading Return Value
+
+@code{NULL} on failure, handle for the loaded image on success.
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+
+@node dlclose, misc
+@findex dlclose
+@subheading Syntax
+
+@example
+#include <dlfcn.h>
+
+int dlclose (void *handle);
+@end example
+
+@subheading Description
+
+This function closes a dynamic module loaded with @code{dlopen} 
+(@pxref{dlopen}).  The memory is freed and all pointers into that 
+image become invalid.
+
+@subheading Return Value
+
+Returns 0 on success, non-zero value on failure.  More detailed
+error information can be obtained using @code{dlerror} (@pxref{dlerror}).
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+
+@node dlsym, misc
+@findex dlsym
+@subheading Syntax
+
+@example
+#include <dlfcn.h>
+
+void *dlsym (void *handle, const char *symbol_name);
+@end example
+
+@subheading Description
+
+This function get the address of a symbol defined in a shared loadable
+image.  
+
+The @var{handle} argument is the value returned from a call to
+@code{dlopen}, or the special value @code{RTLD_DEFAULT} which will
+search all symbols in the global scope.
+
+The @var{symbol_name} is the assembler name, not the C name.  For 
+DJGPP/COFF prepend an underscore in front.
+
+@subheading Return Value
+
+Returns @code{NULL} on failure, pointer to requested symbol on success.
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+

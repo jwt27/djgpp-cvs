@@ -1,0 +1,23 @@
+@node dlerror, misc
+@findex dlerror
+@subheading Syntax
+
+@example
+#include <dlfcn.h>
+
+char *dlerror (void);
+@end example
+
+@subheading Description
+
+This function returns a character string with more information on the
+last error that occurred during dynamic linking processing.  
+
+@subheading Return Value
+
+Returns @code{NULL} if no errors, pointer to error string if available.
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+
