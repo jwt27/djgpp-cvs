@@ -27,24 +27,27 @@ A no-op.  This is currently unused by the library functions.
 
 @item __FSEXT_open
 
-An open handler.  This is called just before the library is about to
-issue the DOS OpenFile call on behalf of your program.  Do not use
-this extension to emulate symlinks.  Use @code{__FSEXT_readlink} handler
-instead.
+An open handler (@pxref{_open}).  This is called just before the library
+is about to issue the DOS OpenFile call on behalf of your program.
+Do not use this extension to emulate symlinks.
+Use @code{__FSEXT_readlink} handler instead.
 
 @item __FSEXT_creat
 
-A create handler.  Called when a file needs to be created.  Note that
-the handler should both create the ``file'' and open it.
+A create handler (@pxref{_creat}, and @pxref{_creatnew}).  Called when
+a file needs to be created.  Note that the handler should both create
+the ``file'' and open it.
 
 @item __FSEXT_read
 
-A read handler.  Called when data should be read from a ``file''.
+A read handler (@pxref{_read}).  Called when data should be read from
+a ``file''.
 
 @item __FSEXT_write
 
-A write handler.  Called to write data to a ``file''.
-On ``text'' files it receives the ORIGINAL (unconverted) buffer.
+A write handler (@pxref{write}, and @pxref{_write}).  Called to write data
+to a ``file''.  On ``text'' files it receives
+the @emph{original} (unconverted) buffer.
 
 @item __FSEXT_ready
 
@@ -72,15 +75,15 @@ The ``file'' has an error condition set.
 
 @item __FSEXT_close
 
-A close handler.  Called when the ``file'' should be closed.
+A close handler (@pxref{_close}).  Called when the ``file'' should be closed.
 
 @item __FSEXT_fcntl
 
-A file fcntl handler.
+A file fcntl handler (@pxref{fcntl}).
 
 @item __FSEXT_ioctl
 
-A file ioctl handler.
+A file ioctl handler (@pxref{ioctl (General description)}).
 
 @item __FSEXT_lseek
 
@@ -97,8 +100,8 @@ system extensions that emulate a directory structure.
 
 @item __FSEXT_unlink
 
-A file unlink handler (@pxref{unlink}).  This is most relevant to file
-system extensions that emulate a directory structure.
+A file unlink handler (@pxref{remove}, and @pxref{unlink}).  This is most
+relevant to file system extensions that emulate a directory structure.
 
 @item __FSEXT_dup
 
@@ -178,6 +181,13 @@ Please note that the special Unix filenames @file{/dev/null} and
 @file{/dev/tty} are already mapped to the appropriate DOS names
 @file{NUL} and @file{CON}, respectively, so you don't need to write
 extensions for these.
+
+Please note that the special Unix filenames @file{/dev/zero} and
+@file{/dev/full} can be made available by calling the functions
+@code{__install_dev_zero} (@pxref{__install_dev_zero}) and
+@code{__install_dev_full} (@pxref{__install_dev_full}) respectively,
+so you don't need to write extensions for these.  These are implemented
+using File System Extensions.
 
 Programs using the DJGPP debug support functions in @file{libdbg.a} may
 have problems using File System Extensions, because the debug support
