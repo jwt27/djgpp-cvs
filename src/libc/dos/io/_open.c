@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -32,18 +33,20 @@ _open(const char* filename, int oflag)
     r.x.bx = (oflag & 0xff) | 0x1000; /* 0x1000 is FAT32 extended size. */
     r.x.dx = 1;			/* Open existing file */
     r.x.si = __tb_offset;
-  } else if(7 <= (_get_dos_version(1) >> 8)) {
-    r.x.ax = 0x6c00;
-    r.x.bx = (oflag & 0xff) | 0x1000; /* 0x1000 is FAT32 extended size. */
-    /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
-       seems it has a bug which only lets you create these big files
-       if LFN is enabled. */
-    r.x.dx = 1;                        /* Open existing file */
-    r.x.si = __tb_offset;
   } else {
-    r.h.ah = 0x3d;
-    r.h.al = oflag;
-    r.x.dx = __tb_offset;
+    if(7 <= _osmajor && _osmajor < 10) {
+      r.x.ax = 0x6c00;
+      r.x.bx = (oflag & 0xff) | 0x1000; /* 0x1000 is FAT32 extended size. */
+      /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
+	 seems it has a bug which only lets you create these big files
+	 if LFN is enabled. */
+      r.x.dx = 1;                        /* Open existing file */
+      r.x.si = __tb_offset;
+    } else {
+      r.h.ah = 0x3d;
+      r.h.al = oflag;
+      r.x.dx = __tb_offset;
+    }
   }
   r.x.cx = 0;
   r.x.ds = __tb_segment;

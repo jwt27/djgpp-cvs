@@ -1,6 +1,7 @@
 /*
  * File getfstyp.c.
  *
+ * Copyright (C) 2001 Martin Str@"omberg <ams@ludd.luth.se>.
  * Copyright (C) 2000 Martin Str@"omberg <ams@ludd.luth.se>.
  *
  * This software may be used freely so long as this copyright notice is
@@ -25,7 +26,7 @@ _get_fs_type( const int drive /* drive number (1=A:). */
   __dpmi_regs r;
 
   /* Check DOZE version and return -1 if too low. */
-  if( ( _get_dos_version(1) >> 8) < 4 )
+  if( _osmajor < 4 )
   {
     errno = ENOSYS;
     return( -1 );

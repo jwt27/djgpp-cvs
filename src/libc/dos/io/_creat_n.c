@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <fcntl.h>
@@ -27,19 +28,27 @@ _creatnew(const char* filename, int attrib, int flags)
 
   _put_path(filename);
   r.x.bx =
-    0x1000 |                   /* FAT32 extended size. */
-    /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
-       seems it has a bug which only lets you create these big files
-       if LFN is enabled. */
     0x2002 | (flags & 0xfff0);	/* r/w, no Int 24h, use caller-defined flags */
   r.x.dx = 0x0010;		/* Create, fail if exists */
   r.x.si = __tb_offset;
   if(use_lfn)
+  {
+    if (7 <= _osmajor && _osmajor < 10)
+    {
+      r.x.bx |= 0x1000; 	/* FAT32 extended size. */
+    }
     r.x.ax = 0x716c;
+  }
   else
   {
-    if (_osmajor == 0)
-      _get_dos_version (0);
+    if (7 <= _osmajor && _osmajor < 10)
+    {
+      r.x.bx |= 0x1000; 	/* FAT32 extended size. */
+      /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
+	 seems it has a bug which only lets you create these big files
+	 if LFN is enabled. */
+    }
+
     if (_osmajor > 3)
       r.x.ax = 0x6c00;
     else
