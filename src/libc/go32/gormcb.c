@@ -74,8 +74,13 @@ static unsigned char wrapper_retf[] = {
 };
 
 static unsigned char wrapper_iret[] = {
+#if 0
+  /* This overwrote the FLAGS in the real-mode call structure with
+     their original value, thus making it impossible for the user's
+     RMCB to change FLAGS (e.g., to set/reset the carry bit).  */
          0x66, 0x8b, 0x46, 0x04,		/* mov     ax,[esi+4]      */
          0x66, 0x26, 0x89, 0x47, 0x20,		/* mov     es:[edi+32],ax  */
+#endif
          0x66, 0x26, 0x83, 0x47, 0x2e, 0x06,	/* add     es:[edi+46],0x6 */
          0xcf					/* iret                    */
 };
