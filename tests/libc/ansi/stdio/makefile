@@ -16,6 +16,7 @@ SRC += mktemp.c
 SRC += printf.c
 SRC += printf2.c
 SRC += sscanf.c
+SRC += sscanf2.c
 SRC += tmpnam.c
 SRC += tscanf.c
 SRC += tsnprtf.c
