@@ -82,3 +82,6 @@ determine the user's name, in addition to @code{USER} and @code{LOGNAME}.
 @findex stpncpy
 New function @code{stpncpy} has been added, thanks to 
 @email{restone@@skypoint.com, Richard E. Stone}.
+
+@findex lchown
+New function @code{lchown} has been added for UNIX compatibility.

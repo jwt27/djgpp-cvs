@@ -1,0 +1,24 @@
+@node lchown, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int lchown(const char *file, int owner, int group);
+@end example
+
+@subheading Description
+
+This function does nothing under MS-DOS
+
+@subheading Return Value
+
+This function always returns zero if the file exists (it does not
+follow symbolic links), else it returns -1 and sets @code{errno} 
+to @code{ENOENT}.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
+

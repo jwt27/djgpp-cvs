@@ -135,6 +135,7 @@ int		getdtablesize(void);
 int		gethostname(char *buf, int size);
 int		getpagesize(void);
 char *		getwd(char *__buffer);
+int             lchown(const char * file, int owner, int group);
 offset_t	llseek(int _fildes, offset_t _offset, int _whence);
 int		nice(int _increment);
 void *		sbrk(int _delta);
