@@ -28,7 +28,7 @@ lseek(int handle, off_t offset, int whence)
   }
 
   llseek_offset = llseek(handle, offset, whence);
-  if( offset == -1 )
+  if( llseek_offset == -1 )
   {
     return -1; /* llseek sets errno. */
   }
