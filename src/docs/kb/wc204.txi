@@ -412,11 +412,11 @@ append mode.
 Type of @code{__file_handle_modes} extended to be able to hold the
 @code{O_APPEND} flag.
 
-@findex fdopen.c@r{, no longer uses _IOAPPEND flag}
-@findex fflush.c@r{, no longer uses _IOAPPEND flag}
-@findex flsbuf.c@r{, no longer uses _IOAPPEND flag}
-@findex fopen.c@r{, no longer uses _IOAPPEND flag}
-@findex freopen.c@r{, no longer uses _IOAPPEND flag}
+@findex fdopen@r{, no longer uses _IOAPPEND flag}
+@findex fflush@r{, no longer uses _IOAPPEND flag}
+@findex flsbuf@r{, no longer uses _IOAPPEND flag}
+@findex fopen@r{, no longer uses _IOAPPEND flag}
+@findex freopen@r{, no longer uses _IOAPPEND flag}
 @cindex @file{libc/file.h}, _IOAPPEND flag deleted
 Due to the improved append mode implementation, the functions @code{fopen},
 @code{fflush}, @code{_flsbuf}, @code{fopen}, and @code{freopen} no longer
