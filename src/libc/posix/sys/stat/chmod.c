@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -5,6 +6,8 @@
 #include <sys/stat.h>
 #include <io.h>
 #include <stdio.h>
+#include <sys/fsext.h>
+#include <libc/fsexthlp.h>
  
 int
 chmod(const char *filename, int pmode)
@@ -12,9 +15,15 @@ chmod(const char *filename, int pmode)
   int dmode;
   char real_name[FILENAME_MAX];
   int attr;
+  int rv;
 
   if (!__solve_symlinks(filename, real_name))
      return -1;
+
+  /* See if a file system extension has a hook for this file. */
+  if (__FSEXT_call_open_handlers_wrapper(__FSEXT_chmod, &rv,
+					 real_name, pmode))
+    return rv;
   
   attr = _chmod(real_name, 0, 0);
 

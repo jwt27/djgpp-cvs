@@ -28,6 +28,9 @@ Make the file writable
 
 Other @code{S_I*} values could be included, but they will be ignored.
 
+This function can be hooked by File System Extensions
+(@pxref{File System Extensions}).
+
 @subheading Return Value
 
 Zero if the file exists and the mode was changed, else nonzero. 
