@@ -8,10 +8,15 @@
 double fabs(double x);
 @end example
 
+@subheading Description
+
+This function computes the absolute value of its argument @var{x}.
+
 @subheading Return Value
 
 @var{x} if @var{x} is positive, else -@var{x}.  Note that in this
-context, +0.0 is positive and -0.0 is negative.
+context, +0.0 is positive and -0.0 is negative.  Infinities and
+@code{NaN}s are returned unchanged, except for the sign.
 
 @subheading Portability
 

@@ -1,24 +1,44 @@
-/* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+.data
+NaN:
+	.long	0xFFC00000
+
+.text
 	.globl	_floor
 _floor:
-	pushl	%ebp
-	movl	%esp,%ebp
-	subl	$8,%esp         /* -4 = old CW, -2 = new CW */
+	subl	$4, %esp
 
-	fstcw	-4(%ebp)
+	movl	12(%esp), %eax
+	andl	$0x7FF00000,%eax
+	cmpl	$0x7FF00000,%eax
+	je	abarg
+
+argok:
+	fnstcw	(%esp)
 	fwait
-	movw	-4(%ebp),%ax
+	movw	(%esp),%ax
 	andw	$0xf3ff,%ax
 	orw	$0x0400,%ax
-	movw	%ax,-2(%ebp)
-	fldcww	-2(%ebp)
+	movw	%ax, 2(%esp)
+	fldcww	2(%esp)
 
-	fldl	8(%ebp)
+	fldl	8(%esp)
 	frndint
 
-	fldcww	-4(%ebp)
+	fldcww	(%esp)
 
-	movl	%ebp,%esp
-	popl	%ebp
+cleanup:
+	addl	$4, %esp
 	ret
 
+abarg:
+	movl	12(%esp), %eax		/* inf or NaN */
+	testl	$0x000FFFFF, %eax
+	jnz	badarg
+	movl	8(%esp), %eax
+	testl	%eax, %eax
+	jz	argok
+
+badarg:					/* arg is NaN */
+	movl	$1, _errno
+	flds	NaN
+	jmp	cleanup

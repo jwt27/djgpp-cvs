@@ -3,23 +3,23 @@
 TOP=../..
 
 SRC += acos.S
-SRC += acosh.c
+SRC += acosh.S
 SRC += asin.S
-SRC += asinh.c
+SRC += asinh.S
 SRC += atan.S
 SRC += atan2.S
-SRC += atanh.c
+SRC += atanh.S
 SRC += ceil.S
 SRC += cos.S
-SRC += cosh.c
+SRC += cosh.S
 SRC += exp.S
 SRC += fabs.S
 SRC += floor.S
 SRC += fmod.S
-SRC += frexp.c
+SRC += frexp.S
 SRC += huge_val.c
-SRC += hypot.c
-SRC += ldexp.c
+SRC += hypot.S
+SRC += ldexp.S
 SRC += log.S
 SRC += log10.S
 SRC += modf.S
@@ -28,9 +28,9 @@ SRC += pow.S
 SRC += pow10.S
 SRC += pow2.S
 SRC += sin.S
-SRC += sinh.c
+SRC += sinh.S
 SRC += sqrt.S
 SRC += tan.S
-SRC += tanh.c
+SRC += tanh.S
 
 include $(TOP)/../makefile.inc

@@ -392,3 +392,31 @@ functions from @code{printf} and @code{scanf} families, handle 8-bit
 characters correctly when they call @code{ctype}
 character-classification functions internally.
 
+@cindex math functions, improved versions
+@vindex errno@r{, set by math functions in @file{libc.a}}
+New versions of mathematical functions, written by
+@email{rudd@@cyberoptics.com, Eric Rudd}, are now included in the
+standard C library, @file{libc.a}.  The new versions are
+@sc{ansi}-compatible (they set @code{errno} in case of FP errors), yet
+very fast and accurate.  Programs that require accurate floating-point
+computations can now be linked without @samp{-lm}, unless they need the
+@code{matherr} call-back or compliance to standards like X/Open or SVID.
+
+@findex powi
+@findex cbrt
+@findex expm1
+@findex exp2
+@findex exp10
+@findex sincos
+New math functions are provided: @code{powi}, @code{cbrt}, @code{expm1},
+@code{exp2}, @code{exp10}, and @code{sincos}.
+
+@findex printf@r{, and negative zero}
+@findex fprintf@r{, and negative zero}
+@findex sprintf@r{, and negative zero}
+@cindex negative zero, printing
+If the format specifier for a floating-point number includes the
+@samp{+} flag (meaning that the sign should be printed even if the
+number is positive), the functions of the @code{printf} family will now
+print the negative zero, @code{-0.0}, with an explicit negative sign.
+

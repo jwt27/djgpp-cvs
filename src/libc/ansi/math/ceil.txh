@@ -8,6 +8,11 @@
 double ceil(double x);
 @end example
 
+@subheading Description
+
+This function computes the smallest integer greater than or equal to
+@var{x}.
+
 @subheading Return Value
 
 The smallest integer value greater than or equal to @var{x}.

@@ -1,33 +1,50 @@
-/* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
+.data
+NaN:
+	.long	0xFFC00000
+
 	.text
-	.globl	_modf
+	.globl	_modf			/* fract = fmod(x, &integer) */
 _modf:
-	pushl	%ebp
-	movl	%esp,%ebp
-	subl	$16,%esp
-	pushl	%ebx
-	fnstcw	-4(%ebp)
-	fwait
-	movw	-4(%ebp),%ax
-	orw	$0x0c3f,%ax
-	movw	%ax,-8(%ebp)
-	fldcw	-8(%ebp)
-	fwait
-	fldl	8(%ebp)
-	frndint
-	fstpl	-16(%ebp)
-	fwait
-	movl	-16(%ebp),%edx
-	movl	-12(%ebp),%ecx
-	movl	16(%ebp),%ebx
-	movl	%edx,(%ebx)
-	movl	%ecx,4(%ebx)
-	fldl	8(%ebp)
-	fsubl	-16(%ebp)
-	leal	-20(%ebp),%esp
-	fclex
-	fldcw	-4(%ebp)
-	fwait
-	popl	%ebx
-	leave
+	movl	8(%esp), %eax
+	andl	$0x7FF00000,%eax
+	cmpl	$0x7FF00000,%eax
+	je	abarg			/* x is inf or NaN */
+
+	fldl	4(%esp)			/* x                 */
+	fld1				/* 1	    x        */
+	fld	%st(1)			/* x        1     x  */
+loop:
+	fpreml				/* fract(x) 1     x  */
+	fnstsw	%ax
+	sahf
+	jpe	loop
+
+	fstp	%st(1)			/* fract(x) x        */
+	fxch 	%st(1)			/* x        fract(x) */
+	fsub	%st(1), %st		/* int(x)   fract(x) */
+
+	movl	12(%esp),%eax		/* Point to second arg */
+	fstpl	(%eax)			/* Store int(x) */
+	ret				/* fract(x) */
+
+abarg:					/* arg is inf or NaN */
+	movl	$1, _errno
+	movl	8(%esp), %eax
+	testl	$0x000FFFFF, %eax
+	jne	badarg			/* y = NaN */
+	movl	4(%esp), %eax
+	testl	%eax, %eax
+	jnz	badarg
+
+infarg:
+	movl	12(%esp),%eax		/* Point to second arg */
+	fldl	4(%esp)			/* Load x */
+	fstpl	(%eax)			/* Store int(x) */
+	flds	NaN
+	ret
+
+badarg:
+	movl	12(%esp),%eax		/* Point to second arg */
+	flds	NaN
+	fstl	(%eax)			/* Store int(x) */
 	ret

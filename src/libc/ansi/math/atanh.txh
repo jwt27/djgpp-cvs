@@ -8,9 +8,17 @@
 double atanh(double x);
 @end example
 
+@subheading Description
+
+This function computes the inverse hyperbolic tangent of @var{x}.
+
 @subheading Return Value
 
-The arc hyperbolic tangent of @var{x}.
+The inverse hyperbolic tangent of @var{x}.  If the the absolute value of
+@var{x} is plus or minus 1, the return value is an @code{Inf} with the
+same sign as the argument @var{x}, and @code{errno} is set to
+@code{ERANGE}.  If the absolute value of @var{x} is greater than 1, the
+return value is @code{NaN} and @code{errno} is set to @code{EDOM}.
 
 @subheading Portability
 

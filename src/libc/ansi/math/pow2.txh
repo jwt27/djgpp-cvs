@@ -8,9 +8,20 @@
 double pow2(double x);
 @end example
 
+@subheading Description
+
+This function computes 2 to the power of @var{x}, @math{2^x}.
+
 @subheading Return Value
 
-2 raised to the @var{x} power.
+2 to the @var{x} power.  If the value of @var{x} is finite, but so large
+in magnitude that @math{2^x} cannot be accurately represented by a
+@code{double}, the return value is the nearest representable
+@code{double} (possibly, an @code{Inf}), and @code{errno} is set to
+@code{ERANGE}.  If @var{x} is either a positive or a negative infinity,
+the result is either @code{+Inf} or zero, respectively, and @code{errno}
+is not changed.  If @var{x} is a @code{NaN}, the return value is
+@code{NaN} and @code{errno} is set to @code{EDOM}.
 
 @subheading Portability
 

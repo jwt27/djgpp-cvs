@@ -8,12 +8,31 @@
 double atan2(double y, double x);
 @end example
 
+@subheading Description
+
+This function computes the angle, in the range @code{[-Pi..Pi]} radians,
+whose tangent is @code{@var{y}/@var{x}}.  In other words, it computes
+the angle, in radians, of the vector (@var{x},@var{y}) with respect to
+the @code{+x} axis, reckoning the counterclockwise direction as
+positive, and returning the value in the range @code{[-Pi, Pi]}.
+
 @subheading Return Value
 
-The arc tangent, in radians, of @var{y/x}, with appropriate return
-values for positive, negative, or zero values of @var{x}.
-E.g. @code{atan2(1, 0)} returns @var{PI/2}, and @code{atan2(0, -1)}
-returns @var{PI}.
+The arc tangent, in radians, of @code{@var{y}/@var{x}}.  @code{Pi} is
+returned if @var{x} is negative and @var{y} is a negative zero,
+@code{-0.0}.  @code{-Pi} is returned, if @var{x} is negative, and
+@var{y} is a positive zero, @code{+0.0}.
+
+If either @var{x} or @var{y} is infinite, @code{atan2} returns,
+respectively, @code{Pi} with the sign of @var{y} or zero, and
+@code{errno} is left unchanged.  However, if @emph{both} arguments are
+infinite, the return value is @code{NaN} and @code{errno} is set to
+@code{EDOM}.
+
+A @code{NaN} is returned, and @code{errno} is set to @code{EDOM}, if
+either @var{x} and @var{y} are both zero, or if either one of the
+arguments is a @code{NaN}.
+
 
 @subheading Portability
 

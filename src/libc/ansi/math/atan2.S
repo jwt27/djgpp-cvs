@@ -1,35 +1,62 @@
-/* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
-.data
-	.align	2
-nan:
-	.long	0xffffffff
-	.byte	0xff
-	.byte	0xff
-	.byte	0xff
-	.byte	0x7f
+NaN:
+	.long	0xFFC00000
 
-.text
 	.globl	_atan2
 _atan2:
+	movl	8(%esp), %eax
+	andl	$0x7FF00000,%eax
+	cmpl	$0x7FF00000,%eax
+	je	aby			/* y is inf or NaN */
+
+	movl	16(%esp), %edx
+	andl	$0x7FF00000,%edx
+	cmpl	$0x7FF00000,%edx
+	je	abx
+
+	orl	%eax, %edx		/* OR exponents together. */
+	je	verysmall		/* Both args are very small; */
+					/* do more tests. */
+
+argok:
 	fldl	4(%esp)
 	fldl	12(%esp)
-	ftst
-	fnstsw	%ax
-	sahf
-	jne	doit
-	fxch	%st(1)
-	ftst
-	fnstsw	%ax
-	sahf
-	je	isanan
-	fxch	%st(1)
-doit:
 	fpatan
 	ret
-isanan:
-	movl	$1,_errno
-	fstp	%st(0)
-	fstp	%st(0)
-	fldl	nan
-	ret
 
+verysmall:
+	movl	4(%esp), %eax
+	orl	12(%esp), %eax
+	jz	badarg			/* x = 0 and y = 0 */
+	jmp	argok
+
+aby:
+	movl	8(%esp), %eax		/* inf or NaN */
+	testl	$0x000FFFFF, %eax
+	jne	badarg			/* y = NaN */
+	movl	4(%esp), %eax
+	testl	%eax, %eax
+	jnz	badarg
+
+	movl	16(%esp), %eax
+	andl	$0x7FF00000,%eax
+	cmpl	$0x7FF00000,%eax
+	jne	argok			/* x is finite */
+	jmp	badarg
+
+abx:
+	movl	16(%esp), %eax		/* inf or NaN */
+	testl	$0x000FFFFF, %eax
+	jnz	badarg
+	movl	4(%esp), %eax
+	testl	%eax, %eax
+	jnz	badarg
+
+	movl	8(%esp), %eax
+	andl	$0x7FF00000,%eax
+	cmpl	$0x7FF00000,%eax
+	jne	argok			/* y is finite */
+
+badarg:					/* arg is NaN */
+	movl	$1, _errno
+	flds	NaN
+	ret

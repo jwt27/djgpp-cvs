@@ -1,33 +1,66 @@
-/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
-/* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
-	.data
-LCW1:
-	.word	0
-LCW2:
-	.word	0
-LC0:
-	.double	0d1.0e+00
+NaN:
+	.long	0xFFC00000
 
-	.text
+pinf:
+	.long	0x7F800000
 
 	.globl	_exp
 _exp:
+	movl	8(%esp), %eax		/* Test for special cases. */
+	andl	$0x7FFFFFFF, %eax
+	cmpl	$0x40862E42, %eax
+	jge	bigarg			/* normal args: */
+					/* 0 < |x| <= log(DBL_MAX) */
+argok:					/* N.B. */
+					/* log(DBL_MAX) = 0x40862E42FEFA39EF */
 	fldl	4(%esp)
-	fldl2e
-	fmulp
-	fstcww	LCW1
-	fstcww	LCW2
-	fwait
-	andw	$0xf3ff,LCW2
-	orw	$0x0400,LCW2
-	fldcww	LCW2
-	fld	%st(0)
-	frndint
-	fldcww	LCW1
-	fxch	%st(1)
-	fsub	%st(1),%st
-	f2xm1
-	faddl	LC0
-	fscale
-	fstp	%st(1)
+	fldl2e				/* log2(e)   x		   */
+	fmulp				/* log2(e)*x		   */
+	fldl	%st			/* xs	     xs		   */
+	frndint				/* nint(xs)  xs		   */
+	fxch	%st(1)			/* xs	     nint(xs)	   */
+	fsub	%st(1), %st		/* fract     nint	   */
+	f2xm1				/* exps()-1  nint	   */
+	fld1				/* 1	     exps-1   nint */
+	faddp				/* exps	     nint	   */
+	fscale				/* exp	     nint	   */
+	fstp	%st(1)			/* exp			   */
+	ret
+
+bigarg:
+	je	edge
+	andl	$0x7FF00000, %eax	/* |x| > log(DBL_MAX) */
+	cmpl	$0x7FF00000, %eax
+	je	abarg
+	movl	$2, _errno		/* |x| is really big, but finite */
+	jmp	argok
+
+edge:					/* |x| is nearly log(DBL_MAX) */
+	cmpl	$0xFEFA39EF, 4(%esp)
+	jbe	argok
+	movl	$2, _errno
+	jmp	argok
+
+abarg:					/* x = +/-inf, or +NaN */
+	testl	$0x000FFFFF, 8(%esp)
+	jnz	badarg
+	movl	4(%esp), %eax
+	testl	%eax, %eax
+	jnz	badarg
+
+infarg:					/* |x| = inf */
+	testl	$0x80000000, 8(%esp)
+	jz	posinf
+
+neginf:
+	fldz
+	ret
+
+posinf:
+	flds	pinf
+	ret
+
+badarg:					/* arg is NaN */
+	movl	$1, _errno
+	flds	NaN
 	ret

@@ -8,9 +8,16 @@
 double acos(double x);
 @end example
 
+@subheading Description
+
+This function returns the angle in the range @code{[0..Pi]} radians
+whose cosine is @var{x}.  If the absolute value of @var{x} is greater
+than 1, a domain error occurs, and @code{errno} is set to @code{EDOM}.
+
 @subheading Return Value
 
-The arc cosine, in radians, of @var{x}.
+The arc cosine, in radians, of @var{x}.  If the absolute value of
+@var{x} is greater than 1, the function returns a @code{NaN}.
 
 @subheading Portability
 

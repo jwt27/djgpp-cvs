@@ -20,7 +20,9 @@ with @samp{-lm}), and will only be called if the global variable
 in the x87 control word (@pxref{_control87}) or install a handler for
 signal @code{SIGFPE} (@pxref{signal}), or else some exceptions will
 generate @code{SIGFPE} and your program will be terminated before it
-gets a chance to call @code{matherr}.
+gets a chance to call @code{matherr}.  DJGPP versions 2.02 and later
+mask all FP exceptions at startup, so this consideration applies only to
+programs that unmask FP exceptions at run time.
 
 If the above conditions are met, every math function will call
 @code{matherr} when a numerical exception is detected.  The default
@@ -51,7 +53,6 @@ The member @code{type} is an integer code describing the type of
 exception that has occured.  It can be one of the following:
 
 @table @code
-
 @item DOMAIN
 Argument(s) are outside the valid function domain (e.g.,
 @code{log(-1)}).
@@ -67,7 +68,6 @@ The result causes underflow, like in @code{exp(-10000)}.
 
 @item TLOSS
 The result loses all significant digits, like in @code{sin(10e100)}.
-
 @end table
 
 These codes are defined on @code{<libm/math.h>}.

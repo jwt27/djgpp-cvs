@@ -8,9 +8,14 @@
 double floor(double x);
 @end example
 
+@subheading Description
+
+This function computes the largest integer not greater than @var{x}.
+
 @subheading Return Value
 
-The largest integer value less than or equal to @var{x}.
+The largest integer value less than or equal to @var{x}.  Infinities and
+@code{NaN}s are returned unchanged.
 
 @subheading Portability
 

@@ -8,9 +8,16 @@
 double asin(double x);
 @end example
 
+@subheading Description
+
+This function returns the angle in the range @code{[-Pi/2..Pi/2]} whose
+sine is @var{x}.
+
 @subheading Return Value
 
-The arc sine, in radians, of @var{x}.
+The inverse sine, in radians, of @var{x}.  If the absolute value of
+@var{x} is greater than 1, the return value is @code{NaN} and
+@code{errno} is set to @code{EDOM}.
 
 @subheading Portability
 

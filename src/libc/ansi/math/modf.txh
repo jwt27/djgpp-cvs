@@ -12,14 +12,15 @@ double modf(double x, double *pint);
 
 @code{modf} breaks down @var{x} into its integer portion (which it
 stores in @var{*pint}) and the remaining fractional portion, which it
-returns.
+returns.  Both integer and fractional portions have the same sign as
+@var{x}, except if @var{x} is a negative zero, in which case the integer
+part is a positive zero.
 
 @subheading Return Value
 
-The fractional portion.
-
-
-
+The fractional portion.  If @var{x} is @code{Inf} or @code{NaN}, the
+return value is zero, the integer portion stored in @var{*pint} is the
+same as the value of @var{x}, and @code{errno} is set to @code{EDOM}.
 
 @subheading Portability
 

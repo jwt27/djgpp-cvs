@@ -1,22 +1,53 @@
-/* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
-	.text
-LC0:
-	.double 0d1.00000000000000000000e+00
+NaN:
+	.long	0xFFC00000
 
-	.globl	_acos
+	.globl _acos
 _acos:
-	fldl	4(%esp)
-	fld1
-	fsubp	%st(0),%st(1)
-	fsqrt
+/*	The commonly-used formula
 
-	fldl	4(%esp)
-	fld1
-	faddp	%st(0),%st(1)
-	fsqrt
+	acos(x) = atan2(sqrt(1.-x*x), x)
 
+	is a bad way to compute the arc cosine, since there are errors for
+	x near 1 (or -1) caused by inaccuracies in forming x*x.	 However, the
+	argument to the square root can be computed accurately even for x near 1
+	by the alternate form
+
+	acos(x) = atan2(sqrt((1.+x)*(1.-x)), x)
+
+	which is used here.
+	*/
+
+	movl	8(%esp), %eax		/* is x >= 1? */
+	andl	$0x7FF00000, %eax	/* |x| */
+	cmpl	$0x3FF00000, %eax
+	jg	badarg			/* |x| >= 2 or x = inf or NaN */
+	je	onetotwo		/* 1 <= |x| < 2 */
+
+argok:
+	fldl	4(%esp)			/* x		  */
+	fld	%st(0)			/* x	x	  */
+	fld	%st(0)			/* x	x   x	  */
+	fld1				/* 1	x   x	x */
+	faddp	%st, %st(2)		/* x	1+x x	  */
+	fld1				/* 1	x   1+x	  */
+	/* Should be fsubrp %st, %st(1) (gas bug) */
+	.byte	0xDE, 0xE1		/* 1-x	1+x x	  */
+	fmulp				/* 1-x2 x	  */
+	fsqrt
+	fxch
 	fpatan
+	ret
 
-	fld	%st(0)
-	faddp
+onetotwo:
+	movl	8(%esp), %eax		/* is x = +/-1? */
+	andl	$0x7FFFFFFF, %eax	/* |x| */
+	cmpl	$0x3FF00000, %eax
+	jne	badarg
+	movl	4(%esp), %eax
+	testl	%eax, %eax
+	jz	argok
+
+badarg:
+	movl	$1,_errno
+	flds	NaN
 	ret

@@ -1,0 +1,28 @@
+@c ----------------------------------------------------------------------
+@node log1p, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+double log1p(double x);
+@end example
+
+@subheading Description
+
+This function computes the natural logarithm of @math{1 + @var{x}}.  It
+is more accurate than @samp{log(1 + @var{x})} for small values of
+@var{x}.
+
+@subheading Return Value
+
+The natural logarithm of @math{1 + @var{x}}.  If @var{x} is -1, a
+negative infinity is returned and @code{errno} is set to @code{ERANGE}.
+If @var{x} is less than -1 or @code{+Inf} or a @code{NaN}, the return
+value is @code{NaN} and @code{errno} is set to @code{EDOM}.
+
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -1,0 +1,34 @@
+@c ----------------------------------------------------------------------
+@node sincos, math
+@subheading Syntax
+
+@example
+#include <math.h>
+
+void   sincos(double *cosine, double *sine, double x);
+@end example
+
+@subheading Description
+
+This function computes the cosine and the sine of @var{x} in a single
+call, and stores the results in the addresses pointed to by @var{cosine}
+and @var{sine}, respectively.  Since the function exploits a machine
+instruction that computes both cosine and sine simultaneously, it is
+faster to call @code{sincos} than to call @code{cos} and @code{sin} for
+the same argument.
+
+If the absolute value of @var{x} is finite but greater than or equal to
+@math{2^63}, the value stored in @var{*cosine} is 1 and the value stored
+in @var{*sine} is 0 (since for arguments that large each bit of the
+mantissa is more than @code{Pi}).  If the value of @var{x} is infinite
+or @code{NaN}, @code{NaN} is stored in both @var{*cosine} and
+@var{*sine}, and @code{errno} is set to @code{EDOM}.
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

@@ -8,9 +8,18 @@
 double asinh(double x);
 @end example
 
+@subheading Description
+
+This function returns the inverse hyperbolic sine of the argument
+@var{x}. 
+
 @subheading Return Value
 
-The arc hyperbolic sine of @var{x}.
+The inverse hyperbolic sine of @var{x}.  If the argument @var{x} is a
+@code{NaN}, the return value is @code{NaN} and @code{errno} is set to
+@code{EDOM}.  If @var{x} is a positive or negative @code{Inf}, the
+return value is equal to the value of @var{x}, and @code{errno} is left
+unchanged.
 
 @subheading Portability
 

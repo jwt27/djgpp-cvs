@@ -8,11 +8,19 @@
 double tan(double x);
 @end example
 
+@subheading Description
+
+This function computes the tangent of @var{x} (which should be given in
+radians).
+
 @subheading Return Value
 
-The tangent of @var{x}.
+The tangent of @var{x}.  If the absolute value of @var{x} is finite but
+greater than or equal to @math{2^63}, the return value is 0 (since for
+arguments that large each bit of the mantissa is more than @code{Pi}).
+If the value of @var{x} is infinite or @code{NaN}, the return value is
+@code{NaN} and @code{errno} is set to @code{EDOM}.
 
 @subheading Portability
 
 @portability ansi, posix
-
