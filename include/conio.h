@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_conio_h_
@@ -71,7 +72,7 @@ int     cscanf(const char *_format, ...) __attribute__((format(scanf,1,2)));
 void    delline(void);
 int     getch(void);
 int     getche(void);
-int     gettext(int _left, int _top, int _right, int _bottom, void *_destin);
+int     _conio_gettext(int _left, int _top, int _right, int _bottom, void *_destin);
 void    gettextinfo(struct text_info *_r);
 void    gotoxy(int _x, int _y);
 void    gppconio_init(void);
@@ -97,6 +98,16 @@ void    window(int _left, int _top, int _right, int _bottom);
 #define kbhit _conio_kbhit /* Who ever includes gppconio.h probably
                               also wants _conio_kbhit and not kbhit
                               from libc */
+
+/* This is to resolve the name clash between
+   gettext from conio.h and gettext from libintl.h.
+   IMPORTANT:
+   If both headers are included, gettext from libintl.h
+   takes ALWAYS precedence over gettext from conio.h. */
+#ifndef __dj_include_libintl_h_
+# undef  gettext
+# define gettext _conio_gettext
+#endif
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
