@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_regex_h_
 #define __dj_include_regex_h_
@@ -39,6 +40,7 @@ extern int regcomp(regex_t *, const char *, int);
 
 
 
+#define	REG_OKAY	 0
 #define	REG_NOMATCH	 1
 #define	REG_BADPAT	 2
 #define	REG_ECOLLATE	 3

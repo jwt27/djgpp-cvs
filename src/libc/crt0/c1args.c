@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -112,7 +113,7 @@ delete_arglist(ArgList *al)
 }
 
 static char *
-parse_arg(char *bp, char *last, size_t *len, int *was_quoted)
+parse_arg(char *bp, char *last, int unquote, size_t *len, int *was_quoted)
 {
   char *ep = bp, *epp = bp;
   int quote=0;
@@ -122,22 +123,28 @@ parse_arg(char *bp, char *last, size_t *len, int *was_quoted)
     if (quote && *ep == quote)
     {
       quote = 0;
+      if (!unquote)
+	*epp++ = *ep;
       ep++;
     }
     else if (!quote && (*ep == '\'' || *ep == '"'))
     {
-      quote = *ep;
-      ep++;
+      quote = *ep++;
+      if (!unquote)
+	*epp++ = quote;
     }
     else if (*ep == '\\' && strchr("'\"", ep[1]) && ep < last-1)
     {
+      if (!unquote)
+	*epp++ = *ep;
       ep++;
       *epp++ = *ep++;
       /* *was_quoted = 1;  - This makes no sense. */
     }
     else
     {
-      if (quote && (strchr("[?*", *ep) || strncmp(ep, "...", 3) == 0))
+      if ((quote && (strchr("[?*", *ep) || strncmp(ep, "...", 3) == 0))
+	  && unquote)
 	*was_quoted = 1;
       *epp++ = *ep++;
     }
@@ -148,7 +155,7 @@ parse_arg(char *bp, char *last, size_t *len, int *was_quoted)
 }
 
 static ArgList *
-parse_bytes(char *bytes, int length)
+parse_bytes(char *bytes, int length, int unquote)
 {
   int largc, i;
   Arg *a, **anext, *afirst;
@@ -165,13 +172,43 @@ parse_bytes(char *bytes, int length)
     if (bp == last)
       break;
     *anext = a = new_arg();
-    ep = parse_arg(bp, last, &arg_len, &(a->was_quoted));
+    ep = parse_arg(bp, last, unquote, &arg_len, &(a->was_quoted));
     anext = &(a->next);
     largc++;
     a->arg = (char *)c1xmalloc(arg_len+1);
     memcpy(a->arg, bp, arg_len);
     a->arg[arg_len] = 0;
     bp = ep+1;
+  }
+  al = new_arglist(largc);
+  for (i=0, a=afirst; i<largc; i++, a=a->next)
+    al->argv[i] = a;
+  return al;
+}
+
+/* parse the output from 'find -print0' */
+static ArgList *
+parse_print0(char *bytes, int length)
+{
+  int largc, i;
+  Arg *a, **anext, *afirst;
+  ArgList *al;
+  char *bp=bytes, *ep, *last=bytes+length;
+
+  anext = &afirst;
+  largc = 0;
+  while (bp<last)
+  {
+    size_t arg_len = strlen(bp);
+    ep = bp;
+    bp += arg_len + 1;
+    *anext = a = new_arg();
+    a->was_quoted = 1;
+    anext = &(a->next);
+    largc++;
+    a->arg = (char *)c1xmalloc(arg_len+1);
+    memcpy(a->arg, ep, arg_len);
+    a->arg[arg_len] = 0;
   }
   al = new_arglist(largc);
   for (i=0, a=afirst; i<largc; i++, a=a->next)
@@ -244,11 +281,20 @@ expand_response_files(ArgList *al)
 	int len, st_size;
 	st_size = lseek(f, 0L, SEEK_END);
 	lseek(f, 0L, SEEK_SET);
-        bytes = (char *)alloca(st_size);
+        if (st_size < 0)
+	  st_size = 0;
+        bytes = (char *)c1xmalloc(st_size+1);
         len = _read(f, bytes, st_size);
+        if (len < 0)
+	  len = 0;
         _close(f);
-        al->argv[i]->arg_file = parse_bytes(bytes, len);
+	/* assume 'find -print0' if the last char is a '\0' */
+	if (len > 0 && bytes[len-1] == '\0')
+          al->argv[i]->arg_file = parse_print0(bytes, len);
+	else
+          al->argv[i]->arg_file = parse_bytes(bytes, len, (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES) == 0);
         expand_response_files(al->argv[i]->arg_file);
+	free(bytes);
       }
   }
 }
@@ -349,7 +395,8 @@ __crt0_setup_arguments(void)
   {
     char doscmd[128];
     movedata(_stubinfo->psp_selector, 128, ds, (int)doscmd, 128);
-    arglist = parse_bytes(doscmd+1, doscmd[0] & 0x7f);
+    arglist = parse_bytes(doscmd+1, doscmd[0] & 0x7f,
+			  (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES) == 0);
   }
   
   /*
@@ -368,7 +415,7 @@ __crt0_setup_arguments(void)
     proxy_line[__PROXY_LEN] = ' ';
     strncpy(proxy_line + __PROXY_LEN+1, proxy_v, plen+1); /* copy value */
     delete_arglist(arglist);
-    arglist = parse_bytes(proxy_line, plen+__PROXY_LEN+1);
+    arglist = parse_bytes(proxy_line, plen+__PROXY_LEN+1, 0);
   }
   if (arglist->argc > 3 && strcmp(arglist->argv[0]->arg, __PROXY+1) == 0)
   {
@@ -395,11 +442,11 @@ __crt0_setup_arguments(void)
       arglist->argv[i] = new_arg();
       arglist->argv[i]->arg = (char *)c1xmalloc(al+1);
       movedata(_dos_ds, argv_seg*16 + rm_argv[i], ds, (int)(arglist->argv[i]->arg), al+1);
-      if (proxy_v)
+      if (proxy_v && !(_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES))
       {
 	size_t ln;
 	char *lastc = arglist->argv[i]->arg + al;
-	parse_arg(arglist->argv[i]->arg, lastc,
+	parse_arg(arglist->argv[i]->arg, lastc, 1,
 		  &ln, &(arglist->argv[i]->was_quoted));
 	arglist->argv[i]->arg[ln] = '\0';
       }

@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_crt0_h_
 #define __dj_include_crt0_h_
@@ -152,6 +154,14 @@ extern int _crt0_startup_flags;
 */
 
 #define _CRT0_FLAG_PRESERVE_FILENAME_CASE	0x2000
+
+/* If set, the quote characters ', ", and \ will be retained in argv[]
+** elements when processing command lines passed via `system'.  This is
+** used by `redir', and should only be needed if you want to get the
+** original command line exactly as it was passed by the caller.
+*/
+
+#define _CRT0_FLAG_KEEP_QUOTES			0x4000
 
 /*****************************************************************************\
  *  Access to the memory handles used by the non-move sbrk algorithm.  
