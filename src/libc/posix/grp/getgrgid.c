@@ -10,6 +10,7 @@ static struct group g;
 static char *mem[2];
 static char def_name[] = "user";
 static char def_grp[] = "dos";
+static char def_passwd[] = "";
 
 static void
 grp_init(void)
@@ -45,6 +46,7 @@ grp_init(void)
   g.gr_gid = getgid();
   g.gr_mem = mem;
   g.gr_name = grp;
+  g.gr_passwd = def_passwd;
 }
 
 struct group *
