@@ -39,7 +39,7 @@ static char *id = __libdbg_ident_string;
 #define MEM_HANDLE_COUNT	256
 #define DESCRIPTOR_COUNT	128
 #define DOS_DESCRIPTOR_COUNT	128
-#define DPMI_EXCEPTION_COUNT     18
+#define DPMI_EXCEPTION_COUNT     20
 #define DS_SIZE_COUNT           128
 
 #define USE_FSEXT
@@ -388,18 +388,20 @@ asm("\n\
         .text                                                           \n\
         .balign  16,,7                                                  \n\
 _change_exception_handler:                                              \n\
-        pushl   %eax                                                    \n\
-        push    %es                                                     \n\
-        push    %ds                                                     \n\
-        .byte   0x2e                                                    \n\
-        movw    _my_ds,%ax                                              \n\
-        movw    %ax,%ds                                                 \n\
-        movw    %ax,%es                                                 \n\
+        pushl %eax							\n\
+        push  %es							\n\
+        push  %ds							\n\
+        .byte 0x2e							\n\
+        movw  _my_ds,%ax						\n\
+        movw  %ax,%ds							\n\
+        movw  %ax,%es							\n\
         movzbl %bl,%eax                                                 \n\
-        imull  $8,%eax                                                  \n\
+        imull $8,%eax							\n\
         addl  $_app_handler,%eax  /* only retain handlers */            \n\
-        cmpw   _app_cs,%cx /* for the main app     */                   \n\
-        jne    _not_in_current_app                                      \n\
+        cmpw  _app_cs,%cx /* for the main app     */			\n\
+        jne   _not_in_current_app					\n\
+	cmpb  $20,%bl							\n\
+	jae   _transmit_unchanged_values				\n\
         movl  %ecx,4(%eax)                                              \n\
         movl  %edx,(%eax)                                               \n\
         cmpb  $0x0d,%bl	                                                \n\
@@ -429,9 +431,10 @@ _forced_not_found:                                                      \n\
 _no_forced_check:                                                       \n\
 _not_in_current_app:                                                    \n\
         subl  $_app_handler,%eax /* allways restore our handler */      \n\
-        addl  $_our_handler,%eax                                         \n\
+        addl  $_our_handler,%eax                                        \n\
         movl  4(%eax),%ecx                                              \n\
         movl (%eax),%edx                                                \n\
+_transmit_unchanged_values:						\n\
         pop   %ds                                                       \n\
         pop   %es                                                       \n\
         popl  %eax                                                      \n\
