@@ -9,12 +9,34 @@ void __libc_termios_init (void);
 
 @subheading Description
 
-This function sets read/write hooks for the termios emulation and
-import parameters. Currently importing parameters is not supported,
-the emulation is resolved by only internal(static) parameters.  Note
-that this function is called by tcXXX function automatically.
+This function sets read/write hooks for the termios emulation and import
+parameters. Currently importing parameters is not supported, the
+emulation is resolved by only internal(static) parameters.  Note that
+this function is automatically called by the other termios functions.
 
+@subheading Portability
 
+@portability !ansi, !posi
+
+@node __libc_termios_exist_queue, termios
+@subheading Syntax
+
+@example
+#include <libc/ttyprvt.h>
+
+int __libc_termios_exist_queue (void);
+@end example
+
+@subheading Description
+
+This function checks whether there are any characters buffered in the
+termios internal queue.  Functions that work on file handles which might
+be hooked by termios should call this function before they invoke system
+calls, to see if there are any characters available for input.
+
+@subheading Return Value
+
+Non-zero if some characters are buffered, zero otherwise.
 
 @subheading Portability
 
