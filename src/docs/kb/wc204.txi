@@ -519,3 +519,8 @@ Similarly, @code{struct passwd} has two new fields, @code{pw_gecos} and
 @code{pw_passwd}.  @code{pw_gecos} gets the same value as @code{pw_name}
 (i.e. the value returned by @code{getlogin()}).  Like @code{gr_passwd},
 @code{pw_passwd} gets the empty string as value.
+
+@findex uname@r{, support for Pentium 4}
+The function @code{uname} supports the new Pentium 4 CPU's by returning
+@code{"i786"} in the @code{machine} member of @code{struct utsname} it
+returns.

@@ -24,27 +24,23 @@ struct utsname @{
 @table @code
 
 @item machine
-
-The CPU family type: "i386", "i486", "i586" or "i686".  
+The CPU family type: @code{"i386"}, @code{"i486"}, @code{"i586"}
+(Pentium), @code{"i686"} (PentiumPro, Pentium II, Pentium III), or
+@code{"i786"} (Pentium 4).
 
 @item nodename
-
-The name of your PC (if networking is installed), else "pc".  
+The name of your PC (if networking is installed), else @code{"pc"}.
 
 @item release
-
-The minor release of dos.  For example, dos 1.23 would return "23"
-here.  
+The major version number of DOS.  For example, DOS 1.23 would return
+@code{"1"} here.
 
 @item sysname
-
 The flavor of the OS.  
 
 @item version
-
-The major release of dos.  For example, dos 1.23 would return "1"
-here.  
-
+The minor version number of DOS.  For example, DOS 1.23 would return
+@code{"23"} here.
 @end table
 
 @subheading Return Value
@@ -54,4 +50,3 @@ Zero on success, else nonzero.
 @subheading Portability
 
 @portability !ansi, posix
-

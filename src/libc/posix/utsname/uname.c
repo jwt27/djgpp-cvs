@@ -93,6 +93,7 @@ int uname(struct utsname *u)
             /* What we need is instruction family info in 8-11 bits */
             switch ((cpuid_info & 0x780) >> 8)
             {
+	       case 0x7: strcpy(u->machine, "i786"); break;
                case 0x6: strcpy(u->machine, "i686"); break;
                case 0x5: strcpy(u->machine, "i586"); break;
                case 0x4: strcpy(u->machine, "i486"); break;
