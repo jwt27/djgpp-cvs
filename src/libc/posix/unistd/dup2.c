@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -7,6 +8,7 @@
 #include <errno.h>
 #include <io.h>
 #include <libc/dosio.h>
+#include <libc/fd_props.h>
 
 int
 dup2(int fd, int newfd)
@@ -25,5 +27,11 @@ dup2(int fd, int newfd)
     return -1;
   }
   setmode(newfd, __file_handle_modes[fd]);
+
+  if (__has_fd_properties(newfd))
+    __clear_fd_properties(newfd);
+  if (__has_fd_properties(fd))
+    __dup_fd_properties(fd, newfd);
+
   return newfd;
 }

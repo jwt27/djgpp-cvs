@@ -8,6 +8,7 @@
 #include <sys/fsext.h>
 
 #include <libc/dosio.h>
+#include <libc/fd_props.h>
 
 int
 _close(int handle)
@@ -37,5 +38,7 @@ _close(int handle)
     errno = EBADF;
     return -1;
   }
+  if (__has_fd_properties(handle))
+    __clear_fd_properties(handle);
   return 0;
 }
