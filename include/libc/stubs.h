@@ -33,6 +33,7 @@ extern "C" {
 
 /* DJGPP functions (for compiling POSIX or ANSI functions) */
 
+#define basename __basename
 #define crlf2nl __crlf2nl
 #define dosmemget __dosmemget
 #define dosmemput __dosmemput
