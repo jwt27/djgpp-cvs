@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
@@ -8,7 +9,6 @@
 #include <setjmp.h>
 #include <sys/time.h>
 #include <sys/exceptn.h>
-#include <sys/mono.h>
 
 /* header of a GPROF type file
 */
@@ -56,15 +56,15 @@ void mcount(int _to)
   int mtabi;
   MTABE **cache;
 
+  asm("movl %%edx,%0" : "=g" (cache)); /* obtain the cached pointer */
+
   if (&_to < &etext)
     *(int *)(-1) = 0; /* fault! */
 
   mcount_skip = 1;
-  asm("movl %%edx,%0" : "=g" (cache)); /* obtain the cached pointer */
   to = *((&_to)-1) - 12;
   ebp = *((&_to)-2); /* glean the caller's return address from the stack */
   from = ((int *)ebp)[1];
-  _mono_printf("from %08x  to %08x\r\n", from, to);
   if (*cache && ((*cache)->from == from) && ((*cache)->to == to))
   {
     /* cache paid off - works quickly */
