@@ -234,32 +234,28 @@ redir_open (int fd, struct dbg_redirect *redir)
 static int
 redir_handle_to_child (int fd, struct dbg_redirect *redir)
 {
-  int save_fd;
+  int save_fd, status = 0;
 
   save_fd = safe_dup (fd);
-  if (save_fd != -1 && dup2 (redir->inf_handle, fd) != -1)
+  if (save_fd == -1 && errno != EBADF)	/* EBADF probably means FD is closed */
+    status = -1;
+
+  redir->our_handle = save_fd;
+  if (redir->inf_handle == -1)	/* it was closed in the inferior */
     {
-      redir->our_handle = save_fd;
-      if (fd != redir->inf_handle && close (redir->inf_handle) == -1)
-	{
-	  dup2 (save_fd, fd);
-	  close (save_fd);
-	  save_fd = -1;
-	}
-      redir->inf_handle = -1;	/* we've closed it */
+      if (save_fd != -1)
+	status = close (fd);
     }
   else
     {
-      /* Failure.  Revert FD to the original file, if at all possible.  */
-      if (save_fd > DBG_HANDLES-1)
-	{
-	  dup2 (save_fd, fd);
-	  close (save_fd);
-	}
-      save_fd = -1;
+      if (dup2 (redir->inf_handle, fd) == -1
+	  || (fd != redir->inf_handle && close (redir->inf_handle) == -1))
+	status = -1;
+      else
+	redir->inf_handle = -1;	/* we've just closed it */
     }
 
-  return save_fd;
+  return status == -1 ? -1 : fd;
 }
 
 /* Make the descriptor FD reference the file which the debugger
@@ -267,32 +263,28 @@ redir_handle_to_child (int fd, struct dbg_redirect *redir)
 static int
 redir_handle_to_debugger (int fd, struct dbg_redirect *redir)
 {
-  int save_fd;
+  int save_fd, status = 0;
 
   save_fd = safe_dup (fd);
-  if (save_fd != -1 && dup2 (redir->our_handle, fd) != -1)
+  if (save_fd == -1 && errno != EBADF)	/* EBADF probably means FD is closed */
+    status = -1;
+
+  redir->inf_handle = save_fd;
+  if (redir->our_handle == -1)	/* it was closed in the debugger */
     {
-      redir->inf_handle = save_fd;
-      if (fd != redir->our_handle && close (redir->our_handle) == -1)
-	{
-	  dup2 (save_fd, fd);
-	  close (save_fd);
-	  save_fd = -1;
-	}
-      redir->our_handle = -1;	/* we've just closed it */
+      if (save_fd != -1)
+	status = close (fd);
     }
   else
     {
-      /* Failure.  Revert FD to the original file, if at all possible.  */
-      if (save_fd > DBG_HANDLES-1)
-	{
-	  dup2 (save_fd, fd);
-	  close (save_fd);
-	}
-      save_fd = -1;
+      if (dup2 (redir->our_handle, fd) == -1
+	  || (fd != redir->our_handle && close (redir->our_handle) == -1))
+	status = -1;
+      else
+	redir->our_handle = -1;	/* we've just closed it */
     }
 
-  return save_fd;
+  return status == -1 ? -1 : fd;
 }
 
 /* Given a pointer to a redirection symbol (presumably followed by a
