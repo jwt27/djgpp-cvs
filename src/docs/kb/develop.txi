@@ -77,6 +77,13 @@ functions, it should include @file{libc/farptrgs.h} instead of
 @sc{gs} register instead of @sc{fs}, to avoid clobbering @sc{fs} which
 might be used by the application.
 
+@subsection Filename manipulation
+
+When manipulating filenames, don't use the ctype functions from
+@file{ctype.h}, because they are locale sensitive.  For example,
+instead of using @code{tolower} (@pxref{tolower, , tolower, libc}),
+convert the case with explicit code.
+
 @subsection Assertions
 @cindex Assertions
 
