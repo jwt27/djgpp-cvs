@@ -613,3 +613,46 @@ correct read/write permissions in @code{st_mode} and correct device code
 in @code{st_dev} members of @code{struct stat}.  This was known to fail
 functions like @code{link} and programs like GNU @code{cp} which tested
 files for being on the same filesystem by calling @code{fstat}.
+
+@findex open@r{, and Windows 2000/XP}
+@findex _open@r{, and Windows 2000/XP}
+@findex _creat@r{, and Windows 2000/XP}
+@findex _creatnew@r{, and Windows 2000/XP}
+The long file name support in Windows 2000 and XP have bugs which cause
+handles returned with long name opens to give incorrect information in
+many library routines.  Routines which open files now open using short
+name calls under Windows NT, 2K and XP if long file names are enabled.
+
+@pindex fsdb@r{, and Windows 2000/XP hardware breakpoints}
+@pindex edebug32@r{, and Windows 2000/XP hardware breakpoints}
+@findex _set_break_DPMI@r{, and Windows 2000/XP breakpoints}
+The set break DPMI call under Windows 2000 and XP do not return the 
+break point handle, which prevented debuggers using break points from
+working properly.  The handle is now guessed for this platforms which
+allows the debuggers to work with hardware break points.
+
+@findex getcwd@r{, and Windows 2000/XP long named directories}
+@findex _fixpath@r{, and long named directories}
+If the short name equivalent of the current path is greater than
+64 characters, Windows 2000 and XP do not return the correct long
+path name - they return the root directory instead without any
+failure code.  Since this can be disastrous in deep directories
+doing an rm -rf, we check for this bug and fix the path.  Long 
+directories can also cause @code{_fixpath} to fail on Windows 9x if LFN=n and
+this is now handled by returning a relative path instead of root.
+Many uses of @code{_fixpath} assume absolute directories so this
+change may break code in rare cases (such as saving the value and
+changing directories).
+
+@findex getmntent@r{, and Windows 2000/XP}
+Windows 2000/XP do not return the volume labels correctly using 
+findfirst calls so we force short name usage to fix the problem.  
+Drives higher than Z are suppressed.
+
+@findex freopen@r{, and reusage of same handle}
+@code{freopen} was modified to always use the same handle even if
+it is not the first one available.   
+
+@vindex _os_trueversion@r{, added to the library}
+This global variable declared in @file{dos.h} is a faster way to 
+get the result of @code{_get_dos_version(1)}.
