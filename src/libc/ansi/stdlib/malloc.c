@@ -217,12 +217,46 @@ malloc(size_t size)
   RET(rv);
 }
 
-static inline BLOCK *
-merge(BLOCK *a, BLOCK *b, BLOCK *c)
+/* Remove block of memory from the free list.  */
+static inline void
+remove_freelist (BLOCK *b)
 {
   int bu;
   BLOCK *bp, **bpp;
 
+  bu = b2bucket(b);
+#if DEBUG
+  printf("bucket for %u/%08x is %d\n", b->size, b, bu);
+#endif
+  bpp = freelist + bu;
+  for (bp = freelist[bu]; bp; bpp=&(bp->next), bp=bp->next)
+  {
+#if DEBUG
+    printf("  %08x", bp);
+#endif
+    if (bp == b)
+    {
+#if DEBUG
+      printf("\n  snipping %u/%08x from freelist[%d]\n", bp->size, bp, bu);
+#endif
+      *bpp = bp->next;
+      break;
+    }
+  }
+}
+
+/* Insert block of memory into free list.  */
+static inline void
+insert_freelist(BLOCK *block)
+{
+  int bu = b2bucket(block);
+  block->next = freelist[bu];
+  freelist[bu] = block;
+}
+
+static inline BLOCK *
+merge(BLOCK *a, BLOCK *b, BLOCK *c)
+{
 #if DEBUG
   printf("  merge %u/%08x + %u/%08x = %u\n",
 	 a->size, a, b->size, b, a->size+b->size+8);
@@ -238,25 +272,8 @@ merge(BLOCK *a, BLOCK *b, BLOCK *c)
 #endif
     slop = 0;
   }
-  bu = b2bucket(c);
-#if DEBUG
-  printf("bucket for %u/%08x is %d\n", c->size, c, bu);
-#endif
-  bpp = freelist+bu;
-  for (bp=freelist[bu]; bp; bpp=&(bp->next), bp=bp->next)
-  {
-#if DEBUG
-    printf("  %08x", bp);
-#endif
-    if (bp == c)
-    {
-#if DEBUG
-      printf("\n  snipping %u/%08x from freelist[%d]\n", bp->size, bp, bu);
-#endif
-      *bpp = bp->next;
-      break;
-    }
-  }
+  else
+    remove_freelist(c);
   CHECK(c);
 
   a->size += b->size + 8;
@@ -270,7 +287,6 @@ merge(BLOCK *a, BLOCK *b, BLOCK *c)
 void
 free(void *ptr)
 {
-  int b;
   BLOCK *block;
   if (ptr == 0)
     return;
@@ -309,11 +325,71 @@ free(void *ptr)
     block = merge(block, AFTER(block), AFTER(block));
   }
   CHECK(block);
-  
-  b = b2bucket(block);
-  block->next = freelist[b];
-  freelist[b] = block;
+
+  insert_freelist(block);
   CHECK(block);
+}
+
+/* Try to increase the size of the allocated block. */
+static BLOCK *
+realloc_inplace(BLOCK *cur, size_t old_size, size_t new_size)
+{
+  BLOCK *after;
+  size_t after_sz, alloc_delta;
+  int extra_space;
+  char is_slop_ptr;
+  
+  after = AFTER(cur);
+  after_sz = after->size;
+  new_size = (new_size + (ALIGN-1)) & ~(ALIGN-1);
+
+  /* Fail if the block following the one being extended is in use.  */
+  if (after_sz & 1)
+    return NULL;
+
+  /* Size of block increase.  */
+  alloc_delta = new_size - old_size;
+
+  /* Fail if the free block is not large enough.  */
+  if (alloc_delta > after_sz)
+    return NULL;
+
+  extra_space = (after_sz - alloc_delta);
+  is_slop_ptr = (after == slop);
+
+  if (!is_slop_ptr)
+  {
+    /* Remove the block from free list.  */
+    after->bucket = -1;
+    remove_freelist(after);
+  }
+
+  /* Expand the block by shrinking or mergin
+     with the free block that follows it.  */
+  if (extra_space > 8)
+  {
+    /* Take part of the free block (or slop) and
+       give to the block being expanded.  */
+    BLOCK *after2 = (BLOCK *)((char *)after + alloc_delta);
+    after2->size = after_sz - alloc_delta;
+    after2->bucket = -1;
+    ENDSZ(after2) = after2->size;
+    cur->size += alloc_delta;
+    ENDSZ(cur) = cur->size;
+    if (is_slop_ptr)
+      slop = after2;
+    else
+      insert_freelist(after2);
+  }
+  else
+  {
+    /* Merge the entire free block with the block being expanded.  */
+    cur->size += after_sz + 8;
+    ENDSZ(cur) = cur->size;
+    if (is_slop_ptr)
+      slop = 0;
+  }
+  return cur;
 }
 
 void *
@@ -337,6 +413,10 @@ realloc(void *ptr, size_t size)
       return ptr;
     copysize = size;
   }
+
+  /* Try to increase the size of the allocation by extending the block.  */
+  if (realloc_inplace(b, copysize, size))
+    return ptr;
 
   newptr = (char *)malloc(size);
 #if DEBUG
