@@ -81,6 +81,7 @@ mode_t	umask(mode_t _cmask);
 #define S_ISLABEL(m)	(((m) & 0xf000) == 0x5000)
 
 void	        _fixpath(const char *, char *);
+char *		__canonicalize_path(const char *, char *, size_t);
 unsigned short  _get_magic(const char *, int);
 int             _is_executable(const char *, int, const char *);
 int             lstat(const char * _path, struct stat * _buf);
