@@ -1,0 +1,28 @@
+@node getpass, misc
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+char * getpass(const char *prompt)
+@end example
+
+@subheading Description
+
+This function reads up to a Newline (CR or LF) or EOF (Ctrl-D or Ctrl-Z)
+from the standard input, without an echo, after prompting with a
+null-terminated string @var{prompt}.  It returns the string of at most 8
+characters typed by the user.  Pressing Ctrl-C or Ctrl-Break will cause
+the calling program to @code{exit(1)}.
+
+@subheading Return Value
+  
+A pointer to a static buffer which holds the user's response.  The buffer
+will be overwritten by each new call.  In case of any error in the lower
+I/O routines, a NULL pointer will be returned.
+
+@subheading Example
+
+@example
+char *password = getpass("Password: ");
+@end example

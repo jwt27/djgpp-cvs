@@ -1,0 +1,25 @@
+@c ----------------------------------------------------------------------
+@node getdisk, dos
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+int getdisk(void);
+@end example
+
+@subheading Description
+
+Gets the current disk (0=A).
+
+@xref{setdisk}.
+
+@subheading Return Value
+
+The current disk number.
+
+@subheading Example
+
+@example
+printf("This drive is %c:\n", getdisk() + 'A');
+@end example

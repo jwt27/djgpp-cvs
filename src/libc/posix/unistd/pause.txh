@@ -1,0 +1,17 @@
+@node pause, process
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int pause(void);
+@end example
+
+@subheading Description
+
+This function just calls @code{__dpmi_yield()} (@pxref{__dpmi_yield})
+to give up a slice of the CPU.
+
+@subheading Return Value
+
+Zero.

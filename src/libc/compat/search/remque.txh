@@ -1,0 +1,29 @@
+@node remque, misc
+@subheading Syntax
+
+@example
+#include <search.h>
+
+void putenv(struct qelem *elem);
+@end example
+
+@subheading Description
+
+This function manipulates queues built from doubly linked lists.  Each element
+in the queue must be in the form of @code{struct qelem} which is defined
+thus:
+
+@example
+struct qelem @{
+  struct qelem *q_forw;
+  struct qelem *q_back;
+  char q_data[0];
+@}
+@end example
+
+This function removes the entry @var{elem} from a queue.
+
+@subheading Return Value
+
+None.
+

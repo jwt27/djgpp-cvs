@@ -1,0 +1,107 @@
+@node _go32_dpmi_allocate_dos_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int _go32_dpmi_allocate_dos_memory(_go32_dpmi_seginfo *info);
+@end example
+
+@subheading Description
+
+@xref{DPMI Overview}
+
+Allocate a part of the conventional memory area (the first 640K).  Set
+the @code{size} field of @var{info} to the number of paragraphs
+requested (this is (size in bytes + 15)/16), then call.  The
+@code{rm_segment} field of @var{info} contains the segment of the
+allocated memory. 
+
+The memory may be resized with @code{_go32_dpmi_resize_dos_memory} and
+must be freed with @code{_go32_dpmi_free_dos_memory}. 
+
+If there isn't enough memory in the system, the @code{size} field of
+@var{info} has the largest available size, and an error is returned. 
+
+@xref{dosmemput} @xref{dosmemget}
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+_go32_dpmi_seginfo info;
+info.size = (want_size+15) / 16;
+_go32_dpmi_allocate_dos_memory(&info);
+dosmemput(buffer, want_size, info.rm_segment*16);
+_go32_dpmi_free_dos_memory(&info);
+@end example
+
+@c ----------------------------------------------------------------------
+@node _go32_dpmi_free_dos_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int _go32_dpmi_free_dos_memory(_go32_dpmi_seginfo *info);
+@end example
+
+@subheading Description
+
+@xref{DPMI Overview}
+
+This function frees the conventional memory allocated by
+@code{_go32_dpmi_allocate_real_mode_memory}.  You should pass it the
+same structure as was used to allocate it. 
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+_go32_dpmi_seginfo info;
+info.size = 100;
+_go32_dpmi_allocate_dos_memory(&info);
+_go32_dpmi_free_dos_memory(&info);
+@end example
+
+@c ----------------------------------------------------------------------
+@node _go32_dpmi_resize_dos_memory, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int _go32_dpmi_resize_dos_memory(_go32_dpmi_seginfo *info);
+@end example
+
+@subheading Description
+
+@xref{DPMI Overview}
+
+The @var{info} structure is the same one used to allocate the memory. 
+Fill in a new value for @code{size} and call this function.  If there is
+not enough memory to satisfy the request, the largest size is filled in
+to the @code{size} field, the memory is not resized, and this function
+fails. 
+
+@subheading Return Value
+
+Zero on success, nonzero on failure.
+
+@subheading Example
+
+@example
+_go32_dpmi_seginfo info;
+info.size = 10;
+_go32_dpmi_allocate_dos_memory(&info);
+info.size = 20;
+_go32_dpmi_resize_dos_memory(&info);
+_go32_dpmi_free_dos_memory(&info);
+@end example
+
