@@ -9,16 +9,26 @@ int bioskey(int command)
 
 @subheading Description
 
+This function issues the BIOS keyboard interrupt 16h with @var{command}
+in the @sc{ah} register, and returns the results of that call.  The
+argument @var{command} can accept the following values:
+
 @table @asis
 
 @item @var{command} = 0
 
-Returns the next key pressed
+Returns the next key pressed.  The value returned is a combination of
+the key's scan code in the high 8 bits and its ASCII code in the low 8
+bits.
 
 @item @var{command} = 1
 
 Checks the keyboard, returns zero if no key pressed, else the key.  Does
-not dequeue the key. 
+not dequeue the key from the keyboard buffer.  The value returned when a
+key was pressed is a combination of the key's scan code in the high 8
+bits and its ASCII code in the low 8 bits.
+
+If the @kbd{Ctrl-@key{BREAK}} key was pressed, returns -1.
 
 @item @var{command} = 2
 
@@ -35,6 +45,48 @@ Returns the shift state:
 --X- ----  Num lock on
 -X-- ----  Caps lock on
 X--- ----  Insert on
+@end example
+
+@item @var{command} = 10
+
+Returns the next extended key pressed.  This works like the case of
+@var{command} = 0, but it recognizes additional keys from the AT-style
+extended 101-key keyboard, like the second @key{Alt} key and @key{F12}.
+If a key was pressed, returns the scan code and ASCII code packed in
+same way as for @var{command} = 0.
+
+Almost every PC nowadays has an extended 101-key keyboard.
+
+@item @var{command} = 11
+
+Like the case of @var{command} = 1, but recognizes the additional keys
+of the extended keyboard.
+
+@item @var{command} = 12
+
+Returns the two status bytes of the enhanced keyboard, packed in the low
+16 bits of the return value.  The individual bits of the return value
+are defined in the following table:
+
+@example
+FEDC BA98  7654 3210  Meaning
+---- ----  ---- ---X  Right SHIFT is pressed
+---- ----  ---- --X-  Left SHIFT is pressed
+---- ----  ---- -X--  CTRL is pressed
+---- ----  ---- X---  ALT is pressed
+---- ----  ---X ----  Scroll Lock locked
+---- ----  --X- ----  Num Lock locked
+---- ----  -X-- ----  Caps Lock locked
+---- ----  X--- ----  Insert locked
+
+---- ---X  ---- ----  Left CTRL is pressed
+---- --X-  ---- ----  Left ALT is pressed
+---- -X--  ---- ----  Right CTRL is pressed
+---- X---  ---- ----  Right ALT is pressed
+---X ----  ---- ----  Scroll Lock is pressed
+--X- ----  ---- ----  Num Lock is pressed
+-X-- ----  ---- ----  Caps Lock is pressed
+X--- ----  ---- ----  SysReq is pressed
 @end example
 
 @end table
