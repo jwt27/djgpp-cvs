@@ -102,7 +102,7 @@ guide to what to download.  In general, download the binary
 distributions only; most people don't need the source distributions.
 
 To build C programs, you'll need djdev203.zip, gcc*b.zip, and
-bnu*b.zip.  For C++, also get gpp*b.zip.
+bnu*b.zip.  For C++, also get gpp*b.zip and lgp*b.zip.
 
 To read the online manuals, get txi*b.zip and run "info".  If you don't
 have a DPMI server installed, you'll need csdpmi*b.zip.  (Windows, QDPMI,
@@ -178,7 +178,7 @@ Installation
 
 4. Reboot.  This makes sure the two lines you added to autoexec.bat
    will take effect.  (On Windows NT and Windows 2000, the changes
-   take effect immediately, so you you don't need to reboot there, but
+   take effect immediately, so you don't need to reboot there, but
    you do have to close and reopen the DOS box windows.)
 
 5. Run the go32-v2.exe program without arguments:
@@ -186,7 +186,7 @@ Installation
 	go32-v2
 
    It should report how much DPMI memory and swap space can DJGPP use
-   on you system, like this:
+   on your system, like this:
 
 	DPMI memory available: 8020 Kb
 	DPMI swap space available: 39413 Kb
@@ -483,7 +483,7 @@ There was a discussion a while ago on the DJGPP news group about the
 copyright of some of libc's functions.  This copyright required that you
 mentioned the "University of California, Berkeley" in your
 distribution even if it only consisted of binaries, i.e. a compiled
-program.  However, the Berkeley license has been changhed in July
+program.  However, the Berkeley license has been changed in July
 1999, and you don't need to mention their copyright in your
 distribution anymore.
 
