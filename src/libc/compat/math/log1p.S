@@ -24,7 +24,7 @@ _log1p:					/* ln(1.+x) */
 
 	movl	%edx, %eax
 	andl	$0x7FFFFFFF,%eax
-	cmpl	$0x3FD33333,%eax	/* 1 - sqrt(0.5) */
+	cmpl	$0x3FD2BEC3,%eax	/* 1 - sqrt(0.5) */
 	fldln2				/* ln(2) */
 	jbe	1f
 	fld1
