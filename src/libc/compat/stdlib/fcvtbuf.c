@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <float.h>
 #include <locale.h>
 
@@ -27,8 +28,11 @@ fcvtbuf (double value, int ndigits, int *decpt, int *sign, char *buf)
 
   /* Where's the decimal point?  */
   dot = strchr (s, decimal);
-  *decpt = dot ? dot - s : strlen (s);
-
+  if( dot )
+    *decpt = dot - s;
+  else
+    *decpt = strlen (s);
+  
   /* SunOS docs says if NDIGITS is 8 or more, produce "Infinity"
      instead of "Inf".  */
   if (strncmp (s, "Inf", 3) == 0)

@@ -115,7 +115,8 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
    
    data_buf = buf + _SYMLINK_PREFIX_LEN;
    bytes_read = strchr(data_buf, '\n') - data_buf;
-   bytes_read = ((unsigned)bytes_read > __max) ? __max : bytes_read;
+   if( (unsigned)bytes_read > __max ) 
+     bytes_read = __max;
    memcpy(__buf, data_buf, bytes_read);
    return bytes_read;
 }

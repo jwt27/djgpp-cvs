@@ -35,7 +35,7 @@ static char decimal = '.';
 		flags&LONGDBL ? va_arg(argp, long long basetype) : \
 		flags&LONGINT ? va_arg(argp, long basetype) : \
 		flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
-		va_arg(argp, int)
+		(basetype)va_arg(argp, int)
 
 static int nan_p = 0;
 

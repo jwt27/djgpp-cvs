@@ -325,9 +325,20 @@ get_inode_from_sda(const char *mybasename)
   unsigned short our_mem_base   = _my_ds();
   char  * dot                   = strchr(mybasename, '.');
   size_t  total_len             = strlen(mybasename);
-  int     name_len              = dot ? dot - mybasename : total_len;
-  int     ext_len               = dot ? total_len - name_len - 1 : 0;
+  int     name_len;
+  int     ext_len;
   int     cluster_offset        = offsetof(struct full_dirent, fcluster);
+
+  if( dot )
+    {
+      name_len = dot - mybasename;
+      ext_len = total_len - name_len - 1;
+    }
+  else
+    {
+      name_len = total_len;
+      ext_len = 0;
+    }
 
   /* Restore failure bits set by last call to init_dirent_table(), so
      they will be reported as if it were called now.  */
