@@ -1,4 +1,4 @@
-/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -11,6 +11,7 @@
 #include <libc/dosio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <io.h>
 
 typedef struct __FSEXT_entry {
   __FSEXT_Function *function;
@@ -139,7 +140,7 @@ __FSEXT_close_all (void)
   __FSEXT_exit_hook=NULL;
   for (i = 0; i < num_fds; i++)
    if (fsext_list[i].function)
-     close(i);
+     _close(i);
 
   /* Free the table */
   free(fsext_list);
