@@ -69,10 +69,11 @@ snarf_environment ()
 int main(int argc, char **argv)
 {
   int i;
+  size_t cmdlen = 0;
   char *dotptr;
   char *fname;
   const _v2_prog_type *prog;
-  char cmdline[128];
+  char *cmdline = NULL;
   jmp_buf start_state;
   int argno;
 
@@ -143,19 +144,30 @@ int main(int argc, char **argv)
     }
   syms_init(fname);
 
-  cmdline[1] = 0;
   for (i = argno + 1; argv[i]; i++) {
-    strcat(cmdline+1, " ");
-    strcat(cmdline+1, argv[i]);
+    cmdlen += strlen(argv[i]) + 1; /* 1 more for the blank */
   }
-  i = strlen(cmdline+1);
-  cmdline[0] = i;
-  cmdline[i+1] = 13;
-  if (v2loadimage(fname,cmdline,start_state))
+  cmdline = malloc(cmdlen + 2);
+  if (cmdline)
+  {
+    cmdline[1] = 0;
+    for (i = argno + 1; argv[i]; i++) {
+      strcat(cmdline+1, " ");
+      strcat(cmdline+1, argv[i]);
+    }
+    if (cmdlen < 127)
     {
+      cmdline[0] = cmdlen;
+      cmdline[i+1] = 13;
+    }
+    else
+      cmdline[0] = 0xff;	/* already null-terminated, no need for CR */
+  }
+  if (!cmdline || v2loadimage(fname,cmdline,start_state))
+  {
       printf("Load failed for image %s\n",argv[1]);
       exit(1);
-    }
+  }
 
   edi_init(start_state);
   stdout->_file = dup(fileno(stdout));
