@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* IS_EXEC.C
  *
@@ -18,6 +19,7 @@
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <errno.h>
 #include <dpmi.h>
 #include <go32.h>
@@ -144,15 +146,15 @@ static char non_executables[] = "\
 |DAT|DBF|DIZ|DOC|DVI\
 |E|EL|ELC\
 |F77|FN3\
-|GIF|GZ\
+|GDT|GIF|GPR|GZ\
 |H|HLP|HPP|HXX\
-|ICO|IN|INC|INF|INI\
+|ICO|IN|INC|INF|INI|INZ\
 |JPG\
 |L|LEX|LF|LIB|LOG|LST|LZH\
 |M|MAK|MAP|MF|MID|MPG\
 |O|OBJ\
 |PAK|PAS|PBM|PCD|PCX|PDS|PIC|PIF|PN3|PRJ|PS\
-|RAS|RGB|RLE\
+|RAS|RGB|RGD|RLE\
 |S|SND|SY3\
 |TAR|TAZ|TEX|TGA|TGZ|TIF|TXH|TXI|TXT\
 |VOC\
@@ -182,11 +184,15 @@ _is_executable(const char *filename, int fhandle, const char *extension)
       && strlen(extension) <= ((extension[0]=='.') ? 4 : 3))
     {
       /* Search the list of extensions in executables[]. */
-      char tmp_buf[6];
+      char tmp_buf[6], *tp = tmp_buf;
 
-      tmp_buf[0] = '|';
-      strcpy(tmp_buf+1, *extension == '.' ? extension + 1 : extension);
-      strcat(tmp_buf, "|");
+      *tp++ = '|';
+      if (*extension == '.')
+ 	extension++;
+      while (*extension)
+ 	*tp++ = toupper (*extension++);
+      *tp++ = '|';
+      *tp = '\0';
       if (strstr(non_executables, tmp_buf))
         return 0;
       else if (strstr(executables, tmp_buf))
