@@ -19,11 +19,13 @@ fputs(const char *s, FILE *f)
   }
 
   while ((c = *s++))
-    r = __putc(c, f);
+    if ((r = __putc(c, f)) == EOF)
+      break;
 
   if (unbuffered)
   {
-    fflush(f);
+    if (fflush(f) == EOF)
+      r = EOF;
     f->_flag |= _IONBF;
     f->_base = NULL;
     f->_bufsiz = NULL;

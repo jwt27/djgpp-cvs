@@ -140,3 +140,8 @@ If the last character of a response file is @samp{^Z}, it is now
 ignored.  Previous versions would pass it to the @code{main} function.
 Use two @samp{^Z} characters in a row if you actually need to pass such
 a character as part of the last element of the @code{argv[]} array.
+
+@findex fputs
+@code{fputs} now returns @code{EOF} when called on an unbuffered stream,
+and there's some error (such as @code{ENOSPC}) in writing to that
+stream.
