@@ -366,7 +366,7 @@ This library was designed specifically for the Crystal Space project
 (see @uref{http://crystal.sourceforge.net}), but it is very general and 
 useful in other environments as well.
 
-Daniel Borca, <dborca@@yahoo.com>, http://www.geocities.com/dborca/
+Daniel Borca, <dborca@@yahoo.com>
 Andrew Zabolotny, <bit@@eltech.ru>
 
 @c -----------------------------------------------------------------------------
