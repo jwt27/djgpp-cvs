@@ -470,3 +470,7 @@ programs without ever exiting to DOS.  To avoid this, the startup code
 was fixed to print an error message and exit to DOS with an exit status
 that indicates a failure, when a selector for DOS memory could not be
 allocated by the DPMI host.
+
+@findex confstr@r{, added}
+@code{confstr} has been added to the library to support returning
+system-dependant configuration in strings.
