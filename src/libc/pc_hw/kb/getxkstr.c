@@ -172,7 +172,7 @@ ecma48_encoding_table[] =
 const unsigned char *
 __get_extended_key_string(int xkey_code)
 {
-  int index;
+  int idx;
 
   /* Strip flags added by getxkey.  */
   xkey_code &= 0xff;
@@ -180,10 +180,10 @@ __get_extended_key_string(int xkey_code)
   if (xkey_code < MIN_EXT_SCAN_CODE)
     return NULL;
 
-  index = xkey_code - MIN_EXT_SCAN_CODE;
-  if (index > ARRAY_SIZEOF(ecma48_encoding_table))
+  idx = xkey_code - MIN_EXT_SCAN_CODE;
+  if (idx > ARRAY_SIZEOF(ecma48_encoding_table))
     return NULL;
 
-  return ecma48_encoding_table[index];
+  return ecma48_encoding_table[idx];
 }
 
