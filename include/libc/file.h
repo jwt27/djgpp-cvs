@@ -49,7 +49,7 @@ static __inline__ int __putc_raw(int const x,FILE *const p)
       p->_cnt--;
       return((unsigned char)(*(p->_ptr++)=(unsigned char)x));
    }
-   return(_flsbuf(x,p));
+   return(_flsbuf((unsigned char)x,p));
 }
 
 static __inline__ int __is_text_file(FILE *const p)
