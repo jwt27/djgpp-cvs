@@ -1,0 +1,17 @@
+@node unlock, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+int unlock(int fd, long offset, long length);
+@end example
+
+@subheading Description
+Unlocks a region previously locked by @code{lock}.
+
+@xref{lock}.
+
+@subheading Return Value
+Zero if successful, nonzero if not.
+

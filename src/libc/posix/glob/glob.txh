@@ -1,0 +1,66 @@
+@node glob, shell
+@subheading Syntax
+
+@example
+#include <glob.h>
+
+int  glob(const char *_pattern, int _flags,
+          int (*_errfunc)(const char *_epath, int _eerrno), glob_t *_pglob);
+@end example
+
+@subheading Description
+
+This function performs command-line wildcard expansion.  The pattern
+to be expanded is passed as @var{pattern}, and a pointer to a
+structure is passed via @var{_pglob}.  This structure is like this:
+
+@example
+typedef struct @{
+  size_t gl_pathc;
+  char **gl_pathv;
+  size_t gl_offs;
+@} glob_t;
+@end example
+
+The @code{gl_pathc} and @code{gl_pathv} fields define a list of
+matches.  The @code{gl_offs} field indicates that the list should be
+offset.
+
+The structure is filled in with information about the files that
+matched the wildcard.  Values for @var{_flags} are as follows:
+
+@table @code
+
+@item GLOB_APPEND
+
+Append matches to a pre-existing structure.
+
+@item GLOB_DOOFFS
+
+Skip _pglob->gl_offs entries in gl_pathv.
+
+@item GLOB_ERR
+
+Stop when an unreadable directory is encountered.
+
+@item GLOB_MARK
+
+Append a slash to each pathname that is a directory.
+
+@item GLOB_NOCHECK
+
+If no matches are found, return the pattern itself as the only match.
+
+@item GLOB_NOESCAPE
+
+Disable blackslash as an escape character.
+
+@item GLOB_NOSORT
+
+Do not sort the returned list.
+
+@end table
+
+@subheading Return Value
+
+Zero on success.
