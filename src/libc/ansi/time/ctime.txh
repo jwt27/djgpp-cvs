@@ -125,7 +125,7 @@ A pointer to a static structure which is overwritten with each call.
 time_t x;
 struct tm *t;
 time(&x);
-t = gmtime(&t);
+t = gmtime(&x);
 @end example
 
 @c ----------------------------------------------------------------------
