@@ -1,0 +1,28 @@
+@node memalign, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *memalign(size_t size, size_t alignment);
+@end example
+
+@subheading Description
+
+This function is like @code{malloc} (@pxref{malloc}) except the returned
+pointer is a multiple of @var{alignment}. @var{alignment} must be a power of
+2.
+
+@subheading Return Value
+
+A pointer to a newly allocated block of memory. 
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+char *page = memalign(1024, 1024 * 4);
+@end example
