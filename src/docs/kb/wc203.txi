@@ -306,4 +306,7 @@ A call to @code{__djgpp_set_ctrl_c} with a negative argument returns the
 current state of @code{SIGINT} and @code{SIGQUIT} generation without
 altering it.
 
+@cindex termios, and TAB expansion
+The @code{termios} cooked-mode output now expands TABs into the
+appropriate number of spaces when writing to the console device.
 

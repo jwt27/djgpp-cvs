@@ -21,6 +21,7 @@
 #include <libc/file.h>
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
+#include <libc/farptrgs.h>
 
 #define _DEV_STDIN  0x0001
 #define _DEV_STDOUT 0x0002
@@ -523,6 +524,25 @@ __libc_termios_write_cooked_tty (int handle, const void *buffer, size_t count)
 	  /* map CR to NL */
 	  else if (ch == '\r' && (__libc_tty_p->t_oflag & OCRNL))
 	    ch = '\n';
+	  /* produce spaces until the next TAB stop */
+	  else if (ch == '\t')
+	    {
+	      int col, max_col;
+
+	      _farsetsel (_dos_ds);
+	      /* current column (cursor position) on the active page */
+	      col = _farnspeekw (0x450 + _farnspeekb (0x462)) & 0xff;
+	      /* the number of displayed character columns */
+	      max_col = _farnspeekw (0x44a);
+
+	      for (__direct_output (' '), col += 1; col % 8; col++)
+		{
+		  if (col >= max_col - 1)
+		    col = -1;
+		  __direct_output (' ');
+		}
+	      continue;
+	    }
 
 	  __direct_output (ch);
 	}
