@@ -444,7 +444,7 @@ Node::write_portability()
     /* Add an entry to the table. */
     strcat (buffer, "@item ");
     strcat (buffer, port_target[i].prefix_name);
-    strcat (buffer, " @tab ");    
+    strcat (buffer, "\n@tab ");    
 
     qualifier_number = 0;
 
