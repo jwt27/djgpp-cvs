@@ -60,6 +60,10 @@ set to @code{N} or @code{n} in the environment, both @code{_use_lfn} and
 You can reset the @code{_CRT0_FLAG_NO_LFN} bit at runtime to force
 filesystem to be queried.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 @example
@@ -122,7 +126,13 @@ This volume is compressed.
 
 @subheading Return value
 
-A combination of the above bits.
+A combination of the above bits if the LFN API is supported, or 0 (and
+@code{errno} set to @code{ENOSYS}) if the LFN API is not supported by the
+OS.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @c -----------------------------------------------------------------------
 
@@ -161,6 +171,10 @@ is because this is how filenames are stored in the DOS directory entries.
 Zero when 8+3 filenames should be converted to lower-case, non-zero
 otherwise.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c -----------------------------------------------------------------------
 
 @node _lfn_gen_short_fname, file system
@@ -169,7 +183,7 @@ otherwise.
 @example
 #include <fcntl.h>
 
-char _lfn_gen_short_fname (const char *long_fname, char *short_fname);
+char * _lfn_gen_short_fname (const char *long_fname, char *short_fname);
 @end example
 
 @subheading Description
@@ -202,6 +216,10 @@ equal with @var{short_fname} because of the case difference.)
 @subheading Return value
 
 The function returns a pointer to @var{short_fname}.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
@@ -297,6 +315,10 @@ year offset from 1980 (add 1980 to get the actual year)
 
 If the underlying system calls fail, the function will return 0 and set
 @code{errno} to an appropriate value.
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 

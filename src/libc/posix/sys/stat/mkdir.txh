@@ -9,12 +9,21 @@ int mkdir(const char *path, mode_t mode);
 
 @subheading Description
 
-This function creates a subdirectory.  The @var{mode} field is ignored
-under MS-DOS. 
+This function creates a subdirectory.
+
+All the bits except @code{S_IWUSR} in the @var{mode} argument are
+ignored under MS-DOS.  If @code{S_IWUSR} is @emph{not} set in
+@var{mode}, the directory is created with read-only attribute bit set.
+Note that DOS itself ignores the read-only bit of directories, but some
+programs do not.
 
 @subheading Return Value
 
 Zero if the subdirectory was created, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @subheading Example
 
