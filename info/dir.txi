@@ -123,6 +123,13 @@ From txiNNNb.zip
 * texindex: (texinfo)Format with tex/texindex.	
 	Sorting Texinfo index files automatically.
 
+From gdbNNNb.zip
+
+* Bfd: (bfd).                   The Binary File Descriptor library.
+* Gdb: (gdb).                   The GNU debugger.
+* Gdb-Internals: (gdbint).	The GNU debugger's internals.
+* Stabs: (stabs).               The "stabs" debugging information format.
+* Standards: (standards).       GNU coding standards.
 
 Miscellaneous GNU utilities
 
@@ -190,9 +197,6 @@ Disk usage
 
 * Gawk: (gawk).
 	GNU Awk, an interpreted batch language for processing text files.
-
-* GDB: (gdb).
-	The GNU Debugger.
 
 * Grep: (grep).
 	Print lines matching patterns.
