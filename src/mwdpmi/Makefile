@@ -3,7 +3,7 @@
 # Distributed under the GPL, see COPYING for details.
 # ---------------------------------------------------------------------------
 ASM16 = djasm
-CFLAGS = -m486 -DDEBUG -O2 -Wall
+CFLAGS = -DDEBUG -O2 -Wall
 LIBDIR = ../lib
 
 INCFILES = \
