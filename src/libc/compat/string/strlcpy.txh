@@ -20,10 +20,17 @@ in many cases using the @code{sizeof} operator.
 @code{strlcpy} is a less ambiguous version of @code{strncpy}
 (@pxref{strncpy}).  Unlike @code{strncpy}, @code{strlcpy} @emph{always}
 nul-terminates the destination @var{dest} for non-zero sizes @var{size}.
+@code{strlcpy} returns the length of the string whether or not
+it was possible to copy it all --- this makes it easier to calculate
+the required buffer size.
 
 If @var{dest} and @var{src} are overlapping buffers, the behavior
 is undefined.  One possible result is a buffer overrun - accessing
 out-of-bounds memory.
+
+The original OpenBSD paper describing @code{strlcpy}
+and @code{strlcat} (@pxref{strlcat}) is available on the web:
+@url{http://www.openbsd.org/papers/strlcpy-paper.ps}.
 
 @subheading Return Value
 

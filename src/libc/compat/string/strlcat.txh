@@ -18,7 +18,10 @@ plus the space for the nul-terminator.  @var{size} may be computed
 in many cases using the @code{sizeof} operator.
 
 @code{strlcat} may be used as a less ambiguous alternative
-to @code{strncat} (@pxref{strncat}).
+to @code{strncat} (@pxref{strncat}).  @code{strlcat} returns
+the length of the concatenated string whether or not it was possible
+to copy it all --- this makes it easier to calculate
+the required buffer size.
 
 If @var{dest} is not nul-terminated, then @var{dest} is not modified.
 
@@ -28,6 +31,10 @@ of @var{dest}.  This is to avoid overrunning the buffer @var{dest}.
 If @var{dest} and @var{src} are overlapping buffers, the behavior
 is undefined.  One possible result is a buffer overrun - accessing
 out-of-bounds memory.
+
+The original OpenBSD paper describing @code{strlcat}
+and @code{strlcpy} (@pxref{strlcpy}) is available on the web:
+@url{http://www.openbsd.org/papers/strlcpy-paper.ps}.
 
 @subheading Return Value
 
