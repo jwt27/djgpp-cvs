@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_stdint__h_
 #define __dj_stdint__h_
@@ -46,6 +47,7 @@ __extension__ typedef unsigned long long uintmax_t;
 #define INT_FAST8_MAX	 127
 #define UINT_FAST8_MAX	 255
 #define INT8_MAX	 127
+#define UINT8_MAX	 255 
 #define INT_LEAST8_MIN	 (-128)
 #define INT_FAST8_MIN	 (-128)
 #define INT8_MIN	 (-128)
