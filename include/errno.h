@@ -56,6 +56,7 @@ extern int errno;
 
 #define ENMFILE		38
 #define ELOOP           39
+#define EOVERFLOW	40
 
 extern char *		sys_errlist[];
 extern int		sys_nerr;
