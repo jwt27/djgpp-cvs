@@ -53,6 +53,10 @@ typedef struct fd_set {
 #define FD_ISSET(n, p)	((p)->fd_bits[(n) / 8] & (1 << ((n) & 7)))
 #define FD_ZERO(p)	memset ((void *)(p), 0, sizeof (*(p)))
 
+__DJ_time_t
+#undef __DJ_time_t
+#define __DJ_time_t
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
