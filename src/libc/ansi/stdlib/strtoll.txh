@@ -4,7 +4,7 @@
 @example
 #include <stdlib.h>
 
-long long strtoll(const char *s, char **endp, int base);
+long long int strtoll(const char *s, char **endp, int base);
 @end example
 
 @subheading Description
@@ -25,7 +25,7 @@ The value.
 
 @subheading Portability
 
-@portability !ansi, !posix
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
 
 @subheading Example
 
@@ -35,4 +35,3 @@ gets(buf);
 char *bp;
 printf("The value is %lld\n", strtoll(buf, &bp, 0));
 @end example
-

@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -8,13 +9,13 @@
 #include <stdlib.h>
 #include <libc/unconst.h>
 
-long long
+long long int
 strtoll(const char *nptr, char **endptr, int base)
 {
   const unsigned char *s = (const unsigned char *) nptr;
-  unsigned long long acc;
+  unsigned long long int acc;
   unsigned char c;
-  unsigned long long cutoff;
+  unsigned long long int cutoff;
   int neg = 0, any, cutlim;
 
   /*

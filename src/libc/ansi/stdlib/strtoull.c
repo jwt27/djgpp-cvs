@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -14,13 +15,13 @@
  * Ignores `locale' stuff.  Assumes that the upper and lower case
  * alphabets and digits are each contiguous.
  */
-unsigned long long
+unsigned long long int
 strtoull(const char *nptr, char **endptr, int base)
 {
   const unsigned char *s = (const unsigned char*) nptr;
-  unsigned long long acc;
+  unsigned long long int acc;
   unsigned char c;
-  unsigned long long cutoff;
+  unsigned long long int cutoff;
   int neg = 0, any, cutlim;
 
   /*
@@ -45,8 +46,8 @@ strtoull(const char *nptr, char **endptr, int base)
   }
   if (base == 0)
     base = c == '0' ? 8 : 10;
-  cutoff = (unsigned long long)ULLONG_MAX / base;
-  cutlim = (unsigned long long)ULLONG_MAX % base;
+  cutoff = (unsigned long long int)ULLONG_MAX / base;
+  cutlim = (unsigned long long int)ULLONG_MAX % base;
   for (acc = 0, any = 0; ; c = *s++)
   {
     if (isdigit(c))
