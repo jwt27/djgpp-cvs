@@ -1,0 +1,52 @@
+@node access, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int access(const char *filename, int flags);
+@end example
+
+@subheading Description
+
+This function determines what kind of access modes a given file allows. 
+The parameter @var{flags} is the logical @code{or} of one or more of the
+following flags:
+
+@table @code
+
+@item R_OK
+
+Request if the file is readable.  Since all files are readable under
+MS-DOS, this access mode always exists. 
+
+@item W_OK
+
+Request if the file is writable.
+
+@item X_OK
+
+Request if the file is executable.
+
+@item F_OK
+
+Request if the file exists.
+
+@item D_OK
+
+Request if the file is really a directory.
+
+@end table
+
+@subheading Return Value
+
+Zero if the requested access mode is allowed, nonzero if not. 
+
+@subheading Example
+
+@example
+if (access("file.ext", W_OK))
+  return ERROR_CANNOT_WRITE;
+open("file.ext", O_RDWR);
+@end example
+
