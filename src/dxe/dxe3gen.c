@@ -25,14 +25,17 @@
 #include <sys/dxe.h>
 #include <coff.h>
 #else
+/* Linux violates POSIX.1 and defines this, but it shouldn't.  We fix it. */
+#undef _POSIX_SOURCE
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
 #endif
 
 #define VERSION "1.0"
 
-#define TEMP_O_FILE	"$$dxe$$.o"
-#define TEMP_S_FILE	"$$dxe$$.s"
+#define TEMP_BASE	"dxe_tmp"	/* 7 chars, 1 char suffix */
+#define TEMP_O_FILE	TEMP_BASE".o"
+#define TEMP_S_FILE	TEMP_BASE".s"
 
 #define VALID_RELOC(r) ((r.r_type != RELOC_REL32) && (r.r_symndx != -1UL))
 
@@ -455,26 +458,26 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
        for (i = 0; argv[i] != NULL; i++) ;
 
        if (init > 0) {
-          f = fopen("$$dxe$$i.o", "wb");
+          f = fopen(TEMP_BASE"i.o", "wb");
           fwrite(inits[init-1].data, inits[init-1].size, 1, f);
           fclose(f);
-          argv[i++] = "$$dxe$$i.o";
+          argv[i++] = TEMP_BASE"i.o";
        }
        if (fini > 0) {
-          f = fopen("$$dxe$$f.o", "wb");
+          f = fopen(TEMP_BASE"f.o", "wb");
           fwrite(finis[fini-1].data, finis[fini-1].size, 1, f);
           fclose(f);
-          argv[i++] = "$$dxe$$f.o";
+          argv[i++] = TEMP_BASE"f.o";
        }
        argv[i] = NULL;
 
        rv = myspawn(argv);
 
        if (init > 0) {
-          remove("$$dxe$$i.o");
+          remove(TEMP_BASE"i.o");
        }
        if (fini > 0) {
-          remove("$$dxe$$f.o");
+          remove(TEMP_BASE"f.o");
        }
 
        if (rv) {
@@ -923,7 +926,7 @@ static int make_implib (void)
 
  if (opt.autoresolve) {
     /* Fire the resolver. It should take care of the dependencies (if any) */
-    strcpy(cmdbuf, "dxe3res -o $$dxe$$.c ");
+    strcpy(cmdbuf, "dxe3res -o "TEMP_BASE".c ");
     strcat(cmdbuf, opt.dxefile);
     if ((rv = system(cmdbuf)) != 0) {
        if (rv == -1) {
@@ -933,8 +936,8 @@ static int make_implib (void)
     }
 
     /* Pre-compile the resolver's output. */
-    rv = system("gcc -o "TEMP_S_FILE" -O2 -S $$dxe$$.c");
-    remove("$$dxe$$.c");
+    rv = system("gcc -o "TEMP_S_FILE" -O2 -S "TEMP_BASE".c");
+    remove(TEMP_BASE".c");
     if (rv != 0) {
        if (rv == -1) {
           perror("gcc");
