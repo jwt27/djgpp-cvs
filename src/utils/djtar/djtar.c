@@ -12,7 +12,7 @@
 #include <io.h>
 #include <crt0.h>
 
-#define NO_LFN (_crt0_startup_flags & _CRT0_FLAG_NO_LFN)
+#define NO_LFN (!_use_lfn("."))
 
 #include "oread.h"
 #include "zread.h"
