@@ -11,7 +11,8 @@ FILE *freopen(const char *filename, const char *mode, FILE *file);
 @subheading Description
 
 This function closes @var{file} if it was open, then opens a new
-file like @code{fopen(filename, mode)} but it reuses @var{file}.
+file like @code{fopen(filename, mode)} (@pxref{fopen})
+but it reuses @var{file}.
 
 This is useful to, for example, associate @code{stdout} with a new file. 
 
