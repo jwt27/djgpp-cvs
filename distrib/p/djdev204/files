@@ -15,6 +15,7 @@ bin/edebug32.exe
 bin/emu387.dxe
 bin/exe2coff.exe
 bin/fsdb.exe
+bin/getconf.exe
 bin/go32-v2.exe
 bin/gxx.exe
 bin/djmerge.exe
@@ -31,6 +32,7 @@ bin/utod.exe
 djgpp.env
 include
 info/dir
+info/djasm.info
 info/kb.info
 info/libc.info
 info/libm.info
