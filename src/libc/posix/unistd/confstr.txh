@@ -35,8 +35,10 @@ If @var{name} has a defined value, the minimum size of the buffer required
 to hold the string including the terminating null is returned.  If this value
 is greater than @var{len}, then @var{buf} is truncated.
 
-If @var{name} does not have a defined value, zero is returned and errno is
-set to @code{EINVAL}.
+If @var{name} is valid but does not have a defined value, zero is returned.
+
+If @var{name} is invalid, zero is returned and @code{errno} is set to
+@code{EINVAL}.
 
 @subheading Portability
 
