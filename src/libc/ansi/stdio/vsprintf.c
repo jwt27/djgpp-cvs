@@ -13,6 +13,6 @@ vsprintf(char *str, const char *fmt, va_list ap)
 
   __stropenw(&f, str, INT_MAX);
   len = _doprnt(fmt, ap, &f);
-  __strclosew(&_strbuf);
+  __strclosew(&f);
   return len;
 }
