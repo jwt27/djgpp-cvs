@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -46,8 +47,8 @@
    In case of any failure, returns a NULL pointer and sets errno.
 */
 
-char *
-_truename(const char *file, char *buf)
+static char *
+_truename_internal(const char *file, char *buf, const int try_lfn)
 {
   __dpmi_regs     regs;
   unsigned short  dos_mem_selector = _dos_ds;
@@ -106,7 +107,8 @@ _truename(const char *file, char *buf)
   /* Call DOS INT 21H undocumented function 60h. */
   if(use_lfn) {
     regs.x.ax = 0x7160;
-    regs.x.cx = 2;		/* Get Long Path Name (if there is one) */
+    /* Get Long Path Name (if there is one) and we want it. */
+    regs.x.cx = try_lfn ? 2 : 0;
   } else
     regs.x.ax = 0x6000;
 
@@ -150,6 +152,23 @@ _truename(const char *file, char *buf)
         }
       return buf;
     }
+}
+
+char *
+_truename(const char *file, char *buf)
+{
+  return _truename_internal(file, buf, 1);
+}
+
+/* Sometimes we want the truename for a file that doesn't exist yet.
+   In those cases Windows '98 seems to prefer returning an SFN truename.
+   So if you want to use truenames in a comparison, it's safer to use
+   the SFN truenames.
+ */
+char *
+_truename_sfn(const char *file, char *buf)
+{
+  return _truename_internal(file, buf, 0);
 }
 
 #ifdef  TEST

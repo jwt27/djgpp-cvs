@@ -29,6 +29,14 @@ or (2) contains only the drive letter (e.g. "c:"); or (3) has leading
 whitespace.  It will also fail if it couldn't allocate memory required for
 its communication with DOS or for @var{true_path} (see below).
 
+@code{_truename} may not return what you expect for files that don't exist.
+For instance, if the current directory was entered using a short
+filename (@samp{c:\thisis~1} instead of @samp{c:\thisisalongname}, say),
+then the truename of an existing file will be a long filename,
+but the truename of an non-existing file will be a short filename.
+This can cause problems when comparing filenames.  Use
+@code{_truename_sfn} (@pxref{_truename_sfn}) instead in this case.
+
 Upon success, the function will place the result in @var{true_path},
 if that's non-NULL; the buffer should be large enough to contain the
 largest possible pathname (PATH_MAX characters).  If @var{true_path}
@@ -52,3 +60,35 @@ a NULL pointer is returned, and @code{errno} is set.
           "True name of %s is %s\n", path, _truename(path, (char *)0));
 @end example
 
+@node _truename_sfn, stdio
+@findex _truename_sfn
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+char * _truename_sfn(const char *path, char *true_path);
+@end example
+
+@subheading Description
+
+@code{_truename_sfn} is like @code{_truename}, except that it always
+returns a short filename. See the documentation for @code{_truename}
+for more details (@pxref{_truename}).
+
+@subheading Return Value
+
+The function returns the pointer to the result.  In case of any failure,
+a NULL pointer is returned, and @code{errno} is set.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  fprintf(stderr, 
+          "True short name of %s is %s\n", path,
+	  _truename_sfn(path, (char *)0));
+@end example

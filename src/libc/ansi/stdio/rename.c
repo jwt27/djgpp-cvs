@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -344,8 +345,8 @@ rename(const char *old, const char *new)
           /* Fail if both OLD and NEW are directories and
              OLD is parent of NEW.  */
           errno = 0;
-          if (is_parent(_truename(real_old, old_true), 
-                        _truename(real_new, new_true)))
+          if (is_parent(_truename_sfn(real_old, old_true), 
+                        _truename_sfn(real_new, new_true)))
             {
               errno = EINVAL;
               return -1;
@@ -377,8 +378,8 @@ rename(const char *old, const char *new)
       char new_true[FILENAME_MAX], old_true[FILENAME_MAX];
 
       errno = 0;
-      if (is_parent(_truename(real_old, old_true), 
-                    _truename(real_new, new_true)))
+      if (is_parent(_truename_sfn(real_old, old_true), 
+                    _truename_sfn(real_new, new_true)))
 	{
 	  errno = EINVAL;
 	  return -1;

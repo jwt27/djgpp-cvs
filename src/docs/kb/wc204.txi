@@ -990,3 +990,13 @@ The functions @code{strtod}, @code{strtof}, @code{strtold} and
 @code{_strtold} now understand ``Inf'', ``Infinity'', ``NaN'',
 ``NaN()'', ``NaN(@var{hex-number})'' and any variations of case in the
 input string.
+
+@findex _truename_sfn
+The @code{_truename_sfn} function was added.  Please use
+@code{_truename_sfn} when comparing truenames, to avoid problems
+when comparing the truenames of existing and non-existing files.
+
+@findex rename@r{, and moving directories into themselves}
+Fix a bug in moving directories into themselves.   Previously
+@code{rename} failed to detect that a subdirectory was being moved
+into itself, when the current directory was a short filename.

@@ -96,6 +96,7 @@ int             _is_executable(const char *, int, const char *);
 int             lstat(const char * _path, struct stat * _buf);
 int		mknod(const char *_path, mode_t _mode, dev_t _dev);
 char          * _truename(const char *, char *);
+char          * _truename_sfn(const char *, char *);
 
 /* Bit-mapped variable _djstat_flags describes what expensive
    f?stat() features our application needs.  If you don't need a
