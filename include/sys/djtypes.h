@@ -1,5 +1,4 @@
-/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
-/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
@@ -9,17 +8,14 @@
 #define __DJ_clock_t	typedef int clock_t;
 #define __DJ_gid_t	typedef int gid_t;
 #define __DJ_off_t	typedef int off_t;
-#define __DJ_offset_t	typedef long long offset_t;
 #define __DJ_pid_t	typedef int pid_t;
 #define __DJ_size_t	typedef long unsigned int size_t;
 #define __DJ_ssize_t	typedef int ssize_t;
 #define __DJ_time_t	typedef unsigned int time_t;
 #define __DJ_uid_t	typedef int uid_t;
 
-/* For GCC 2.96 or later we use its builtin va_list.                       */
-/* In most cases these definitions won't be used, because headers provided */
-/* by GCC hide them. But we can DTRT if GCC headers are missing.           */
-#if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
+/* For GCC 3.00 or later we use its builtin va_list.                       */
+#if __GNUC__ >= 3
 #define __DJ_va_list    typedef __builtin_va_list va_list;
 #else
 #define __DJ_va_list	typedef void *va_list;
