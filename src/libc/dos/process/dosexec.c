@@ -22,6 +22,7 @@
 #include <libc/unconst.h>
 #include <libc/dosio.h>
 #include <libc/farptrgs.h>
+#include <libc/symlink.h>
 
 /* FIXME: this is not LFN-clean.  Win95 has a way to
    pass long command lines, but we don't support it here.  */
@@ -519,6 +520,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   int i;
   char *go32, *sip=0;
   char rpath[FILENAME_MAX];
+  char real_program[FILENAME_MAX];
   int argc=0;
 
   int si_la=0, si_off=0, rm_off, argv_off;
@@ -527,7 +529,10 @@ static int go32_exec(const char *program, char **argv, char **envp)
   int retval;
   int lfn = 2;	/* means don't know yet */
 
-  type = _check_v2_prog (program, -1);
+  if (!__solve_symlinks(program, real_program))
+     return -1;
+
+  type = _check_v2_prog (real_program, -1);
 
   /* Because this function is called only, when program
      exists, I can skip the check for type->valid */
@@ -539,16 +544,16 @@ static int go32_exec(const char *program, char **argv, char **envp)
 
   if (type->exec_format == _V2_EXEC_FORMAT_UNIXSCRIPT)
   {
-    return script_exec(program, argv, envp);
+    return script_exec(real_program, argv, envp);
   }
 
   /* Non-DJGPP programs cannot be run by !proxy.  */
   if (!is_coff)
   {
     if (type->exec_format == _V2_EXEC_FORMAT_EXE)
-      return direct_exec(program, argv, envp);
+      return direct_exec(real_program, argv, envp);
     else
-      return __dosexec_command_exec (program, argv, envp);
+      return __dosexec_command_exec (real_program, argv, envp);
   }
 
   if (found_si)
@@ -560,7 +565,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
 
   if (v2_0 && is_stubbed)
   {
-    strcpy(rpath, program);
+    strcpy(rpath, real_program);
   }
   else
   {
@@ -568,7 +573,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
     if (!__dosexec_find_on_path(go32, envp, rpath))
     {
       errno = e;
-      return direct_exec(program, argv, envp); /* give up and just run it */
+      return direct_exec(real_program, argv, envp); /* give up and just run it */
     }
 
     if (found_si)
@@ -586,7 +591,8 @@ static int go32_exec(const char *program, char **argv, char **envp)
      usual DOS command line and the !proxy one (which will be put
      into the environment).  Sigh...  */
   save_argv0 = argv[0];
-  argv[0] = unconst(program, char *); /* since that's where we really found it */
+  /* Since that's where we really found it */
+  argv[0] = unconst(program, char *); 
   /* Construct the DOS command tail */
   for (argc=0; argv[argc]; argc++);
 
@@ -704,9 +710,13 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   int cmdlen;
   int i;
   int was_quoted = 0;	/* was the program name quoted? */
+  char real_program[FILENAME_MAX];
+
+  if (!__solve_symlinks(program, real_program))
+     return -1;
 
   /* Add spare space for possible quote characters.  */
-  cmdlen = strlen(program) + 4 + 2;
+  cmdlen = strlen(real_program) + 4 + 2;
   for (i=0; argv[i]; i++)
     cmdlen += 2*strlen(argv[i]) + 1;
   cmdline = (char *)alloca(cmdlen);
@@ -714,21 +724,21 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   /* FIXME: is this LFN-clean?  What special characters can
      the program name have and how should they be quoted?  */
   strcpy(cmdline, "/c ");
-  if (strchr(program, ' ') || strchr(program, '\t'))
+  if (strchr(real_program, ' ') || strchr(real_program, '\t'))
   {
     was_quoted = 1;
     cmdline[3] = '"';
   }
-  for (i = 0; program[i] > ' '; i++)
+  for (i = 0; real_program[i] > ' '; i++)
   {
     /* COMMAND.COM cannot grok program names with forward slashes.  */
     if (program[i] == '/')
       cmdline[i+3+was_quoted] = '\\';
     else
-      cmdline[i+3+was_quoted] = program[i];
+      cmdline[i+3+was_quoted] = real_program[i];
   }
-  for (; program[i]; i++)
-    cmdline[i+3+was_quoted] = program[i];
+  for (; real_program[i]; i++)
+    cmdline[i+3+was_quoted] = real_program[i];
   if (was_quoted)
   {
     cmdline[i+3+was_quoted] = '"';
