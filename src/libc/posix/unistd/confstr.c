@@ -43,7 +43,9 @@ confstr(int name, char *buf, size_t len)
     case _CS_POSIX_V6_ILP32_OFF32_LDFLAGS:
     case _CS_POSIX_V6_ILP32_OFF32_LIBS:
     {
-      out_len = snprintf(buf, len, "");
+      if (buf && (len > 0))
+	buf[0] = 0;
+      /* confstr includes the null terminator in its return value. */
       ++out_len;
       break;
     }
