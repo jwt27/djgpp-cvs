@@ -220,8 +220,8 @@ Don't use capital letters for emphasis---use @samp{@@strong@{@}} instead.
 Put a comma or colon after ``e.g.''.
 
 @item
-When ``i.e.'' is followed by a space, use @samp{@@:} after it,
-to indicate that that the final period in ``i.e.'' does not end
+When ``i.e.'' or ``etc.'' is followed by a space, use @samp{@@:} after it,
+to indicate that that the final period does not end
 the sentence. E.g.: @samp{i.e.@@:}.
 
 @item
