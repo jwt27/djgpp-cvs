@@ -75,9 +75,11 @@ unsigned char symbol[] = @{
 @node djecho, djtar, bin2h, Top
 @chapter djecho
 
-This program simply echos whatever is given to it on the command line.
+This program simply echoes whatever is given to it on the command line.
 
-Usage: @code{djecho} [@code{-n}] [@code{-o} @var{file}] stuff . . .
+@smallexample
+ @r{Usage:} djecho [-n] [-o @var{file}] [-s] [-a] @var{args}@dots{}
+@end smallexample
 
 @table @code
 
@@ -89,6 +91,17 @@ Do not emit the trailing newline after printing the text.
 
 Send output to a @var{file}.
 
+@item -s
+
+Separate @var{args} with a newline, instead of the default blank.  This
+is useful for writing several lines of output in a single invocation
+(which is faster than several separate commands).
+
+@item -a
+
+Append the output to the file instead of overwriting it.  Useful with
+the @samp{-o} option.
+
 @end table
 
 The purpose of this program is to be able to interact directly with
@@ -97,7 +110,14 @@ use redirection, you aren't always able to handle long command lines
 (especially since echo is normally in @file{command.com}).  With
 @code{djecho}, you can, and you can use the @samp{-o} option to redirect
 output to a file (and use the file later as a response file) without
-using dos's redirection.
+using DOS's redirection.
+
+Latest versions of ported @code{make} do not invoke @file{command.com}
+for redirection and @code{echo} commands, but @code{djecho} is still
+useful for related tasks, e.g. for writing several lines to a file in a
+single invocation.  Since @code{djecho} is part of the basic DJGPP
+development environment, it is easy to rely on it being present when a
+package is built.
 
 @c -----------------------------------------------------------------------------
 @node djtar, dtou, djecho, Top
