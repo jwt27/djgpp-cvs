@@ -18,6 +18,7 @@
 #include <io.h>
 
 #include <libc/dosio.h>
+#include <libc/fd_props.h>
 
 /* Extra share flags that can be indicated by the user */
 int __djgpp_share_flags;
@@ -148,6 +149,7 @@ open(const char* filename, int oflag, ...)
   __file_handle_set(fd, bintext ^ (O_BINARY|O_TEXT));
   /* this will do cooked/raw ioctl() on character devices */
   setmode(fd, bintext);
+  __set_fd_properties(fd, real_name, oflag);
 
   if(oflag & O_APPEND)
     lseek(fd, 0, SEEK_END);
