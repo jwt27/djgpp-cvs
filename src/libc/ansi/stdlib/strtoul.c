@@ -15,9 +15,9 @@
 unsigned long
 strtoul(const char *nptr, char **endptr, int base)
 {
-  const char *s = nptr;
+  const unsigned char *s = (const unsigned char*) nptr;
   unsigned long acc;
-  int c;
+  unsigned char c;
   unsigned long cutoff;
   int neg = 0, any, cutlim;
 
@@ -26,7 +26,7 @@ strtoul(const char *nptr, char **endptr, int base)
    */
   do {
     c = *s++;
-  } while (isspace(c & 0xff));
+  } while (isspace(c));
   if (c == '-')
   {
     neg = 1;
@@ -45,7 +45,7 @@ strtoul(const char *nptr, char **endptr, int base)
     base = c == '0' ? 8 : 10;
   cutoff = (unsigned long)ULONG_MAX / (unsigned long)base;
   cutlim = (unsigned long)ULONG_MAX % (unsigned long)base;
-  for (acc = 0, any = 0, c &= 0xff;; c = *s++, c &= 0xff)
+  for (acc = 0, any = 0; ; c = *s++)
   {
     if (isdigit(c))
       c -= '0';
