@@ -164,6 +164,9 @@ command line.  The DJGPP startup code also supports @code{CMDLINE}
 method of passing long command lines, so DJGPP programs can now be
 invoked with long command lines from the @file{COMMAND.COM}'s prompt,
 and also from other Windows programs which support @code{CMDLINE}.
+The functions @code{system} and @code{spawn*} have also been enhanced
+to free DPMI selectors leaked by many DPMI hosts.  This fixes the 
+problem with large makefiles failing before completion under Windows.
 
 @findex _rename@r{, change letter-case of a file name}
 @findex rename@r{, change letter-case of a file name}
