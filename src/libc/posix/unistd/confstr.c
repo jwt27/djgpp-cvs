@@ -38,6 +38,16 @@ confstr(int name, char *buf, size_t len)
       }
       break;
     }
+    /* No options are required for the default 32-bit environment.  */
+    case _CS_POSIX_V6_ILP32_OFF32_CFLAGS:
+    case _CS_POSIX_V6_ILP32_OFF32_LDFLAGS:
+    case _CS_POSIX_V6_ILP32_OFF32_LIBS:
+    {
+      out_len = snprintf(buf, len, "");
+      ++out_len;
+      break;
+    }
+
     default:
     {
       errno = EINVAL;
