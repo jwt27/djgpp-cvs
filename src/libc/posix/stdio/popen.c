@@ -8,7 +8,7 @@
    
    Original author: pacetti@fl-ngnet.army.mil
 
-   These routines are hacks, that is they SIMULATE thier UNIX
+   These routines are hacks, that is they SIMULATE their UNIX
    counterparts.  Since MSDOS and won't allow concurrent process spawning,
    you can't really pipe.  I came up with this nearly stupid way around
    piping because I wanted to have some portability between UNIX and MSDOS.
