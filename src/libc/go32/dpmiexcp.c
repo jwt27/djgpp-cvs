@@ -619,17 +619,18 @@ __djgpp_set_ctrl_c(int enable_sigs)
    Note that we invoke here a PM Int 21, which sets the PM selector of
    our PSP.  This is _not_ a call to __dpmi_int ! */
 
-static void
-__maybe_fix_w2k_ntvdm_bug(void)
+void __maybe_fix_w2k_ntvdm_bug(void);	/* Prototype to avoid warning */
+void __maybe_fix_w2k_ntvdm_bug(void)
 {
   if (_osmajor == 5 && _get_dos_version(1) == 0x532) /* Windows NT, 2000 or XP? */
   {
-    /* Protected mode call to SetPSP - may destroy RM PSP if not extended */
-    asm volatile("movw %0, %%bx                           \n\
+    /* Protected mode call to SetPSP - uses BX from GetPSP (0x51) */
+    asm volatile("movb $0x51, %%ah                        \n\
+                  int  $0x21                              \n\
                   movb $0x50, %%ah                        \n\
                   int  $0x21                              "
                   :                               /* output */
-                  : "g" (_stubinfo->psp_selector) /* input */
+                  :                               /* input */
                   : "ax", "bx" );                 /* regs */
   }
 }
