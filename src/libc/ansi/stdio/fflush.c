@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -18,7 +19,7 @@ int
 fflush(FILE *f)
 {
   char *base;
-  int n;
+  ssize_t n;
   size_t rn;
 
   if (f == NULL)
