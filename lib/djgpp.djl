@@ -4,7 +4,9 @@ SECTIONS
 {
   .text  0x1000+SIZEOF_HEADERS : {
     *(.text)
+    *(.text.*)
     *(.gnu.linkonce.t*)
+    *(.ro*)
     *(.gnu.linkonce.r*)
     etext  =  . ;
     PROVIDE(_etext  =  .);
@@ -18,6 +20,7 @@ SECTIONS
     *(.dtor)
     djgpp_last_dtor = . ;
     *(.data)
+    *(.data.*)
     *(.gnu.linkonce.d*)
     *(.gcc_exc*)
     ___EH_FRAME_BEGIN__ = . ;
