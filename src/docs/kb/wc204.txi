@@ -725,7 +725,7 @@ POSIX-compliant.
 @findex __install_dev_full@r{, install support for @file{/dev/full}}
 Optional support for the devices @file{/dev/zero} and @file{/dev/full} was
 added.  This is enabled using the @code{__install_dev_zero} and
-@code{__install_dev_zero} functions.
+@code{__install_dev_full} functions.
 
 @pindex mkdoc@r{, clearer style for portability information}
 @pindex mkdoc@r{, support for multiple versions of standards}
