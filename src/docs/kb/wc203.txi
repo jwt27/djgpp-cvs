@@ -79,7 +79,7 @@ now printed as @samp{Unnormal}.
 @code{srand} now documented as returning a void.
 @findex srand
 
-@code{rand48} and friends now in libc
+@code{rand48} and friends are now in libc.
 @findex rand48
 @findex srand48
 
@@ -177,7 +177,7 @@ prevent the startup code from recognizing section names.
 @code{dtou} and @code{utod} no longer overwrite the stack when invoked
 on file names longer than 80 characters.
 
-@findex system
+@findex system@r{, and redirection}
 @code{system} works when its argument uses redirection to/from quoted
 file names (e.g., when the file name includes embedded whitespace).
 
@@ -215,4 +215,19 @@ buffer in addition to the internal buffer maintained by the
 @code{termios} input processing.  This is compatible with the Unix
 specification that @code{tcflush} should ``discard all data received but
 not read''.
+
+@findex system@r{, and pipe symbols}
+@pindex Make, crashes
+@pindex Bash
+Library function @code{system} no longer crashes when given invalid
+command lines which involve pipe symbols @samp{|}.  Typically, such
+command lines should have been run by a Unix-style shell, like Bash.
+However, sometimes, due to some system configuration snafu, the
+@code{SHELL} variable in the environment didn't point to such a shell,
+and @code{system} would try to execute the command line using its
+internal emulator of @file{COMMAND.COM}; it would then crash due to a
+bug.  This is now solved: @code{system} prints appropriate error
+message(s) and exits with an error code of -1.  We believe that some of
+the rarely-reported and hard-to-reproduce crashes of the Make utility
+were due to this bug.
 

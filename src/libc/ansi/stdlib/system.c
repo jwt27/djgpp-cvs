@@ -569,7 +569,7 @@ system (const char *cmdline)
       int needcmd = 1;
       int again;
 
-      if (rm_in)
+      if (rm_in && f_in)
 	remove (f_in);
       f_in = f_out;			/* Piping.  */
       rm_in = rm_out;
@@ -763,7 +763,13 @@ system (const char *cmdline)
 	  else
 	  {
 	    if (token == SEMICOLON)
+	    {
+	      if (f_in && rm_in)
+		remove (f_in);
+	      if (f_out && rm_out)
+		remove (f_out);
 	      f_in = f_out = 0;
+	    }
 	    s = u;
 	  }
 	  break;
@@ -779,9 +785,9 @@ system (const char *cmdline)
       } while (again);
     }
   leave:
-    if (rm_in)
+    if (rm_in && f_in)
       remove (f_in);
-    if (rm_out)
+    if (rm_out && f_out)
       remove (f_out);
 
     return result;

@@ -387,10 +387,13 @@ static const char *shell_brokets[] = {
    which treat single quote specially.  */
 static const char *unix_shells[] = {
   "SH.EXE",
+  "-SH.EXE", /* people create `-sh.exe' and `-bash.exe' to have login shells */
   "SH16.EXE",
   "SH32.EXE",
   "TCSH.EXE",
+  "-TCSH.EXE",
   "BASH.EXE",
+  "-BASH.EXE",
   0
 };
 
