@@ -1,3 +1,4 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
@@ -10,6 +11,7 @@ SRC += djecho.c
 SRC += djmerge.c
 SRC += djsplit.c
 SRC += dtou.c
+SRC += getconf.c
 SRC += gxx.c
 SRC += redir.c
 SRC += update.c
