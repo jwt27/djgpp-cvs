@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+/*
+ * __dj_va_rounded_size's definition is copied from DJGPP's <stdarg.h>.
+ * GCC 3.x's <stdarg.h> may override DJGPP's, so __dj_va_rounded_size
+ * may not be defined for GCC 3.x (and perhaps later).
+ */
+#ifndef __dj_va_rounded_size
+#define __dj_va_rounded_size(T)  \
+  (((sizeof (T) + sizeof (int) - 1) / sizeof (int)) * sizeof (int))
+#endif
+
 void x(const char *f, ...)
 {
   const char *c;
