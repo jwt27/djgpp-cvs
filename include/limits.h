@@ -60,6 +60,15 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
+/* constants used in Solaris */
+#define LLONG_MIN       (-9223372036854775807LL-1LL)
+#define LLONG_MAX       9223372036854775807LL
+#define ULLONG_MAX      18446744073709551615ULL
+/* gnuc ones */
+#define LONG_LONG_MIN	LLONG_MIN
+#define LONG_LONG_MAX	LLONG_MAX
+#define ULONG_LONG_MAX	ULLONG_MAX
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
