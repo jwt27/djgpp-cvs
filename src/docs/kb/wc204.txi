@@ -849,3 +849,7 @@ The mnemonic @code{wbinvd} has been added to @code{djasm}.
 @vindex HUGE_VALF
 @vindex HUGE_VALL
 The constants @code{HUGE_VALF} and @code{HUGE_VALL} were added.
+
+@tindex ssize_t
+@code{ssize_t} was changed from an @code{int} to a @code{signed long int}.
+@code{ssize_t} is now really a signed version of @code{size_t}.
