@@ -1,0 +1,220 @@
+@ignore
+ * File hcreate.txh.
+ *
+ * Copyright (C) 2005 Martin Str@"omberg <ams@ludd.luth.se>.
+ *
+ * This software may be used freely so long as this copyright notice is
+ * left intact. There is no warranty on this software.
+ *
+@end ignore
+
+@node hcreate, search
+@findex hcreate
+@subheading Syntax
+
+@example
+#include <search.h>
+
+int hcreate(size_t nel)
+@end example
+
+@subheading Description
+
+This function creates a hash table that has room for @var{nel}
+elements.  
+
+There can only be at most one hash table in use at any time.  
+
+See also @code{hdestroy} (@pxref{hdestroy}) and @code{hsearch}
+(@pxref{hsearch}).  
+
+@subheading Return Value
+
+Non-zero if successful, or zero if the hash table couldn't be
+created.  
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+#include <search.h>
+#include <stdio.h>
+
+#define N_ELS	1000
+
+int main(void)
+@{
+
+  if( hcreate(N_ELS) )
+  @{
+    printf("Hash table created successfully.\n");
+  @}
+  else
+  @{
+    printf("Failed to create hash table.\n");
+  @}
+
+  return 0;
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node hdestroy, search
+@findex hdestroy
+@subheading Syntax
+
+@example
+#include <search.h>
+
+void hdestroy(void)
+@end example
+
+@subheading Description
+
+This function destroys the hash table previously created by
+a call to @code{hcreate} (@pxref{hcreate}).  
+
+See also @code{hsearch} (@pxref{hsearch}).  
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+#include <search.h>
+
+#define N_ELS 10000
+
+int main(void)
+@{
+
+  if( hcreate(N_ELS) )
+  @{
+    printf("Hash table created successfully.\n");
+
+    /*
+       Insert elements into the hash table and look them up.
+       ...
+     */
+
+    hdestroy();
+  @}
+  else
+  @{
+    printf("Failed to create hash table.\n");
+  @}
+
+  return 0;
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node hsearch, search
+@findex hsearch
+@tindex ACTION@r{ type}
+@tindex ENTRY@r{ type}
+@subheading Syntax
+
+@example
+#include <search.h>
+
+ENTRY * hsearch(ENTRY item, ACTION action);
+@end example
+
+@subheading Description
+
+This function searches the hash table previously created by a call to
+@code{hcreate} (@pxref{hcreate}) for the key @var{item.key}.  If the
+key is found a pointer to that entry is returned.  If the key is not
+found and action is ENTER, @var{item} is added to the hash table and a
+pointer to the newly added entry is returned.  If the key is not found
+and action is FIND, @code{NULL} is returned.  
+
+The comparison function used is @code{strcmp}.  
+
+The types ACTION and ENTRY are defined as:
+
+@example
+typedef enum @{
+  FIND,
+  ENTER
+@} ACTION;
+
+typedef struct entry @{
+  char    *key;
+  void    *data;
+@} ENTRY;
+@end example
+
+See also @code{hdestroy} (@pxref{hdestroy}).  
+
+@subheading Return Value
+
+@code{NULL} if action is ENTER but hash table is full.  
+A pointer to the found or inserted item, if action is ENTER.  
+
+A pointer to the found item or @code{NULL}, if action is FIND.  
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+#include <search.h>
+
+#define N_ELS 10000
+
+int main(void)
+@{
+  ENTRY item, *item_p;
+
+  if( ! hcreate(N_ELS) )
+  @{
+    printf("Hash table could not be created.\n");
+    return 1;
+  @}
+
+  /* Fill hash. */
+  while( /* element to insert */ )
+  @{
+    item.key = /* allocate space for key and setting it */ 
+    item.data = /* allocate space for data and setting it */
+    item_p = hsearch(item, ENTER);
+    if( ! item_p )
+    @{
+      printf("Out of memory.\n");
+      return 1;
+    @}
+  @}
+
+  /* Look up element. */
+  item.key = /* some key */
+  item_p = hsearch(item, FIND)
+  if( item_p )
+  @{
+    printf("Found key '%s' with data pointing to %p.\n", item.key, item.data);
+  @}
+  else
+  @{
+    printf("Can't find key '%s'.\n", item.key);
+  @}
+
+  hdestroy();
+
+  return 0;
+@}
+
+@end example

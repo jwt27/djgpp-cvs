@@ -24,19 +24,37 @@ __DJ_size_t
 
 #ifndef __STRICT_ANSI__
 
-void * lfind(const void *_key, void *_base, size_t *_nelp, size_t _width,
-	     int(*_compar)(const void *, const void *));
-void * lsearch(const void *_key, void *_base, size_t *_nelp, size_t _width,
-	       int(*_compar)(const void *, const void *));
+/* ACTION type for hsearch(). */
+typedef enum {
+  FIND,
+  ENTER
+} ACTION;
+
+/* ENTRY type for hsearch(). */
+typedef struct entry {
+  char    *key;
+  void    *data;
+} ENTRY;
+
+
+int	hcreate(size_t _nel);
+void	hdestroy(void);
+ENTRY *	hsearch(ENTRY _item, ACTION _action);
+void *	lfind(const void *_key, void *_base, size_t *_nelp, size_t _width,
+	      int(*_compar)(const void *, const void *));
+void *	lsearch(const void *_key, void *_base, size_t *_nelp, size_t _width,
+		int(*_compar)(const void *, const void *));
 
 #ifndef _POSIX_SOURCE
 
+/* qelem type for insque and remque. */
 typedef struct qelem {
   struct qelem *q_forw;
   struct qelem *q_back;
   char q_data[0];
 } qelem;
 
+unsigned long _hash2v(unsigned char *s, unsigned long *v2);
 void insque(struct qelem *_elem, struct qelem *_pred);
 void remque(struct qelem *_elem);
 

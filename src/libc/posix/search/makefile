@@ -2,6 +2,7 @@
 
 TOP=../..
 
+SRC += _hash2v.c
 SRC += hcreate.c
 SRC += lfind.c
 

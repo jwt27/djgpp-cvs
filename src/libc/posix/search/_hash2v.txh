@@ -1,0 +1,56 @@
+@ignore
+ * File _hash2v.txh.
+ *
+ * Copyright (C) 2005 Martin Str@"omberg <ams@ludd.luth.se>.
+ *
+ * This software may be used freely so long as this copyright notice is
+ * left intact. There is no warranty on this software.
+ *
+@end ignore
+
+@node _hash2v, misc
+@findex _hash2v
+@subheading Syntax
+
+@example
+#include <search.h>
+
+unsigned long _hash2v(unsigned char *s, unsigned long *v2)
+@end example
+
+@subheading Description
+
+This function generate two hash values from the string @var{s}.  It
+returns the first and sets *@var{v2} to the second.  
+
+@subheading Return Value
+
+The first hash value.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <search.h>
+#include <stdio.h>
+
+
+int main(void)
+@{
+  unsigned int hash_value1, hash_value2;
+
+  hash_value1 = _hash2v("", &hash_value2);
+  printf("_hash2v generated the values 0x%08lx and 0x%08lx from \"\" (the empty string).\n",
+         hash_value1, hash_value2);
+  hash_value1 = _hash2v("a", &hash_value2);
+  printf("_hash2v generated the values 0x%08lx and 0x%08lx from \"a\".\n"
+         hash_value1, hash_value2);
+
+  return 0;
+@}
+
+@end example
+
