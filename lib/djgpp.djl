@@ -6,6 +6,7 @@ SECTIONS
     *(.text)
     *(.text.*)
     *(.gnu.linkonce.t*)
+    *(.const*)
     *(.ro*)
     *(.gnu.linkonce.r*)
     etext  =  . ;
@@ -14,10 +15,14 @@ SECTIONS
   }
   .data  ALIGN(0x200) : {
     djgpp_first_ctor = . ;
+    *(SORT(.ctors.*))
     *(.ctor)
+    *(.ctors)
     djgpp_last_ctor = . ;
     djgpp_first_dtor = . ;
+    *(SORT(.dtors.*))
     *(.dtor)
+    *(.dtors)
     djgpp_last_dtor = . ;
     __environ = . ;
     PROVIDE(_environ = .);
