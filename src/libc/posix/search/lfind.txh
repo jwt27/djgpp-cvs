@@ -1,0 +1,151 @@
+@ignore
+ * File lfind.txh.
+ *
+ * Copyright (C) 2005 Martin Str@"omberg <ams@ludd.luth.se>.
+ *
+ * This software may be used freely so long as this copyright notice is
+ * left intact. There is no warranty on this software.
+ *
+@end ignore
+
+@node lfind, misc
+@findex lfind
+@subheading Syntax
+
+@example
+#include <search.h>
+
+void * lfind(const void *key, void *base, size_t *nelp, size_t width, 
+             int (*compar)(const void *, const void *));  
+@end example
+
+@subheading Description
+
+This function searches the array @var{base} of elements of size
+@var{width}, currently containing @var{nelp} elements, for the element
+identified by @var{key} using the comparison function @var{compar}.  
+
+The function @var{compar} should return 0 when its inputs are equal
+and not 0 otherwise.  
+
+See also @code{lsearch} (@pxref{lsearch}).  
+
+@subheading Return Value
+
+A pointer to the found element or @code{NULL} if not present.  
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+#include <search.h>
+#include <stdio.h>
+#include <string.h>
+
+#define N_ELEM       50
+#define ELEM_SIZE    50
+#define COMPARE_FUN  (int (*)(const void *, const void *)) strcmp
+
+char arr[N_ELEM][ELEM_SIZE];
+size_t n_arr = 0;
+
+int main(void)
+@{
+  char *entry;
+
+  entry = lfind("Anyone there?", arr, &n_arr, ELEM_SIZE, COMPARE_FUN);
+  if( entry )
+  @{
+    printf("Someone there: %s!\n", entry);
+  @}
+  else
+  @{
+    printf("Noone there...\n");
+  @}
+
+  return 0;
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node lsearch, misc
+@findex lsearch
+@subheading Syntax
+
+@example
+#include <search.h>
+
+void * lsearch(const void *key, void *base, size_t *nelp, size_t width, 
+               int (*compar)(const void *, const void *));
+@end example
+
+@subheading Description
+
+This function searches the array @var{base} of elements of size
+@var{width}, currently containing @var{nelp} elements, for the element
+identified by @var{key} using the comparison function @var{compar}.  
+
+If the @var{key} isn't found it is added to the array @var{base} and
+@var{*nelp} is incremented.  
+
+The function @var{compar} should return 0 when its inputs are equal
+and not 0 otherwise.  
+
+It is the caller's responsibility that the array has enough room for
+an additional element.  
+
+See also @code{lfind} (@pxref{lfind}).  
+
+@subheading Return Value
+
+A pointer to the found or inserted element.  
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+#include <search.h>
+#include <stdio.h>
+#include <string.h>
+
+#define N_ELEM       50
+#define ELEM_SIZE    sizeof(char *)
+#define COMPARE_FUN  my_p_strcmp
+
+char *arr[N_ELEM];
+size_t n_arr = 0;
+
+
+int my_p_strcmp( const void *el1, const void *el2)
+@{
+  return strcmp( *(const char **)el1, *(const char **)el2 );
+@}
+
+
+int main(void)
+@{
+  const char *nentry;
+  char *entry;
+
+  nentry = "Anyone there?";
+  entry = lsearch(&nentry, arr, &n_arr, ELEM_SIZE, COMPARE_FUN);
+  if( entry )
+  @{
+    printf("Someone there: %s, %ld\n", entry, n_arr);
+  @}
+  else
+  @{
+    printf("Error, noone there: %ld...\n", n_arr);
+  @}
+
+  return 0;
+@}
+
+@end example

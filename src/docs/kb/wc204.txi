@@ -1057,8 +1057,11 @@ The C99 file @file{stdbool.h} was added.
 @findex asctime_r@r{ added}
 @findex ctime_r@r{ added}
 @findex gmtime_r@r{ added}
+@findex lfind@r{ added}
+@findex lsearch@r{ added}
 @findex localtime_r@r{ added}
 @findex strtok_r@r{ added}
 @findex strerror_r@r{ added}
 The POSIX functions @code{asctime_r}, @code{ctime_r}, @code{gmtime_r},
-@code{localtime_r}, @code{strtok_r} and @code{strerror_r} were added.  
+@code{lfind}, @code{lsearch}, @code{localtime_r}, @code{strtok_r} and
+@code{strerror_r} were added.  

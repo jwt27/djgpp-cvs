@@ -10,12 +10,24 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
+#include <sys/djtypes.h>
+
+#ifndef _SIZE_T
+__DJ_size_t
+#define _SIZE_T
+#endif
+
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
   || !defined(__STRICT_ANSI__)
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
 #ifndef __STRICT_ANSI__
+
+void * lfind(const void *_key, void *_base, size_t *_nelp, size_t _width,
+	     int(*_compar)(const void *, const void *));
+void * lsearch(const void *_key, void *_base, size_t *_nelp, size_t _width,
+	       int(*_compar)(const void *, const void *));
 
 #ifndef _POSIX_SOURCE
 
