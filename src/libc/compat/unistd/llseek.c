@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -38,6 +39,10 @@ llseek( int handle, offset_t offset, int whence )
   }
 
   has_props = __has_fd_properties(handle);
+
+  /* Directory? If so, we're done. */
+  if (has_props && (__fd_properties[handle]->flags & FILE_DESC_DIRECTORY))
+    return 0;
 
   /* POSIX doesn't allow seek on a pipe.  */
   if (has_props && (__fd_properties[handle]->flags & FILE_DESC_PIPE))
