@@ -54,7 +54,7 @@ unsigned short dos_descriptors[DOS_DESCRIPTOR_COUNT];
   ss can be different from ds in dbgsig !! */
 static int excep_stack[1000];
 static int errcode,cs,eflags,eip,ss,esp,ret_cs,ret_eip;
-static void *cur_pos;
+static int *cur_pos;
 static int child_exception_level;
 
 ExternalDebuggerInfo edi;
@@ -98,7 +98,9 @@ void save_npx (void)
   int i;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
-  asm ("inb	$0xa0, %%al
+  asm ("movb	$0x0b, %%al
+	outb	%%al, $0xa0
+	inb	$0xa0, %%al
 	testb	$0x20, %%al
 	jz	1f
 	xorb	%%al, %%al
@@ -954,15 +956,14 @@ static void call_app_exception(int signum, char complete)
     eflags = load_state->__eflags;
     /* reset the debug trace bit */
     /* we don't want to step inside the exception_table code */
-    load_state->__eflags &= 0xfffffeff;
+    load_state->__eflags &= 0xfffffeffU;
     errcode = load_state->__sigmask;
     load_state->__eip=app_handler[signum].offset32;
     load_state->__cs=app_handler[signum].selector;
     /* use our own exception stack */
     child_exception_level++;
     memset(&excep_stack,0xAB,sizeof(excep_stack));
-    cur_pos = &excep_stack[1000-40];
-    cur_pos -= 8*4;
+    cur_pos = &excep_stack[1000-40] - 8;
     load_state->__ss = my_ds;
     load_state->__esp= (int) cur_pos;
     /* where to return */
@@ -971,22 +972,15 @@ static void call_app_exception(int signum, char complete)
       ret_eip = (int) &dbgcom_exception_return_complete;
     else
       ret_eip = (int) &dbgcom_exception_return;
-    memcpy(cur_pos,&ret_eip,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&ret_cs,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&errcode,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&eip,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&cs,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&eflags,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&esp,4);
-    cur_pos+=4;
-    memcpy(cur_pos,&ss,4);
-    cur_pos+=4;
+    cur_pos[0] = ret_eip;
+    cur_pos[1] = ret_cs;
+    cur_pos[2] = errcode;
+    cur_pos[3] = eip;
+    cur_pos[4] = cs;
+    cur_pos[5] = eflags;
+    cur_pos[6] = esp;
+    cur_pos[7] = ss;
+    cur_pos   += 8;
     longjmp(load_state, load_state->__eax);
     }
 
@@ -1262,6 +1256,7 @@ void edi_init(jmp_buf start_state)
   app_cs = a_tss.tss_cs;
   edi.app_base = 0;
   memset(&npx,0,sizeof(npx));
+  save_npx();	/* FIXME!! */
   /* Save all the changed signal handlers */
   oldTRAP = signal(SIGTRAP, dbgsig);
   oldSEGV = signal(SIGSEGV, dbgsig);
