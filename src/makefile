@@ -44,7 +44,7 @@ subs:
 	$(MAKE) -C libemu
 	$(MAKE) -C libm
 	$(MAKE) -C utils
-	$(MAKE) -C docs/kb
+	$(MAKE) -C docs
 	-$(MAKE) -C ../zoneinfo/src
 	$(MAKE) -f makempty
 
@@ -58,7 +58,7 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C stub clean
 	$(MAKE) -C dxe clean
 	$(MAKE) -C mkdoc clean
-	$(MAKE) -C docs/kb clean
+	$(MAKE) -C docs clean
 	-$(MAKE) -C ../zoneinfo/src clean
 	$(MAKE) -f makempty clean
 		./misc.exe rm makemake.exe copyrite.exe misc.exe
