@@ -1,4 +1,4 @@
-@node Changes in 2.03, , Changes in 2.02, What Changed
+@node Changes in 2.03, Changes in 2.04, Changes in 2.02, What Changed
 @section Changes in 2.03
 
 Here is a list of changes from DJGPP V2.02 to V2.03
