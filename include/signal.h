@@ -17,6 +17,7 @@ extern "C" {
 #define SIGILL	290
 #define SIGSEGV	291
 #define SIGTERM	292
+#define SIGINT  295
 
 #define SIG_DFL ((void (*)(int))(0))
 #define SIG_ERR	((void (*)(int))(1))
@@ -37,7 +38,7 @@ void	(*signal(int _sig, void (*_func)(int)))(int);
 
 #define SIGALRM	293
 #define SIGHUP	294
-#define SIGINT  295
+/* SIGINT is ansi */
 #define SIGKILL	296
 #define SIGPIPE	297
 #define SIGQUIT	298
