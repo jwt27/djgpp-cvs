@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_fcntl_h_
 #define __dj_include_fcntl_h_
@@ -70,6 +71,8 @@ int	fcntl(int _fildes, int _cmd, ...);
 #define _SH_DENYWR	SH_DENYWR
 #define _SH_DENYRD	SH_DENYRD
 #define _SH_DENYNO	SH_DENYNO
+
+extern int __djgpp_share_flags;
 
 #define S_IREAD		S_IRUSR
 #define S_IWRITE	S_IWUSR
