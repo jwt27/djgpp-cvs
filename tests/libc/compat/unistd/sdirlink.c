@@ -42,9 +42,11 @@ int main(void)
    test_success( 7, "c:test1", "c:test1");
    symlink("c:/file", "c:/linkfile");
    test_success( 8, "c:/linkfile", "c:/linkfile");
-   remove("c:/linkfile");
    test_success( 9, "c:/djgpp/tests/libc/compat/unistd/file1", 
                     "c:/djgpp/tests/libc/compat/unistd/file1");
+   test_success(10, "/dev/env/DJDIR/bin/gcc.exe", "/dev/env/DJDIR/bin/gcc.exe");
+   test_success(11, "/dev/c/linkfile", "/dev/c/linkfile");
+   remove("c:/linkfile");
    printf("Done.\n");
    return 0;
 }
