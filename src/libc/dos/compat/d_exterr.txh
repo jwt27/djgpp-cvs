@@ -334,11 +334,11 @@ int dostrerr(struct DOSERROR *p_error, struct DOSERROR_str *p_str);
 @subheading Description
 
 This function accepts the extended error structure from DOS (e.g., from
-the returned parameter from function @code{dosexterr}, see
+the returned parameter from function @code{dosexterr},
 @pxref{dosexterr}) and returns the strings which describes that error
 structure in the structure pointed to by the second parameter.  This
-function is a DOS analogue of the ANSI function @code{strerror} (see
-@pxref{strerror}), and can be used to print descriptive messages
+function is a DOS analogue of the ANSI function @code{strerror}
+(@pxref{strerror}), and can be used to print descriptive messages
 corresponding to the errors described in the @code{DOSERROR} structure.
 
 For a list of the strings returned for each error number and type, see
@@ -376,7 +376,7 @@ If each value is within the limits of valid error codes for that member,
 sets parameter @var{p_str} member fields with the corresponding string
 describing the error code.  If any error code is outside of the valid
 values for that code, sets the corresponding @var{p_str} member to the
-string "Unknown error: " followed by the decimal numeric value of the
+string ``Unknown error: '' followed by the decimal numeric value of the
 error code.
 
 @subheading Portability
