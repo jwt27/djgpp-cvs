@@ -1,0 +1,73 @@
+@node biosdisk, bios
+@subheading Syntax
+
+@example
+#include <bios.h>
+
+int biosdisk(int cmd, int drive, int head, int track,
+	     int sector, int nsects, void *buffer);
+@end example
+
+@subheading Description
+
+This function interfaces with the BIOS disk sevice (interrupt 0x13).
+Please refer to a BIOS reference manual for detailed information about
+the parameters of this call.  All known calls are supported.  A sector
+size of 512 bytes is assumed.
+
+@table @asis
+@item 0 - reset disk subsystem
+@item 1 - get disk subsystem status
+@item 2 - read one or more sectors
+@item 3 - write one or more sectors
+@item 5 - format a track
+@item 6 - format back track
+@item 7 - format drive
+@item 8 - get drive parameters
+@item 9 - initialize drive parameters
+@item 10 - read long sectors
+@item 11 - write long sectors
+@item 12 - seek to cylinder
+@item 13 - alternate fixed disk reset
+@item 14 - read test buffer
+@item 15 - write test buffer
+@item 16 - test for drive ready
+@item 17 - recalibrate drive
+@item 18 - controller RAM diagnostic
+@item 19 - controller drive diagnostic
+@item 20 - controller internal diagnostic
+@item 15 - read fixed disk type
+@item 22 - read disk change line status
+@item 23 - set DASD type (pass dasd in @var{nsects})
+@item 24 - set media type for format
+@item
+@end table
+
+The first request with more sectors than will fit in the transfer
+buffer will cause a DOS buffer to be allocated.  This buffer is
+automatically freed when your application exits.  Since this buffer is
+big enough to hold 18 sectors, requests for more sectors than that
+will fail.
+
+Request eight returns values in buffer as follows:
+
+@table @asis
+@item byte 0 = sectors per track (bits 0..5) and top two bits of cylinder (in bits 6..7)
+@item byte 1 = cyliders (bits 0..7)
+@item byte 2 = number of drives
+@item byte 3 = number of heads
+@item
+@end table
+
+@subheading Return Value
+
+The value of AH returned by the BIOS.
+
+@subheading Example
+
+@example
+char buffer[512];
+if (biosdisk(2, 0x80, 0, 0, 0, 1, buffer))
+  error("disk");
+@end example
+
