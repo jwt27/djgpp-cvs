@@ -8,13 +8,15 @@
 #include <string.h>
 #include <errno.h>
 
-void
+static const char env_delim = '~';
+
+int
 _put_path(const char *path)
 {
-  _put_path2(path, 0);
+  return _put_path2(path, 0);
 }
 
-void
+int
 _put_path2(const char *path, int offset)
 {
   int o = __tb+offset;
@@ -47,6 +49,71 @@ _put_path2(const char *path, int offset)
       path = p + 6;
       space -= 2;
     }
+    else if (strncmp(p+5, "env", 3) == 0
+             && (p[8] == '/' || p[8] == '\\') && p[9])
+    {
+      /* /dev/env/FOO/bar: expand env var FOO and generate %FOO%/bar */
+      char *var_name, *d;
+      char *var_value;
+      int new_offset;
+      int use_default = 1;
+      int c;
+
+      p += 9;           /* point to the beginning of the variable name */
+      var_name = alloca(strlen (p) + 1);
+      for (d = var_name; *p && *p != '/' && *p != '\\'; *d++ = *p++)
+        if (*p == env_delim)
+        {
+          if (p[1] == env_delim)      /* two ~ in a row mean a literal ~ */
+            p++;
+          else
+            break;
+        }
+      *d = '\0';
+      var_value = getenv(d = var_name);
+      if (var_value && *var_value)
+      {
+        /* The value of the env var can include special constructs
+           like /dev/x/foo or even a reference to another env var, so
+           we need to recursively invoke ourselves.  */
+        new_offset = _put_path2(var_value, offset);
+        space -= new_offset - offset;
+        o += new_offset - offset;
+        use_default = 0;
+      }
+      if (*p == env_delim)    /* use or skip the default value if present */
+      {
+        for (++p; *p; p++)
+        {
+          if (*p == env_delim)
+          {
+            if (p[1] == env_delim)
+              p++;
+            else
+              break;
+          }
+          if (use_default)
+            *d++ = *p;
+        }
+        if (use_default)
+        {
+          *d = '\0';
+          /* The default value may use special constructs as well.  */
+          new_offset = _put_path2(var_name, offset);
+          space -= new_offset - offset;
+          o += new_offset - offset;
+        }
+        if (*p == env_delim)	/* a luser could forget the trailing '~' */
+          p++;
+      }
+
+      /* if the rest of path begins with a slash, remove the trailing
+         slash in the transfer buffer */
+      if ((*p == '/' || *p == '\\') && o-1 >= __tb+offset
+          && ((c = _farnspeekb(o-1)) == '/' || c == '\\'))
+        o--;
+      path = p;
+    }
     else if (p[5])
       path = p + 5;
   }
@@ -72,4 +139,5 @@ _put_path2(const char *path, int offset)
 
   /* null terminate it */
   _farnspokeb(o, 0);
+  return o - __tb;
 }

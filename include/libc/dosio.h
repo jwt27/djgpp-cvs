@@ -21,8 +21,8 @@ int __doserr_to_errno(int doserr);
 
 /* puts "path" in the transfer buffer, fixing
    unix-allowed multi-slashes */
-void _put_path(const char *_path);
-void _put_path2(const char *_path, int _offset);
+int _put_path(const char *_path);
+int _put_path2(const char *_path, int _offset);
 
 /* Convenience functions for setting up transfers */
 

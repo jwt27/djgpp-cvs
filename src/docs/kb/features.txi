@@ -195,6 +195,12 @@ converted to the DOS @file{@var{x}:/} form; this is required for running
 some Unix shell scripts which take apart the @code{PATH} variable where
 colons separate directories.
 
+In addition, file names which begin with @file{/dev/env/} are expanded
+using the environment variables.  For example, @file{/dev/env/DJDIR}
+expands into the full path name of the top DJGPP installation directory,
+since the environment variable @code{DJDIR} has that directory as its
+value.
+
 @item Filesystem extensions.
 
 @cindex Filesystem extensions facility

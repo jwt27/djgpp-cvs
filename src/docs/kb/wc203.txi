@@ -258,3 +258,12 @@ code, the value of the global variable @code{_8087} is now set by the
 startup code according to the environment override: 3 if @code{387} is
 set to @samp{y}, 0 otherwise.
 
+@findex _put_path
+@findex _put_path2
+@cindex environment variables, in file names
+You can use the special @file{/dev/env/foo/} construct in file names
+to expand it into the value of the environment variable @code{foo}
+at run time.  @file{/dev/env/foo~bar~} will expand to @file{bar} if
+@code{foo} is undefined, or if its value is empty.
+
+
