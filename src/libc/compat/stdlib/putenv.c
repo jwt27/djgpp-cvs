@@ -1,7 +1,9 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <libc/bss.h>
@@ -35,7 +37,7 @@ static int putenv_bss_count = -1;
 unsigned __environ_changed = 1;
 
 int
-putenv(const char *val)
+putenv(char *val)
 {
   int vlen = strlen(val);
   char *epos = strchr(val, '=');
@@ -99,6 +101,7 @@ putenv(const char *val)
 	if (environ[eindex] == 0)
 	{
 	  environ[eindex] = oval;
+	  errno = ENOMEM;
 	  return -1;
 	}
 	if (vlen > olen)
@@ -120,7 +123,10 @@ putenv(const char *val)
     emax += 10;
     enew = (char **)malloc((emax+1) * sizeof(char *));
     if (enew == 0)
+    {
+      errno = ENOMEM;
       return -1;
+    }
     memcpy(enew, environ, ecount * sizeof(char *));
     /* If somebody set environ to another array, we can't
        safely free it.  Better leak memory than crash.  */
@@ -132,7 +138,10 @@ putenv(const char *val)
 
   environ[ecount] = (char *)malloc(vlen+1);
   if (environ[ecount] == 0)
+  {
+    errno = ENOMEM;
     return -1;
+  }
   strcpy(environ[ecount], val);
 
   ecount++;
