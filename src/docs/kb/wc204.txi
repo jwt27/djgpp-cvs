@@ -829,3 +829,7 @@ the @file{/dev} prefix on DOS device names if possible since the behavior
 will change if the directory exists (and file operations which use the
 name will be slower).  You should avoid using a @file{/dev} directory
 to avoid conflicts.
+
+@findex ctime@r{, and calls to @code{getenv}}
+Fix caching when environment variable TZ is not set.  Prevents many calls to
+getenv() which are not needed.
