@@ -250,6 +250,10 @@ EOVERFLOW -- Value too large.  @code{filelength} can assign this to
 (@pxref{filelength}).  @code{lfilelength} can assign this to @code{errno}
 when a file's length is larger than @math{2^63-1} (@pxref{lfilelength}).
 
+@item 41
+
+EILSEQ -- Invalid or incomplete multibyte or wide character.
+
 @end table
 
 
