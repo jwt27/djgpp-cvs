@@ -170,7 +170,7 @@ void num_s2v(void *addr, char *buf, int max)
 struct {
   char *short_name;
   char *long_name;
-  int offset_of_field;
+  unsigned long offset_of_field;
   PerFunc val2string;
   PerFunc string2val;
   int max;

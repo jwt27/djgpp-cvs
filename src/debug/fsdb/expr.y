@@ -95,7 +95,7 @@ static int
 yylex ()
 {
   char *p, save;
-  int i;
+  size_t i;
   static struct {
     char c1, c2;
     int token;

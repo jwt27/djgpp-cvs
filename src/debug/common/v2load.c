@@ -245,9 +245,9 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
     return -1;
   if(read_section(pf, client_ds, data_foffset, data_soffset, data_size) )
     return -1;
-  for (i=0; i+3<bss_size; i+= 4)
+  for (i=0; i+3<(signed)bss_size; i+= 4)
     _farpokel(client_ds, bss_soffset+i, 0);
-  for (; i<bss_size; i++)
+  for (; i<(signed)bss_size; i++)
     _farpokeb(client_ds, bss_soffset+i, 0);
 
   close(pf);

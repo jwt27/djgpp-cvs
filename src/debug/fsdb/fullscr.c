@@ -1456,7 +1456,7 @@ redraw (int first)
 	name = syms_val2name (breakpoint_table[b].addr, &delta);
 	if (name[0] != '0')
 	{
-	  if (delta && strlen (name) < width)
+	  if (delta && (int)strlen (name) < width)
 	    sprintf (buf, " %s+%#lx", name, delta);
 	  else
 	    sprintf (buf, " %-*s", width, name);
@@ -2013,7 +2013,7 @@ redraw (int first)
 	  if (evaluate (watch_pane_text[i], &val, &errtxt))
 	    {
 	      valtxt = errtxt;
-	      if (strlen (errtxt) > width - 5)
+	      if ((int)strlen (errtxt) > width - 5)
 		{
 		  valtxt = alloca (width - 4);
 		  strncpy (valtxt, errtxt, width - 4);
