@@ -1,6 +1,8 @@
 /* Testsuite for symlink() */
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define LINK_CONT "whatever.file"

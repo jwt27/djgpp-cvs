@@ -6,17 +6,19 @@
  *   4. Real file in symlinked directory
  *   5. Symlink in symlinked directory
  *   6. Real file in a symlink subdir in a symlink subdir
+ *   7. Root directory / or \
  * Any unhandled cases are more than welcome.
  *
  */
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <libc/symlink.h>
 #include <sys/stat.h>
 
-static void test_success(int num, const char * slink, const char * expect);
+static void test_success(const char * slink, const char * expect);
 
 int main(void)
 {
@@ -33,26 +35,29 @@ int main(void)
        exit(1);
    }
    printf("Running __solve_dir_symlink() testsuite:\n");
-   test_success( 1, "test1", "test1");
-   test_success( 2, "test1/", "test1");
-   test_success( 3, "dir1/test1", "dir1/test1");
-   test_success( 4, "dirtest/file1", "dir1/file1");
-   test_success( 5, "dirtest/test1", "dir1/test1");
-   test_success( 6, "dirtest/test6/file", "dir1/dir2/file");
-   test_success( 7, "c:test1", "c:test1");
+   test_success("test1", "test1");
+   test_success("test1/", "test1");
+   test_success("dir1/test1", "dir1/test1");
+   test_success("dirtest/file1", "dir1/file1");
+   test_success("dirtest/test1", "dir1/test1");
+   test_success("dirtest/test6/file", "dir1/dir2/file");
+   test_success("c:test1", "c:test1");
    symlink("c:/file", "c:/linkfile");
-   test_success( 8, "c:/linkfile", "c:/linkfile");
-   test_success( 9, "c:/djgpp/tests/libc/compat/unistd/file1", 
-                    "c:/djgpp/tests/libc/compat/unistd/file1");
-   test_success(10, "/dev/env/DJDIR/bin/gcc.exe", "/dev/env/DJDIR/bin/gcc.exe");
-   test_success(11, "/dev/c/linkfile", "/dev/c/linkfile");
+   test_success("c:/linkfile", "c:/linkfile");
+   test_success("c:/djgpp/tests/libc/compat/unistd/file1", 
+                "c:/djgpp/tests/libc/compat/unistd/file1");
+   test_success("/dev/env/DJDIR/bin/gcc.exe", "/dev/env/DJDIR/bin/gcc.exe");
+   test_success("/dev/c/linkfile", "/dev/c/linkfile");
+   test_success("/", "/");
+   test_success("\\", "\\");
    remove("c:/linkfile");
    printf("Done.\n");
    return 0;
 }
 
-static void test_success(int num, const char * slink, const char * expect)
+static void test_success(const char * slink, const char * expect)
 {
+   static int num = 1;
    char real_name[FILENAME_MAX + 1];
    char real_fixed[FILENAME_MAX + 1];
    char expect_fixed[FILENAME_MAX + 1];
@@ -74,6 +79,6 @@ static void test_success(int num, const char * slink, const char * expect)
       fprintf(stderr, "It returns %s\n", real_fixed);
       exit(1);
    }
-   printf("Test %d passed\n", num);
+   printf("Test %d passed\n", num++);
 }
 
