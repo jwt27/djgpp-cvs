@@ -1,8 +1,8 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* This is file RANDOM.C */
 /* This file may have been modified by DJ Delorie (Jan 1995).  If so,
-** these modifications are Coyright (C) 1993 DJ Delorie, 24 Kirsten Ave,
-** Rochester NH, 03867-2954, USA.
+** these modifications are Coyright (C) 1993 DJ Delorie, 334 North Rd,
+** Deerfield NH 03037-1110
 */
 
 /*

@@ -4,7 +4,7 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
-** Copyright (C) 1993 DJ Delorie, 24 Kirsten Ave, Rochester NH 03867-2954
+** Copyright (C) 1993 DJ Delorie, 334 North Rd, Deerfield NH 03037-1110
 **
 ** This file is distributed under the terms listed in the document
 ** "copying.dj", available from DJ Delorie at the address above.
