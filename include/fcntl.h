@@ -126,6 +126,7 @@ extern int __djgpp_share_flags;
 unsigned _get_volume_info (const char *_path, int *_max_file_len, int *_max_path_len, char *_filesystype);
 char _use_lfn (const char *_path);
 char *_lfn_gen_short_fname (const char *_long_fname, char *_short_fname);
+int _is_DOS83 (const char *_fname);
 
 #define _LFN_CTIME	1
 #define _LFN_ATIME	2
