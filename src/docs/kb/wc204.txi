@@ -240,3 +240,8 @@ format.
 @pindex djasm@r{, new executable header offset}
 @code{djasm} now sets the offset of new executable field in the header
 of executables to zero (meaning not used).
+
+@pindex djasm@r{, space allocation with .union}
+Allow one to allocate space in @code{djasm} using @code{.union}
+(instead of @code{.struct}) when using a union.  As there is no
+checking, @code{.struct} and @code{.union} are interchangeable.
