@@ -9,7 +9,7 @@ int lchown(const char *file, int owner, int group);
 
 @subheading Description
 
-This function does nothing under MS-DOS
+This function does nothing under MS-DOS.
 
 @subheading Return Value
 
