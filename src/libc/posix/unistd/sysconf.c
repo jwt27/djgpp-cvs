@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <errno.h>
@@ -21,6 +22,7 @@ sysconf(int name)
   case _SC_STREAM_MAX:	return _POSIX_STREAM_MAX;
   case _SC_TZNAME_MAX:	return TZNAME_MAX;
   case _SC_VERSION:	return _POSIX_VERSION;
+  case _SC_V6_ILP32_OFF32: return _POSIX_V6_ILP32_OFF32;
 
   default:
     errno = EINVAL;
