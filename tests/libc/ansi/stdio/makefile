@@ -18,6 +18,7 @@ SRC += printf.c
 SRC += printf2.c
 SRC += sscanf.c
 SRC += sscanf2.c
+SRC += sscanf3.c
 SRC += tmpnam.c
 SRC += tremove.c
 SRC += tscanf.c

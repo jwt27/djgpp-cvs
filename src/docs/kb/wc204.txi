@@ -1039,3 +1039,9 @@ A stack overflow handler was added.
 
 @vindex math_errhandling@r{ added}
 @code{math_errhandling} was added.
+
+@findex scanf@r{, and assignment suppression}
+A bug was fixed in the @code{scanf} family of functions,
+when suppressing assignment of conversions to variables.
+Previously the @code{scanf} family of functions could return
+a match failure at EOF instead of @code{EOF}.

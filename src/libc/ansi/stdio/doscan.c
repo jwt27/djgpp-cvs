@@ -144,7 +144,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       }
     }
     if (ch == '\0')
-      return(-1);
+      return(EOF);
 
     if (ch == 'n')
     {
@@ -167,12 +167,12 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
 	       &fileended))
     {
       if (ptr)
-        nmatch++;
+	nmatch++;
     }
     else
     {
-      if (fileended && nmatch==0)
-        return(-1);
+      if (fileended)
+        return(EOF);
       return(nmatch);
     }
     break;
@@ -198,7 +198,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     if (ch1 != EOF) nchars++;
     if (ch1 != ch) {
       if (ch1==EOF)
-	return(nmatch? nmatch: -1);
+	return(nmatch? nmatch: EOF);
       scan_ungetc(ch1, iop);
       nchars--;
       return(nmatch);
@@ -351,11 +351,10 @@ _instr(char *ptr, int type, int len, FILE *iop,
        int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), int *eofptr)
 {
   register int ch;
-  register char *optr;
   int ignstp;
+  int matched = 0;
 
   *eofptr = 0;
-  optr = ptr;
   if (type=='c' && len==30000)
     len = 1;
   ignstp = 0;
@@ -369,6 +368,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
   else if (type=='[')
     ignstp = STP;
   while (ch!=EOF && (_sctab[ch & 0xff]&ignstp)==0) {
+    matched = 1;
     if (ptr)
       *ptr++ = ch;
     if (--len <= 0)
@@ -388,10 +388,8 @@ _instr(char *ptr, int type, int len, FILE *iop,
     nchars--;
     *eofptr = 1;
   }
-  if (!ptr)
-    return(1);
-  if (ptr!=optr) {
-    if (type!='c')
+  if (matched) {
+    if (ptr && type!='c')
       *ptr++ = '\0';
     return(1);
   }
@@ -409,11 +407,12 @@ _getccl(const unsigned char *s)
     t++;
     s++;
   }
-  for (c = 0; c < (sizeof _sctab / sizeof _sctab[0]); c++)
+  for (c = 0; c < (sizeof _sctab / sizeof _sctab[0]); c++) {
     if (t)
       _sctab[c] &= ~STP;
     else
       _sctab[c] |= STP;
+  }
   if ((c = *s) == ']' || c == '-') { /* first char is special */
     if (t)
       _sctab[c] |= STP;
