@@ -57,8 +57,9 @@ the extension @file{.exe} isn't given in the command line.
 
 @findex div@r{, and negative arguments}
 @findex ldiv@r{, and negative arguments}
-@code{div} and @code{ldiv} return properly signed remainders for
-negative arguments.
+@findex lldiv@r{, and negative arguments}
+@code{div}, @code{ldiv} and @code{lldiv} return properly signed remainders
+for negative arguments.
 
 @findex remove@r{, and write-protected floppies}
 The function @code{remove} works around a DOS bug, whereby DOS returns a
