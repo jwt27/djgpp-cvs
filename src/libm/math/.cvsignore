@@ -1,0 +1,5 @@
+*.d
+*.def
+*.oh
+targetdep.texi
+
