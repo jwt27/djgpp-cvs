@@ -233,8 +233,8 @@ Added @code{_v2_prog_type} to @file{sys/system.h} and extended @code{symlink} wi
 @code{fread} and @code{fwrite} are documented as returning less than the
 requested size, rather than -1 on error, since they never return
 negative values.
-@code{fread}
-@code{fwrite}
+@findex fread@r{, return value documented}
+@findex fwrite@r{, return value documented}
 
 @code{stub} forcefully closes file descriptors 18 and 19, so that the
 stub and the DPMI server have enough handles to open the swap file and
@@ -394,7 +394,7 @@ frames is computed so that the stack dump will use all the available
 screen area, without scrolling off the visible part.  For example, at
 50-line display, you can have as much as 36 stack frames printed and
 still see the registers and selectors dump, and the exception mnemonic
-that preceed it.
+that precede it.
 
 When stderr is not the console, the number of printed stack frames is
 only limited by the stack size of the running program.
@@ -486,13 +486,6 @@ by default.  The @code{__OPENDIR_FIND_HIDDEN} bit of the
 files/directories from the search.
 @findex opendir
 @findex readdir
-
-@code{getmntent} better supports Windows NT and doesn't cause DOS to
-return stale data when the disk is changed.  Removable media such as JAZ
-drives are no longer reported when the drive is empty.  Disks written by
-Windows 9X are no longer reported with bogus names taken from LFN
-directory entries (which have their volume label attribute bit set).
-@findex getmntent
 
 @code{opendir}, @code{closedir} and @code{rewinddir} don't lose search
 handles anymore when long file names are supported.  @code{rewinddir}

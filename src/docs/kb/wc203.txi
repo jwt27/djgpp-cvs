@@ -131,7 +131,7 @@ code in the @code{argv[]} array is now correct in these cases.
 @code{textcolor} and @code{textbackground} now support the 16 background
 colors mode (e.g., after a call to @code{intensevideo}).  Previously,
 @code{textbackground} would ignore the high intensity color bit in its
-argument, and @code{textcolor} would clobber thatt bit sometimes.
+argument, and @code{textcolor} would clobber that bit sometimes.
 @findex textcolor
 @findex textbackground
 
@@ -501,7 +501,7 @@ The @code{tcgetpgrp} and @code{tcsetpgrp} are now provided in the
 library.
 
 @findex realloc@r{, crashes when memory is exhausted}
-@code{realloc} no longer crashes when the avialable virtual memory is
+@code{realloc} no longer crashes when the available virtual memory is
 not enough to satisfy the reallocation request.
 
 @findex symlink@r{, source and target in different directories}
@@ -697,7 +697,7 @@ manuals require.  This affects functions @code{sin}, @code{cos},
 The emulation of instructions @code{FST} and @code{FSTP} that store
 FP registers into @code{float} or @code{double} variables, now correctly
 round the stored value according to the current rounding mode.
-Previoulsy, the stored value was always chopped (truncated) at the last
+Previously, the stored value was always chopped (truncated) at the last
 stored bit of the mantissa.
 @end itemize
 
