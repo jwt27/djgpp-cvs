@@ -363,7 +363,7 @@ raise(int sig)
     return 0;			/* Ignore it */
   if(temp == (SignalHandler)SIG_DFL)
     __djgpp_traceback_exit(sig); /* this does not return */
-  else if((unsigned)temp < 4096 || temp > (SignalHandler)&end)
+  else if((unsigned)temp < 4096)
   {
     err("Bad signal handler, ");
     __djgpp_traceback_exit(sig); /* does not return */
