@@ -228,3 +228,8 @@ Functions @code{rename} and @code{_rename} work on Windows 2000 when the
 file under the new name already exists.  This solves the problems with
 linking DJGPP programs and with running the @code{stubify} utility on
 that OS.
+
+@findex lfilelength@r{, and FAT32}
+The function @code{lfilelength} added with return type @code{long long}
+to support file sizes of up to @math{2^63-2}.
+
