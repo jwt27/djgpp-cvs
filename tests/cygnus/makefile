@@ -33,7 +33,7 @@ RM = rm -f
 
 DEFS     = -D_USE_LIBM_MATH_H -D_HAVE_STDC
 CPPFLAGS = -nostdinc -I$(HERE) -I$(TOP)/../include
-CFLAGS   = $(DEFS) -O2 -g
+CFLAGS   = $(DEFS) -O2 -g -Wall
 LIBS     = $(CRT0) -lm -lc $(LIBGCCA)
 LDFLAGS  = -nostdlib -L$(TOP)/../lib
 
@@ -90,7 +90,7 @@ GEN_VEC_FILES := $(foreach name,$(GEN_VEC_NAMES),$($(name)VEC_FILES))
 
 VEC_OFILES = $(GEN_VEC_FILES:.c=.o)
 
-$(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g
+$(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g -Wall
 
 all: check
 
@@ -119,7 +119,7 @@ $(erfVEC_FILES:vec.c=%.c): tgen/gerf%.exe
 
 tgen/g%vec.exe: tgen/g%vec.cpp tgen/genmathv.h
 	$(MAKE) -C $(@D) $(@F) TOP='$(TOP)' \
-	 CFLAGS='$(CFLAGS) -Wall' CPPFLAGS='$(CPPFLAGS) -I./qfloat -I..' \
+	 CFLAGS='$(CFLAGS)' CPPFLAGS='$(CPPFLAGS) -I./qfloat -I..' \
 	 QFLOAT=$(HERE)/tgen/qfloat TEST=$(HERE) MATH=$(TOP)/../lib
 
 mtest.exe: $(OFILES)  $(VEC_OFILES)
