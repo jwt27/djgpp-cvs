@@ -601,7 +601,6 @@ __libc_termios_erase_editline (void)
 	{
 	  /* erase one of "^X" */
 	  __libc_termios_maybe_erase1 ();
-	  --col;
 	}
       __libc_termios_maybe_erase1 ();
       --col;
