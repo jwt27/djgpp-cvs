@@ -20,7 +20,8 @@ have two additional characters before the @code{X}'s.
 
 @subheading Return Value
 
-The resulting filename.
+If a unique name cannot be chosen, @code{NULL} is returned.  Otherwise
+the resulting filename is returned.
 
 @subheading Portability
 
@@ -30,7 +31,10 @@ The resulting filename.
 
 @example
 char template[] = "/tmp/ccXXXXXX";
-mktemp(template);
-FILE *q = fopen(template, "w");
+if (mktemp(template) != NULL)
+  @{
+    FILE *q = fopen(template, "w");
+    @dots{}
+  @}
 @end example
 
