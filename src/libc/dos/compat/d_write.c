@@ -19,7 +19,8 @@
 unsigned int _dos_write(int handle, const void *buffer, unsigned int count, unsigned int *result)
 {
   __dpmi_regs r;
-  unsigned int dos_segment, dos_selector, dos_buffer_size, write_size;
+  int dos_segment;
+  unsigned int dos_selector, dos_buffer_size, write_size;
   const unsigned char *p_buffer;
 
   /* Allocates ~64K or less transfer buffer from DOS */
