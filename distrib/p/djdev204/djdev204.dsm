@@ -1,26 +1,21 @@
 #
 # DSM for djdev 2.04 binaries
-# Written by Richard Dawe <richdawe@bigfoot.com>
 #
 
-dsm-file-version: 1.0
+dsm-file-version: 1.1
 dsm-version: 0.6.0
 dsm-name: djdev204
 
 dsm-author: Richard Dawe
-dsm-author-email: richdawe@bigfoot.com
-dsm-author-web-site: http://www.bigfoot.com/~richdawe/
 
 name: djdev
-version: 2.04 alpha 1
+version: 2.04 beta 1
 type: binaries
 sources-dsm: djlsr204
 manifest: djdev204
 
 short-description: DJGPP Development Kit and Runtime
 license: Mostly the GNU General and Library General Public Licenses with some allowed exceptions - see copying.dj.
-author: DJ Delorie
-author-email: dj@delorie.com
 web-site: http://www.delorie.com/djgpp/
 newsgroup: comp.os.msdos.djgpp
 newsgroup-email-gateway: djgpp@delorie.com
@@ -32,7 +27,7 @@ zip: djdev204.zip
 
 pre-install-readme: readme.1st
 
-replaces: djdev < 2.04 alpha 1
+replaces: djdev < 2.04 beta 1
 requires: DPMI
 
 # For reading docs
