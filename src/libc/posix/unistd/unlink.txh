@@ -17,11 +17,22 @@ Zero on success, nonzero on failure.
 
 @subheading Portability
 
-@portability !ansi, posix
+@port-note posix
+The @sc{posix} specification requires this removal to be delayed until the
+file is no longer open.  Due to problems with the underlying operating
+systems, this implementation of @code{unlink} does not fully comply with
+the specs; if the file you want to unlink is open, you're asking for
+trouble --- how much trouble depends on the underlying OS.  On Windows NT
+(and possibly on Windows 2000 as well), you get the behaviour @sc{posix}
+expects.
+On Windows 9x and Windows ME (and possibly Windows XP as well), the removal
+will simply fail (@code{errno} gets set to @code{EACCES}).  On DOS, removing
+an open file could lead to filesystem corruption if the removed file is
+written to before it's closed.
+@portability !ansi, ~posix
 
 @subheading Example
 
 @example
 unlink("data.txt");
 @end example
-
