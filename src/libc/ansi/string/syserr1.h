@@ -38,3 +38,4 @@ extern char __syserr35[];
 extern char __syserr36[];
 extern char __syserr37[];
 extern char __syserr38[];
+extern char __syserr39[];

@@ -40,3 +40,4 @@ char __syserr35[] = "Invalid seek (ESPIPE)";
 char __syserr36[] = "No such process (ESRCH)";
 char __syserr37[] = "Improper link (EXDEV)";
 char __syserr38[] = "No more files (ENMFILE)";
+char __syserr39[] = "Too many levels of symbolic links (ELOOP)";

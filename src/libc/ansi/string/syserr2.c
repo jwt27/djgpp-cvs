@@ -10,7 +10,7 @@ __syserr15, __syserr16, __syserr17, __syserr18, __syserr19,
 __syserr20, __syserr21, __syserr22, __syserr23, __syserr24,
 __syserr25, __syserr26, __syserr27, __syserr28, __syserr29,
 __syserr30, __syserr31, __syserr32, __syserr33, __syserr34,
-__syserr35, __syserr36, __syserr37, __syserr38
+__syserr35, __syserr36, __syserr37, __syserr38, __syserr39
 };
 
 int __sys_nerr = sizeof(__sys_errlist) / sizeof(__sys_errlist[0]);
