@@ -1499,7 +1499,8 @@ int main(int argc, char **argv)
         if ((i&15) == 15)
         {
           fputc('\n', outfile);
-          fputs(leader, outfile);
+          if (i<bsspc-1)
+            fputs(leader, outfile);
         }
         else
           if (i<bsspc-1)
