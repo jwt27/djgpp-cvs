@@ -24,6 +24,12 @@ EXTRA_FILES += phony_djtar
 
 include $(TOP)/../makefile.prg
 
+native :: $(HOSTBIN)/bin2h.exe
+	$(NOP)
+
+$(HOSTBIN)/bin2h.exe : bin2h.c
+	$(GCC) bin2h.c -o $@
+
 $(BIN)/rem.com : rem.asm
 	$(HOSTBIN)/djasm.exe $^ $@
 
