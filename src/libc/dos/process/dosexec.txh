@@ -172,7 +172,7 @@ already be included in @var{path}.
 
 @subheading Return Value
 
-@xref{spawn*}
+@xref{spawn*}.
 
 @subheading Portability
 
