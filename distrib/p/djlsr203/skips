@@ -7,4 +7,4 @@
 /src\/libc\/stubs\/.*\.s$/ d
 /src\/libc\/stubs\/makefil2$/ d
 /src\/libm\/.*\.def$/ d
-s/\.s$/\.S/
+/CVS/ d
