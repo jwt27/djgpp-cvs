@@ -1,0 +1,18 @@
+@node settimeofday, time
+@subheading Syntax
+
+@example
+#include <time.h>
+
+int settimeofday(struct timeval *tp, ...);
+@end example
+
+@subheading Description
+
+Sets the current GMT time.  For compatibility, a second argument is
+accepted.  @xref{gettimeofday} for information on the structure types.
+
+@subheading Return Value
+
+Zero if the time was set, nonzero on error.
+
