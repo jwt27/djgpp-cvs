@@ -45,5 +45,4 @@ lib/libemu.a
 lib/libg.a
 lib/libm.a
 lib/libpc.a
-lib/specs
 tmp/remove.me
