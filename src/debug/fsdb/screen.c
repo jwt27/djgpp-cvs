@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
@@ -604,10 +605,12 @@ text2attr (char *s)
   s1 = alloca (l);
   s2 = alloca (l);
   if ((cs = strchr (s, ',')))
+  {
     if (stricmp (cs, ", blinking"))
       return -1;
     else
       *cs = 0;
+  }
   if (sscanf (s, "%s on %s", s1, s2) == 2)
     {
       for (f = 0; f < 16; f++)

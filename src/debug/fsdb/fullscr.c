@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* ------------------------------------------------------------------------- */
@@ -395,7 +396,7 @@ save_npx (void)
   asm ("inb	$0xa0, %%al
 	testb	$0x20, %%al
 	jz	1f
-	xorl	%%al, %%al
+	xorb	%%al, %%al
 	outb	%%al, $0xf0
 	movb	$0x20, %%al
 	outb	%%al, $0xa0
@@ -742,6 +743,7 @@ activate_breakpoints (void)
   /* Now handle code breakpoint.  */
   for (b = 0, bep = breakpoint_table; b < breakpoint_count; b++, bep++)
     if (!bep->disabled && bep->type == BP_Code)
+    {
       if (no <= 3)
 	{
 	  bep->saved = 0;
@@ -759,6 +761,7 @@ activate_breakpoints (void)
 	      write_child (bep->addr, &int03, 1);
 	    }
 	}
+    }
 }
 /* ------------------------------------------------------------------------- */
 /* Un-patch code.  This means restore the instruction under any "Int 3"
@@ -1105,6 +1108,7 @@ step (KIND_TYPE kind)
     case R_Step:
       /* If we are referencing memory we should swap-in the user screen.  */
       if (strchr (inst, '['))
+      {
 	/* Assume that all access to code and stack segments are safe.
 	   This should hold unless you do something extra-ordinarily dirty.  */
 	if (((a_tss.tss_ds == a_tss.tss_cs) || (a_tss.tss_ds == a_tss.tss_ss))
@@ -1119,6 +1123,7 @@ step (KIND_TYPE kind)
 	  /* Nothing.  */;
 	else
 	  user_screen ();
+      }
       a_tss.tss_eflags |= 0x0100;
       edi.dr[7] = 0;
       go (0);
@@ -1208,11 +1213,13 @@ step (KIND_TYPE kind)
 	  {
 	  case BP_Code:
 	    if (!breakpoint_table[no].temporary)
+	    {
 	      if (breakpoint_table[no].condition)
 		message (CL_Msg, "Condition \"%s\" satisfied",
 			 breakpoint_table[no].condition);
 	      else
 		message (CL_Info, "Code breakpoint hit");
+	    }
 	    break;
 	  case BP_Write:
 	    message (CL_Msg, "Data write breakpoint at 0x%08lx triggered by previous instruction",
@@ -1296,11 +1303,13 @@ stack_trace (word32 *eip, word32 *esp, word32 *ebp)
   else
     {
       if (! (eipcode[0] == 0x89 && eipcode[1] == 0xe5))
+      {
 	 /* We are *not* looking at `Mov Ebp,Esp'.  */
 	if (*ebp < 0x80000000UL && *ebp >= *esp && valid_addr (*ebp, 8))
 	  *esp = *ebp;
 	else
 	  return 0;
+      }
       else
 	if (!valid_addr (*esp, 8))
 	  return 0;
@@ -1475,10 +1484,12 @@ redraw (int first)
 
 	name = syms_val2name (breakpoint_table[b].addr, &delta);
 	if (name[0] != '0')
+	{
 	  if (delta && strlen (name) < width)
 	    sprintf (buf, " %s+%#lx", name, delta);
 	  else
 	    sprintf (buf, " %-*s", width, name);
+	}
 	else
 	  buf[0] = '\0';
 	putl (x, y++, width , buf);
@@ -1650,6 +1661,7 @@ redraw (int first)
 	    break;
 	  case 2:
 	    if (npx.reg[i].exponent == 0x7fff)
+	    {
 	      if (npx.reg[i].sig3 == 0x8000
 		  && npx.reg[i].sig2 == 0x0000
 		  && npx.reg[i].sig1 == 0x0000
@@ -1657,6 +1669,7 @@ redraw (int first)
 		strcat (dstr, "Inf");
 	      else
 		strcat (dstr, "NaN");
+	    }
 	    else
 	      dstr = "Special";
 	    break;
@@ -1690,6 +1703,7 @@ redraw (int first)
     while (valid_instaddr (eip))
       {
 	if (no++ >= 0)
+	{
 	  if (y > toplines)
 	    {
 	      stack_dump_more = 1;
@@ -1722,6 +1736,7 @@ redraw (int first)
 	      stack_dump_pos[stack_dump_last = y - 1] = eip;
 	      putl (1, y++, width, buf);
 	    }
+	}
 
 	if (!stack_trace (&eip, &esp, &ebp))
 	  break;
@@ -2270,6 +2285,7 @@ setup_restore (int booting)
 		    goto error;
 		  fgets (cond, sizeof (cond), f);
 		  if (evaluate (addr, &res, &errtxt))
+		  {
 		    if (booting)
 		      fprintf (stderr,
 			       "Ignoring out-of-date breakpoint at %s.\n",
@@ -2278,6 +2294,7 @@ setup_restore (int booting)
 		      message (CL_Error,
 			       "Ignoring out-of-date breakpoint at %s",
 			       addr);
+		  }
 		  else
 		    {
 		      b = set_breakpoint (a[0], a[2], res);
@@ -2466,10 +2483,12 @@ standardmovement (int key, int count, int lines, int *origin)
     case K_Down:
     case K_EDown:
       if (no < count - 1)
+      {
 	if (pane_pos == lines - 1)
 	  (*origin)++;
 	else
 	  pane_pos++;
+      }
       break;
     case K_Home:
     case K_EHome:
@@ -2728,10 +2747,12 @@ breakpoint_pane_command (int key)
     case K_Down:
     case K_EDown:
       if (!last)
+      {
 	if (pane_pos < bottomlines / 2 - 1)
 	  pane_pos++;
 	else
 	  breakpoint_origin++;
+      }
       break;
     case K_Control_G:
       if (b != -1)

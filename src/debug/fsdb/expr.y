@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 %{
 
@@ -10,6 +11,7 @@
 #endif
 #define YYSTYPE long
 
+int valid_addr(word32 addr, int len);
 
 #ifdef TEST
 unsigned long syms_name2val (char *);

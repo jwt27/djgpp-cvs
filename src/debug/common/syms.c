@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
 ** Copyright (C) 1993 DJ Delorie, 24 Kirsten Ave, Rochester NH 03867-2954
@@ -21,6 +23,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <io.h>
+#include <libc/unconst.h>
 
 #include <debug/tss.h>
 #include <coff.h>
@@ -287,7 +290,7 @@ static void process_coff(FILE *fd, long ofs)
         {
           files[f-1].lines = l;
         }
-        if (l_pending)
+        if (l_pending && f_aux[i+1].x_sym.x_misc.x_lnsz.x_lnno)
         {
           int lbase = f_aux[i+1].x_sym.x_misc.x_lnsz.x_lnno - 1;
           int i2;
@@ -511,7 +514,11 @@ static int lookup_sym_byname(const char *name, int idx, int ofs)
     if (c == 0)
       c = strncmp(name, syms_byname[mid].name+ofs, idx);
     if (c == 0)
+    {
+      while (mid && strncmp(name, syms_byname[mid-1].name+ofs, idx) == 0)
+	mid--;
       return mid;
+    }
     if (c < 0)
       above = mid;
     else
@@ -529,7 +536,8 @@ unsigned long syms_name2val(const char *name)
   undefined_symbol = 0;
 
   idx = 0;
-  sscanf(name, "%s", name);
+  cp = unconst(name, char *);
+  sscanf(cp, "%s", cp);
 
   if (name[0] == 0)
     return 0;
