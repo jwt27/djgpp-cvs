@@ -77,6 +77,76 @@ functions, it should include @file{libc/farptrgs.h} instead of
 @sc{gs} register instead of @sc{fs}, to avoid clobbering @sc{fs} which
 might be used by the application.
 
+@subsection Assertions
+@cindex Assertions
+
+Assertions should not generally be used in library code.  To catch an error,
+the code should check for the error and return an error code.  Using
+@code{assert} (@pxref{assert, , assert, libc}) causes the debug
+and final release (@samp{NDEBUG} defined) versions of the code to differ,
+so that the final release is not as well tested.
+
+@subsection Coping with restarted programs
+@cindex coping with restarted programs
+@cindex @code{__bss_count} and restarted programs
+
+Uninitialised static and global data is placed in the @code{.bss} section.
+@dfn{BSS} stands for Block Started by Symbol.  The @code{.bss} section
+is zeroed by the start-up code.
+
+Initialised static and global data is placed in the @code{.data} section.
+
+So it would seem that one can rely on static and global variables being
+initialised to zero or some specified value.  Unfortunately this may not
+be true, where programs are unexecuted and then restarted ---
+Emacs is the primary example.
+
+Part of Emacs's build procedure is that Emacs unexecutes (dumps) itself to
+a file.  The dumping process records the value of each variable at
+the time of the dump to a file.  The symbols in the @code{.bss} section
+are moved to the @code{.data} section.  The values at the time of the dump
+are recorded, not the original values.  So if the library code is
+relying on the value of a static or global variable, e.g. to see whether
+it needs to initialise some device or allocate memory, then it may break
+when the program restarts.
+
+Fortunately there is a way that library code can detect a restart.
+The variable @code{__bss_count} contains a counter of the number of times
+that the program has been started --- it is incremented by the start-up
+code.  A routine can store @code{__bss_count} and then check whether it needs
+to initialise its data by comparing @code{__bss_count} with its stored value.
+Here is an example:
+
+@example
+#include <string.h>
+#include <libc/bss.h>
+
+extern int do_something_interesting (const int n);
+
+static int my_bss_count = -1;
+static int my_array[20];
+
+int
+myfunc (const int n)
+@{
+  if (my_bss_count != __bss_count)
+    @{
+      my_bss_count = __bss_count;
+      memset(my_array, 0, sizeof(my_array));
+    @}
+
+  if (n >= 20)
+    return 0;
+
+  if (!my_array[n])
+    my_array[n] = do_something_interesting(n);
+
+  return(my_array[n]);
+@}
+@end example
+
+For more details see @file{src/libc/crt0/crt1.c} in the DJGPP libc sources.
+
 @section Texinfo documentation
 
 @subsection Formatting
