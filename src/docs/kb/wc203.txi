@@ -448,3 +448,7 @@ values for such small timers.  The global variable
 granularity used by @code{setitimer}, in case an application reprograms
 the timer chip to run with a non-standard frequency.
 
+@findex ftruncate@r{, and file pointer position}
+@code{ftruncate} now leaves the file pointer at the same byte position
+as it were before the function was called.
+

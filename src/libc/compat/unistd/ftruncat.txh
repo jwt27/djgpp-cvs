@@ -4,13 +4,14 @@
 @example
 #include <unistd.h>
 
-int ftruncate(int file, off_t where);
+int ftruncate(int handle, off_t where);
 @end example
 
 @subheading Description
 
-This function truncates @var{file} at @var{where} length.  This only
-works if the file is closed right after this call. 
+This function truncates the file open on @var{handle} at byte position
+@var{where}.  The file pointer associated with @var{handle} is not
+changed.
 
 @subheading Return Value
 
