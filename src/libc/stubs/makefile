@@ -1,16 +1,18 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
-.PHONY : none all
-
 TOP = ..
+include $(TOP)/../makefile.inc
 
-all : makefile.oh
-	@rem.com
+STUBH = $(TOP)/../../include/libc/stubs.h
 
-makefile.oh : $(TOP)/../../include/libc/stubs.h gen.exe makefile
-	gen.exe $<
+all :: makefil2
+	$(MAKE) -f makefil2
 
-gen.exe : gen.c
-	gcc -s gen.c -o gen.exe
+makefil2 : mkstubs.exe  $(STUBH) makefile
+	./mkstubs.exe $(STUBH)
 
-clean :
-	-rm -f *.o makefile.oh
+mkstubs.exe : mkstubs.c
+	$(GCC) mkstubs.c -o mkstubs.exe
+
+clean ::
+	@-$(MISC) rm *.S makefil2 mkstubs.exe

@@ -1,3 +1,4 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=..
@@ -9,8 +10,12 @@ SRC += wild.c
 
 include $(TOP)/../makefile.inc
 
+#relax error checking
+XGCC=$(XLGCC)
 
 e : $(BIN)/symify.exe
+	$(NOP)
 
 $(BIN)/symify.exe : $C symify.o $(LIB)/libdbg.a $L
-	gcc -s -o $@ symify.o $(LIB)/libdbg.a 
+	$(LINK)
+	$(EXE)

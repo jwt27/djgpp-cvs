@@ -1,8 +1,9 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
-CFLAGS = -O2 -Wimplicit
-LDFLAGS = -s
 
-OBJS = \
+TOP=..
+
+EOBJS = \
 	fileio.o \
 	ps.o \
 	screenio.o \
@@ -11,16 +12,11 @@ OBJS = \
 	ifset.o \
 	$E
 
-../../../bin/texi2ps.exe: $(OBJS)
-	gcc $(LDFLAGS) -o $@ $(OBJS)
+include $(TOP)/../makefile.inc
+XGCC = $(XLGCC)
 
-%.o: %.c
-	gcc -MMD -c $(CFLAGS) $<
+all :: $(BIN)/texi2ps.exe
 
-clean:
-	-rm -f *.o *.exe *.d
-
-DEPS := $(wildcard *.d)
-ifneq ($(DEPS),)
-include $(DEPS)
-endif
+$(BIN)/texi2ps.exe: $(C) $(EOBJS) $(L)
+	$(LINK)
+	$(EXE)
