@@ -21,6 +21,7 @@
 #include <sys/exceptn.h>
 #include <sys/nearptr.h>		/* For DS base/limit info */
 #include <libc/internal.h>
+#include <stubinfo.h>
 
 #define err(x) _write(STDERR_FILENO, x, sizeof(x)-1)
 
@@ -605,7 +606,7 @@ __djgpp_set_ctrl_c(int enable_sigs)
    about a DPMI program exit, but NTVDM does not use this information.)
 
    To work around that, we ask NTVDM to record a valid PSP before we
-   exit.  We do that by invoking a PM Int 21h, function 51h, which gets
+   exit.  We do that by invoking a PM Int 21h, function 50h, which sets
    the PM selector for the PSP (which triggers NTVDM to record the
    correct internal value).  We do that just before exiting, to make 
    sure that even an application which crashes (e.g., due to SIGSEGV 
@@ -615,17 +616,21 @@ __djgpp_set_ctrl_c(int enable_sigs)
    (To play it safe in the face of non-DJGPP DPMI programs and old
    DJGPP programs, we also restore the PSP in dosexec.c, which see.)
 
-   Note that we invoke here a PM Int 21, which returns the PM selector of
+   Note that we invoke here a PM Int 21, which sets the PM selector of
    our PSP.  This is _not_ a call to __dpmi_int ! */
 
 void
 __maybe_fix_w2k_ntvdm_bug(void)
 {
-  if (_os_trueversion == 0x532) /* NT or Windows 2000? */
+  if (_os_trueversion == 0x532) /* Windows NT, 2000 or XP? */
   {
-    /* Protected mode call to GetPSP - may return RM PSP if not extended */
-    asm volatile("movb $0x51, %%ah ; int $0x21"
-                  : : : "ax", "bx" );    /* input, output, regs */
+    /* Protected mode call to SetPSP - may destroy RM PSP if not extended */
+    asm volatile("movw %0, %%bx                           \n\
+                  movb $0x50, %%ah                        \n\
+                  int  $0x21                              "
+                  :                               /* output */
+                  : "g" (_stubinfo->psp_selector) /* input */
+                  : "ax", "bx" );                 /* regs */
   }
 }
 
