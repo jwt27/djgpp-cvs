@@ -61,6 +61,7 @@ extern "C" {
 #undef  _POSIX_SAVED_IDS
 #define _POSIX_VDISABLE		-1
 #define _POSIX_VERSION		199009L
+#define _POSIX_V6_ILP32_OFF32	1
 
 #define _SC_ARG_MAX		1
 #define _SC_CHILD_MAX		2
@@ -72,6 +73,7 @@ extern "C" {
 #define _SC_STREAM_MAX		8
 #define _SC_TZNAME_MAX		9
 #define _SC_VERSION		10
+#define _SC_V6_ILP32_OFF32	11
 
 #ifndef _SIZE_T
 __DJ_size_t
