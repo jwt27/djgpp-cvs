@@ -1,0 +1,132 @@
+@subsubsection Set
+
+@c Intel mnemonics
+@opindex SETA
+@opindex SETAE
+@opindex SETB
+@opindex SETBE
+@opindex SETC
+@opindex SETE
+@opindex SETG
+@opindex SETGE
+@opindex SETL
+@opindex SETLE
+@opindex SETNA
+@opindex SETNAE
+@opindex SETNB
+@opindex SETNBE
+@opindex SETNC
+@opindex SETNE
+@opindex SETNG
+@opindex SETNGE
+@opindex SETNL
+@opindex SETNLE
+@opindex SETNO
+@opindex SETNP
+@opindex SETNS
+@opindex SETNZ
+@opindex SETO
+@opindex SETP
+@opindex SETPE
+@opindex SETPO
+@opindex SETS
+@opindex SETZ
+
+@c opcode description
+@opindex Set byte if above
+@opindex Set byte if above or equal
+@opindex Set byte if below
+@opindex Set byte if below or equal
+@opindex Set byte if carry
+@opindex Set byte if equal
+@opindex Set byte if greater
+@opindex Set byte if greater or equal
+@opindex Set byte if less
+@opindex Set byte if less or equal
+@opindex Set byte if not above
+@opindex Set byte if not above or equal
+@opindex Set byte if not below
+@opindex Set byte if not below or equal
+@opindex Set byte if not carry
+@opindex Set byte if not equal
+@opindex Set byte if not greater
+@opindex Set byte if not greater or equal
+@opindex Set byte if not less
+@opindex Set byte if not less or equal
+@opindex Set byte if not overflow
+@opindex Set byte if not parity
+@opindex Set byte if not sign
+@opindex Set byte if not zero
+@opindex Set byte if overflow
+@opindex Set byte if parity
+@opindex Set byte if parity even
+@opindex Set byte if parity odd
+@opindex Set byte if sign
+@opindex Set byte if zero
+
+@c djasm mnemonics
+@opindex seta
+@opindex setae
+@opindex setb
+@opindex setbe
+@opindex setc
+@opindex sete
+@opindex setg
+@opindex setge
+@opindex setl
+@opindex setle
+@opindex setna
+@opindex setnae
+@opindex setnb
+@opindex setnbe
+@opindex setnc
+@opindex setne
+@opindex setng
+@opindex setnge
+@opindex setnl
+@opindex setnle
+@opindex setno
+@opindex setnp
+@opindex setns
+@opindex setnz
+@opindex seto
+@opindex setp
+@opindex setpe
+@opindex setpo
+@opindex sets
+@opindex setz
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item SETA      @tab seta       @tab Set byte if above
+@item SETAE     @tab setae      @tab Set byte if above or equal
+@item SETB      @tab setb       @tab Set byte if below
+@item SETBE     @tab setbe      @tab Set byte if below or equal
+@item SETC      @tab setc       @tab Set byte if carry
+@item SETE      @tab sete       @tab Set byte if equal
+@item SETG      @tab setg       @tab Set byte if greater
+@item SETGE     @tab setge      @tab Set byte if greater or equal
+@item SETL      @tab setl       @tab Set byte if less
+@item SETLE     @tab setle      @tab Set byte if less or equal
+@item SETNA     @tab setna      @tab Set byte if not above
+@item SETNAE    @tab setnae     @tab Set byte if not above or equal
+@item SETNB     @tab setnb      @tab Set byte if not below
+@item SETNBE    @tab setnbe     @tab Set byte if not below or equal
+@item SETNC     @tab setnc      @tab Set byte if not carry
+@item SETNE     @tab setne      @tab Set byte if not equal
+@item SETNG     @tab setng      @tab Set byte if not greater
+@item SETNGE    @tab setnge     @tab Set byte if not greater or equal
+@item SETNL     @tab setnl      @tab Set byte if not less
+@item SETNLE    @tab setnle     @tab Set byte if not less or equal
+@item SETNO     @tab setno      @tab Set byte if not overflow
+@item SETNP     @tab setnp      @tab Set byte if not parity
+@item SETNS     @tab setns      @tab Set byte if not sign
+@item SETNZ     @tab setnz      @tab Set byte if not zero
+@item SETO      @tab seto       @tab Set byte if overflow
+@item SETP      @tab setp       @tab Set byte if parity
+@item SETPE     @tab setpe      @tab Set byte if parity even
+@item SETPO     @tab setpo      @tab Set byte if parity odd
+@item SETS      @tab sets       @tab Set byte if sign
+@item SETZ      @tab setz       @tab Set byte if zero
+@end multitable

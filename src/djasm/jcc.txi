@@ -1,0 +1,155 @@
+@subsubsection Conditional Jump
+
+@c Intel mnemonics
+@opindex JA
+@opindex JAE
+@opindex JB
+@opindex JBE
+@opindex JC
+@opindex JCXZ
+@opindex JECXZ
+@opindex JE
+@opindex JG
+@opindex JGE
+@opindex JL
+@opindex JLE
+@opindex JNA
+@opindex JNAE
+@opindex JNB
+@opindex JNBE
+@opindex JNC
+@opindex JNE
+@opindex JNG
+@opindex JNGE
+@opindex JNL
+@opindex JNLE
+@opindex JNO
+@opindex JNP
+@opindex JNS
+@opindex JNZ
+@opindex JO
+@opindex JP
+@opindex JPE
+@opindex JPO
+@opindex JS
+@opindex JZ
+
+@c opcode description
+@opindex Jump if above
+@opindex Jump if above or equal
+@opindex Jump if below
+@opindex Jump if below or equal
+@opindex Jump if carry
+@opindex CX register is zero
+@opindex ECX register is zero
+@opindex Jump if equal
+@opindex Jump if greater
+@opindex Jump if greater or equal
+@opindex Jump if less
+@opindex Jump if less or equal
+@opindex Jump if not above
+@opindex Jump if not above nor equal
+@opindex Jump if not below
+@opindex Jump if not below nor equal
+@opindex Jump if not carry
+@opindex Jump if not equal
+@opindex Jump if not greater
+@opindex Jump if not greater nor equal
+@opindex Jump if not less
+@opindex Jump if not less nor equal
+@opindex Jump if not overflow
+@opindex Jump if not parity
+@opindex Jump if not sign
+@opindex Jump if not zero
+@opindex Jump if overflow
+@opindex Jump if parity
+@opindex Jump if parity even
+@opindex Jump if parity odd
+@opindex Jump if sign
+@opindex Jump if zero
+
+@c djasm mnemonics
+@opindex ja
+@opindex jae
+@opindex jb
+@opindex jbe
+@opindex jc
+@opindex jcxz
+@opindex jecxz
+@opindex je
+@opindex jg
+@opindex jge
+@opindex jl
+@opindex jle
+@opindex jna
+@opindex jnae
+@opindex jnb
+@opindex jnbe
+@opindex jnc
+@opindex jne
+@opindex jng
+@opindex jnge
+@opindex jnl
+@opindex jnle
+@opindex jno
+@opindex jnp
+@opindex jns
+@opindex jnz
+@opindex jo
+@opindex jp
+@opindex jpe
+@opindex jpo
+@opindex js
+@opindex jz
+
+There are 32 ``Jump if Condition'' instructions.
+The unsuffixed form denotes a jump to an 8-bit relative offset.
+Append the @code{l} suffix for jumps to 16-bit relative offsets.
+There are jumps to 32-bit relative offsets as well, but these
+are not yet implemented in @code{djasm}.
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item JA        @tab ja[l]      @tab Jump if above
+@item JAE       @tab jae[l]     @tab Jump if above or equal
+@item JB        @tab jb[l]      @tab Jump if below
+@item JBE       @tab jbe[l]     @tab Jump if below or equal
+@item JC        @tab jc[l]      @tab Jump if carry
+@item JCXZ      @tab jcxz       @tab CX register is zero [1]
+@item JECXZ     @tab jecxz      @tab ECX register is zero [1]
+@item JE        @tab je[l]      @tab Jump if equal
+@item JG        @tab jg[l]      @tab Jump if greater
+@item JGE       @tab jge[l]     @tab Jump if greater or equal
+@item JL        @tab jl[l]      @tab Jump if less
+@item JLE       @tab jle[l]     @tab Jump if less or equal
+@item JNA       @tab jna[l]     @tab Jump if not above
+@item JNAE      @tab jnae[l]    @tab Jump if not above nor equal
+@item JNB       @tab jnb[l]     @tab Jump if not below
+@item JNBE      @tab jnbe[l]    @tab Jump if not below nor equal
+@item JNC       @tab jnc[l]     @tab Jump if not carry
+@item JNE       @tab jne[l]     @tab Jump if not equal
+@item JNG       @tab jng[l]     @tab Jump if not greater
+@item JNGE      @tab jnge[l]    @tab Jump if not greater nor equal
+@item JNL       @tab jnl[l]     @tab Jump if not less
+@item JNLE      @tab jnle[l]    @tab Jump if not less nor equal
+@item JNO       @tab jno[l]     @tab Jump if not overflow
+@item JNP       @tab jnp[l]     @tab Jump if not parity
+@item JNS       @tab jns[l]     @tab Jump if not sign
+@item JNZ       @tab jnz[l]     @tab Jump if not zero
+@item JO        @tab jo[l]      @tab Jump if overflow
+@item JP        @tab jp[l]      @tab Jump if parity
+@item JPE       @tab jpe[l]     @tab Jump if parity even
+@item JPO       @tab jpo[l]     @tab Jump if parity odd
+@item JS        @tab js[l]      @tab Jump if sign
+@item JZ        @tab jz[l]      @tab Jump if zero
+@end multitable
+
+@subsubsection Notes
+
+@itemize 1
+
+@item
+There are no long (@code{l}-suffix) forms for these instructions.
+
+@end itemize

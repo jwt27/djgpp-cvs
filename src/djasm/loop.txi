@@ -1,0 +1,30 @@
+@c Intel mnemonics
+@opindex LOOP
+@opindex LOOPE
+@opindex LOOPZ
+@opindex LOOPNE
+@opindex LOOPNZ
+
+@c opcode description
+@opindex Loop
+@opindex Loop while equal
+@opindex Loop while zero
+@opindex Loop while not equal
+@opindex Loop while not zero
+
+@c djasm mnemonics
+@opindex loop
+@opindex loope
+@opindex loopz
+@opindex loopne
+@opindex loopnz
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item LOOP      @tab loop       @tab Loop
+@item LOOPE     @tab loope      @tab Loop while equal
+@item LOOPZ     @tab loopz      @tab Loop while zero
+@item LOOPNE    @tab loopne     @tab Loop while not equal
+@item LOOPNZ    @tab loopnz     @tab Loop while not zero
+@end multitable

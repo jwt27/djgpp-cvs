@@ -1,0 +1,108 @@
+@c Intel mnemonics
+@opindex MOVSB
+@opindex MOVSW
+@opindex MOVSD
+@opindex CMPSB
+@opindex CMPSW
+@opindex CMPSD
+@opindex SCASB
+@opindex SCASW
+@opindex SCASD
+@opindex LODSB
+@opindex LODSW
+@opindex LODSD
+@opindex STOSB
+@opindex STOSW
+@opindex STOSD
+@opindex REP
+@opindex REPE
+@opindex REPZ
+@opindex REPNE
+@opindex REPNZ
+@opindex CLD
+@opindex CLD
+
+@c opcode description
+@opindex Move string (byte)
+@opindex Move string (word)
+@opindex Move string (double word)
+@opindex Compare strings (byte)
+@opindex Compare strings (word)
+@opindex Compare strings (double word)
+@opindex Scan string (byte)
+@opindex Scan string (word)
+@opindex Scan string (double word)
+@opindex Load string (byte)
+@opindex Load string (word)
+@opindex Load string (double word)
+@opindex Store string (byte)
+@opindex Store string (word)
+@opindex Store string (double word)
+@opindex Repeat while not end of string
+@opindex Repeat while not end of string and strings are equal
+@opindex Repeat while not end of string and strings are equal
+@opindex Repeat while not end of string and strings are not equal
+@opindex Repeat while not end of string and strings are not equal
+@opindex Clear DF
+@opindex Set DF
+
+@c djasm mnemonics
+@opindex movsb
+@opindex movsw
+@opindex movsd
+@opindex cmpsb
+@opindex cmpsw
+@opindex cmpsd
+@opindex scasb
+@opindex scasw
+@opindex scasd
+@opindex lodsb
+@opindex lodsw
+@opindex lodsd
+@opindex stosb
+@opindex stosw
+@opindex stosd
+@opindex rep
+@opindex repe
+@opindex repz
+@opindex repne
+@opindex repnz
+@opindex cld
+@opindex std
+
+@c The byte, word, and double word versions of some string mnemonics
+@c distinguished in my Intel reference, so I left the djasm mnemonics
+@c distinguished as well.
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item MOVSB     @tab movsb      @tab Move string (byte)
+@item MOVSW     @tab movsw      @tab Move string (word)
+@item MOVSD     @tab movsd      @tab Move string (double word)
+@item
+@item CMPSB     @tab cmpsb      @tab Compare strings (byte)
+@item CMPSW     @tab cmpsw      @tab Compare strings (word)
+@item CMPSD     @tab cmpsd      @tab Compare strings (double word)
+@item
+@item SCASB     @tab scasb      @tab Scan string (byte)
+@item SCASW     @tab scasw      @tab Scan string (word)
+@item SCASD     @tab scasd      @tab Scan string (double word)
+@item
+@item LODSB     @tab lodsb      @tab Load string (byte)
+@item LODSW     @tab lodsw      @tab Load string (word)
+@item LODSD     @tab lodsd      @tab Load string (double word)
+@item
+@item STOSB     @tab stosb      @tab Store string (byte)
+@item STOSW     @tab stosw      @tab Store string (word)
+@item STOSD     @tab stosd      @tab Store string (double word)
+@item
+@item REP       @tab rep        @tab MOVS/STOS: Repeat while not end of string
+@item REPE      @tab repe       @tab CMPS/SCAS: Repeat while not end of string and strings are equal
+@item REPZ      @tab repz       @tab CMPS/SCAS: Repeat while not end of string and strings are equal
+@item REPNE     @tab repne      @tab CMPS/SCAS: Repeat while not end of string and strings are not equal
+@item REPNZ     @tab repnz      @tab CMPS/SCAS: Repeat while not end of string and strings are not equal
+@item
+@item CLD       @tab cld        @tab Clear DF
+@item CLD       @tab std        @tab Set DF
+@end multitable

@@ -1,0 +1,26 @@
+@c Intel mnemonics
+@opindex ROL
+@opindex ROR
+@opindex RCL
+@opindex RCR
+
+@c opcode description
+@opindex Rotate left
+@opindex Rotate right
+@opindex Rotate left through carry
+@opindex Rotate right through carry
+
+@c djasm mnemonics
+@opindex rol
+@opindex ror
+@opindex rcl
+@opindex rcr
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item ROL       @tab rol[bwd]   @tab Rotate left
+@item ROR       @tab ror[bwd]   @tab Rotate right
+@item RCL       @tab rcl[bwd]   @tab Rotate left through carry
+@item RCR       @tab rcr[bwd]   @tab Rotate right through carry
+@end multitable

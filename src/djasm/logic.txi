@@ -1,0 +1,26 @@
+@c Intel mnemonics
+@opindex AND
+@opindex XOR
+@opindex OR
+@opindex NOT
+
+@c opcode description
+@opindex Logical AND
+@opindex Logical OR (exclusive)
+@opindex Logical OR (inclusive)
+@opindex Logical NOT
+
+@c djasm mnemonics
+@opindex and
+@opindex xor
+@opindex or
+@opindex not
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item AND       @tab and[bwd]   @tab Logical AND
+@item XOR       @tab xor[bwd]   @tab Logical OR (exclusive)
+@item OR        @tab or[bwd]    @tab Logical OR (inclusive)
+@item NOT       @tab not        @tab Logical NOT
+@end multitable

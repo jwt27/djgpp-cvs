@@ -1,0 +1,16 @@
+@subsubsection Compare
+
+@c Intel mnemonics
+@opindex CMP
+
+@c opcode description
+@opindex Compare
+
+@c djasm mnemonics
+@opindex cmp
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item CMP       @tab cmp[bwd]   @tab Compare
+@end multitable

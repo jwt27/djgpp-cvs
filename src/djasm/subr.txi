@@ -1,0 +1,69 @@
+@c Intel mnemonics
+@opindex CALL
+@opindex RET
+@opindex PUSH
+@opindex POP
+@opindex PUSHF
+@opindex POPF
+@opindex PUSHA
+@opindex POPA
+@opindex PUSHAD
+@opindex POPAD
+@opindex ENTER
+@opindex LEAVE
+
+@c opcode description
+@opindex Subroutine call
+@opindex Return from subroutine
+@opindex Push operand onto stack
+@opindex Pop operand from stack
+@opindex Push flags onto stack
+@opindex Pop flags from stack
+@opindex Push all 16-bit general registers
+@opindex Pop all 16-bit general registers
+@opindex Push all 32-bit general registers
+@opindex Pop all 32-bit general registers
+@opindex Make stack frame
+@opindex Release stack frame
+
+@c djasm mnemonics
+@opindex call
+@opindex ret
+@opindex push
+@opindex pop
+@opindex pushf
+@opindex popf
+@opindex pusha
+@opindex popa
+@opindex pushad
+@opindex popad
+@opindex enter
+@opindex leave
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item CALL      @tab call       @tab Subroutine call
+@item           @tab callf
+@item           @tab callfd
+@item
+@item RET       @tab ret        @tab Return from subroutine
+@item           @tab retd
+@item           @tab retf
+@item           @tab retfd
+@item
+@item PUSHF     @tab pushf      @tab Push flags onto stack
+@item PUSHFD    @tab pushfd	@tab Push extended flags onto stack
+@item
+@item POPF      @tab popf       @tab Pop flags from stack
+@item POPFD     @tab popfd      @tab Pop extended flags from stack
+@item
+@item PUSHA     @tab pusha      @tab Push all 16-bit general registers
+@item POPA      @tab popa       @tab Pop all 16-bit general registers
+@item
+@item PUSHAD    @tab pushad     @tab Push all 32-bit general registers
+@item POPAD     @tab popad      @tab Pop all 32-bit general registers
+@item
+@item ENTER     @tab enter      @tab Make stack frame
+@item LEAVE     @tab leave      @tab Release stack frame
+@end multitable

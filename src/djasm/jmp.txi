@@ -1,0 +1,33 @@
+@subsubsection Unconditional Jump
+
+@c Intel mnemonics
+@opindex JMP
+
+@c opcode description
+@opindex Unconditional jump
+
+@c djasm mnemonics
+@opindex jmpb
+@opindex jmpf
+@opindex jmpfd
+@opindex jmpl
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item JMP       @tab jmp[bl]    @tab Unconditional jump  [1]
+@item           @tab jmpf
+@item           @tab jmpfd
+@item           @tab jmpl
+@end multitable
+
+@subsubsection Notes
+
+@itemize 1
+
+@item
+The @code{l} suffix denotes a jump relative to a 16-bit offset.
+(Shouldn't this be @code{jmpw} for consistency with other mnemonics?
+Sigh.)
+
+@end itemize

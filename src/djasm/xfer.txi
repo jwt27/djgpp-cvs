@@ -1,0 +1,58 @@
+@c Intel mnemonics
+@opindex MOV
+@opindex MOVSX
+@opindex MOVZX
+@opindex XCHG
+@opindex XLAT
+@opindex XLAT
+@opindex LEA
+@opindex LDS
+@opindex LES
+@opindex LSS
+@opindex LFS
+@opindex LGS
+
+@c opcode description
+@opindex Move
+@opindex Move (sign-extended)
+@opindex Move (zero-extended)
+@opindex Exchange
+@opindex Translat (allows segment override)
+@opindex Translat (must use DS)
+@opindex Load effective address
+@opindex Load register and DS
+@opindex Load register and ES
+@opindex Load register and SS
+@opindex Load register and FS
+@opindex Load register and GS
+
+@c djasm mnemonics
+@opindex mov
+@opindex movsx
+@opindex movzx
+@opindex xchg
+@opindex xlat
+@opindex xlatb
+@opindex lea
+@opindex lds
+@opindex les
+@opindex lss
+@opindex lfs
+@opindex lgs
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item MOV       @tab mov[bwd]   @tab Move
+@item MOVSX     @tab movsx[bw]  @tab Move (sign-extended)
+@item MOVZX     @tab movzx[bw]  @tab Move (zero-extended)
+@item XCHG      @tab xchg       @tab Exchange
+@item XLAT      @tab xlat       @tab Translat (allows segment override)
+@item XLAT      @tab xlatb      @tab Translat (must use DS)
+@item LEA       @tab lea        @tab Load effective address
+@item LDS       @tab lds        @tab Load register and DS
+@item LES       @tab les        @tab Load register and ES
+@item LSS       @tab lss        @tab Load register and SS
+@item LFS       @tab lfs        @tab Load register and FS
+@item LGS       @tab lgs        @tab Load register and GS
+@end multitable

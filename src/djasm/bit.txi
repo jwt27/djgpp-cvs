@@ -1,0 +1,34 @@
+@c Intel mnemonics
+@opindex BSF
+@opindex BSR
+@opindex BT
+@opindex BTC
+@opindex BTR
+@opindex BTS
+
+@c opcode description
+@opindex Bit scan forward
+@opindex Bit scan reverse
+@opindex Bit test
+@opindex Bit test and complement
+@opindex Bit test and reset
+@opindex Bit test and set
+
+@c djasm mnemonics
+@opindex bsf
+@opindex bsr
+@opindex bt
+@opindex btc
+@opindex btr
+@opindex bts
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item BSF       @tab bsf        @tab Bit scan forward
+@item BSR       @tab bsr        @tab Bit scan reverse
+@item BT        @tab bt         @tab Bit test
+@item BTC       @tab btc        @tab Bit test and complement
+@item BTR       @tab btr        @tab Bit test and reset
+@item BTS       @tab bts        @tab Bit test and set
+@end multitable

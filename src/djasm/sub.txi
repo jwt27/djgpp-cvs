@@ -1,0 +1,36 @@
+@subsubsection Subtraction
+
+@c Intel mnemonics
+@opindex SUB
+@opindex SBB
+@opindex DEC
+@opindex NEG
+@opindex AAS
+@opindex DAS
+
+@c opcode description
+@opindex Subtract byte or word
+@opindex Subtract byte or word with borrow
+@opindex Increment byte or word by 1
+@opindex Negate byte or word
+@opindex ASCII adjust for subtraction
+@opindex Decimal adjust for subtraction
+
+@c djasm mnemonics
+@opindex sub
+@opindex sbb
+@opindex dec
+@opindex neg
+@opindex aas
+@opindex das
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item SUB       @tab sub[bwd]   @tab Subtract byte or word
+@item SBB       @tab sbb[bwd]   @tab Subtract byte or word with borrow
+@item DEC       @tab dec[bwd]   @tab Increment byte or word by 1
+@item NEG       @tab neg        @tab Negate byte or word
+@item AAS       @tab aas        @tab ASCII adjust for subtraction
+@item DAS       @tab das        @tab Decimal adjust for subtraction
+@end multitable

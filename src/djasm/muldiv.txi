@@ -1,0 +1,52 @@
+@subsubsection Multiplication and Division
+
+@c Intel mnemonics
+@opindex MUL
+@opindex IMUL
+@opindex AAM
+@opindex DIV
+@opindex IDIV
+@opindex AAD
+@opindex CBW
+@opindex CWDE
+@opindex CWD
+@opindex CDQ
+
+@c opcode description
+@opindex Multiply byte or word (unsigned)
+@opindex Integer multiply byte or word
+@opindex ASCII adjust for multiply
+@opindex Divide byte or word (unsigned)
+@opindex Integer divide byte or word
+@opindex ASCII adjust for division
+@opindex Convert byte to word
+@opindex Convert word to double word in EAX
+@opindex Convert word to double word in DX and AX
+@opindex Convert double word to quad word
+
+@c djasm mnemonics
+@opindex mul
+@opindex imul
+@opindex aam
+@opindex div
+@opindex idiv
+@opindex aad
+@opindex cbw
+@opindex cwde
+@opindex cwd
+@opindex cdq
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item MUL       @tab mul[bwd]   @tab Multiply byte or word (unsigned)
+@item IMUL      @tab imul[bwd]  @tab Integer multiply byte or word
+@item AAM       @tab aam        @tab ASCII adjust for multiply
+@item DIV       @tab div[bwd]   @tab Divide byte or word (unsigned)
+@item IDIV      @tab idiv[bwd]  @tab Integer divide byte or word
+@item AAD       @tab aad        @tab ASCII adjust for division
+@item CBW       @tab cbw        @tab Convert byte to word
+@item CWDE      @tab cwde       @tab Convert word to double word in EAX
+@item CWD       @tab cwd        @tab Convert word to double word in DX and AX
+@item CDQ       @tab cdq        @tab Convert double word to quad word
+@end multitable

@@ -1,0 +1,32 @@
+@subsubsection Addition
+
+@c Intel mnemonics
+@opindex ADD
+@opindex ADC
+@opindex INC
+@opindex AAA
+@opindex DAA
+
+@c opcode description
+@opindex Add byte or word
+@opindex Add byte or word with carry
+@opindex Increment byte or word by 1
+@opindex ASCII adjust for addition
+@opindex Decimal adjust for addition
+
+@c djasm mnemonics
+@opindex add
+@opindex adc
+@opindex inc
+@opindex aaa
+@opindex daa
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item ADD       @tab add[bwd]   @tab Add byte or word
+@item ADC       @tab adc[bwd]   @tab Add byte or word with carry
+@item INC       @tab inc[bwd]   @tab Increment byte or word by 1
+@item AAA       @tab aaa        @tab ASCII adjust for addition
+@item DAA       @tab daa        @tab Decimal adjust for addition
+@end multitable

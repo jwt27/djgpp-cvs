@@ -1,0 +1,38 @@
+@c Intel mnemonics
+@opindex LAHF
+@opindex SAHF
+@opindex CLC
+@opindex STC
+@opindex CMC
+@opindex CLI
+@opindex STI
+
+@c opcode description
+@opindex Load AH from flags
+@opindex Store AH into flags
+@opindex Clear carry flag
+@opindex Set carry flag
+@opindex Complement carry flag
+@opindex Clear interrupt flag
+@opindex Set interrupt flag
+
+@c djasm mnemonics
+@opindex lahf
+@opindex sahf
+@opindex clc
+@opindex stc
+@opindex cmc
+@opindex cli
+@opindex sti
+
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item LAHF      @tab lahf       @tab Load AH from flags
+@item SAHF      @tab sahf       @tab Store AH into flags
+@item CLC       @tab clc        @tab Clear carry flag
+@item STC       @tab stc        @tab Set carry flag
+@item CMC       @tab cmc        @tab Complement carry flag
+@item CLI       @tab cli        @tab Clear interrupt flag
+@item STI       @tab sti        @tab Set interrupt flag
+@end multitable
