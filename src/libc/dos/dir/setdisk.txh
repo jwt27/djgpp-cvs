@@ -1,0 +1,25 @@
+@node setdisk, dos
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+int setdisk(int drive);
+@end example
+
+@subheading Description
+
+This function sets the current disk (0=A).
+
+@xref{getdisk}
+
+@subheading Return Value
+
+The total number of possible drives.
+
+@subheading Example
+
+@example
+printf("There are %d drives\n", setdisk(getdisk()));
+@end example
+

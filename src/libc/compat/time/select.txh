@@ -1,0 +1,49 @@
+@node select, unix
+@subheading Syntax
+
+@example
+#include <time.h>
+
+int
+select(int nfds,
+	fd_set *readfds,
+	fd_set *writefds,
+	fd_set *exceptfds,
+	struct timeval *timeout)
+@end example
+
+@subheading Description
+
+This function waits for files to be ready for input or output, or for
+a timeout.  Each fd_set represents a set of bits representing file
+descriptors.  The following macros shall be used to deal with these
+sets:
+
+@table @code
+
+@item FD_ZERO(p)
+
+Initialize the set to all zeros.
+
+@item FD_SET(n, p)
+
+Set member @var{n} in set @var{p}.
+
+@item FD_CLR(n, p)
+
+Clear member @var{n} in set @var{p}.
+
+@item FD_ISSET(n, p)
+
+Return the value of member @var{n} in set @var{p}.
+
+@end table
+
+The @var{timeout} value may be a NULL pointer (no timeout), a pointer
+to a zero-value structure (poll mode), or a pointer to an
+interval-filled structure (timeout).
+
+@subheading Return Value
+
+The number of files ready.  The input sets are replaced with sets that
+describe which files are ready for which operations.
