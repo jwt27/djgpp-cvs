@@ -39,7 +39,7 @@ static int capify=0;
 static int eat_skips = 0;
 static int fill_mode;
 
-typedef int FUNCTION ();	/* So I can say FUNCTION *foo; */
+typedef void FUNCTION ();	/* So I can say FUNCTION *foo; */
 
 /* The list of commands that we hack in texinfo.  Each one
    has an associated function.  When the command is encountered in the
@@ -148,9 +148,10 @@ static FUNCTION *lookup_command(char *name)
 #define BRACE_WORD_ARGS 4
 #define SELF_ARGS 5
 
-int cm_example();
-int cm_samp();
+void cm_example();
+void cm_samp();
 
+void
 big_font(int se, char *arg, int szup)
 {
   if (se == START)
@@ -170,6 +171,7 @@ big_font(int se, char *arg, int szup)
   }
 }
 
+void
 cm_TeX(int se)
 {
   if (se == START && !suspend_output)
@@ -188,6 +190,7 @@ cm_TeX(int se)
   }
 }
 
+void
 cm_appendix(int se, char *arg)
 {
   if (se == START)
@@ -195,16 +198,18 @@ cm_appendix(int se, char *arg)
   big_font(se, arg, 8);
 }
 
-cm_appendixsec(int se, char *arg) { big_font(se, arg, 6); }
-cm_appendixsubsec(int se, char *arg) { big_font(se, arg, 4); }
-cm_appendixsubsubsec(int se, char *arg) { big_font(se, arg, 2); }
-cm_asis(){}
+void cm_appendixsec(int se, char *arg) { big_font(se, arg, 6); }
+void cm_appendixsubsec(int se, char *arg) { big_font(se, arg, 4); }
+void cm_appendixsubsubsec(int se, char *arg) { big_font(se, arg, 2); }
+void cm_asis(){}
      
+void
 cm_asterisk()
 {
   line_break();
 }
 
+void
 cm_author(int se, char *args)
 {
   if (suspend_output)
@@ -222,6 +227,7 @@ cm_author(int se, char *args)
   }
 }
      
+void
 cm_bold(int se)
 {
   if (se == START)
@@ -230,12 +236,14 @@ cm_bold(int se)
     psf_pop();
 }
 
+void
 cm_br(int se)
 {
   if (se == START)
     para_close();
 }
 
+void
 cm_bullet(int se)
 {
   if (se == START)
@@ -245,19 +253,22 @@ cm_bullet(int se)
   }
 }
 
+void
 cm_bye()
 {
   page_flush();
   bye = 1;
 }
 
-cm_cartouche(int se, char *arg) { cm_example(se, arg); }
-cm_center(){}
+void cm_cartouche(int se, char *arg) { cm_example(se, arg); }
+void cm_center(){}
+void
 cm_chapheading(int se, char *arg)
 {
   big_font(se, arg, 8);
 }
 
+void
 cm_chapter(int se, char *arg)
 {
   if (se == START)
@@ -265,9 +276,10 @@ cm_chapter(int se, char *arg)
   big_font(se, arg, 8);
 }
 
-cm_cindex(){}
-cm_cite(){}
+void cm_cindex(){}
+void cm_cite(){}
 
+void
 cm_clear(int se, char *arg)
 {
   char *p;
@@ -291,6 +303,7 @@ cm_clear(int se, char *arg)
   clear_flag(arg);
 }
 
+void
 cm_code(int se)
 {
   if (se == START)
@@ -299,6 +312,7 @@ cm_code(int se)
     psf_pop();
 }
 
+void
 cm_copyright(int se)
 {
   if (suspend_output)
@@ -307,6 +321,7 @@ cm_copyright(int se)
     word_symbol(0323);
 }
 
+void
 cm_ctrl(int se, char *args)
 {
   if (suspend_output)
@@ -322,16 +337,18 @@ cm_ctrl(int se, char *args)
   }
 }
 
-cm_defcodeindex(){}
-cm_defindex(){}
-cm_defun(){}
-cm_dfn(){}
-cm_display(){}
+void cm_defcodeindex(){}
+void cm_defindex(){}
+void cm_defun(){}
+void cm_dfn(){}
+void cm_display(){}
 
+void
 cm_do_cond(int se)
 {
 }
 
+void
 cm_dots(int se)
 {
   if (suspend_output)
@@ -340,6 +357,7 @@ cm_dots(int se)
     word_symbol(0274);
 }
 
+void
 cm_emph(int se, char *args)
 {
   if (se == START)
@@ -352,6 +370,7 @@ cm_emph(int se, char *args)
   }
 }
 
+void
 cm_end(int se, char *w)
 {
   FUNCTION *cmd = lookup_command(w);
@@ -359,6 +378,7 @@ cm_end(int se, char *w)
     cmd(END);
 }
 
+void
 helper_enumerate(int se)
 {
   if (suspend_output)
@@ -377,6 +397,7 @@ helper_enumerate(int se)
   }
 }
 
+void
 cm_enumerate(int se, char *arg)
 {
   if (se == START)
@@ -402,6 +423,7 @@ cm_enumerate(int se, char *arg)
   }
 }
 
+void
 cm_equiv(int se)
 {
   if (suspend_output)
@@ -410,6 +432,7 @@ cm_equiv(int se)
     word_symbol(0272);
 }
 
+void
 cm_error(int se)
 {
   if (suspend_output)
@@ -421,6 +444,7 @@ cm_error(int se)
   }
 }
 
+void
 cm_example(int se)
 {
   if (se == START)
@@ -439,12 +463,14 @@ cm_example(int se)
   }
 }
 
+void
 cm_exdent(int se)
 {
   if (se == START)
     para_set_indent(-prevailing_indent);
 }
      
+void
 cm_expansion(int se)
 {
   if (suspend_output)
@@ -453,24 +479,27 @@ cm_expansion(int se)
     word_symbol(0336);
 }
 
+void
 cm_file(int se, char *args)
 {
   cm_samp(se, args);
 }
 
-cm_findex(){}
-cm_flushleft(){}
-cm_flushright(){}
+void cm_findex(){}
+void cm_flushleft(){}
+void cm_flushright(){}
 
-int cm_italic();
+void cm_italic();
+void
 cm_footnote(int se)
 {
   cm_italic(se);
 }
 
-cm_footnotestyle(){}
-cm_force_abbreviated_whitespace(){}
+void cm_footnotestyle(){}
+void cm_force_abbreviated_whitespace(){}
 
+void
 cm_format(int se, char *args)
 {
   if (se == 0)
@@ -486,16 +515,18 @@ cm_format(int se, char *args)
   }
 }
 
-int cm_table();
+void cm_table();
+void
 cm_ftable(int se, char *arg)
 {
   cm_table(se, arg);
 }
-cm_group(){}
-cm_heading(int se, char *arg) { big_font(se, arg, 6); }
+void cm_group(){}
+void cm_heading(int se, char *arg) { big_font(se, arg, 6); }
 
 static int set_level, clear_level;
 
+void
 cm_ifclear(int se, char *arg)
 {
   if (se == START)
@@ -516,6 +547,7 @@ cm_ifclear(int se, char *arg)
   }
 }
 
+void
 cm_ifset(int se, char *arg)
 {
   if (se == START)
@@ -536,6 +568,7 @@ cm_ifset(int se, char *arg)
   }
 }
 
+void
 cm_ignore_cond(int se)
 {
   if (se == START)
@@ -546,8 +579,9 @@ cm_ignore_cond(int se)
     fprintf(stderr, "\nunmatched @end XXX at %s", fileio_where());
 }
 
-cm_ignore_line(){}
+void cm_ignore_line(){}
 
+void
 cm_ignore_sentence_ender(int se, char *arg)
 {
   if (suspend_output)
@@ -556,10 +590,11 @@ cm_ignore_sentence_ender(int se, char *arg)
     word_add_quoted(arg[0]);
 }
 
-cm_include(int se, char *args) { fileio_include(args); }
-cm_infoinclude(int se, char *args) { fileio_include(args); }
-cm_inforef(){}
+void cm_include(int se, char *args) { fileio_include(args); }
+void cm_infoinclude(int se, char *args) { fileio_include(args); }
+void cm_inforef(){}
 
+void
 cm_italic(int se)
 {
   if (se == START)
@@ -568,6 +603,7 @@ cm_italic(int se)
     psf_pop();
 }
 
+void
 cm_item(int se, char *s)
 {
   if (table_stack)
@@ -588,6 +624,7 @@ cm_item(int se, char *s)
     fprintf(stderr, "\n@item without table_stack at %s\n", fileio_where());
 }
 
+void
 cm_itemize(int se, char *arg)
 {
   if (se == START)
@@ -602,11 +639,13 @@ cm_itemize(int se, char *arg)
   }
 }
 
+void
 cm_itemx(int se, char *arg)
 {
   cm_item(se, arg);
 }
 
+void
 cm_kbd(int se)
 {
   if (se == START)
@@ -614,19 +653,21 @@ cm_kbd(int se)
   else
     psf_pop();
 }
-cm_key(int se) { cm_kbd(se); }
-cm_kindex(){}
-cm_lisp(){}
-cm_lowersections(){}
-cm_macro(){}
+void cm_key(int se) { cm_kbd(se); }
+void cm_kindex(){}
+void cm_lisp(){}
+void cm_lowersections(){}
+void cm_macro(){}
 
+void
 cm_majorheading(int se, char *arg)
 {
   big_font(se, arg, 8);
 }
 
-cm_math(){}
+void cm_math(){}
 
+void
 cm_menu(int se)
 {
   if (se == START)
@@ -643,6 +684,7 @@ cm_menu(int se)
   }
 }
 
+void
 cm_minus(int se)
 {
   if (suspend_output)
@@ -651,34 +693,38 @@ cm_minus(int se)
     word_symbol(0055);
 }
 
+void
 cm_node(int se, char *args)
 {
   sscanf(args, "%[^,\n]", args);
   screenio_note("%3d %s", current_page, args);
 }
 
-cm_noindent(){}
+void cm_noindent(){}
 
+void
 cm_page(int se)
 {
   if (se == START)
     page_flush();
 }
 
-cm_paragraphindent(){}
-cm_pindex(){}
-cm_point(){}
-cm_print(){}
-cm_printindex(){}
-int cm_xref();
+void cm_paragraphindent(){}
+void cm_pindex(){}
+void cm_point(){}
+void cm_print(){}
+void cm_printindex(){}
+void cm_xref();
+void
 cm_pxref(int se, char *a)
 {
   cm_xref(se, a);
 }
-cm_quotation(){}
-cm_raisesections(){}
-cm_refill(){}
+void cm_quotation(){}
+void cm_raisesections(){}
+void cm_refill(){}
 
+void
 cm_result(int se)
 {
   if (suspend_output)
@@ -687,6 +733,7 @@ cm_result(int se)
     word_symbol(0336);
 }
 
+void
 cm_roman(int se, char *arg)
 {
   if (se == START)
@@ -695,11 +742,13 @@ cm_roman(int se, char *arg)
     psf_pop();
 }
 
+void
 cm_samp(int se)
 {
   cm_code(se);
 }
 
+void
 cm_sc(int se)
 {
   if (se == START)
@@ -714,8 +763,9 @@ cm_sc(int se)
   }
 }
 
-cm_section(int se, char *arg) { big_font(se, arg, 6); }
+void cm_section(int se, char *arg) { big_font(se, arg, 6); }
 
+void
 cm_set(int se, char *arg)
 {
   char *p;
@@ -749,15 +799,18 @@ cm_set(int se, char *arg)
   set_flag(arg, p);
 }
 
+void
 cm_setfilename(){}
 
+void
 cm_smallexample(int se)
 {
   cm_example(se);
 }
 
-cm_smalllisp(){}
+void cm_smalllisp(){}
 
+void
 cm_sp(int se, char *a)
 {
   if (se == START)
@@ -770,7 +823,7 @@ cm_sp(int se, char *a)
   }
 }
 
-cm_strong(int se)
+void cm_strong(int se)
 {
   if (se == START)
     psf_pushset(PSF_bold);
@@ -778,13 +831,14 @@ cm_strong(int se)
     psf_pop();
 }
 
-cm_subheading(int se, char *arg) { big_font(se, arg, 4); }
-cm_subsection(int se, char *arg) { big_font(se, arg, 4); }
-cm_subsubheading(int se, char *arg) { big_font(se, arg, 2); }
-cm_subsubsection(int se, char *arg) { big_font(se, arg, 2); }
-cm_subtitle(int se, char *a) { big_font(se, a, 10); }
-cm_synindex(){}
+void cm_subheading(int se, char *arg) { big_font(se, arg, 4); }
+void cm_subsection(int se, char *arg) { big_font(se, arg, 4); }
+void cm_subsubheading(int se, char *arg) { big_font(se, arg, 2); }
+void cm_subsubsection(int se, char *arg) { big_font(se, arg, 2); }
+void cm_subtitle(int se, char *a) { big_font(se, a, 10); }
+void cm_synindex(){}
 
+void
 cm_table(int se, char *arg)
 {
   if (se == START)
@@ -800,8 +854,9 @@ cm_table(int se, char *arg)
   }
 }
 
-cm_tindex(){}
+void cm_tindex(){}
 
+void
 cm_title(int se, char *arg)
 {
   if (se == START)
@@ -828,6 +883,7 @@ cm_title(int se, char *arg)
   }
 }
 
+void
 cm_titlefont(int se)
 {
   if (se == START)
@@ -839,6 +895,7 @@ cm_titlefont(int se)
   }
 }
 
+void
 cm_titlepage(int se)
 {
   if (se == START)
@@ -847,6 +904,7 @@ cm_titlepage(int se)
     page_flush();
 }
 
+void
 cm_today(int se)
 {
   if (suspend_output)
@@ -863,9 +921,10 @@ cm_today(int se)
   }
 }
 
-cm_top(){}
-cm_unmacro(){}
+void cm_top(){}
+void cm_unmacro(){}
 
+void
 cm_unnumbered(int se, char *arg)
 {
   if (se == START)
@@ -873,10 +932,11 @@ cm_unnumbered(int se, char *arg)
   big_font(se, arg, 8);
 }
 
-cm_unnumberedsec(int se, char *arg) { big_font(se, arg, 6); }
-cm_unnumberedsubsec(int se, char *arg) { big_font(se, arg, 4); }
-cm_unnumberedsubsubsec(int se, char *arg) { big_font(se, arg, 2); }
+void cm_unnumberedsec(int se, char *arg) { big_font(se, arg, 6); }
+void cm_unnumberedsubsec(int se, char *arg) { big_font(se, arg, 4); }
+void cm_unnumberedsubsubsec(int se, char *arg) { big_font(se, arg, 2); }
 
+void
 cm_value(int se, char *flag)
 {
   if (suspend_output)
@@ -900,21 +960,24 @@ cm_value(int se, char *flag)
     fprintf(stderr, "\ncm_value(END, %s) at %s", flag, fileio_where());
 }
 
-cm_var(){}
-cm_vindex(){}
+void cm_var(){}
+void cm_vindex(){}
 
+void
 cm_vskip()
 {
   vskip_enabled = 1;
 }
 
+void
 cm_vtable(int se, char *arg)
 {
   cm_table(se, arg);
 }
 
-cm_w(){}
+void cm_w(){}
 
+void
 cm_xref(int se, char *a)
 {
   if (suspend_output)
@@ -928,9 +991,10 @@ cm_xref(int se, char *a)
   }
 }
 
-command_name_condition(){}
-do_nothing(){}
+void command_name_condition(){}
+void do_nothing(){}
 
+void
 insert_self(int se, char *a)
 {
   if (suspend_output)
@@ -1312,7 +1376,7 @@ do_file(char *file_name)
   }
 }
 
-static int
+static void
 usage(void)
 {
   printf("usage: texi2ps [-f size] [-I dir] [-Idir] [-v] [-m pts] [-Dname[=val]] [-Uname] [file...]\n");
