@@ -44,7 +44,7 @@ A read handler.  Called when data should be read from a ``file''.
 A write handler.  Called to write data to a ``file''.
 On ``text'' files it receives the ORIGINAL (unconverted) buffer.
 
-@item __FSEXT_read
+@item __FSEXT_ready
 
 A ready handler.  It is called by @code{select} library function
 (@pxref{select}) when it needs to know whether a handle used to
