@@ -52,22 +52,23 @@ of one is implied.
 
 @item d
 
-Convert the input to a signed @code{int}.
+Convert the input to a signed @code{int} using 10 as the base of the
+number representation.
 
 @item hd
 
-Convert the input to a signed @code{short}.
+Convert the input to a signed @code{short} using 10 as the base.
 
 @item ld
 @itemx D
 
-Convert the input to a signed @code{long}.
+Convert the input to a signed @code{long} using 10 as the base.
 
 @item Ld
 @itemx lld
 @itemx lD
 
-Convert the input to a signed @code{long long}.
+Convert the input to a signed @code{long long} using 10 as the base.
 
 @item e
 @itemx E
@@ -172,22 +173,22 @@ stored is then terminated with a null character.
 
 @item u
 
-Convert the input to an unsigned @code{int}.
+Convert the input to an unsigned @code{int} using 10 as the base.
 
 @item hu
 
-Convert the input to an unsigned @code{short}.
+Convert the input to an unsigned @code{short} using 10 as the base.
 
 @item lu
 @itemx U
 
-Convert the input to an unsigned @code{long}.
+Convert the input to an unsigned @code{long} using 10 as the base.
 
 @item Lu
 @itemx llu
 @itemx lU
 
-Convert the input to an unsigned @code{long long}.
+Convert the input to an unsigned @code{long long} using 10 as the base.
 
 @item x
 @itemx X

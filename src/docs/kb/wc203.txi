@@ -452,3 +452,13 @@ the timer chip to run with a non-standard frequency.
 @code{ftruncate} now leaves the file pointer at the same byte position
 as it were before the function was called.
 
+@findex scanf@r{, and octal conversions}
+@findex sscanf@r{, and octal conversions}
+@findex fscanf@r{, and octal conversions}
+@findex vscanf@r{, and octal conversions}
+@findex vsscanf@r{, and octal conversions}
+@findex vfscanf@r{, and octal conversions}
+Functions of the @code{scanf} family now correctly stop the scan when
+they encounter a digit larger than 7, and either the format specifies
+octal conversion, like in @code{%o}, or the format is @code{%i} and the
+leading digit is @code{0}, which implies octal conversion.
