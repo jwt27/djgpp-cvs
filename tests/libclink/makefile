@@ -14,7 +14,7 @@ p_compare.out : compare.out
 	@cat compare.out
 
 check.out : check.exe ../../lib/crt0.o ../../lib/libc.a
-	@nm -g ../../lib/crt0.o ../../lib/libc.a | check > check.out
+	@nm -g ../../lib/crt0.o ../../lib/libc.a | ./check > check.out
 
 check.exe : check.o slist.o objs.o
 	gcc -o $@ $^ $(LIBSTDCXX)
