@@ -266,4 +266,10 @@ to expand it into the value of the environment variable @code{foo}
 at run time.  @file{/dev/env/foo~bar~} will expand to @file{bar} if
 @code{foo} is undefined, or if its value is empty.
 
+@findex getch
+@findex getche
+@cindex flushing buffered output
+Calling @code{getch} and @code{getche} flushes the @code{stdout} and
+@code{stderr} streams, if they are connected to the console and have any
+pending buffered characters.
 

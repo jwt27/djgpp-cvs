@@ -130,10 +130,15 @@ int     getch(void);
 
 @subheading Description
 
-A single character from the console (stdin) is returned.  The input is
-not line-buffered.  If there is a character pending from
-@ref{ungetch}, it is returned instead.  The character is not echoed to
-the screen.
+A single character from the predefined standard input handle is read and
+returned.  The input is not buffered.  If there is a character pending
+from @code{ungetch} (@pxref{ungetch}), it is returned instead.  The
+character is not echoed to the screen.  This function doesn't check for
+special characters like @kbd{Ctrl-@key{C}}.
+
+If the standard input handle is connected to the console, any pending
+output in the @code{stdout} and @code{stderr} streams is flushed before
+reading the input, if these streams are connected to the console.
 
 @subheading Return Value
 
@@ -155,10 +160,15 @@ int getche(void);
 
 @subheading Description
 
-A single character from the console (stdin) is returned.  The input is
-not line-buffered.  If there is a character pending from
-@ref{ungetch}, it is returned instead.  The character is echoed to
-the screen.
+A single character from the predefined standard input handle is read and
+returned.  The input is not buffered.  If there is a character pending
+from @code{ungetch} (@pxref{ungetch}), it is returned instead.  The
+character is echoed to the screen.  This function doesn't check for
+special characters like @kbd{Ctrl-@key{C}}.
+
+If the standard input handle is connected to the console, any pending
+output in the @code{stdout} and @code{stderr} streams is flushed before
+reading the input, if these streams are connected to the console.
 
 @subheading Return Value
 

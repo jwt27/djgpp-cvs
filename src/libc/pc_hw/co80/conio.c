@@ -8,6 +8,7 @@
 #include <stdarg.h>
 #include <pc.h>
 #include <errno.h>
+#include <unistd.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/farptrgs.h>
@@ -398,6 +399,16 @@ getch(void)
 {
   __dpmi_regs regs;
   int c;
+
+  /* Flush any buffered output, otherwise they might get confusing
+     out-of-order execution (and we get to answer FAQs).  */
+  if (isatty(0))
+  {
+    if ((stdout->_flag&_IOLBF) && isatty(fileno(stdout)))
+      fflush(stdout);
+    if ((stderr->_flag&_IOLBF) && isatty(fileno(stderr)))
+      fflush(stderr);
+  }
   if (char_avail)
   {
     c = ungot_char;
