@@ -16,10 +16,6 @@
 #include <errno.h>
 #endif
 
-#ifdef __DJGPP__
-#define tbsize _go32_info_block.size_of_transfer_buffer
-#endif
-
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -209,7 +205,7 @@ void coff2exe(char *fname)
      */
     r.x.ax = 0x3f00; /* dos read from file handle function */
     r.x.bx = ifile;
-    r.x.cx = tbsize; /* number of bytes to read */
+    r.x.cx = __tb_size; /* number of bytes to read */
     r.x.dx = __tb & 15; /* transfer buffer offset */
     r.x.ds = __tb / 16; /* transfer buffer segment */
     __dpmi_int(0x21, &r);
