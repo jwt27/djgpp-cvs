@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
 #include <libc/stubs.h>
@@ -121,7 +122,8 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
    /* Check for symlink file header */
    if (strncmp(buf, _SYMLINK_PREFIX, _SYMLINK_PREFIX_LEN))
    {
-      close(fd);
+      if (!__fhandle)
+         close(fd);
       errno = EINVAL;
       return -1;
    }
