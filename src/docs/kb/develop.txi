@@ -256,7 +256,7 @@ Command-line options should use the @samp{@@samp@{@}} or
 @samp{@@option@{@}} mark-up.  @samp{@@option@{@}} is new in Texinfo 4.0.
 
 @item
-Names of programs should use @samp{@@code@{@}} (unless program's name
+Names of programs should use @samp{@@command@{@}} (unless program's name
 has become a proper name, like GCC or GDB).
 
 @item
