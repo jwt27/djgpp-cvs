@@ -42,6 +42,13 @@ int	isblank(int c);
 
 #ifndef __STRICT_ANSI__
 
+int	_tolower(int c);
+int	_toupper(int c);
+
+#ifndef __dj_ENFORCE_FUNCTION_CALLS
+#include <inlines/ctype.hp>
+#endif /* !__dj_ENFORCE_FUNCTION_CALLS */
+
 #ifndef _POSIX_SOURCE
 
 int	isascii(int c);
