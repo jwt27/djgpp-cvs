@@ -13,6 +13,7 @@ SRC += getwd.c
 SRC += lchown.c
 SRC += llseek.c
 SRC += nice.c
+SRC += readlink.c
 SRC += sync.c
 SRC += truncate.c
 SRC += usleep.c

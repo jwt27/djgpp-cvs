@@ -138,6 +138,7 @@ char *		getwd(char *__buffer);
 int             lchown(const char * file, int owner, int group);
 offset_t	llseek(int _fildes, offset_t _offset, int _whence);
 int		nice(int _increment);
+int             readlink(const char * __file, char * __buffer, size_t __size);
 void *		sbrk(int _delta);
 int		symlink (const char *, const char *);
 int		sync(void);
