@@ -189,6 +189,7 @@ do_faulting_finish_message(int fake_exception)
   unsigned long signum = __djgpp_exception_state->__signum;
   unsigned excpt_stack_addr = (unsigned)&djgpp_exception_stack;
   int i;
+  const char *prog_name;
   
   /* check video mode for original here and reset (not if PC98) */
   if(ScreenPrimary != 0xa0000 && _farpeekb(_dos_ds, 0x449) != old_video_mode) {
@@ -256,8 +257,9 @@ do_faulting_finish_message(int fake_exception)
   err("\r\nebp="); itox(__djgpp_exception_state->__ebp, 8);
   err(" esp="); itox(__djgpp_exception_state->__esp, 8);
   err(" program=");
-  for (i=0; __dos_argv0[i]; i++);
-  write(STDERR_FILENO, __dos_argv0, i);
+  prog_name = __dos_argv0 ? __dos_argv0 : "<??UNKNOWN??>";
+  for (i=0; prog_name[i]; i++);
+  write(STDERR_FILENO, prog_name, i);
   err("\r\n");
   dump_selector("cs", __djgpp_exception_state->__cs);
   dump_selector("ds", __djgpp_exception_state->__ds);
