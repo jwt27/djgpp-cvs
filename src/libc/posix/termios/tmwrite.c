@@ -31,6 +31,7 @@ struct screen_info
   int max_col;
   unsigned char active_page;
   unsigned long video_buffer;
+  unsigned int is_mono : 1;
 };
 
 /* Console command parser */
@@ -74,7 +75,13 @@ void __libc_termios_init_write(void)
   screen.active_page = _farnspeekb(0x462);
   screen.max_row = (int)_farnspeekb(0x484);
   screen.max_col = (int)_farnspeekw(0x44a) - 1;
-  screen.video_buffer = 0xb800 * 16;
+
+  /* Use the current mode to determine
+     if the screen is in monochrome mode.  */
+  screen.is_mono = (_farnspeekb(0x449) == 7);
+
+  /* Determine the video offset.  */
+  screen.video_buffer = screen.is_mono ? 0xb000 * 16 : 0xb800 * 16;
 
   r.h.ah = 0x08;
   r.h.bh = screen.active_page;
@@ -465,12 +472,12 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
 
     /* SU: Scroll Up */
     case 'S':
-      scroll_forward(0, 0, 0, screen.max_row, 0, -GET_ARG(0, 1));
+      scroll_backward(0, GET_ARG(0, 1), 0, screen.max_row, 0, 0);
       break;
 
     /* ST: Scroll Down */
     case 'T':
-      scroll_backward(0, 0, 0, screen.max_row, 0, GET_ARG(0, 1));
+      scroll_forward(0, 0, 0, screen.max_row, 0, GET_ARG(0, 1));
       break;
 
     /* ICH: Insert Character */
@@ -601,6 +608,8 @@ clear_screen(int x1, int y1, int x2, int y2)
     _farnspokew(ptr, fill);
 }
 
+/* Move the area (x1, y1), (x2, y2) to
+   (xdst, ydst), ((xdst + (x2 - x1)), (ydst + (y2 - y1))). */
 static void
 scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
 {
@@ -621,7 +630,18 @@ scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   src_end = get_video_offset(x1, y1);
   screen_end = get_video_offset(screen.max_col, screen.max_row);
 
-  /* Sanity check.  */
+  /* Quit if the start of the source area is off the screen.  */
+  if (src_end > screen_end)
+    return;
+
+  /* Clear area if all of the destination area is off the screen.  */
+  if (dst_end > screen_end)
+  {
+    clear_screen(x1, y1, screen.max_col, screen.max_row);
+    return;
+  }
+
+  /* Adjust pointers if part of destination area is past end of screen.  */
   if (dst_ptr > screen_end)
   {
     src_ptr -= (dst_ptr - screen_end);
@@ -677,12 +697,15 @@ scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
     _farnspokew(src_end, fill);
 }
 
+/* Move the area (x1, y1), (x2, y2) to
+   (xdst, ydst), ((xdst + (x2 - x1)), (ydst + (y2 - y1))). */
 static void
 scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
 {
   unsigned short fill;
   unsigned long fill_l;
   unsigned long dst_ptr, src_ptr, dst_end, src_end;
+  unsigned long screen_end;
   int xdst2, ydst2;
 
   xdst2 = xdst + (x2 - x1);
@@ -693,14 +716,24 @@ scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   src_ptr = get_video_offset(x1, y1);
   dst_end = get_video_offset(xdst2, ydst2);
   src_end = get_video_offset(x2, y2);
+  screen_end = get_video_offset(screen.max_col, screen.max_row);
 
-  /* Sanity check.  */
+  /* Quit if the start of the source area is off the screen.  */
+  if (src_ptr > screen_end)
+    return;
+
+  /* Quit if the end of the destination area is off the screen.  */
+  if (dst_end < screen.video_buffer)
+    return;
+
+  /* Don't bother with copying outside the video buffer area.  */
   if (dst_ptr < screen.video_buffer)
   {
     src_ptr += (screen.video_buffer - dst_ptr);
     dst_ptr = screen.video_buffer;
   }
 
+  /* On to business.  */
   fill = ' ' | (screen.attrib << 8);
   fill_l = fill | (fill << 16);
 
