@@ -139,7 +139,10 @@ NOP = @$(MISC)
 
 .PRECIOUS: %.exe %.out %.err
 
-$(INFO)/%.inf : %.tex
+$(INFO)/%.info : %.tex
+	makeinfo --no-split $<
+
+$(INFO)/%.info : %.txi
 	makeinfo --no-split $<
 
 $(BIN)/%.exe : $C %.o $L
