@@ -208,62 +208,32 @@ void load_npx (void)
   asm volatile ("frstor %0" : "=m" (npx));
 }
 
-static int _DPMIsetBreak(unsigned short sizetype, unsigned vaddr)
-{
-	int handle;
-
-	asm volatile(						       "\n\
-	    movw   %1,%%dx						\n\
-	    movl   %2,%%ecx						\n\
-	    movl   %%ecx,%%ebx						\n\
-	    shrl   $16,%%ebx						\n\
-	    movw   $0x0b00,%%ax						\n\
-	    int    $0x31						\n\
-	    jnc    3f							\n\
-	    xorl   %%ebx,%%ebx						\n\
-	    decl   %%ebx						\n\
-	    jmp    1f							\n\
-3:          movzwl %%bx,%%ebx						\n\
-1:	    movl   %%ebx,%0						\n\
-	    "
-	    : "=g" (handle)			/* outputs */
-	    : "g" (sizetype), "g"  (vaddr)	/* inputs */
-	    : "ax", "bx", "cx", "dx"		/* regs used */
-	);
-	return handle;
-}
-
 static int _DPMIcancelBreak(int handle)
 {
-	unsigned state;
+  int rv, state;
 
-	asm volatile(						       "\n\
-	    movl   %1,%%ebx						\n\
-	    movw   $0x0b02,%%ax						\n\
-	    int    $0x31						\n\
-	    jnc    2f							\n\
-	    xorl   %%eax,%%eax                                          \n\
-2:	    andl   $1,%%eax						\n\
-	    pushl  %%eax						\n\
-	    movw   $0x0b01,%%ax						\n\
-	    int    $0x31						\n\
-	    popl   %0							\n\
-	    "
-	    : "=g" (state)			/* outputs */
-	    : "g"  (handle)			/* inputs */
-	    : "ax", "bx"			/* regs used */
-	);
-	return state;
+  rv = __dpmi_get_state_of_debug_watchpoint(handle, &state);
+  if(rv == -1) {
+    printf("DPMI get watchpoint state failed for handle 0x%x\n",handle);
+    state = 0;
+  }
+  rv = __dpmi_clear_debug_watchpoint(handle);
+  if(rv == -1)
+    printf("DPMI release watchpoint failed for handle 0x%x\n",handle);
+
+  /* printf("CancelBreak han=0x%x returns state=0x%x\n",handle,state); */
+  return (state & 1);
 }
 
 /* Can't be static because called in asm below; -O3 inlines if static */
 void _set_break_DPMI(void);
 void _set_break_DPMI(void)
 {
-  int i;
+  int i, rv;
   unsigned extract;
-  unsigned short sizetype;
+  unsigned char brtype;
   unsigned long vbase;
+  __dpmi_meminfo bpinfo;
   
   if(__dpmi_get_segment_base_address(app_ds, &vbase) == -1)
     return;
@@ -273,14 +243,21 @@ void _set_break_DPMI(void)
 
   for(i=0;i<4;i++)
     if( (edi.dr[7] >> (i*2))&3 ) {		/* enabled? */
-      sizetype = (extract >> (i*4)) & 3;    /* extract the type */
-      if(sizetype == 3) sizetype = 2;       /* convert for DPMI brain damage */
-      sizetype = (sizetype << 8) + ((extract >> (i*4+2)) & 3) + 1; /* & size */
-      breakhandle[i] = _DPMIsetBreak(sizetype, edi.dr[i]+vbase);
-      if(breakhandle[i] == -1)
-        printf("Error allocating DPMI breakpoint at address 0x%08lx\n",edi.dr[i]);
-      else
+      brtype = (extract >> (i*4)) & 3;	/* extract the type */
+      if(brtype == 3) brtype = 2;	/* convert for DPMI brain damage */
+      bpinfo.size = ((extract >> (i*4+2)) & 3) + 1;	/* size */
+      bpinfo.address = edi.dr[i]+vbase;
+      rv = __dpmi_set_debug_watchpoint(&bpinfo, brtype);
+      if(rv != -1) {
+        breakhandle[i] = bpinfo.handle;
+        /* printf("SetBreak typ=%d siz=%d at 0x%x returns han=%d\n",brtype,(int)bpinfo.size,(unsigned)bpinfo.address,breakhandle[i]); */
+        if(breakhandle[i] == (bpinfo.address >> 16) )	/* Win 2K bug */
+          breakhandle[i] = nset;
         nset++;
+      } else {
+        printf("Error allocating DPMI breakpoint type %d of size %d at address 0x%08lx\n",brtype,(int)bpinfo.size,edi.dr[i]);
+        breakhandle[i] = -1;
+      }
     } else
       breakhandle[i] = -1;
   return;
