@@ -30,3 +30,6 @@ different ones.
 @findex _go32_dpmi_allocate_real_mode_callback_iret
 
 Doc fixes for ansi/posix portability.
+
+handle error considions in @file{bin2h}
+@pindex bin2h
