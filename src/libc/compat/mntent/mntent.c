@@ -612,7 +612,7 @@ getmntent(FILE *filep)
       if (drive_number <= 2)
         {
           unsigned char buf[512];
-          int bios_status, count = 0;
+          int bios_status = 0, count = 0;
 	  int drive_a_remapped = drive_a_mapping == 2;
 
 	  /* When biosdisk is called, Windows 9X pops up the ugly

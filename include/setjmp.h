@@ -8,7 +8,7 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-typedef struct {
+typedef struct __jmp_buf {
   unsigned long __eax, __ebx, __ecx, __edx, __esi;
   unsigned long __edi, __ebp, __esp, __eip, __eflags;
   unsigned short __cs, __ds, __es, __fs, __gs, __ss;
