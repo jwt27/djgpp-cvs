@@ -37,7 +37,9 @@ that implies conversion to a @code{long} or @code{float} or
 @code{double}, like in @samp{%hD} or @samp{%hf}, it is generally
 ignored.
 
-@item The conversion type specifier:
+@item The conversion type specifier@footnote{Some of the combinations
+listed below are non-standard.  If you use the non-standard specifiers,
+a compiler could complain.}:
 
 @table @code
 

@@ -90,19 +90,21 @@ A signed long integer
 @item e
 @itemx E
 
-A floating point number (double or long double).  The exponent case matches
-the specifier case.  The representation always has an exponent.
+A floating point number (float or double).  For long double, use
+@code{"Le"} or @code{"LE"}.  The exponent case matches the specifier
+case.  The representation always has an exponent.
 
 @item f
 
-A floating point number (double or long double).  The representation
-never has an exponent. 
+A floating point number (float or double).  For long double, use
+@code{"Lf"}.  The representation never has an exponent.
 
 @item g
 @itemx G
 
-A floating point number (double or long double).  The exponent case matches
-the specifier case.  The representation has an exponent if it needs one.
+A floating point number (float or double).  For long double, use
+@code{"Lg"} or @code{"LG"}.  The exponent case matches the specifier
+case.  The representation has an exponent if it needs one.
 
 @item i
 
