@@ -575,3 +575,13 @@ converted to @file{.tgz} only at the end of a file name.  @file{++} is
 converted to @file{xx} (instead of @file{plus} in previous versions),
 and this conversion is performed for all occurrences of @file{++} in a
 file name (previous versions only converted the first occurrence).
+
+@pindex gxx@r{, and missing libgpp.a}
+@cindex @file{libstdcxx.a}, and @code{gxx}
+The @code{gxx} compiler driver no longer reports an error if the
+optional GNU C@t{++} class library @file{libgpp.a} is not installed.  If
+@file{libgpp.a} cannot be found where @code{gcc} would look for it,
+@code{gxx} does not pass the @samp{-lgpp} option to the linker.  Also,
+if the standard C@t{++} library, @file{libstdcxx.a}, cannot be found,
+@code{gxx} now tries @file{libstdcx.a} and @file{libstd~1.a}, in case
+the user has some LFN-related installation @emph{snafu}.
