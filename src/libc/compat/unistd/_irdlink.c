@@ -98,7 +98,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
       } 
    }
 
-   bytes_read = read(fd, &buf, _SYMLINK_FILE_LEN);
+   bytes_read = _read(fd, &buf, _SYMLINK_FILE_LEN);
 
    if (__fhandle)
       lseek(__fhandle, old_pos, SEEK_SET);
