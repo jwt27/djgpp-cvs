@@ -14,7 +14,7 @@
 
 char *predefs[] = { "main", "edata", "end", "etext", "_environ",
 		    "__udivdi3", "__umoddi3", "__divdi3",
-		    "__moddi3", 0 };
+		    "__moddi3", "__cmpdi2", 0 };
 
 /* Note: tzname is POSIX, but we list it here because it is a datum,
    not a function, and we can't stub it.  ctime() sets tzname, and
