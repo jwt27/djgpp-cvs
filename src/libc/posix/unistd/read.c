@@ -6,11 +6,24 @@
 #include <io.h>
 
 #include <libc/dosio.h>
+#include <libc/ttyprvt.h>
+
+int (*__libc_read_termios_hook)(int handle, void *buffer, size_t count,
+				ssize_t *rv) = NULL;
 
 ssize_t
 read(int handle, void* buffer, size_t count)
 {
   ssize_t ngot;
+
+  /* termios special hook */
+  if (__libc_read_termios_hook != NULL)
+    {
+      ssize_t rv;
+      if (__libc_read_termios_hook(handle, buffer, count, &rv) != 0)
+        return rv;
+    }
+
   ngot = _read(handle, buffer, count);
   if(ngot <= 0)
     return ngot;

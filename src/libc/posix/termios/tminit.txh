@@ -1,0 +1,17 @@
+@node __libc_termios_init, termios
+@subheading Syntax
+
+@example
+#include <libc/ttyprvt.h>
+
+void __libc_termios_init (void);
+@end example
+
+@subheading Description
+
+This function sets read/write hooks for the termios emulation and
+import parameters. Currently importing parameters is not supported,
+the emulation is resolved by only internal(static) parameters.  Note
+that this function is called by tcXXX function automatically.
+
+

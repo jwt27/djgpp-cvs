@@ -2,71 +2,82 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
 #include <fcntl.h>
+#include <go32.h>
+#include <dpmi.h>
 #include <io.h>
 #include <errno.h>
+#include <libc/farptrgs.h>
 
 #include <libc/dosio.h>
-#include <libc/bss.h>
+#include <libc/ttyprvt.h>
 
-static char *sbuf = 0;
-static size_t sbuflen = 0;
+#define tblen _go32_info_block.size_of_transfer_buffer
 
-static int write_count = -1;
+int (*__libc_write_termios_hook)(int handle, const void *buffer, size_t count,
+				 ssize_t *rv) = NULL;
 
 ssize_t
 write(int handle, const void* buffer, size_t count)
 {
+  const char *buf = (const char *)buffer;
+  int bytes_in_tb = 0;
+  int offset_into_buf = 0;
+  __dpmi_regs r;
+
+  /* termios special hook */
+  if (__libc_write_termios_hook != NULL)
+    {
+      ssize_t rv;
+      if (__libc_write_termios_hook(handle, buffer, count, &rv) != 0)
+        return rv;
+    }
+
   if (count == 0)
     return 0; /* POSIX.1 requires this */
 
   if(__file_handle_modes[handle] & O_BINARY)
-    return _write(handle, buffer, count);
-  else
+    return _write(handle, buf, count);
+
+  while (offset_into_buf < count)
   {
-    int nput, ocount;
-    unsigned bufp=0, sbufp=0, crcnt=0;
-    const char *buf;
-    ocount = count;
-
-    /* Force reinitialization in restarted programs (emacs).  */
-    if (write_count != __bss_count)
+    _farsetsel(_dos_ds);
+    while (bytes_in_tb < tblen && offset_into_buf < count)
     {
-      write_count = __bss_count;
-      sbuf = 0;
-      sbuflen = 0;
-    }
-
-    if(sbuflen < 2*count)
-    {
-      if(sbuf != 0)
-	free(sbuf);
-      sbuflen = 2*count;
-      sbuf = (char *)malloc(sbuflen);
-      if (sbuf == 0)
+      if (buf[offset_into_buf] == '\n')
       {
-        errno = ENOMEM;
-        return -1;
+	if (bytes_in_tb == tblen - 1)
+	  break; /* can't fit two more */
+	_farnspokeb(__tb + bytes_in_tb, '\r');
+	bytes_in_tb++;
       }
+      _farnspokeb(__tb + bytes_in_tb, buf[offset_into_buf]);
+      bytes_in_tb++;
+      offset_into_buf++;
     }
-    buf = buffer;
-    while (ocount--)
+
+    /* we now have a transfer buf stuffed with data; write it out */
+    r.x.ax = 0x4000;
+    r.x.bx = handle;
+    r.x.cx = bytes_in_tb;
+    r.x.dx = __tb & 15;
+    r.x.ds = __tb / 16;
+    __dpmi_int(0x21, &r);
+    if (r.x.flags & 1)
     {
-      if(buf[bufp] == 10)
-      {
-	crcnt++;
-	sbuf[sbufp++] = 13;
-      }
-      sbuf[sbufp++] = buf[bufp++];
+      errno = __doserr_to_errno(r.x.ax);
+      return -1;
     }
-    ocount = count;
-    count += crcnt;
-    buffer = sbuf;
-    nput = _write(handle, buffer, count);
-    if (nput < ocount)
-      return nput;		/* Maybe disk full? */
-    return ocount;		/* But don't return count with CR's (TC) */
+
+    if (r.x.ax < bytes_in_tb) /* disk full? */
+    {
+      offset_into_buf += r.x.ax;
+      errno = ENOSPC;
+      return count - offset_into_buf;
+    }
+
+    bytes_in_tb = 0;
   }
+
+  return count;	/* Don't return count with CR's (TC) */
 }
