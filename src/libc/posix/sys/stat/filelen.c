@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* This is file FILELEN.C */
 /*
@@ -11,6 +12,10 @@
 #include <errno.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
+#include <go32.h>
+#include <sys/farptr.h>
+#include <dos.h>
+#include <fcntl.h>
 
 long __filelength(int);
 
@@ -21,6 +26,31 @@ __filelength(int fhandle)
   unsigned short fpos_high, fpos_low;
   long           retval;
 
+  /* Use the LFN API when available to get the file length.  */
+  if (_USE_LFN)
+  {
+    regs.x.ax = 0x71A6;
+    regs.x.bx = fhandle;
+    regs.x.ds = __tb >> 4;
+    regs.x.dx = 0;
+    regs.x.flags |= 1;
+    __dpmi_int(0x21, &regs);
+    
+    if ((regs.x.flags & 1) == 0)
+    {
+      /* Offset 0x24 contains the low 32-bits of the file size.
+         Offset 0x20 contains the high 32-bits.  */
+      retval = _farpeekl(_dos_ds, __tb + 0x24);
+
+      if (_farpeekl(_dos_ds, __tb + 0x20) != 0)
+      {
+        errno = EOVERFLOW;
+        return -1L;
+      }
+      return retval;
+    }
+  }
+  
   /* Remember the current file position, so we can return there
      later.  */
   regs.x.ax = 0x4201;      /* set pointer from current position */
