@@ -4,8 +4,8 @@
 TOP=../..
 
 SRC += cbrt.S
-SRC += exp2.S
-SRC += exp10.S
+SRC += exp2.s
+SRC += exp10.s
 SRC += expm1.S
 SRC += log1p.S
 SRC += log2.S
