@@ -14,7 +14,7 @@ rand(void)
      Edition, Addison-Wesley, 1998, p. 106 (line 26) & p. 108 */
   next = next * 6364136223846793005LL + 1;
   /* was: next = next * 0x5deece66dLL + 11; */
-  return (int)((next >> 21) & RAND_MAX);
+  return (int)((next >> 32) & RAND_MAX);
 }
 
 void
