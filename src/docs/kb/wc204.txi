@@ -164,3 +164,14 @@ method of passing long command lines, so DJGPP programs can now be
 invoked with long command lines from the @file{COMMAND.COM}'s prompt,
 and also from other Windows programs which support @code{CMDLINE}.
 
+@findex _rename@r{, change letter-case of a file name}
+@findex rename@r{, change letter-case of a file name}
+The functions @code{rename} and @code{_rename} can now be used to change
+the letter case of a file name, like in this snippet:
+
+@example
+ rename ("makefile", "Makefile);
+@end example
+
+@noindent
+(This only works when the LFN support is available, of course.)

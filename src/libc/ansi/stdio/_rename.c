@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -24,17 +25,40 @@ int _rename(const char *old, const char *new)
   char tempfile[FILENAME_MAX], tempfile1[FILENAME_MAX];
   const char *orig = old;
   int lfn_fd = -1;
+  int identical_but_for_case = 0;
 
-  /* If OLD and NEW are the same file, do nothing.  */
   if (__file_exists(new)
       && strcmp(_truename(old, tempfile), _truename(new, tempfile1)) == 0)
-    return 0;
+    {
+      /* NEW might seem to exist because the filesystem is case-
+	 insensitive, if OLD and NEW are identical but for the
+	 letter case.  Allow renaming `foo' into `Foo' under LFN.  */
+      if (use_lfn)
+	{
+	  const char *s1 = old + strlen(old), *s2 = new + strlen(new);
+
+	  /* Find the basename of both OLD and NEW.  */
+	  while (s1 > old && s2 > new
+		 && strchr(":/\\", s1[-1]) == NULL
+		 && strchr(":/\\", s2[-1]) == NULL)
+	  {
+	    s1--;
+	    s2--;
+	  }
+	  /* If OLD and NEW are really the same file, do nothing.  */
+	  if (strcmp(s1, s2) == 0)
+	    return 0;
+	  identical_but_for_case = 1;
+	}
+      else
+	return 0;  /* no LFN; foo and Foo ar *always* the same file */
+    }
 
   r.x.dx = __tb_offset;
   r.x.di = __tb_offset + olen;
   r.x.ds = r.x.es = __tb_segment;
 
-  if (use_lfn)
+  if (use_lfn && !identical_but_for_case)
   {
     /* Windows 95 bug: for some filenames, when you rename
        file -> file~ (as in Emacs, to leave a backup), the
@@ -108,6 +132,7 @@ int _rename(const char *old, const char *new)
     if(r.x.flags & 1)
     {
       if (i == 0
+	  && !identical_but_for_case /* don't nuke OLD! */
 	  && (r.x.ax == 5 || (r.x.ax == 2 && __file_exists(old))))
 	remove(new);		 /* and try again */
       else
@@ -115,7 +140,7 @@ int _rename(const char *old, const char *new)
 	errno = __doserr_to_errno(r.x.ax);
 
 	/* Restore to original name if we renamed it to temporary.  */
-	if (use_lfn)
+	if (use_lfn && !identical_but_for_case)
 	{
 	  if (lfn_fd != -1)
 	  {
