@@ -21,6 +21,7 @@
 #include <io.h>
 
 extern char __libdbg_ident_string[];
+static char *id = __libdbg_ident_string;
 
 #define MEM_HANDLE_COUNT	256
 #define DESCRIPTOR_COUNT	128
