@@ -13,7 +13,6 @@ extern "C" {
 #define FNM_NOESCAPE	0x01
 #define FNM_PATHNAME	0x02
 #define FNM_PERIOD	0x04
-#define FNM_NOCASE	0x08
 
 #define FNM_NOMATCH	1
 #define FNM_ERROR	2
@@ -21,6 +20,10 @@ extern "C" {
 int fnmatch(const char *_pattern, const char *_string, int _flags);
 
 #ifndef _POSIX_SOURCE
+
+#define FNM_NOCASE	0x08
+#define FNM_CASEFOLD	FNM_NOCASE /* compatibility with GNU fnmatch */
+#define FNM_IGNORECASE	FNM_NOCASE /* compatibility with Solaris */
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
