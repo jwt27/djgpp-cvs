@@ -5,18 +5,19 @@
 @example
 #include <stdio.h>
 
-FILE *popen(const char *program, const char *mode);
+FILE *popen(const char *cmd, const char *mode);
 @end example
 
 @subheading Description
 
-This function executes the named @code{program} and attaches either its
-input stream or its output stream to the returned file.  While the file
-is open, the calling program can write to the program (if the program
-was open for writing) or read the program's output (if the program was
-opened for reading).  When the program is done, or if you have no more
-input for it, pass the file pointer to @code{pclose} (@pxref{pclose}),
-which terminates the program. 
+This function executes the command or program specified by @code{cmd}
+and attaches either its input stream or its output stream
+to the returned file.  While the file is open, the calling program
+can write to the program (if the program was open for writing)
+or read the program's output (if the program was opened for reading).
+When the program is done, or if you have no more input for it, pass
+the file pointer to @code{pclose} (@pxref{pclose}), which terminates
+the program. 
 
 Since MS-DOS does not support multitasking, this function actually runs
 the entire program when the program is opened for reading, and stores
