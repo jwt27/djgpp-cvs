@@ -654,8 +654,9 @@ system (const char *cmdline)
 	    errno = EINVAL;
 	    goto leave;
 	  }
-	  *fp = memcpy ((char *)alloca (v - u + 1), u, v - u);
-	  (*fp)[v - u] = 0;
+	  /* The target of redirection might be quoted, so we need to
+	     unquote it.  */
+	  *fp = __unquote ((char *)alloca (v - u + 1), u, v);
 	  strcpy (t, v);
 	  again = 1;
 	  break;

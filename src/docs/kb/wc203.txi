@@ -176,3 +176,8 @@ prevent the startup code from recognizing section names.
 @pindex utod
 @code{dtou} and @code{utod} no longer overwrite the stack when invoked
 on file names longer than 80 characters.
+
+@findex system
+@code{system} works when its argument uses redirection to/from quoted
+file names (e.g., when the file name includes embedded whitespace).
+
