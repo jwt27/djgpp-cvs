@@ -1,6 +1,9 @@
 @node __set_fd_properties, io
 @findex __set_fd_properties
 @tindex fd_properties@r{ structure}
+@cindex fd_props
+@cindex fd_properties
+@cindex file descriptor properties
 @subheading Syntax
 
 @example
@@ -50,12 +53,21 @@ The file pointer will be set to the end of file before each write.
 
 @end table
 
-For more information, see @ref{__clear_fd_properties} and
-@ref{__dup_fd_properties}.
+The @code{flags} can be manipulated using
+@code{__set_fd_flags} (@pxref{__set_fd_flags}),
+@code{__clear_fd_flags} (@pxref{__clear_fd_flags})
+and @code{__get_fd_flags} (@pxref{__get_fd_flags}).
+
+The file name can be retrieved using @code{__get_fd_name}
+(@pxref{__get_fd_name}).
+
+For more information, see @code{__clear_fd_properties}
+(@pxref{__clear_fd_properties}) and @code{__dup_fd_properties}
+(@pxref{__dup_fd_properties}).
 
 @subheading Return Value
 
-Returns 0 on success. Returns -1 when unable to store the information.
+Returns 0 on success.  Returns -1 when unable to store the information.
 
 @subheading Portability
 
@@ -79,8 +91,9 @@ no longer valid.  The usage count of the associated @code{fd_properties} struct
 is decremented.  And if it becomes zero, this function performs cleanup
 and releases the memory used by the @code{fd_properties} struct.
 
-For more information, see @ref{__set_fd_properties} and
-@ref{__dup_fd_properties}.
+For more information, see @code{__set_fd_properties}
+(@pxref{__set_fd_properties}) and @code{__dup_fd_properties}
+(@pxref{__dup_fd_properties}).
 
 @subheading Return Value
 
@@ -104,11 +117,12 @@ void __dup_fd_properties(int existing_handle, int new_handle);
 @subheading Description
 
 Causes the new file descriptor @var{new_handle} to refer to the same
-@code{fd_properties} struct as @var{existing_handle}.  
+@code{fd_properties} struct as @var{existing_handle}.
 This internal function is called by @code{dup} and @code{dup2}.
 
-For more information, see @ref{__set_fd_properties} and
-@ref{__clear_fd_properties}.
+For more information, see @code{__set_fd_properties}
+(@pxref{__set_fd_properties}) and
+@code{__clear_fd_properties} (@pxref{__clear_fd_properties}).
 
 @subheading Return Value
 
@@ -118,3 +132,139 @@ None.
 
 @portability !ansi, !posix
 
+@node __has_fd_properties, io
+@findex __has_fd_properties
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+int __has_fd_properties(int fd);
+@end example
+
+@subheading Description
+
+This internal function checks whether there are any properties associated
+with the file descriptor @var{fd}.
+
+@subheading Return Value
+
+Non-zero if @var{fd} has any properties; zero otherwise.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __set_fd_flags, io
+@findex __set_fd_flags
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+void __set_fd_flags(int fd, unsigned long flags);
+@end example
+
+@subheading Description
+
+This internal function adds the combination of flags @var{flags} to
+the flags associated with the file descriptor @var{fd}.  The flags are
+some properties that may be associated with a file descriptor
+(@pxref{__set_fd_properties}).
+
+The caller should first check that @var{fd} has properties associated
+with it, by calling @code{__has_fd_properties}
+(@pxref{__has_fd_properties}).
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __clear_fd_flags, io
+@findex __clear_fd_flags
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+void __clear_fd_flags(int fd, unsigned long flags);
+@end example
+
+@subheading Description
+
+This internal function clears the combination of flags @var{flags} from
+the flags associated with the file descriptor @var{fd}.  The flags are
+some properties that may be associated with a file descriptor
+(@pxref{__set_fd_properties}).
+
+The caller should first check that @var{fd} has properties associated
+with it, by calling @code{__has_fd_properties}
+(@pxref{__has_fd_properties}).
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __get_fd_flags, io
+@findex __get_fd_flags
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+unsigned long __get_fd_flags(int fd);
+@end example
+
+@subheading Description
+
+This internal functions gets the flags associated with file descriptor
+@var{fd}, if any.  The flags are some properties that may be associated
+with a file descriptor (@pxref{__set_fd_properties}).
+
+This function will return zero, if no flags are associated
+with @var{fd}.  The caller should first check that there are flags
+associated with @var{fd} using @code{__has_fd_properties}
+(@pxref{__has_fd_properties}), before calling @code{__get_fd_flags}.
+This will allow the cases of no flags and the flags being zero
+to be distinguished.
+
+@subheading Return Value
+
+The flags, if any; otherwise zero.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __get_fd_name, io
+@findex __get_fd_name
+@subheading Syntax
+
+@example
+#include <libc/fd_props.h>
+
+const char *__get_fd_name(int fd);
+@end example
+
+@subheading Description
+
+This internal function gets the file name associated with
+the file descriptor @var{fd}, if any.  The file name is one property
+that may be associated with a file descriptor
+(@pxref{__set_fd_properties}).
+
+@subheading Return Value
+
+A pointer to the file name, if any; otherwise @code{NULL}.
+
+@subheading Portability
+
+@portability !ansi, !posix
