@@ -3,7 +3,7 @@
 
 Here is a list of changes from DJGPP V2.02 to V2.03
 
-Bugs in the @code{ititmer} functions are fixed.  In particular:
+Bugs in the @code{itimer} functions are fixed.  In particular:
 
 @itemize @minus{}
 @item
