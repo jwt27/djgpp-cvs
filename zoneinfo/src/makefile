@@ -311,6 +311,9 @@ zic.exe:	$(TZCOBJS) yearistype
 
 yearistype:	yearistype.sh
 		$(UTIL) cp yearistype.sh yearistype
+ifeq ($(CROSS_BUILD),1)
+		chmod +x yearistype
+endif
 
 posix_only:	$(zic) $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
