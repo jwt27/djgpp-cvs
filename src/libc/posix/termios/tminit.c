@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -10,6 +11,7 @@
 #include <libc/stubs.h>
 #include <fcntl.h>
 #include <go32.h>
+#include <pc.h>
 #include <io.h>
 #include <limits.h>
 #include <signal.h>
@@ -28,6 +30,10 @@
 
 #define CPMEOF 0x1a /* Ctrl+Z */
 
+#define SENSE_NO_KEY	0
+#define SENSE_REG_KEY	1
+#define SENSE_EXT_KEY	2
+
 /* tty buffers */
 unsigned char __libc_tty_queue_buffer[_TTY_QUEUE_SIZE];
 struct tty __libc_tty_internal = TTYDEFAULT;
@@ -36,6 +42,13 @@ struct tty_editline __libc_tty_editline = { 0, { 0 }, { 0 }, };
 
 /* global only in the termios functions */
 int __libc_termios_hook_common_count = -1;
+
+/* static data */
+static unsigned ah_key_sense;
+static unsigned ah_key_get;
+static unsigned ah_ctrl_sense;
+
+static const unsigned char *ext_key_string;
 
 /* static functions */
 static void __libc_termios_fflushall (void);
@@ -87,6 +100,19 @@ __libc_termios_init (void)
       /* flush all buffered streams */
       __libc_termios_fflushall ();
 
+      if (_farpeekb (_dos_ds, 0x496) & 0x10)
+      {
+        ah_key_get = 0x10;
+        ah_key_sense = 0x11;
+        ah_ctrl_sense = 0x12;
+      }
+      else
+      {
+        ah_key_get = 0x00;
+        ah_key_sense = 0x01;
+        ah_ctrl_sense = 0x02;
+      }
+
       /* set special hooks */
       __libc_read_termios_hook = __libc_termios_read;
       __libc_write_termios_hook = __libc_termios_write;
@@ -102,16 +128,18 @@ __libc_termios_init (void)
 #define _REG_STATUS_ZF 0x40
 
 static inline int
-__direct_keysense (void)
+__direct_keysense(void)
 {
   __dpmi_regs r;
+  char is_ext_key;
 
-  r.h.ah = 0x01;
-  __dpmi_int (0x16, &r);
+  r.h.ah = ah_key_sense;
+  __dpmi_int(0x16, &r);
   if (r.x.flags & _REG_STATUS_ZF)
-    return 0;
+    return SENSE_NO_KEY;
 
-  return 1;
+  is_ext_key = (r.h.al == 0x00 || r.h.al == 0xe0);
+  return is_ext_key ? SENSE_EXT_KEY : SENSE_REG_KEY;
 }
 
 static inline unsigned char
@@ -119,10 +147,23 @@ __direct_keyinput (void)
 {
   __dpmi_regs r;
 
-  r.h.ah = 0x00;
+  r.h.ah = ah_key_get;
   __dpmi_int (0x16, &r);
 
   return r.h.al;
+}
+
+/* Get an extended key and return its encoding.  */
+static inline
+const unsigned char *
+set_ext_key_string(void)
+{
+  __dpmi_regs r;
+
+  r.h.ah = ah_key_get;
+  __dpmi_int(0x16, &r);
+
+  return (ext_key_string = __get_extended_key_string((int)r.h.ah));
 }
 
 #define _KEY_INS  0x80
@@ -331,6 +372,7 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
   unsigned char *wp;
   unsigned char ch;
   ssize_t n;
+  int sense;
 
   n = count;
   wp = buffer;
@@ -340,21 +382,49 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
     __libc_termios_clear_queue ();
 
   /* block until getting inputs */
-  while (! __direct_keysense ())
+  while (ext_key_string == NULL && __direct_keysense() == SENSE_NO_KEY)
     __dpmi_yield ();
 
   while (--n >= 0)
     {
       /* exhaust inputs ? */
-      if (! __direct_keysense ())
+      if (ext_key_string == NULL
+          && (sense = __direct_keysense()) == SENSE_NO_KEY)
 	break;
 
-      /* realy get */
-      ch = __direct_keyinput ();
+      if (ext_key_string)
+      {
+        ch = *ext_key_string;
+        ++ext_key_string;
+        if (*ext_key_string == '\0')
+          ext_key_string = NULL;
+      }
+      else if (sense == SENSE_REG_KEY)
+      {
+        ch = __direct_keyinput();
 
-      /* replace CTRL+SPACE with 0x00 */
-      if (ch == ' ' && __direct_ctrlsense ())
-	ch = '\0';
+        /* replace CTRL+SPACE with 0x00 */
+        if (ch == ' ' && __direct_ctrlsense ())
+	  ch = '\0';
+      }
+      else
+      {
+        if (set_ext_key_string() == NULL)
+        {
+          /* This extended key has no encoding.  If there are no keys
+             already stored in the buffer, wait for another key to ensure
+             at least one character is put into the buffer.  */
+          ++n;
+          if (wp == (unsigned char *)buffer)
+          {
+            while (__direct_keysense() == SENSE_NO_KEY)
+              __dpmi_yield();
+          }
+          continue;
+        }
+        ch = *ext_key_string;
+        ++ext_key_string;
+      }
 
       /* copy a character into buffer and echo */
       *wp++ = ch;
@@ -864,11 +934,13 @@ static void
 __libc_termios_fill_queue (void)
 {
   unsigned char ch;
+  int sense;
 
   while (1)
     {
       /* exhaust inputs ? */
-      if (! __direct_keysense ())
+      if (ext_key_string == NULL
+          && (sense = __direct_keysense()) == SENSE_NO_KEY)
 	{
 	  if (__libc_tty_p->t_lflag & ICANON)
 	    {
@@ -879,12 +951,29 @@ __libc_termios_fill_queue (void)
 	  return;
 	}
 
-      /* realy get */
-      ch = __direct_keyinput ();
+      /* really get */
+      if (ext_key_string)
+      {
+        ch = *ext_key_string;
+        ++ext_key_string;
+        if (*ext_key_string == '\0')
+          ext_key_string = NULL;
+      }
+      else  if (sense == SENSE_REG_KEY)
+      {
+        ch = __direct_keyinput();
 
-      /* replace CTRL+SPACE with 0x00 */
-      if (ch == ' ' && __direct_ctrlsense ())
-	ch = '\0';
+        /* replace CTRL+SPACE with 0x00 */
+        if (ch == ' ' && __direct_ctrlsense())
+	      ch = '\0';
+      }
+      else
+      {
+        if (set_ext_key_string() == NULL)
+          continue;
+        ch = *ext_key_string;
+        ++ext_key_string;
+      }
 
       /* input process if need */
       if (! (__libc_tty_p->t_status & _TS_LNCH) || ch != (unsigned char) _POSIX_VDISABLE)
