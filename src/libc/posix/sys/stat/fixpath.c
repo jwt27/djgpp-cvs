@@ -56,7 +56,7 @@ __get_current_directory(char *out, int drive_number)
       *out = '/';
       return out + strlen(out);
     } 
-    else if (_os_trueversion != 0x532 || !use_lfn)
+    else if (!use_lfn || _get_dos_version(1) != 0x532)
       /* Root path, don't insert "/", it'll be added later */
       return out;
   }
@@ -242,7 +242,7 @@ _fixpath(const char *in, char *out)
   /* switch FOO\BAR to foo/bar, downcase where appropriate */
   for (op = out + 3, name_start = op - 1; *name_start; op++)
   {
-    char long_name[FILENAME_MAX];
+    char long_name[FILENAME_MAX], short_name[13];
 
 #if 1
     /* skip multibyte character */
@@ -259,7 +259,7 @@ _fixpath(const char *in, char *out)
     {
       memcpy(long_name, name_start+1, op - name_start - 1);
       long_name[op - name_start - 1] = '\0';
-      if (_is_DOS83(long_name))
+      if (!strcmp(_lfn_gen_short_fname(long_name, short_name), long_name))
       {
 #if 0
 	while (++name_start < op)
