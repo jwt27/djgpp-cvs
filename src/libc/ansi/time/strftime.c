@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
@@ -220,7 +221,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
       case 'z':
 	if (!_add(t->__tm_gmtoff<0 ? "-" : "+", 0))
 	  return 0;
-	if (!_conv(t->__tm_gmtoff, 4, pad))
+	if (!_conv(t->__tm_gmtoff<0 ? -t->__tm_gmtoff : t->__tm_gmtoff, 4, pad))
 	  return 0;
 	continue;
       case 'Z':
