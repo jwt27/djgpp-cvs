@@ -563,3 +563,7 @@ This was due to incorrect optimization by the version of GCC used to
 produce @file{djdev202.zip}.  The new version of the emulator works
 around this bug by preventinging the compiler from performing these
 incorrect optimizations.
+
+@findex fsetpos@r{, return value}
+@code{fsetpos} no longer returns zero when it fails to move the file
+position pointer.
