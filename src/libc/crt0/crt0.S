@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -35,8 +36,9 @@
 	.comm	___djgpp_base_address, 4
 	.comm	___djgpp_selector_limit, 4
 	.comm	___djgpp_stack_limit, 4
+	.comm	__crt0_startup_flags, 4
+	.comm	___djgpp_ds_alias, 2
 	.lcomm	sel_buf, 8
-	/* ___djgpp_ds_alias defined in go32/exceptn.S */
 
 #define MULTIBLOCK 1
 

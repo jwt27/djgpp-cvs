@@ -35,7 +35,6 @@
 int __bss_count = 1;
 
 char **environ;
-int _crt0_startup_flags;	/* default to zero unless app overrides them */
 
 int __crt0_argc;
 char **__crt0_argv;
