@@ -1,3 +1,4 @@
+; Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 ; Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 ; Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 ; Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details
@@ -70,7 +71,7 @@
 	.org	0			; just in case
 stubinfo:
 stubinfo_magic:				; char [16]
-	.db	"go32stub, v 2.02"	; version may change, [0..7] won't
+	.db	"go32stub, v 2.04"	; version may change, [0..7] won't
 stubinfo_size:				; unsigned long
 	.dd	stubinfo_end		; bytes in structure
 stubinfo_minstack:			; unsigned long
