@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <io.h>
 #include <dos.h>
 #include <go32.h>
@@ -19,9 +20,14 @@ int _rename(const char *old, const char *new)
   int olen    = strlen(old) + 1;
   int i;
   int use_lfn = _USE_LFN;
-  char tempfile[FILENAME_MAX];
+  char tempfile[FILENAME_MAX], tempfile1[FILENAME_MAX];
   const char *orig = old;
   int lfn_fd = -1;
+
+  /* If OLD and NEW are the same file, do nothing.  */
+  if (__file_exists(new)
+      && strcmp(_truename(old, tempfile), _truename(new, tempfile1)) == 0)
+    return 0;
 
   r.x.dx = __tb_offset;
   r.x.di = __tb_offset + olen;

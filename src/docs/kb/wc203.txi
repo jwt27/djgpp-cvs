@@ -145,3 +145,8 @@ a character as part of the last element of the @code{argv[]} array.
 @code{fputs} now returns @code{EOF} when called on an unbuffered stream,
 and there's some error (such as @code{ENOSPC}) in writing to that
 stream.
+
+@findex _rename
+@findex rename
+If both arguments of @code{_rename} and @code{rename} refer to the same
+file, they no longer remove that file.
