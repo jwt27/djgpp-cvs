@@ -1,19 +1,23 @@
 @node spawn*, process
 @subheading Syntax
 
-@example
+@smallexample
 #include <process.h>
 
 int spawnl(int mode, const char *path, const char *argv0, ..., NULL);
-int spawnle(int mode, const char *path, const char *argv0, ..., NULL /*, const char **envp */);
+int spawnle(int mode, const char *path, const char *argv0, ...,
+            NULL /*, const char **envp */);
 int spawnlp(int mode, const char *path, const char *argv0, ..., NULL);
-int spawnlpe(int mode, const char *path, const char *argv0, ..., NULL /*, const char **envp */);
+int spawnlpe(int mode, const char *path, const char *argv0, ...,
+             NULL /*, const char **envp */);
 
 int spawnv(int mode, const char *path, const char **argv);
-int spawnve(int mode, const char *path, const char **argv, const char **envp);
+int spawnve(int mode, const char *path, const char **argv,
+            const char **envp);
 int spawnvp(int mode, const char *path, const char **argv);
-int spawnvpe(int mode, const char *path, const char **argv, const char **envp);
-@end example
+int spawnvpe(int mode, const char *path, const char **argv,
+             const char **envp);
+@end smallexample
 
 @subheading Description
 
@@ -127,3 +131,61 @@ char *args[] = @{
 spawnvpe(P_WAIT, "gcc", args, environ);
 @end example
 
+@c -----------------------------------------------------------------------
+
+@node __dosexec_find_on_path, process
+@subheading Syntax
+
+@example
+#include <stdio.h>
+#include <libc/dosexec.h>
+
+char *__dosexec_find_on_path(const char *program,
+                             char *envp[], char *buf);
+@end example
+
+@subheading Description
+
+This function searches for a program using a given path.  The program is
+searched for using a known set of executable extensions, e.g. @file{.exe}.
+These executable extensions are described for the @code{spawn*()} function
+(@pxref{spawn*}).
+
+Pass the program name in @var{program}, the environment array in
+@var{envp} and the output buffer in @var{buf}.  @var{envp} is an array
+of pointers to the environment variables; it must be terminated with a
+@code{NULL} pointer.  @var{buf} must be large enough to hold at least
+@samp{FILENAME_MAX} bytes.
+
+@var{envp} controls where @code{__dosexec_find_on_path} looks for the
+program.  If @var{envp} is @code{NULL}, then only the current directory
+is searched.  If @var{envp} contains the @samp{PATH} environment
+variable whose value lists several directories, then these directories
+are also searched.  The global variable @code{environ} is usually passed
+for @var{envp}.
+
+@subheading Return Value
+
+If the function finds the program, with or without one of the known
+executable extensions, either in the current directory or along
+the @samp{PATH} as recorded in @var{envp}, it puts the full pathname
+into @var{buf} and returns a pointer to @var{buf}.  Otherwise, it returns
+@code{NULL}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@smallexample
+ char shellpath[FILENAME_MAX];
+ extern char * __dosexec_find_on_path (const char *, char *[], char *);
+ extern char **environ;
+
+ /* See if we can find "/bin/sh.exe", "/bin/sh.com", etc.  */
+ if (__dosexec_find_on_path ("/bin/sh", (char **)0, shellpath)
+     /* If not found, look for "sh" along the PATH.  */
+     || __dosexec_find_on_path ("sh", environ, shellpath))
+   printf ("/bin/sh found as `%s'\n", shellpath);
+@end smallexample
