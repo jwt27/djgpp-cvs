@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -214,9 +215,6 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     if (   !match_dev_path(filename, DEV_ZERO_PATH)
 	&& !match_dev_path(filename, DEV_FULL_PATH))
       break;
-    
-    /* It's for us. */
-    emul = 1;
 
     /* Check whether the zero/full device has been installed. */
     if (match_dev_path(filename, DEV_ZERO_PATH) && !dev_zero_installed)
@@ -225,7 +223,10 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     if (match_dev_path(filename, DEV_FULL_PATH) && !dev_full_installed)
       break;
 
-    /* zero device _always_ exists. */
+    /* It's for us. */
+    emul = 1;
+
+    /* zero/full device _always_ exists, if installed. */
     if (open_mode & O_CREAT) {
       errno = EEXIST;
       *rv   = -1;	
@@ -576,16 +577,49 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     filename     = va_arg(args, char *);
     new_filename = va_arg(args, char *);
 
+    /* Check the filenames */
+    if (   !match_dev_path(filename, DEV_ZERO_PATH)
+	&& !match_dev_path(filename, DEV_FULL_PATH)
+        && !match_dev_path(new_filename, DEV_ZERO_PATH)
+	&& !match_dev_path(new_filename, DEV_FULL_PATH))
+      break;
+
+    /* Check whether the zero/full device has been installed. */
+    if (match_dev_path(filename, DEV_ZERO_PATH) && !dev_zero_installed)
+      break;
+
+    if (match_dev_path(filename, DEV_FULL_PATH) && !dev_full_installed)
+      break;
+
+    if (match_dev_path(new_filename, DEV_ZERO_PATH) && !dev_zero_installed)
+      break;
+
+    if (match_dev_path(new_filename, DEV_FULL_PATH) && !dev_full_installed)
+      break;
+
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
 
     /* Fail request */
+    /* It doesn't make sense to link to or from /dev/zero or /dev/full. */
     errno = EPERM;
     *rv   = -1;
     break;
 
   case __FSEXT_unlink:
     filename = va_arg(args, char *);
+
+    /* Check the filename */
+    if (   !match_dev_path(filename, DEV_ZERO_PATH)
+	&& !match_dev_path(filename, DEV_FULL_PATH))
+      break;
+
+    /* Check whether the zero/full device has been installed. */
+    if (match_dev_path(filename, DEV_ZERO_PATH) && !dev_zero_installed)
+      break;
+
+    if (match_dev_path(filename, DEV_FULL_PATH) && !dev_full_installed)
+      break;
 
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
