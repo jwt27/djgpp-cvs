@@ -944,7 +944,7 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   int i;
   int was_quoted = 0;	/* was the program name quoted? */
   char real_program[FILENAME_MAX];
-  int cmdline_len;
+  size_t cmdline_len;
   char *cmdline_var = NULL;
 
   if (!__solve_symlinks(program, real_program))
@@ -1034,7 +1034,7 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
 
   if ((cmdline_len = strlen(cmdline)) > CMDLEN_LIMIT)
   {
-    unsigned int cmdline_limit;
+    size_t cmdline_limit;
 
     cmdline_limit = _shell_cmdline_limit(comspec);
     if (cmdline_limit == 0)	/* unknown shell */

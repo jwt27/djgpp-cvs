@@ -401,7 +401,7 @@ void
 __djgpp_exception_toggle(void)
 {
   __dpmi_paddr except;
-  int i;
+  size_t i;
   
   for(i=0; i < EXCEPTION_COUNT; i++)
   {
@@ -516,7 +516,7 @@ __djgpp_exception_setup(void)
 {
   __dpmi_paddr except;
   __dpmi_meminfo lockmem;
-  int i;
+  size_t i;
 
   if (ScreenPrimary != 0xa0000)
     {
