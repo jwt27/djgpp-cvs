@@ -1,4 +1,4 @@
-/* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
