@@ -179,7 +179,7 @@ Installation
 4. Reboot.  This makes sure the two lines you added to autoexec.bat
    will take effect.  (On Windows NT and Windows 2000, the changes
    take effect immediately, so you you don't need to reboot there, but
-   you do have to close and reopen and command windows.)
+   you do have to close and reopen the DOS box windows.)
 
 5. Run the go32-v2.exe program without arguments:
 
