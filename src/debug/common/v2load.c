@@ -60,7 +60,7 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   unsigned client_cs, client_ds, my_ds;
   __dpmi_meminfo memblock;
   unsigned new_env_selector;
-  char true_name[200];
+  char true_name[FILENAME_MAX];
 
   _truename(program, true_name);
 
@@ -88,7 +88,7 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
     strcpy(si.magic, "go32stub, V 2.00");
     si.size = 0x44;
     si.minstack = 0x40000;
-    si.minkeep = 4096;			/* transfer buffer size */
+    si.minkeep = 16384;			/* transfer buffer size */
     memset(&si.basename, 0, 24);	/* Asciiz strings */
   }
   if (header[0] != 0x014c) {		/* COFF? */
@@ -134,7 +134,7 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   si.env_size += 4 + strlen(true_name);
 
   /* Allocate the dos memory for the environment and command line. */
-  i = __dpmi_allocate_dos_memory((si.minkeep + 256) / 16, (int *)&new_env_selector);
+  i = __dpmi_allocate_dos_memory((si.env_size + 256) / 16, (int *)&new_env_selector);
   if(i == -1)
     return -1;
 

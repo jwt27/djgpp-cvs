@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
@@ -20,6 +21,7 @@ exit(int status)
 {
   int i;
   struct __atexit *a = __atexit_ptr;
+  __atexit_ptr = 0; /* to prevent infinite loops */
   while (a)
   {
     (a->__function)();
