@@ -1,5 +1,6 @@
 @node getrlimit, unix
 @findex getrlimit
+@tindex rlimit@r{ structure}
 @subheading Syntax
 
 @example

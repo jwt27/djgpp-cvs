@@ -1,5 +1,6 @@
 @node glob, shell
 @findex glob
+@tindex glob_t@r{ type}
 @subheading Syntax
 
 @example

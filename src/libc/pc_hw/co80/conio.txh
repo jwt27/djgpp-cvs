@@ -472,6 +472,7 @@ manually (this is the function called by a static constructor).
 @c ----------------------------------------------------------------------
 @node gettextinfo, conio
 @findex gettextinfo
+@tindex text_info@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node _dos_getdiskfree, dos
 @findex _dos_getdiskfree
+@tindex diskfree_t@r{ structure}
 @subheading Syntax
 
 @example

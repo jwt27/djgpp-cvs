@@ -1,5 +1,6 @@
 @node times, time
 @findex times
+@tindex tms@r{ structure}
 @subheading Syntax
 
 @example

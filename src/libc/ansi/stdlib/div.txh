@@ -1,5 +1,6 @@
 @node div, math
 @findex div
+@tindex div_t@r{ type}
 @subheading Syntax
 
 @example

@@ -79,6 +79,11 @@ bdosptr(9, "Hello, there$", 0);
 @c -------------------------------------------------------------------------
 @node int86, dos
 @findex int86
+@tindex DWORDREGS@r{ structure}
+@tindex DWORDREGS_W@r{ structure}
+@tindex WORDREGS@r{ structure}
+@tindex BYTEREGS@r{ structure}
+@tindex REGS@r{ union}
 @subheading Syntax
 
 @example

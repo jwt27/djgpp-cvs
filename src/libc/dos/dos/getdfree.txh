@@ -1,5 +1,6 @@
 @node getdfree, file system
 @findex getdfree
+@tindex dfree@r{ structure}
 @subheading Syntax
 
 @example

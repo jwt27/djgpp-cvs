@@ -1,5 +1,6 @@
 @node stat, io
 @findex stat
+@tindex stat@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,6 +1,7 @@
 @c ----------------------------------------------------------------------
 @node matherr, math
 @findex matherr
+@tindex exception@r{ structure}
 @subheading Syntax
 
 @example

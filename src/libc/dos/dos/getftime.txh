@@ -1,5 +1,6 @@
 @node getftime, file system
 @findex getftime
+@tindex ftime@r{ structure}
 @subheading Syntax
 
 @example

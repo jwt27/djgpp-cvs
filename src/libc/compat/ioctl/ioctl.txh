@@ -1,5 +1,5 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.5 2003/01/29 12:36:02 peuha Exp $
+@c $Id: ioctl.txh,v 1.6 2003/02/07 18:13:52 richdawe Exp $
 @node ioctl (General description), io
 @findex ioctl@r{, General description}
 @code{ioctl} performs low level calls to communicate with device drivers. As
@@ -267,6 +267,7 @@ int main(int argc, char **argv)
 
 @node ioctl (UNIX), io
 @findex ioctl@r{, UNIX}
+@tindex winsize@r{ structure}
 @subheading Syntax
 
 @example

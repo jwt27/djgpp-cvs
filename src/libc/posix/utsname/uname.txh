@@ -1,5 +1,6 @@
 @node uname, unix
 @findex uname
+@tindex utsname@r{ structure}
 @subheading Syntax
 
 @example

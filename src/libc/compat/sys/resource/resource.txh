@@ -1,5 +1,6 @@
 @node getrusage, unix
 @findex getrusage
+@tindex rusage@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node _dos_getdate, dos
 @findex _dos_getdate
+@tindex dosdate_t@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node regcomp, string
 @findex regcomp
+@tindex regex_t@r{ type}
 @subheading Syntax
 
 @example

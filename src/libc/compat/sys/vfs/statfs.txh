@@ -1,5 +1,6 @@
 @node statfs, file system
 @findex statfs
+@tindex statfs@r{ structure}
 @subheading Syntax
 
 @example

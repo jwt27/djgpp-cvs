@@ -1,5 +1,6 @@
 @node dosexterr, dos
 @findex dosexterr
+@tindex DOSERROR@r{ structure}
 @subheading Syntax
 
 @example
@@ -325,6 +326,7 @@ int main(void)
 
 @node dostrerr, dos
 @findex dostrerr
+@tindex DOSERROR_STR@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node _go32_dpmi_get_free_memory_information, dpmi
 @findex _go32_dpmi_get_free_memory_information
+@tindex _go32_dpmi_meminfo@r{ type}
 @subheading Syntax
 
 @example

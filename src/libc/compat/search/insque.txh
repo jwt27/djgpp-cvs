@@ -1,5 +1,6 @@
 @node insque, misc
 @findex insque
+@tindex qelem@r{ structure}
 @subheading Syntax
 
 @example

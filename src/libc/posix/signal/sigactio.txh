@@ -1,5 +1,6 @@
 @node sigaction, signal
 @findex sigaction
+@tindex sigaction@r{ structure}
 @subheading Syntax
 
 @example

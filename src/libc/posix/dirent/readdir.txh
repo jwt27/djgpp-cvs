@@ -1,5 +1,6 @@
 @node readdir, file system
 @findex readdir
+@tindex dirent@r{ structure}
 @subheading Syntax
 
 @example

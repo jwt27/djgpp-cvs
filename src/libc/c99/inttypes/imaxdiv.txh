@@ -1,5 +1,6 @@
 @node imaxdiv, math
 @findex imaxdiv
+@tindex imaxdiv_t@r{ type}
 @subheading Syntax
 
 @example

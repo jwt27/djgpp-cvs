@@ -1,5 +1,6 @@
 @node findfirst, file system
 @findex findfirst
+@tindex ffblk@r{ structure}
 @subheading Syntax
 
 @example

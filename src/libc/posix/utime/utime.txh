@@ -1,5 +1,6 @@
 @node utime, file system
 @findex utime
+@tindex utimbuf@r{ structure}
 @subheading Syntax
 
 @example

@@ -120,6 +120,7 @@ if (now+new > max)
 
 @node mallinfo, memory
 @findex mallinfo
+@tindex mallinfo@r{ structure}
 @subheading Syntax
 
 @example

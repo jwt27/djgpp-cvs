@@ -36,6 +36,7 @@ Returns 0 on success, -1 on failure (and sets @code{errno}).
 @c ----------------------------------------------------------------------
 @node setitimer, process
 @findex setitimer
+@tindex itimerval@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node __set_fd_properties, io
 @findex __set_fd_properties
+@tindex fd_properties@r{ structure}
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @node ldiv, math
 @findex ldiv
+@tindex ldiv_t@r{ type}
 @subheading Syntax
 
 @example

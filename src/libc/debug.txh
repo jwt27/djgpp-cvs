@@ -39,6 +39,8 @@ The argument @var{start_state} is usually set by a preceding call to
 @c ----------------------------------------------------------------------
 @node save_npx, debugging
 @findex save_npx
+@tindex NPXREG@r{ type}
+@tindex NPX@r{ type}
 @subheading Syntax
 
 @example
@@ -165,6 +167,8 @@ and provided that a call to @code{save_npx} was issued before
 @c ----------------------------------------------------------------------
 @node run_child, debugging
 @findex run_child
+@tindex TSS@r{ structure}
+@tindex TSS@r{ type}
 
 @subheading Syntax
 
@@ -520,6 +524,8 @@ otherwise.
 
 @node redir_debug_init, debugging
 @findex redir_debug_init
+@tindex dbg_redirect@r{ structure}
+@tindex cmdline_t@r{ type}
 
 @subheading Syntax
 

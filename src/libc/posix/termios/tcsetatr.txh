@@ -1,5 +1,6 @@
 @node Termios functions, termios
 @cindex termios
+@tindex termios@r{ structure}
 
 The @code{termios} functions allow to control terminals and asynchronous
 communications ports.  The DJGPP implementation currently supports the

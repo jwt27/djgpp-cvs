@@ -1,5 +1,6 @@
 @node _bios_disk, bios
 @findex _bios_disk
+@tindex diskinfo_t@r{ structure}
 @subheading Syntax
 
 @example

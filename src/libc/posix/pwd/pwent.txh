@@ -1,5 +1,6 @@
 @node getpwent, unix
 @findex getpwent
+@tindex passwd@r{ structure}
 @subheading Syntax
 
 @example

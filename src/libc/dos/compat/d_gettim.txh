@@ -1,5 +1,6 @@
 @node _dos_gettime, dos
 @findex _dos_gettime
+@tindex dostime_t@r{ structure}
 @subheading Syntax
 
 @example

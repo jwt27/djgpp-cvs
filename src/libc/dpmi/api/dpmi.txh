@@ -6,15 +6,15 @@ and http://www.delorie.com/djgpp/doc/dpmi/.
 
 @node DPMI Overview, dpmi
 @vindex __dpmi_error
-@tindex __dpmi_raddr
-@tindex __dpmi_paddr
-@tindex __dpmi_meminfo
-@tindex __dpmi_regs
-@tindex __dpmi_version_ret
-@tindex __dpmi_free_mem_info
-@tindex __dpmi_memory_info
-@tindex __dpmi_callback_info
-@tindex __dpmi_shminfo
+@tindex __dpmi_raddr@r{ type}
+@tindex __dpmi_paddr@r{ type}
+@tindex __dpmi_meminfo@r{ type}
+@tindex __dpmi_regs@r{ type}
+@tindex __dpmi_version_ret@r{ type}
+@tindex __dpmi_free_mem_info@r{ type}
+@tindex __dpmi_memory_info@r{ type}
+@tindex __dpmi_callback_info@r{ type}
+@tindex __dpmi_shminfo@r{ type}
 
 @example
 extern unsigned short __dpmi_error;

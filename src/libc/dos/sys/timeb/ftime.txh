@@ -1,6 +1,7 @@
 @c ----------------------------------------------------------------------
 @node ftime, time
 @findex ftime
+@tindex timeb@r{ structure}
 @subheading Syntax
 
 @example

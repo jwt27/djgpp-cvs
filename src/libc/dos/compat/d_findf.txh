@@ -1,5 +1,6 @@
 @node _dos_findfirst, dos
 @findex _dos_findfirst
+@tindex find_t@r{ structure}
 @subheading Syntax
 
 @example

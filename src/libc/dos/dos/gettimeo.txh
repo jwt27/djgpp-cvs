@@ -1,5 +1,7 @@
 @node gettimeofday, time
 @findex gettimeofday
+@tindex timeval@r{ structure}
+@tindex timezone@r{ structure}
 @subheading Syntax
 
 @example

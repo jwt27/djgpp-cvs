@@ -1,5 +1,6 @@
 @node getdate, time
 @findex getdate
+@tindex date@r{ structure}
 @subheading Syntax
 
 @example

@@ -84,6 +84,7 @@ printf("The current time is %s", asctime(localtime(&now)));
 @c ----------------------------------------------------------------------
 @node gmtime, time
 @findex gmtime
+@tindex tm@r{ structure}
 @subheading Syntax
 
 @example

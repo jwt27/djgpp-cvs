@@ -46,6 +46,7 @@ not a real pointer and may only be used by @code{getmntent}.
 @c ----------------------------------------------------------------------
 @node getmntent, unix
 @findex getmntent
+@tindex mntent@r{ structure}
 @subheading Syntax
 
 @example

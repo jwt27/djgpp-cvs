@@ -1,5 +1,7 @@
 @node _check_v2_prog, process
 @findex _check_v2_prog
+@tindex _v1_stubinfo@r{ type}
+@tindex _v2_prog_type@r{ type}
 @subheading Syntax
 
 @example

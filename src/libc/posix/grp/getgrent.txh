@@ -1,6 +1,7 @@
 @c ----------------------------------------------------------------------
 @node getgrent, unix
 @findex getgrent
+@tindex group@r{ structure}
 @subheading Syntax
 
 @example
