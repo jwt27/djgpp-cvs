@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -885,6 +886,16 @@ static int script_exec(const char *program, char **argv, char **envp)
     spawnfunc = spawnve;	/* no need to search on PATH: we've found it */
   else
     return -1;
+
+  /* pinterp may contain backslashes because of __dosexec_find_on_path.
+     Convert them to slashes so Unix shell scripts can run without editing.  */
+  p = pinterp;
+  while (*p)
+  {
+    if ((*p) == '\\')
+      *p = '/';
+    ++p;
+  }
 
   i = (*spawnfunc)(P_WAIT, pinterp, newargs, envp);
   return i;
