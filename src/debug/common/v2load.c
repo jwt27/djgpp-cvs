@@ -109,10 +109,10 @@ make_proxy_var(const char *program, const char *cmdline,
   size_t argc;
   const char *beg, *end;
   char proxy[48];
-  int max_dos_mem;
+  extern int cmd_selector;	/* defined on dbgcom.c */
 
   /* Include the program name, a null terminator, and offset pointer
-     in the argument count.  */  
+     in the argument count.  */
   argc = 1;
   *tb_space = strlen(program) + 1 + sizeof(short);
 
@@ -126,7 +126,8 @@ make_proxy_var(const char *program, const char *cmdline,
     ++argc;
   }
 
-  *tbuf = __dpmi_allocate_dos_memory ((*tb_space + 15) >> 4, &max_dos_mem);
+  cmd_selector = 0;	/* if it stays 0, it wasn't allocated */
+  *tbuf = __dpmi_allocate_dos_memory ((*tb_space + 15) >> 4, &cmd_selector);
   if (*tbuf == -1)
     return 0;
 

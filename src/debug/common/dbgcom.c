@@ -1385,6 +1385,8 @@ static void (*oldINT)(int);
 static void (*oldQUIT)(int);
 static void (*oldILL)(int);
 
+int cmd_selector;	/* set by v2loadimage */
+
 void edi_init(jmp_buf start_state)
 {
   int i;
@@ -1438,7 +1440,9 @@ void edi_init(jmp_buf start_state)
   app_exit_cs=si.cs_selector;
   memset(dos_descriptors,0,sizeof(dos_descriptors));
   dos_descriptors[0] = _farpeekw(si.psp_selector,0x2c);
-  dos_descriptors[1] = si.psp_selector; 
+  dos_descriptors[1] = si.psp_selector;
+  if (cmd_selector)
+    dos_descriptors[2] = cmd_selector;
   /* set initial value of cur_pos */
   cur_pos = &excep_stack[1000-40];
   /* pattern fill exception stack for debugging */
