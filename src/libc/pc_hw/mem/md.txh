@@ -38,7 +38,7 @@ movedata(_dos_ds, 0xb8000 + ScreenCols()*2,
          _dos_ds, 0xb8000,
          ScreenCols() * (ScreenRows()-1) * 2);
 /* fill last row */
-movedata(_my_ds, (int)blank_row_buf,
+movedata(_my_ds(), (int)blank_row_buf,
          _dos_ds, 0xb8000 + ScreenCols()*(ScreenRows()-1)*2,
           ScreenCols() * 2);
 @end example

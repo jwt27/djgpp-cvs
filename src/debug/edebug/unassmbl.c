@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
 ** Copyright (C) 1993 DJ Delorie, 24 Kirsten Ave, Rochester NH 03867-2954
@@ -26,7 +27,7 @@ int seg_size=32;
 static word8 buf[20];
 static word32 vaddr;
 static int bufp, bufe;
-static char ubuf[100], *ubufp;
+static char ubuf[4000], *ubufp;
 static col;
 
 static void ua_str(const char *s);
