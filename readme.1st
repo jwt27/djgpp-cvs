@@ -365,7 +365,7 @@ To quickly search for a particular subject in the index of a manual,
 press `i' (for Index), type the subject, then press [Enter].  You can
 type only part of the subject name and press TAB, to see whether the
 index includes any entries that begin with what you typed.  TAB causes
-Info to try to complete what you typed using the avialable index
+Info to try to complete what you typed using the available index
 entries.  If Info beeps at you or flashes the screen colors when you
 press TAB, it means that there are no index entries which begin with
 what you typed; delete what you have typed (using the BackSpace key)
@@ -374,7 +374,7 @@ some index entries that begin with what you typed, Info will complete
 it.  If the completed entry looks like what you are looking for, press
 [Enter] to go to the section of the manual that discusses it; if not,
 press TAB again to see all the possible completions.  If any of the
-completions seem right, type enough text to make it uinque and press
+completions seem right, type enough text to make it unique and press
 [Enter].  If none of the completions seem appropriate, delete what you
 typed and try a different subject name.
 
