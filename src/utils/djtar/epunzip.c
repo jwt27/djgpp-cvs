@@ -37,6 +37,9 @@ int epcopy(char *, long);
 void
 epunzip_read(char *zipfilename)
 {
+  int dont_understand = 0;
+  int at_local_header = 0;
+
   clear_bufs();
   errno = 0;
   ifd = oread_open(zipfilename);
@@ -46,28 +49,83 @@ epunzip_read(char *zipfilename)
       return;
     }
 
+  /* Find the first local header. Skip over spanning markers
+   * for a one-segment ZIP, but fail on other headers. */
   while(1)
     {
-      int buffer, ext_header, timedate, crc, size, length, name_length,
-	extra_length, should_be_written, count, real_file = 0;
-      char filename[2048];
+      int buffer = 0;
 
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
 
       if(*(short *)&buffer != *(short *)"PK")
-	{
-	  fprintf(log_out, "%s: invalid zip file structure\n", zipfilename);
-	  break;
-	}
+	break;
 
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
 
-      if(*(short *)&buffer != *(short *)"\3\4")
+      if(*(short *)&buffer == *(short *)"\x3\x4")
 	{
-	  /* not a local header - all done */
+	  /* local header */
+	  at_local_header = 1;
 	  break;
+	}
+      else if(*(short *)&buffer == *(short *)"\x30\x30")
+	{
+	  /* spanning marker, but only one segment
+	   * => need to find local header. */
+	  continue;
+	}
+      else if(*(short *)&buffer == *(short *)"\x7\x8")
+	{
+	  /* spanning marker, multiple segments. */
+	  fprintf(log_out, "%s: spanning is not supported\n", zipfilename);
+	  dont_understand = 1;
+	  break;
+	}
+      else
+	{
+	  /* unknown header */
+	  fprintf(log_out,
+		  "%s: don't understand header type 0x%02x%02x\n",
+		  zipfilename, ((char *)&buffer)[0], ((char *)&buffer)[1]);
+	  dont_understand = 1;
+	  break;
+	}
+    }
+
+  if (!at_local_header && !dont_understand)
+    fprintf(log_out, "%s: invalid zip file structure\n", zipfilename);
+
+  if (at_local_header) while(1)
+    {
+      int buffer, ext_header, timedate, crc, size, length, name_length,
+	extra_length, should_be_written, count, real_file = 0;
+      char filename[2048];
+
+      if (!at_local_header)
+	{
+	  ((char *)&buffer)[0] = (char)get_byte();
+	  ((char *)&buffer)[1] = (char)get_byte();
+
+	  if(*(short *)&buffer != *(short *)"PK")
+	    {
+	      fprintf(log_out, "%s: invalid zip file structure\n", zipfilename);
+	      break;
+	    }
+
+	  ((char *)&buffer)[0] = (char)get_byte();
+	  ((char *)&buffer)[1] = (char)get_byte();
+
+	  if(*(short *)&buffer != *(short *)"\x3\x4")
+	    {
+	      /* not a local header - all done */
+	      break;
+	    }
+	}
+      else
+	{
+	  at_local_header = 0;
 	}
 
       /* version info - ignore it */
@@ -222,7 +280,7 @@ epunzip_read(char *zipfilename)
 	      ((char *)&buffer)[1] = (char)get_byte();
 	      ((char *)&buffer)[2] = (char)get_byte();
 	      ((char *)&buffer)[3] = (char)get_byte();
-	      if(buffer != *(int *)"PK\7\x8")
+	      if(buffer != *(int *)"PK\x7\x8")
 		{
 		  fprintf(log_out, "%s: invalid zip file structure\n",
 			  zipfilename);
