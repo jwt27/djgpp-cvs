@@ -1,0 +1,35 @@
+@node dosmemputb, memory
+@subheading Syntax
+
+@example
+#include <sys/movedata.h>
+
+void _dosmemputb(const void *buffer, size_t xfers, unsigned long offset);
+@end example
+
+@subheading Description
+
+This function transfers data from the program's virtual address space
+to MS-DOS's conventional memory space, using only byte (8-bit)
+transfers.  The @var{offset} is a physical address, which can be
+computed from a real-mode segment/offset pair as follows:
+
+@example
+offset = segment * 16 + offset;
+@end example
+
+The @var{xfers} is the number of bytes to transfer, and @var{buffer}
+is a pointer to somewhere in your virtual address space (such as
+memory obtained from @code{malloc}) where the data will come from.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+unsigned short save_screen[25][80];
+dosmemputb(save_screen, 0xb8000, 80*2*25);
+@end example
+

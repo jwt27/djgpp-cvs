@@ -1,0 +1,36 @@
+@node dosmemputl, memory
+@subheading Syntax
+
+@example
+#include <sys/movedata.h>
+
+void _dosmemputl(const void *buffer, size_t xfers unsigned long offset);
+@end example
+
+@subheading Description
+
+This function transfers data from the program's virtual address space
+to MS-DOS's conventional memory space, using only long-word (32-bit)
+transfers.  The @var{offset} is a physical address, which can be
+computed from a real-mode segment/offset pair as follows:
+
+@example
+offset = segment * 16 + offset;
+@end example
+
+The @var{xfers} is the number of long-words to transfer, and
+@var{buffer} is a pointer to somewhere in your virtual address space
+(such as memory obtained from @code{malloc}) where the data will come
+from.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+unsigned short save_screen[25][80];
+dosmemputl(save_screen, 0xb8000, 40*25);
+@end example
+

@@ -1,0 +1,37 @@
+@node dosmemgetl, memory
+@subheading Syntax
+
+@example
+#include <sys/movedata.h>
+
+void _dosmemgetl(unsigned long offset, size_t xfers, void *buffer);
+@end example
+
+@subheading Description
+
+This function transfers data from MS-DOS's conventional memory space
+to the program's virtual address space, using only long-word (32-bit)
+transfers.  The @var{offset} is a physical address, which can be
+computed from a real-mode segment/offset pair as follows:
+
+@example
+offset = segment * 16 + offset;
+@end example
+
+The @var{count} is the number of long-words to transfer, and
+@var{buffer} is a pointer to somewhere in your virtual address space
+(such as memory obtained from @code{malloc}) where the data will go.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+unsigned long shift_state;
+dosmemgetl(0x417, 1, &shift_state);
+if (shift_state & 0x0004)
+  /* Ctrl key pressed */;
+@end example
+
