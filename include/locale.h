@@ -4,6 +4,7 @@
 #define __dj_include_locale_h_
 
 #ifdef __cplusplus
+namespace std {
 extern "C" {
 #endif
 
@@ -54,6 +55,18 @@ char *		setlocale(int _category, const char *_locale);
 
 #ifdef __cplusplus
 }
+}
 #endif
 
 #endif /* !__dj_include_locale_h_ */
+
+
+#if defined(__cplusplus) && !defined(__dj_ENFORCE_ANSI_FREESTANDING)
+#ifndef __dj_via_cplusplus_header_
+
+using std::lconv;
+using std::localeconv;
+using std::setlocale;
+
+#endif /* !__dj_via_cplusplus_header_ */
+#endif /* __cplusplus && !__dj_ENFORCE_ANSI_FREESTANDING */
