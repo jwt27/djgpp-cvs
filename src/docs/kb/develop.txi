@@ -1,0 +1,101 @@
+@node Development, , , Top
+
+@section Internal header files
+
+@subsection libc/stubs.h
+@cindex libc/stubs.h
+
+The @strong{only} time you put something in @file{stubs.h} is if an
+ANSI/POSIX function in libc needs to call a non-ANSI/POSIX function
+in libc, in which case the non-ANSI/POSIX function needs to be listed
+in @file{stubs.h} (or, for ANSI functions calling POSIX-only functions).
+
+There is no other reason why a function would get listed in stubs.
+
+@cindex stubbed name
+The @dfn{stubbed name} (@samp{__foo}) is @strong{not} part of
+the published API.
+
+@section Texinfo documentation
+
+@subsection Formatting
+
+@itemize
+@item
+Use two spaces after every period/full-stop ending a sentence.
+
+@item
+Don't use capital letters for emphasis---use @samp{@@strong@{@}} instead.
+
+@item
+Don't put a newline between a function's return type and its name, e.g.:
+
+@example
+int
+somefunc (void);
+@end example
+
+is incorrect;
+
+@example
+int somefunc (void);
+@end example
+
+is correct.
+
+@item
+When introducing a new term, it is usually a good idea to use
+@samp{@@dfn@{@}} to mark it as a definition.  It may also be a good idea
+to add it to the concept index using @samp{@@cindex@{@}}.  E.g.:
+
+@example
+@@cindex definition
+
+This is a @@dfn@{definition@}.
+@end example
+
+@item
+Command-line options should use the @samp{@@samp@{@}} or
+@samp{@@option@{@}} mark-up.  @samp{@@option@{@}} is new in Texinfo 4.0.
+
+@item
+Names of programs should use @samp{@@code@{@}} (unless program's name
+has become a proper name, like GCC or GDB).
+
+@item
+Constants like @code{EINVAL} should be enclosed in @samp{@@code@{@}}.
+
+@item
+Avoid the urge to use @samp{@@ref@{@}} or variant in the middle of sentence,
+because it will look ugly in info documentation and terrible in printed
+documentation.  Instead use a textual reference followed by a comma followed
+by the reference command, e.g.
+
+@example
+@@code@{yabbadabbadoo()@}, @@ref@{yabbadabbadoo()@}.
+
+@end example
+
+@item
+Be aware of how you use the @samp{-} character.  Use the following mark-up
+correctly:
+
+@itemize @bullet
+@item
+@samp{@@minus@{@}} to insert a minus sign;
+
+@item
+@samp{---} to insert an em-dash---do not put spaces on either side of
+@samp{---};
+
+@item
+@samp{-} to hyphenate;
+
+@item
+@samp{@@-} to insert a discretionary hyphenation point.
+@end itemize
+
+@item
+Finally, for some relevant texinfo technique, look at the source
+of this page in the DJGPP sources---@file{src/docs/kb/contrib.txi}.
+@end itemize
