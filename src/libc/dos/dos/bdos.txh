@@ -266,6 +266,7 @@ The returned value of @code{EAX}.
 @c ----------------------------------------------------------------------
 @node int86x, dos
 @findex int86x
+@tindex SREGS@r{ structure}
 @subheading Syntax
 
 @example
@@ -277,8 +278,21 @@ int int86x(int ivec, union REGS *in, union REGS *out,
 
 @subheading Description
 
+The @code{struct SREGS} is defined by @code{<dos.h>} as follows:
+
+@example
+struct SREGS @{
+  unsigned short es;
+  unsigned short ds;
+  unsigned short fs;
+  unsigned short gs;
+  unsigned short cs;
+  unsigned short ss;
+@};
+@end example
+
 This function is just like @code{int86} (@pxref{int86}) except that
-values you pass in @var{SREGS} are used for the segment registers instead
+values you pass in @var{seg} are used for the segment registers instead
 of the defaults.
 
 See also @ref{int86}, @ref{intdos}, and @ref{bdos}.
