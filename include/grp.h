@@ -18,9 +18,10 @@ __DJ_gid_t
 #endif
 
 struct group {
-  gid_t		gr_gid;
-  char **      	gr_mem;
-  char *	gr_name;
+  gid_t		gr_gid;		/* Group ID.	*/
+  char **      	gr_mem;		/* Member list.	*/
+  char *	gr_name;	/* Group name.	*/
+  char *	gr_passwd;	/* Password.	*/
 };
 
 struct group *	getgrgid(gid_t _gid);
