@@ -21,6 +21,7 @@ extern "C" {
 #define close __close
 #define dup __dup
 #define dup2 __dup2
+#define fdopen __fdopen
 #define fnmatch __fnmatch
 #define fstatvfs __fstatvfs
 #define getcwd __getcwd
