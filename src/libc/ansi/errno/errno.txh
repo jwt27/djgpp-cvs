@@ -227,9 +227,8 @@ ESRCH -- No such process.  Not used in DJGPP.
 
 @item 37
 
-EXDEV -- Improper link.  An attempt to rename a file across drives, or
-create a ``symlink'' to a file that is not an executable DJGPP v2.x
-program.
+EXDEV -- Improper link.  An attempt to rename a file across drives
+or create a cross-device hardlink.
 
 @item 38
 
