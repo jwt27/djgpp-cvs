@@ -656,3 +656,10 @@ it is not the first one available.
 @vindex _os_trueversion@r{, added to the library}
 This global variable declared in @file{dos.h} is a faster way to 
 get the result of @code{_get_dos_version(1)}.
+
+@pindex djtar@r{, new option -e}
+@pindex djtar@r{, multiple -o and -e options}
+New option @samp{-e} has been added to @code{djtar} to skip specified files 
+and directories when extracting.  Also @code{djtar} can accept multiple 
+@samp{-o} and @samp{-e} options in a single command line.  Finally, the file
+name change file format allows skipping files and directories.

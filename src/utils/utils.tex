@@ -127,9 +127,10 @@ package is built.
 @node djtar, dtou, djecho, Top
 @chapter djtar
 
-Usage: @code{djtar} [@code{-n} @file{changeFile}] [@code{-o} @file{dir}]
-[@code{-t}|@code{-x}] [@code{-i}] [@code{-v}] [@code{-p}]
-[@code{-.}|@code{-!.}] [@code{-d}|@code{-u}|@code{-b}] @file{tarfile}
+Usage: @code{djtar} [@code{-n} @file{changeFile}] [@code{-e} @file{dir}]
+[@code{-o} @file{dir}] [@code{-t}|@code{-x}] [@code{-i}] [@code{-v}] 
+[@code{-p}] [@code{-.}|@code{-!.}] [@code{-d}|@code{-u}|@code{-b}] 
+@file{tarfile}
 
 @code{djtar} is a program that is designed to ease the problems related
 to extracting Unix tar files on a DOS machine.  The long file names and
@@ -262,11 +263,13 @@ The format of the @file{changeFile} file is like this:
 @example
 dir/dir/dir/old.name.here  dir/dir/dir/newname.hre
 dir/dir/dir/old2.name.here  dir/dir/dir/newname2.hre
+dir/dir/dir.to.skip.here
 @end example
 
-The directories must be complete, not relative.  The "old" directories
-must match the complete path in the tar file, and the "new" directories
-indicate where the file goes on the DOS disk.
+The directories must be complete, not relative.  The ``old'' directories
+must match the complete path in the tar file, and the ``new'' directories
+indicate where the file goes on the DOS disk.  If there is no ``new'' directory
+specified, the ``old'' one and all its siblings will be not extracted.
 
 @item -d
 
@@ -297,6 +300,13 @@ written in text mode, so this option doesn't have any effect when used
 with @samp{-p}, unless the output of @code{djtar} is redirected to a file
 or a pipe.
 
+@item -e @var{string}
+
+Only extract files whose full path names do @strong{not} begin with @var{string}.
+This option can be used to skip portions of archive.  If both this
+and @samp{-o} options are specified, then this option has precendence.  In
+other ways @samp{-e} is similar to @samp{-o} option.
+
 @item -o @var{string}
 
 Only extract files whose full path names begin with @var{string}.
@@ -305,7 +315,8 @@ extracted will still be shown, but with a string @samp{[ skipped ]}
 appended to their names.  When given the @samp{-o} option, @code{djtar}
 actually checks if @var{string} is the initial substring of each filename,
 so you can specify incomplete file names, thus using @samp{-o} as a poor man's
-wildcard facility.
+wildcard facility.  You may specify multiple @samp{-o} options to extract
+several different directories and files.
 
 @item -i
 
@@ -515,10 +526,10 @@ hours:minutes:seconds.
 
 @end table
 
-Options are processed in the order they are encountered.  Thus, "-o foo
--eo" means "redirect output to foo, then redirect errors there also",
-whereas "-eo -o foo" means "send errors to where output was going, then
-move output to foo".
+Options are processed in the order they are encountered.  Thus, ``-o foo
+-eo'' means ``redirect output to foo, then redirect errors there also'',
+whereas ``-eo -o foo'' means ``send errors to where output was going, then
+move output to foo''.
 
 
 Examples:

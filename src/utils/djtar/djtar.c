@@ -24,6 +24,15 @@ Fatal(const char *msg)
   exit(1);
 }
 
+static char *
+xstrdup(const char * source)
+{
+  char * ptr = strdup(source);
+  if (!ptr)
+     Fatal("Out of memory");
+  return ptr;
+}
+
 /*------------------------------------------------------------------------*/
 
 typedef struct CE {
@@ -31,6 +40,21 @@ typedef struct CE {
   char *from;
   char *to;
 } CE;
+
+/* Do not extract files and directories starting with prefixes in this list. */
+/* It has precendence over only_dir below.  */
+struct skip_dir_list
+{
+   char *skip_dir;
+   struct skip_dir_list * next;
+} * skip_dirs;
+
+/* Extract only files and directories starting with prefixes in this list. */
+struct only_dir_list
+{
+   char *only_dir;
+   struct only_dir_list * next;
+} * only_dirs;
 
 #define HASHSIZE 2048
 #define HASHMASK 2047
@@ -52,11 +76,9 @@ static void
 store_entry(char *from, char *to)
 {
   unsigned long h = hash(from);
-  CE *ce = (CE *)malloc(sizeof(CE));
-  if (ce == 0)
-    Fatal("Out of memory");
-  ce->from = strdup(from);
-  ce->to = strdup(to);
+  CE *ce = (CE *)xmalloc(sizeof(CE));
+  ce->from = xstrdup(from);
+  ce->to = xstrdup(to);
   ce->next = htab[h];
   htab[h] = ce;
 }
@@ -76,6 +98,7 @@ get_entry(char *from)
 static void
 DoNameChanges(char *fname)
 {
+  struct skip_dir_list * new_entry; 
   FILE *f = fopen(fname, "r");
   char from[PATH_MAX], to[PATH_MAX];
   char line[PATH_MAX*2 + 10];
@@ -93,6 +116,13 @@ DoNameChanges(char *fname)
     sscanf(line, "%s %s", from, to);
     if (to[0])
       store_entry(from, to);
+    else
+    {
+      new_entry = xmalloc(sizeof(struct skip_dir_list));
+      new_entry->skip_dir = xstrdup(from);
+      new_entry->next = skip_dirs;
+      skip_dirs = new_entry;
+    }
   }
   fclose(f);
 }
@@ -111,8 +141,6 @@ int to_tty = 0;
 int ignore_csum = 0;
 int list_only = 1;
 char skipped_str[] = "[skipped]";
-
-char *only_dir;
 
 /*------------------------------------------------------------------------*/
 
@@ -178,12 +206,10 @@ change(char *fname, const char *problem, int isadir)
   if ((strcmp(new, "") == 0) && (isadir == 2))
     return 0;
   if (isadir) isadir=1;
-  ch = (CHANGE *)malloc(sizeof(CHANGE));
-  if (ch == 0)
-    Fatal("Out of memory");
+  ch = (CHANGE *)xmalloc(sizeof(CHANGE));
   ch->next = change_root;
   change_root = ch;
-  ch->old = strdup(fname);
+  ch->old = xstrdup(fname);
   pos = strrchr(fname, '/');
   if (pos && (strchr(new, '/') == 0))
   {
@@ -191,9 +217,7 @@ change(char *fname, const char *problem, int isadir)
       ch->new = skipped_str;
     else
     {
-      ch->new = (char *)malloc(strlen(new) + (pos-fname) + 2);
-      if (ch->new == 0)
-        Fatal("Out of memory");
+      ch->new = (char *)xmalloc(strlen(new) + (pos-fname) + 2);
       *pos = 0;
       sprintf(ch->new, "%s/%s", fname, new);
     }
@@ -201,7 +225,7 @@ change(char *fname, const char *problem, int isadir)
   else if (new[0] == 0)
     ch->new = skipped_str;
   else
-    ch->new = strdup(new);
+    ch->new = xstrdup(new);
   ch->isdir = isadir;
   strcpy(fname, ch->new);
   if (new[0] == 0)
@@ -294,13 +318,44 @@ char *
 get_new_name(char *name_to_change, int *should_be_written)
 {
   char *changed_name;
+  struct skip_dir_list * skip_dir_entry;
+  struct only_dir_list * only_dir_entry;
 
   /* ONLY_DIR says to extract only files which are siblings
      of that directory.  */
   *should_be_written = list_only == 0;
-  if (*should_be_written &&
-      only_dir && strncmp(only_dir, name_to_change, strlen(only_dir)))
-    *should_be_written = 0;
+
+  if (*should_be_written)
+  {
+     skip_dir_entry = skip_dirs;
+     while (skip_dir_entry)
+     {
+        if (!strncmp(skip_dir_entry->skip_dir, name_to_change, 
+                     strlen(skip_dir_entry->skip_dir)))
+        {
+           char * following_char = name_to_change + strlen(name_to_change);
+           if ((*following_char == '\0') || (*following_char == '/') ||
+               (*following_char == '\\'))
+              break;
+        } 
+        skip_dir_entry = skip_dir_entry->next;
+     }
+     if (skip_dir_entry)
+        *should_be_written = 0;
+     else if (only_dirs)
+     {
+        only_dir_entry = only_dirs;
+        while (only_dir_entry)
+        {
+           if (!strncmp(only_dir_entry->only_dir, name_to_change,
+                        strlen(only_dir_entry->only_dir)))
+              break;
+           only_dir_entry = only_dir_entry->next;
+        }
+        if (!only_dir_entry)
+           *should_be_written = 0;
+     }
+  }
 
   changed_name = get_entry(name_to_change);
   if (*should_be_written && !to_stdout && NO_LFN(changed_name))
@@ -498,12 +553,14 @@ main(int argc, char **argv)
   int i = 1;
   char *tp;
   char *xp;
+  struct skip_dir_list * skip_entry;
+  struct only_dir_list * only_entry;
 
-  progname = strlwr(strdup(argv[0]));
+  progname = strlwr(xstrdup(argv[0]));
 
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: %s [-n changeFile] [-p] [-i] [-t|x] [-o dir] [-v] [-u|d|b] [-[!].] tarfile...\n", progname);
+    fprintf(stderr, "Usage: %s [-n changeFile] [-p] [-i] [-t|x] [-e dir] [-o dir] [-v] [-u|d|b] [-[!].] tarfile...\n", progname);
     exit(1);
   }
 
@@ -515,6 +572,7 @@ main(int argc, char **argv)
     list_only = 1;
   else if (xp && (xp[sizeof(djtarx)-1] == '\0' || xp[sizeof(djtarx)-5] == '\0'))
     list_only = 0;
+
   while ((argc > i) && (argv[i][0] == '-') && argv[i][1])
   {
     switch (argv[i][1])
@@ -544,8 +602,17 @@ main(int argc, char **argv)
 	if (argv[i][2] == '.')
 	  dot_switch = 0;
 	break;
+      case 'e':
+        skip_entry = xmalloc(sizeof(struct skip_dir_list));
+        skip_entry->skip_dir = xstrdup(argv[++i]);
+        skip_entry->next = skip_dirs;
+        skip_dirs = skip_entry;
+	break;
       case 'o':
-        only_dir = strdup(argv[++i]);
+        only_entry = xmalloc(sizeof(struct only_dir_list));
+        only_entry->only_dir = xstrdup(argv[++i]);
+        only_entry->next = only_dirs;
+        only_dirs = only_entry;
         break;
       case 'p':
         to_stdout = 1;
