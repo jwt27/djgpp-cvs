@@ -423,7 +423,9 @@ non-zero.
 The function @code{readdir} now includes the file's type in the
 @code{d_type} member of @code{struct dirent} it returns.  This member is
 used by some GNU packages, such as Fileutils, to make directory
-traversal more efficient.
+traversal more efficient.  @strong{WARNING: This makes some object files
+built with DJGPP v2.03 incompatible with programs compiled with the
+v2.04 library!}
 
 @findex moncontrol@r{, added}
 @findex monstartup@r{, added}
