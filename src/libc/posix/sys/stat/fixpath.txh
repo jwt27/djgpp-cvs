@@ -30,7 +30,8 @@ caller should ensure there is enough space in the buffer pointed to by
 
 @subheading Return Value
 
-None.
+None.  If the length of the returned path name exceeds @code{FILENAME_MAX},
+@code{errno} is set to @code{ENAMETOOLONG}.
 
 @subheading Portability
 
