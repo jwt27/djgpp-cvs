@@ -11,5 +11,6 @@
 /makefile.sub/ d
 /src\/libm\/.*\.def$/ d
 /\/[Cc][Vv][Ss]\// d
+/\/\.cvsignore/ d
 /src\/debug\/ar\.in/ d
 /src\/libc\/dpmi\/api\/_dpmi/ d
