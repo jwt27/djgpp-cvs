@@ -12,7 +12,7 @@ size_t
 fwrite(const void *vptr, size_t size, size_t count, FILE *f)
 {
   const char *ptr = (const char *)vptr;
-  size_t s;
+  ssize_t s;
 
   if (__libc_write_termios_hook
       && (f->_flag & (_IOTERM | _IONTERM)) == 0)
@@ -29,7 +29,9 @@ fwrite(const void *vptr, size_t size, size_t count, FILE *f)
   {
     if (f->_flag & _IOLBF)
       while (s > 0) {
-	if (--f->_cnt > -f->_bufsiz && *(const char *)ptr != '\n')
+	long signed int negative_bufsiz = -f->_bufsiz;
+
+	if (--f->_cnt > negative_bufsiz && *(const char *)ptr != '\n')
 	  *f->_ptr++ = *(const char *)ptr++;
 	else if (_flsbuf(*(const char *)ptr++, f) == EOF)
 	  break;
@@ -60,15 +62,17 @@ fwrite(const void *vptr, size_t size, size_t count, FILE *f)
     if (f->_flag & _IOLBF)
     {
       while (s > 0) {
+	long signed int negative_bufsiz = -f->_bufsiz;
+	
         if (*ptr=='\n')
         {
-          if (--f->_cnt > -f->_bufsiz)
+          if (--f->_cnt > negative_bufsiz)
             *f->_ptr++ = '\r';
           else
             if (_flsbuf('\r', f) == EOF)
 	      break;
         }
-	if (--f->_cnt > -f->_bufsiz && *ptr != '\n')
+	if (--f->_cnt > negative_bufsiz && *ptr != '\n')
 	  *f->_ptr++ = *ptr++;
 	else if (_flsbuf(*(const unsigned char *)ptr++, f) == EOF)
 	  break;

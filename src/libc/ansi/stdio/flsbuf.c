@@ -17,7 +17,8 @@ int
 _flsbuf(int c, FILE *f)
 {
   char *base;
-  int n, rn;
+  int n;
+  size_t rn;
   char c1;
   size_t size;
 
