@@ -32,7 +32,9 @@ what's in the %fs register.  The invariant ones don't take a selector,
 they only take an offset.  These are used inside loops and in
 time-critical accesses where the selector doesn't change.  To specify
 the selector, use the farsetsel() function.  That selector is used for
-all farns*() functions until changed. 
+all farns*() functions until changed.  You can use _fargetsel() if you
+want to temporary change the selector with _farsetsel() and restore
+it afterwards.
 
 The farpoke* and farpeek* take selectors.
 
@@ -67,6 +69,7 @@ unsigned char _farpeekb(unsigned short, unsigned long);
 unsigned short _farpeekw(unsigned short, unsigned long);
 unsigned long _farpeekl(unsigned short, unsigned long);
 void _farsetsel(unsigned short);
+unsigned short _fargetsel(void);
 void _farnspokeb(unsigned long, unsigned char);
 void _farnspokew(unsigned long, unsigned short);
 void _farnspokel(unsigned long, unsigned long);
@@ -155,6 +158,16 @@ _farsetsel(unsigned short selector)
   __asm__ __volatile__ ("movw %w0,%%fs"
       :
       : "rm" (selector));
+}
+
+extern __inline__ unsigned short
+_fargetsel(void)
+{
+  unsigned short selector;
+  __asm__ __volatile__ ("movw %%fs,%w0 \n"
+      : "=r" (selector)
+      : );
+  return selector;
 }
 
 extern __inline__ void

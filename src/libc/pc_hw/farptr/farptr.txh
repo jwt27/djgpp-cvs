@@ -14,6 +14,7 @@ void _farpokew(unsigned short sel, unsigned long off, unsigned short val);
 void _farpokel(unsigned short sel, unsigned long off, unsigned long val);
 
 void _farsetsel(unsigned short selector);
+unsigned short _fargetsel(void);
 
 void _farnspokeb(unsigned long offset, unsigned char value);
 void _farnspokew(unsigned long offset, unsigned short value);
@@ -47,7 +48,10 @@ between @code{_farsetsel} and using these other functions, unless
 you're absolutely sure that they won't modify that selector.  This
 allows you to optimize loops by setting the selector once outside the
 loop, and using the shorter functions within the loop.
+You can use @code{_fargetsel} if you want to temporary change the
+selector with @code{_farsetsel} and restore it afterwards.
 
 @subheading Return Value
 
 Functions which peek the address return the value at given address.
+@code{_fargetsel} returns the current selector.
