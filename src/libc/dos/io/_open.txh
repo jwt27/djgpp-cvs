@@ -21,7 +21,41 @@ if LFN is enabled. In plain DOS mode it plainly works.
 
 The file is set to binary mode.
 
-This function can be hooked by the @dfn{File System Extensions}
+The @var{attrib} parameter is a combination of one or more bits from the
+following:
+
+@table @code
+@item O_RDONLY
+open for read only
+
+@item O_WRONLY
+open for write only
+
+@item O_RDWR
+open for read and write
+
+@item O_NOINHERIT
+file handle is not inherited by child processes
+
+@item SH_COMPAT
+open in compatibility mode
+
+@item SH_DENYRW
+deny requests by other processes to open the file for eaither reading or
+writing
+
+@item SH_DENYWR
+deny requests to open the file for writing
+
+@item SH_DENYRD
+deny requests to open the file for reading
+
+@item SH_DENYNO
+deny-none mode: allow other processes to open the file if their open
+mode doesn't conflict with the open mode of this process
+@end table
+
+THIS function can be hooked by the @dfn{File System Extensions}
 (@pxref{File System Extensions}).  If you don't want this, you should
 use @code{_dos_open} (@pxref{_dos_open}) (but note that the latter
 doesn't support long file names).
@@ -33,4 +67,3 @@ The new file descriptor, else -1 on error.
 @subheading Portability
 
 @portability !ansi, !posix
-
