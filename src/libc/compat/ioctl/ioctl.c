@@ -69,8 +69,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.4 2001/08/08 17:03:19 snowball Exp $
+$Id: ioctl.c,v 1.5 2001/08/09 03:59:13 snowball Exp $
 $Log: ioctl.c,v $
+Revision 1.5  2001/08/09 03:59:13  snowball
+Add bare-bones implementation of TIOCSWINSZ.
+
 Revision 1.4  2001/08/08 17:03:19  snowball
 Implement TIOCGWINSZ for retrieving the screen height and width.
 
@@ -278,6 +281,19 @@ static int _unix_ioctl(int fd, int cmd, va_list args)
       win->ws_xpixel = 1;
       win->ws_ypixel = 1;
       return 0;
+    }
+
+    case TIOCSWINSZ:  /* Do nothing implementation.  */
+    {
+      struct winsize *win;
+
+      win = va_arg(args, struct winsize *);
+
+      _farsetsel(_dos_ds);
+      if (win->ws_row == _farnspeekb(0x484) + 1
+          && win->ws_col == _farnspeekw(0x44a))
+        return 0;
+      break;
     }
   }
 
