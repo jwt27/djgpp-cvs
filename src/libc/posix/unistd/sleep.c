@@ -7,7 +7,7 @@ unsigned int
 sleep(unsigned int _seconds)
 {
   clock_t start_time = clock();
-  while (clock()-start_time < _seconds * CLOCKS_PER_SEC)
+  while (((unsigned)(clock() - start_time)) / CLOCKS_PER_SEC < _seconds)
     __dpmi_yield();
   return 0;
 }

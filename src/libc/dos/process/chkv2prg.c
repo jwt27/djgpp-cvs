@@ -75,9 +75,9 @@ const _v2_prog_type *_check_v2_prog_internal (int pf)
   else if (header[0] == 0x5a4d)	/* "MZ" */
   {
     char go32stub[9];
-    unsigned long coff_start = (unsigned long)header[2]*512L;
-    unsigned long exe_start;
-    unsigned long real_exe_start;
+    off_t coff_start = (unsigned long)header[2]*512L;
+    off_t exe_start;
+    off_t real_exe_start;
     type.exec_format = _V2_EXEC_FORMAT_EXE;
 
     if (lseek(pf, 0x3c, SEEK_SET) != 0x3c)
