@@ -68,6 +68,14 @@ handler for a particular signal, it will be called when that signal
 occurs.  The execution of the program will be suspended until the
 handler returns or calls @code{longjmp} (@pxref{longjmp}).
 
+The state of the floating-point unit (FPU) is not saved, before
+entering a signal handler.  It can be extremely costly to save
+the FPU state.  Most signal handlers do not use floating-point
+operations, so the overhead of saving FPU state is avoided.
+An example of a signal handler that saves the FPU state is
+the function @code{dbgsig} in @file{src/debug/common/dbgcom.c}
+in the DJGPP sources.
+
 You may pass @code{SIG_DFL} as the value of @var{func} to reset the
 signal handling for the signal @var{sig} to default (also
 @xref{__djgpp_exception_toggle}, for a quick way to restore all the
