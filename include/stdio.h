@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -45,19 +46,24 @@ __DJ_size_t
 #define _SIZE_T
 #endif
 
+#ifndef _SSIZE_T
+__DJ_ssize_t
+#define _SSIZE_T
+#endif
+
 /* Note that the definitions of these fields are NOT guaranteed!  They
    may change with any release without notice!  The fact that they
    are here at all is to comply with ANSI specifictions. */
    
 typedef struct {
-  int     _cnt;
-  char   *_ptr;
-  char   *_base;
-  size_t  _bufsiz;
-  int     _flag;
-  int     _file;
-  char   *_name_to_remove;
-  size_t  _fillsize;
+  ssize_t  _cnt;
+  char    *_ptr;
+  char    *_base;
+  size_t   _bufsiz;
+  int      _flag;
+  int      _file;
+  char    *_name_to_remove;
+  size_t   _fillsize;
 } FILE;
 
 typedef unsigned long		fpos_t;
