@@ -297,6 +297,8 @@ void _clear_break_DPMI(void)
 static __dpmi_paddr old_i31,old_i21,user_i31,user_i21;
 static int user_int_set = 0;
 static __dpmi_paddr my_i9,user_i9,my_i8,user_i8;
+static void (*oldNOFP)(int);
+static void dbgsig(int);
 
 static void hook_dpmi(void)
 {
@@ -341,6 +343,7 @@ static void hook_dpmi(void)
         __dpmi_set_processor_exception_handler_vector(i,&app_handler[i]);
     } */
   load_npx();
+  oldNOFP = signal(SIGNOFP, dbgsig); /* if we run under FP emulation */
   /* Crtl-C renders app code unreadable */
   __djgpp_app_DS = app_ds;
 }
@@ -1009,6 +1012,7 @@ static void unhook_dpmi(void)
   int i;
   /* Crtl-C renders debugger code unreadable */
   __djgpp_app_DS = __djgpp_our_DS;
+  signal(SIGNOFP, oldNOFP);	/* in case we run under FP emulation */
   save_npx();
   /* save app i31 and i21 if changed */
   __dpmi_get_protected_mode_interrupt_vector(0x31, &user_i31);
