@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -23,8 +24,6 @@
 #include <sys/stat.h>
 #include <ctype.h>
 #define SIMAGIC "go32stub"
-
-#define __tb_size _go32_info_block.size_of_transfer_buffer
 
 AREAS areas[MAX_AREA];
 

@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -70,8 +71,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.6 2002/10/17 23:00:24 richdawe Exp $
+$Id: ioctl.c,v 1.7 2003/05/10 15:26:11 richdawe Exp $
 $Log: ioctl.c,v $
+Revision 1.7  2003/05/10 15:26:11  richdawe
+__tb_size is defined in <go32.h> now.
+
 Revision 1.6  2002/10/17 23:00:24  richdawe
 Update copyright messages
 
@@ -133,11 +137,6 @@ import djgpp 2.02
 #include <sys/fsext.h>
 #include <dos.h>
 #include <libc/dosio.h>
-
-/*
-** This one might be added to <go32.h>
-*/
-#define __tb_size _go32_info_block.size_of_transfer_buffer
 
 static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
                       int xarg)
