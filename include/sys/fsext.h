@@ -22,6 +22,8 @@ typedef enum {
   __FSEXT_write,
   __FSEXT_ready,
   __FSEXT_close,
+  __FSEXT_fcntl,
+  __FSEXT_ioctl,
 } __FSEXT_Fnumber;
 
 /* _ready gets passed a fd and should return a mask of these,
