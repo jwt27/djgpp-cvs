@@ -165,7 +165,7 @@ method of passing long command lines, so DJGPP programs can now be
 invoked with long command lines from the @file{COMMAND.COM}'s prompt,
 and also from other Windows programs which support @code{CMDLINE}.
 The functions @code{system} and @code{spawn*} have also been enhanced
-to free DPMI selectors leaked by many DPMI hosts.  This fixes the 
+to free DPMI selectors leaked by many DPMI hosts.  This fixes the
 problem with large makefiles failing before completion under Windows.
 @findex spawn*@r{, no longer leak selectors on Windows and DOSEmu}
 @findex system@r{, no longer leaks selectors on Windows and DOSEmu}
@@ -592,7 +592,7 @@ to @code{_crt0_startup_flags} in file @file{crt0.h}
 @vindex __djgpp_memory_handle_size@r{, added to library}
 @cindex @file{crt0.h}, declaration of memory size array
 @cindex array of DPMI memory block sizes
-A list of memory block sizes @code{__djgpp_memory_handle_size} was added for 
+A list of memory block sizes @code{__djgpp_memory_handle_size} was added for
 use in core dumps of the address space.
 
 @findex sbrk@r{, changed allocation size algorithm}
@@ -630,7 +630,7 @@ name calls under Windows NT, 2K and XP if long file names are enabled.
 @pindex fsdb@r{, and Windows 2000/XP hardware breakpoints}
 @pindex edebug32@r{, and Windows 2000/XP hardware breakpoints}
 @findex _set_break_DPMI@r{, and Windows 2000/XP breakpoints}
-The set break DPMI call under Windows 2000 and XP do not return the 
+The set break DPMI call under Windows 2000 and XP do not return the
 break point handle, which prevented debuggers using break points from
 working properly.  The handle is now guessed for this platforms which
 allows the debuggers to work with hardware break points.
@@ -641,7 +641,7 @@ If the short name equivalent of the current path is greater than
 64 characters, Windows 2000 and XP do not return the correct long
 path name - they return the root directory instead without any
 failure code.  Since this can be disastrous in deep directories
-doing an rm -rf, we check for this bug and fix the path.  Long 
+doing an rm -rf, we check for this bug and fix the path.  Long
 directories can also cause @code{_fixpath} to fail on Windows 9x if LFN=n and
 this is now handled by returning a relative path instead of root.
 Many uses of @code{_fixpath} assume absolute directories so this
@@ -649,22 +649,22 @@ change may break code in rare cases (such as saving the value and
 changing directories).
 
 @findex getmntent@r{, and Windows 2000/XP}
-Windows 2000/XP do not return the volume labels correctly using 
-findfirst calls so we force short name usage to fix the problem.  
+Windows 2000/XP do not return the volume labels correctly using
+findfirst calls so we force short name usage to fix the problem.
 Drives higher than Z are suppressed.
 
 @findex freopen@r{, and reusage of same handle}
 @code{freopen} was modified to always use the same handle even if
-it is not the first one available.   
+it is not the first one available.
 
 @vindex _os_trueversion@r{, added to the library}
-This global variable declared in @file{dos.h} is a faster way to 
+This global variable declared in @file{dos.h} is a faster way to
 get the result of @code{_get_dos_version(1)}.
 
 @pindex djtar@r{, new option -e}
 @pindex djtar@r{, multiple -o and -e options}
-New option @samp{-e} has been added to @code{djtar} to skip specified files 
-and directories when extracting.  Also @code{djtar} can accept multiple 
+New option @samp{-e} has been added to @code{djtar} to skip specified files
+and directories when extracting.  Also @code{djtar} can accept multiple
 @samp{-o} and @samp{-e} options in a single command line.  Finally, the file
 name change file format allows skipping files and directories.
 
@@ -757,7 +757,7 @@ name failed to match the error message was EFAULT and misleading.
 @findex pow
 A bug was fixed in the function @code{pow} in @file{libm.a}.
 Previously @code{pow(x,y)} returned 0 when @code{x} was very close to
--1.0 and @code{y} was very large. 
+-1.0 and @code{y} was very large.
 
 A bug was fixed in the function @code{pow} in @file{libc.a}.
 Previously @code{pow} may have failed for negative numbers with
@@ -825,7 +825,7 @@ of macros were added.
 @findex _put_path@r{, and @file{/dev} directory on disk}
 The low-level function @code{_put_path} was changed to retain the @file{/dev}
 prefix if a @file{/dev} directory exists on the disk.  This allows DJGPP
-images to work with directories by this name.  You should avoid using 
+images to work with directories by this name.  You should avoid using
 the @file{/dev} prefix on DOS device names if possible since the behavior
 will change if the directory exists (and file operations which use the
 name will be slower).  You should avoid using a @file{/dev} directory
@@ -865,3 +865,29 @@ an error message for @code{EILSEQ}.
 It's possible to set stub parameters by passing
 @option{-stubparams=@dots{}} to @command{stubify}.
 
+@pindex go32-v2@r{, documentation}
+@pindex stubify@r{, documentation}
+@pindex stubedit@r{, documentation}
+@pindex exe2coff@r{, documentation}
+@pindex coff2exe@r{, documentation}
+@pindex dxegen@r{, documentation}
+@pindex symify@r{, documentation}
+@pindex edebug32@r{, documentation}
+@pindex fsdb@r{, documentation}
+Info documentation was added for @command{go32-v2}, @command{stubify},
+@command{stubedit}, @command{exe2coff}, @command{coff2exe},
+@command{dxegen}, @command{symify}, @command{edebug32}, and @command{fsdb}.
+
+@vindex __djgpp_ds_alias@r{, moved to crt0}
+@vindex _crt0_startup_flags@r{, moved to crt0}
+The internal declaration of these two variables was moved to @file{crt0.S}.
+This change makes the new @file{crt0.o} incompatible with previous DJGPP
+releases if you accidentally link crt0 with the wrong libc.
+@code{__djgpp_ds_alias} used to be declared in the @code{.text} section
+and locked by default.  It is now in @code{.data} and not locked.  If you
+are referencing this value in a hardware interrupt handler, you should
+lock the memory area or copy it to your handler's locked memory.
+
+@findex _rdtsc@r{, new timer function}
+Added @code{_rdtsc} as a direct call to the hardware instruction.  It 
+will inline to a single instruction when compiled with optimization.
