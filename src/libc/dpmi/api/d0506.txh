@@ -1,11 +1,11 @@
 @node __dpmi_get_page_attributes, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_get_page_attributes(__dpmi_meminfo *_info, short *_buffer);
-@end example
+int __dpmi_get_page_attributes(__dpmi_meminfo *info, short *buffer);
+@end smallexample
 
 @subheading Description
 
@@ -13,12 +13,42 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0506 (DPMI 1.0 only)
+DPMI function AX = 0x0506 (DPMI 1.0 only).  Supported by CWSDPMI, but
+not by Windows.
 
-Pass the handle, offset of first page (relative to start of block) in
-@code{@var{_info}->address}, and number of pages in
-@code{@var{_info}->count}.  The buffer @var{_buffer} gets filled in with
-the attributes (see spec).
+This function retrieves the attributes of a number of pages.  Pass the
+handle in @code{@var{info}->handle}, offset of first page (relative to
+start of block) in @code{@var{info}->address}, and number of pages in
+@code{@var{info}->count}.  The buffer @var{buffer} gets filled in with
+the attributes.  For each page, a 16-bit attribute word in @var{buffer}
+defines the attributes of that page as follows:
+
+@table @asis
+@item bits 0-2
+Page type:
+
+@table @code
+@item 000
+uncommitted
+@item 001
+committed
+@item 010
+mapped
+@end table
+
+@item bit 3
+If set, the page is read/write.  If cleared, the page is read-only.
+
+@item bit 4
+If set, bits 5 and 6 specify accessed and dirty bits.
+
+@item bit 5
+The page has been accessed (only valid if bit 4 is set).
+
+@item bit 6
+The page has been written (is @dfn{dirty}).  Only valid if bit 4 is
+set.
+@end table
 
 @subheading Return Value
 

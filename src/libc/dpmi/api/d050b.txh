@@ -1,11 +1,11 @@
 @node __dpmi_get_memory_information, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_get_memory_information(__dpmi_memory_info *_buffer);
-@end example
+int __dpmi_get_memory_information(__dpmi_memory_info *buffer);
+@end smallexample
 
 @subheading Description
 
@@ -13,9 +13,56 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x050b (DPMI 1.0 only)
+DPMI function AX = 0x050b (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-This function returns virtual memory information.
+This function returns virtual memory information, as follows:
+
+@table @code
+@item total_allocated_bytes_of_physical_memory_host
+The total amount of allocated physical memory controlled by the DPMI
+host.
+
+@item total_allocated_bytes_of_virtual_memory_host
+The total amount of allocated virtual memory controlled by the DPMI
+host.
+
+@item total_available_bytes_of_virtual_memory_host
+The total amount of available virtual memory controlled by the DPMI
+host.
+
+@item total_allocated_bytes_of_virtual_memory_vcpu
+The amount of virtual memory allocated by the DPMI host for the current
+virtual machine.
+
+@item total_available_bytes_of_virtual_memory_vcpu
+The amount of virtual memory available for the current virtual machine.
+
+@item total_allocated_bytes_of_virtual_memory_client
+The amount of virtual memory allocated by the DPMI host for the current
+client (that is, for the calling program).
+
+@item total_available_bytes_of_virtual_memory_client
+The amount of virtual memory available to the current client.
+
+@item total_locked_bytes_of_memory_client
+The amount of memory locked by the calling program.
+
+@item max_locked_bytes_of_memory_client
+Maximum locked memory for the current client.
+
+@item highest_linear_address_available_to_client
+The highest linear address available to the calling program.
+
+@item size_in_bytes_of_largest_free_memory_block
+Size of the largest available memory block.
+
+@item size_of_minimum_allocation_unit_in_bytes
+Size of the smallest block that can be allocated.
+
+@item size_of_allocation_alignment_unit_in_bytes
+The alignment of allocated memory blocks.
+@end table
 
 @subheading Return Value
 

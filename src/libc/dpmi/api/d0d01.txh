@@ -1,11 +1,11 @@
 @node __dpmi_free_shared_memory, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_free_shared_memory(unsigned long _handle);
-@end example
+int __dpmi_free_shared_memory(unsigned long handle);
+@end smallexample
 
 @subheading Description
 
@@ -13,9 +13,11 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0d01 (DPMI 1.0 only)
+DPMI function AX = 0x0d01 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-See the spec.
+This function frees the shared memory block specified by the given
+@var{handle}.  The handle becomes invalid after this call.
 
 @subheading Return Value
 

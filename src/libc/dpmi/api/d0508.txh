@@ -1,11 +1,12 @@
 @node __dpmi_map_device_in_memory_block, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_map_device_in_memory_block(__dpmi_meminfo *_info, unsigned long *_physaddr);
-@end example
+int __dpmi_map_device_in_memory_block(__dpmi_meminfo *info, 
+                                      unsigned long *physaddr);
+@end smallexample
 
 @subheading Description
 
@@ -13,7 +14,8 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0508 (DPMI 1.0 only)
+DPMI function AX = 0x0508 (DPMI 1.0 only).  Supported by CWSDPMI, but
+not by Windows.
 
 This function maps a physical address range to virtual memory.  Pass
 the handle, offset relative to the start of the block, and number of

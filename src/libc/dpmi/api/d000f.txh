@@ -4,7 +4,7 @@
 @example
 #include <dpmi.h>
 
-int __dpmi_set_multiple_descriptors(int _count, void *_buffer);
+int __dpmi_set_multiple_descriptors(int count, void *buffer);
 @end example
 
 @subheading Description
@@ -13,15 +13,18 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x000f (DPMI 1.0 only)
+DPMI function AX = 0x000f (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-This function sets multiple descriptors.  Buffer usage is like
-@ref{__dpmi_get_multiple_descriptors}, but the caller fills in
+This function sets multiple descriptors.  Buffer usage is like in
+@code{__dpmi_get_multiple_descriptors}
+(@pxref{__dpmi_get_multiple_descriptors}), but the caller fills in
 everything before calling.
 
 @subheading Return Value
 
-Returns _count if successful, the negative of # descriptors set if failure.
+Returns @var{count} if successful, the negative of the number of
+descriptors set if failure.
 
 @subheading Portability
 

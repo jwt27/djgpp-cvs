@@ -1,11 +1,12 @@
 @node __dpmi_install_resident_service_provider_callback, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_install_resident_service_provider_callback(__dpmi_callback_info *_info);
-@end example
+int 
+__dpmi_install_resident_service_provider_callback(__dpmi_callback_info *info);
+@end smallexample
 
 @subheading Description
 
@@ -13,9 +14,39 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0c00 (DPMI 1.0 only)
+DPMI function AX = 0x0c00 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-See the spec.
+This function installs a resident service provider callback and declares
+an intent to provide resident protected-mode services after terminating
+with a call to @code{__dpmi_terminate_and_stay_resident}
+(@pxref{__dpmi_terminate_and_stay_resident}).
+
+The various members of @var{info} should be filled as follows:
+
+@table @code
+@item data16
+An 8-byte descriptor for the 16-bit data segment.
+
+@item code16
+An 8-byte descriptor for the 16-bit code segment (zeros if not
+supported).
+
+@item ip
+A 16-bit offset of the 16-bit callback procedure.
+
+@item data32
+An 8-byte descriptor for 32-bit data segment.
+
+@item code32
+An 8-byte descriptor for 32-bit code segment (zeros if not supported).
+
+@item eip
+A 32-bit offset of the 32-bit callback procedure.
+@end table
+
+@xref{__dpmi_get_descriptor}, for the details about the layout of the
+8-byte segment descriptor.
 
 @subheading Return Value
 

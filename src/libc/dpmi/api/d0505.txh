@@ -1,11 +1,11 @@
 @node __dpmi_resize_linear_memory, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_resize_linear_memory(__dpmi_meminfo *_info, int _commit);
-@end example
+int __dpmi_resize_linear_memory(__dpmi_meminfo *info, int commit);
+@end smallexample
 
 @subheading Description
 
@@ -13,10 +13,11 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0505 (DPMI 1.0 only)
+DPMI function AX = 0x0505 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
 This function resizes a memory block.  Pass the handle and new size.
-Bit 0 of _commit is 1 for committed pages; bit 1 is 1 to automatically
+Bit 0 of @var{commit} is 1 for committed pages; bit 1 is 1 to automatically
 update descriptors.  It returns a new handle and base address.
 
 @subheading Return Value

@@ -1,11 +1,11 @@
 @node __dpmi_set_coprocessor_emulation, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_set_coprocessor_emulation(int _flags);
-@end example
+int __dpmi_set_coprocessor_emulation(int flags);
+@end smallexample
 
 @subheading Description
 
@@ -13,7 +13,24 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0e01 (DPMI 1.0 only)
+DPMI function AX = 0x0e01 (DPMI 1.0 only), but supported by most DPMI
+servers, including CWSDPMI, Windows, and QDPMI.
+
+This function sets the co-processor emulation state as specified by
+@var{flags}.  The only two used bits in @var{flags} are:
+
+@table @code
+@item bit 0
+If set, enable the emulation.
+
+@item bit 1
+If set, the emulation of the floating-point instructions will be done by
+the calling application.
+@end table
+
+DJGPP programs using one of the provided emulators should generally call
+this functions with an argument of 3.  (The DJGPP startup code does that
+automatically if no co-processor is detected.)
 
 @subheading Return Value
 

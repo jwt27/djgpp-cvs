@@ -1,11 +1,11 @@
 @node __dpmi_get_coprocessor_status, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
 int __dpmi_get_coprocessor_status(void);
-@end example
+@end smallexample
 
 @subheading Description
 
@@ -13,11 +13,43 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0e00 (DPMI 1.0 only)
+DPMI function AX = 0x0e00 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
 @subheading Return Value
 
--1 on error, else returns the processor status flags
+-1 on error, else returns the processor status flags.  Here's the
+meaning of each set bit:
+
+@table @asis
+@item bit 0
+If set, co-processor emulation is enabled.
+
+@item bit 1
+If set, the application is emulating the co-processor.
+
+@item bit 2
+If set, the numeric co-processor is present.
+
+@item bit 3
+If set, the DPMI host is emulating the co-processor.
+
+@item bits 4-7
+The co-processor type:
+
+@table @code
+@item 0000
+none
+@item 0010
+80287
+@item 0011
+80387
+@item 0100
+80486 with a numeric processor
+@end table
+
+@end table
+
 
 @subheading Portability
 

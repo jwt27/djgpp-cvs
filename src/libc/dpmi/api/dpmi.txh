@@ -137,7 +137,7 @@ typedef struct @{
   unsigned long highest_linear_address_available_to_client;
   unsigned long size_in_bytes_of_largest_free_memory_block;
   unsigned long size_of_minimum_allocation_unit_in_bytes;
-  unsigned long size_of_allocation_alignmentunit_in_bytes;
+  unsigned long size_of_allocation_alignment_unit_in_bytes;
   unsigned long reserved[19];
 @} __dpmi_memory_info;
 @end example

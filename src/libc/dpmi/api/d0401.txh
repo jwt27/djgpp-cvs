@@ -1,11 +1,11 @@
 @node __dpmi_get_capabilities, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_get_capabilities(int *_flags, char *vendor_info);
-@end example
+int __dpmi_get_capabilities(int *flags, char *vendor_info);
+@end smallexample
 
 @subheading Description
 
@@ -13,9 +13,10 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0401 (DPMI 1.0 only)
+DPMI function AX = 0x0401 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-Gets the capabilities of the server.  The flags are as follows:
+Gets the capabilities of the server.  @var{flags} are as follows:
 
 @example
 ---- ---X = 1="page accessed/dirty" supported
@@ -37,7 +38,7 @@ The vendor info is a 128-byte buffer:
 
 @subheading Return Value
 
-!-1 on error, else zero.
+-1 on error, else zero.
 
 @subheading Portability
 

@@ -1,11 +1,11 @@
 @node __dpmi_allocate_shared_memory, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_allocate_shared_memory(__dpmi_shminfo *_info);
-@end example
+int __dpmi_allocate_shared_memory(__dpmi_shminfo *info);
+@end smallexample
 
 @subheading Description
 
@@ -13,9 +13,21 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0d00 (DPMI 1.0 only)
+DPMI function AX = 0x0d00 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-See the spec.
+This function allocates a shared memory block that can be accessed from
+different virtual machines.  Fill the required length in
+@code{@var{info}->size_requested}.  The function fills the rest of the
+structure: allocated length in @code{@var{info}->size}, block handle in
+@code{@var{info}->handle}, linear address in @code{@var{info}->address},
+and the selector:offset of an @sc{asciiz} block name (up to 128 bytes
+long) in @code{@var{info}->name_selector} and
+@code{@var{info}->name_offset}, respectively.
+
+The access to the shared memory block can be serialized by calling
+the @code{__dpmi_serialize_on_shared_memory} function
+(@pxref{__dpmi_serialize_on_shared_memory}).
 
 @subheading Return Value
 

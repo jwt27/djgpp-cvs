@@ -1,11 +1,11 @@
 @node __dpmi_serialize_on_shared_memory, dpmi
 @subheading Syntax
 
-@example
+@smallexample
 #include <dpmi.h>
 
-int __dpmi_serialize_on_shared_memory(unsigned long _handle, int _flags);
-@end example
+int __dpmi_serialize_on_shared_memory(unsigned long handle, int flags);
+@end smallexample
 
 @subheading Description
 
@@ -13,9 +13,30 @@ Please refer to @ref{DPMI Specification} for details on DPMI
 function call operation.  Also see @ref{DPMI Overview} for general
 information.
 
-DPMI function AX = 0x0d02 (DPMI 1.0 only)
+DPMI function AX = 0x0d02 (DPMI 1.0 only).  Not supported by CWSDPMI and
+Windows.
 
-See the spec.
+This function serializes access to a shared memory block whose handle is
+given in @var{handle}.  The bit-mapped variable @var{flags} defines the
+following bits:
+
+@table @asis
+@item bit 0
+If set, return immediately if serialization is unavailable.  If cleared,
+the program is suspended until the serialization becomes available.
+
+@item bit 1
+If set, perform shared serialization.  If cleared, perform exclusive
+serialization.
+
+@item bits 2-15
+Reserved (should be zero).
+@end table
+
+An @dfn{exclusive serialization} blocks @emph{any} serialization
+attempts for the same memory block from other virtual machines.  A
+@dfn{shared serialization} blocks only @emph{exclusive} serialization
+attempts from other virtual machines.
 
 @subheading Return Value
 
