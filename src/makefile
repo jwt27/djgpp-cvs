@@ -36,6 +36,7 @@ copyrite.exe : copyrite.cc
 subs:
 	$(MAKE) -C djasm native
 	$(MAKE) -C stub native
+	$(MAKE) -C utils native
 	$(MAKE) -C dxe native
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
