@@ -110,6 +110,7 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <libc/fd_props.h>
+#include <libc/getdinfo.h>
 
 #include <dpmi.h>
 #include <go32.h>
@@ -410,7 +411,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   else
     have_trusted_values = 0;
 
-  if (dev_info & 0x0080)
+  if (dev_info & _DEV_CDEV)
     {
       is_dev = 1;
       is_remote = 0;	/* device can't be remote */
@@ -418,7 +419,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   else
     {
       is_dev = 0;
-      if (dev_info & 0x8000)
+      if (dev_info & _DEV_REMOTE)
 	is_remote = 1;
       else
 	is_remote = 0;
@@ -769,16 +770,16 @@ fstat_assist(int fhandle, struct stat *stat_buf)
                * We will also pretend devices belong to a special drive
                * named `@'.
                */
-              if (dev_info & 0xf)
+              if (dev_info & (_DEV_STDIN|_DEV_STDOUT|_DEV_NUL|_DEV_CLOCK))
                 {
                   char dev_name[16];
 
                   strcpy(dev_name, "@:\\dev\\");
-                  if (dev_info & 3)         /* either STDIN or STDOUT */
+                  if (dev_info & (_DEV_STDIN|_DEV_STDOUT))
                     strcat(dev_name, "CON     ");
-                  else if (dev_info & 4)    /* NULL device */
+                  else if (dev_info & _DEV_NUL)
                     strcat(dev_name, "NUL     ");
-                  else if (dev_info & 8)    /* CLOCK device */
+                  else if (dev_info & _DEV_CLOCK)
                     strcat(dev_name, "CLOCK$  ");
 
                   stat_buf->st_ino = _invent_inode(dev_name, 0, 0);

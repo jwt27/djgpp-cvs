@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -11,6 +12,7 @@
 
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
+#include <libc/getdinfo.h>
 
 void (*__setmode_stdio_hook)(int fd, int mode); /* BSS to zero */
 
@@ -25,11 +27,11 @@ setmode(int handle, int mode)
      return -1;
 
   if (mode & O_BINARY)
-    newmode |= 0x20;
+    newmode |= _DEV_RAW;
   else
-    newmode &= ~0x20;
+    newmode &= ~_DEV_RAW;
 
-  if (oldmode & 0x80)	/* Only for character dev */
+  if (oldmode & _DEV_CDEV)	/* Only for character dev */
   {
     regs.x.ax = 0x4401;
     regs.x.bx = handle;
