@@ -247,7 +247,7 @@ Allow one to allocate space in @code{djasm} using @code{.union}
 (instead of @code{.struct}) when using a union.  As there is no
 checking, @code{.struct} and @code{.union} are interchangeable.
 This feature taken from a version of @code{djasm} maintained by
-@email{bcurrie@@taniwha.org, Bill Currie}.
+@email{bill@@taniwha.org, Bill Currie}.
 
 The @code{fcntl} function has been significantly enhanced.  In
 particular:
@@ -308,7 +308,7 @@ interfaces to these two new @code{_dos_*} functions.
 @pindex djasm@r{, enumeration type}
 Support for enumeration type added to @code{djasm}.
 This feature taken from a version of @code{djasm} maintained by
-@email{bcurrie@@taniwha.org, Bill Currie}.
+@email{bill@@taniwha.org, Bill Currie}.
 
 @cindex C99 compliance, new header files
 Header files, which are part of the new ANSI/ISO C99 Standard, are now
@@ -395,4 +395,4 @@ reserved for the basic shift/rotate instructions.)
 @pindex djasm@r{, rotate instructions}
 Completed the support in @code{djasm} for the byte/word/double
 shift/rotate instructions.  This feature taken from a version of
-@code{djasm} maintained by @email{bcurrie@@taniwha.org, Bill Currie}.
+@code{djasm} maintained by @email{bill@@taniwha.org, Bill Currie}.
