@@ -3,13 +3,18 @@
 #define __dj_include_stddef_h_
 
 #ifdef __cplusplus
-extern "C" {
+namespace std {
+  extern "C" {
 #endif
 
 #include <sys/djtypes.h>
   
 #define NULL 0
+#ifdef __cplusplus
+#define offsetof(s_type, mbr) ((std::size_t) &((s_type *)0)->mbr)
+#else
 #define offsetof(s_type, mbr) ((size_t) &((s_type *)0)->mbr)
+#endif
 
 #ifndef _PTRDIFF_T
 typedef int ptrdiff_t;
@@ -40,7 +45,18 @@ __DJ_wchar_t
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 
 #ifdef __cplusplus
+  }
 }
 #endif
 
 #endif /* !__dj_include_stddef_h_ */
+
+
+#if defined(__cplusplus)
+#ifndef __dj_via_cplusplus_header_
+
+using std::ptrdiff_t;
+using std::size_t;
+
+#endif /* !__dj_via_cplusplus_header_ */
+#endif /* __cplusplus */
