@@ -55,6 +55,7 @@ extern int errno;
 #ifndef _POSIX_SOURCE
 
 #define ENMFILE		38
+#define ELOOP           39
 
 extern char *		sys_errlist[];
 extern int		sys_nerr;
