@@ -31,11 +31,14 @@ open(const char* filename, int oflag, ...)
 
   /* Solve symlinks and honor O_NOLINK flag  */
   if (oflag & O_NOLINK)
-      strcpy(real_name, filename);
+  {
+     if (!__solve_dir_symlinks(filename, real_name))
+        return -1; /* errno from from __solve_dir_symlinks() */
+  }
   else
   {
      if (!__solve_symlinks(filename, real_name))
-        return -1; /* errno from from __solve_symlinks() */
+        return -1; 
   }
 
   /* Honor O_NOFOLLOW flag. */
