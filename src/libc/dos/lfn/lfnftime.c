@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <errno.h>
 #include <fcntl.h>
