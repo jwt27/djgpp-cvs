@@ -102,7 +102,7 @@ guide to what to download.  In general, download the binary
 distributions only; most people don't need the source distributions.
 
 To build C programs, you'll need djdev203.zip, gcc*b.zip, and
-bnu*b.zip.  For C++, also get gpp*b.zip and lgp*b.zip.
+bnu*b.zip.  For C++, also get gpp*b.zip.
 
 To read the online manuals, get txi*b.zip and run "info".  If you don't
 have a DPMI server installed, you'll need csdpmi*b.zip.  (Windows, QDPMI,
