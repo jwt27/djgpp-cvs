@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* Provided by Cygnus Support (jtc@cygnus.com) */
 
@@ -14,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.1 1995/08/27 01:44:18 dj Exp $
+ * $Id: math.h,v 1.2 1998/07/25 19:08:20 dj Exp $
  */
 
 #ifndef _MATH_H_
@@ -23,35 +24,57 @@
 /*
  * ANSI/POSIX
  */
-extern char __infinity[];
-#define HUGE_VAL	(*(double *) __infinity)
+typedef int __int32_t;
+typedef unsigned int __uint32_t;
+
+union __dmath
+{
+  __uint32_t i[2];
+  double d;
+};
+
+extern const union __dmath __infinity;
+#define HUGE_VAL (__infinity.d)
 
 /*
  * XOPEN/SVID
  */
-#if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
+#if !defined(__STRICT_ANSI__) && !defined(_POSIX_SOURCE)
 #define	M_E		2.7182818284590452354	/* e */
 #define	M_LOG2E		1.4426950408889634074	/* log 2e */
 #define	M_LOG10E	0.43429448190325182765	/* log 10e */
-#define	M_LN2		0.69314718055994530942	/* log e2 */
+#define	M_LN2		0.693147180559945309417	/* log e2 */
 #define	M_LN10		2.30258509299404568402	/* log e10 */
 #define	M_PI		3.14159265358979323846	/* pi */
+#define	M_TWOPI		6.28318530717958647692	/* 2*pi */
 #define	M_PI_2		1.57079632679489661923	/* pi/2 */
 #define	M_PI_4		0.78539816339744830962	/* pi/4 */
+#define	M_3PI_4		2.3561944901923448370	/* 3/4 * pi */
+#define	M_SQRTPI	1.77245385090551602792981 /* sqrt(pi) */
 #define	M_1_PI		0.31830988618379067154	/* 1/pi */
 #define	M_2_PI		0.63661977236758134308	/* 2/pi */
 #define	M_2_SQRTPI	1.12837916709551257390	/* 2/sqrt(pi) */
 #define	M_SQRT2		1.41421356237309504880	/* sqrt(2) */
 #define	M_SQRT1_2	0.70710678118654752440	/* 1/sqrt(2) */
+#define	M_LN2LO		1.9082149292705877000E-10 /* lower bits of log e2 */
+#define	M_LN2HI		6.9314718036912381649E-1 /* log e2 */
+#define	M_SQRT3   	1.73205080756887719000	/* sqrt(3) */
+#define	M_IVLN10	0.43429448190325182765 /* 1 / log(10) */
+#define	M_LOG2_E	0.693147180559945309417
+#define	M_INVLN2	1.4426950408889633870E0  /* 1 / log e2 */
 
-#define	MAXFLOAT	((float)3.40282346638528860e+38)
 extern int signgam;
 
-#if !defined(_XOPEN_SOURCE)
-enum fdversion {fdlibm_ieee = -1, fdlibm_svid, fdlibm_xopen, fdlibm_posix};
+enum __fdlibm_version
+{
+  __fdlibm_ieee = -1,
+  __fdlibm_svid,
+  __fdlibm_xopen,
+  __fdlibm_posix
+};
 
-#define _LIB_VERSION_TYPE enum fdversion
-#define _LIB_VERSION _fdlib_version  
+#define _LIB_VERSION_TYPE enum __fdlibm_version
+#define _LIB_VERSION __fdlib_version
 
 /* if global variable _LIB_VERSION is not desirable, one may 
  * change the following to be a constant by: 
@@ -62,20 +85,24 @@ enum fdversion {fdlibm_ieee = -1, fdlibm_svid, fdlibm_xopen, fdlibm_posix};
  */ 
 extern  _LIB_VERSION_TYPE  _LIB_VERSION;
 
-#define _IEEE_  fdlibm_ieee
-#define _SVID_  fdlibm_svid
-#define _XOPEN_ fdlibm_xopen
-#define _POSIX_ fdlibm_posix
+#define _IEEE_  __fdlibm_ieee
+#define _SVID_  __fdlibm_svid
+#define _XOPEN_ __fdlibm_xopen
+#define _POSIX_ __fdlibm_posix
 
-struct exception {
+/* The exception structure passed to the matherr routine.  */
+
+#ifndef __cplusplus
+struct exception
+{
 	int type;
-	char *name;
+	const char *name;
 	double arg1;
 	double arg2;
 	double retval;
+	int err;
 };
-
-#define	HUGE		MAXFLOAT
+#endif
 
 /* 
  * set X_TLOSS = pi*2**52, which is possibly defined in <values.h>
@@ -91,8 +118,7 @@ struct exception {
 #define	TLOSS		5
 #define	PLOSS		6
 
-#endif /* !_XOPEN_SOURCE */
-#endif /* !_ANSI_SOURCE && !_POSIX_SOURCE */
+#endif /* !__STRICT_ANSI__ && !_POSIX_SOURCE */
 
 
 #include <sys/cdefs.h>
@@ -118,13 +144,9 @@ extern double frexp __P((double, int *));
 extern double ldexp __P((double, int));
 extern double log __P((double));
 extern double log10 __P((double));
-extern double log2 __P((double));
 extern double modf __P((double, double *));
-extern long double modfl __P((long double, long double *));
 
 extern double pow __P((double, double));
-extern double pow2 __P((double));
-extern double pow10 __P((double));
 extern double sqrt __P((double));
 
 extern double ceil __P((double));
@@ -132,11 +154,12 @@ extern double fabs __P((double));
 extern double floor __P((double));
 extern double fmod __P((double, double));
 
-#if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
+#if !defined(__STRICT_ANSI__) && !defined(_POSIX_SOURCE)
 extern double erf __P((double));
 extern double erfc __P((double));
 extern double gamma __P((double));
 extern double hypot __P((double, double));
+extern double infinity __P((void));
 extern int isinf __P((double));
 extern int isnan __P((double));
 extern int finite __P((double));
@@ -144,9 +167,11 @@ extern double j0 __P((double));
 extern double j1 __P((double));
 extern double jn __P((int, double));
 extern double lgamma __P((double));
+extern double nan __P((void));
 extern double y0 __P((double));
 extern double y1 __P((double));
 extern double yn __P((int, double));
+#define log2(x) (log (x) / M_LOG2_E)
 
 #if !defined(_XOPEN_SOURCE)
 extern double acosh __P((double));
@@ -158,7 +183,9 @@ extern double nextafter __P((double, double));
 extern double remainder __P((double, double));
 extern double scalb __P((double, double));
 
+#ifndef __cplusplus
 extern int matherr __P((struct exception *));
+#endif
 
 /*
  * IEEE Test Vector
@@ -176,7 +203,6 @@ extern double scalbn __P((double, int));
 /*
  * BSD math library entry points
  */
-/* extern double cabs(); */
 extern double drem __P((double, double));
 extern double expm1 __P((double));
 extern double log1p __P((double));
@@ -185,10 +211,8 @@ extern double log1p __P((double));
  * Reentrant version of gamma & lgamma; passes signgam back by reference
  * as the second argument; user must allocate space for signgam.
  */
-#ifdef _REENTRANT
 extern double gamma_r __P((double, int *));
 extern double lgamma_r __P((double, int *));
-#endif /* _REENTRANT */
 
 
 /* float versions of ANSI/POSIX functions */
@@ -223,6 +247,7 @@ extern float erff __P((float));
 extern float erfcf __P((float));
 extern float gammaf __P((float));
 extern float hypotf __P((float, float));
+extern float infinityf __P((void));
 extern int isinff __P((float));
 extern int isnanf __P((float));
 extern int finitef __P((float));
@@ -230,9 +255,11 @@ extern float j0f __P((float));
 extern float j1f __P((float));
 extern float jnf __P((int, float));
 extern float lgammaf __P((float));
+extern float nanf __P((void));
 extern float y0f __P((float));
 extern float y1f __P((float));
 extern float ynf __P((int, float));
+#define log2f(x) (logf (x) / (float) M_LOG2_E)
 
 extern float acoshf __P((float));
 extern float asinhf __P((float));
@@ -260,7 +287,6 @@ extern float scalbnf __P((float, int));
 /*
  * float versions of BSD math library entry points
  */
-/* extern float cabsf (); */
 extern float dremf __P((float, float));
 extern float expm1f __P((float));
 extern float log1pf __P((float));
@@ -270,13 +296,11 @@ extern float log1pf __P((float));
  * signgam back by reference as the second argument; user must
  * allocate space for signgam.
  */
-#ifdef _REENTRANT
 extern float gammaf_r __P((float, int *));
 extern float lgammaf_r __P((float, int *));
-#endif	/* _REENTRANT */
 
 #endif /* !_XOPEN_SOURCE */
-#endif /* !_ANSI_SOURCE && !_POSIX_SOURCE */
+#endif /* !__STRICT_ANSI__ && !_POSIX_SOURCE */
 
 __END_DECLS
 
