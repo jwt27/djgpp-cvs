@@ -420,10 +420,11 @@ newlines under @code{REG_NEWLINE} (REG_NEWLINE, @pxref{regcomp}).
 
 @item REG_STARTEND
 
-The string is considered to start at @var{@w{string + pmatch[0].rm_so}}
+The string is considered to start at
+@w{@code{@var{string} + @var{pmatch}[0].rm_so}}
 and to have a terminating @code{NUL} located at
-@var{@w{string + pmatch[0].rm_eo}} (there need not actually be a
-@code{NUL} at that location), regardless of the value of @var{nmatch}.
+@w{@code{@var{string} + @var{pmatch}[0].rm_eo}} (there need not actually
+be a @code{NUL} at that location), regardless of the value of @var{nmatch}.
 See below for the definition of @var{pmatch} and @var{nmatch}.  This is
 an extension, compatible with but not specified by @sc{posix 1003.2},
 and should be used with caution in software intended to be portable to
@@ -509,8 +510,9 @@ the passed argument @var{preg} doesn't point to an RE compiled by
 
 @item REG_INVARG
 
-invalid argument(s) (e.g., @var{@w{string + pmatch[0].rm_eo}} is less
-than @var{@w{string + pmatch[0].rm_so}})
+invalid argument(s) (e.g.,
+@w{@code{@var{string} + @var{pmatch}[0].rm_eo}} is less
+than @w{@code{@var{string} + @var{pmatch}[0].rm_so}})
 
 @end table
 
