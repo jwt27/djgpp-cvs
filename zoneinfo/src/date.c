@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef NOID
-static char	elsieid[] = "@(#)date.c	7.32";
+static char	elsieid[] = "@(#)date.c	7.34";
 /*
 ** Modified from the UCB version with the SCCS ID appearing below.
 */
@@ -39,7 +39,9 @@ static char sccsid[] = "@(#)date.c	4.23 (Berkeley) 9/20/88";
 #include "sys/time.h"	/* for struct timeval, struct timezone */
 #endif /* HAVE_ADJTIME || HAVE_SETTIMEOFDAY */
 #include "locale.h"
+#ifdef OLD_TIME
 #include "utmp.h"	/* for OLD_TIME (or its absence) */
+#endif
 #if HAVE_UTMPX_H
 #include "utmpx.h"
 #endif
@@ -77,7 +79,9 @@ static void		errensure P((void));
 static void		iffy P((time_t, time_t, const char *, const char *));
 int			main P((int, char**));
 static const char *	nondigit P((const char *));
+#ifndef __MSDOS__
 static void		oops P((const char *));
+#endif
 static void		reset P((time_t, int));
 static void		timeout P((FILE *, const char *, const struct tm *));
 static void		usage P((void));
@@ -119,11 +123,11 @@ char *		argv[];
 	(void) setlocale(LC_TIME, "");
 	(void) time(&now);
 	format = value = NULL;
-	while ((ch = getopt(argc, argv, "ucnd:t:a:")) != EOF) {
+	while ((ch = getopt(argc, argv, "ucnd:t:a:")) != EOF && ch != -1) {
 		switch (ch) {
 		default:
 			usage();
-		case 'u':		/* do it in GMT */
+		case 'u':		/* do it in UTC */
 		case 'c':
 			dogmt();
 			break;
@@ -143,7 +147,7 @@ char *		argv[];
 				wildinput(_("-t value"), optarg,
 					_("must be a non-negative number"));
 			break;
-		case 't':		/* minutes west of GMT */
+		case 't':		/* minutes west of UTC */
 			if (tflag) {
 				(void) fprintf(stderr,
 					_("date: error: multiple -t's used"));
@@ -222,7 +226,7 @@ _("date: error: multiple values in command line\n"));
 				**	TZ=America/New_York date 8712311859.60
 				** when the leap second was inserted.)
 				** The normal check won't work since
-				** the given time is valid in GMT.
+				** the given time is valid in UTC.
 				*/
 				if (atoi(cp + 1) >= SECSPERMIN)
 					wildinput(_("time"), value,
@@ -431,12 +435,14 @@ const int	nflag;
 #endif /* !defined BSD4_4 */
 #endif /* !defined TIME_NAME */
 
+#ifdef TSP_SETDATE
 #include "syslog.h"
 #include "sys/socket.h"
 #include "netinet/in.h"
 #include "netdb.h"
 #define TSPTYPES
 #include "protocols/timed.h"
+#endif /* TSP_SETDATE */
 
 extern int		logwtmp();
 
@@ -462,6 +468,7 @@ const int	nflag;
 	if (username == NULL || *username == '\0') /* single-user or no tty */
 		username = "root";
 	tv.tv_sec = newt;
+#ifndef __MSDOS__
 #ifdef TSP_SETDATE
 	if (nflag || !netsettime(tv))
 #endif /* defined TSP_SETDATE */
@@ -476,6 +483,7 @@ const int	nflag;
 				username);
 		} else	oops("settimeofday");
 	}
+#endif /* !__MSDOS__ */
 }
 
 #endif /* !defined OLD_TIME */
@@ -517,6 +525,7 @@ usage P((void))
 	(void) exit(retval);
 }
 
+#ifndef __MSDOS__
 static void
 oops(string)
 const char * const	string;
@@ -529,6 +538,7 @@ const char * const	string;
 	errensure();
 	display((char *) NULL);
 }
+#endif /* !__MSDOS__ */
 
 static void
 display(format)
@@ -646,7 +656,7 @@ const time_t			t;
 	}
 
 	cp = value;
-	switch (dotp - cp) {
+	switch ((int)(dotp - cp)) {
 		default:
 			wildinput(_("time"), value, _("main part is wrong length"));
 		case 12:
@@ -696,7 +706,7 @@ const time_t			t;
 	tm.tm_isdst = -1;
 	outtm = tm;
 	outt = mktime(&outtm);
-	return (comptm(&tm, &outtm) == 0) ? outt : -1;
+	return (comptm(&tm, &outtm) == 0) ? outt : (time_t)-1;
 }
 
 /*
