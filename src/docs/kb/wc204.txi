@@ -6,8 +6,8 @@ Here is a list of changes from DJGPP V2.03 to V2.04.
 @findex uname@r{, CPU type detection}
 Ability to report the exact CPU type in @code{uname}.
 
-@cindex stdarg.h{, GCC 2.96}
-@cindex varargs.h{, GCC 2.96}
+@cindex stdarg.h@r{, GCC 2.96}
+@cindex varargs.h@r{, GCC 2.96}
 When used together with GCC 2.96 or later, va_list facilities
 in <stdarg.h> and <varargs.h> are implemented using new
 builtins from GCC 2.96.
