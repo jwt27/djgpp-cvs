@@ -24,35 +24,31 @@ int __libc_termios_hook_common_count = -1;
 
 
 /* static functions */
-static void __libc_termios_fflushall (void);
+static void __libc_termios_fflushall(void);
 
 /******************************************************************************/
 /* initialize function ********************************************************/
 
 static void
-__libc_termios_fflushall (void)
+__libc_termios_fflushall(void)
 {
-#if 0 /* don't work on djgpp */
-  fflush (NULL);
-#else
-  _fwalk ((void (*) (FILE*)) fflush);
-#endif
+  fflush(NULL);
 }
 
-void
-__libc_termios_init (void)
+void __attribute__((constructor))
+__libc_termios_init(void)
 {
   if (__libc_termios_hook_common_count != __bss_count)
-    {
-      __libc_termios_hook_common_count = __bss_count;
+  {
+    __libc_termios_hook_common_count = __bss_count;
 
-      /* flush all buffered streams */
-      __libc_termios_fflushall ();
+    /* flush all buffered streams */
+    __libc_termios_fflushall ();
 
-      __libc_termios_init_read();
-      __libc_termios_init_write();
+    __libc_termios_init_read();
+    __libc_termios_init_write();
 
-      /* import parameters */
-      /* __libc_tty_p = ...; */
-    }
+    /* import parameters */
+    /* __libc_tty_p = ...; */
+  }
 }
