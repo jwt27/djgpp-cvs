@@ -748,3 +748,8 @@ The function @code{fchown} was added.
 A bug was fixed in the File System Extensions mechanism that could be
 exposed in environments where it is possible to have large numbers of
 file descriptors (> 256) and low memory.
+
+@findex __doserr_to_errno@r{, wildcards on Windows 2000 and XP}
+The @code{errno} value is now set correctly when a file open fails
+due to wildcard (illegal) characters in the name.  If a wildcarded
+name failed to match the error message was EFAULT and misleading.
