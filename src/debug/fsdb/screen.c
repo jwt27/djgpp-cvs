@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -10,6 +11,7 @@
 #include <go32.h>
 #include <keys.h>
 #include <setjmp.h>
+#include <stdarg.h>
 #include "ed.h"
 #include "screen.h"
 void *xmalloc (size_t);
@@ -210,11 +212,15 @@ mysleep (int secs)
 void
 message (CL_TYPE class, char *fmt, ...)
 {
+  va_list args;
   char *save, *buf = alloca (cols);
   unsigned char saveattr = screen_attr;
   int len, y = rows / 2;
 
-  vsprintf (buf, fmt, (&fmt) + 1);
+  va_start(args, fmt);
+  vsprintf (buf, fmt, args);
+  va_end(args);
+
   len = strlen (buf);
   save = debug_screen_save;
   debug_screen_save = get_screen ();
