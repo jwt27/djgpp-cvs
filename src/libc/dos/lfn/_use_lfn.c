@@ -158,7 +158,7 @@ _use_lfn (const char *path)
       same_drive_as_last_time = 0;
     else
     {
-      unsigned drv_no;
+      int drv_no;
 
       _dos_getdrive(&drv_no);
       if (drv_no - 1 + 'A' != last_drive)

@@ -24,8 +24,8 @@ ssize_t
 write(int handle, const void* buffer, size_t count)
 {
   const char *buf = (const char *)buffer;
-  int bytes_in_tb = 0;
-  int offset_into_buf = 0;
+  size_t bytes_in_tb = 0;
+  size_t offset_into_buf = 0;
   int out;
   ssize_t rv;
   __FSEXT_Function *func = __FSEXT_get_function(handle);
@@ -84,7 +84,7 @@ write(int handle, const void* buffer, size_t count)
     out = _write_int(handle, NULL, bytes_in_tb);
     if (out < 0)
       return -1;
-    if (out < bytes_in_tb)
+    if ((size_t)out < bytes_in_tb)
     {
       offset_into_buf += out;
       errno = ENOSPC;
