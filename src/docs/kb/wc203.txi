@@ -1,4 +1,173 @@
-@node Changes in 2.03, Changes in 2.04, Changes in 2.02, What Changed
+@node Changes in 2.03, , Changes in 2.02, What Changed
+@section Changes in 2.03 update
+
+Here is a list of changes in DJGPP V2.03 update (since V2.03).
+
+@findex __dpmi_simulate_real_mode_procedure_retf_stack@r{, stack corruption}
+@code{__dpmi_simulate_real_mode_procedure_retf_stack} no longer corrupts
+the caller's stack.
+
+@findex setitimer@r{, and zero @code{it_interval.tv_usec}}
+Calling the @code{setitimer} function with both
+@code{it_interval.tv_sec} and @code{it_interval.tv_usec} members of
+@code{struct itimerval} set to zero no longer causes the timer to behave
+as if @code{it_interval.tv_usec} were set to the system clock
+granularity (55@dmn{msec} by default).
+
+@findex syms_init@r{, crashes for large programs}
+@pindex symify@r{, crashes for large programs}
+A subtle bug was corrected in function @code{process_coff} used by
+@code{syms_init} from @file{libdbg.a} to read and sort the symbols from
+a @sc{coff} image.  As a result, the @code{symify} utility should no
+longer crash in rare cases, especially when invoked on large programs.
+
+@findex _rename@r{, change letter-case of a file name}
+@findex rename@r{, change letter-case of a file name}
+The functions @code{rename} and @code{_rename} can now be used to change
+the letter case of a file name, like in this snippet:
+
+@example
+ rename ("makefile", "Makefile");
+@end example
+
+@noindent
+(This only works when the LFN support is available, of course.)
+
+@findex rename@r{, and Windows 2000}
+@findex _rename@r{, and Windows 2000}
+@cindex linking programs on Windows 2000
+@pindex stubify@r{, and Windows 2000}
+Functions @code{rename} and @code{_rename} work on Windows 2000 when the
+file under the new name already exists.  This solves the problems with
+linking DJGPP programs and with running the @code{stubify} utility on
+that OS.
+
+@pindex djasm@r{, Y2K fix}
+@code{djasm} writes a 2 digit year into the executable header instead of 
+a 3 digit year after Y2K.
+
+@findex _rename@r{, on Windows ME}
+@findex rename@r{, on Windows ME}
+@findex mkdir@r{, on Windows ME}
+@pindex stubify@r{, on Windows ME}
+The functions @code{_rename} (and @code{rename} which calls it) and
+@code{mkdir} no longer fail on Windows ME when long file names support
+is disabled.  This solves the problem with failures to link programs if
+the @env{LFN} variable is set to @samp{n} because @code{stubify.exe}
+failed to rename the produced executable and reported @code{EINVAL}.
+
+@findex spawn*@r{, invoking @file{.com} programs}
+@file{.com} programs are now invoked by the @code{spawn*} family of
+functions directly, thus making their exit status available to the
+parent DJGPP program.  Previously, when long file names were supported,
+@file{.com} programs were invoked through @file{COMMAND.COM}, which
+would lose the exit status.
+
+@cindex startup code, and crashes on Windows
+Nested DJGPP programs which are run by other DJGPP programs on Windows
+should no longer crash (and take the DOS box with them) due to the fact
+that Windows leaks selectors.  These crashes were caused by a failure to
+allocate a selector for conventional memory, and subsequent use of the
+invalid selector by the startup code itself.  This problem was typical
+for Make, Bash, and any other program which can launch lots of child
+programs without ever exiting to DOS.  To avoid this, the startup code
+was fixed to print an error message and exit to DOS with an exit status
+that indicates a failure, when a selector for DOS memory could not be
+allocated by the DPMI host.
+
+@findex spawn*@r{, no longer leak selectors on Windows and DOSEmu}
+@findex system@r{, no longer leaks selectors on Windows and DOSEmu}
+@pindex make@r{, no longer fails on large jobs due to selector leaks}
+The functions @code{system} and @code{spawn*} have also been changed
+to free DPMI selectors leaked by many DPMI hosts.  This fixes the 
+problem with large makefiles failing before completion under Windows.
+
+@cindex nested DJGPP program on Windows 2000
+There's now a work-around for the bug in NTVDM, the DOS emulator, which
+ships with Windows 2000: nested DJGPP programs no longer cause NTVDM to
+crash.  This allows to use GCC, Make, RHIDE, Bash, and other programs
+which routinely invoke child programs.
+
+@findex utime@r{, on Windows 2000 and XP}
+@pindex touch@r{, on Windows 2000 and XP}
+@pindex dtou@r{, on Windows 2000 and XP}
+@pindex utod@r{, on Windows 2000 and XP}
+@pindex recode@r{, on Windows 2000 and XP}
+@cindex time stamp of directories, changing
+The function @code{utime} now works on Windows 2000 and Windows XP.
+Previously, it would fail with @code{errno} set to @code{EIO}; this
+affected programs like @code{touch}, @code{dtou}, and @code{recode},
+which set time stamps of files.  In addition, @code{utime} now allows to
+set the time stamp of directories, but only on Windows 2000 or XP (other
+versions of Windows do not allow to change time stamps of directories).
+
+@findex sbrk@r{, fixed address wrap where illegal}
+@cindex @file{crt0.h}, added new flag to control wrap
+@cindex address wrap crashes on Windows NT, 2000, XP
+A fix has been applied to the memory allocation routines in @code{sbrk}
+to prevent use of memory which would require address wrap when the host
+DPMI provider does not allow 4Gb address limits.  
+
+@findex sbrk@r{, changed allocation size algorithm}
+@cindex DPMI memory block allocation sizes dynamic
+Change the round up size for memory block allocations in @code{sbrk} to increase with
+the number of handles allocated.  This helps keep the number of handles
+to the 256 allocated and reduce problems exhausting DPMI handle resources.
+
+@findex dup@r{, duplicates @code{FSEXT} hooks}
+@findex dup2@r{, duplicates @code{FSEXT} hooks}
+The functions @code{dup} and @code{dup2} now copy to the new handle any
+Filesystem Extensions which hooked the original handle.  Thus, the
+duplicate handle now behaves exactly like the original one, in that it
+is also hooked by the extension.
+
+@findex fstat@r{, and Windows 2000/XP}
+@findex link@r{, and Windows 2000/XP}
+@pindex cp@r{, and Windows 2000/XP}
+The function @code{fstat} now work arounds incompatibilities in DOS
+IOCTL interface on Windows 2000 and Windows XP, and as a result returns
+correct read/write permissions in @code{st_mode} and correct device code
+in @code{st_dev} members of @code{struct stat}.  This was known to fail
+functions like @code{link} and programs like GNU @code{cp} which tested
+files for being on the same filesystem by calling @code{fstat}.
+
+@findex open@r{, and Windows 2000/XP}
+@findex _open@r{, and Windows 2000/XP}
+@findex _creat@r{, and Windows 2000/XP}
+@findex _creatnew@r{, and Windows 2000/XP}
+The long file name support in Windows 2000 and XP have bugs which cause
+handles returned with long name opens to give incorrect information in
+many library routines.  Routines which open files now open using short
+name calls under Windows NT, 2K and XP if long file names are enabled.
+
+@pindex fsdb@r{, and Windows 2000/XP hardware breakpoints}
+@pindex edebug32@r{, and Windows 2000/XP hardware breakpoints}
+@findex _set_break_DPMI@r{, and Windows 2000/XP breakpoints}
+The set break DPMI call under Windows 2000 and XP do not return the 
+break point handle, which prevented debuggers using break points from
+working properly.  The handle is now guessed for this platforms which
+allows the debuggers to work with hardware break points.
+
+@findex getcwd@r{, and Windows 2000/XP long named directories}
+@findex _fixpath@r{, and long named directories}
+If the short name equivalent of the current path is greater than
+64 characters, Windows 2000 and XP do not return the correct long
+path name - they return the root directory instead without any
+failure code.  Since this can be disastrous in deep directories
+doing an rm -rf, we check for this bug and fix the path.  Long 
+directories can also cause @code{_fixpath} to fail on Windows 9x if LFN=n and
+this is now handled by returning a relative path instead of root.
+Many uses of @code{_fixpath} assume absolute directories so this
+change may break code in rare cases (such as saving the value and
+changing directories).
+
+@findex freopen@r{, and reusage of same handle}
+@code{freopen} was modified to always use the same handle even if
+it is not the first one available.   
+
+@findex strftime@r{, and z format}
+Corrected problem with negative gmt offsets with z format in @code{strftime}.
+
 @section Changes in 2.03
 
 Here is a list of changes from DJGPP V2.02 to V2.03
@@ -568,7 +737,7 @@ The floating-point emulator software had a bug in emulation of the
 @code{FSQRT} instruction, which could cause the calling program to hang.
 This was due to incorrect optimization by the version of GCC used to
 produce @file{djdev202.zip}.  The new version of the emulator works
-around this bug by preventing the compiler from performing these
+around this bug by preventinging the compiler from performing these
 incorrect optimizations.
 
 @findex fsetpos@r{, return value}
