@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -59,11 +61,13 @@
 #include <unistd.h>
 #include <libc/file.h>
 
-/* hold file pointer, descriptor, command, mode, temporary file name */
+/* hold file pointer, descriptor, command, mode, temporary file name,
+   and the status of the command  */
 struct pipe_list {
   FILE *fp;
   int fd;
-  char *command, mode[10], temp_name[FILENAME_MAX];
+  int exit_status;
+  char *command, mode[10], temp_name[L_tmpnam];
   struct pipe_list *next;
 };
 
@@ -73,12 +77,7 @@ static struct pipe_list *pl = NULL;
 FILE *
 popen (const char *cm, const char *md) /* program name, pipe mode */
 {
-  struct pipe_list *l1, *l2;
-  static char *tn = NULL;       /* temporary file basename */
-
-  if (!tn)
-    if ((tn = tmpnam(0)) == NULL)
-      return NULL;
+  struct pipe_list *l1;
 
   /* make new node */
   if ((l1 = (struct pipe_list *) malloc (sizeof (struct pipe_list))) == NULL)
@@ -90,25 +89,18 @@ popen (const char *cm, const char *md) /* program name, pipe mode */
   l1->next = NULL;
 
   /* if empty list - just grab new node */
-  if (!pl)
-    pl = l1;
-  else
-  {
-    /* otherwise, find last node in list */
-    ++(l1->fd);
-    l2 = pl;
-    while (l2->next)
-    {
-      ++(l1->fd);
-      l2 = l2->next;
-    };
-    /* add new node to list */
-    l2->next = l1;
-  }
+  l1->next = pl;
+  pl = l1;
 
   /* stick in elements we know already */
+  l1->exit_status = -1;
   strcpy (l1->mode, md);
-  sprintf (l1->temp_name, "%s.%d", tn, l1->fd);
+  if (tmpnam (l1->temp_name) == NULL)
+  {
+    pl = l1->next;
+    free (l1);
+    return NULL;
+  }
 
   /* if can save the program name, build temp file */
   if ((l1->command = malloc(strlen(cm)+1)))
@@ -124,12 +116,13 @@ popen (const char *cm, const char *md) /* program name, pipe mode */
 	l1->fp = NULL;
       else
 	/* exec cmd */
-	if (system (cm) == EOF)
+	if ((l1->exit_status = system (cm)) == EOF)
 	  l1->fp = NULL;
       /* reopen real stdout */
       if (dup2 (l1->fd, fileno (stdout)) == EOF)
 	l1->fp = NULL;
-      else
+      /* if cmd couldn't be run, make sure we return NULL */
+      else if (l1->exit_status != EOF)
 	/* open file for reader */
 	l1->fp = fopen (l1->temp_name, l1->mode);
       close(l1->fd);
@@ -142,8 +135,15 @@ popen (const char *cm, const char *md) /* program name, pipe mode */
       else
         /* unknown mode */
         l1->fp = NULL;
+
+    return l1->fp;
   }
-  return l1->fp;              /* return == NULL ? ERROR : OK */
+  else
+  {
+    pl = l1->next;
+    free (l1);
+    return NULL;
+  }
 }
 
 int
@@ -151,6 +151,9 @@ pclose (FILE *pp)
 {
   struct pipe_list *l1, *l2;    /* list pointers */
   int retval=0;			/* function return value */
+
+  if (!pl)
+    return -1;
 
   /* if pointer is first node */
   if (pl->fp == pp)
@@ -192,9 +195,7 @@ pclose (FILE *pp)
 	  retval = -1;
 	else
 	  /* exec cmd */
-          if (system (l1->command) == EOF)
-            retval = -1;
-          else
+          if ((retval = system (l1->command)) != EOF)
 	  {
             /* reopen stdin */
 	    if (dup2 (l1->fd, fileno (stdin)) == EOF)
@@ -203,9 +204,9 @@ pclose (FILE *pp)
       close(l1->fd);
     }
     else
-      /* if pipe was opened to read */
+      /* if pipe was opened to read, return the exit status we saved */
       if (l1->mode[0] == 'r')
-        retval = 0;
+        retval = l1->exit_status;
       else
         /* invalid mode */
         retval = -1;
