@@ -142,7 +142,7 @@ epunzip_read(char *zipfilename)
 
       if(!should_be_written)
 	epoutfile = open("/dev/null",
-			 O_WRONLY | O_BINARY | O_CREAT | O_EXCL,
+			 O_WRONLY | O_BINARY,
 			 S_IWRITE | S_IREAD);
       else if(changed_name[strlen(changed_name) - 1] == '/' && !to_stdout)
 	{
@@ -166,7 +166,7 @@ epunzip_read(char *zipfilename)
 		  goto open_file;
 		else
 		  epoutfile = open("/dev/null",
-				   O_WRONLY | O_BINARY | O_CREAT | O_EXCL,
+				   O_WRONLY | O_BINARY,
 				   S_IWRITE | S_IREAD);
 	      }
 	      real_file = 1;
