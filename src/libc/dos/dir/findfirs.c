@@ -23,6 +23,11 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
     return -1;
   }
 
+  /* The low 8 bits are the allowable attributes; the next 8 bits
+     are the required attributes. We have no required attributes,
+     so mask off bits 8-15. */
+  attrib &= 0xff;
+
   pathlen = strlen(pathname) + 1;
 
   _put_path(pathname);

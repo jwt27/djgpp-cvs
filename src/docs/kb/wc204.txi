@@ -762,3 +762,8 @@ Previously @code{pow(x,y)} returned 0 when @code{x} was very close to
 A bug was fixed in the function @code{pow} in @file{libc.a}.
 Previously @code{pow} may have failed for negative numbers with
 a large magnitude.
+
+@findex findfirst
+A bug was fixed in the function @code{findfirst}.  Previously
+unexpected behaviour may have resulted, if the attribute argument
+had a value outside the range describable by the @code{FA_*} constants.
