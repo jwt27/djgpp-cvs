@@ -69,6 +69,12 @@ __crt0_load_environment_file(char *app_name)
 	  continue;
 	if (tb[0] == '[')
 	{
+	  char *p = bp - 2;
+
+	  /* Some losers leave trailing blanks after "[foo]".  */
+	  while (p > tb && (*p == ' ' || *p == '\t'))
+	    p--;
+	  *++p = 0;
 	  if (strcmp(tb, base) == 0)
 	    this_prog = 1;
 	  else

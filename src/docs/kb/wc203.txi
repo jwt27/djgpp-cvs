@@ -163,3 +163,11 @@ when passed format specifiers with upper-case letters, such as
 specifiers and qualifiers, such as @samp{%lld} and @samp{%U}, are now
 documented and their portability information included in the library
 docs.
+
+@findex __crt0_load_environment_file
+The function @code{__crt0_load_environment_file} called by the startup
+code now strips trailing blanks and TABs from the @samp{[program]} lines
+of the @file{DJGPP.ENV} file which define sections for individual
+programs.  This is so editing @file{DJGPP.ENV} with some losing editors
+that don't strip trailing whitespace when saving the file doesn't
+prevent the startup code from recognizing section names.
