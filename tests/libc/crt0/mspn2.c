@@ -21,7 +21,7 @@ main(int argc, char **argv)
     printf("[%02d] %04x\n", i, sel);
     __dpmi_free_ldt_descriptor(sel);
     fflush(stdout);
-    system("teststub");
+    system("nop");
   }
   return 0;
 }
