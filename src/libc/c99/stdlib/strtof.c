@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -21,6 +22,7 @@ strtof(const char *s, char **sret)
   int esign;
   int i;
   int flags=0;
+  int overflow=0;
 
   r = 0.0;
   sign = 1;
@@ -93,7 +95,8 @@ strtof(const char *s, char **sret)
   if (e < 0)
   {
     errno = ERANGE;
-    r = HUGE_VAL;
+    r = 0.0;
+    overflow = 1;
   }
   else if (esign < 0)
     for (i = 1; i <= e; i++)
@@ -115,12 +118,17 @@ strtof(const char *s, char **sret)
       if (r > FLT_MAX)	/* detect overflow */
       {
 	errno = ERANGE;
-	r = HUGE_VAL;
+	r = 0;
+	overflow = 1;
 	break;
       }
     }
 
   if (sret)
     *sret = unconst(s, char *);
-  return r * sign;
+
+  if (!overflow)
+    return r * sign;
+  else
+    return HUGE_VALF * sign;
 }
