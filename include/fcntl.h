@@ -90,6 +90,29 @@ int	fcntl(int _fildes, int _cmd, ...);
 #define _O_BINARY       O_BINARY
 #define _O_NOINHERIT    O_NOINHERIT
 
+/*
+ * Support for advanced filesystems (Windows 9x VFAT, NTFS, LFN etc.)
+ */
+
+#define _FILESYS_UNKNOWN	0x80000000U
+#define _FILESYS_CASE_SENSITIVE	0x0001
+#define _FILESYS_CASE_PRESERVED	0x0002
+#define _FILESYS_UNICODE	0x0004
+#define _FILESYS_LFN_SUPPORTED	0x4000
+#define _FILESYS_VOL_COMPRESSED	0x8000
+
+unsigned _get_volume_info (const char *_path, int *_max_file_len, int *_max_path_len, char *_filesystype);
+char _use_lfn (const char *_path);
+char *_lfn_gen_short_fname (const char *_long_fname, char *_short_fname);
+
+#define _LFN_CTIME	1
+#define _LFN_ATIME	2
+
+unsigned _lfn_get_ftime (int _handle, int _which);
+
+char _preserve_fncase (void);
+#define _USE_LFN	_use_lfn(0) /* assume it's the same on ALL drives */
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */

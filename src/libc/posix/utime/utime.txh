@@ -15,14 +15,16 @@ new time is stored in this structure:
 @example
 struct utimbuf
 @{
-    time_t  actime;  /* access time (unused) */
+    time_t  actime;  /* access time (unused on FAT filesystems) */
     time_t  modtime; /* modification time */
 @};
 @end example
 
 Note that, as under DOS a file only has a single timestamp, the
-@code{actime} field of @code{struct utimbuf} is ignored by
-this function, and only @code{modtime} field is used.
+@code{actime} field of @code{struct utimbuf} is ignored by this
+function, and only @code{modtime} field is used.  On filesystems which
+support long filenames, both fields are used and both access and
+modification times are set.
 
 @subheading Return Value
 

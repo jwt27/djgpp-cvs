@@ -2,5 +2,8 @@
 TOP=../..
 
 SRC += _use_lfn.c
+SRC += fncase.c
+SRC += lfnftime.c
+SRC += lfnshort.c
 
 include $(TOP)/../makefile.inc

@@ -97,6 +97,7 @@
 #include <errno.h>
 #include <time.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -328,6 +329,29 @@ get_sft_entry(int fhandle)
   /* Get here only by error, which probably means unsupported DOS version. */
   _djstat_fail_bits |= _STFAIL_SFTNF;
   return -2;
+}
+
+/* On LFN platforms, we can get all the 3 time-related fields.  */
+
+static void
+set_fstat_times (int fhandle, struct stat *stat_buf)
+{
+  if (_USE_LFN)
+    {
+      time_t access_time;
+      unsigned int create_time;
+
+      /* Access time is currently date only (time is zeroed).  */
+      access_time = _file_time_stamp (_lfn_get_ftime (fhandle, _LFN_ATIME));
+      if (access_time > stat_buf->st_atime)
+	stat_buf->st_atime = access_time;
+
+      /* Creation time might be zero if the file was created
+	 by a DOS program which doesn't support LFN API.  */
+      create_time = _lfn_get_ftime (fhandle, _LFN_CTIME);
+      if (create_time)
+	stat_buf->st_ctime = _file_time_stamp (create_time);
+    }
 }
 
 /* fstat_assist() is where all the actual work is done.
@@ -635,6 +659,8 @@ fstat_assist(int fhandle, struct stat *stat_buf)
               stat_buf->st_atime = stat_buf->st_ctime = stat_buf->st_mtime =
                 _file_time_stamp(dos_ftime);
 
+	      /* Additional time info for LFN platforms.  */
+	      set_fstat_times (fhandle, stat_buf);
               return 0;
             }
 
@@ -749,6 +775,9 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           stat_buf->st_size  = trusted_fsize;
           stat_buf->st_atime = stat_buf->st_ctime = stat_buf->st_mtime =
             _file_time_stamp(dos_ftime);
+
+	  /* Additional time info for LFN platforms.  */
+	  set_fstat_times (fhandle, stat_buf);
         }
       return 0;
     }
@@ -837,6 +866,9 @@ int main(int argc, char *argv[])
                   (long)stat_buf.st_size,
                   (unsigned long)stat_buf.st_mtime,
                   ctime(&stat_buf.st_mtime));
+	  fprintf (stderr, "\t\t\tTimes: %lu %lu\n",
+		   (unsigned long)stat_buf.st_atime,
+		   (unsigned long)stat_buf.st_ctime);
           _djstat_describe_lossage(stderr);
         }
       else

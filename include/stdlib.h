@@ -70,15 +70,25 @@ int	wctomb(char *_s, wchar_t _wchar);
 
 #ifndef _POSIX_SOURCE
 
+typedef struct {
+  long long quot;
+  long long rem;
+} lldiv_t;
+
 void *		alloca(size_t _size);
 long double	_atold(const char *_s);
+long long	atoll(const char *_s);
 void		cfree(void *_ptr);
 char *		getpass(const char *_prompt);
 int		getlongpass(const char *_prompt, char *_buffer, int _max_len);
 char *		itoa(int value, char *buffer, int radix);
+long long	llabs(long long _i);
+lldiv_t		lldiv(long long _numer, long long _denom);
 int		putenv(const char *_val);
 int		setenv(const char *_var, const char *_val, int _replace);
 long double	_strtold(const char *_s, char **_endptr);
+long long	strtoll(const char *_s, char **_endptr, int _base);
+unsigned long long strtoull(const char *_s, char **_endptr, int _base);
 void		swab(const void *from, void *to, int nbytes);
 
 #ifndef alloca
@@ -96,6 +106,22 @@ void		xfree(void *_ptr);
 void *		xmalloc(size_t _size);
 void *		xrealloc(void *ptr, size_t _size);
 */
+
+#define __system_redirect	      0x0001 /* redirect internally */
+#define __system_call_cmdproc	      0x0002 /* always call COMMAND/$SHELL */
+#define __system_use_shell	      0x0004 /* use $SHELL if set */
+#define __system_allow_multiple_cmds  0x0008 /* allow `cmd1; cmd2; ...' */
+#define __system_allow_long_cmds      0x0010 /* handle commands > 126 chars  */
+#define __system_emulate_command      0x0020 /* try to emulate the shell */
+#define __system_handle_null_commands 0x1000 /* ignore cmds with no effect */
+#define __system_ignore_chdir	      0x2000 /* make `cd' be a null command */
+#define __system_emulate_chdir	      0x4000 /* handle `cd' internally */
+
+extern int __system_flags;
+
+extern int _shell_command  (const char *_prog, const char *_cmdline);
+extern int _is_unixy_shell (const char *_prog);
+extern int _is_dos_shell   (const char *_prog);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
