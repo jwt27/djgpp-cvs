@@ -1,0 +1,9 @@
+List of things to get fixed (in v2load and dbgcom):
+ 1) v2load copies the debugger PSP, which references the debugger 16 bit
+    environment, thus the argv0 name is wrong.  Fix in si?  Build new
+    environment and point to it (with allocated selector?)
+ 2) CTRL-C attention issues
+ 3) FPU emulation
+ 4) Doesn't work under QDPMI 7.5 ?!?
+ 5) Exception hooks are disabled - would be nice to chain some of them
+ 6) What if debuggee hooks KBD interrupt?
