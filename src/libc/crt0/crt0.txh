@@ -139,7 +139,7 @@ This function does not return.
 
 @subheading Portability
 
-@portability !ansi, posix
+@portability !ansi, !posix
 
 @c ----------------------------------------------------------------------
 @node __exit, process

@@ -19,7 +19,7 @@ The host-order value.
 
 @subheading Portability
 
-@portability ansi, posix
+@portability !ansi, !posix
 
 @subheading Example
 
