@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /*
  * tminit.c - initializer and main part of termios emulation.
  *   designed for DJGPP by Daisuke Aoyama <jack@st.rim.or.jp>
