@@ -107,8 +107,6 @@ functionality is either always available or always ignored.
 * cfsetispeed::              No-op.
 * cfsetospeed::              No-op.
 * chown::                    Trivial.
-* fcntl::                    Always fails for all operations except
-                             @code{F_DUPFD} and @code{F_GETFD}.
 * fork::                     Always fails.
 * getgrgid::                 Trivial.
 * getgrnam::                 Trivial.
@@ -119,7 +117,6 @@ functionality is either always available or always ignored.
 * mkfifo::                   Always fails.
 * mknod::                    Trivial.
 * nice::                     No-op.
-* pipe::                     Always fails.
 * setgid::                   Trivial.
 * setpgid::                  Trivial.
 * setsid::                   Trivial.
