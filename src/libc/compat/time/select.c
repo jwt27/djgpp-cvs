@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -27,6 +28,8 @@
 #include <libc/ttyprvt.h>
 #include <sys/fsext.h>
 #include <libc/fsexthlp.h>
+#include <io.h>
+#include <libc/fd_props.h>
 
 inline static int
 fp_output_ready(FILE *fp)
@@ -67,8 +70,11 @@ fp_input_ready (FILE *fp)
 inline static int
 fd_output_ready(int fd)
 {
-
   __dpmi_regs regs;
+
+  /* If it's a directory, always return 0. We can't write to directories. */
+  if (__get_fd_flags(fd) & FILE_DESC_DIRECTORY)
+    return 0;
 
   regs.x.ax = 0x4407;
   regs.x.bx = fd;
@@ -85,24 +91,26 @@ fd_output_ready(int fd)
 inline static int
 fd_input_ready(int fd)
 {
-
   __dpmi_regs regs;
+  short dev_info;
+
+  /* If it's a directory, always return 1. That way the caller
+     will hit the EISDIR error as quickly as possible. */
+  if (__get_fd_flags(fd) & FILE_DESC_DIRECTORY)
+    return 1;
 
   /* If it's a disk file, always return 1, since DOS returns ``not ready''
      for files at EOF, but we won't block in that case.  */
-  regs.x.ax = 0x4400;
-  regs.x.bx = fd;
-  __dpmi_int (0x21, &regs);
-  if (regs.x.flags & 1)
-  {
-    errno = __doserr_to_errno (regs.x.ax);
+  dev_info = _get_dev_info(fd);
+  if (dev_info == -1)
     return -1;
-  }
-  if ((regs.x.dx & 0x80) == 0)	/* if not a character device */
+
+  if ((dev_info & _DEV_CDEV) == 0)	/* if not a character device */
     return 1;
+
   /* If it's a STDIN device, and termios buffers some characters, say
      it's ready for input.  */
-  else if ((regs.x.dx & _DEV_STDIN) == 1
+  else if ((dev_info & _DEV_STDIN) == _DEV_STDIN
 	   && __libc_read_termios_hook && __libc_termios_exist_queue ())
     return 1;
 
