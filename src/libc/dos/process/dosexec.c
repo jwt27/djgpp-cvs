@@ -1351,9 +1351,6 @@ find_extension (const char *path, char *ext)
 }
 
 
-#define SPAWN_SEARCH_FLAGS \
-  (SPAWN_EXTENSION_SRCH | SPAWN_INTERP_ONLY_SRCH)
-
 int __spawnve(int mode, const char *path, char *const argv[],
               char *const envp[])
 {
@@ -1396,7 +1393,7 @@ int __djgpp_spawn(int mode, const char *path, char *const argv[],
   if (envpp == NULL)
     envpp = environ;
 
-  if ((flags & SPAWN_SEARCH_FLAGS) == 0)
+  if (flags == 0)
     flags |= SPAWN_EXTENSION_SRCH;
 
   /* Copy the path to rpath and also mark where the extension is.  */
@@ -1410,7 +1407,7 @@ int __djgpp_spawn(int mode, const char *path, char *const argv[],
   }
   *rp_end = 0;
 
-  /* Perform an extension search when the flag SPAWN_INTERP_SEARCH is not
+  /* Perform an extension search when the flag SPAWN_NO_EXTENSION_SRCH is not
      present.  If LFN is supported on the volume where rpath resides, we
      might have something like foo.bar.exe or even foo.exe.com.
      If so, look for RPATH.ext before even trying RPATH itself.
