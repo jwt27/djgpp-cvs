@@ -423,6 +423,9 @@ fstat_assist(int fhandle, struct stat *stat_buf)
 	is_remote = 1;
       else
 	is_remote = 0;
+      
+      if(!have_trusted_values && dev_info == 0 && _get_dos_version(1) == 0x532)
+        is_dev = 1;   /* Device under NT or Win2K with pre-open/lfn handle. */
     }
 
   /* First, fill the fields which are constant under DOS. */
