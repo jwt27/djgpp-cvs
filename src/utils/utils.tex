@@ -669,6 +669,7 @@ Another use of @code{update} might be to validate (and replace if
 necessary) a local copy of some master data file:
 
 @example
+.PHONY: foo.dat
 foo.dat:    /master/data/foo.dat
             [ -f $@@ ] && cmp -s $< $@@ || cp -f $< $@@ && touch $@@
 @end example
