@@ -77,15 +77,16 @@ The conversion type specifier:
 
 @item c
 
-A single character
+A single character.
 
 @item d
 
-A signed integer
+A signed integer.
 
 @item D
 
-A signed long integer
+A signed long integer.  This is non-standard and obsolete.
+Please use @code{ld} instead.
 
 @item e
 @itemx E
@@ -119,6 +120,11 @@ characters generated so far is stored in that integer.
 
 A unsigned integer, printed in base 8 instead of base 10.
 
+@item O
+
+A unsigned long integer, printed in base 8 instead of base 10.
+This is non-standard and obsolete.  Please use @code{lo} instead.
+
 @item p
 
 A pointer.  This is printed with an @code{x} specifier.
@@ -133,7 +139,8 @@ An unsigned integer.
 
 @item U
 
-An unsigned long integer.
+An unsigned long integer.  This is non-standard and obsolete.
+Please use @code{lu} instead.
 
 @item x
 @itemx X
@@ -154,6 +161,9 @@ A single percent symbol is printed.
 The number of characters written.
 
 @subheading Portability
+
+The @code{D}, @code{O} and @code{U} conversion types are non-standard.
+gcc may generate warnings, if you use them.
 
 @portability ansi, posix
 
