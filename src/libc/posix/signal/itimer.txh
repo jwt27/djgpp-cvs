@@ -67,6 +67,9 @@ This function changes the current value of the interval timer specified by
 of the timer is returned in @var{ovalue} if it is not a @code{NULL}
 pointer.  When the timer expires, the appropriate signal is raised.
 
+Please see the documentation for @code{signal} (@pxref{signal})
+for restrictions on signal handlers.
+
 If @var{value} is a @code{NULL} pointer, @code{setitimer} stores the
 previous timer value in @var{ovalue} (if it is non-@code{NULL}), like
 @code{getitimer} does, but otherwise does nothing.
