@@ -1,0 +1,10 @@
+@node What Changed, Known Bugs, Introduction, Top
+@chapter What Changed
+
+@menu
+
+* Changes in 2.01::		DJGPP 2.01
+
+@end menu
+
+@include wc201.txi
