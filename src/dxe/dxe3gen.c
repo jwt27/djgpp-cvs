@@ -20,6 +20,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* _POSIX_SOURCE is defined at this point when cross compiling from
+   Linux. Therefore undefine it before including coff.h  */
+#undef _POSIX_SOURCE
 #ifndef DXE_LD			/* Cross compile ld name/location */
 #define DXE_LD "ld"
 #include <sys/dxe.h>
@@ -268,13 +271,13 @@ static void process_args (int argc, char *argv[], const char *new_argv[])
  }
  if (opt.legacy) {
     /* legacy mode */
-    static char **dummy;
     progname = "dxegen";
     if (argc < 4) {
        printf("Usage: %s output.dxe symbol input.o [input2.o ... -lgcc -lc]\n", progname);
        exit(-1);
     }
-    opt.export_prefix = dummy;
+    opt.max_prefix = 16;
+    opt.export_prefix = (char **)malloc(opt.max_prefix * sizeof(char *));
     opt.num_prefix = 1;
     opt.output = argv[1];
     opt.export_prefix[0] = argv[2];
