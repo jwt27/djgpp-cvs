@@ -54,7 +54,7 @@ FAQ      A short file which points you to other documents you should
            read (including the full FAQ list).
 
 v2/
-unzip386 A free program to unzip the archive (like PKUNZIP) 
+unzip32  A free program to unzip the archive (like PKUNZIP) 
 djdev203 DJGPP V2 Development Kit and Runtime
 djlsr203 DJGPP V2 Base Library Sources
 djtst203 DJGPP V2 Test Programs (for testing the C library)
@@ -79,7 +79,7 @@ v2misc/
 csdpmi* CWSDPMI, Charles Sandmann's free DPMI server binaries and docs
 mlp*    ML's Executable File Packer Binaries ("djp")
 pmode*  PMODE stub for djgpp V2
-wmemu*  WM's 387 emulator binaries for DJGPP V2
+wmemu*  WM's alternative 387 emulator binaries for DJGPP V2
 (and other miscellaneous things to use with DJGPP)
 
 
@@ -131,11 +131,12 @@ Installation
 
 	pkunzip -d djdev203
   or
-	unzip386 djdev203
+	unzip32 djdev203
 
    On Windows 9X, use an unzip program which supports long file names.
    Latest versions of InfoZip's UnZip and PKUnZip, as well as WinZip,
-   all support long file names.  One way to make sure you have
+   all support long file names.  unzip32.exe, available from the DJGPP
+   sites, also supports long file names.  One way to make sure you have
    preserved long file names is to look for a file include/sys/sysmacros.h:
    if you see only sysmacro.h instead, your unzip program does NOT
    support long filenames, and you need to find another one.
