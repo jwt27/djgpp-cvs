@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_libc_file_h__
 #define __dj_include_libc_file_h__
@@ -31,7 +32,7 @@ int	_flsbuf(int, FILE*);
 int	_filbuf(FILE *);
 void	_fwalk(void (*)(FILE *));
 
-int __inline__ static __getc_raw(FILE *const p)
+static __inline__ int __getc_raw(FILE *const p)
 {
    if(p->_cnt>0)
    {
@@ -41,7 +42,7 @@ int __inline__ static __getc_raw(FILE *const p)
    return(_filbuf(p));
 }
 
-int __inline__ static __putc_raw(int const x,FILE *const p)
+static __inline__ int __putc_raw(int const x,FILE *const p)
 {
    if(p->_cnt>0)
    {
@@ -51,12 +52,12 @@ int __inline__ static __putc_raw(int const x,FILE *const p)
    return(_flsbuf(x,p));
 }
 
-int __inline__ static __is_text_file(FILE *const p)
+static __inline__ int __is_text_file(FILE *const p)
 {
    return(!((p)->_flag&_IOSTRG) && (__file_handle_modes[(p)->_file]&O_TEXT));
 }
 
-int __inline__ static __getc(FILE *const p)
+static __inline__ int __getc(FILE *const p)
 {
   int __c=__getc_raw(p);
   if (__c=='\r' && __is_text_file(p))
@@ -64,7 +65,7 @@ int __inline__ static __getc(FILE *const p)
   return __c;
 }
 
-int __inline__ static __putc(const int x,FILE *const p)
+static __inline__ int __putc(const int x,FILE *const p)
 {
   if(x=='\n' && __is_text_file(p))
     __putc_raw('\r',p);
