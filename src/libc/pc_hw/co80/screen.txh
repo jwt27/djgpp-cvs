@@ -156,6 +156,39 @@ ScreenPutChar('R', (BLUE << 4) | LIGHTMAGENTA, 75, 0);
 @end example
 
 @c ----------------------------------------------------------------------
+@node ScreenGetChar, conio
+@subheading Syntax
+
+@example
+#include <pc.h>
+
+void  ScreenGetChar(int *ch, int *attr, int col, int row);
+
+@end example
+
+@subheading Description
+
+This function stores the character and attribute of the current
+primary screen at row given by @var{row} and column given by @var{col}
+(these are zero-based) into the integers whose address is specified by
+@var{ch} and @var{attr}.  It does so by directly accessing the video memory,
+so it will only work when the screen is in text mode.  You can pass the value
+@code{NULL} in each of the pointers if you do not want to retrieve the 
+the corresponding information.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+int ch, attr;
+
+ScreenGetChar(&ch, &attr, 0, 0);
+@end example
+
+@c ----------------------------------------------------------------------
 @node ScreenPutString, conio
 @subheading Syntax
 

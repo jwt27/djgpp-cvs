@@ -2,7 +2,7 @@
 #include "sc.h"
 
 void	
-ScreenUpdateLine(void *_virtual_screen_line, int _row)
+ScreenUpdateLine(const void *_virtual_screen_line, int _row)
 {
   movedata(_my_ds(), (int)_virtual_screen_line,
 	   dossel, co80 + ScreenCols() * 2 * _row,

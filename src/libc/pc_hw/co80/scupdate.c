@@ -2,7 +2,7 @@
 #include "sc.h"
 
 void	
-ScreenUpdate(void *_virtual_screen)
+ScreenUpdate(const void *_virtual_screen)
 {
   movedata(_my_ds(), (int)_virtual_screen,
 	   dossel, co80,

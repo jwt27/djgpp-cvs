@@ -6,6 +6,7 @@ SRC += scattrib.c
 SRC += scclear.c
 SRC += sccols.c
 SRC += scgetc.c
+SRC += scgetch.c
 SRC += scmode.c
 SRC += scputc.c
 SRC += scputs.c

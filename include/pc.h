@@ -25,6 +25,10 @@ void		outportsb(unsigned short _port, unsigned char  *_buf, unsigned _len);
 void		outportsw(unsigned short _port, unsigned short *_buf, unsigned _len);
 void		outportsl(unsigned short _port, unsigned long  *_buf, unsigned _len);
 
+unsigned char	inp(unsigned short _port);
+unsigned short	inpw(unsigned short _port);
+void		outp(unsigned short _port, unsigned char _data);
+void		outpw(unsigned short _port, unsigned short _data);
 int		kbhit(void);
 int		getkey(void);	/* ALT's have 0x100 set */
 int		getxkey(void);	/* ALT's have 0x100 set, 0xe0 sets 0x200 */
@@ -41,12 +45,13 @@ int	ScreenMode(void);
 int	ScreenRows(void);
 int	ScreenCols(void);
 void	ScreenPutChar(int _ch, int _attr, int _x, int _y);
+void	ScreenGetChar(int *_ch, int *_attr, int _x, int _y);
 void	ScreenPutString(const char *_ch, int _attr, int _x, int _y);
 void	ScreenSetCursor(int  _row, int  _col);
 void	ScreenGetCursor(int *_row, int *_col);
 void	ScreenClear(void);
-void	ScreenUpdate(void *_virtual_screen);
-void	ScreenUpdateLine(void *_virtual_screen_line, int _row);
+void	ScreenUpdate(const void *_virtual_screen);
+void	ScreenUpdateLine(const void *_virtual_screen_line, int _row);
 void	ScreenRetrieve(void *_virtual_screen);
 void	ScreenVisualBell(void);
 
