@@ -273,3 +273,11 @@ Calling @code{getch} and @code{getche} flushes the @code{stdout} and
 @code{stderr} streams, if they are connected to the console and have any
 pending buffered characters.
 
+@pindex @r{Emacs, warnings from} GDB
+@pindex GDB@r{, debugging Emacs}
+@cindex @code{FILE} objects, allocation
+A bug in the library caused programs like Emacs, which dump their data
+and then restart, to use stale @code{FILE} objects created before they
+were dumped.  This caused warning messages to be issued by GDB near the
+end of debugging session.  This bug is now fixed.
+

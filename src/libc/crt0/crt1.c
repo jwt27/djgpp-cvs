@@ -154,6 +154,7 @@ setup_pname(void)
 extern void __main(void);
 extern int  main(int, char **, char **);
 extern void _crt0_init_mcount(void);	/* For profiling */
+extern void __setup_file_rec_list(void);
 
 char __PROXY[] = " !proxy";
 size_t __PROXY_LEN = sizeof(__PROXY)-1;
@@ -180,6 +181,7 @@ __crt1_startup(void)
   __djgpp_exception_setup();
   setup_environment();
   __environ_changed++;
+  __setup_file_rec_list();
   /* Make so rest of startup could use LFN.  */
   (void)_USE_LFN;
   setup_pname();
