@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <unistd.h>
 #include <errno.h>
@@ -18,7 +19,14 @@ _close(int handle)
   {
     int rv;
     if (func(__FSEXT_close, &rv, &handle))
+    {
+      /* So that we don't try to use it later!
+	 The extension *should* do this itself! */
+      __FSEXT_set_function(handle, 0);
       return rv;
+    }
+    /* same here */
+    __FSEXT_set_function(handle, 0);
   }
 
   r.h.ah = 0x3e;
