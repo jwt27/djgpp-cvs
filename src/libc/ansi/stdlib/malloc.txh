@@ -369,7 +369,7 @@ default level is 0.
 @example
 #include <stdlib.h>
 
-void mallocmap(int level);
+void mallocmap(void);
 @end example
 
 @subheading Description
