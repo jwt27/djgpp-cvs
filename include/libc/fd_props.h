@@ -8,6 +8,8 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
+#include <string.h>
+
 #ifndef __STRICT_ANSI__
 
 #ifndef _POSIX_SOURCE
@@ -63,6 +65,11 @@ static __inline__ void __clear_fd_flags(int _fd, unsigned long _flags)
 static __inline__ unsigned long __get_fd_flags(int _fd)
 {
   return __has_fd_properties(_fd) ? __fd_properties[_fd]->flags : 0;
+}
+
+static __inline__ const char * __get_fd_name(int _fd)
+{
+  return __has_fd_properties(_fd) ? __fd_properties[_fd]->filename : NULL;
 }
 
 #endif /* !_POSIX_SOURCE */
