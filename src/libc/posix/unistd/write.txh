@@ -22,7 +22,7 @@ If @var{count} is zero, the function does nothing and returns zero.
 Use @code{_write} if you want to actually ask DOS to write zero bytes.
 
 The precise behavior of @code{write} when the target filesystem is full
-are somewhat troublesome, because DOS doesn't fail the underlying system
+is somewhat troublesome, because DOS doesn't fail the underlying system
 call.  If your application needs to rely on @code{errno} being set to
 @code{ENOSPC} in such cases, you need to invoke @code{write} as shown in
 the example below.  In a nutshell, the trick is to call @code{write} one
