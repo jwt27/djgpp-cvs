@@ -21,9 +21,12 @@
 #include <sys/stat.h>
 #define SIMAGIC "go32stub"
 
+#define __tb_size _go32_info_block.size_of_transfer_buffer
+
 AREAS areas[MAX_AREA];
 
 extern char **environ;
+extern unsigned _stklen;
 
 static int read_section(int pf, unsigned ds, unsigned foffset, unsigned soffset, unsigned size)
 {
@@ -89,8 +92,11 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
     coff_offset = 0;
     strcpy(si.magic, "go32stub, V 2.00");
     si.size = 0x44;
-    si.minstack = 0x40000;
-    si.minkeep = 16384;			/* transfer buffer size */
+    /* The default size of the stack and the transfer buffer are taken
+       from the debugger's values, so that users could get predictable
+       results by stubediting the debugger.  */
+    si.minstack = _stklen;
+    si.minkeep = __tb_size;		/* transfer buffer size */
     memset(&si.basename, 0, 24);	/* Asciiz strings */
   }
   if (header[0] != 0x014c) {		/* COFF? */
