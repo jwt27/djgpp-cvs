@@ -1053,7 +1053,7 @@ step (KIND_TYPE kind)
 	    final = a_tss.tss_eip + len;
 	}
       break;
-    default:
+    default:;
       /* Nothing.  */
     }
 
@@ -1165,7 +1165,7 @@ step (KIND_TYPE kind)
 	    goto retry;
 	  bep->count = 0;
 	}
-    error:
+    error:;
     }
 
   code_pane_goto (a_tss.tss_eip);
@@ -1867,8 +1867,8 @@ redraw (int first)
 	word32 limit;
 
 	asm volatile
-	  ("xorl  %%eax,%%eax
-	    sldt  %%ax
+	  ("xorl  %%eax,%%eax	\n\
+	    sldt  %%ax		\n\
 	    movl  %%eax,%0"
 	   : "=r" ((int)(ldt))
 	   : /* no inputs.  */
@@ -3226,7 +3226,7 @@ gildt_pane_command (int key)
 	    case 0x0b:
 	      show_tss (&descr);
 	      break;
-	    default:
+	    default:;
 	    }
 	break;
       }
@@ -3631,7 +3631,7 @@ debugger(void)
 	      case 3:
 		initdisplay (0);
 		break;
-	      case -1:
+	      case -1:;
 		/* Nothing.  */
 	      }
 	    redraw (0);
