@@ -28,7 +28,6 @@ _IOMYBUF	buffer needs to be freed
 _IOEOF		file is at EOF
 _IOERR		error occurred
 _IOSTRG		sprintf
-_IOAPPEND	append mode
 _IORMONCL	remove file on close
 _IOUNGETC       buffer contents does not correspond to file
 _IOTERM         file's handle hooked by termios
