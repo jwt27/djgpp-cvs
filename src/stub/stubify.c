@@ -103,7 +103,7 @@ void coff2exe(char *fname)
     }
     else
     {
-      fprintf(stderr, "Warning: input file is not COFF or stubbed COFF\n");
+      fprintf(stderr, "Warning: input file is neither COFF nor stubbed COFF\n");
       break;
     }
   }
@@ -138,7 +138,7 @@ void coff2exe(char *fname)
   ofile = open(ofilename, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0777);
   if (ofile < 0)
   {
-    perror(ofname);
+    perror(ofilename);
     return;
   }
   v_printf("stubify: %s -> %s", ifilename, ofilename);
@@ -199,7 +199,7 @@ void coff2exe(char *fname)
 #endif
     if (wb < 0)
     {
-      perror(ofname);
+      perror(ofilename);
       close(ifile);
       close(ofile);
       unlink(ofilename);
@@ -207,7 +207,7 @@ void coff2exe(char *fname)
     }
     if (wb < rbytes)
     {
-      fprintf(stderr, "%s: disk full\n", ofname);
+      fprintf(stderr, "%s: disk full\n", ofilename);
       close(ifile);
       close(ofile);
       unlink(ofilename);
@@ -245,7 +245,7 @@ int main(int argc, char **argv)
   v_printf("stubify for djgpp V2.X executables, Copyright (C) 1995 DJ Delorie\n");
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: stubify [-g] <program>  (program may be COFF or stubbed .exe,\n");
+    fprintf(stderr, "Usage: stubify [-v] [-g] <program>  (program may be COFF or stubbed .exe,\n");
     fprintf(stderr, "  and may be COFF with .exe extension.  Resulting file will have .exe)\n");
 
     fprintf(stderr, "\nThis program is NOT shareware or public domain.  It is copyrighted.\n");
