@@ -76,6 +76,7 @@ int pc = 0;
 int bsspc = -1;
 int stack_ptr = 0;
 int start_ptr = 0;
+int movacc = 0;
 
 typedef struct Symbol {
   struct Symbol *next;
@@ -133,7 +134,7 @@ void sortsyms();
 int istemp(char *symname, char which);
 void do_sreg_pop(int sreg);
 void do_sreg_push(int sreg);
-void do_align(int p2);
+void do_align(int p2, int val);
 void set_lineaddr();
 void add_copyright(char *buf);
 void add_rcs_ident(char *buf);
@@ -173,10 +174,10 @@ void do_linkcoff(char *fname);
 %token <i> NUMBER REG8 REG16 REG32 SREG STRING PC CRREG DRREG TRREG
 %token <i> ARITH2 ARITH2B ARITH2D ARITH2W
 %token <i> LXS MOVSZX
-%token <i> JCC JCCL LOOP
+%token <i> JCC JCCL JCXZ LOOP SETCC
 %token <i> SHIFT SHLRD
-%token <i> ONEBYTE TWOBYTE
-%token <i> BITTEST GROUP3 GROUP6 GROUP7
+%token <i> ONEBYTE TWOBYTE ASCADJ
+%token <i> BITTEST GROUP3 GROUP3B GROUP3D GROUP3W GROUP6 GROUP7
 %token ALIGN
 %token BSS
 %token CALL CALLF COPYRIGHT
@@ -185,9 +186,10 @@ void do_linkcoff(char *fname);
 %token JMPW JMPB JMPF
 %token LINKCOFF
 %token MOV MOVB MOVD MOVW
+%token IMUL IMULB IMULD IMULW
 %token ORG OUT
 %token POP POPW POPD PUSH PUSHW PUSHD
-%token RCS_ID RET RETF
+%token RCS_ID RET RETF RETD RETFD
 %token STACK START
 %token TEST TESTB TESTD TESTW TYPE
 %token XCHG
@@ -203,8 +205,8 @@ struct opcode {
 
 struct opcode opcodes[] = {
   "aaa", ONEBYTE, 0x37,
-  "aad", TWOBYTE, 0xd50a,
-  "aam", TWOBYTE, 0xd40a,
+  "aad", ASCADJ, 0xd5,
+  "aam", ASCADJ, 0xd4,
   "aas", ONEBYTE, 0x3f,
   "cbw", ONEBYTE, 0x98,
   "cwde", TWOBYTE, 0x6698,
@@ -319,6 +321,18 @@ struct opcode opcodes[] = {
   "decb", DECB, NO_ATTR,
   "decd", DECD, NO_ATTR,
   "decw", DECW, NO_ATTR,
+  "div", GROUP3, 6,
+  "divb", GROUP3B, 6,
+  "divd", GROUP3D, 6,
+  "divw", GROUP3W, 6,
+  "idiv", GROUP3, 7,
+  "idivb", GROUP3B, 7,
+  "idivd", GROUP3D, 7,
+  "idivw", GROUP3W, 7,
+  "imul", IMUL, NO_ATTR,
+  "imulb", IMULB, NO_ATTR,
+  "imuld", IMULD, NO_ATTR,
+  "imulw", IMULW, NO_ATTR,
   "in", IN, NO_ATTR,
   "inc", INC, NO_ATTR,
   "incb", INCB, NO_ATTR,
@@ -388,6 +402,9 @@ struct opcode opcodes[] = {
   "jnlel", JCCL, 15,
   "jgl", JCCL, 15,
 
+  "jcxz", JCXZ, 0,
+  "jecxz", JCXZ, 1,
+
   "jmp", JMPB, NO_ATTR,
   "jmpf", JMPF, NO_ATTR,
   "jmpl", JMPW, NO_ATTR,
@@ -412,6 +429,10 @@ struct opcode opcodes[] = {
   "movw", MOVW, NO_ATTR,
   "movsx", MOVSZX, 0xbe,
   "movzx", MOVSZX, 0xb6,
+  "mul", GROUP3, 4,
+  "mulb", GROUP3B, 4,
+  "muld", GROUP3D, 4,
+  "mulw", GROUP3W, 4,
   "not", GROUP3, 2,
   "neg", GROUP3, 3,
   "or", ARITH2, 1,
@@ -428,7 +449,9 @@ struct opcode opcodes[] = {
   "rcl", SHIFT, 2,
   "rcr", SHIFT, 3,
   "ret", RET, NO_ATTR,
+  "retd", RETD, NO_ATTR,
   "retf", RETF, NO_ATTR,
+  "retfd", RETFD, NO_ATTR,
   "rol", SHIFT, 0,
   "ror", SHIFT, 1,
   "sar", SHIFT, 7,
@@ -436,9 +459,42 @@ struct opcode opcodes[] = {
   "sbbb", ARITH2B, 3,
   "sbbd", ARITH2D, 3,
   "sbbw", ARITH2W, 3,
+
+  "seto", SETCC, 0,
+  "setno", SETCC, 1,
+  "setb", SETCC, 2,
+  "setc", SETCC, 2,
+  "setnae", SETCC, 2,
+  "setnb", SETCC, 3,
+  "setnc", SETCC, 3,
+  "setae", SETCC, 3,
+  "setz", SETCC, 4,
+  "sete", SETCC, 4,
+  "setnz", SETCC, 5,
+  "setne", SETCC, 5,
+  "setbe", SETCC, 6,
+  "setna", SETCC, 6,
+  "setnbe", SETCC, 7,
+  "seta", SETCC, 7,
+  "sets", SETCC, 8,
+  "setns", SETCC, 9,
+  "setp", SETCC, 10,
+  "setpe", SETCC, 10,
+  "setnp", SETCC, 11,
+  "setpo", SETCC, 11,
+  "setl", SETCC, 12,
+  "setnge", SETCC, 12,
+  "setnl", SETCC, 13,
+  "setge", SETCC, 13,
+  "setle", SETCC, 14,
+  "setng", SETCC, 14,
+  "setnle", SETCC, 15,
+  "setg", SETCC, 15,
+
   "sgdt", GROUP7, 0,
   "sidt", GROUP7, 1,
   "sldt", GROUP6, 0,
+  "sal", SHIFT, 4,
   "shl", SHIFT, 4,
   "shld", SHLRD, 0xa4,
   "shr", SHIFT, 5,
@@ -540,24 +596,43 @@ line
 	| SREG ':'			{ emitb(sreg_overrides[$1]); }
 
 	| ARITH2B regmem ',' const	{ emitb(0x80), reg($1); emitb($4); }
-	| ARITH2 REG8 ',' const		{ emitb(0x80), modrm(3, $1, $2); emitb($4); }
+	| ARITH2 REG8 ',' const		{ if ($2)
+					      {emitb(0x80), modrm(3, $1, $2);}
+					  else
+					      modrm (0,$1,4); 
+					  emitb	($4);
+					}
 	| ARITH2 REG8 ',' REG8		{ emitb($1*8); modrm(3, $4, $2); }
 	| ARITH2 regmem ',' REG8	{ emitb($1*8); reg($4); }
 	| ARITH2 REG8 ',' regmem	{ emitb($1*8+2); reg($2); }
 
 	| ARITH2W regmem ',' constID	{ emitb(0x81); reg($1); emits($4.sym,$4.ofs,REL_abs); }
-	| ARITH2 REG16 ',' constID	{ emitb(0x81); modrm(3, $1, $2); emits($4.sym,$4.ofs,REL_abs); }
+	| ARITH2 REG16 ',' constID	{ if ($2)
+					      {emitb(0x81); modrm(3, $1, $2);}
+					  else
+					      modrm (0,$1,5);
+					  emits($4.sym,$4.ofs,REL_abs);
+					}
 	| ARITH2 REG16 ',' REG16	{ emitb($1*8+1); modrm(3, $4, $2); }
 	| ARITH2 regmem ',' REG16	{ emitb($1*8+1); reg($4); }
 	| ARITH2 REG16 ',' regmem	{ emitb($1*8+3); reg($2); }
 
 	| ARITH2D regmem ',' constID	{ emitb(0x66); emitb(0x81); reg($1); emits($4.sym,$4.ofs,REL_abs); emitw($4.ofs >> 16); }
-	| ARITH2 REG32 ',' constID	{ emitb(0x66); emitb(0x81); modrm(3, $1, $2); emits($4.sym,$4.ofs,REL_abs); emitw($4.ofs >> 16); }
+	| ARITH2 REG32 ',' constID	{ emitb(0x66);
+					  if ($2)
+					      {emitb(0x81); modrm(3, $1, $2);}
+					  else
+					      modrm (0,$1,5);
+					  emits($4.sym,$4.ofs,REL_abs);	emitw($4.ofs >>	16); }
 	| ARITH2 REG32 ',' REG32	{ emitb(0x66); emitb($1*8+1); modrm(3, $4, $2); }
 	| ARITH2 regmem ',' REG32	{ emitb(0x66); emitb($1*8+1); reg($4); }
 	| ARITH2 REG32 ',' regmem	{ emitb(0x66); emitb($1*8+3); reg($2); }
 
-	| ALIGN const			{ do_align($2); }
+	| ASCADJ			{ emitb($1); emitb(0x0a); }
+	| ASCADJ const			{ emitb($1); emitb($2); }
+
+	| ALIGN const			{ do_align($2,0x90); }
+	| ALIGN const ',' const		{ do_align($2,$4); }
 
 	| BITTEST REG16 ',' REG16	{ emitb(0x0f); emitb($1*8+0x83); modrm(3, $4, $2); }
 	| BITTEST regmem ',' REG16	{ emitb(0x0f); emitb($1*8+0x83); reg($4); }
@@ -598,9 +673,44 @@ line
 	| INCW regmem			{ emitb(0xff); reg(0); }
 	| INCD regmem			{ emitb(0x66); emitb(0xff); reg(0); }
 
+	| IMUL REG8			{ emitb(0xf6); modrm(3, 5, $2); }
+	| IMULB regmem			{ emitb(0xf6); reg(5); }
+	| IMUL REG16			{ emitb(0xf7); modrm(3, 5, $2); }
+	| IMULW regmem			{ emitb(0xf7); reg(5); }
+	| IMUL REG32			{ emitb(0x66); emitb(0xf7); modrm(3, 5, $2); }
+	| IMULD regmem			{ emitb(0x66); emitb(0xf7); reg(5); }
+	| IMUL REG16 ',' REG16		{ emitb(0x0f); emitb(0xaf); modrm(3, $2, $4);}
+	| IMUL REG32 ',' REG32		{ emitb(0x66); emitb(0x0f); emitb(0xaf); modrm(3, $2, $4);}
+	| IMUL REG16 ',' regmem		{ emitb(0x0f); emitb(0xaf); reg($2); }
+	| IMUL REG32 ',' regmem		{ emitb(0x66); emitb(0x0f); emitb(0xaf); reg($2); }
+	| IMUL REG16 ',' regmem ',' const { if ($6>=-128 && $6<=127)
+					      emitb(0x6b);
+					  else
+					      emitb(0x69);
+					  reg($2);
+					  if ($6>=-128 && $6<=127)
+					      emitb($6);
+					  else
+					      emitw($6);
+					}
+	| IMUL REG32 ',' regmem ',' const { emitb(0x66);
+					  if ($6>=-128 && $6<=127)
+					      emitb(0x6b);
+					  else
+					      emitb(0x69);
+					  reg($2);
+					  if ($6>=-128 && $6<=127)
+					      emitb($6&0xff);
+					  else
+					      emitd($6);
+					}
+
 	| GROUP3 REG8			{ emitb(0xf6); modrm(3, $1, $2); }
+	| GROUP3B regmem		{ emitb(0xf6); reg($1); }
 	| GROUP3 REG16			{ emitb(0xf7); modrm(3, $1, $2); }
+	| GROUP3W regmem		{ emitb(0xf7); reg($1); }
 	| GROUP3 REG32			{ emitb(0x66); emitb(0xf7); modrm(3, $1, $2); }
+	| GROUP3D regmem		{ emitb(0x66); emitb(0xf7); reg($1); }
 
 	| GROUP6 regmem			{ emitb(0x0f); emitb(0x00); reg($1); }
 	| GROUP6 REG16			{ emitb(0x0f); emitb(0x00); modrm(3, $1, $2); }
@@ -612,9 +722,12 @@ line
 	| JCC ID       			{ emitb(0x70+$1); emits($2,0,REL_8); $2->type |= SYM_code; }
 	| JCCL ID			{ emitb(0x0f); emitb(0x80+$1); emits($2,0,REL_16); $2->type |= SYM_code; }
 
+	| JCXZ ID			{ if ($1) emitb(0x66); emitb(0xe3); emits($2,0,REL_8); $2->type |= SYM_code; }
+
 	| JMPW ID			{ emitb(0xe9); emits($2,0,REL_16); $2->type |= SYM_code; }
 	| JMPB ID			{ emitb(0xeb); emits($2,0,REL_8); $2->type |= SYM_code; }
 	| JMPF regmem			{ emitb(0xff); reg(5); }
+	| JMPF const ':' constID	{ emitb(0xea); emits($4.sym,$4.ofs,REL_abs); emitw($2); }
 
 	| LINKCOFF STRING		{ strbuf[strbuflen]=0; do_linkcoff(strbuf); }
 	| LOOP ID			{ emitb($1); emits($2,0,REL_8); }
@@ -625,21 +738,50 @@ line
 	| MOVB regmem ',' const		{ emitb(0xc6), reg(0); emitb($4); }
 	| MOV REG8 ',' const		{ emitb(0xb0+$2); emitb($4); }
 	| MOV REG8 ',' REG8		{ emitb(0x88), modrm(3, $4, $2); }
-	| MOV regmem ',' REG8		{ emitb(0x88); reg($4); }
-	| MOV REG8 ',' regmem		{ emitb(0x8a); reg($2); }
-
+	| MOV regmem ',' REG8		{ if ($4==0 && _modrm.regs==0)
+					      movacc=0xa2;
+					  else
+					      emitb(0x88); 
+					  reg($4); 
+					}
+	| MOV REG8 ',' regmem		{ if ($2==0 && _modrm.regs==0)
+					      movacc=0xa0;
+					  else
+					      emitb(0x8a);
+					  reg($2);
+					}
 	| MOVW regmem ',' constID	{ emitb(0xc7); reg(0); emits($4.sym,$4.ofs,REL_abs); }
 	| MOV REG16 ',' constID		{ emitb(0xb8+$2); emits($4.sym,$4.ofs,REL_abs); }
 	| MOV REG16 ',' REG16		{ emitb(0x89); modrm(3, $4, $2); }
-	| MOV regmem ',' REG16		{ emitb(0x89); reg($4); }
-	| MOV REG16 ',' regmem		{ emitb(0x8b); reg($2); }
-
+	| MOV regmem ',' REG16		{ if ($4==0 && _modrm.regs==0)
+					      movacc=0xa3;
+					  else
+					      emitb(0x89);
+					  reg($4); 
+					}
+	| MOV REG16 ','	regmem		{ if ($2==0 && _modrm.regs==0)
+					      movacc=0xa1;
+					  else
+					      emitb(0x8b);
+					  reg($2);
+					}
 	| MOVD regmem ',' constID	{ emitb(0x66); emitb(0xc7); reg(0); emits($4.sym,$4.ofs,REL_abs); emitw($4.ofs >> 16); }
 	| MOV REG32 ',' constID		{ emitb(0x66); emitb(0xb8+$2); emits($4.sym,$4.ofs,REL_abs); emitw($4.ofs >> 16); }
 	| MOV REG32 ',' REG32		{ emitb(0x66); emitb(0x89); modrm(3, $4, $2); }
-	| MOV regmem ',' REG32		{ emitb(0x66); emitb(0x89); reg($4); }
-	| MOV REG32 ',' regmem		{ emitb(0x66); emitb(0x8b); reg($2); }
-
+	| MOV regmem ',' REG32		{ emitb(0x66);
+					  if ($4==0 && _modrm.regs==0)
+					      movacc=0xa3;
+					  else
+					      emitb(0x89);
+					  reg($4);
+					}
+	| MOV REG32 ','	regmem		{ emitb(0x66);
+					  if ($2==0 && _modrm.regs==0)
+					      movacc=0xa1;
+					  else
+					      emitb(0x8b);
+					  reg($2);
+					}
 	| MOV regmem ',' SREG		{ emitb(0x8c); reg($4); }
 	| MOV REG16 ',' SREG		{ emitb(0x8c); modrm(3, $4, $2); }
 	| MOV SREG ',' regmem		{ emitb(0x8e); reg($2); }
@@ -657,6 +799,7 @@ line
 	| MOVSZX REG32 ',' REG16	{ emitb(0x66); emitb(0x0f); emitb($1+1); modrm(3, $2, $4); }
 
 	| ORG const			{ if (pc > $2) yyerror ("Backwards org directive"); else while (pc < $2) emitb(0x90); }
+	| ORG const ',' const		{ if (pc > $2) yyerror ("Backwards org directive"); else while (pc < $2) emitb($4); }
 
 	| OUT const ',' REG8		{ emitb(0xe6); emitb($2); }
 	| OUT const ',' REG16		{ emitb(0xe7); emitb($2); }
@@ -682,6 +825,13 @@ line
 	| RET const			{ emitb(0xc2); emitw($2); }
 	| RETF				{ emitb(0xcb); }
 	| RETF const			{ emitb(0xca); emitw($2); }
+	| RETD				{ emitb(0x66); emitb(0xc3); }
+	| RETD const			{ emitb(0x66); emitb(0xc2); emitd($2); }
+	| RETFD				{ emitb(0x66); emitb(0xcb); }
+	| RETFD const			{ emitb(0x66); emitb(0xca); emitd($2); }
+
+	| SETCC REG8			{ emitb(0x0f); emitb(0x90+$1); modrm(3, 0, $2); }
+	| SETCC regmem			{ emitb(0x0f); emitb(0x90+$1); reg(0); }
 
 	| SHIFT REG8 ',' const		{ emitb($4 == 1 ? 0xd0 : 0xc0); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG8 ',' REG8		{ if ($4 != 1) yyerror ("Non-constant shift count must be `cl'"); emitb(0xd2); modrm(3, $1, $2); }
@@ -723,10 +873,19 @@ line
 	| XCHG REG8 ',' REG8		{ emitb(0x86); modrm(3, $2, $4); }
 	| XCHG REG8 ',' regmem		{ emitb(0x86); reg($2); }
 	| XCHG regmem ',' REG8		{ emitb(0x86); reg($4); }
-	| XCHG REG16 ',' REG16		{ emitb(0x87); modrm(3, $2, $4); }
+	| XCHG REG16 ',' REG16		{ if (($2==0) ^	($4==0))
+					      emitb(0x90+$2+$4);
+					  else
+					      {emitb(0x87); modrm(3, $2, $4); }
+					}      
 	| XCHG REG16 ',' regmem		{ emitb(0x87); reg($2); }
 	| XCHG regmem ',' REG16		{ emitb(0x87); reg($4); }
-	| XCHG REG32 ',' REG32		{ emitb(0x66); emitb(0x87); modrm(3, $2, $4); }
+	| XCHG REG32 ',' REG32		{ emitb(0x66);
+					  if (($2==0) ^	($4==0))
+					      emitb(0x90+$2+$4);
+					  else
+					      {emitb(0x87); modrm(3, $2, $4); }
+					}
 	| XCHG REG32 ',' regmem		{ emitb(0x66); emitb(0x87); reg($2); }
 	| XCHG regmem ',' REG32		{ emitb(0x66); emitb(0x87); reg($4); }
 	;
@@ -1063,26 +1222,27 @@ main(int argc, char **argv)
         leader = INC_LEADER;
       else
         leader = S_LEADER;
-      fputs(leader, outfile);
       if (image_type == OUT_exe)
         for (i=0; i<EXE_HEADER_SIZE; i++)
         {
+	  if ((i%15) == 0)
+	    fputs(leader, outfile);
           fprintf(outfile, "0x%02x", exe[i]);
           if ((i&15) == 15)
           {
             fputc('\n', outfile);
-            fputs(leader, outfile);
           }
           else
             fputc(',', outfile);
         }
       for (i=((image_type==OUT_com)?0x100:0); i<bsspc; i++)
       {
+	if ((i&15) == 0)
+	  fputs(leader, outfile);
         fprintf(outfile, "0x%02x", outbin[i]);
         if ((i&15) == 15)
         {
           fputc('\n', outfile);
-          fputs(leader, outfile);
         }
         else
           if (i<bsspc-1)
@@ -1349,7 +1509,8 @@ void reg(int which)
 
   if (_modrm.regs == 0)
   {
-    emitb(mbyte + 6);
+    emitb(movacc ? movacc : mbyte + 6);
+    movacc=0;
   }
   else if (_modrm.regs == 0x20 && _modrm.offset == 0 && _modrm.nsyms == 0)
   {
@@ -1635,11 +1796,11 @@ void set_lineaddr()
   num_lineaddr++;
 }
 
-void do_align(int p2)
+void do_align(int p2, int val)
 {
   last_align_begin = pc;
   while ((pc+EXE_HEADER_SIZE) % p2)
-    emitb(0x90);
+    emitb(val);
   last_align_end = pc;
 }
 
