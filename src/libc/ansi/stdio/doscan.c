@@ -59,11 +59,13 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   register int ch;
   int nmatch, len, ch1;
   int *ptr, fileended, size;
+  int suppressed;
 
   decimal = localeconv()->decimal_point[0];
   nchars = 0;
   nmatch = 0;
   fileended = 0;
+  suppressed = 0;
   for (;;) switch (ch = *fmt++) {
   case '\0': 
     return (nmatch);
@@ -73,8 +75,9 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     ptr = 0;
     if (ch != '*')
       ptr = va_arg(argp, int *);
-    else
+    else {
       ch = *fmt++;
+    }
     len = 0;
     size = REGULAR;
     while (isdigit(ch & 0xff)) {
@@ -168,11 +171,13 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     {
       if (ptr)
 	nmatch++;
+      else
+	suppressed = 1;
     }
     else
     {
-      if (fileended)
-        return(EOF);
+      if (fileended && !nmatch && !suppressed)
+	return(EOF);
       return(nmatch);
     }
     break;
@@ -198,7 +203,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     if (ch1 != EOF) nchars++;
     if (ch1 != ch) {
       if (ch1==EOF)
-	return(nmatch? nmatch: EOF);
+	return(nmatch||suppressed? nmatch: EOF);
       scan_ungetc(ch1, iop);
       nchars--;
       return(nmatch);
