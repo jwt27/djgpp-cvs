@@ -7,6 +7,7 @@
 #include <dpmi.h>
 #include <io.h>
 #include <dos.h>
+#include <unistd.h>
 #include <libc/dosio.h>
 #include <sys/fsext.h>
 
@@ -74,8 +75,8 @@ _creatnew(const char* filename, int attrib, int flags)
        to work around the bugs. */
     rv = _open(filename, flags | 2);	/* 2 is a read/write flag */
     if(rv != -1) {	/* Re-open failure, continue with LFN handle */
-      _close(r.x.ax);
-      return rv;
+      dup2(rv, r.x.ax);	/* Close ax, put handle in first position (bugs) */
+      _close(rv);
     }
   }
   __file_handle_set(r.x.ax, O_BINARY);
