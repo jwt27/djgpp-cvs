@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -280,7 +281,7 @@ get_jam_info(int drive_num)
   if (jam_version < 0x110)      /* version sanity check */
     return 0;
   /* Sanity check of the size of the JAMINFO structure.  */
-  if (r.x.cx < 0x115 || r.x.cx > _go32_info_block.size_of_transfer_buffer)
+  if (r.x.cx < 0x115 || r.x.cx > __tb_size)
     return 0;
   if (jam_version >= 0x120 && r.x.cx < 0x124)
     return 0;

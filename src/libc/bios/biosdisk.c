@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -84,7 +85,7 @@ biosdisk(int cmd, int drive, int head, int track,
   {
     if (xfer > 18*512)
       return 1;			/* bad command */
-    if (xfer > _go32_info_block.size_of_transfer_buffer)
+    if (xfer > __tb_size)
     {
       alloc_dos_buffer();
       if (dos_segment == 0)
@@ -145,7 +146,7 @@ _bios_disk(unsigned _cmd, struct diskinfo_t *_di)
   {
     if (xfer > 18*512)
       return 1;			/* bad command */
-    if (xfer > _go32_info_block.size_of_transfer_buffer)
+    if (xfer > __tb_size)
     {
       alloc_dos_buffer();
       if (dos_segment == 0)

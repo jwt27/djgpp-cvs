@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -35,7 +36,7 @@ int
 _put_path2(const char *path, int offset)
 {
   size_t o = __tb+offset;
-  int space = _go32_info_block.size_of_transfer_buffer - offset;
+  int space = __tb_size - offset;
   const char *p = path;
 
   if (path == 0)

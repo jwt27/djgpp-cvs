@@ -454,7 +454,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
     {
       /* Fall back on transfer buffer size, if we can't determine file name
        * (which gives the drive letter and then the drive's cluster size). */
-      stat_buf->st_blksize = _go32_info_block.size_of_transfer_buffer;
+      stat_buf->st_blksize = __tb_size;
     }
 #endif
 

@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -109,7 +110,7 @@ setup_go32_info_block(void)
 
   _go32_info_block.size_of_this_structure_in_bytes = sizeof(_go32_info_block);
   __tb = _stubinfo->ds_segment * 16;
-  _go32_info_block.size_of_transfer_buffer = _stubinfo->minkeep;
+  __tb_size = _stubinfo->minkeep;
   _go32_info_block.pid = _stubinfo->psp_selector;
   _go32_info_block.master_interrupt_controller_base = ver.master_pic;
   _go32_info_block.slave_interrupt_controller_base = ver.slave_pic;

@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -42,8 +43,8 @@ __getcwd(char *buf, size_t size)
   }
 
   /* make sure we don't overrun the TB */
-  if (size > _go32_info_block.size_of_transfer_buffer)
-    size = _go32_info_block.size_of_transfer_buffer;
+  if (size > __tb_size)
+    size = __tb_size;
 
   /* get the path into the transfer buffer at least */
   if(use_lfn)

@@ -19,8 +19,6 @@
 #include <libc/ttyprvt.h>
 #include <libc/fd_props.h>
 
-#define tblen _go32_info_block.size_of_transfer_buffer
-
 ssize_t
 write(int handle, const void* buffer, size_t count)
 {
@@ -76,11 +74,11 @@ write(int handle, const void* buffer, size_t count)
   while (offset_into_buf < count)
   {
     _farsetsel(_dos_ds);
-    while (bytes_in_tb < tblen && offset_into_buf < count)
+    while (bytes_in_tb < __tb_size && offset_into_buf < count)
     {
       if (buf[offset_into_buf] == '\n')
       {
-	if (bytes_in_tb == tblen - 1)
+	if (bytes_in_tb == __tb_size - 1)
 	  break; /* can't fit two more */
 	_farnspokeb(__tb + bytes_in_tb, '\r');
 	bytes_in_tb++;

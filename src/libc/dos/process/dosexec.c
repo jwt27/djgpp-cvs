@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -558,7 +559,7 @@ _dos_exec(const char *program, const char *args, char * const envp[],
 	  const char *cmdline_var)
 {
   tbuf_beg = tbuf_ptr = __tb;
-  tbuf_len = _go32_info_block.size_of_transfer_buffer;
+  tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
   return direct_exec_tail(program, args, envp, 0, 2, cmdline_var);
 }
@@ -759,7 +760,7 @@ static int direct_exec(const char *program, char **argv, char **envp)
     errno = E2BIG;
   
   tbuf_beg = tbuf_ptr = __tb;
-  tbuf_len = _go32_info_block.size_of_transfer_buffer;
+  tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
   return direct_exec_tail(program, args, envp, 0, 2, 0);
 }
@@ -875,7 +876,7 @@ static int direct_pe_exec(const char *program, char **argv, char **envp)
     errno = E2BIG;
   
   tbuf_beg = tbuf_ptr = __tb;
-  tbuf_len = _go32_info_block.size_of_transfer_buffer;
+  tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
 
   /* If the command line is too long to pass directly, put the entire
@@ -1001,7 +1002,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
      this point: they will overwrite the data already in __tb.  */
 
   tbuf_beg = tbuf_ptr = __tb;
-  tbuf_len = _go32_info_block.size_of_transfer_buffer;
+  tbuf_len = __tb_size;
   tbuf_end = tbuf_ptr + tbuf_len - 1;
 
   /* Starting from DJGPP v2.04, programs are always run through !proxy.
@@ -1218,7 +1219,7 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   }
 
   tbuf_beg = tbuf_ptr = __tb;
-  tbuf_len = _go32_info_block.size_of_transfer_buffer;
+  tbuf_len = __tb_size;
   tbuf_end = tbuf_ptr + tbuf_len - 1;
   return direct_exec_tail(comspec, cmdline, envp, 0, 2, cmdline_var);
 }

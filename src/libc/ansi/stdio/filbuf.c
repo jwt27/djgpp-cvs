@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -41,7 +42,7 @@ _filbuf(FILE *f)
   f->_flag &= ~_IOUNGETC;
 
   if (f->_base==NULL && (f->_flag&_IONBF)==0) {
-    size = _go32_info_block.size_of_transfer_buffer;
+    size = __tb_size;
     if ((f->_base = malloc(size)) == NULL)
     {
       f->_flag |= _IONBF;

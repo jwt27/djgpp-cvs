@@ -39,7 +39,7 @@ _flsbuf(int c, FILE *f)
   /* if the buffer is not yet allocated, allocate it */
   if ((base = f->_base) == NULL && (f->_flag & _IONBF) == 0)
   {
-    size = _go32_info_block.size_of_transfer_buffer;
+    size = __tb_size;
     if ((f->_base = base = malloc (size)) == NULL)
     {
       f->_flag |= _IONBF;
