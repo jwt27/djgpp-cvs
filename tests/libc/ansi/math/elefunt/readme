@@ -1,0 +1,64 @@
+               C Version of the Code & Waite
+          ELEFUNT Elementary Function Test Package
+                        [15-Jun-87]
+
+This C version of the ELEFUNT test package was translated by
+Ken Stoner (GU.STONER@SCIENCE.UTAH.EDU) and Nelson H.F.
+Beebe (BEEBE@SCIENCE.UTAH.EDU) at the Center for Scientific
+Computing, Department of Mathematics, University of Utah.
+The translation was carried out by converting the original
+FORTRAN code to Ratfor automatically with the Unix struct
+utility, then hand editing the Ratfor to C, which resemble
+one another.
+
+Considerable care has been taken to match the output format
+of the two versions, so that after the characters
++-0123456789 have been converted to blanks, the output
+listings should substantially agree.  One error was
+corrected in FORMAT 1030 in TPOWER--a missing right
+parenthesis.  The FORTRAN version has some inconsistencies
+in the number of blank lines used for spacing the output; we
+have opted in favor of uniformity in the C version.
+
+C is problematic for numerical work on several grounds:
+        * Parentheses in expressions cannot be used to
+          enforce evaluation order; temporary variables must
+          be introduced.  This was particularly a problem in
+          machar.c.
+        * C has float and double data types, but an
+          implementation is free to implement these
+          in the same precision (PCC-20 uses only single
+          precision); the run-time library is written only
+          in type double.
+        * The behavior of library functions with respect to
+          out-of-range arguments, or arguments which would
+          result in substantial accuracy loss, is not
+          standardized.  Most C run-time libraries simply
+          set the global error value "errno" to a non-zero
+          value and return an arbitrary function result.
+          Code to test errno has been added to the test
+          programs.
+        * The behavior of floating-point arithmetic in
+          response to  underflow or overflow is not
+          well-defined.
+
+In addition, machines with IEEE arithmetic (which is
+provided by most newer architectures) place additional
+demands on numerical software because they have
+computational units of greater precision than is stored in
+memory.  For example, several implementations compute with
+80-bit extended precision, but store 32-bit or 64-bit values
+in memory.  Code in machar is particularly sensitive to
+this, and it has been necessary to force memory stores in
+intermediate expressions by calling a function
+store(&memval).  Since the address of a memory location is
+passed to store(), that location can potentially be
+modified, and the caller of store() must then reload the
+memory value upon return, rather than using a value that
+might exist in a higher-precision register.
+
+The C version has been written using type "float"; the
+Makefile's for it provide an implicit "#define float double"
+for those systems in which the two precisions are
+implemented differently, so that the tests are carried out
+at the precision of the run-time library.
