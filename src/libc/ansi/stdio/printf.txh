@@ -65,9 +65,10 @@ characters for a string.
 
 @item
 
-An optional conversion qualifier, which may be @code{h} to specify
-@code{short}, @code{l} to specify long ints, or @code{L} to specify
-long doubles. Long long type can be specified by @code{L} or @code{ll}.
+An optional conversion qualifier, which may be @code{hh} to specify
+@code{char}, @code{h} to specify @code{short} integers, @code{l}
+to specify @code{long} integers, @code{ll} to specify
+@code{long long} integers, or @code{L} to specify @code{long} doubles.
 
 @item
 

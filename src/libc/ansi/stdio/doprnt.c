@@ -37,6 +37,7 @@ static char decimal = '.';
 		flags&LONGDBL ? va_arg(argp, long long basetype) : \
 		flags&LONGINT ? va_arg(argp, long basetype) : \
 		flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
+		flags&CHARINT ? (char basetype)va_arg(argp, int) : \
 		(basetype)va_arg(argp, int)
 
 static int nan_p = 0;
@@ -59,10 +60,11 @@ static __inline__ char tochar(int n)
 #define	LONGINT		0x01		/* long integer */
 #define	LONGDBL		0x02		/* long double */
 #define	SHORTINT	0x04		/* short integer */
-#define	ALT		0x08		/* alternate form */
-#define	LADJUST		0x10		/* left adjustment */
-#define	ZEROPAD		0x20		/* zero (as opposed to blank) pad */
-#define	HEXPREFIX	0x40		/* add 0x or 0X prefix */
+#define	CHARINT		0x08		/* char */
+#define	ALT		0x10		/* alternate form */
+#define	LADJUST		0x20		/* left adjustment */
+#define	ZEROPAD		0x40		/* zero (as opposed to blank) pad */
+#define	HEXPREFIX	0x80		/* add 0x or 0X prefix */
 
 static int cvtl(long double number, int prec, int flags, char *signp,
 	        unsigned char fmtch, char *startp, char *endp);
@@ -192,7 +194,12 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       flags |= LONGDBL;
       goto rflag;
     case 'h':
-      flags |= SHORTINT;
+      if (flags&SHORTINT) {
+	flags |= CHARINT;
+	flags &= ~SHORTINT;
+      } else {
+	flags |= SHORTINT;
+      }
       goto rflag;
     case 'l':
       if (flags&LONGINT)
@@ -210,7 +217,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       /*FALLTHROUGH*/
     case 'd':
     case 'i':
-      ARG(int);
+      ARG(signed);
       if ((long long)_ulonglong < 0)
       {
         _ulonglong = -_ulonglong;
@@ -295,6 +302,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	*va_arg(argp, long *) = cnt;
       else if (flags & SHORTINT)
 	*va_arg(argp, short *) = cnt;
+      else if (flags & CHARINT)
+	*va_arg(argp, char *) = (char)cnt;
       else
 	*va_arg(argp, int *) = cnt;
       break;
