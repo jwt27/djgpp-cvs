@@ -270,6 +270,8 @@ time_t posix2time P((time_t));
 #define IS_ABSOLUTE(n)	(IS_SLASH((n)[0]) || HAS_DEVICE(n))
 #undef TZDIR
 #define TZDIR (getenv("TZDIR")?getenv("TZDIR"):"c:/djgpp/zoneinfo")
+#else
+#define HAS_DEVICE(n) 0
 #endif /* __MSDOS__ */
 
 /*
