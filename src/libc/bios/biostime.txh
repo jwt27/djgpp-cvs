@@ -1,4 +1,5 @@
 @node biostime, bios
+@findex biostime
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node qsort, misc
+@findex qsort
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node getwd, file system
+@findex getwd
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node __djgpp_memory_handle, memory
+@findex __djgpp_memory_handle
 @subheading Syntax
 
 @example

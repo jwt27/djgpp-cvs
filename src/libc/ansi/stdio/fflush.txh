@@ -1,4 +1,5 @@
 @node fflush, stdio
+@findex fflush
 @subheading Syntax
 
 @example

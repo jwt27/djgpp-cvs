@@ -1,4 +1,5 @@
 @node setlinebuf, stdio
+@findex setlinebuf
 @subheading Syntax
 
 @example

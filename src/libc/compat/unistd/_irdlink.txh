@@ -1,4 +1,5 @@
 @node __internal_readlink, io
+@findex __internal_readlink
 @subheading Syntax
 
 @example

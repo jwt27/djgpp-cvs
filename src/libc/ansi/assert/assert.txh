@@ -1,4 +1,6 @@
 @node assert, misc
+@findex assert
+@findex assertval
 @subheading Syntax
 
 @example

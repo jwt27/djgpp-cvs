@@ -1,4 +1,5 @@
 @node __solve_symlinks, io
+@findex __solve_symlinks
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node localeconv, locale
+@findex localeconv
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node ctime, time
+@findex ctime
 @subheading Syntax
 
 @example
@@ -23,6 +24,7 @@ The ascii representation of the time.
 
 @c ----------------------------------------------------------------------
 @node asctime, time
+@findex asctime
 @subheading Syntax
 
 @example
@@ -81,6 +83,7 @@ printf("The current time is %s", asctime(localtime(&now)));
 
 @c ----------------------------------------------------------------------
 @node gmtime, time
+@findex gmtime
 @subheading Syntax
 
 @example
@@ -130,6 +133,7 @@ t = gmtime(&x);
 
 @c ----------------------------------------------------------------------
 @node localtime, time
+@findex localtime
 @subheading Syntax
 
 @example
@@ -154,6 +158,7 @@ A pointer to a static structure which is overwritten with each call.
 
 @c ----------------------------------------------------------------------
 @node mktime, time
+@findex mktime
 @subheading Syntax
 
 @example
@@ -203,6 +208,8 @@ in that format.
 
 @c ----------------------------------------------------------------------
 @node tzset, time
+@vindex tzname
+@findex tzset
 @subheading Syntax
 
 @example
@@ -231,6 +238,7 @@ None.
 
 @c ----------------------------------------------------------------------
 @node tzsetwall, time
+@findex tzsetwall
 @subheading Syntax
 
 @example

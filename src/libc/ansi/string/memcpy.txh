@@ -1,4 +1,5 @@
 @node memcpy, memory
+@findex memcpy
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node biosequip, bios
+@findex biosequip
 @subheading Syntax
 
 @example

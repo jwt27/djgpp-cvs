@@ -1,4 +1,5 @@
 @node abs, math
+@findex abs
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node brk, memory
+@findex brk
 @subheading Syntax
 
 @example
@@ -32,6 +33,7 @@ if (brk(old_brk+1000))
 
 @c ----------------------------------------------------------------------
 @node sbrk, memory
+@findex sbrk
 @subheading Syntax
 
 @example
@@ -70,6 +72,7 @@ buf = sbrk(1000); /* allocate space */
 
 @c ----------------------------------------------------------------------
 @node _stklen, startup
+@vindex _stklen
 @subheading Syntax
 
 @example
@@ -94,6 +97,7 @@ int _stklen = 256000;
 
 @c ----------------------------------------------------------------------
 @node __djgpp_memory_handle_list, memory
+@vindex __djgpp_memory_handle_list
 @subheading Syntax
 
 @example
@@ -130,6 +134,7 @@ protection or memory mapping.
 
 @c ----------------------------------------------------------------------
 @node __djgpp_memory_handle_size, memory
+@vindex __djgpp_memory_handle_size
 @subheading Syntax
 
 @example
@@ -165,6 +170,7 @@ values are normally not needed unless you are dumping the memory blocks.
 
 @c ----------------------------------------------------------------------
 @node _exit, process
+@findex _exit
 @subheading Syntax
 
 @example
@@ -193,6 +199,7 @@ This function does not return.
 
 @c ----------------------------------------------------------------------
 @node __exit, process
+@findex __exit
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node strcoll, locale
+@findex strcoll
 @subheading Syntax
 
 @example

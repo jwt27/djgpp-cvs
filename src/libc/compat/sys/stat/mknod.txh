@@ -1,4 +1,5 @@
 @node mknod, unix
+@findex mknod
 @subheading Syntax
 
 @example

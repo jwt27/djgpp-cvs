@@ -1,4 +1,5 @@
 @node ungetc, stdio
+@findex ungetc
 @subheading Syntax
 
 @example

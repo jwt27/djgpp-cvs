@@ -1,4 +1,5 @@
 @node _fwalk, stdio
+@findex _fwalk
 @subheading Syntax
 
 @example

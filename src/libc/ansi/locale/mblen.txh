@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node mblen, locale
+@findex mblen
 @subheading Syntax
 
 @example

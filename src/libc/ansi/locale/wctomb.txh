@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node wctomb, locale
+@findex wctomb
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node setenv, environment
+@findex setenv
 @subheading Syntax
 
 @example

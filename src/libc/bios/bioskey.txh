@@ -1,4 +1,5 @@
 @node bioskey, bios
+@findex bioskey
 @subheading Syntax
 
 @example

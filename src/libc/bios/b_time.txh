@@ -1,4 +1,5 @@
 @node _bios_timeofday, bios
+@findex _bios_timeofday
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node difftime, time
+@findex difftime
 @subheading Syntax
 
 @example

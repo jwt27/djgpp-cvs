@@ -1,4 +1,13 @@
 @node rand48, random number
+@findex drand48
+@findex erand48
+@findex lrand48
+@findex nrand48
+@findex mrand48
+@findex jrand48
+@findex srand48
+@findex seed48
+@findex lcong48
 @subheading Syntax
 
 @example

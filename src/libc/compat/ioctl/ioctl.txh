@@ -1,6 +1,7 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.4 2001/08/09 03:47:26 snowball Exp $
+@c $Id: ioctl.txh,v 1.5 2003/01/29 12:36:02 peuha Exp $
 @node ioctl (General description), io
+@findex ioctl@r{, General description}
 @code{ioctl} performs low level calls to communicate with device drivers. As
 there are lots of different device drivers, no really general description is
 possible.
@@ -12,6 +13,7 @@ at least one of the 3 MSB set to 1.
 
 
 @node ioctl (DOS), io
+@findex ioctl@r{, DOS}
 The DOSish version of @code{ioctl} performs an
 interrupt 0x21, function 0x44. It takes care of supplying transfer buffers in
 low address regions, if they are needed. For an exhaustive description of the
@@ -264,6 +266,7 @@ int main(int argc, char **argv)
 @end example
 
 @node ioctl (UNIX), io
+@findex ioctl@r{, UNIX}
 @subheading Syntax
 
 @example

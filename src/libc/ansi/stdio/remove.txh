@@ -1,4 +1,5 @@
 @node remove, file system
+@findex remove
 @subheading Syntax
 
 @example

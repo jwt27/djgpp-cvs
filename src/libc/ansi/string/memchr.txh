@@ -1,4 +1,5 @@
 @node memchr, memory
+@findex memchr
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node ferror, stdio
+@findex ferror
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node fputc, stdio
+@findex fputc
 @subheading Syntax
 
 @example

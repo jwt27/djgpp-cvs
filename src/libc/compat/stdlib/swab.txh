@@ -1,4 +1,5 @@
 @node swab, memory
+@findex swab
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node sys_errlist, stdio
+@vindex sys_errlist
 @subheading Syntax
 
 @example
@@ -24,6 +25,7 @@ printf("Error: %s\n", sys_errlist[errno]);
 
 @c ----------------------------------------------------------------------
 @node sys_nerr, stdio
+@vindex sys_nerr
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node strdup, string
+@findex strdup
 @subheading Syntax
 
 @example

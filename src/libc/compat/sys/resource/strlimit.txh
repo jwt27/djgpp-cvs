@@ -1,4 +1,5 @@
 @node setrlimit, unix
+@findex setrlimit
 @subheading Syntax
 
 @example

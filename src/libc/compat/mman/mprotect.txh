@@ -1,4 +1,5 @@
 @node mprotect, memory
+@findex mprotect
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node strtoumax, string
+@findex strtoumax
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node biosmemory, bios
+@findex biosmemory
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node remque, misc
+@findex remque
 @subheading Syntax
 
 @example

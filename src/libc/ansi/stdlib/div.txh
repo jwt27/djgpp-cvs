@@ -1,4 +1,5 @@
 @node div, math
+@findex div
 @subheading Syntax
 
 @example

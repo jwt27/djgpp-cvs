@@ -1,4 +1,5 @@
 @node getpass, misc
+@findex getpass
 @subheading Syntax
 
 @example

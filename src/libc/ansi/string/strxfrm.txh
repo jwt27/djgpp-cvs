@@ -1,4 +1,5 @@
 @node strxfrm, locale
+@findex strxfrm
 @subheading Syntax
 
 @example

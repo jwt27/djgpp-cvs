@@ -1,4 +1,5 @@
 @node setvbuf, stdio
+@findex setvbuf
 @subheading Syntax
 
 @example

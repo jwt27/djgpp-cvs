@@ -1,4 +1,5 @@
 @node alloca, memory
+@findex alloca
 @subheading Syntax
 
 @example

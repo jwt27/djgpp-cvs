@@ -1,4 +1,5 @@
 @node setbuffer, stdio
+@findex setbuffer
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node itoa, string
+@findex itoa
 @subheading Syntax
 
 @example
@@ -37,6 +38,7 @@ char binary_str[33];
 @c ---------------------------------------------------------------------
 
 @node ecvtbuf, string
+@findex ecvtbuf
 @subheading Syntax
 
 @example
@@ -96,6 +98,7 @@ A pointer to @var{buf}.
 @c -----------------------------------------------------------------
 
 @node ecvt, string
+@findex ecvt
 @subheading Syntax
 
 @example
@@ -124,6 +127,7 @@ A pointer to the generated string.
 @c -------------------------------------------------------------------
 
 @node fcvtbuf, string
+@findex fcvtbuf
 @subheading Syntax
 
 @example
@@ -191,6 +195,7 @@ A pointer to @var{buf}.
 @c -----------------------------------------------------------------
 
 @node fcvt, string
+@findex fcvt
 @subheading Syntax
 
 @example
@@ -219,6 +224,7 @@ A pointer to the generated string.
 @c -------------------------------------------------------------------
 
 @node gcvt, string
+@findex gcvt
 @subheading Syntax
 
 @example

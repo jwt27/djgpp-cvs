@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node monstartup, profiling
+@findex monstartup
 @subheading Syntax
 
 @example
@@ -55,6 +56,7 @@ Zero on success, non-zero on failure.
 
 @c ----------------------------------------------------------------------
 @node moncontrol, profiling
+@findex moncontrol
 @subheading Syntax
 
 @example

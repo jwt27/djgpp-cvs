@@ -1,4 +1,5 @@
 @node atoll, string
+@findex atoll
 @subheading Syntax
 
 @example

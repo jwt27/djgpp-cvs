@@ -1,4 +1,5 @@
 @node sync, unix
+@findex sync
 @subheading Syntax
 
 @example

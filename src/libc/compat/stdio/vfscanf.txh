@@ -1,4 +1,5 @@
 @node vfscanf, stdio
+@findex vfscanf
 @subheading Syntax
 
 @example

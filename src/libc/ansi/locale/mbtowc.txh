@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node mbtowc, locale
+@findex mbtowc
 @subheading Syntax
 
 @example

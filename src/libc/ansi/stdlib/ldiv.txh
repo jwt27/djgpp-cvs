@@ -1,4 +1,5 @@
 @node ldiv, math
+@findex ldiv
 @subheading Syntax
 
 @example

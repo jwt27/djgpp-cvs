@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node acosh, math
+@findex acosh
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node sincos, math
+@findex sincos
 @subheading Syntax
 
 @example

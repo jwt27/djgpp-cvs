@@ -1,4 +1,5 @@
 @node strcasecmp, string
+@findex strcasecmp
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node strtod, string
+@findex strtod
 @subheading Syntax
 
 @example

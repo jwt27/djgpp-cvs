@@ -1,4 +1,5 @@
 @node fclose, stdio
+@findex fclose
 @subheading Syntax
 
 @example

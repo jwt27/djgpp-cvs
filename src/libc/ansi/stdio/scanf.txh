@@ -1,4 +1,5 @@
 @node scanf, stdio
+@findex scanf
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node rand, random number
+@findex rand
 @subheading Syntax
 
 @example
@@ -45,6 +46,7 @@ for (i=rand(); i; i--);
 @end example
 
 @node srand, random number
+@findex srand
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node gethostname, misc
+@findex gethostname
 @subheading Syntax
 
 @example

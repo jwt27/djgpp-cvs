@@ -1,4 +1,5 @@
 @node imaxabs, math
+@findex imaxabs
 @subheading Syntax
 
 @example

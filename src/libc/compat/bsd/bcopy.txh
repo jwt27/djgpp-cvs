@@ -1,4 +1,5 @@
 @node bcopy, memory
+@findex bcopy
 @subheading Syntax
 
 @example

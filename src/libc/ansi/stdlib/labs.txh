@@ -1,4 +1,5 @@
 @node labs, misc
+@findex labs
 @subheading Syntax
 
 @example

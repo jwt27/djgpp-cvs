@@ -1,4 +1,5 @@
 @node abort, process
+@findex abort
 @subheading Syntax
 
 @example

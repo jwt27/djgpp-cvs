@@ -1,6 +1,7 @@
 @c ----------------------------------------------------------------------
 
 @node tempnam, file system
+@findex tempnam
 @subheading Syntax
 
 @example

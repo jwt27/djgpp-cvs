@@ -1,4 +1,5 @@
 @node strsep, string
+@findex strsep
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node freopen, stdio
+@findex freopen
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node log2, math
+@findex log2
 @subheading Syntax
 
 @example

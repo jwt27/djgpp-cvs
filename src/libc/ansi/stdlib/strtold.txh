@@ -1,4 +1,5 @@
 @node _strtold, string
+@findex _strtold
 @subheading Syntax
 
 @example
@@ -33,6 +34,7 @@ long double x = _strtold(buf, &bp);
 @end example
 
 @node strtold, string
+@findex strtold
 @subheading Syntax
 
 @example

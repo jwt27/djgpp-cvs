@@ -1,4 +1,5 @@
 @node readlink, io
+@findex readlink
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node ldexp, math
+@findex ldexp
 @subheading Syntax
 
 @example

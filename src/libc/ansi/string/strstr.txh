@@ -1,4 +1,5 @@
 @node strstr, string
+@findex strstr
 @subheading Syntax
 
 @example

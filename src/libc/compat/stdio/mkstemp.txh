@@ -1,4 +1,5 @@
 @node mkstemp, file system
+@findex mkstemp
 @subheading Syntax
 
 @example

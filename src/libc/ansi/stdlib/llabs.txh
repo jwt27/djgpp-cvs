@@ -1,4 +1,5 @@
 @node llabs, misc
+@findex llabs
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node fchown, unix
+@findex fchown
 @subheading Syntax
 
 @example

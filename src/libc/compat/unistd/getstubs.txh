@@ -1,4 +1,5 @@
 @node getdtablesize, posix
+@findex getdtablesize
 @subheading Syntax
 
 @example
@@ -21,6 +22,7 @@ Get the maximum number of open file descriptors the system supports.
 
 @c ----------------------------------------------------------------------
 @node getpagesize, misc
+@findex getpagesize
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node bzero, memory
+@findex bzero
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node fopen, stdio
+@findex fopen
 @subheading Syntax
 
 @example

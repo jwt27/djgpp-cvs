@@ -1,4 +1,5 @@
 @node setmntent, unix
+@findex setmntent
 @subheading Syntax
 
 @example
@@ -44,6 +45,7 @@ not a real pointer and may only be used by @code{getmntent}.
 
 @c ----------------------------------------------------------------------
 @node getmntent, unix
+@findex getmntent
 @subheading Syntax
 
 @example
@@ -175,6 +177,7 @@ endmntent(f);
 
 @c ----------------------------------------------------------------------
 @node addmntent, unix
+@findex addmntent
 @subheading Syntax
 
 @example
@@ -198,6 +201,7 @@ This function always returns nonzero to signify an error.
 
 @c ----------------------------------------------------------------------
 @node hasmntopt, unix
+@findex hasmntopt
 @subheading Syntax
 
 @example
@@ -223,6 +227,7 @@ or @code{NULL} otherwise.
 
 @c ----------------------------------------------------------------------
 @node endmntent, unix
+@findex endmntent
 @subheading Syntax
 
 @example

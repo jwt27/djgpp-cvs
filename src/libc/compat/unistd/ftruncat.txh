@@ -1,4 +1,5 @@
 @node ftruncate, stdio
+@findex ftruncate
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node isprint, ctype
+@findex isprint
 @subheading Syntax
 
 @example

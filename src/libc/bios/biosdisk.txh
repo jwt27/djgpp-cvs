@@ -1,4 +1,5 @@
 @node biosdisk, bios
+@findex biosdisk
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node bioscom, bios
+@findex bioscom
 @subheading Syntax
 
 @example

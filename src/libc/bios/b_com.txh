@@ -1,4 +1,5 @@
 @node _bios_serialcom, bios
+@findex _bios_serialcom
 @subheading Syntax
 
 @example

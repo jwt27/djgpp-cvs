@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node expm1, math
+@findex expm1
 @subheading Syntax
 
 @example

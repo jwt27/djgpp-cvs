@@ -1,4 +1,5 @@
 @node fsetpos, stdio
+@findex fsetpos
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node puts, stdio
+@findex puts
 @subheading Syntax
 
 @example

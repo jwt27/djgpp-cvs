@@ -1,4 +1,5 @@
 @node fseek, stdio
+@findex fseek
 @subheading Syntax
 
 @example

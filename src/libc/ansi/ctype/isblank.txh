@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node isblank, ctype
+@findex isblank
 @subheading Syntax
 
 @example

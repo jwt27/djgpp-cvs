@@ -1,4 +1,5 @@
 @node index, string
+@findex index
 @subheading Syntax
 
 @example

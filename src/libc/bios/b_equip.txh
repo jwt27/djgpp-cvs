@@ -1,4 +1,5 @@
 @node _bios_equiplist, bios
+@findex _bios_equiplist
 @subheading Syntax
 
 @example

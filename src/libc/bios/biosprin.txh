@@ -1,4 +1,5 @@
 @node biosprint, bios
+@findex biosprint
 @subheading Syntax
 
 @example

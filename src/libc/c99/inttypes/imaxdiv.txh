@@ -1,4 +1,5 @@
 @node imaxdiv, math
+@findex imaxdiv
 @subheading Syntax
 
 @example

@@ -1,4 +1,7 @@
 @node varargs, misc
+@findex va_start
+@findex va_arg
+@findex va_end
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node memset, memory
+@findex memset
 @subheading Syntax
 
 @example

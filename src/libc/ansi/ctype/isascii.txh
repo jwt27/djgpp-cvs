@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node isascii, ctype
+@findex isascii
 @subheading Syntax
 
 @example

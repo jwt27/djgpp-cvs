@@ -1,4 +1,5 @@
 @node _doprnt, stdio
+@findex _doprnt
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node iscntrl, ctype
+@findex iscntrl
 @subheading Syntax
 
 @example

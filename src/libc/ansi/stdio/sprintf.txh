@@ -1,4 +1,5 @@
 @node sprintf, stdio
+@findex sprintf
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node fpurge, stdio
+@findex fpurge
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node rindex, string
+@findex rindex
 @subheading Syntax
 
 @example

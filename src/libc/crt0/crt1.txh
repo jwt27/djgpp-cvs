@@ -1,4 +1,5 @@
 @node __crt0_glob_function, startup
+@findex __crt0_glob_function
 @subheading Syntax
 
 @example
@@ -25,6 +26,7 @@ that always returns 0.
 
 @c ----------------------------------------------------------------------
 @node __crt0_setup_arguments, startup
+@findex __crt0_setup_arguments
 @subheading Syntax
 
 @example
@@ -55,6 +57,7 @@ with filenames which have embedded whitespace (on LFN filesystems).
 
 @c ----------------------------------------------------------------------
 @node __crt0_load_environment_file, startup
+@findex __crt0_load_environment_file
 @subheading Syntax
 
 @example
@@ -80,6 +83,7 @@ function that does nothing.
 
 @c ----------------------------------------------------------------------
 @node _crt0_startup_flags, startup
+@vindex _crt0_startup_flags
 @subheading Syntax
 
 @example

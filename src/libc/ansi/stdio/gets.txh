@@ -1,4 +1,5 @@
 @node gets, stdio
+@findex gets
 @subheading Syntax
 
 @example

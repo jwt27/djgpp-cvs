@@ -1,4 +1,5 @@
 @node fsync, stdio
+@findex fsync
 @subheading Syntax
 
 @example

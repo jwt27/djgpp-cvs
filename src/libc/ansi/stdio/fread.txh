@@ -1,4 +1,5 @@
 @node fread, stdio
+@findex fread
 @subheading Syntax
 
 @example

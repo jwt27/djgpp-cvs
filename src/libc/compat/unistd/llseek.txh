@@ -9,6 +9,7 @@
 @end ignore
 
 @node llseek, io
+@findex llseek
 @subheading Syntax
 
 @example

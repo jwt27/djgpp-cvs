@@ -1,4 +1,5 @@
 @node _bios_printer, bios
+@findex _bios_printer
 @subheading Syntax
 
 @example

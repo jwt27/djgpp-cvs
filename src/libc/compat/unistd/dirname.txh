@@ -2,6 +2,7 @@
 @c ----------------------------------------------------------------------
 
 @node dirname, file system
+@findex dirname
 @subheading Syntax
 
 @example

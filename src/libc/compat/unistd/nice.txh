@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node nice, process
+@findex nice
 @subheading Syntax
 
 @example

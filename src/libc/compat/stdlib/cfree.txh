@@ -1,4 +1,5 @@
 @node cfree, memory
+@findex cfree
 @subheading Syntax
 
 @example

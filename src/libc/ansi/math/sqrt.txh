@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node sqrt, math
+@findex sqrt
 @subheading Syntax
 
 @example

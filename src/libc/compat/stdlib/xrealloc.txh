@@ -1,4 +1,5 @@
 @node xrealloc, memory
+@findex xrealloc
 @subheading Syntax
 
 @example

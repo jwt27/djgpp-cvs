@@ -1,4 +1,5 @@
 @node rawclock, time
+@findex rawclock
 @subheading Syntax
 
 @example

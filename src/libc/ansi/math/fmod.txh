@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node fmod, math
+@findex fmod
 @subheading Syntax
 
 @example

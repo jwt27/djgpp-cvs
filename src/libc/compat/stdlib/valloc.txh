@@ -1,4 +1,5 @@
 @node valloc, memory
+@findex valloc
 @subheading Syntax
 
 @example

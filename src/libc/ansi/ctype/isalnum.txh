@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node isalnum, ctype
+@findex isalnum
 @subheading Syntax
 
 @example

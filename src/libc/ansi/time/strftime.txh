@@ -1,4 +1,5 @@
 @node strftime, time
+@findex strftime
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node atan, math
+@findex atan
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node _Exit, process
+@findex _Exit
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node vsprintf, stdio
+@findex vsprintf
 @subheading Syntax
 
 @example

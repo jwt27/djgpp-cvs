@@ -1,4 +1,5 @@
 @node utimes, time
+@findex utimes
 @subheading Syntax
 
 @example

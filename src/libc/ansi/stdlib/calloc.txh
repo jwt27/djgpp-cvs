@@ -1,4 +1,5 @@
 @node calloc, memory
+@findex calloc
 @subheading Syntax
 
 @example

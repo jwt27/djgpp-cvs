@@ -2,6 +2,7 @@
 @c ----------------------------------------------------------------------
 
 @node basename, file system
+@findex basename
 @subheading Syntax
 
 @example

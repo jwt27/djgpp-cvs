@@ -1,4 +1,5 @@
 @node srandom, random number
+@findex srandom
 @subheading Syntax
 
 @example
@@ -29,6 +30,7 @@ srandom(45);
 
 @c ----------------------------------------------------------------------
 @node random, random number
+@findex random
 @subheading Syntax
 
 @example
@@ -58,6 +60,7 @@ Returns a random number in the range 0..MAXINT.
 
 @c ----------------------------------------------------------------------
 @node initstate, random number
+@findex initstate
 @subheading Syntax
 
 @example
@@ -82,6 +85,7 @@ Pointer to old state information.
 
 @c ----------------------------------------------------------------------
 @node setstate, random number
+@findex setstate
 @subheading Syntax
 
 @example

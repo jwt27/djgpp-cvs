@@ -1,4 +1,5 @@
 @node perror, stdio
+@findex perror
 @subheading Syntax
 
 @example

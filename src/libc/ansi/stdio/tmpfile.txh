@@ -1,4 +1,5 @@
 @node tmpfile, stdio
+@findex tmpfile
 @subheading Syntax
 
 @example

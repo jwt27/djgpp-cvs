@@ -1,4 +1,5 @@
 @node getrlimit, unix
+@findex getrlimit
 @subheading Syntax
 
 @example

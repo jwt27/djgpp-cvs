@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node cos, math
+@findex cos
 @subheading Syntax
 
 @example

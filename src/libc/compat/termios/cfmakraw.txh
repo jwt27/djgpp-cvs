@@ -1,4 +1,5 @@
 @node cfmakeraw, termios
+@findex cfmakeraw
 @subheading Syntax
 
 @example

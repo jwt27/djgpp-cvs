@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node floor, math
+@findex floor
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node getw, stdio
+@findex getw
 @subheading Syntax
 
 @example

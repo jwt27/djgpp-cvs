@@ -1,4 +1,5 @@
 @node setjmp, misc
+@findex setjmp
 @subheading Syntax
 
 @example

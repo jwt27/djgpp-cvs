@@ -1,4 +1,5 @@
 @node printf, stdio
+@findex printf
 @subheading Syntax
 
 @example

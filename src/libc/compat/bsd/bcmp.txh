@@ -1,4 +1,5 @@
 @node bcmp, memory
+@findex bcmp
 @subheading Syntax
 
 @example

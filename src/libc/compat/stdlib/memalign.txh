@@ -1,4 +1,5 @@
 @node memalign, memory
+@findex memalign
 @subheading Syntax
 
 @example

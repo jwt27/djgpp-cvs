@@ -1,4 +1,5 @@
 @node lockf, unistd
+@findex lockf
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node strerror, stdio
+@findex strerror
 @subheading Syntax
 
 @example

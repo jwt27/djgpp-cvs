@@ -1,4 +1,5 @@
 @node truncate, io
+@findex truncate
 @subheading Syntax
 
 @example

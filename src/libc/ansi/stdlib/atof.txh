@@ -1,4 +1,5 @@
 @node atof, string
+@findex atof
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node getrusage, unix
+@findex getrusage
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node feof, stdio
+@findex feof
 @subheading Syntax
 
 @example

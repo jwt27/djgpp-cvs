@@ -1,4 +1,5 @@
 @node vscanf, stdio
+@findex vscanf
 @subheading Syntax
 
 @example

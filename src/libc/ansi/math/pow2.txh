@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node pow2, math
+@findex pow2
 @subheading Syntax
 
 @example

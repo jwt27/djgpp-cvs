@@ -1,4 +1,5 @@
 @node mktemp, file system
+@findex mktemp
 @subheading Syntax
 
 @example

@@ -1,6 +1,7 @@
 @c ----------------------------------------------------------------------
 
 @node psignal, signal
+@findex psignal
 @subheading Syntax
 
 @example

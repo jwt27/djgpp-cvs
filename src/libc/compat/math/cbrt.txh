@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node cbrt, math
+@findex cbrt
 @subheading Syntax
 
 @example

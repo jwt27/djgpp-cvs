@@ -1,4 +1,5 @@
 @node strcspn, string
+@findex strcspn
 @subheading Syntax
 
 @example

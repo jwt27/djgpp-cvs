@@ -1,4 +1,5 @@
 @node _doscan, stdio
+@findex _doscan
 @subheading Syntax
 
 @example

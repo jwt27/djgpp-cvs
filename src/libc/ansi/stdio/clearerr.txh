@@ -1,4 +1,5 @@
 @node clearerr, stdio
+@findex clearerr
 @subheading Syntax
 
 @example

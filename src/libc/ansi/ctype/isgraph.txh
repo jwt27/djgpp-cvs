@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node isgraph, ctype
+@findex isgraph
 @subheading Syntax
 
 @example

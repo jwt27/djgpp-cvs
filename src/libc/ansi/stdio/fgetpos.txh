@@ -1,4 +1,5 @@
 @node fgetpos, stdio
+@findex fgetpos
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node memicmp, memory
+@findex memicmp
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node ftell, stdio
+@findex ftell
 @subheading Syntax
 
 @example

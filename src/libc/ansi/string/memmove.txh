@@ -1,4 +1,5 @@
 @node memmove, memory
+@findex memmove
 @subheading Syntax
 
 @example

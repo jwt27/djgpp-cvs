@@ -1,4 +1,5 @@
 @node longjmp, misc
+@findex longjmp
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node rename, file system
+@findex rename
 @subheading Syntax
 
 @example
@@ -48,6 +49,7 @@ rename("c:/path1/mydir", "c:/path2");
 @c -------------------------------------------------------------------------
 
 @node _rename, file system
+@findex _rename
 @subheading Syntax
 
 @example

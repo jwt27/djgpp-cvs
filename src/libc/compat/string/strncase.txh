@@ -1,4 +1,5 @@
 @node strncasecmp, string
+@findex strncasecmp
 @subheading Syntax
 
 @example

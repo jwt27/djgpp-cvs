@@ -1,4 +1,5 @@
 @node getenv, environment
+@findex getenv
 @subheading Syntax
 
 @example

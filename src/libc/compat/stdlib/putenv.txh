@@ -1,4 +1,5 @@
 @node putenv, environment
+@findex putenv
 @subheading Syntax
 
 @example

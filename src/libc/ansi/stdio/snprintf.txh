@@ -1,4 +1,5 @@
 @node snprintf, stdio
+@findex snprintf
 @subheading Syntax
 
 @example

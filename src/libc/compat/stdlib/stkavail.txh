@@ -1,4 +1,5 @@
 @node stackavail, memory
+@findex stackavail
 @subheading Syntax
 
 @example

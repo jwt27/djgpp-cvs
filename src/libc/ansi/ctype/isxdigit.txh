@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node isxdigit, ctype
+@findex isxdigit
 @subheading Syntax
 
 @example

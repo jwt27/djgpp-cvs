@@ -1,4 +1,5 @@
 @node insque, misc
+@findex insque
 @subheading Syntax
 
 @example

@@ -1,4 +1,5 @@
 @node strtok, string
+@findex strtok
 @subheading Syntax
 
 @example

@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node usleep, process
+@findex usleep
 @subheading Syntax
 
 @example

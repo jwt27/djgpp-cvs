@@ -1,4 +1,5 @@
 @node llockf, unistd
+@findex llockf
 @subheading Syntax
 
 @example

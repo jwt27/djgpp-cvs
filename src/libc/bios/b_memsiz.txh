@@ -1,4 +1,5 @@
 @node _bios_memsize, bios
+@findex _bios_memsize
 @subheading Syntax
 
 @example

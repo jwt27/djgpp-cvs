@@ -1,4 +1,5 @@
 @node strupr, string
+@findex strupr
 @subheading Syntax
 
 @example

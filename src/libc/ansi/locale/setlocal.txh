@@ -1,5 +1,6 @@
 @c ----------------------------------------------------------------------
 @node setlocale, locale
+@findex setlocale
 @subheading Syntax
 
 @example

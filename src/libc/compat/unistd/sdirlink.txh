@@ -1,4 +1,5 @@
 @node __solve_dir_symlinks, io
+@findex __solve_dir_symlinks
 @subheading Syntax
 
 @example

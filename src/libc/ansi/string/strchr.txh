@@ -1,4 +1,5 @@
 @node strchr, string
+@findex strchr
 @subheading Syntax
 
 @example

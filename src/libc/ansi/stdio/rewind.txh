@@ -1,4 +1,5 @@
 @node rewind, stdio
+@findex rewind
 @subheading Syntax
 
 @example

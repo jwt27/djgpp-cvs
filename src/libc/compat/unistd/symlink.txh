@@ -1,4 +1,5 @@
 @node symlink, io
+@findex symlink
 @subheading Syntax
 
 @example

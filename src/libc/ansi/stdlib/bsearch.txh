@@ -1,4 +1,5 @@
 @node bsearch, misc
+@findex bsearch
 @subheading Syntax
 
 @example
