@@ -146,11 +146,12 @@ xltz:
 	jmp	badresult
 
 yisint:
-	fistl	8(%esp)
+	fld	%st
+	fistpq	(%esp)
 	fxch	%st(1)
 	fyl2x
 	call	Lpow2
-	andl	$1,8(%esp)
+	andl	$1,(%esp)
 	jz	yeven
 	fchs
 yeven:
