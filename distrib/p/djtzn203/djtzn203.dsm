@@ -3,8 +3,8 @@
 # Constructed by Richard Dawe <richdawe@bigfoot.com> 2000-04-02
 #
 
-dsm-file-version: 1.1
-dsm-version: 0.5.1
+dsm-file-version: 1.2
+dsm-version: 0.6.0
 dsm-name: djtzn203
 
 dsm-author: Richard Dawe
@@ -18,6 +18,7 @@ sources-dsm: djtzs203
 manifest: djtzn203
 
 short-description: Extra timezone support files for DJGPP
+license: Various: public domain, BSD
 web-site: http://www.delorie.com/djgpp/
 newsgroup: comp.os.msdos.djgpp
 newsgroup-email-gateway: djgpp@delorie.com

@@ -3,12 +3,13 @@
 # Written by Richard Dawe <richdawe@bigfoot.com>
 #
 
-dsm-file-version: 1.0
+dsm-file-version: 1.1
 dsm-name: djtst203
 dsm-version: 0.5.1
 
 dsm-author: Richard Dawe
 dsm-author-email: richdawe@bigfoot.com
+dsm-author-web-site: http://www.bigfoot.com/~richdawe/
 
 name: djtest
 version: 2.03
@@ -16,6 +17,12 @@ type: sources
 manifest: djtst203
 
 short-description: DJGPP test suite sources
+license: GNU General Public License - see copying.dj.
+author: DJ Delorie
+author-email: dj@delorie.com
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
 
 simtelnet-path: v2/
 zip: djtst203.zip
