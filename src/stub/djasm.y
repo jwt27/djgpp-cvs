@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -139,6 +140,7 @@ int undefs = 0;
 
 void destroy_symbol(Symbol *sym, int undef_error);
 void destroy_locals(void);
+void add_enum_element(Symbol *s);
 void add_struct_element(Symbol *s);
 void emit_struct(Symbol *ele, int tp, Symbol *struc);
 void emit_struct_abs(Symbol *ele, int tp, Symbol *struc, int offset);
@@ -234,7 +236,8 @@ void write_MODEND(FILE *outfile, int main_obj, int start_ptr);
 %token ALIGN ARPL
 %token BOUND BSS BSF BSR
 %token CALL CALLF CALLFD COPYRIGHT
-%token DB DD DEC DECB DECD DECW DUP DW ENDS ENTER
+%token DB DD DEC DECB DECD DECW DUP DW
+%token ENDS ENUM ENTER
 %token IN INC INCB INCD INCW INT INCLUDE
 %token JMPW JMPB JMPF JMPFD
 %token LAR LEA LINKCOFF LSL
@@ -340,7 +343,8 @@ struct opcode opcodes[] = {
   {".dd", DD, NO_ATTR},
   {".dup", DUP, NO_ATTR},
   {".dw", DW, NO_ATTR},
-  {".ends",ENDS, NO_ATTR},
+  {".ends", ENDS, NO_ATTR},
+  {".enum", ENUM, NO_ATTR},
   {".id", RCS_ID, NO_ATTR},
   {".include", INCLUDE, NO_ATTR},
   {".linkcoff", LINKCOFF, NO_ATTR},
@@ -669,6 +673,15 @@ line
 					  $<sym>4->next=symtab;
 					  symtab=$<sym>4;
 	  				}
+	| ENUM ID '\n'			{ struct_pc=0;
+					  struct_sym=$2->name;
+					  lineno++;
+					  $<sym>$=symtab;
+					  if (symtab==$2)
+					      symtab=symtab->next;
+					}
+	  enum_lines
+	  ENDS
 	| ID STRUCT ID			{ emit_struct($1,$2,$3); }
 	| ID STRUCT ID '(' const ')'	{ emit_struct_abs($1,$2,$3,$5); }
 	| error
@@ -1073,6 +1086,17 @@ struct_line
 	  struct_db
 	;
 
+enum_lines
+	:
+	| enum_lines enum_line '\n' { lineno++; }
+	;
+
+enum_line
+	:
+	| ID				{ add_enum_element($1); }
+	| ID '=' const			{ struct_pc = $3; add_enum_element($1); }
+	;
+
 struct_db
 	: DB				{ if (struct_tp=='s') {
 					      struct_pc++;
@@ -1241,6 +1265,7 @@ offset
 	| '-' const			{ $$ = -$2; }
 	| 				{ $$ = 0; }
 	;
+
 %% /***********************************************************************/
 
 typedef struct FileStack {
@@ -1609,6 +1634,29 @@ Symbol *get_symbol(char *name, int create)
   s->first_used = lineno;
   s->type = SYM_unknown;
   return s;
+}
+
+void
+add_enum_element(Symbol * s)
+{
+  if (islocal(s->name) || istemp(s->name, 0))
+  {
+    djerror("Cannot have local or temporary labels within an enum");
+  }
+  else
+  {
+    char *id = alloca(strlen(s->name) + strlen(struct_sym) + 2);
+    strcpy(id, struct_sym);
+    strcat(id, ".");		/* should this be "_" to disambiguate enums
+				   from structs? */
+    strcat(id, s->name);
+    if (!s->defined && !s->patches)
+    {
+      /* only delete fresh symbols */
+      destroy_symbol(s, 0);
+    }
+    set_symbol(get_symbol(id, 1), struct_pc++);
+  }
 }
 
 void add_struct_element(Symbol *s)
