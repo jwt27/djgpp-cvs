@@ -17,7 +17,7 @@ typedef unsigned int QELT;
 #define EXPONE 0x8001
 
 /* Number of WORDSIZE-bit words in a q type number (12 or 24) */
-#define NQ 9 /* was 12 - ok */
+#define NQ 14 /* was 12 - ok */
 
 /* Number of words in significand area */
 #define OMG (NQ-2)
