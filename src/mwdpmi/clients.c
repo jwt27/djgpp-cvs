@@ -272,6 +272,10 @@ client_terminate (int code)
     }
   client_free ();
   client_count--;
+
+  if(client_count)
+    set_current_client(primary_client_handle, 1);
+
   if (client_count == 0 && one_shot_mode && unload_safe ())
     unload (termination_regs.h.al);
   else
