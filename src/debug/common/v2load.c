@@ -104,12 +104,12 @@ static char proxy_string[] = " !proxy";
 
 static int
 make_proxy_var(const char *program, const char *cmdline,
-               unsigned long tbuf, size_t tb_len,
-               size_t *proxy_argc, size_t *tb_space)
+               unsigned long *tbuf, size_t *tb_space, size_t *proxy_argc)
 {
   size_t argc;
   const char *beg, *end;
   char proxy[48];
+  int max_dos_mem;
 
   /* Include the program name, a null terminator, and offset pointer
      in the argument count.  */  
@@ -117,7 +117,7 @@ make_proxy_var(const char *program, const char *cmdline,
   *tb_space = strlen(program) + 1 + sizeof(short);
 
   /* Got arguments? */
-  while (*cmdline && (*tb_space <= tb_len))
+  while (*cmdline)
   {
     cmdline = get_arg(cmdline, &beg, &end);
     /* Add in the space needed for the command, a null terminator
@@ -125,17 +125,16 @@ make_proxy_var(const char *program, const char *cmdline,
     *tb_space += (end - beg) + 1 + sizeof(short);
     ++argc;
   }
-  /* If the last arg would cause an overrun, don't include it.  */
-  if (*tb_space > tb_len)
-  {
-    --argc;
-    *tb_space -= (end - beg) - 1 - sizeof(short);
-  }
 
+  *tbuf = __dpmi_allocate_dos_memory ((*tb_space + 15) >> 4, &max_dos_mem);
+  if (*tbuf == -1)
+    return 0;
+
+  *tbuf <<= 4;
   *proxy_argc = argc;
 
   sprintf(proxy, "%s=%04x %04lx %04lx", proxy_string, (unsigned int)argc,
-                                          tbuf / 16, tbuf & 0x0f);
+                                        *tbuf / 16, *tbuf & 0x0f);
   putenv(proxy);
 
   return 1;
@@ -188,8 +187,10 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   __dpmi_meminfo memblock;
   unsigned new_env_selector;
   char true_name[FILENAME_MAX];
-  size_t proxy_argc, proxy_space;
+  size_t proxy_argc;
   int proxy_mode;
+  unsigned long tbuf;
+  size_t tbuf_len;
 
   _truename(program, true_name);
 
@@ -270,8 +271,10 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   /* Create the proxy variable now so the child's environment
      has the correct size.  */
   if (proxy_mode)
-    make_proxy_var(program, cmdline + 1, __tb, __tb_size,
-                   &proxy_argc, &proxy_space);
+  {
+    if (!make_proxy_var(program, cmdline + 1, &tbuf, &tbuf_len, &proxy_argc))
+      return -1;
+  }
 
   si.env_size = 0;
   for (i=0; environ[i]; i++)
@@ -406,14 +409,14 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
     unsigned char cmd_len;
 
     /* Setup the transfer buffer with proxy arguments.  */
-    make_proxy_buffer(program, cmdline + 1, proxy_argc, __tb, __tb_size);
+    make_proxy_buffer(program, cmdline + 1, proxy_argc, tbuf, tbuf_len);
 
     /* Provide a fallback command line in case the debugee has disabled
        the proxy method.  */
     cmd_len = __strnlen(cmdline + 1, 126);
-    _farpokeb(my_ds, si.psp_selector + 128, cmd_len);
-    movedata(my_ds, (unsigned)(cmdline + 1), si.psp_selector, 128 + 1, cmd_len);
-    _farpokeb(my_ds, si.psp_selector + 128 + 1 + cmd_len, '\r');
+    _farpokeb(si.psp_selector, 128, cmd_len);
+    movedata(my_ds, (unsigned)(cmdline + 1), si.psp_selector, 128+1, cmd_len);
+    _farpokeb(si.psp_selector, 128 + 1 + cmd_len, '\r');
   }
   else
     /* copy command arguments into debug process */
