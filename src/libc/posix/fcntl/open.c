@@ -59,14 +59,28 @@ open(const char* filename, int oflag, ...)
   {
     fd = _open(filename, oflag);
 
-    /* Under multi-taskers, such as Windows, our file might be open
-       by some other program with DENY-NONE sharing bit, which fails
-       the `_open' call above.  Try again with DENY-NONE bit set,
-       unless some sharing bits were already set in the initial call.  */
-    if (fd == -1 && dont_have_share)
-      fd = _open(filename, oflag | SH_DENYNO);
-    if (fd == -1 && oflag & O_CREAT)
-      fd = _creat(filename, dmode);
+    if (fd == -1)
+    {
+      /* It doesn't make sense to try anything else if there are no
+	 more file handles available.  */
+      if (errno == EMFILE || errno == ENFILE)
+	return fd;
+
+      if (__file_exists(filename))
+      {
+	/* Under multi-taskers, such as Windows, our file might be
+	   open by some other program with DENY-NONE sharing bit,
+	   which fails the `_open' call above.  Try again with
+	   DENY-NONE bit set, unless some sharing bits were already
+	   set in the initial call.  */
+	if (dont_have_share)
+	  fd = _open(filename, oflag | SH_DENYNO);
+      }
+      /* Don't call _creat on existing files for which _open fails,
+         since the file could be truncated as a result.  */
+      else if ((oflag & O_CREAT))
+	fd = _creat(filename, dmode);
+    }
   }
 
   if (fd == -1)

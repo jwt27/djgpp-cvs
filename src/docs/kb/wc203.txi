@@ -233,3 +233,8 @@ message(s) and exits with an error code of -1.  We believe that some of
 the rarely-reported and hard-to-reproduce crashes of the Make utility
 were due to this bug.
 
+@findex open@r{, when there are no more file handles}
+Previously, when attempt was made to open a file, and all the available
+file handles were exhausted, @code{open} would sometimes truncate an
+existing file on Windows 9X.  This is now fixed.
+
