@@ -133,6 +133,9 @@ __direct_keysense(void)
   __dpmi_regs r;
   char is_ext_key;
 
+  if (_farpeekw(_dos_ds, 0x41a) == _farpeekw(_dos_ds, 0x41c))
+    return SENSE_NO_KEY;
+
   r.h.ah = ah_key_sense;
   __dpmi_int(0x16, &r);
   if (r.x.flags & _REG_STATUS_ZF)
