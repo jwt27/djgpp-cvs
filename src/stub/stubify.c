@@ -47,7 +47,7 @@ void coff2exe(char *fname)
   int ofile;
   char *ofname, *ofext;
   char buf[4096];
-  int rbytes, used_temp, i, n;
+  int rbytes, used_temp = 0, i, n;
   long coffset=0;
   unsigned char filehdr_buf[20];
   int max_file_size = 0;
