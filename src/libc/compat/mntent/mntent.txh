@@ -1,0 +1,191 @@
+@node setmntent, unix
+@subheading Syntax
+
+@example
+#include <mntent.h>
+
+FILE *setmntent(char *filename, char *type);
+@end example
+
+@subheading Description
+
+This function returns an open FILE* pointer which can be used by
+getmntent (@pxref{getmntent}).
+
+@subheading Return Value
+
+The FILE* pointer is returned.  For MS-DOS, this FILE* is not a real
+pointer and may only be used by @code{getmntent}.
+
+@c ----------------------------------------------------------------------
+@node getmntent, unix
+@subheading Syntax
+
+@example
+#include <mntent.h>
+
+struct mntent *getmntent(FILE *filep);
+@end example
+
+@subheading Description
+
+This function returns information about the various drives that are
+available to your program.  Beginning with drive @code{A:}, information
+is retrieved for successive drives with successive calls to
+@code{getmntent}.  Note that drives @code{A:} and @code{B:} will only be
+returned if there is an MS-DOS formatted disk in the drive; empty drives
+are skipped.  For systems with a single floppy drive, it is returned as
+if it were mounted on A:/ or B:/, depending on how it was last referenced
+(and if there is a disk in the drive).
+
+For each drive scanned, a pointer to a static structure of the following
+type is returned:
+
+@example
+struct mntent
+@{
+    char * mnt_fsname;  /* The name of this file system */
+    char * mnt_dir;     /* The root directory of this file system */
+    char * mnt_type;	/* Filesystem type */
+    char * mnt_opts;    /* Options, see below */
+    int    mnt_freq;    /* -1 */
+    int    mnt_passno;  /* -1 */
+    long   mnt_time;    /* -1 */
+@};
+@end example
+
+DJGPP implementation returns the following in the first 4 fields of
+@code{struct mntent}:
+
+@table @code
+
+@item mnt_fsname
+
+For networked and CD-ROM drives, the name of root directory in the
+form "\\HOST\PATH" (this is called a UNC name).
+
+For drives compressed with DoubleSpace, the string "X:\DBLSPACE.NNN",
+where ``X'' is the drive letter of the host drive and ``NNN'' is the
+sequence number of the Compressed Volume File.
+
+For drives compressed with Stacker, the string "X:\STACVOL.NNN", where
+``X'' and ``NNN'' are as for DoubleSpace drives.
+
+For SUBSTed drives, the actual directory name that that was SUBSTed to
+emulate a drive.
+
+JOINed drives get their name as if they were NOT JOINed (i.e., either
+the label name or the default "Drive X:").
+
+For drives with a volume label, the name of the label; otherwise the
+string "Drive X:", where ``X'' is the drive letter.
+
+@item mnt_dir
+
+For most drives, the name of its root directory "X:/" (where ``X'' is
+the drive letter), except that JOINed drives get this as the name of
+the directory to which they were JOINed.
+
+For systems with a single floppy drive (which can be referenced as either
+"a:/" or "b:/"), the mount directory will be returned as one of these,
+depending on which drive letter was last used to reference that drive.
+
+@item mnt_type
+
+@example
+ "fd"     for floppy disks
+ "hd"     for hard disks
+ "dblsp"  for disks compressed with DoubleSpace
+ "stac"   for disks compressed with Stacker
+ "cdrom"  for CD-ROM drives
+ "ram"    for RAM disks
+ "subst"  for SUBSTed directories
+ "join"   for JOINed disks
+ "net"    for networked drives
+@end example
+
+@item mnt_opts
+
+The string "ro,dev=XX" for CD-ROM drives, "rw,dev=XX" for all the others,
+where ``XX'' is the hexadecimal drive number of the REAL drive on which
+this filesystem resides.  That is, if you call @code{stat} on @var{mnt_fsname},
+you will get the numeric equivalent of XX in @code{st_dev} field of
+@code{struct stat}.  E.g., for drive C: you will get "rw,dev=02".  Note
+that SUBSTed and JOINed drives get the drive numbers as if SUBST and JOIN
+were NOT in effect.
+
+@end table
+
+@subheading Return Value
+
+This function returns a pointer to an @code{struct} @code{mntent}, or
+NULL if there are no more drives to report on. 
+
+@subheading Example
+
+@example
+struct mntent *m;
+FILE *f;
+f = setmntent("", "");
+while ((m = getmntent(f)))
+  printf("Drive %s, name %s\n", m->mnt_dir, m->mnt_fsname);
+endmntent(f);
+@end example
+
+@c ----------------------------------------------------------------------
+@node addmntent, unix
+@subheading Syntax
+
+@example
+#include <mntent.h>
+
+int addmntent(FILE *filep, struct mntent *mnt);
+@end example
+
+@subheading Description
+
+This function is a no-op for MS-DOS, but is provided to assist in Unix
+ports.  @xref{getmntent}.
+
+@subheading Return Value
+
+This function always returns nonzero to signify an error.
+
+@c ----------------------------------------------------------------------
+@node hasmntopt, unix
+@subheading Syntax
+
+@example
+#include <mntent.h>
+
+char *hasmntopt(struct mntent *mnt, char *opt);
+@end example
+
+@subheading Description
+
+This function scans the @code{mnt_opts} field of the @code{mntent}
+structure @var{mnt} for a substring that matches @var{opt}. 
+@xref{getmntent}.
+
+@subheading Return Value
+
+This function returns the address of the substring if a match is found,
+or @code{NULL} otherwise.
+
+@c ----------------------------------------------------------------------
+@node endmntent, unix
+@subheading Syntax
+
+@example
+#include <mntent.h>
+
+int endmntent(FILE *filep);
+@end example
+
+@subheading Description
+
+This function should be called after the last call to getmntent (@pxref{getmntent}).
+
+@subheading Return Value
+
+This function always returns one.

@@ -1,0 +1,23 @@
+@node __dpmi_lock_linear_region, dpmi
+@subheading Syntax
+
+@example
+#include <dpmi.h>
+
+int __dpmi_lock_linear_region(__dpmi_meminfo *_info);
+@end example
+
+@subheading Description
+
+Please refer to @ref{DPMI Specification} for details on DPMI
+function call operation.  Also see @ref{DPMI Overview} for general
+information.
+
+DPMI function AX = 0x0600
+
+This function locks virtual memory, to prevent page faults during
+hardware interrupts.  Pass address and size (in bytes).
+
+@subheading Return Value
+
+-1 on error, else zero.
