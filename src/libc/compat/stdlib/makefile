@@ -1,3 +1,4 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details
@@ -22,6 +23,7 @@ SRC += fcvtbuf.c
 SRC += fcvt.c
 SRC += gcvt.c
 SRC += rand48.c
-
+SRC += memalign.c
+SRC += valloc.c
 
 include $(TOP)/../makefile.inc
