@@ -14,19 +14,19 @@ Ability to report the exact CPU type in @code{uname}.
 @findex _open@r{, and FAT32}
 The functions @code{_creat}, @code{_creatnew} and @code{_open} now set
 extended size flag in DOS calls to be able to create files with size up
-to 2^32-1, supported on FAT32 volumes.
+to @math{2^32-1}, supported on FAT32 volumes.
 
 @findex llseek@r{, and FAT32}
 The function @code{llseek} added with type @code{offset_t} to support
-file seeks up to 2^32-2.
+file seeks up to @math{2^32-2}.
 
 @findex statfs@r{, and FAT32}
 The function @code{statfs} have been made to report correct values >
-2^31 on FAT32 partitions.
+@math{2^31} on FAT32 partitions.
 
 @findex _invent_inode@r{, and FAT32}
 The function @code{_invent_inode} has been changed to start numbering
-invented inodes from @code{USHRT_MAX+1} to @code{2^28+1}.
+invented inodes from @code{USHRT_MAX+1} to @math{2^28+1}.
 
 @findex _is_cdrom_drive
 @findex _is_ram_drive
