@@ -24,6 +24,12 @@ static struct lconv __lconv_ = {
   CHAR_MAX,
   CHAR_MAX,
   CHAR_MAX,
+  CHAR_MAX,
+  CHAR_MAX,
+  CHAR_MAX,
+  CHAR_MAX,
+  CHAR_MAX,
+  CHAR_MAX,
   CHAR_MAX
 };
 

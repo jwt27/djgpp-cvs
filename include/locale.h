@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -38,6 +39,12 @@ struct lconv {
   char p_cs_precedes;
   char p_sep_by_space;
   char p_sign_posn;
+  char int_n_cs_precedes;
+  char int_n_sep_by_space;
+  char int_n_sign_posn;
+  char int_p_cs_precedes;
+  char int_p_sep_by_space;
+  char int_p_sign_posn;
 };
 
 struct lconv *	localeconv(void);

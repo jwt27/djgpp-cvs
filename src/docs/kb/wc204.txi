@@ -774,3 +774,11 @@ as @code{_fixpath}, but is @sc{posix} compliant and resolves symlinks.
 
 @findex isblank
 The function @code{isblank} was added.
+
+@cindex C99 compliance, @code{struct lconv}
+@cindex C99 compliance, @file{locale.h}
+@tindex struct lconv
+The @code{int_n_cs_precedes}, @code{int_n_sep_by_space},
+@code{int_n_sign_posn}, @code{int_p_cs_precedes},
+@code{int_p_sep_by_space} and @code{int_p_sign_posn} members were added
+to @code{struct lconv}, to comply with the C99 standard.
