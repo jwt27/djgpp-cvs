@@ -10,6 +10,7 @@
 int
 fsync(int _fd)
 {
+  __dpmi_regs r;
   int oerrno = errno;
 
   /* Directory? If so, fail. */
@@ -19,7 +20,6 @@ fsync(int _fd)
     return -1;
   }
 
-  __dpmi_regs r;
   r.h.ah = 0x68;
   r.x.bx = _fd;
   __dpmi_int(0x21, &r);
