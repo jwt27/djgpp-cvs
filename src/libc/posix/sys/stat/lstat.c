@@ -210,7 +210,7 @@ init_dirent_table (void)
      We need exact knowledge about DOS internals, so we need the
      TRUE DOS version (not the simulated one by SETVER), if that's
      available.  */
-  true_dos_version = _get_dos_version(1);
+  true_dos_version = _os_trueversion;
   dos_major = true_dos_version >> 8;
   dos_minor = true_dos_version & 0xff;
 

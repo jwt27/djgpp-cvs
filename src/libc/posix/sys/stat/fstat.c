@@ -103,6 +103,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <dos.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -219,7 +220,7 @@ fstat_init(void)
      We need exact knowledge about DOS internals, so we need the
      TRUE DOS version (not the simulated one by SETVER), if that's
      available.  */
-  true_dos_version = _get_dos_version(1);
+  true_dos_version = _os_trueversion;
   dos_major = true_dos_version >> 8;
   dos_minor = true_dos_version & 0xff;
   sft_size = sft_size_list[dos_major > 4 ? 3 : dos_major - 1];
@@ -424,7 +425,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
       else
 	is_remote = 0;
       
-      if(!have_trusted_values && dev_info == 0 && _get_dos_version(1) == 0x532)
+      if(!have_trusted_values && dev_info == 0 && _os_trueversion == 0x532)
         is_dev = 1;   /* Device under NT or Win2K with pre-open/lfn handle. */
     }
 

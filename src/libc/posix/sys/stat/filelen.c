@@ -33,7 +33,7 @@ filelength(int fhandle)
      combos work properly.  This assumes this routine is called from fstat() 
      before we get the magic number or other things that do both seeks and 
      reads. */
-  if (_USE_LFN && (fhandle != 0 || _osmajor != 5 || _get_dos_version(1) != 0x532))
+  if (_USE_LFN && (fhandle != 0 || _os_trueversion != 0x532))
   {
     regs.x.ax = 0x71A6;
     regs.x.bx = fhandle;
