@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 #include <errno.h>
 #include <stddef.h>
 #include <sys/resource.h>
