@@ -21,6 +21,7 @@ SRC += execv.c
 SRC += execve.c
 SRC += execvp.c
 SRC += execvpe.c
+SRC += fchdir.c
 SRC += fork.c
 SRC += fpathcon.c
 SRC += getcwd.c

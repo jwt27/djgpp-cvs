@@ -1,0 +1,31 @@
+@node fchdir, file system
+@findex fchdir
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int fchdir(int fd);
+@end example
+
+@subheading Description
+
+This function changes the current directory to the directory
+described by the file descriptor @var{fd}.
+
+@subheading Return Value
+
+Zero on success, else nonzero and @var{errno} set if error.
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+int fd;
+
+fd = open("dir", O_RDONLY);
+fchdir(fd);
+@end example
