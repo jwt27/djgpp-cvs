@@ -34,7 +34,7 @@ out-of-bounds memory.
 
 The original OpenBSD paper describing @code{strlcat}
 and @code{strlcpy} (@pxref{strlcpy}) is available on the web:
-@url{http://www.openbsd.org/papers/strlcpy-paper.ps}.
+@uref{http://www.openbsd.org/papers/strlcpy-paper.ps}.
 
 @subheading Return Value
 
