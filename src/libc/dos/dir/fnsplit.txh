@@ -1,0 +1,96 @@
+@node fnmerge, file system
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+void fnmerge (char *path, const char *drive, const char *dir,
+		const char *name, const char *ext);
+@end example
+
+@subheading Description
+
+This function constructs a file @var{path} from its components
+@var{drive}, @var{dir}, @var{name}, and @var{ext}.  If any of these is a
+@code{NULL} pointer, it won't be used.  Usually, the @var{drive} string
+should include the trailing colon @code{`:'}, the @var{dir} string should
+include the trailing slash @code{`/'} or backslash @code{`\'}, and the
+@var{ext} string should include the leading dot @code{`.'}.  However, if
+any of these isn't present, @code{fnmerge} will add them.
+
+@xref{fnsplit}.
+
+@subheading Return Value
+
+None.
+
+@subheading Example
+
+@example
+char buf[MAXPATH];
+fnmerge(buf, "d:", "/foo/", "data", ".txt");
+@end example
+
+@c ----------------------------------------------------------------------
+@node fnsplit, file system
+@subheading Syntax
+
+@example
+#include <dir.h>
+
+int fnsplit (const char *path, char *drive, char *dir, 
+		char *name, char *ext);
+@end example
+
+@subheading Description
+
+This function decomposes a @var{path} into its components.  It is smart
+enough to know that @code{.} and @code{..} are directories.
+The @var{drive}, @var{dir}, @var{name} and @var{ext} arguments should
+all be passed, but some or even all of them might be @code{NULL} pointers.
+Those of them which are non-@code{NULL} should point to buffers which have
+enough room for the strings they would hold.  The constants @code{MAXDRIVE},
+@code{MAXDIR}, @code{MAXFILE} and @code{MAXEXT}, defined on dir.h, define
+the maximum length of these buffers.
+
+@xref{fnmerge}.
+
+@subheading Return Value
+
+A flag that indicates which components were found:
+
+@table @code
+
+@item DRIVE
+
+The drive letter was found.
+
+@item DIRECTORY
+
+A directory or subdirectories was found.
+
+@item FILENAME
+
+A filename was found.
+
+@item EXTENSION
+
+An extension was found.
+
+@item WILDCARDS
+
+The path included @code{*} or @code{?}.
+
+@end table
+
+@subheading Example
+
+@example
+char d[MAXDRIVE], p[MAXDIR], f[MAXFILE], e[MAXEXT];
+int which = fnsplit("d:/djgpp/bin/gcc.exe", d, p, f, e);
+d = "d:"
+p = "/djgpp/bin/"
+f = "gcc"
+e = ".exe"
+@end example
+
