@@ -5,6 +5,7 @@
 #include <dos.h>
 
 extern unsigned short   _osmajor, _osminor;
+extern unsigned short   _os_trueversion;
 extern const    char  * _os_flavor;
 
 unsigned short _get_dos_version(int true_version);
@@ -18,13 +19,18 @@ number, which is unaffected by possible tinkering with SETVER TSR program.
 (This is only available in DOS 5.0 or later.)
 
 The external variables @code{_osmajor} and @code{_osminor} will always be
-set to the major and minor parts of the @cite{advertised} version number,
-possibly changed by SETVER, even if @var{true_version} is non-zero.  You
-typically need the true version when you need an intimate knowledge of the
-host OS internals, like when using undocumented features.  Note that some
-DOS clones (notably, DR-DOS) do not support DOS function required to
-report the true DOS version; for these, the version reported might be
-affected by SETVER even if @var{true_version} is non-zero.
+set to the major and minor parts of the @cite{advertised} version number.
+The external variable @code{_os_trueversion} will always be set to the
+true version number.  @code{_osmajor}, @code{_osminor}
+and @code{_os_trueversion} may possibly be changed by @code{SETVER},
+even if @var{true_version} is non-zero.
+
+You typically need the true version when you need an intimate knowledge
+of the host OS internals, like when using undocumented features.  Note
+that some DOS clones (notably, DR-DOS) do not support DOS function
+required to report the true DOS version; for these, the version
+reported might be affected by @code{SETVER} even if @var{true_version}
+is non-zero.
 
 The external variable @code{_os_flavor} will point to a string which
 describes the OEM name of the host OS variety.
