@@ -273,10 +273,16 @@ automatically support long file names when it runs on Windows 9X.
 @cindex Symlinks, emulation
 DOS doesn't support hard and symbolic links.  However, @sc{djgpp}
 emulates them to some extent.  The @code{link} library function
-simulates hard links by copying.  The @code{symlink} library function
-simulates a symbolic link for executable programs only, by creating a
-2KB stub which is set up to run the COFF image from the target of the
-link.  Thus, @samp{ln -s grep fgrep} does what you'd expect.
+simulates hard links by copying.  Symbolic links are fully emulated by 
+most file handling functions in the library.  Also, symlink support API 
+that you would expect find only on UNIX (such as @code{readlink}) is 
+present.  Function @code{symlink} creates files with special size and 
+format which are recognized by other library functions.  Because DOS 
+itself and most DOS applications weren't designed with symlinks in mind, 
+there is a subset of file handling API which intentionally does not support 
+symlinks.  This includes functions with @code{_dos_} prefix, as well 
+as other functions with DOS origin, such as @code{findfirst}.
+
 
 @item Emacs compatibility.
 
