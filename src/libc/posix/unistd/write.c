@@ -20,10 +20,6 @@
 int (*__libc_write_termios_hook)(int handle, const void *buffer, size_t count,
 				 ssize_t *rv) = NULL;
 
-/* From _write.c. */
-int _write_fill_seek_gap(int fd);
-int _write_int(int fd, const char *buffer, size_t count);
-
 ssize_t
 write(int handle, const void* buffer, size_t count)
 {
