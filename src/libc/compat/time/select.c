@@ -47,8 +47,7 @@ fp_input_ready (FILE *fp)
   if (fp->_cnt)
     return 1;
 
-  /* The `feof' part is only correct in a single-tasked environment.  */
-  if (ferror (fp) || feof (fp))
+  if (ferror (fp))
     return 0;
 
   /* There is nothing in the buffer (perhaps because we read unbuffered).
@@ -83,6 +82,19 @@ fd_input_ready(int fd)
 {
 
   __dpmi_regs regs;
+
+  /* If it's a disk file, always return 1, since DOS returns ``not ready''
+     for files at EOF, but we won't block in that case.  */
+  regs.x.ax = 0x4400;
+  regs.x.bx = fd;
+  __dpmi_int (0x21, &regs);
+  if (regs.x.flags & 1)
+  {
+    errno = __doserr_to_errno (regs.x.ax);
+    return -1;
+  }
+  if ((regs.x.dx & 0x80) == 0)	/* if not a character device */
+    return 1;
 
   regs.x.ax = 0x4406;
   regs.x.bx = fd;
