@@ -55,6 +55,14 @@ builtins from GCC 2.96.
 @code{fsdb} checks for executables and loads them even if
 the extension @file{.exe} isn't given in the command line.
 
-div and ldiv return properly signed remainders for negative arguments.
-@findex div
-@findex ldiv
+@findex div@r{, and negative arguments}
+@findex ldiv@r{, and negative arguments}
+@code{div} and @code{ldiv} return properly signed remainders for
+negative arguments.
+
+@findex remove@r{, and write-protected floppies}
+The function @code{remove} works around a DOS bug, whereby DOS returns a
+``File not found'' error for write-protected floppy disks.
+
+@findex rand@r{, increased period}
+The series produced by @code{rand} have a longer period.
