@@ -1,18 +1,26 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <unistd.h>
 #ifdef __DJGPP__
 #include <io.h>
+#include <libc/dosio.h>
+#include <go32.h>
+#include <dpmi.h>
+#include <errno.h>
+
+#define tbsize _go32_info_block.size_of_transfer_buffer
 #endif
 
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
 
-unsigned char stub_bytes[] = {
+const unsigned char stub_bytes[] = {
 #include "stub.h"
 };
 
@@ -126,7 +134,7 @@ void coff2exe(char *fname)
 
   lseek(ifile, coffset, 0);
 
-  ofile = open(ofilename, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0666);
+  ofile = open(ofilename, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0777);
   if (ofile < 0)
   {
     perror(ofname);
@@ -143,28 +151,65 @@ void coff2exe(char *fname)
 
   write(ofile, stub_bytes, sizeof(stub_bytes));
   
+#ifdef __DJGPP__
+  /* if 0 bytes are read (or an error occurs, the loop will be broken from */
+  while (1) {
+    __dpmi_regs r;
+    int wb;
+    /* bypass the normal read routine to avoid the unnecessary copying of the
+     * file contents into extended memory (the data is not actually being
+     * used, only copied from one file to another, and so easy access from gcc
+     * compiled code is not needed).
+     */
+    r.x.ax = 0x3f00; /* dos read from file handle function */
+    r.x.bx = ifile;
+    r.x.cx = tbsize; /* number of bytes to read */
+    r.x.dx = __tb & 15; /* transfer buffer offset */
+    r.x.ds = __tb / 16; /* transfer buffer segment */
+    __dpmi_int(0x21, &r);
+    if (r.x.flags & 1)
+      errno = __doserr_to_errno(r.x.ax);
+    if ((rbytes=(r.x.flags & 1) ? -1 : r.x.ax) <= 0)
+      break;
+#else
   while ((rbytes=read(ifile, buf, 4096)) > 0)
   {
     int wb;
+#endif
 
     if (drop_last_four_bytes && rbytes < 4096)
       rbytes -= 4;
 
+#ifdef __DJGPP__
+    /* bypass the normal write routine to avoid the unnecessary copying of the
+     * file contents from extended memory.
+     */
+    r.x.ax = 0x4000; /* dos write to file handle function */
+    r.x.bx = ofile;
+    r.x.cx = rbytes; /* number of bytes to write */
+    r.x.dx = __tb & 15; /* transfer buffer offset */
+    r.x.ds = __tb / 16; /* transfer buffer segment */
+    __dpmi_int(0x21, &r);
+    wb = (r.x.flags & 1) ? -1 : r.x.ax;
+    if (r.x.flags & 1)
+      errno = __doserr_to_errno(r.x.ax);
+#else
     wb = write(ofile, buf, rbytes);
+#endif
     if (wb < 0)
     {
       perror(ofname);
-      unlink(ofilename);
       close(ifile);
       close(ofile);
+      unlink(ofilename);
       exit(1);
     }
     if (wb < rbytes)
     {
       fprintf(stderr, "%s: disk full\n", ofname);
-      unlink(ofilename);
       close(ifile);
       close(ofile);
+      unlink(ofilename);
       exit(1);
     }
   }
@@ -175,7 +220,11 @@ void coff2exe(char *fname)
   if (used_temp)
   {
     unlink(ofilename);
+#ifdef __DJGPP__
+    if (_rename(ifilename, ofilename))
+#else
     if (rename(ifilename, ofilename))
+#endif
     {
       printf("rename of %s to %s failed.\n", ifilename, ofilename);
       perror("The error was");
@@ -227,7 +276,7 @@ int main(int argc, char **argv)
     {
       printf("Cannot open output file to generate\n");
       perror(ofilename);
-      return;
+      return 1;
     }
     v_printf("stubify: generate %s\n", argv[2]);
 
