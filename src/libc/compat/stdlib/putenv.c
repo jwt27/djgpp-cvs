@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -53,7 +54,6 @@ putenv(const char *val)
   if (putenv_bss_count != __bss_count
       || environ       != prev_environ)
   {
-    putenv_bss_count = __bss_count;
     for (ecount=0; environ[ecount]; ecount++);
     emax = ecount;
     /* Bump the count to a value no function has yet seen,
@@ -71,8 +71,9 @@ putenv(const char *val)
 	&& (epos || environ[eindex][nlen] == '='))
     {
       char *oval = environ[eindex];
+      int olen = strlen(oval);
 
-      if (val[nlen] == 0) /* delete the entry */
+      if (val[nlen] == 0 && !epos) /* delete the entry */
       {
 	free(oval);
 	environ[eindex] = environ[ecount-1];
@@ -85,20 +86,31 @@ putenv(const char *val)
       /* change existing entry */
       if (strcmp(environ[eindex]+nlen, val+nlen) == 0)
 	return 0; /* they're the same */
-      environ[eindex] = (char *)malloc(vlen+1);
-      if (environ[eindex] == 0)
+
+      /* If new is the same length as old, reuse the same
+	 storage.  If new is shorter, call realloc to shrink the
+	 allocated block: this causes less memory fragmentation.  */
+      if (vlen != olen)
       {
-	environ[eindex] = oval;
-	return -1;
+	if (vlen > olen)
+	  environ[eindex] = (char *)malloc(vlen+1);
+	else	/* vlen < olen */
+	  environ[eindex] = (char *)realloc(oval, vlen+1);
+	if (environ[eindex] == 0)
+	{
+	  environ[eindex] = oval;
+	  return -1;
+	}
+	if (vlen > olen)
+	  free(oval);
       }
-      free(oval);
       strcpy(environ[eindex], val);
       __environ_changed++;
       return 0;
     }
 
   /* delete nonexisting entry? */
-  if (val[nlen] == 0)
+  if (val[nlen] == 0 && !epos)
     return 0;
 
   /* create new entry */
@@ -106,7 +118,7 @@ putenv(const char *val)
   {
     char **enew;
     emax += 10;
-    enew = (char **)malloc(emax * sizeof(char *));
+    enew = (char **)malloc((emax+1) * sizeof(char *));
     if (enew == 0)
       return -1;
     memcpy(enew, environ, ecount * sizeof(char *));
