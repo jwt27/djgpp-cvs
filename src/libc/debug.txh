@@ -825,3 +825,394 @@ handles.
           strerror (errno));
 @end example
 
+
+@c ----------------------------------------------------------------------
+
+@node syms_init, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+
+void syms_init (char *file);
+@end example
+
+@subheading Description
+
+This function reads debugging symbols from the named @var{file}, which
+should be an executable program (either a @file{.exe} file or a raw COFF
+image created by @file{ld.exe}, the linker).  It then processes the
+symbols: classifies them by type, sorts them by name and value, and
+stores them in internal data structures used by other symbol-related
+functions, such as @code{syms_val2name}, @code{syms_val2line}, etc.
+
+You @strong{must} call @code{syms_init} before calling the other
+@code{syms_*} functions.
+
+Currently, @code{syms_init} only supports COFF and AOUT debugging
+format, so programs compiled with @samp{-gstabs} cannot be processed by
+it.
+
+@subheading Return Value
+
+None.
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  syms_init("c:/foo/bar/baz.exe");
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node syms_name2val, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+extern int undefined_symbol;
+extern int syms_printwhy;
+
+unsigned long syms_name2val (const char *string);
+@end example
+
+@subheading Description
+
+This function returns the address of a symbol specified by @var{string}.
+@var{string} may be one of the following:
+
+@itemize @bullet
+@item
+A number, with or without a sign, in which case the number specifies the
+address or an offset from an address.
+
+@item
+A file name and a line number: @code{@var{file}#[@var{line}]}, where
+@var{file} is the name of one of the source files linked into the
+program whose symbols were read by @code{syms_init}, and @var{line} is a
+line number in that @var{file}.  If @var{line} is omitted, it defaults
+to zero.
+
+Note that the COFF format supported by DJGPP only stores the basename of
+the source files, so do not specify @var{file} with leading directories.
+
+@item
+A symbol name as a string.  The name can be specified either with or
+without the leading underscore @samp{_}.
+
+@item
+A register name @code{%@var{reg}}.  @var{reg} specifies the value of one
+of the debuggee's registers saved in the external variable @code{a_tss}
+(@pxref{run_child}).
+
+@item
+Any sensible combination of the above elements, see the example below.
+@end itemize
+
+@code{syms_name2val} looks up the specified file, line, and symbol in
+the symbol table prepared by @code{syms_init}, finds their addresses,
+adds the offset, if any, and returns the result.
+
+If the specified file, line, or symbol cannot be found,
+@code{syms_name2val} returns zero and sets the global variable
+@code{undefined_symbol} to a non-zero value.  If the global variable
+@code{syms_printwhy} is non-zero, an error message is printed
+telling which part of the argument @var{string} was invalid.
+
+You must call @code{syms_init} (@pxref{syms_init}) before calling any of
+the other @code{syms_*} functions for the first time.
+
+@subheading Return Value
+
+The address specified by @var{string}, or zero, if none found.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ unsigned long addr1, addr2, addr3;
+
+ syms_init ("foo.exe");
+ addr1 = syms_name2val ("foo.c#256+12");
+ addr2 = syms_name2val ("_main");
+ addr3 = syms_name2val ("struct_a_var+%eax+4");
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node syms_val2name, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+
+char *syms_val2name (unsigned long addr, unsigned long *offset);
+@end example
+
+@subheading Description
+
+This function takes an address @var{addr} and returns the name of the
+closest symbol whose address is less that @var{addr}.  If @var{offset}
+is not a @code{NULL} pointer, the offset of @var{addr} from the symbol's
+address is stored in the variable pointed to by @var{offset}.
+
+You must call @code{syms_init} (@pxref{syms_init}) before calling any of
+the other @code{syms_*} functions for the first time.
+
+This function is meant to be used to convert numerical addresses into
+function names and offsets into their code, like what @code{symify} does
+with the call frame traceback.
+
+The function ignores several dummy symbols, like @samp{_end} and
+@samp{_etext}.
+
+@subheading Return Value
+
+The name of the found symbol, or the printed hexadecimal representation
+of @var{addr}, if no symbol was found near @var{addr}.  The return value
+is a pointer to a static buffer, so don't overwrite it and don't pass it
+to @code{free}!
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  unsigned long offs;
+  char *symbol_name;
+  syms_init ("foo.exe");
+  symbol_name = syms_val2name (0x1c12, &offs);
+  printf ("The address %x is at %s%+ld\n", 0x1c12, symbol_name, offs);
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node syms_val2line, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+
+char *syms_val2line (unsigned long addr, int *line, int exact);
+@end example
+
+@subheading Description
+
+This function takes an address @var{addr} and returns the source file
+name which correspond to that address.  The line number in that source
+file is stored in the variable pointed by @var{line}.  If @var{exact} is
+non-zero, the function succeeds only if @var{addr} is the first address
+which corresponds to some source line.
+
+You must call @code{syms_init} (@pxref{syms_init}) before calling any of
+the other @code{syms_*} functions for the first time.
+
+@subheading Return Value
+
+The name of the source file which corresponds to @var{addr}, or
+@code{NULL} if none was found.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  int lineno;
+  char *file_name;
+  syms_init ("foo.exe");
+  file_name = syms_val2line (0x1c12, &lineno);
+  printf ("The address %x is on %s, line %d\n", 0x1c12, file_name, line);
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node syms_listwild, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+
+void syms_listwild (char *pattern,
+                    void (*handler) (unsigned long addr, char type_c,
+                                     char *name, char *file, int lnum));
+@end example
+
+@subheading Description
+
+This function walks through all the symbols that were read by a previous
+call to @code{syms_init} (@pxref{syms_init}).  For each symbol whose
+name matches @var{pattern}, it invokes the user-defined function
+@var{handler}, passing it information about that symbol:
+
+@table @code
+@item address
+the address of the symbol.
+
+@item type_c
+a letter that specifies the type of the symbol, as follows:
+
+@table @samp
+@item T
+@itemx t
+``text'', or code: usually a function.
+
+@item D
+@itemx d
+data: an initialized variable.
+
+@item B
+@itemx b
+``bss'': an uninitialized variable.
+
+@item F
+@item f
+a function (in @code{a.out} file only).
+
+@item V
+@itemx v
+a set element or pointer (in @code{a.out} file only).
+
+@item I
+@itemx i
+an indirect symbol (in @code{a.out} file only).
+
+@item U
+@itemx u
+an undefined (a.k.a.@: unresolved) symbol.
+
+@item A
+@itemx a
+an absolute symbol.
+@end table
+
+@item name
+the name of the symbol.
+
+@item file
+the source file name where the symbol is defined.
+
+@item lnum
+the line number on which the symbol is defined in the source file.
+@end table
+
+Since variables and functions defined in C get prepended with an
+underscore @samp{_}, begin @var{pattern} with @samp{_} if you want it to
+match C symbols.
+
+You must call @code{syms_init} (@pxref{syms_init}) before calling any of
+the other @code{syms_*} functions for the first time.
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+  void print_sym (unsigned long addr, char type_c,
+                  char *name, char *file, int lnum)
+  @{
+    printf (file ? "%s: %lx %c %s:%d\n" : "%s: %lx %c\n",
+            name, addr, type_c,
+            file ? file : "", lnum );
+  @}
+
+  int main (void)
+  @{
+    syms_init ("foo.exe");
+    /* List all the symbols which begin with "___djgpp".  */
+    syms_listwild ("___djgpp*", print_sym);
+    return 0;
+  @}
+@end example
+
+@c ----------------------------------------------------------------------
+
+@node syms_module, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+
+char *syms_module (int nfile);
+@end example
+
+@subheading Description
+
+This function returns the name of the source file (a.k.a.@: module)
+whose ordinal number in the symbol table is @var{nfile}.
+
+You must call @code{syms_init} (@pxref{syms_init}) before calling any of
+the other @code{syms_*} functions for the first time.
+
+@subheading Return Value
+
+The name of the source file, or a @code{NULL} pointer if @var{nfile} is
+negative or larger than the total number of modules linked into the
+program whose symbols were read by @code{syms_init}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@c ----------------------------------------------------------------------
+
+@node syms_line2val, debugging
+
+@subheading Syntax
+
+@example
+#include <debug/syms.h>
+
+unsigned long syms_line2val (char *filename, int lnum);
+@end example
+
+@subheading Description
+
+This function returns the address of the first instruction produced from
+the line @var{lnum} of the source file @var{filename} that was linked
+into a program whose symbols were read by a previous call to
+@code{syms_init}.
+
+COFF debugging format does not support pathnames, so @var{filename}
+should not include leading directories, just the basename.
+
+You must call @code{syms_init} (@pxref{syms_init}) before calling any of
+the other @code{syms_*} functions for the first time.
+
+@subheading Return Value
+
+The address of the first instruction produced from the line, or zero if
+@var{filename} is not found in the symbol table or if no executable code
+was generated for line @var{lnum} in @var{filename}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ syms_init ("foo.exe");
+ printf ("Line 3 of foo.c is at address %lx\n",
+          syms_line2val("foo.c", 3));
+@end example
