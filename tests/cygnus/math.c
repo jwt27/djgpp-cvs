@@ -23,6 +23,7 @@
 #include <math.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
 int inacc;
 int redo;

@@ -1,5 +1,6 @@
 #include "test.h"
 #include <ctype.h>
+#include <stdlib.h>
 
 int setascii;
 int setlower;
