@@ -9,9 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libc/malloc.h>
-
-#define NUMSMALL	0
-#define SMALL		(NUMSMALL*ALIGN)
+#include "xmalloc.h"
 
 static BLOCK *slop = 0;
 static BLOCK *freelist[30];
@@ -19,10 +17,9 @@ static BLOCK *freelist[30];
 static BLOCK *smallblocks[NUMSMALL];
 #endif
 
-#define MIN_SAVE_EXTRA	64
-#define BIG_BLOCK	4096
-
-#define DEBUG 0
+static unsigned long malloc_bytes_in_use;
+static unsigned long malloc_chunks_in_use;
+static unsigned long malloc_sbrked;
 
 #if DEBUG
 static void
@@ -49,27 +46,6 @@ consistency()
 #define CHECK(p)
 #endif
 
-static inline int
-size2bucket(size_t size)
-{
-  int rv=0;
-  size>>=2;
-  while (size)
-  {
-    rv++;
-    size>>=1;
-  }
-  return rv;
-}
-
-static inline int
-b2bucket(BLOCK *b)
-{
-  if (b->bucket == -1)
-    b->bucket = size2bucket(b->size);
-  return b->bucket;
-}
-
 static inline BLOCK *
 split_block(BLOCK *b, size_t size)
 {
@@ -88,7 +64,64 @@ split_block(BLOCK *b, size_t size)
   return rv;
 }
 
-#define RET(rv) CHECK(rv); ENDSZ(rv) |= 1; rv->size |= 1; return DATA(rv)
+/* These hooks can be used to gain access to the innards of memory
+   allocation routines without bloating each program's size (since
+   malloc is called from the startup code) or adverse effects on
+   run-time performance of programs which don't call these hooks or
+   malloc debug routines (which call them internally).  */
+BLOCK **
+__malloc_get_freelist(void)
+{
+  return freelist;
+}
+
+BLOCK *
+__malloc_get_slop(void)
+{
+  return slop;
+}
+
+#if NUMSMALL
+BLOCK **
+__malloc_get_smallblocks(void)
+{
+  return smallblocks;
+}
+#endif
+
+unsigned long
+__malloc_get_bytes_in_use(void)
+{
+  return malloc_bytes_in_use;
+}
+
+unsigned long
+__malloc_get_chunks_in_use(void)
+{
+  return malloc_chunks_in_use;
+}
+
+unsigned long
+__malloc_get_sbrked(void)
+{
+  return malloc_sbrked;
+}
+
+void (*__libc_malloc_hook)(size_t, void *);
+void (*__libc_malloc_fail_hook)(size_t);
+void (*__libc_free_hook)(void *);
+void (*__libc_free_null_hook)(void);
+void (*__libc_realloc_hook)(void *, size_t);
+
+#define RET(rv) \
+  do { 				     \
+    CHECK(rv);			     \
+    ENDSZ(rv) |= 1;		     \
+    malloc_bytes_in_use += rv->size; \
+    malloc_chunks_in_use++;	     \
+    rv->size |= 1;		     \
+    return DATA(rv);		     \
+  } while (0)
 
 void *
 malloc(size_t size)
@@ -110,6 +143,10 @@ malloc(size_t size)
     if (rv)
     {
       smallblocks[size/ALIGN] = rv->next;
+      if (__libc_malloc_hook)
+	__libc_malloc_hook(size, rv);
+      malloc_bytes_in_use += rv->size;
+      malloc_chunks_in_use++;
       return DATA(rv);
     }
   }
@@ -130,6 +167,8 @@ malloc(size_t size)
     }
     else
       slop = 0;
+    if (__libc_malloc_hook)
+      __libc_malloc_hook(size, rv);
     RET(rv);
   }
 
@@ -140,6 +179,8 @@ malloc(size_t size)
     if (rv->size >= size && rv->size < size+size/4)
     {
       *prev = rv->next;
+      if (__libc_malloc_hook)
+	__libc_malloc_hook(size, rv);
       RET(rv);
     }
   }
@@ -177,6 +218,8 @@ malloc(size_t size)
 	  printf("    slop size %u/%08x\n", slop->size, slop);
 #endif
 	}
+	if (__libc_malloc_hook)
+	  __libc_malloc_hook(size, rv);
 	RET(rv);
       }
     b++;
@@ -185,7 +228,12 @@ malloc(size_t size)
   chunk_size = size+16; /* two ends plus two placeholders */
   rv = (BLOCK *)sbrk(chunk_size);
   if (rv == (BLOCK *)(-1))
+  {
+    if (__libc_malloc_fail_hook)
+      __libc_malloc_fail_hook(size);
     return 0;
+  }
+  malloc_sbrked += chunk_size;
 #if DEBUG
   printf("sbrk(%d) -> %08x, expected %08x\n", chunk_size, rv, expected_sbrk);
 #endif
@@ -214,6 +262,8 @@ malloc(size_t size)
   AFTER(rv)->size = 1;
   CHECK(rv);
 
+  if (__libc_malloc_hook)
+    __libc_malloc_hook(size, rv);
   RET(rv);
 }
 
@@ -289,19 +339,29 @@ free(void *ptr)
 {
   BLOCK *block;
   if (ptr == 0)
+  {
+    if (__libc_free_null_hook)
+      __libc_free_null_hook();
     return;
+  }
   block = (BLOCK *)((char *)ptr-4);
+  if (__libc_free_hook)
+    __libc_free_hook(block);
 
 #if NUMSMALL
   if (block->size < SMALL)
   {
     block->next = smallblocks[block->size/ALIGN];
     smallblocks[block->size/ALIGN] = block;
+    malloc_bytes_in_use -= block->size;
+    malloc_chunks_in_use--;
     return;
   }
 #endif
 
   block->size &= ~1;
+  malloc_bytes_in_use -= block->size;
+  malloc_chunks_in_use--;
   ENDSZ(block) &= ~1;
   block->bucket = -1;
 #if DEBUG
@@ -376,6 +436,7 @@ realloc_inplace(BLOCK *cur, size_t old_size, size_t new_size)
     ENDSZ(after2) = after2->size;
     cur->size += alloc_delta;
     ENDSZ(cur) = cur->size;
+    malloc_bytes_in_use += alloc_delta;
     if (is_slop_ptr)
       slop = after2;
     else
@@ -386,6 +447,7 @@ realloc_inplace(BLOCK *cur, size_t old_size, size_t new_size)
     /* Merge the entire free block with the block being expanded.  */
     cur->size += after_sz + 8;
     ENDSZ(cur) = cur->size;
+    malloc_bytes_in_use += after_sz + 8;
     if (is_slop_ptr)
       slop = 0;
   }
@@ -403,6 +465,8 @@ realloc(void *ptr, size_t size)
     return malloc(size);
 
   b = (BLOCK *)((char *)ptr-4);
+  if (__libc_realloc_hook)
+    __libc_realloc_hook(b, size);
   copysize = b->size & ~1;
   if (size <= copysize)
   {

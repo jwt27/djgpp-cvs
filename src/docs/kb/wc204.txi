@@ -444,3 +444,17 @@ Two new functions, @code{monstartup} and @code{moncontrol}, allow to
 control when profiling starts and ends, and what range of addresses is
 recorded in the profiling data.
 
+@findex mallinfo@r{, added}
+@findex malloc_verify@r{, added}
+@findex malloc_debug@r{, added}
+@findex mallocmap@r{, added}
+@findex malloc@r{, debug facilities}
+There are new @code{malloc} debug facilities.  While not as powerful and
+versatile as existing external packages, such as @acronym{YAMD}, these
+facilities do allow to detect a wide variety of heap corruption
+problems, and to report important heap usage statistics.  The new
+functions are @code{mallinfo}, @code{malloc_debug},
+@code{malloc_verify}, and @code{mallocmap}; these names are compatible
+with many Unix and GNU/Linux systems.  In addition, special hooks, such
+as @code{__libc_malloc_hook} and @code{__libc_free_hook}, are provided
+for building custom @code{malloc} debugging packages.

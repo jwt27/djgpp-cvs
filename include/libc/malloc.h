@@ -24,7 +24,11 @@ typedef struct BLOCK {
 #define AFTER(bp)	((BLOCK *)((char *)bp + ((bp->size & ~1) + 8)))
 #define DATA(bp)	((char *)&(bp->next))
 
+#ifndef NUMSMALL
+#define NUMSMALL	0
+#endif
 #define ALIGN		8
+#define SMALL		(NUMSMALL*ALIGN)
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
