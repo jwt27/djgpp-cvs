@@ -1395,7 +1395,7 @@ trace_till_source (word32 eip, int level, int mustmove)
 static void
 redraw (int first)
 {
-  char *buf = alloca (cols);
+  char *buf = alloca (8192);
 
   debug_screen ();
   screen_attr = ScreenAttrib = screen_attr_normal;
