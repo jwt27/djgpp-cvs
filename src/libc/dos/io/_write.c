@@ -16,7 +16,7 @@
 
 
 int _write_fill_seek_gap(int fd);
-int _write_int(int fd, const char *buffer, unsigned long long count);
+int _write_int(int fd, const char *buffer, size_t count);
 
 int
 _write(int handle, const void* buffer, size_t count)
@@ -102,6 +102,10 @@ _write_fill_seek_gap(int fd)
   }
 
   /* Write out 'fill_count' number of zeros.  */
+  /* Warning! If fill_count > ULONG_MAX, this call won't work.
+     But changing _write_int's last argument to 'unsigned long long'
+     won't work either because gcc generates bad code for long longs
+     passed via the stack.  */
   return _write_int(fd, NULL, fill_count);
 }
 
@@ -110,21 +114,21 @@ _write_fill_seek_gap(int fd)
    transfer buffer and written out. Otherwise, the data already in the
    transfer buffer is written out. */
 int
-_write_int(int fd, const char *buffer, unsigned long long write_count)
+_write_int(int fd, const char *buffer, size_t write_count)
 {
   unsigned long buf_size, tb_size;
   unsigned long chunk_count;
   int total_written;
   unsigned short bytes_written;
   __dpmi_regs r;
-  
+
   tb_size = _go32_info_block.size_of_transfer_buffer;
   buf_size = (write_count > tb_size) ? tb_size : write_count;
   
   total_written = 0;
   do
   {
-    chunk_count = (write_count <= buf_size) ? write_count : buf_size;
+    chunk_count = (write_count <= buf_size) ? buf_size : write_count;
     if (buffer && chunk_count)
       dosmemput(buffer, chunk_count, __tb);
     r.x.ax = 0x4000;
