@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -5,9 +6,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <io.h>
+#include <errno.h>
 
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
+#include <libc/fd_props.h>
 
 ssize_t
 read(int handle, void* buffer, size_t count)
@@ -21,6 +24,14 @@ read(int handle, void* buffer, size_t count)
       if (__libc_read_termios_hook(handle, buffer, count, &rv) != 0)
         return rv;
     }
+
+  /* Directory? If so, fail, which indicates that the caller should use
+   * readdir() instead. */
+  if (__get_fd_flags(handle) & FILE_DESC_DIRECTORY)
+  {
+    errno = EISDIR;
+    return -1;
+  }
 
   ngot = _read(handle, buffer, count);
   if(ngot <= 0)

@@ -15,6 +15,9 @@ This function reads at most @var{length} bytes from file @var{fd} into
 and text files, it may read less than the requested number of bytes. 
 At end-of-file, @code{read} will read exactly zero bytes.
 
+Directories cannot be read using @code{read} --- use @code{readdir}
+instead.
+
 @subheading Return Value
 
 The number of bytes read, zero meaning end-of-file, or -1 for an error. 
