@@ -78,6 +78,14 @@ component in @var{file} is symlink.
 If @var{file} is a symlink, @code{open} will open symlink file itself instead 
 of referred file.
 
+@item O_TEMPORARY
+
+Delete @var{file} when all file descriptors that refer to it are closed.
+
+Note that @var{file} should not also be opened with the low-level functions
+@code{_creat}, @code{_creatnew}, @code{_dos_creat}, @code{_dos_creatnew},
+and @code{_dos_open}.  Otherwise @var{file} may not be deleted as expected.
+
 @end table
 
 If the file is created by this call, it will be given the read/write
