@@ -140,7 +140,9 @@ int		symlink (const char *, const char *);
 int		sync(void);
 int		truncate(const char*, off_t);
 unsigned int	usleep(unsigned int _useconds);
+#ifndef vfork
 pid_t		vfork(void);
+#endif
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

@@ -30,7 +30,9 @@ unsigned char	inp(unsigned short _port);
 unsigned short	inpw(unsigned short _port);
 void		outp(unsigned short _port, unsigned char _data);
 void		outpw(unsigned short _port, unsigned short _data);
+#ifndef kbhit
 int		kbhit(void);
+#endif
 int		getkey(void);	/* ALT's have 0x100 set */
 int		getxkey(void);	/* ALT's have 0x100 set, 0xe0 sets 0x200 */
 
