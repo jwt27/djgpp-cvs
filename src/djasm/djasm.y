@@ -81,8 +81,8 @@ char strbuf[200];
 int strbuflen;
 
 typedef struct {
-  short line;
-  short addr;
+  unsigned short line;
+  unsigned short addr;
   char *name;
 } lineaddr_s;
 
