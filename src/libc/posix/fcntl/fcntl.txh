@@ -72,6 +72,10 @@ until it is unblocked and the lock can be applied.  This is unsupported
 and will always fail.
 @end table
 
+This function can be hooked by the @dfn{Filesystem extensions}, see
+@ref{File System Extensions}.  If you don't want this, and you are
+calling @code{fcntl} with the @code{F_DUPFD} command, you should use
+@code{dup2} instead, see @ref{dup2}.
 
 @subheading Return Value
 
