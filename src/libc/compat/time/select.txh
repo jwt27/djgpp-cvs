@@ -19,13 +19,14 @@ have exceptional condition pending, or for a timeout.
 
 Each @code{fd_set} variable is a bitmap representation of a set of file
 descriptors, one bit for every descriptor.  The following macros shall
-be used to deal with these sets:
+be used to deal with these sets (in the table below, @var{p} is a
+pointer to an @code{fd_set} object and @var{n} is a file descriptor):
 
 @table @code
 
 @item FD_ZERO(p)
 
-Initialize the set to all zeros.
+Initialize the set @var{p} to all zeros.
 
 @item FD_SET(n, p)
 
