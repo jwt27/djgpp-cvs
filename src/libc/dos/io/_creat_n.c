@@ -72,7 +72,7 @@ _creatnew(const char* filename, int attrib, int flags)
        badly when using IOCTL and write-truncate calls on LFN handles.
        We close the long name file and re-open it with _open.c (short)
        to work around the bugs. */
-    rv = _open(filename, flags | 2);
+    rv = _open(filename, flags | 2);	/* 2 is a read/write flag */
     if(rv != -1) {	/* Re-open failure, continue with LFN handle */
       _close(r.x.ax);
       return rv;
