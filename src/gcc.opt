@@ -1,0 +1,14 @@
+-MD
+-O3
+-Wall
+-Wbad-function-cast
+-Wcast-qual
+-Werror
+-Wmissing-declarations
+-Wmissing-prototypes
+-Wpointer-arith
+-Wshadow
+-Wstrict-prototypes
+-Wtraditional
+-Wwrite-strings
+-nostdinc
