@@ -16,8 +16,8 @@
 #define __DJ_uid_t	typedef int uid_t;
 
 /* Under GCC 2.96 or later, we use its builtin va_list management.  */
-#if ((__GNUC_ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
-#define __DJ_va_list    typedef __builtin_va_list va_list
+#if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
+#define __DJ_va_list    typedef __builtin_va_list va_list;
 #else
 #define __DJ_va_list	typedef void *va_list;
 #endif
