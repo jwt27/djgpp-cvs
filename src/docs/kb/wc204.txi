@@ -945,3 +945,15 @@ to the POSIX functions @code{open}, @code{read}, @code{write},
 @code{fsync} and @code{fdopen} and the ANSI functions @code{fopen},
 @code{freopen}, @code{fclose}, @code{ftell}, @code{fseek}
 and @code{rewind}, to make them aware of file descriptors for directories.
+
+@findex fstat@r{, and inodes}
+@findex stat@r{, and inodes}
+@strong{Simple temporary fix - TODO: more complete fix}: @code{fstat}
+will now use the file name used to open the file, when inventing inodes.
+This is done so that the same inode is generated irrespective
+of the actual file path used to open the file.  This also fixes
+the problem where multiple calls to fstat on the same file descriptor
+would give different inodes.
+
+@code{stat} and @code{fstat} should now return the same inode for a file
+in most cases.
