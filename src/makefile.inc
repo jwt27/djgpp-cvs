@@ -1,40 +1,82 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
+# -*- makefile -*-
+
+include $(TOP)/../makefile.def
+
+MAKEFLAGS := --no-print-directory
 
 .SUFFIXES: .o .i .c .cc .s
 
-GCC = gcc @$(TOP)/../gcc.opt -I. -I- -I$(TOP)/../../include $(CFLAGS) -c $<
+ifneq ($(CROSS_BUILD),1)
+XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I. -I- -I$(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I. -I- -I$(TOP)/../../include $(CFLAGS)
+else
+GCC_OPT := $(shell cat $(TOP)/../gcc.opt)
+GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
+XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -I$(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -I$(TOP)/../../include $(CFLAGS)
+endif
+
+MISC = $(TOP)/../misc.exe
 
 %.o : %.c
-	$(GCC)
+	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	@$(XGCC) -c $<
 %.o : %.cc
-	$(GCC)
+	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	@$(XGCC) -c $<
 %.o : %.S
-	$(GCC)
+	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	@$(XGCC) -c $<
+%.o : %.s
+	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	@$(XGCC) -x assembler-with-cpp -c $<
 
 %.i : %.c
-	$(GCC) -E > $@
+	$(XGCC) -c $< -E > $@
 %.i : %.cc
-	$(GCC) -E > $@
+	$(XGCC) -c $< -E > $@
 %.i : %.S
-	$(GCC) -E > $@
+	$(XGCC) -c $< -E > $@
 
 %.ss : %.c
-	$(GCC) -S > $@
+	$(XGCC) -c $< -S > $@
 %.ss : %.cc
-	$(GCC) -S > $@
+	$(XGCC) -c $< -S > $@
 
-LINK = ld $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ ${LIB}/libgcc.a -T ${TOP}/../../lib/djgpp.djl
-EXE = ${TOP}/../../bin/stubify.exe $@
+%.c : %.y
+	bison $*.y -o $*.c
 
 LIB=$(TOP)/../../lib
 BIN=$(TOP)/../../bin
 INC=$(TOP)/../../include
 INFO=$(TOP)/../../info
 
+# Where programs we *run* to build djgpp are
+HOSTBIN = $(TOP)/../../hostbin
+
 C = $(LIB)/crt0.o
 L = $(LIB)/libc.a
 
+ifeq ($(LIBGCCA),)
+LIBGCCA := $(shell $(CROSS_GCC) -print-file-name=libgcc.a)
+LIBGCCA := $(subst \,/,$(LIBGCCA))
+export LIBGCCA
+endif
+
+ifeq ($(DJGPP_DJL),)
+DJGPP_DJL := $(shell $(CROSS_GCC) -print-file-name=djgpp.djl)
+DJGPP_DJL := $(subst \,/,$(DJGPP_DJL))
+export DJGPP_DJL
+endif
+
+LINK = $(CROSS_LD) -s $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ $(LIBGCCA) -T $(DJGPP_DJL)
+EXE = $(HOSTBIN)/stubify.exe $@
+
 OBJS := $(addsuffix .o, $(basename $(SRC)))
 EXES := $(addprefix $(BIN)/,$(addsuffix .exe, $(basename $(SRC))))
+
+NOP = @$(MISC)
 
 .PRECIOUS: %.exe %.out %.err
 
@@ -45,14 +87,21 @@ $(BIN)/%.exe : $C %.o $L
 	$(LINK)
 	$(EXE)
 
-all :: $(OBJS) $(EXTRA_OBJS) makefile.oh
-	@rem.com
+$(HOSTBIN)/%.exe : %
+	$(GCC) -o $@ $^
 
+all :: $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
+	$(NOP)
+
+ifneq ($(MAKEFILE_LIB),1)
+all :: makefile.oh
 makefile.oh : makefile
-	@echo.exe -o makefile.oh $(addprefix &/,$(OBJS))
+	@$(MISC) echo - building new response file
+	@$(MISC) echo makefile.oh $(addprefix \&/,$(OBJS))
+endif
 
 clean ::
-	-rm -f *.o *.d *.i makefile.oh
+	-$(MISC) rm *.o *.d *.i makefile.oh
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)
