@@ -540,3 +540,12 @@ to use that buffer.
 @findex v2loadimage@r{, long command line support}
 @code{v2loadimage} now supports long command lines, instead of being
 restricted by the DOS 126-character limit.
+
+@findex __djgpp_spawn@r{, added to the library}
+A new function, @code{__djgpp_spawn}, has been added to allow control over
+whether a search for executable extensions is performed.
+
+@findex glob@r{, fixed buffer overrun}
+The function @code{glob} and its helper functions have been changed to prevent
+an internal buffer from being overrun when the pattern to be expanded has more
+than 2000 characters.
