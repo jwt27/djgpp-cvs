@@ -1,7 +1,7 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <errno.h>
  
 /* MS-DOS couldn't care less about file ownerships, so we could
@@ -9,9 +9,10 @@
    and for devices.  */
  
 int
-chown(const char *path, uid_t owner, gid_t group)
+chown(const char *path, uid_t owner __attribute__((__unused__)), 
+                        gid_t group __attribute__((__unused__)))
 {
-  if (!__file_exists(path))       /* non-existent file */
+  if (access(path, F_OK))       /* non-existent file */
   {
     errno = ENOENT;
     return -1;
