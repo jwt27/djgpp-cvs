@@ -67,7 +67,8 @@ int main(int argc, char **argv)
   char *data, *strings;
   SYMENT *sym;
   RELOC *relocs;
-  int strsz, i;
+  int strsz;
+  size_t i;
   dxe_header dh;
 
   if (argc < 4)
