@@ -1051,4 +1051,5 @@ Now @code{assert} prints also the name of the function where an assertion
 fails, if that function is compiled with C99 features enabled.
 
 @cindex @file{stdbool.h} added
-The file @file{stdbool.h} was added.
+@cindex C99 compliance, @file{stdbool.h}
+The C99 file @file{stdbool.h} was added.
