@@ -11,14 +11,23 @@ int write(int file, const void *buffer, unsigned count);
 
 This function writes @var{count} bytes from @var{buffer} to
 @var{file}.  It returns the number of bytes actually written.  It will
-return zero if the disk is full, and may return less than @var{count}
-even under valid conditions.
+return zero or a number less than @var{count} if the disk is full, and
+may return less than @var{count} even under valid conditions.
 
 Note that if @var{file} is a text file, @code{write} may write more
 bytes than it reports. 
 
 If @var{count} is zero, the function does nothing and returns zero.
 Use _write if you want to actually ask dos to write zero bytes.
+
+The precise behavior of @code{write} when the target filesystem is full
+are somewhat troublesome, because DOS doesn't fail the underlying system
+call.  If your application needs to rely on @code{errno} being set to
+@code{ENOSPC} in such cases, you need to invoke @code{write} as shown in
+the example below.  In a nutshell, the trick is to call @code{write} one
+more time after it returns a value smaller than the @var{count}
+parameter; then it will @emph{always} set @code{errno} if the disk is
+full.
 
 @subheading Return Value
 
@@ -30,7 +39,23 @@ The number of bytes written, zero at EOF, or -1 on error.
 
 @subheading Example
 
+This example shows how to call @code{write} in a way which ensures that
+@code{errno} will be set to @code{ENOSPC} if the target filesystem is or
+becomes full:
+
 @example
-write(fd, "hello", 5);
+  char *buf_ptr;    /* the buffer to write */
+  size_t buf_len;   /* the number of bytes to write */
+  int desc;         /* the file descriptor to write to */
+
+  while (buf_len > 0)
+  @{
+    int written = write (desc, buf_ptr, buf_len);
+    if (written <= 0)
+      break;
+
+    buf_ptr += written;
+    buf_len -= written;
+  @}
 @end example
 
