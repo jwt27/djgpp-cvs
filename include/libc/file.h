@@ -2,6 +2,9 @@
 #ifndef __dj_include_libc_file_h__
 #define __dj_include_libc_file_h__
 
+#include <fcntl.h>
+#include <libc/dosio.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -22,18 +25,51 @@ extern "C" {
 #define _IOAPPEND 002000
 #define _IORMONCL 004000  /* remove on close, for temp files */
 /* if _flag & _IORMONCL, ._name_to_remove needs freeing */
+#define _IOUNGETC 010000  /* there is an ungetc'ed character in the buffer */
 
 int	_flsbuf(int, FILE*);
 int	_filbuf(FILE *);
 void	_fwalk(void (*)(FILE *));
 
-#define __getc(p) (--(p)->_cnt>=0 ? \
-  (int)(*(unsigned char*)(p)->_ptr++) : \
-  _filbuf(p))
+int __inline__ static __getc_raw(FILE *const p)
+{
+   if(p->_cnt>0)
+   {
+      p->_cnt--;
+      return((unsigned char)*(p->_ptr++));
+   }
+   return(_filbuf(p));
+}
 
-#define __putc(x,p) (--(p)->_cnt>=0? \
-  ((int)((unsigned char)((*(p)->_ptr++=(unsigned)(x))))): \
-  _flsbuf((unsigned)(x),p))
+int __inline__ static __putc_raw(int const x,FILE *const p)
+{
+   if(p->_cnt>0)
+   {
+      p->_cnt--;
+      return((unsigned char)(*(p->_ptr++)=(unsigned char)x));
+   }
+   return(_flsbuf(x,p));
+}
+
+int __inline__ static __is_text_file(FILE *const p)
+{
+   return(!((p)->_flag&_IOSTRG) && (__file_handle_modes[(p)->_file]&O_TEXT));
+}
+
+int __inline__ static __getc(FILE *const p)
+{
+  int __c=__getc_raw(p);
+  if (__c=='\r' && __is_text_file(p))
+    return __getc_raw(p);
+  return __c;
+}
+
+int __inline__ static __putc(const int x,FILE *const p)
+{
+  if(x=='\n' && __is_text_file(p))
+    __putc_raw('\r',p);
+  return __putc_raw(x,p);
+}
 
 #undef  fileno
 #define fileno(f)	(f->_file)
