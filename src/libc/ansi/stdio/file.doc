@@ -31,6 +31,8 @@ _IOSTRG		sprintf
 _IOAPPEND	append mode
 _IORMONCL	remove file on close
 _IOUNGETC       buffer contents does not correspond to file
+_IOTERM         file's handle hooked by termios
+_IONTERM        file's handle not hooked by termios
 
 int   _file;
 
