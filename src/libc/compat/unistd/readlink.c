@@ -2,6 +2,7 @@
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 
 #include <libc/stubs.h>
+#include <sys/fsext.h>
 #include <dir.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -20,6 +21,7 @@ int readlink(const char * filename, char * buffer, size_t size)
    char        * data_buf;
    int           fd;
    struct ffblk  file_info;
+   int           ret;
 
    /* Reject NULLs */
    if (!filename || !buffer)
@@ -27,6 +29,10 @@ int readlink(const char * filename, char * buffer, size_t size)
       errno = EINVAL;
       return -1;
    }
+
+   /* Provide ability to hook symlink support */
+   if (__FSEXT_call_open_handlers(__FSEXT_readlink, &ret, &filename))
+      return ret;
 
    /* Does symlink file exist at all? */
    if (findfirst(filename, &file_info, 0))

@@ -32,7 +32,9 @@ typedef enum {
   __FSEXT_dup2,
   __FSEXT_fstat,
   __FSEXT_stat,
-  __FSEXT_llseek
+  __FSEXT_llseek,
+  __FSEXT_readlink,
+  __FSEXT_symlink
 } __FSEXT_Fnumber;
 
 /* _ready gets passed a fd and should return a mask of these,

@@ -3,6 +3,7 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <libc/symlink.h>
+#include <sys/fsext.h>
 #include <errno.h>
 #include <unistd.h>
 #include <io.h>
@@ -13,8 +14,9 @@
 /* Emulate symlinks for all files */
 int symlink(const char *source, const char *dest)
 {
-   int symlink_file;
-   char real_dest[FILENAME_MAX];
+   int         symlink_file;
+   char        real_dest[FILENAME_MAX];
+   int         ret;
    static char fill_buf[_SYMLINK_FILE_LEN + 1] =
                              "This is just a text to force symlink file to "
                              "be 510 bytes long. Do not delete it nor spaces "
@@ -28,6 +30,11 @@ int symlink(const char *source, const char *dest)
       errno = EINVAL;
       return -1;
    }
+
+   /* Provide ability to hook symlink support */
+   if (__FSEXT_call_open_handlers(__FSEXT_symlink, &ret, &source))
+      return ret;
+
 
    /* The ``dest'' may have symlinks somewhere in the path itself.  */
    if (!__solve_symlinks(dest, real_dest))
