@@ -1,0 +1,32 @@
+@node getcwd, file system
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+char *getcwd(char *buffer, int max);
+@end example
+
+@subheading Description
+
+Get the current directory.  The return value includes the drive
+specifier.  If @var{buffer} is @code{NULL}, @code{getcwd} allocates
+memory with @code{malloc}.  This call fails if more than @var{max}
+characters are required to specify the current directory.
+
+@subheading Return Value
+
+The buffer, either @var{buffer} or a newly-allocated buffer, or
+@code{NULL} on error.
+
+@subheading Example
+
+@example
+char *buf = (char *)malloc(PATH_MAX);
+if (buf && getcwd(buf, PATH_MAX))
+@{
+  printf("cwd is %s\n", buf);
+  free(buf);
+@}
+@end example
+
