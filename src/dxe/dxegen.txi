@@ -2,6 +2,7 @@
 @c -----------------------------------------------------------------------------
 @node dxegen, , , Top
 @chapter @command{dxegen}
+@pindex dxegen
 
 Usage: @kbd{dxegen outfile.dxe _symbol infile.o [infile2.o ... -lgcc -lc]}
 
