@@ -1,0 +1,12 @@
+@node sigsetjmp, misc
+@subheading Syntax
+
+@example
+#include <setjmp.h>
+
+int	sigsetjmp(sigjmp_buf env, int savemask);
+@end example
+
+@subheading Description
+
+@xref{setjmp}.

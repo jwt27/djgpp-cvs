@@ -1,0 +1,16 @@
+@node stpcpy, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *stpcpy(char *_dest, const char *_src);
+@end example
+
+@subheading Description
+
+Like @code{strcpy} (@pxref{strcpy}), but return value different.
+
+@subheading Return Value
+
+Returns a pointer to the trailing NUL in @var{dest}.

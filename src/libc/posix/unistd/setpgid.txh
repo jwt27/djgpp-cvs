@@ -1,0 +1,12 @@
+@node setpgid, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int setpgid(pid_t _pid, pid_t _pgid);
+@end example
+
+@subheading Return Value
+
+-1 (EPERM) if _pgid is not your current pid, else zero.

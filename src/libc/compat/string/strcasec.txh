@@ -1,0 +1,25 @@
+@node strcasecmp, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int strcasecmp(const char *s1, const char *s2);
+@end example
+
+@subheading Description
+
+This function compares the two strings, disregarding case.
+
+@subheading Return Value
+
+Zero if they're the same, nonzero if different, the sign indicates
+"order". 
+
+@subheading Example
+
+@example
+if (strcasecmp(arg, "-i") == 0)
+  do_include();
+@end example
+

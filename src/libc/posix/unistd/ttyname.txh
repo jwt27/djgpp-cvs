@@ -1,0 +1,23 @@
+@node ttyname, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+char *ttyname(int file);
+@end example
+
+@subheading Description
+
+Gives the name of the terminal associated with @var{file}. 
+
+@subheading Return Value
+
+Returns "con" if @var{file} is a device, else @code{NULL}.
+
+@subheading Example
+
+@example
+char *tty = ttyname(0);
+@end example
+

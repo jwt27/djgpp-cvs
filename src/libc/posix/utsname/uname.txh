@@ -1,0 +1,52 @@
+@node uname, unix
+@subheading Syntax
+
+@example
+#include <sys/utsname.h>
+
+#int uname(struct utsname *u);
+@end example
+
+@subheading Description
+
+Fills in the structure with information about the system.
+
+@example
+struct utsname @{
+  char machine[9];
+  char nodename[32];
+  char release[9];
+  char sysname[9];
+  char version[9];
+@};
+@end example
+
+@table @code
+
+@item machine
+
+"pc"
+
+@item nodename
+
+The name of your PC (if networking is installed), else "pc".
+
+@item release
+
+The minor release of dos.  For example, dos 1.23 would return "23"
+here.
+
+@item sysname
+
+The flavor of the OS.
+
+@item version
+
+The major release of dos.  For example, dos 1.23 would return "1"
+here.
+
+@end table
+
+@subheading Return Value
+
+Zero on success, else nonzero.

@@ -1,0 +1,23 @@
+@node tell, io
+@subheading Syntax
+
+@example
+#include <io.h>
+
+off_t tell(int file);
+@end example
+
+@subheading Description
+
+This function returns the location of the file pointer for @var{file}. 
+
+@subheading Return Value
+
+The file pointer, or -1 on error.
+
+@subheading Example
+
+@example
+off_t q = tell(fd);
+@end example
+

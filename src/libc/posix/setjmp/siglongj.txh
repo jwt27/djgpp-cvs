@@ -1,0 +1,12 @@
+@node siglongjmp, misc
+@subheading Syntax
+
+@example
+#include <setjmp.h>
+
+int	siglongjmp(sigjmp_buf env, int val);
+@end example
+
+@subheading Description
+
+@xref{longjmp}.
