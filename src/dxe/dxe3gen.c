@@ -20,9 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* _POSIX_SOURCE is defined at this point when cross compiling from
-   Linux. Therefore undefine it before including coff.h  */
-#undef _POSIX_SOURCE
 #ifndef DXE_LD			/* Cross compile ld name/location */
 #define DXE_LD "ld"
 #include <sys/dxe.h>
