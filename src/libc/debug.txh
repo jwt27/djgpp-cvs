@@ -430,17 +430,17 @@ the @code{PATH} and does @strong{not} try any executable extensions, so
 drive, directory, and file-name extension; otherwise the call will fail.
 
 @var{cmdline} should point to the command-line arguments to be passed to
-the program.  The format of the command line should be exactly like the
-command tail DOS passes to programs: the first byte gives the length of
-the command tail, the tail itself begins with the second byte, and the
-tail is terminated by a CR character (decimal code 13); the length byte
-does not include the CR.  The command-line arguments should look as if
-they were to be passed to the library function @code{system}.  In
-particular, all special characters like wildcards and whitespace should
-be quoted as if they were typed at the DOS prompt.
-
-Note that currently, this function doesn't support command lines longer
-than the DOS 126-character limit.
+the program.  A command line up to 126 characters long can be formatted
+exactly like the command tail DOS passes to programs: the first byte gives
+the length of the command tail, the tail itself begins with the second byte,
+and the tail is terminated by a CR character (decimal code 13); the length
+byte does not include the CR.  Longer command lines require a different
+format: the first byte is 255, the command-line starting with the second byte
+which is terminated by a NUL character (decimal code 0).  Regardless of the
+method used, the command-line arguments should look as if they were to be
+passed to the library function @code{system}.  In particular, all special
+characters like wildcards and whitespace should be quoted as if they were
+typed at the DOS prompt.
 
 After the function loads the image and sets up the necessary memory
 segments for it to be able to run, it sets @var{load_state} so that it
