@@ -24,9 +24,13 @@ sbrk16.ah : sbrk16.asm
 	$(HOSTBIN)/djasm.exe sbrk16.asm sbrk16.ah
 
 $(LIB)/crt0.o : crt0.S exit16.ah sbrk16.ah
-	$(XGCC) -MMD -c crt0.S -o $@
+	$(XGCC) -MMD -c crt0.S
+	$(MISC) cp crt0.o $@
+	$(MISC) rm crt0.o
 	sed 's@crt0.o@$(LIB)/crt0.o@' crt0.d > crt02.d
 
 $(LIB)/gcrt0.o : gcrt0.S crt0.S exit16.ah sbrk16.ah
-	$(XGCC) -MMD -c gcrt0.S -o $@
+	$(XGCC) -MMD -c gcrt0.S
+	$(MISC) cp gcrt0.o $@
+	$(MISC) rm gcrt0.o
 	sed 's@gcrt0.o@$(LIB)/gcrt0.o@' gcrt0.d > gcrt02.d
