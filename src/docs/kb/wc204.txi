@@ -914,3 +914,6 @@ The functions @code{_tolower} and @code{_toupper} were added.
 @findex readv
 @findex writev
 The functions @code{readv} and @code{writev} were added.
+
+@findex pwrite
+The function @code{pwrite} was added.
