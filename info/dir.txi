@@ -91,7 +91,7 @@ From lgpNNNb.zip
 * iostream: (iostream).
 	The C++ input/output facility (in libstdcxx.a or libiostream.a).
 
-* libgpp.a: (libgplus).
+* libgpp: (libgpp).
 	The g++ class library.
 
 
