@@ -9,13 +9,21 @@ unsigned alarm(unsigned seconds);
 
 @subheading Description
 
-This function causes the signal SIGALRM to be raised in @var{seconds} seconds.
-A value of zero for @var{seconds} cancels any pending alarm.  If an alarm
-has previously been set, the new alarm delay will supercede the prior call.
+This function causes the signal @code{SIGALRM} to be raised in
+@var{seconds} seconds.  A value of zero for @var{seconds} cancels any
+pending alarm.  If an alarm has previously been set, the new alarm delay
+will supercede the prior call.
 
 Note that signals in DJGPP are deferred when the program is inside a
 real-mode (e.g., DOS) call or isn't touching its data; see @ref{signal},
 for more details.
+
+A misfeature of Windows 9X prevents the timer tick interrupt from being
+delivered to programs that are in the background (i.e. don't have the
+focus), even though the program itself might continue to run, if you
+uncheck the @cite{Background: Always suspend} property in the Property
+Sheets.  Therefore, @code{alarm} will not work in background programs on
+Windows 9X.
 
 @subheading Return Value
 
