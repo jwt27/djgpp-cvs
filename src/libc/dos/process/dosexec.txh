@@ -24,7 +24,7 @@ int spawnvpe(int mode, const char *path, char *const argv[],
 These functions run other programs.  The @var{path} points to the
 program to run, and may optionally include its extension.  These
 functions will look for a file @var{path} with the extensions
-@file{.com}, @file{.exe}, @file{.bat}, and @file{.btm}; if none is found,
+@file{.com}, @file{.exe}, @file{.bat}, and @file{.btm}; if none are found,
 neither in the current directory nor along the @samp{PATH}, they will look for
 @var{path} itself.
 
@@ -135,6 +135,61 @@ char *args[] = @{
 @};
 
 spawnvpe(P_WAIT, "gcc", args, environ);
+@end example
+
+@c -----------------------------------------------------------------------
+
+@node __djgpp_spawn, process
+@subheading Syntax
+
+@example
+#include <process.h>
+
+int __djgpp_spawn(int mode, const char *path, char *const argv[],
+                  char *const envp[], unsigned long flags);
+@end example
+
+@subheading Description
+
+This function runs other programs like @code{spawnve} (@pxref{spawn*}) except
+that an additional parameter @var{flags} is passed.  @var{flags} can
+include the following flags to control the details of finding the program
+to run:
+
+@table @code
+
+@item SPAWN_EXTENSION_SRCH
+
+If an extension is not included in @var{path}, search for a file @var{path}
+with the extensions @file{.com}, @file{.exe}, @file{.bat}, and @file{.btm}.
+
+@item SPAWN_NO_EXTENSION_SRCH
+
+Do not perform an extension search.  If the file has an extension, it must
+already be included in @var{path}.
+
+@end table
+
+@subheading Return Value
+
+@xref{spawn*}
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+char *args[] = @{
+  "gcc.exe",
+  "-v",
+  "hello.c",
+  0
+@};
+
+__djgpp_spawn(P_WAIT, "/dev/env/DJDIR/bin/gcc.exe", args, NULL,
+              SPAWN_NO_EXTENSION_SRCH);
 @end example
 
 @c -----------------------------------------------------------------------
