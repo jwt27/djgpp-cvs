@@ -20,94 +20,83 @@ char *predefs[] = { "main", "edata", "end", "etext", "environ",
    not a function, and we can't stub it.  ctime() sets tzname, and
    ctime is ANSI and tzname is POSIX.  Sigh. */
 
-char *ansi_fns[] = { "_Exit", "abort", "abs",
-"acos", "acosf", "acosh", "acoshf", "acoshl", "acosl",
-"asctime", "asin", "asinf", "asinh", "asinhf", "asinhl", "asinl",
-"atan", "atan2", "atan2f", "atan2l",
-"atanf", "atanh", "atanhf", "atanhl", "atanl",
-"atexit", "atof", "atoi", "atol", "atoll", "bsearch", "btowc",
-"cabs", "cabsf", "cabsl",
-"cacos", "cacosf", "cacosh", "cacoshf", "cacoshl", "cacosl",
-"calloc", "carg", "cargf", "cargl",
-"casin", "casinf", "casinh", "casinhf", "casinhl", "casinl",
-"catan", "catanf", "catanh", "catanhf", "catanhl", "catanl",
-"cbrt", "cbrtf", "cbrtl",
-"ccos", "ccosf", "ccosh", "ccoshf", "ccoshl", "ccosl",
-"ceil", "ceilf", "ceill", "cexp", "cexpf", "cexpl",
-"cimag", "cimagf", "cimagl", "clearerr", "clock",
-"clog", "clogf", "clogl", "conj", "conjf", "conjl",
-"copysign", "copysignf", "copysignl", "cos", "cosf",
-"cosh", "coshf", "coshl", "cosl", "cpow", "cpowf", "cpowl",
-"cproj", "cprojf", "cprojl", "creal", "crealf", "creall",
-"csin", "csinf", "csinh", "csinhf", "csinhl", "csinl",
-"csqrt", "csqrtf", "csqrtl",
-"ctan", "ctanf", "ctanh", "ctanhf", "ctanhl", "ctanl",
-"ctime", "difftime", "div",
-"erf", "erff", "erfl", "erfc", "erfcf", "erfcl", "errno", "exit",
-"exp", "exp2", "exp2f", "exp2l", "expf", "expl", 
-"expm1", "expm1f", "expm1l", "fabs", "fabsf", "fabsl", "fclose",
-"fdim", "fdimf", "fdiml", "feclearexcept", "fegetenv", "fegetexceptflag",
-"fegetround", "feholdexcept", "feof", "feraiseexcept", "ferror",
-"fesetenv", "fesetexceptflag", "fesetround", "fetestexcept",
-"feupdateenv", "fflush", "fgetc", "fgetpos", "fgets", "fgetwc", "fgetws",
-"floor", "floorf", "floorl", "fma", "fmaf", "fmal",
-"fmax", "fmaxf", "fmaxl", "fmin", "fminf", "fminl",
-"fmod", "fmodf", "fmodl", "fopen", "fpclassify", "fprintf",
-"fputc", "fputs", "fputwc", "fputws", "fread", "free", "freopen",
-"frexp", "frexpf", "frexpl", "fscanf", "fseek", "fsetpos", "ftell",
-"fwide", "fwprintf", "fwrite", "fwscanf", "getc",
-"getchar", "getenv", "gets", "getwc", "getwchar", "gmtime",
-"hypot", "hypotf", "hypotl", "ilogb", "ilogbf", "ilogbl",
-"imaxabs", "imaxdiv", "isalnum", "isalpha", "isblank",
-"iscntrl", "isdigit", "isfinite", "isgraph", "isgreater",
-"isgreaterequal", "isinf", "isless", "islessequal", "islessgreater",
-"islower", "isnan", "isnormal", "isprint", "ispunct",
-"isspace", "isunordered", "isupper", "iswalnum", "iswalpha", "iswblank",
-"iswcntrl", "iswctype", "iswdigit", "iswgraph", "iswlower", "iswprint",
-"iswpunct", "iswspace", "iswupper", "iswxdigit", "isxdigit",
-"labs", "ldexp", "ldexpf", "ldexpl", "ldiv",
-"lgamma", "lgammaf", "lgammal", "llabs", "lldiv",
-"llrint", "llrintf", "llrintl", "llround", "llroundf", "llroundl",
-"localeconv", "localtime",
-"log", "log10", "log10f", "log10l", "log1p", "log1pf", "log1pl",
-"log2", "log2f", "log2l", "logb", "logbf", "logbl", "logf", "logl",
-"longjmp", "lrint", "lrintf", "lrintl", "lround", "lroundf", "lroundl",
-"main", "malloc", "mblen", "mbrlen", "mbrtowc", "mbsinit",
-"mbsrtowcs", "mbstowcs", "mbtowc", "memchr", "memcmp",
-"memcpy", "memmove", "memset", "mktime",
-"modf", "modff", "modfl", "nan", "nanf", "nanl",
-"nearbyint", "nearbyintf", "nearbyintl",
-"nextafter", "nextafterf", "nextafterl",
-"nexttoward", "nexttowardf", "nexttowardl",
-"perror", "pow", "powf", "powl", "printf", "putc", "putchar", "puts",
-"putwc", "putwchar", "qsort", "raise", "rand", "realloc",
-"remainder", "remainderf", "remainderl",
-"remove", "remquo", "remquof", "remquol", "rename", "rewind",
-"rint", "rintf", "rintl", "round", "roundf", "roundl",
-"scalbln", "scalblnf", "scalblnl", "scalbn", "scalbnf", "scalbnl",
-"scanf", "setbuf", "setjmp", "setlocale", "setvbuf",
-"signal", "signbit", "sin", "sinf", "sinh", "sinhf", "sinhl", "sinl",
-"snprintf", "sprintf", "sqrt", "sqrtf", "sqrtl",
+char *ansi_c89_fns[] = { "abort", "abs", "acos", "asctime", "asin",
+"atan", "atan2", "atexit", "atof", "atoi", "atol", "bsearch",
+"calloc", "ceil", "clearerr", "clock", "cos", "cosh", "ctime",
+"difftime", "div", "errno", "exit", "exp", "fabs", "fclose", "feof",
+"ferror", "fflush", "fgetc", "fgetpos", "fgets", "floor", "fmod",
+"fopen", "fprintf", "fputc", "fputs", "fread", "free", "freopen",
+"frexp", "fscanf", "fseek", "fsetpos", "ftell", "fwrite", "getc",
+"getchar", "getenv", "gets", "gmtime", "isalnum", "isalpha",
+"iscntrl", "isdigit", "isgraph", "islower", "isprint", "ispunct",
+"isspace", "isupper", "isxdigit", "labs", "ldexp", "ldiv",
+"localeconv", "localtime", "log", "log10", "longjmp", "main",
+"malloc", "mblen", "mbstowcs", "mbtowc", "memchr", "memcmp", "memcpy",
+"memmove", "memset", "mktime", "modf", "perror", "pow", "printf",
+"putc", "putchar", "puts", "qsort", "raise", "rand", "realloc",
+"remove", "rename", "rewind", "scanf", "setbuf", "setjmp",
+"setlocale", "setvbuf", "signal", "sin", "sinh", "sprintf", "sqrt",
 "srand", "sscanf", "strcat", "strchr", "strcmp", "strcoll", "strcpy",
 "strcspn", "strerror", "strftime", "strlen", "strncat", "strncmp",
-"strncpy", "strpbrk", "strrchr", "strspn", "strstr",
-"strtod", "strtof", "strtoimax", "strtok",
-"strtol", "strtold", "strtoll", "strtoul", "strtoull",
-"strtoumax", "strxfrm", "swprinf", "swscanf", "system",
-"tan", "tanf", "tanh", "tanhf", "tanhl", "tanl",
-"tgamma", "tgammaf", "tgammal", "time", "tmpfile", "tmpnam",
-"tolower", "toupper", "towctrans", "towlower", "towupper",
-"trunc", "truncf", "truncl", "tzname", "ungetc", "ungetwc",
-"vfprintf", "vfscanf", "vfwprintf", "vfwscanf", "vprintf",
-"vscanf", "vsnprintf", "vsprintf", "vsscanf", "vswprintf", "vswscanf",
-"vwprintf", "vwscanf", "wcrtomb",
-"wcscat", "wcschr", "wcscmp", "wcscoll", "wcscpy", "wcscspn", "wcsftime",
-"wcslen", "wcsncat", "wcsncmp", "wcsncpy", "wcspbrk", "wcsrchr",
-"wcsrtombs", "wcsspn", "wcsstr", "wcstod", "wcstof",
-"wcstoimax", "wcstok", "wcstol", "wcstold", "wcstoll",
-"wcstombs", "wcstoul", "wcstoull", "wcstoumax",
-"wcsxfrm", "wctob", "wctomb", "wctrans",
-"wctype", "wmemchr", "wmemcmp", "wmemcpy",
+"strncpy", "strpbrk", "strrchr", "strspn", "strstr", "strtod",
+"strtok", "strtol", "strtoul", "strxfrm", "system", "tan", "tanh",
+"time", "tmpfile", "tmpnam", "tolower", "toupper", "tzname", "ungetc",
+"vfprintf", "vprintf", "vsprintf", "wcstombs", "wctomb", 0
+};
+
+char *ansi_c99_fns[] = { "_Exit", "acosf", "acosh", "acoshf",
+"acoshl", "acosl", "asinf", "asinh", "asinhf", "asinhl", "asinl",
+"atan2f", "atan2l", "atanf", "atanh", "atanhf", "atanhl", "atanl",
+"atoll", "btowc", "cabs", "cabsf", "cabsl", "cacos", "cacosf",
+"cacosh", "cacoshf", "cacoshl", "cacosl", "carg", "cargf", "cargl",
+"casin", "casinf", "casinh", "casinhf", "casinhl", "casinl", "catan",
+"catanf", "catanh", "catanhf", "catanhl", "catanl", "cbrt", "cbrtf",
+"cbrtl", "ccos", "ccosf", "ccosh", "ccoshf", "ccoshl", "ccosl",
+"ceilf", "ceill", "cexp", "cexpf", "cexpl", "cimag", "cimagf",
+"cimagl", "clog", "clogf", "clogl", "conj", "conjf", "conjl",
+"copysign", "copysignf", "copysignl", "cosf", "coshf", "coshl",
+"cosl", "cpow", "cpowf", "cpowl", "cproj", "cprojf", "cprojl",
+"creal", "crealf", "creall", "csin", "csinf", "csinh", "csinhf",
+"csinhl", "csinl", "csqrt", "csqrtf", "csqrtl", "ctan", "ctanf",
+"ctanh", "ctanhf", "ctanhl", "ctanl", "erf", "erff", "erfl", "erfc",
+"erfcf", "erfcl", "exp2", "exp2f", "exp2l", "expf", "expl", "expm1",
+"expm1f", "expm1l", "fabsf", "fabsl", "fdim", "fdimf", "fdiml",
+"feclearexcept", "fegetenv", "fegetexceptflag", "fegetround",
+"feholdexcept", "feraiseexcept", "fesetenv", "fesetexceptflag",
+"fesetround", "fetestexcept", "feupdateenv", "fgetwc", "fgetws",
+"fwscanf", "floorf", "floorl", "fma", "fmaf", "fmal", "fmax", "fmaxf",
+"fmaxl", "fmin", "fminf", "fminl", "fmodf", "fmodl", "fpclassify",
+"fputwc", "fputws", "frexpf", "frexpl", "fwide", "fwprintf", "getwc",
+"getwchar", "hypot", "hypotf", "hypotl", "ilogb", "ilogbf", "ilogbl",
+"imaxabs", "imaxdiv", "isblank", "isfinite", "isgreater",
+"isgreaterequal", "isinf", "isless", "islessequal", "islessgreater",
+"isnan", "isnormal", "isunordered", "iswalnum", "iswalpha",
+"iswblank", "iswcntrl", "iswctype", "iswdigit", "iswgraph",
+"iswlower", "iswprint", "iswpunct", "iswspace", "iswupper",
+"iswxdigit", "ldexpf", "ldexpl", "lgamma", "lgammaf", "lgammal",
+"llabs", "lldiv", "llrint", "llrintf", "llrintl", "llround",
+"llroundf", "llroundl", "log1p", "log2", "logb", "log10f", "log10l",
+"log1pf", "log1pl", "log2f", "log2l", "logbf", "logbl", "logf",
+"logl", "lrint", "lrintf", "lrintl", "lround", "lroundf", "lroundl",
+"mbrlen", "mbrtowc", "mbsinit", "mbsrtowcs", "modff", "modfl",
+"nan", "nanf", "nanl", "nearbyint", "nearbyintf", "nearbyintl",
+"nextafter", "nextafterf", "nextafterl", "nexttoward", "nexttowardf",
+"nexttowardl", "powf", "powl", "putwc", "putwchar", "remainder",
+"remainderf", "remainderl", "remquo", "remquof", "remquol", "rint",
+"rintf", "rintl", "round", "roundf", "roundl", "scalbln", "scalblnf",
+"scalblnl", "scalbn", "scalbnf", "scalbnl", "signbit", "sinf",
+"sinhf", "sinhl", "sinl", "snprintf", "strtoimax", "strtoumax",
+"sqrtf", "sqrtl", "strtof", "strtold", "strtoll", "strtoull",
+"swprinf", "swscanf", "tanf", "tanhf", "tanhl", "tanl", "tgamma",
+"tgammaf", "tgammal", "towctrans", "towlower", "towupper", "trunc",
+"truncf", "truncl", "ungetwc", "vfscanf", "vfwprintf", "vfwscanf",
+"vscanf", "vsnprintf",  "vsscanf", "vswprintf", "vswscanf",
+"vwprintf", "vwscanf", "wcrtomb", "wcscat", "wcschr", "wcscmp",
+"wcscoll", "wcscpy", "wcscspn", "wcsftime", "wcslen", "wcsncat",
+"wcsncmp", "wcsncpy", "wcspbrk", "wcsrchr", "wcsrtombs", "wcsspn",
+"wcsstr", "wcstod", "wcstof", "wcstoimax", "wcstok", "wcstol",
+"wcstold", "wcstoll", "wcstoul", "wcstoull", "wcstoumax", "wcsxfrm",
+"wctob", "wctrans", "wctype", "wmemchr", "wmemcmp", "wmemcpy",
 "wmemmove", "wmemset", "wprintf", "wscanf", 0
 };
 
@@ -187,20 +176,24 @@ char *posix_fns[] = { "_exit", "_longjmp", "_setjmp",
 "y0", "y1", "yn", 0
 };
 
-#define Tansi	0x01
-#define Tposix	0x02
-#define Tallow	0x04
-#define Tother	0x08
-#define Tstub	0x10
+#define Tansi_c89	0x01
+#define Tansi_c99	0x02
+#define Tposix		0x04
+#define Tallow		0x08
+#define Tother		0x10
+#define Tstub		0x20
 
 int name2type(char *c)
 {
   int i;
   if (c[0] == '_')
     return Tallow;
-  for (i=0; ansi_fns[i]; i++)
-    if (strcmp(ansi_fns[i], c) == 0)
-      return Tansi;
+  for (i=0; ansi_c89_fns[i]; i++)
+    if (strcmp(ansi_c89_fns[i], c) == 0)
+      return Tansi_c89;
+  for (i=0; ansi_c99_fns[i]; i++)
+    if (strcmp(ansi_c99_fns[i], c) == 0)
+      return Tansi_c99;
   for (i=0; posix_fns[i]; i++)
     if (strcmp(posix_fns[i], c) == 0)
       return Tposix;
@@ -214,6 +207,7 @@ int name2type(char *c)
   return Tother;
 }
 
+#if 0
 char *type2name(int t)
 {
   static char buf[10][10];
@@ -228,6 +222,7 @@ char *type2name(int t)
   *bp = 0;
   return buf[bpi];
 }
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -250,15 +245,30 @@ void diagnose_obj(Object *obj)
   int i, title=1;
   int dtp=0, rtp=0;
 
-  if ((obj->df & Tansi) && (obj->rf & Tposix))
+  if ((obj->df & Tansi_c89) && (obj->rf & Tposix))
   {
-    printf("%s: (A) -> (P)\n", n);
-    dtp |= Tansi; rtp |= Tposix;
+    printf("%s: (C89) -> (P)\n", n);
+    dtp |= Tansi_c89; rtp |= Tposix;
   }
-  else if ((obj->df & Tansi) && (obj->rf & Tother))
+  if ((obj->df & Tansi_c89) && !(obj->rf & Tansi_c89) && (obj->rf & Tansi_c99))
   {
-    printf("%s: (A) -> (O)\n", n);
-    dtp |= Tansi; rtp |= Tother;
+    printf("%s: (C89) -> (C99)\n", n);
+    dtp |= Tansi_c89; rtp |= Tposix;
+  }
+  else if ((obj->df & Tansi_c89) && (obj->rf & Tother))
+  {
+    printf("%s: (C89) -> (O)\n", n);
+    dtp |= Tansi_c89; rtp |= Tother;
+  }
+  else if ((obj->df & Tansi_c99) && (obj->rf & Tposix))
+  {
+    printf("%s: (C99) -> (P)\n", n);
+    dtp |= Tansi_c99; rtp |= Tposix;
+  }
+  else if ((obj->df & Tansi_c99) && (obj->rf & Tother))
+  {
+    printf("%s: (C99) -> (O)\n", n);
+    dtp |= Tansi_c99; rtp |= Tother;
   }
   else if ((obj->df & Tposix) && (obj->rf & Tother))
   {
@@ -268,21 +278,31 @@ void diagnose_obj(Object *obj)
   else if ((obj->df & Tposix) && (obj->df & Tother))
   {
     printf("%s: (P),(O)\n", n);
-    dtp |= Tansi|Tposix;
+    dtp |= Tansi_c89|Tansi_c99|Tposix;
   }
-  else if ((obj->df & Tansi) && (obj->df & Tother))
+  else if ((obj->df & Tansi_c89) && (obj->df & Tother))
   {
-    printf("%s: (A),(O)\n", n);
-    dtp |= Tansi|Tother;
+    printf("%s: (C89),(O)\n", n);
+    dtp |= Tansi_c89|Tother;
   }
-  else if ((obj->df & Tansi) && (obj->df & Tposix))
+  else if ((obj->df & Tansi_c89) && (obj->df & Tposix))
   {
-    printf("%s: (A),(P)\n", n);
+    printf("%s: (C89),(P)\n", n);
+    dtp |= Tother|Tposix;
+  }
+  else if ((obj->df & Tansi_c99) && (obj->df & Tother))
+  {
+    printf("%s: (C99),(O)\n", n);
+    dtp |= Tansi_c99|Tother;
+  }
+  else if ((obj->df & Tansi_c99) && (obj->df & Tposix))
+  {
+    printf("%s: (C99),(P)\n", n);
     dtp |= Tother|Tposix;
   }
 
-  if ((obj->df & Tposix && obj->lf & Tansi)
-      || ((obj->df & Tother && obj->lf & (Tansi | Tposix))))
+  if ((obj->df & Tposix && obj->lf & (Tansi_c89 | Tansi_c99))
+      || ((obj->df & Tother && obj->lf & (Tansi_c89 | Tansi_c99 | Tposix))))
   {
     dtp = -1;
     rtp = -1;
@@ -471,7 +491,8 @@ main()
   for (obj=Object::first; obj; obj=obj->next)
     diagnose_obj(obj);
 
-  do_missing("ANSI", ansi_fns, all_defs);
+  do_missing("ANSI C89", ansi_c89_fns, all_defs);
+  do_missing("ANSI C99", ansi_c99_fns, all_defs);
   do_missing("POSIX", posix_fns, all_defs);
 
   return 0;
