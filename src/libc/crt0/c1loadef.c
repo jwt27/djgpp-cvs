@@ -2,6 +2,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <crt0.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <io.h>
 #include <fcntl.h>
@@ -21,7 +22,7 @@ __crt0_load_environment_file(char *app_name)
     if (djgpp_env >= 0)
     {
       char *file;
-      char base[120], *bp, *a0p, *tb;
+      char base[PATH_MAX], *bp, *a0p, *tb;
       int this_prog = 1;
       int fsize = lseek(djgpp_env, 0L, SEEK_END);
 
@@ -80,8 +81,13 @@ __crt0_load_environment_file(char *app_name)
 	    char *buf = alloca(fsize);
 	    char *tb2 = buf;
 	    char *sp=tb, *dp=tb2;
-	    while (*sp != '=')
+	    while (*sp != '=' && *sp != '\n' && *sp)
 	      *dp++ = *sp++;
+	    if (*sp == '\n' || *sp == '\0')
+	    {
+	      tb = sp;
+	      continue;
+	    }
 	    if (*tb2 == '+')	/* non-overriding */
 	    {
 	      *dp = 0;
