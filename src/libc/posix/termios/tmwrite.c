@@ -20,7 +20,17 @@
 #include <libc/farptrgs.h>
 #include <libc/getdinfo.h>
 
-#define NARGS 16
+#define NPAR 16
+
+struct screen_info
+{
+  unsigned char init_attrib;
+  unsigned char attrib;
+  unsigned char max_row;
+  unsigned char active_page;
+  unsigned short max_col;
+  unsigned long video_buffer;
+};
 
 /* Console command parser */
 
@@ -29,21 +39,44 @@ enum cmd_parser_states { need_esc = 0, have_esc, have_lbracket,
 
 static enum cmd_parser_states cmd_state;
 
+static struct screen_info screen;
+
 /* static functions */
 static ssize_t __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv);
 static ssize_t __libc_termios_write_cooked_tty (int handle, const void *buffer, size_t count);
 static ssize_t __libc_termios_write_raw_tty (int handle, const void *buffer, size_t count);
 static size_t parse_console_command(const unsigned char *buf, size_t count);
-static void execute_console_command(const unsigned char cmd, unsigned char argc, unsigned int args[NARGS]);
+static void execute_console_command(const unsigned char cmd, unsigned char argc, unsigned int args[NPAR]);
 
 /* direct I/O functions */
 static inline void __direct_output (unsigned char ch);
 static inline void __direct_outputs (const unsigned char *s);
 
+/* Cursor motion functions.  */
+static void set_cursor(unsigned char col, unsigned char row);
+static void move_cursor(int x_delta, int y_delta);
+static void get_cursor(unsigned char *col, unsigned char *row);
+
+/* Initialize the screen portion of termios.  */
 void __libc_termios_init_write(void)
 {
+  __dpmi_regs r;
+
   /* set special hooks */
   __libc_write_termios_hook = __libc_termios_write;
+  _farsetsel(_dos_ds);
+
+  screen.active_page = _farnspeekb(0x462);
+  screen.max_row = _farnspeekb(0x484);
+  screen.max_col = _farnspeekb(0x44a) - 1;
+  screen.video_buffer = 0xb800 * 16;
+
+  r.h.ah = 0x08;
+  r.h.bh = screen.active_page;
+  __dpmi_int(0x10, &r);
+
+  screen.init_attrib = r.h.ah;
+  screen.attrib = r.h.ah;
 }
 
 /******************************************************************************/
@@ -209,8 +242,9 @@ is_command_char(unsigned char ch)
 static size_t
 parse_console_command(const unsigned char *buf, size_t count)
 {
-  static unsigned int args[NARGS];
+  static unsigned int args[NPAR];
   static unsigned char arg_count;
+  static unsigned char ignore_cmd;
 
   const unsigned char *ptr = buf;
   const unsigned char *ptr_end = buf + count;
@@ -241,16 +275,17 @@ parse_console_command(const unsigned char *buf, size_t count)
       case have_lbracket:
         /* After the left bracket, either an argument
            or the command follows.  */
-        arg_count = NARGS;
+        arg_count = NPAR;
         arg_count = 0;
         args[0] = 0;
         if (isdigit(*ptr))
         {
           cmd_state = have_arg;
         }
-        else if (!is_command_char(*ptr))
+        else if (*ptr == '[')
         {
-          /* Ignore non-digits and non-letters. */
+          /* Ignore function keys. */
+          ignore_cmd = 1;
           ++ptr;
           break;
         }
@@ -277,7 +312,7 @@ parse_console_command(const unsigned char *buf, size_t count)
         {
           /* Argument separator.  */
           ++arg_count;
-          if (arg_count < NARGS)
+          if (arg_count < NPAR)
             args[arg_count] = 0;
           ++ptr;
           break;
@@ -293,11 +328,12 @@ parse_console_command(const unsigned char *buf, size_t count)
       case have_cmd:
       {
         /* Execute the command.  */
-        if (is_command_char(*ptr))
+        if (is_command_char(*ptr) && !ignore_cmd)
           execute_console_command(*ptr, arg_count, args);
 
         /* Reset the parse state.  */
         cmd_state = need_esc;
+        ignore_cmd = 1;
         ++ptr;
         return ptr - buf;
       }
@@ -306,124 +342,48 @@ parse_console_command(const unsigned char *buf, size_t count)
   return ptr - buf;
 }
 
-static inline void
-get_cursor(unsigned char *col, unsigned char *row)
-{
-  unsigned char cur_page;
-  unsigned short rowcol;
-
-  cur_page = _farnspeekb(0x462);
-
-  rowcol = _farnspeekw(0x450 + cur_page);
-  *row = rowcol >> 8;
-  *col = rowcol & 0xff;
-}
-
-
-static void
-move_cursor(int x_delta, int y_delta)
-{
-  unsigned char row, col;
-  unsigned char max_row, max_col;
-  unsigned char cur_page;
-  unsigned short rowcol;
-  __dpmi_regs r;
-
-  _farsetsel(_dos_ds);
-  cur_page = _farnspeekb(0x462);
-
-  rowcol = _farnspeekw(0x450 + cur_page);
-  row = rowcol >> 8;
-  col = rowcol & 0xff;
-
-  max_row = _farnspeekb(0x484) + 1;
-  max_col = _farnspeekb(0x44a);
-
-  if ((int)row + y_delta < 0)
-    row = 0;
-  else if (row + y_delta > max_row)
-    row = max_row;
-
-  if ((int)col + x_delta < 0)
-    col = 0;
-  else if (col + x_delta > max_row)
-    col = max_col;
-
-  r.h.ah = 2;
-  r.h.bh = cur_page;
-  r.h.dh = row + y_delta;
-  r.h.dl = col + x_delta;
-  __dpmi_int(0x10, &r);
-}
-
-static void
-set_cursor(unsigned char col, unsigned char row)
-{
-  unsigned char max_row, max_col;
-  unsigned char cur_page;
-  __dpmi_regs r;
-
-  _farsetsel(_dos_ds);
-  cur_page = _farnspeekb(0x462);
-
-  max_row = _farnspeekb(0x484) + 1;
-  max_col = _farnspeekb(0x44a);
-
-  if (row > max_row)
-    row = max_row;
-
-  if (col > max_row)
-    col = max_col;
-
-  r.h.ah = 2;
-  r.h.bh = cur_page;
-  r.h.dh = row;
-  r.h.dl = col;
-  __dpmi_int(0x10, &r);
-}
-
 #define GET_ARG(I, DEFVAL) ((argc > I) ? (args[I]) : (DEFVAL))
 
 static void
 execute_console_command(const unsigned char cmd, unsigned char argc,
-                        unsigned int args[NARGS])
+                        unsigned int args[NPAR])
 {
   unsigned char row, col;
 
   switch (cmd)
   {
-    /* Move up.  */
+    /* CUU: Cursor up.  */
     case 'A':
       move_cursor(0, -GET_ARG(0, 1));
       break;
 
-    /* Move down.  */
+    /* CUD: Cursor down.  */
     case 'B':
-      move_cursor(0, -GET_ARG(0, 1));
+      move_cursor(0, GET_ARG(0, 1));
       break;
 
-    /* Move left.  */
+    /* CUF: Cursor right.  */
     case 'C':
-      move_cursor(-GET_ARG(0, 1), 0);
-      break;
-
-    /* Move right.  */
-    case 'D':
       move_cursor(GET_ARG(0, 1), 0);
       break;
 
-    /* Go to column.  */
+    /* CUB: Cursor Left.  */
+    case 'D':
+      move_cursor(-GET_ARG(0, 1), 0);
+      break;
+
+    /* CHA: Cursor to column.  */
     case 'G':
       get_cursor(&row, &col);
       set_cursor(GET_ARG(0, 1) - 1, row);
       break;
 
-    /* Go to row and column.  */
+    /* CUP: Cursor to row and column.  */
     case 'H':
       set_cursor(GET_ARG(0, 1) - 1, GET_ARG(1, 1) - 1);
       break;
 
-    /* Go to row.  */
+    /* VPA: Cursor to row.  */
     case 'd':
       get_cursor(&row, &col);
       set_cursor(row, GET_ARG(0, 1) - 1);
@@ -433,3 +393,62 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
       break;
   }
 }
+
+static void
+get_cursor(unsigned char *col, unsigned char *row)
+{
+  unsigned short rowcol;
+
+  rowcol = _farnspeekw(0x450 + screen.active_page);
+  *row = rowcol >> 8;
+  *col = rowcol & 0xff;
+}
+
+static void
+set_cursor(unsigned char col, unsigned char row)
+{
+  __dpmi_regs r;
+
+  _farsetsel(_dos_ds);
+
+  if (row > screen.max_row)
+    row = screen.max_row;
+
+  if (col > screen.max_col)
+    col = screen.max_col;
+
+  r.h.ah = 2;
+  r.h.bh = screen.active_page;
+  r.h.dh = row;
+  r.h.dl = col;
+  __dpmi_int(0x10, &r);
+}
+
+static void
+move_cursor(int x_delta, int y_delta)
+{
+  unsigned char row, col;
+  unsigned short rowcol;
+  __dpmi_regs r;
+
+  rowcol = _farpeekw(_dos_ds, 0x450 + screen.active_page);
+  row = rowcol >> 8;
+  col = rowcol & 0xff;
+
+  if ((int)row + y_delta < 0)
+    row = 0;
+  else if (row + y_delta > screen.max_row)
+    row = screen.max_row;
+
+  if ((int)col + x_delta < 0)
+    col = 0;
+  else if (col + x_delta > screen.max_col)
+    col = screen.max_col;
+
+  r.h.ah = 2;
+  r.h.bh = screen.active_page;
+  r.h.dh = row + y_delta;
+  r.h.dl = col + x_delta;
+  __dpmi_int(0x10, &r);
+}
+
