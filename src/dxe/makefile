@@ -33,7 +33,7 @@ $(BIN)/dxe3res.exe : $(C) dxe3res.o $(L)
 	$(EXE)
 
 $(HOSTBIN)/dxegen.exe : dxe3gen.c init1.h init2.h init3.h fini1.h fini2.h fini3.h
-	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" dxe3gen.c -o $@
+	$(GCC) -I ../../include -DDXE_LD=\"$(CROSS_LD)\" dxe3gen.c -o $@
 
 clean ::
 	@-$(MISC) rm *.o *.h $(HOSTBIN)/dxegen.exe
