@@ -15,10 +15,12 @@ extern "C" {
 /* POSIX functions (for when compiling an ANSI function) */
 
 #define access __access
+#define chdir __chdir
 #define close __close
 #define dup __dup
 #define dup2 __dup2
 #define fnmatch __fnmatch
+#define getcwd __getcwd
 #define glob __glob
 #define isatty __isatty
 #define lseek __lseek
@@ -39,6 +41,7 @@ extern "C" {
 #define findnext __findnext
 #define fsync __fsync
 #define getdisk __getdisk
+#define getdtablesize __getdtablesize
 #define getitimer __getitimer
 #define gettimeofday __gettimeofday
 #define modfl __modfl
