@@ -99,8 +99,7 @@ What to download
 
 See http://www.delorie.com/djgpp/zip-picker.html for a form-based
 guide to what to download.  In general, download the binary
-distributions only; most of the people don't need the source
-distributions.
+distributions only; most people don't need the source distributions.
 
 To build C programs, you'll need djdev203.zip, gcc*b.zip, and
 bnu*b.zip.  For C++, also get gpp*b.zip.
@@ -109,8 +108,8 @@ To read the online manuals, get txi*b.zip and run "info".  If you don't
 have a DPMI server installed, you'll need csdpmi*b.zip.  (Windows, QDPMI,
 386Max, NWDOS, OpenDOS, OS/2, Win/NT and Linux DOSEmu all provide DPMI
 services, so you don't need CWSDPMI in those environments.)  For more
-details, download faq*b.zip (the full FAQ list) and read Chapter 4
-there.
+details, download faq*b.zip (the full FAQ list) and read Chapter 4,
+"Where and What to Download".
 
 
 Installation
@@ -193,15 +192,15 @@ Installation
    The actual numbers will vary according to amount of RAM installed
    on your system, the available disk space and the DPMI server.  If
    the sum of the two numbers reported by go32-v2 is less than 4MB,
-   read section 3.8 of the FAQ.  (If you have more than that, but want
-   to get the optimal performance from your system, read that section
-   anyway.)
+   read section 3.9 of the FAQ, "How to configure your system for
+   DJGPP".  (If you have more than that, but want to get the optimal
+   performance from your system, read that section anyway.)
 
 
 Compilation
 -----------
 
-GCC is a command-line compiler, which you invoke from DOS command
+GCC is a command-line compiler which you invoke from the DOS command
 line.  To compile and link a single-file C program, use a command like
 this:
 
@@ -221,7 +220,8 @@ command line:
 This produces the object file myfile.o.  The `-Wall' switch turns on
 many useful warning messages which are especially beneficial for new
 users of GCC.  (Other C++ extensions, like .cpp, are also supported,
-see section 8.4 of the FAQ for details.)
+see section 8.4 of the FAQ, "How does GCC recognize the source
+language", for details.)
 
 To link several C object files into an executable program, use a
 command line such as this:
@@ -280,8 +280,8 @@ information and updates.
 Debugging
 ---------
 
-To debug a program, you must first compile its source files with `-g'
-switch:
+To debug a program, you must first compile its source files with the
+`-g'switch:
 
 	gcc -c -Wall -g mymain.c
 	gcc -c -Wall -g mysub1.c
@@ -295,7 +295,7 @@ and then link with `-g' as well:
 compile to a raw COFF output by omitting the `.exe' from the filename
 in order to debug programs.  The debuggers distributed with v2.01 and
 later are capable of reading an executable as well as the raw COFF.
-If you don't understand this, don't worry about it.)
+If you don't understand what this means, don't worry about it.)
 
 Then run your program under the debugger:
 
@@ -306,7 +306,7 @@ or
 	edebug32 myprog.exe
 
 (You will have to get gdb*b.zip if you want to debug with GDB.)
-FSDB has its help screen; press F1 to read it.  GDB comes with Info
+FSDB has a help screen; press F1 to read it.  GDB comes with Info
 docs (see below) which can be read with info.exe.  Edebug32 is a
 seldom-used alternative debugger; type 'h' to get help.
 
@@ -316,8 +316,8 @@ On-line docs
 ------------
 
 Most of the on-line documentation is organized in a special hypertext
-format used by the GNU project.  Each package brings its docs which
-are files with .iNN extension and are unzipped into the info/
+format used by the GNU project.  Each package comes with its own docs,
+in files with the .iNN extension which are unzipped into the info/
 subdirectory of your main DJGPP installation directory.  To browse
 these docs, get and unzip the file txi*b.zip, then run info.exe.  If
 you don't know how to use Info, read the next section.
@@ -328,8 +328,8 @@ Reading the documentation, or A Crash Course in Info
 ----------------------------------------------------
 
 The following is not supposed to be a complete guide to using Info,
-just a starting point, so you could move around the docs and search it
-for whatever you are looking for.
+but just a starting point, so you could move around the docs and
+search it efficiently for specific subjects.
 
 To invoke Info to read a manual, type "info" followed by the manual
 name.  For example:
@@ -340,6 +340,7 @@ name.  For example:
   - type "info gcc" to read the manual for GCC, the GNU C compiler;
   - type "info faq" to read the DJGPP FAQ list;
   - type "info make" to read the manual for the Make utility;
+  - type "info" to get a menu of all the manuals.
 
 To exit Info, press `q' (for Quit).
 
@@ -360,51 +361,78 @@ position the cursor at the asterisk, then press [Enter].  To get back
 from the excursion, press `l' (that's a lower-case letter ell, not the
 digit one), for "Last".
 
-To quickly search for a certain subject in the index of a manual,
+To quickly search for a particular subject in the index of a manual,
 press `i' (for Index), type the subject, then press [Enter].  You can
 type only part of the subject name and press TAB, to see whether the
 index includes any entries that begin with what you typed.  TAB causes
 Info to try to complete what you typed using the avialable index
-entries; if Info beeps on you or flashes the screen colors, you know
-that there are no index entries which begin with what you typed;
-delete what you have typed (using the BackSpace key) and try a
-different name for what you are looking.  If there are some index
-entries that begin with what you typed, Info will complete it.  If the
-completed entry looks like what you are looking for, press [Enter] to
-go to the section of the manual that discusses it; if not, press TAB
-again to see all the possible completions.  If any of the completions
-seem right, type enough text to make it uinque and press [Enter].  If
-none of the completions seem appropriate, delete what you typed and
-try a different subject name.
+entries.  If Info beeps at you or flashes the screen colors when you
+press TAB, it means that there are no index entries which begin with
+what you typed; delete what you have typed (using the BackSpace key)
+and try a different name for what you were looking for.  If there are
+some index entries that begin with what you typed, Info will complete
+it.  If the completed entry looks like what you are looking for, press
+[Enter] to go to the section of the manual that discusses it; if not,
+press TAB again to see all the possible completions.  If any of the
+completions seem right, type enough text to make it uinque and press
+[Enter].  If none of the completions seem appropriate, delete what you
+typed and try a different subject name.
 
 For example, suppose you get the infamous message "ld.exe: cannot open
 -lstdcxx: No such file or directory" and you want to check what the
 FAQ has to say about that.  You start Info ("info faq"), then press
-`i' and type "can TAB".  The first TAB just capitalizes "can" into
-"Can", so you know there are some index entries which begin with
-"Can", and type TAB again.  Now you will see a list of potential
-completions.  Alas, none of them seems to be relevant for this
-problem, so you use BackSpace to delete "Can" and then type "-lstd"
-followed by TAB.  Now the the info program only has one choice so it
-completes your search and this time it's exactly what you are looking
-for!  Now press "RET" to go to that node and read what the FAQ has to
+`i' and type "c a n TAB" (without the blanks).  The first TAB just
+capitalizes "can" into "Can", so you know there are some index entries
+which begin with "Can", and type TAB again.  Now you will see a list
+of potential completions.  Alas, none of them seems to be relevant for
+this problem, so you use BackSpace to delete "Can" and then type
+"-lstd" followed by TAB.  Now Info has only one choice so it completes
+your search and this time it's exactly what you are looking for!
+Finally, press [Enter] to go to that node and read what the FAQ has to
 say about this subject.
 
 If you prefer to look up the subject in the index yourself, page
 through the top-level menu of the manual until you find a menu entry
 that says something like "* Concept Index" or "* Command Index" or
 just "* Index", press [Enter] to go to the index, then browse it for
-any pertinent entries.  An index is just a huge menu sorted in an
-alphabetical order, so whenever you find an entry you are looking for,
-position the cursor at that line and press [Enter] to go to the
+any pertinent entries.  An index is just a huge menu sorted in
+alphabetical order, so find an entry you are looking for, position the
+cursor at the beginning of its line, and press [Enter] to go to the
 relevant section.
 
-Sometimes the index search isn't good enough (because the indices
-cannot list everything).  In this case, press `s' (for Search) and
-type a string you want to find, then press [Enter].  Info will search
-the entire manual for this string and position you at the first
-occurrence.  To search for the next occurrence, press `s' again and
-then [Enter]: Info will repeat the search.
+The library reference doesn't have an index, so search for functions
+either in the alphabetical list or in the functional categories.  For
+example, library function `mktime' is in the "Time Functions"
+category, `random' is in the "Random Number Functions" category, etc.
+
+Sometimes the index search won't help you (because the indices cannot
+list everything).  In this case, press `s' (for Search), type the text
+you want to find, and then press [Enter].  Info will search the entire
+manual for this string and position you at the first occurrence.  To
+search for the next occurrence, press `s' and [Enter] again: Info will
+repeat the search.
+
+Finally, if you don't know in what manual to look for some subject,
+you can use the "--apropos" switch to cause Info to look for that
+subject in the indices of every installed manual.  For example,
+suppose you have heard that DJGPP programs support file-name
+wildcards, but you don't know in which manual to look for their
+description.  The following command will ask Info to print all the
+sections in every manual whose indices mention the string "wildcard":
+
+	info --apropos=wildcard
+
+This will run for a while, and then print lines like these:
+
+    "(kb)Features" -- Wildcards
+    "(kb)Changes in 2.01" -- wildcards
+    "(djgppfaq)Filename globbing" -- Filename wildcards expansion
+
+The text inside the quotes is the name of the manual and the section
+where the subject "wildcard" is discussed.  To invoke Info in order to
+read the first entry above, type this:
+
+	info --node="(kb)Features"
 
 Info has many more commands and options.  To find out, from the
 command line type "info info".  To find out even more, type
