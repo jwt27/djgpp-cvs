@@ -3,7 +3,7 @@
 /*
  * This is file XSTAT.C
  *
- * Internal assist functions which are common to stat() and fstat().
+ * Internal assist functions which are common to stat(), fstat() and lstat().
  *
  *
  * Copyright (c) 1994-96 Eli Zaretskii <eliz@is.elta.co.il>

@@ -1,10 +1,10 @@
-@node stat, io
+@node lstat, io
 @subheading Syntax
 
 @example
 #include <sys/stat.h>
 
-int stat(const char *file, struct stat *sbuf);
+int lstat(const char *file, struct stat *sbuf);
 @end example
 
 @subheading Description
@@ -33,18 +33,18 @@ values only when long file names are supported (e.g. on Windows 9X);
 otherwise, they all have the same value: the time that the file was last
 written@footnote{
 Even when long file names @emph{are} supported, the three time values
-returned by @code{stat} might be identical if the file was last written
+returned by @code{lstat} might be identical if the file was last written
 by a program which used legacy DOS functions that don't know about long
 file names.}.  Most Windows 9X VFAT filesystems only support the date of
 the file's last access (the time is set to zero); therefore, the DJGPP
-implementation of @code{stat} sets the @code{st_atime} member to the
+implementation of @code{lstat} sets the @code{st_atime} member to the
 same value as @code{st_mtime} if the time part of @code{st_atime}
 returned by the filesystem is zero (to prevent the situation where the
 file appears to have been created @emph{after} it was last accessed,
 which doesn't look good).
 
 Some members of @code{struct stat} are very expensive to compute.  If
-your application is a heavy user of @code{stat} and is too slow, you can
+your application is a heavy user of @code{lstat} and is too slow, you can
 disable computation of the members your application doesn't need, as
 described in @ref{_djstat_flags}.
 
@@ -54,22 +54,22 @@ Zero on success, nonzero on failure (and @var{errno} set).
 
 @subheading Portability
 
-@portability !ansi, posix
+@portability !ansi, !posix
 
 @subheading Example
 
 @example
 struct stat s;
-stat("data.txt", &s);
+lstat("data.txt", &s);
 if (S_ISDIR(s.st_mode))
   printf("is directory\n");
 @end example
 
 @subheading Implementation Notes
 
-Supplying a 100% Unix-compatible @code{stat} function under DOS is an
+Supplying a 100% Unix-compatible @code{lstat} function under DOS is an
 implementation nightmare.  The following notes describe some of the
-obscure points specific to @code{stat}s behavior in DJGPP.
+obscure points specific to @code{lstat}s behavior in DJGPP.
 
 1. The @samp{drive} for character devices (like @code{con}, @code{/dev/null}
 and others is returned as -1.  For drives networked by Novell Netware, it
@@ -83,7 +83,7 @@ in a way which guarantees that no two different files will get the same
 inode number (thus it is unique).  This invented inode will also be
 different from any real cluster number of any local file.  However, only
 on plain DOS, and only for local, non-empty files/directories the inode
-is guaranteed to be consistent between @code{stat}, @code{fstat} and
+is guaranteed to be consistent between @code{stat}, @code{fstat} and 
 @code{lstat} function calls.
 
 3. The WRITE access mode bit is set only for the user (unless the file is
@@ -104,12 +104,12 @@ if that's available; otherwise, it is reported as 1-Jan-1980.
 what hard-to-get fields of @code{struct stat} are needed by the
 application.
 
-7. @code{stat} should not be used to get an up-to-date info about a file
-which is open and has been written to, because @code{stat} will only
+7. @code{lstat} should not be used to get an up-to-date info about a file
+which is open and has been written to, because @code{lstat} will only
 return correct data after the file is closed.  Use @code{fstat}
 (@pxref{fstat}) while the file is open.  Alternatively, you can call
 @code{fflush} and @code{fsync} to make the OS flush all the file's data
-to the disk, before calling @code{stat}.
+to the disk, before calling @code{lstat}.
 
 8. The number of links @code{st_nlink} is always 1 for files other than
 directories.  For directories, it is the number of subdirectories plus

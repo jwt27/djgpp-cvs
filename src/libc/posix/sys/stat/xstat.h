@@ -1,7 +1,7 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
- * Header for internal stat()/fstat() assist functions.
+ * Header for internal stat()/fstat()/lstat() assist functions.
  *
  */
 

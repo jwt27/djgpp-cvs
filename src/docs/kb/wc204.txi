@@ -84,7 +84,9 @@ New function @code{stpncpy} has been added, thanks to
 @email{restone@@skypoint.com, Richard E. Stone}.
 
 @findex lchown@r{, added to the library}
-New function @code{lchown} has been added for UNIX compatibility.
+@findex lstat@r{, added to the library}
+New functions @code{lchown} and @code{lstat} have been added for 
+UNIX compatibility.
 
 @findex setitimer@r{, and zero @code{it_interval.tv_usec}}
 Calling the @code{setitimer} function with both
