@@ -700,3 +700,6 @@ versions can be built.  Profiling options in @file{gcc.opt} are ignored
 for certain files in the C libraries' sources.  The build system for
 @file{emu387.dxe}, the math co-processor emulation library, was also
 modified, so that it can be built against a profiled version of libc.
+
+@findex strftime@r{, and z format}
+Corrected problem with negative gmt offsets with z format.
