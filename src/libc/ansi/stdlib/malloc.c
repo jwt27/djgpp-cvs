@@ -6,14 +6,14 @@
 #include <unistd.h>
 
 typedef struct BLOCK {
-  int size;
+  size_t size;
   struct BLOCK *next;
   int bucket;
 } BLOCK;
 
 #define BEFORE(bp)	((BLOCK *)((char *)bp - *(int *)((char *)bp - 4) - 8))
-#define BEFSZ(bp)	(*(int *)((char *)bp - 4))
-#define ENDSZ(bp)	(*(int *)((char *)bp + bp->size + 4))
+#define BEFSZ(bp)	(*(size_t *)((char *)bp - 4))
+#define ENDSZ(bp)	(*(size_t *)((char *)bp + bp->size + 4))
 #define AFTER(bp)	((BLOCK *)((char *)bp + bp->size + 8))
 #define DATA(bp)	((char *)&(bp->next))
 
@@ -58,7 +58,7 @@ consistency()
 #endif
 
 static inline int
-size2bucket(unsigned size)
+size2bucket(size_t size)
 {
   int rv=0;
   size>>=2;
@@ -79,11 +79,11 @@ b2bucket(BLOCK *b)
 }
 
 static inline BLOCK *
-split_block(BLOCK *b, int size)
+split_block(BLOCK *b, size_t size)
 {
   BLOCK *rv = (BLOCK *)((char *)b + size+8);
 #if DEBUG
-  printf("  split %d/%08x to %d/%08x, %d/%08x\n",
+  printf("  split %u/%08x to %u/%08x, %u/%08x\n",
 	 b->size, b, size, b, b->size - size - 8, rv);
 #endif
   rv->size = b->size - size - 8;
@@ -108,7 +108,7 @@ malloc(size_t size)
   if (size<ALIGN) size = ALIGN;
   size = (size+(ALIGN-1))&~(ALIGN-1);
 #if DEBUG
-  printf("malloc(%d)\n", size);
+  printf("malloc(%u)\n", size);
 #endif
 
 #if NUMSMALL
@@ -127,13 +127,13 @@ malloc(size_t size)
   {
     rv = slop;
 #if DEBUG
-    printf("  using slop %d/%08x\n", slop->size, slop);
+    printf("  using slop %u/%08x\n", slop->size, slop);
 #endif
     if (slop->size >= size+MIN_SAVE_EXTRA)
     {
       slop = split_block(slop, size);
 #if DEBUG
-      printf("  remaining slop %d/%08x\n", slop->size, slop);
+      printf("  remaining slop %u/%08x\n", slop->size, slop);
 #endif
     }
     else
@@ -174,7 +174,7 @@ malloc(size_t size)
 	  {
 	    b = b2bucket(slop);
 #if DEBUG
-	    printf("    putting old slop %d/%08x on free list %d\n",
+	    printf("    putting old slop %u/%08x on free list %d\n",
 		   slop->size, slop, b);
 #endif
 	    slop->next = freelist[b];
@@ -182,7 +182,7 @@ malloc(size_t size)
 	  }
 	  slop = split_block(rv, size);
 #if DEBUG
-	  printf("    slop size %d/%08x\n", slop->size, slop);
+	  printf("    slop size %u/%08x\n", slop->size, slop);
 #endif
 	}
 	RET(rv);
@@ -232,7 +232,7 @@ merge(BLOCK *a, BLOCK *b, BLOCK *c)
   BLOCK *bp, **bpp;
 
 #if DEBUG
-  printf("  merge %d/%08x + %d/%08x = %d\n",
+  printf("  merge %u/%08x + %u/%08x = %u\n",
 	 a->size, a, b->size, b, a->size+b->size+8);
 #endif
 
@@ -242,13 +242,13 @@ merge(BLOCK *a, BLOCK *b, BLOCK *c)
   if (c == slop)
   {
 #if DEBUG
-    printf("  snipping slop %d/%08x\n", slop->size, slop);
+    printf("  snipping slop %u/%08x\n", slop->size, slop);
 #endif
     slop = 0;
   }
   bu = b2bucket(c);
 #if DEBUG
-  printf("bucket for %d/%08x is %d\n", c->size, c, bu);
+  printf("bucket for %u/%08x is %d\n", c->size, c, bu);
 #endif
   bpp = freelist+bu;
   for (bp=freelist[bu]; bp; bpp=&(bp->next), bp=bp->next)
@@ -259,7 +259,7 @@ merge(BLOCK *a, BLOCK *b, BLOCK *c)
     if (bp == c)
     {
 #if DEBUG
-      printf("\n  snipping %d/%08x from freelist[%d]\n", bp->size, bp, bu);
+      printf("\n  snipping %u/%08x from freelist[%d]\n", bp->size, bp, bu);
 #endif
       *bpp = bp->next;
       break;
@@ -297,7 +297,7 @@ free(void *ptr)
   ENDSZ(block) &= ~1;
   block->bucket = -1;
 #if DEBUG
-  printf("free(%d/%08x)\n", block->size, block);
+  printf("free(%u/%08x)\n", block->size, block);
 #endif
 
   CHECK(block);
@@ -329,7 +329,7 @@ realloc(void *ptr, size_t size)
 {
   BLOCK *b;
   char *newptr;
-  int copysize;
+  size_t copysize;
 
   if (ptr == 0)
     return malloc(size);
@@ -348,7 +348,7 @@ realloc(void *ptr, size_t size)
 
   newptr = (char *)malloc(size);
 #if DEBUG
-  printf("realloc %d %d/%08x %08x->%08, %d\n",
+  printf("realloc %u %u/%08x %08x->%08, %u\n",
 	 size, b->size & ~1, b, ptr, newptr, copysize);
 #endif
   memcpy(newptr, ptr, copysize);
