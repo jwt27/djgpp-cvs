@@ -34,8 +34,8 @@ int __emu387_load_hook;
 
 /* The environment variable 387 can be used to disable a 387 which is present
    (for testing) by setting it to "n".  The presence can be reported to 
-   stderr by setting 387 to "q" (query).  Unlike GO32, "y" is not supported
-   since it can hang the machine if a coprocessor is not really present.
+   stderr by setting 387 to "q" (query).  If 387 is set to "y", we assume the
+   coprocessor is present without checking.
    If a 387 is not present under DPMI, we call a V1.0 DPMI extension to ask 
    that Exception 7 be sent to our process.  If we don't have a 387, we 
    attempt to load the EMU387.DXE and call it from the signal.
@@ -71,6 +71,7 @@ void _npxsetup(char *argv0)
   cp = getenv("387");
   if (cp && (tolower((unsigned char)cp[0]) == 'y'))
   {
+    _8087 = 3;
     _control87(0x033f, 0xffff);	/* mask all numeric exceptions */
     return;
   }
@@ -82,8 +83,8 @@ void _npxsetup(char *argv0)
        nested FPU client fault - DJ */
     __dpmi_set_coprocessor_emulation(1);
     have_80387 = _detect_80387();
-    _8087 = (have_80387 ? 3 : 0);
   }
+  _8087 = (have_80387 ? 3 : 0);
 
   if (cp && (tolower((unsigned char)cp[0]) == 'q')) {
     if (!have_80387)

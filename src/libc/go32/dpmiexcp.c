@@ -12,6 +12,7 @@
 #include <libc/farptrgs.h>
 #include <dpmi.h>
 #include <go32.h>
+#include <dos.h>
 #include <signal.h>
 #include <setjmp.h>
 #include <errno.h>
@@ -569,10 +570,10 @@ __djgpp_exception_setup(void)
 }
 
 int
-__djgpp_set_ctrl_c(int enable)
+__djgpp_set_ctrl_c(int enable_sigs)
 {
   int oldenable = !(__djgpp_hwint_flags & 1);
-  if(enable)
+  if (enable_sigs)
     __djgpp_hwint_flags &= ~1;
   else
     __djgpp_hwint_flags |= 1;
@@ -582,6 +583,12 @@ __djgpp_set_ctrl_c(int enable)
 void __attribute__((noreturn))
 _exit(int status)
 {
+  /* If we are exiting due to an FP exception, the next program run in the
+     same DOS box on Windows crashes during startup.  Clearing the 80x87
+     seems to prevent this, at least in some cases.  We only do that if a
+     coprocessor is actually present.  */
+  if (_8087)
+    _clear87();
   /* We need to restore hardware interrupt handlers even if somebody calls
      `_exit' directly, or else we crash the machine in nested programs.
      We only toggle the handlers if the original keyboard handler is intact

@@ -47,7 +47,7 @@ extern unsigned short __djgpp_sigint_mask; /* kb mask for SIGINT key */
 extern unsigned short __djgpp_sigquit_mask;/* kb mask for SIGQUIT key */
 
 void __djgpp_exception_toggle(void);
-int  __djgpp_set_ctrl_c(int _enable);	/* On by default */
+int  __djgpp_set_ctrl_c(int __enable);	/* On by default */
 int  __djgpp_set_sigint_key(int new_key);  /* Set key which raises SIGINT */
 int  __djgpp_set_sigquit_key(int new_key); /* Set key which raises SIGQUIT */
 
