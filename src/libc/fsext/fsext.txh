@@ -181,6 +181,11 @@ the ownership is to be changed for a file.
 
 The file name passed to the handler will have all its symlinks resolved.
 
+@item __FSEXT_fchmod
+
+A file fchmod handler (@pxref{fchmod}).  This is called when
+the permissions are to be changed for an open file.
+
 @item __FSEXT_fchown
 
 A file fchown handler (@pxref{fchown}).  This is called when

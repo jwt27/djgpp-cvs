@@ -45,7 +45,8 @@ typedef enum {
   __FSEXT_symlink,
   __FSEXT_fchown,
   __FSEXT_chmod,
-  __FSEXT_chown
+  __FSEXT_chown,
+  __FSEXT_fchmod
 } __FSEXT_Fnumber;
 
 /* _ready gets passed a fd and should return a mask of these,
