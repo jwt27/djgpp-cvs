@@ -94,3 +94,12 @@ Doc fixes for ansi/posix portability.
 handle error considions in @file{bin2h}
 @pindex bin2h
 
+@file{tests/libclink/check.cc} - remove duplicates
+
+Remove unneeded includes from @file{rand.c}
+
+Call @code{system} properly in termios (Ctrl-Z)
+
+Work around a gcc 2.8.1 bug in emu387
+
+Linking with -lemu should obviate the need for emu387.dxe
