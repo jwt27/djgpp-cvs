@@ -102,9 +102,12 @@ void    window(int _left, int _top, int _right, int _bottom);
 /* This is to resolve the name clash between
    gettext from conio.h and gettext from libintl.h.
    IMPORTANT:
-   If both headers are included, gettext from libintl.h
-   takes ALWAYS precedence over gettext from conio.h. */
-#ifndef __dj_include_libintl_h_
+   If both headers are included, the gettext keyword will always
+   make reference to the GNU gettext function declared in libintl.h
+   and never to the BORLAND-compatibility gettext function declared
+   in conio.h. In this case, BORLAND-compatibility gettext function
+   will only be available as _conio_gettext. */
+#ifndef __USE_GNU_GETTEXT
 # undef  gettext
 # define gettext _conio_gettext
 #endif
