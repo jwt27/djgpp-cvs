@@ -73,6 +73,7 @@ static void execute_console_command(const unsigned char cmd, unsigned char argc,
 static void set_cursor(int col, int row);
 static void move_cursor(int x_delta, int y_delta);
 static void get_cursor(int *col, int *row);
+static void set_cursor_shape(int shape);
 
 /* Attribute helpers.  */
 static void set_blink_attrib(int enable_blink);
@@ -357,8 +358,7 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
                         unsigned int args[NPAR])
 {
   int col, row;
-  int col_arg, row_arg;
-  __dpmi_regs r;
+  int arg, col_arg, row_arg;
 
   switch (cmd)
   {
@@ -633,26 +633,9 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
     break;
 
     case 'v':  /* Change cursor shape.  DJGPP private command.  */
-      switch (GET_ARG(0, 0))
-      {
-        case 0:  /* Set to normal.  */
-          r.x.cx = 0x0607;
-          break;
-
-        case 1:  /* Make invisible.  */
-          r.x.cx = 0x2000;
-          break;
-
-        case 2:  /* Make enhanced.  */
-          r.x.cx = 0x0007;
-          break;
-      }
-      r.h.ah = 1;
-      __dpmi_int(0x10, &r);
-      break;
-
-    /* Unrecognized command. Do nothing.  */
-    default:
+      arg = GET_ARG(0, 0);
+      if (arg >= 0 && arg <= 2)
+        set_cursor_shape(arg);
       break;
   }
 }
@@ -737,6 +720,53 @@ move_cursor(int x_delta, int y_delta)
   __dpmi_int(0x10, &r);
 }
 
+#define NORMAL_CURSOR    0
+#define INVISIBLE_CURSOR 1
+#define ENHANCED_CURSOR  2
+
+static void
+set_cursor_shape(int shape)
+{
+  __dpmi_regs r;
+  unsigned short max_line, bot_line, top_line;
+  unsigned short new_cursor;
+
+  if (shape == INVISIBLE_CURSOR)
+  {
+    new_cursor = 0x2000;
+  }
+  else
+  {
+    max_line = _farpeekw(_dos_ds, 0x0485) - 1;
+    switch (max_line)
+    {
+      default:
+        max_line = 7;
+      case 7:
+      case 9:
+        bot_line = max_line;
+        break;
+
+      case 13:
+      case 15:
+        bot_line = max_line - 1;
+        break;
+    }
+    if (shape == ENHANCED_CURSOR)
+      top_line = 0;
+    else
+      top_line = bot_line + 1;
+
+    new_cursor = ((top_line & 0x1f) << 8) | (bot_line & 0x1f);
+  }
+
+  if (new_cursor == _farpeekw(_dos_ds, 0x460))
+    return;
+
+  r.x.cx = new_cursor;
+  r.h.ah = 1;
+  __dpmi_int(0x10, &r);
+}
 
 /* Blink support functions.  */
 
@@ -760,9 +790,11 @@ restore_video_state(void)
   if (__tty_screen.cur_blink != __tty_screen.norm_blink)
     set_blink_attrib(__tty_screen.norm_blink);
 
-  r.h.ah = 1;
-  r.x.cx = __tty_screen.init_cursor_shape;
-  __dpmi_int(0x10, &r);
+  if (__tty_screen.init_cursor_shape != _farpeekw(_dos_ds, 0x460))
+  {
+    r.h.ah = 1;
+    r.x.cx = __tty_screen.init_cursor_shape;
+    __dpmi_int(0x10, &r);
+  }
 }
-
 
