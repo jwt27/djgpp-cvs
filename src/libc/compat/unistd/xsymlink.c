@@ -50,9 +50,14 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    }
 
    strcpy(__real_path, __symlink_path);
+   /* Begin by start pointing at the first character and end pointing 
+      at the first path separator.  In the cases like "/foo" end will 
+      point to the next path separator.  In all cases, if there are no
+      path separators left, end will point to the end of string. 
+    */
    start = __real_path;
    end = strpbrk(__real_path, "/\\");
-   if (!end)
+   if (!end || (start == end))
       end = __real_path + strlen(__real_path);
    while (start && *start)
    {
@@ -164,7 +169,8 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    return 1;
 }
 
-/* Advance to the next portion of the path. Cope with multiple slashes. */
+/* Advance to the next portion of the path in the case we won't need
+   previously resolved part anymore.  Cope with multiple slashes. */
 static void advance(char ** s, char ** e)
 {
    *s = strpbrk(*s + 1, "/\\");
