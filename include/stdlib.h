@@ -102,6 +102,7 @@ long long	llabs(long long _i);
 lldiv_t		lldiv(long long _numer, long long _denom);
 void            lcong48(unsigned short param[7]);
 unsigned long   lrand48(void);
+void *		memalign (size_t _amt, size_t _align);
 long            mrand48(void);
 unsigned long   nrand48(unsigned short state[3]);
 int		putenv(const char *_val);
@@ -113,6 +114,7 @@ long double	_strtold(const char *_s, char **_endptr);
 long long	strtoll(const char *_s, char **_endptr, int _base);
 unsigned long long strtoull(const char *_s, char **_endptr, int _base);
 void		swab(const void *from, void *to, int nbytes);
+void *		valloc (size_t _amt);
 
 #ifndef alloca
 #define alloca __builtin_alloca
