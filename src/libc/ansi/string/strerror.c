@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +16,7 @@ strerror(int errnum)
     return(unconst(__sys_errlist[errnum], char *));
 
   strcpy(ebuf, "Unknown error: ");
-  cp = ebuf + 15;
+  cp = ebuf + strlen(ebuf);
   if (errnum < 0)
   {
     *cp++ = '-';
