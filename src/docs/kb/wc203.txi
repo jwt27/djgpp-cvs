@@ -150,3 +150,16 @@ stream.
 @findex rename
 If both arguments of @code{_rename} and @code{rename} refer to the same
 file, they no longer remove that file.
+
+@findex scanf
+@findex sscanf
+@findex fscanf
+@findex vscanf
+@findex vsscanf
+@findex vfscanf
+Functions of the @code{scanf} family no longer crash or work incorrectly
+when passed format specifiers with upper-case letters, such as
+@samp{%lX} or @samp{%E}.  Non-@sc{ansi} extensions to the format
+specifiers and qualifiers, such as @samp{%lld} and @samp{%U}, are now
+documented and their portability information included in the library
+docs.

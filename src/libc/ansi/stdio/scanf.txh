@@ -16,64 +16,149 @@ The format string contains regular characters which much match the input
 exactly as well as a conversion specifiers, which begin with a percent
 symbol.  Any whitespace in the format string matches zero or more of any
 whitespace characters in the input.  Thus, a single space may match a
-newline and two tabs in the input.  All conversions except @code{c} and
-@code{[} also skip leading whitespace automatically.  Each conversion
+newline and two tabs in the input.  All conversions except @samp{c} and
+@samp{[} also skip leading whitespace automatically.  Each conversion
 specifier contains the following fields:
 
 @itemize @bullet
 
-@item
-
-An asterisk (@code{*}) which indicates that the input should be
+@item An asterisk (@samp{*}) which indicates that the input should be
 converted according to the conversion spec, but not stored anywhere. 
+This allows to describe an input field that is to be skipped.
 
-@item
-
-A width specifier, which specifies the maximum number of input
+@item A width specifier, which specifies the maximum number of input
 characters to use in the conversion. 
 
-@item
+@item An optional conversion qualifier, which may be @samp{h} to specify
+@code{short}, @samp{l} to specify doubles or long ints, or @samp{L} or
+@samp{ll} (two lower-case ell letters) to specify long doubles and the
+long long type.  If the @samp{h} qualifier appears before a specifier
+that implies conversion to a @code{long} or @code{float} or
+@code{double}, like in @samp{%hD} or @samp{%hf}, it is generally
+ignored.
 
-An optional conversion qualifier, which may be @code{h} to specify
-@code{short}, @code{l} to specify doubles or long ints or, or @code{L}
-to specify long doubles. Long long type can be specified by @code{L}
-or @code{ll}.
-
-@item
-
-The conversion type specifier:
+@item The conversion type specifier:
 
 @table @code
 
 @item c
 
 Copy the next character (or @var{width} characters) to the given buffer.
+This conversion suppresses skipping of the leading whitespace; use
+@samp{%1s} to read the next non-whitespace character.  Unlike with
+@samp{%s}, the copied characters are @strong{not} terminated with a null
+character.  If the @var{width} parameter is not specified, a @var{width}
+of one is implied.
 
 @item d
 
-Convert the input to a signed integer.
+Convert the input to a signed @code{int}.
+
+@item hd
+
+Convert the input to a signed @code{short}.
+
+@item ld
+@itemx D
+
+Convert the input to a signed @code{long}.
+
+@item Ld
+@itemx lld
+@itemx lD
+
+Convert the input to a signed @code{long long}.
 
 @item e
-@item E
+@itemx E
 @itemx f
+@itemx F
 @itemx g
 @itemx G
 
-Convert the input to a floating point number.
+Convert the input to a floating point number (a @code{float}).
+
+@item le
+@itemx lE
+@itemx lf
+@itemx lF
+@itemx lg
+@itemx lG
+
+Convert the input to a @code{double}.
+
+@item Le
+@itemx LE
+@itemx lle
+@itemx llE
+@itemx Lf
+@itemx LF
+@itemx llf
+@itemx llF
+@itemx Lg
+@itemx LG
+@itemx llg
+@itemx llG
+
+Convert the input to a @code{long double}.
 
 @item i
 
 Convert the input, determining base automatically by the presence of
-@code{0x} or @code{0} prefixes.  @xref{strtol}.
+@code{0x} or @code{0} prefixes, and store in an @code{int}.
+@xref{strtol}.
+
+@item hi
+
+Like @samp{i}, but stores the result in a @code{short}.
+
+@item li
+@itemx I
+
+Like @samp{i}, but stores the result in a @code{long}.
+
+@item Li
+@itemx lli
+@itemx lI
+
+Like @samp{i}, but stores the result in a @code{long long}.
 
 @item n
 
-Store the number of characters scanned so far into the integer pointed
-to. 
+Store the number of characters scanned so far into the @code{int}
+pointed to by the argument.
+
+@item hn
+
+Like @samp{n}, but the argument should point to a @code{short}.
+
+@item ln
+
+Like @samp{n}, but the argument should point to a @code{long}.
+
+@item Ln
+@itemx lln
+
+Like @samp{n}, but the argument should point to a @code{long long}.
 
 @item o
 
-Convert the input to a signed integer, using base 8.
+Convert the input to a signed @code{int}, using base 8.
+
+@item ho
+
+Convert the input to a signed @code{short}, using base 8.
+
+@item lo
+@itemx O
+
+Convert the input to a signed @code{long}, using base 8.
+
+@item Lo
+@itemx llo
+@itemx lO
+
+Convert the input to a signed @code{long long}, using base 8.
 
 @item p
 
@@ -83,27 +168,65 @@ Convert the input to a pointer.  This is like using the @code{x} format.
 
 Copy the input to the given string, skipping leading whitespace and
 copying non-whitespace characters up to the next whitespace.  The string
-stored is then @code{NULL}-terminated. 
+stored is then terminated with a null character. 
 
 @item u
 
-Convert the input to an unsigned integer.
+Convert the input to an unsigned @code{int}.
+
+@item hu
+
+Convert the input to an unsigned @code{short}.
+
+@item lu
+@itemx U
+
+Convert the input to an unsigned @code{long}.
+
+@item Lu
+@itemx llu
+@itemx lU
+
+Convert the input to an unsigned @code{long long}.
 
 @item x
 @itemx X
 
-Convert the input to an unsigned integer, using base 16.
+Convert the input to an unsigned @code{int}, using base 16.
+
+@item hx
+@itemx hX
+
+Convert the input to an unsigned @code{short}, using base 16.
+
+@item lx
+@itemx lX
+
+Convert the input to an unsigned @code{long}, using base 16.
+
+@item Lx
+@itemx LX
+@itemx llx
+@itemx llX
+
+Convert the input to an unsigned @code{long long}, using base 16.
 
 @item [@dots{}]
 
-Like the @code{c} format, except only certain characters are copied. 
-The characters between the brackets determine which characters are
-allowed, and thus when the copying stops.  These characters may be
-regular characters (example: @code{[abcd]}) or a range of characters
-(example: @code{[a-d]}).  If the first character is a caret (@code{^}),
-then the set specifies the set of characters that do not get copied
-(i.e.  the set is negated).  To specify that the set contains a
-close-bracket (@code{]}), list that as the first regular character. 
+Stores the matched characters in a @code{char} array, followed by a
+terminating null character.  If you do not specify the @var{width}
+parameter, @code{scanf} behaves as if @var{width} had a very large
+value.  Up to @var{width} characters are consumed and assigned, provided
+that they match the specification inside the brackets.  The characters
+between the brackets determine which characters are allowed, and thus
+when the copying stops.  These characters may be regular characters
+(example: @samp{[abcd]}) or a range of characters (example:
+@samp{[a-d]}).  If the first character is a caret (@samp{^}), then the
+set specifies the set of characters that do not get copied (i.e.  the
+set is negated).  To specify that the set contains a close-bracket
+(@samp{]}), put it immediately after @samp{[} or @samp{[^}.  To specify
+a literal dash (@samp{-}), write it either immediately after @samp{[} or
+@samp{[^}, or immediately before the closing @samp{]}.
 
 @item %
 
@@ -113,15 +236,23 @@ This must match a percent character in the input.
 
 @end itemize
 
-Most conversions make use of @code{strtol} or @code{strtoul} to perform
-the actual conversions. 
+Integer formats make use of @code{strtol} or @code{strtoul} to perform
+the actual conversions.  Floating-point conversions use @code{strtod}
+and @code{_strtold}.
 
 @subheading Return Value
 
-The number of items successfully matched and assigned. If input ends
-before first item is assigned, EOF is returned.
+The number of items successfully matched and assigned.  If input ends,
+or if there is any input failure before the first item is converted and
+assigned, @code{EOF} is returned.  Note that literal characters
+(including whitespace) in the format string which matched input
+characters count as ``converted items'', so input failure @emph{after}
+such characters were read and matched will @strong{not} cause @code{EOF}
+to be returned.
 
 @subheading Portability
+
+@port-note ansi The conversion specifiers @samp{F}, @samp{D}, @samp{I}, @samp{O}, and @code{U} are DJGPP extensions; they are provided for compatibility with Borland C and other compilers.  The conversion specifiers for the @code{long long} data type are GCC extensions.  The meaning of @samp{[a-c]} as a range of characters is a very popular extension to ANSI (which merely says a dash ``may have a special meaning'' in that context).
 
 @portability ansi, posix
 

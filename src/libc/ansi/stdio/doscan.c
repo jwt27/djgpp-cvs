@@ -81,7 +81,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       ch = *fmt++;
       if (ch=='l')
       {
-        size = LONGDOUBLE; /* for long long 'll' format */
+        size = LONGDOUBLE; /* for long long and long double 'll' format */
         ch = *fmt++;
       }
     }
@@ -98,10 +98,20 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
 	 gcc gives warning: ANSI C forbids braced
 	 groups within expressions */
       ch += 'a' - 'A';
-      if (size==LONG)
-        size = LONGDOUBLE;
-      else if (size != LONGDOUBLE)
-        size = LONG;
+      /* The following if clause is an extension of ANSI/Posix spec: it
+	 allows to use %D, %U, %I etc. to store value in a long (rather
+	 than an int) and %lD, %lU etc. to store value in a long long.
+	 This extension is supported by some compilers (e.g. Borland C).
+	 Old pre-ANSI compilers, such as Turbo C 2.0, also interpreted
+	 %E, %F and %G to store in a double (rather than a float), but
+	 this contradicts the ANSI Standard, so we don't support it.  */
+      if (ch == 'd' || ch == 'i' || ch == 'o' || ch == 'u' || ch == 'x')
+      {
+	if (size==LONG && ch != 'x') /* ANSI: %lX is long, not long long */
+	  size = LONGDOUBLE;
+	else if (size != LONGDOUBLE)
+	  size = LONG;
+      }
     }
     if (ch == '\0')
       return(-1);
@@ -288,7 +298,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
     break;
 
   case (INT<<4) | LONG:
-    **(long **)ptr = lcval;
+    **(long **)ptr = (long)lcval;
     break;
 
   case (INT<<4) | LONGDOUBLE:
