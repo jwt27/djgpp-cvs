@@ -691,7 +691,7 @@ stat_assist(const char *path, struct stat *statbuf)
 	errno = ENODEV;
       return -1;
     }
-  else if (pathname[3] == '\0' && pathname[2] == '/')
+  else if (pathname[3] == '\0' && (pathname[2] == '/' || pathname[2] == '\\') )
     {
       /* Detect root directories.  These are special because, unlike
 	 subdirectories, FindFirst fails for them.  We look at PATHNAME
