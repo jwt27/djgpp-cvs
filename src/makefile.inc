@@ -57,11 +57,11 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 # Moved setting of $(GCC{L}_OPT) to top of file
 #
 ifneq ($(CROSS_BUILD),1)
-XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I. -I- -I$(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I. -I- -I$(TOP)/../../include $(CFLAGS)
+XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 else
-XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -I$(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -I$(TOP)/../../include $(CFLAGS)
+XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 endif
 
 MISC = $(TOP)/../misc.exe
