@@ -14,7 +14,7 @@
    isn't little-endian like the i386 */
 
 static void
-dosswap(void *vdata, char *pattern)
+dosswap(void *vdata, const char *pattern)
 {
   static int endian = 1;
   unsigned char *data, c;
@@ -52,7 +52,7 @@ dosswap(void *vdata, char *pattern)
   }
 }
 
-void exit_cleanup(void)
+static void exit_cleanup(void)
 {
   remove("dxe__tmp.o");
 }
