@@ -13,12 +13,14 @@
  *
  */
 
+#include <libc/stubs.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <limits.h>
 #include <time.h>
 #include <errno.h>
+#include <sys/vfs.h>
 #include <dos.h>
 #include <dpmi.h>
 #include <libc/farptrgs.h>
@@ -40,12 +42,7 @@ static int xstat_count = -1;
    This improvement was suggested by Charles Sandmann
    <sandmann@clio.rice.edu> and DJ Delorie <dj@delorie.com>.  */
 
-#define _STAT_INODE         1   /* should we bother getting inode numbers? */
-#define _STAT_EXEC_EXT      2   /* get execute bits from file extension? */
-#define _STAT_EXEC_MAGIC    4   /* get execute bits from magic signature? */
-#define _STAT_DIRSIZE       8   /* compute directory size? */
-#define _STAT_ROOT_TIME  0x10   /* try to get root dir time stamp? */
-#define _STAT_WRITEBIT   0x20   /* fstat() needs write bit? */
+/* Please see the header file sys/stat.h for the definitions of _STAT_*. */
 
 /* Should we bother about executables at all? */
 #define _STAT_EXECBIT       (_STAT_EXEC_EXT | _STAT_EXEC_MAGIC)
@@ -116,6 +113,81 @@ _getftime(int fhandle, unsigned int *dos_ftime)
   *dos_ftime = ((unsigned int)regs.x.dx << 16) + (unsigned int)regs.x.cx;
 
   return 0;
+}
+
+/* Cache the cluster size (aka block size) for each drive letter, so we can
+ * populate the st_blksize of struct stat easily. The cluster size is
+ * measured in bytes.
+ *
+ * ASSUMPTION: path has already been fixed by `_fixpath'.
+ */
+
+/* Comment copied from DJGPP 2.03's src/libc/compat/mntent/mntent.c:
+ *
+ * There may be a maximum of 32 block devices.  Novell Netware indeed
+ * allows for 32 disks (A-Z plus 6 more characters from '[' to '\'')
+ */
+static blksize_t cache_blksize[32];
+static int cache_blksize_count = -1;
+
+blksize_t
+_get_cached_blksize (const char *path)
+{
+  struct statfs sbuf;
+  int           d; /* index into drive cache = drive_num - 1 */  
+  static int    overmax_d = sizeof(cache_blksize) / sizeof(cache_blksize[0]);
+
+  /* Force initialization in restarted programs (emacs).  */
+  if (cache_blksize_count != __bss_count)
+    {
+      cache_blksize_count = __bss_count;
+      memset(cache_blksize, 0, sizeof(cache_blksize));
+
+      /* Default floppy drives to 512B block size, to improve performance. */
+      cache_blksize[0] = cache_blksize[1] = 512;
+    }
+
+  /* Get the drive number. The fixed filename will begin with a lowercase
+   * letter or a symbol. The symbols for drives > 'z:' occur straight
+   * after 'Z' in ASCII.
+   */
+  if ((path[0] >= 'a') && (path[0] <= 'z'))
+    d = path[0] - 'a';
+  else
+    d = path[0] - 'A';
+
+  if ((d < 0) || (d >= overmax_d))
+    {
+      errno = ENODEV;
+      return -1;
+    }
+
+  if (!cache_blksize[d])
+    {
+      if (_is_remote_drive(d + 1))
+	{
+	  /* Default remote drives to 4K block size, to improve performance.
+	   *
+	   * Also the size returned by statfs() may not be correct. Testing
+	   * against files shared by Samba 2.0.10 on Linux kernel 2.2.19
+	   * returned a 32K block size, even though the ext2 filesystem
+	   * holding the share share had a 4K block size. */
+	  cache_blksize[d] = 4096;
+	}
+      else
+	{
+	  /* No entry => retrieve cluster size */
+	  if (statfs(path, &sbuf) != 0)
+	    {
+	      /* Failed, pass error through */
+	      return -1;
+	    }
+
+	  cache_blksize[d] = sbuf.f_bsize;
+	}
+    }
+
+  return cache_blksize[d];
 }
 
 /* Invent an inode number for those files which don't have valid DOS

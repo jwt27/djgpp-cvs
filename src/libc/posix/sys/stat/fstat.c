@@ -106,6 +106,8 @@
 #include <dos.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <limits.h>
+#include <libc/fd_props.h>
 
 #include <dpmi.h>
 #include <go32.h>
@@ -114,13 +116,6 @@
 #include <libc/symlink.h>
 #include <sys/fsext.h>
 #include "xstat.h"
-
-#define _STAT_INODE         1   /* should we bother getting inode numbers? */
-#define _STAT_EXEC_EXT      2   /* get execute bits from file extension? */
-#define _STAT_EXEC_MAGIC    4   /* get execute bits from magic signature? */
-#define _STAT_DIRSIZE       8   /* compute directory size? */
-#define _STAT_ROOT_TIME  0x10   /* try to get root dir time stamp? */
-#define _STAT_WRITEBIT   0x20   /* fstat() needs write bit? */
 
 /* Should we bother about executables at all? */
 #define _STAT_EXECBIT       (_STAT_EXEC_EXT | _STAT_EXEC_MAGIC)
@@ -433,8 +428,26 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   stat_buf->st_uid = getuid();
   stat_buf->st_gid = getgid();
   stat_buf->st_nlink = 1;
+
+  /* Get the block size for the device associated with `fhandle'. */
 #ifndef  NO_ST_BLKSIZE
-  stat_buf->st_blksize = _go32_info_block.size_of_transfer_buffer;
+  if (__get_fd_name(fhandle))
+    {
+      const char *filename;
+      char fixed_filename[PATH_MAX + 1];
+
+      filename = __get_fd_name(fhandle);
+      _fixpath(filename, fixed_filename);
+      stat_buf->st_blksize = _get_cached_blksize(fixed_filename);
+      if (stat_buf->st_blksize == -1)
+	return -1; /* errno set by _get_cached_blksize() */
+    }
+  else
+    {
+      /* Fall back on transfer buffer size, if we can't determine file name
+       * (which gives the drive letter and then the drive's cluster size). */
+      stat_buf->st_blksize = _go32_info_block.size_of_transfer_buffer;
+    }
 #endif
 
   /* If SFT entry for our handle is required and available, we will use it.  */
@@ -936,6 +949,9 @@ int main(int argc, char *argv[])
       _djstat_describe_lossage(stderr);
     }
 
+  if (!argc)
+    return EXIT_SUCCESS;
+
   /* Now call fstat() for each command-line argument. */
   while (++argv, --argc)
     {
@@ -956,6 +972,8 @@ int main(int argc, char *argv[])
 	  fprintf (stderr, "\t\t\tTimes: %lu %lu\n",
 		   (unsigned long)stat_buf.st_atime,
 		   (unsigned long)stat_buf.st_ctime);
+	  fprintf(stderr, "\t\t\tBlock size: %d\n",
+		  stat_buf.st_blksize);
           _djstat_describe_lossage(stderr);
         }
       else
@@ -965,7 +983,7 @@ int main(int argc, char *argv[])
           _djstat_describe_lossage(stderr);
         }
     }
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 #endif  /* TEST */

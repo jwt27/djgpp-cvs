@@ -31,9 +31,11 @@ stat(const char *path, struct stat *statbuf)
 
 #ifdef  TEST
 
+#include <stdlib.h>
+
 unsigned short _djstat_flags = 0;
 
-void
+int
 main(int argc, char *argv[])
 {
   struct stat stat_buf;
@@ -42,7 +44,7 @@ main(int argc, char *argv[])
   if (argc < 2)
     {
       fprintf (stderr, "Usage: %s <_djstat_flags> <file...>\n", argv[0]);
-      exit(0);
+      return (EXIT_FAILURE);
     }
 
   if (stat(*argv, &stat_buf) != 0)
@@ -67,6 +69,8 @@ main(int argc, char *argv[])
                   (long)stat_buf.st_size,
                   (unsigned long)stat_buf.st_mtime,
                   ctime(&stat_buf.st_mtime));
+	  fprintf(stderr, "\t\t\tBlock size: %d\n",
+		  stat_buf.st_blksize);
           _djstat_describe_lossage(stderr);
         }
       else
@@ -79,7 +83,7 @@ main(int argc, char *argv[])
       ++argv;
     }
 
-    exit (0);
+    return (EXIT_SUCCESS);
 }
 
 #endif

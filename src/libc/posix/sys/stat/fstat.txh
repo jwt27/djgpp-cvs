@@ -18,6 +18,10 @@ overflow on FAT32 volumes for files that are larger than 2GB.
 Therefore, if your program needs to support large files, you should
 treat the value of @code{st_size} as an unsigned value.
 
+For some drives @code{st_blksize} has a default value, to improve
+performance.  The floppy drives A: and B: default to a block size
+of 512 bytes.  Network drives default to a block size of 4096 bytes.
+
 Some members of @code{struct stat} are very expensive to compute.  If
 your application is a heavy user of @code{fstat} and is too slow, you
 can disable computation of the members your application doesn't need, as

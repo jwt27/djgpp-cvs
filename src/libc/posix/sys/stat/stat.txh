@@ -14,17 +14,18 @@ it in @var{sbuf}, which has this structure:
 
 @smallexample
 struct  stat @{
-        time_t   st_atime;     /* time of last access       */
-        time_t   st_ctime;     /* time of file's creation   */
-        dev_t    st_dev;       /* The drive number (0 = a:) */
-        gid_t    st_gid;       /* what getgid() returns */
-        ino_t    st_ino;       /* starting cluster or unique identifier */
-        mode_t   st_mode;      /* file mode - S_IF* and S_IRUSR/S_IWUSR */
-        time_t   st_mtime;     /* time that the file was last written */
-        nlink_t  st_nlink;     /* 2 + number of subdirs, or 1 for files */
-        off_t    st_size;      /* size of file in bytes */
-        off_t    st_blksize;   /* the size of transfer buffer */
-        uid_t    st_uid;       /* what getuid() returns */
+        time_t    st_atime;     /* time of last access       */
+        time_t    st_ctime;     /* time of file's creation   */
+        dev_t     st_dev;       /* The drive number (0 = a:) */
+        gid_t     st_gid;       /* what getgid() returns */
+        ino_t     st_ino;       /* starting cluster or unique identifier */
+        mode_t    st_mode;      /* file mode - S_IF* and S_IRUSR/S_IWUSR */
+        time_t    st_mtime;     /* time that the file was last written */
+        nlink_t   st_nlink;     /* 2 + number of subdirs, or 1 for files */
+        off_t     st_size;      /* size of file in bytes */
+        blksize_t st_blksize;   /* block size in bytes*/
+        uid_t     st_uid;       /* what getuid() returns */
+	dev_t     st_rdev;      /* The drive number (0 = a:) */
 @};
 @end smallexample
 
@@ -47,6 +48,10 @@ The @code{st_size} member is an signed 32-bit integer type, so it will
 overflow on FAT32 volumes for files that are larger than 2GB.
 Therefore, if your program needs to support large files, you should
 treat the value of @code{st_size} as an unsigned value.
+
+For some drives @code{st_blksize} has a default value, to improve
+performance.  The floppy drives A: and B: default to a block size
+of 512 bytes.  Network drives default to a block size of 4096 bytes.
 
 Some members of @code{struct stat} are very expensive to compute.  If
 your application is a heavy user of @code{stat} and is too slow, you can

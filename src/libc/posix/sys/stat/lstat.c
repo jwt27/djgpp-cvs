@@ -129,13 +129,6 @@ int __findnext(struct ffblk *);
 
 #define ALL_FILES   (FA_RDONLY|FA_HIDDEN|FA_SYSTEM|FA_DIREC|FA_ARCH)
 
-#define _STAT_INODE         1   /* should we bother getting inode numbers? */
-#define _STAT_EXEC_EXT      2   /* get execute bits from file extension? */
-#define _STAT_EXEC_MAGIC    4   /* get execute bits from magic signature? */
-#define _STAT_DIRSIZE       8   /* compute directory size? */
-#define _STAT_ROOT_TIME  0x10   /* try to get root dir time stamp? */
-#define _STAT_WRITEBIT   0x20   /* fstat() needs write bit? */
-
 /* Should we bother about executables at all? */
 #define _STAT_EXECBIT       (_STAT_EXEC_EXT | _STAT_EXEC_MAGIC)
 
@@ -444,9 +437,6 @@ stat_assist(const char *path, struct stat *statbuf)
   statbuf->st_uid     = getuid();
   statbuf->st_gid     = getgid();
   statbuf->st_nlink   = 1;
-#ifndef  NO_ST_BLKSIZE
-  statbuf->st_blksize = _go32_info_block.size_of_transfer_buffer;
-#endif
 
   /* Make the path explicit.  This makes the rest of our job much
      easier by getting rid of some constructs which, if present,
@@ -454,6 +444,13 @@ stat_assist(const char *path, struct stat *statbuf)
      deletes trailing slashes, makes "d:" explicit, and allows us
      to make an illusion of having a ".." entry in root directories.  */
   _fixpath (path, pathname);
+
+  /* Get the block size for the device associated with `pathname'. */
+#ifndef  NO_ST_BLKSIZE
+  statbuf->st_blksize = _get_cached_blksize(pathname);
+  if (statbuf->st_blksize == -1)
+    return -1; /* errno set by _get_cached_blksize() */
+#endif
 
   /* Get the drive number.  It is always explicit, since we
      called `_fixpath' on the original pathname.  */
@@ -932,9 +929,11 @@ lstat(const char *path, struct stat *statbuf)
 
 #ifdef  TEST
 
+#include <stdlib.h>
+
 unsigned short _djstat_flags = 0;
 
-void
+int
 main(int argc, char *argv[])
 {
   struct stat stat_buf;
@@ -943,7 +942,7 @@ main(int argc, char *argv[])
   if (argc < 2)
     {
       fprintf (stderr, "Usage: %s <_djstat_flags> <file...>\n", argv[0]);
-      exit(0);
+      return (EXIT_FAILURE);
     }
 
   if (lstat(*argv, &stat_buf) != 0)
@@ -968,6 +967,8 @@ main(int argc, char *argv[])
                   (long)stat_buf.st_size,
                   (unsigned long)stat_buf.st_mtime,
                   ctime(&stat_buf.st_mtime));
+	  fprintf(stderr, "\t\t\tBlock size: %d\n",
+		  stat_buf.st_blksize);
           _djstat_describe_lossage(stderr);
         }
       else
@@ -980,7 +981,7 @@ main(int argc, char *argv[])
       ++argv;
     }
 
-    exit (0);
+    return (EXIT_SUCCESS);
 }
 
 #endif
