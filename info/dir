@@ -1,5 +1,5 @@
-This is Info file dir, produced by Makeinfo-1.63 from the input file
-dir.txi.
+This is Info file dir, produced by Makeinfo version 1.67 from the input
+file dir.txi.
 
 
 File: dir,  Node: Top,  Next: (dir),  Prev: (dir),  Up: (dir)
@@ -20,14 +20,20 @@ this dir-file, edit 'dir.txi', and pass it through 'makeinfo'
 * Menu:
 
 
+* Knowledge Base: (kb.inf).
+        The DJGPP Knowledge Base
+
+* libc.a: (libc.inf).
+	The Standard C Library Reference
+
 * as: (as.inf).
 	The GNU assembler
 
-* Binutils: (binutils).
+* Binutils: (binutils.inf).
 	The GNU binary utilities "ar", "objcopy",
 	"objdump", "nm", "size", "strip", and "ranlib".
 
-* Bison: (bison).
+* Bison: (bison.inf).
 	The GNU yacc-like parser generator
 
 * CPP: (cpp.inf).
@@ -36,11 +42,17 @@ this dir-file, edit 'dir.txi', and pass it through 'makeinfo'
 * diff: (diff.inf).
         GNU diff, cmp, and patch
 
-* Flex: (flex).
+* find: (find.inf).
+        Find files on your hard drive
+
+* Flex: (flex.inf).
         A fast scanner generator.
 
 * gasp: (gasp.inf).
         GNU assembler's macro preprocessor
+
+* gawk: (gawk.inf).
+        GNU Awk
 
 * GCC: (gcc.inf).
 	The GNU C, C++, and Objective-C Compiler
@@ -64,9 +76,6 @@ this dir-file, edit 'dir.txi', and pass it through 'makeinfo'
 * ld: (ld.inf).
         The GNU linker
 
-* libc.a: (libc.inf).
-	The Standard C Library Reference
-
 * libgpp.a: (libgplus.inf).
 	The g++ class library.
 
@@ -77,7 +86,7 @@ this dir-file, edit 'dir.txi', and pass it through 'makeinfo'
 	Convert a .texinfo file (.txi) to an info file (.inf) suitable
 	for the info reader or Emacs.
 
-* Texinfo: (texi.inf).
+* Texinfo: (texinfo).
 	With one source file, make either a printed manual
 	(through TeX) or an Info file (through texinfo).
 	Full documentation in this menu item.
@@ -85,9 +94,88 @@ this dir-file, edit 'dir.txi', and pass it through 'makeinfo'
 * Utilities: (utils.inf).
         Miscellaneous utilities that come with DJGPP.
 
+* Text utilities: (textutils.inf).          GNU text utilities.
+* cat: (textutils.inf)cat invocation.           Concatenate and write files.
+* cksum: (textutils.inf)cksum invocation.       Print POSIX CRC checksum.
+* comm: (textutils.inf)comm invocation.         Compare sorted files by line.
+* csplit: (textutils.inf)csplit invocation.     Split by context.
+* cut: (textutils.inf)cut invocation.           Print selected parts of lines.
+* expand: (textutils.inf)expand invocation.     Convert tabs to spaces.
+* fmt: (textutils.inf)fmt invocation.           Reformat paragraph text.
+* fold: (textutils.inf)fold invocation.         Wrap long input lines.
+* head: (textutils.inf)head invocation.         Output the first part of files.
+* join: (textutils.inf)join invocation.         Join lines on a common field.
+* md5sum: (textutils.inf)md5sum invocation.     Print or check message-digests.
+* nl: (textutils.inf)nl invocation.             Number lines and write files.
+* od: (textutils.inf)od invocation.             Dump files in octal, etc.
+* paste: (textutils.inf)paste invocation.       Merge lines of files.
+* pr: (textutils.inf)pr invocation.             Paginate or columnate files.
+* sort: (textutils.inf)sort invocation.         Sort text files.
+* split: (textutils.inf)split invocation.       Split into fixed-size pieces.
+* sum: (textutils.inf)sum invocation.           Print traditional checksum.
+* tac: (textutils.inf)tac invocation.           Reverse files.
+* tail: (textutils.inf)tail invocation.         Output the last part of files.
+* tr: (textutils.inf)tr invocation.             Translate characters.
+* unexpand: (textutils.inf)unexpand invocation. Convert spaces to tabs.
+* uniq: (textutils.inf)uniq invocation.         Uniqify files.
+* wc: (textutils.inf)wc invocation.             Byte, word, and line counts.
+
+* File utilities: (fileutils.inf).  GNU file utilities.
+* chgrp: (fileutils.inf)chgrp invocation.       Change file groups.
+* chown: (fileutils.inf)chown invocation.       Change file owners/groups.
+* chmod: (fileutils.inf)chmod invocation.       Change file permissions.
+* cp: (fileutils.inf)cp invocation.             Copy files.
+* dd: (fileutils.inf)dd invocation.             Copy and convert a file.
+* df: (fileutils.inf)df invocation.             Report filesystem disk usage.
+* dir: (fileutils.inf)dir invocation.           List directories briefly.
+* dircolors: (fileutils.inf)dircolors invocation.   Color setup for ls.
+* du: (fileutils.inf)du invocation.             Report on disk usage.
+* install: (fileutils.inf)install invocation.   Copy and change attributes.
+* ln: (fileutils.inf)ln invocation.             Make links between files.
+* ls: (fileutils.inf)ls invocation.             List directory contents.
+* mkdir: (fileutils.inf)mkdir invocation.       Create directories.
+* mkfifo: (fileutils.inf)mkfifo invocation.     Create FIFOs: (named pipes).
+* mknod: (fileutils.inf)mknod invocation.       Create special files.
+* mv: (fileutils.inf)mv invocation.             Rename files.
+* rm: (fileutils.inf)rm invocation.             Remove files.
+* rmdir: (fileutils.inf)rmdir invocation.       Remove empty directories.
+* sync: (fileutils.inf)sync invocation.         Synchronize memory and disk.
+* touch: (fileutils.inf)touch invocation.       Change file timestamps.
+* vdir: (fileutils.inf)vdir invocation.         List directories verbosely.
+
+* Shell utilities: (sh-utils.inf).		GNU shell utilities.
+* basename: (sh-utils.inf)basename invocation.	Strip directory and suffix.
+* date: (sh-utils.inf)date invocation.		Print/set system date and time.
+* dirname: (sh-utils.inf)dirname invocation.	Strip non-directory suffix.
+* echo: (sh-utils.inf)echo invocation.		Print a line of text.
+* env: (sh-utils.inf)env invocation.		Modify the environment.
+* expr: (sh-utils.inf)expr invocation.		Evaluate expressions.
+* false: (sh-utils.inf)false invocation.	Do nothing, unsuccessfully.
+* groups: (sh-utils.inf)groups invocation.	Print group names a user is in.
+* hostname: (sh-utils.inf)hostname invocation.	Print or set system name.
+* id: (sh-utils.inf)id invocation.		Print real/effective uid/gid.
+* logname: (sh-utils.inf)logname invocation.	Print current login name.
+* nice: (sh-utils.inf)nice invocation.		Modify scheduling priority.
+* pathchk: (sh-utils.inf)pathchk invocation.	Check file name portability.
+* printenv: (sh-utils.inf)printenv invocation.	Print environment variables.
+* printf: (sh-utils.inf)printf invocation.	Format and print data.
+* pwd: (sh-utils.inf)pwd invocation.	        Print working directory.
+* sleep: (sh-utils.inf)sleep invocation.	Delay for a specified time.
+* stty: (sh-utils.inf)stty invocation.	        Print/change terminal settings.
+* su: (sh-utils.inf)su invocation.	        Modify user and group id.
+* tee: (sh-utils.inf)tee invocation.	        Redirect to multiple files.
+* test: (sh-utils.inf)test invocation.	        File/string tests.
+* true: (sh-utils.inf)true invocation.	        Do nothing, successfully.
+* tty: (sh-utils.inf)tty invocation.	        Print terminal name.
+* uname: (sh-utils.inf)uname invocation.	Print system information.
+* users: (sh-utils.inf)users invocation.	Print current user names.
+* who: (sh-utils.inf)who invocation.	        Print who is logged in.
+* whoami: (sh-utils.inf)whoami invocation.	Print effective user id.
+* yes: (sh-utils.inf)yes invocation.		Print a string indefinitely.
+
 
 
 Tag Table:
-Node: Top79
+Node: Top87
 
 End Tag Table
