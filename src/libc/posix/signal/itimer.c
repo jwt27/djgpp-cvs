@@ -25,38 +25,38 @@ static uclock_t u_now;
 int
 getitimer(int which, struct itimerval *value)
 {
-  uclock_t rel;
+  uclock_t expire, reload;
 
   u_now = uclock();
   if (which == ITIMER_REAL)
   {
     if (r_exp)
     {
-      u_now = r_exp - uclock();
-      rel   = r_rel;
+      expire = r_exp - u_now;
+      reload = r_rel;
     }
     else
-      r_exp =  rel = 0;
+      expire = reload = 0;
   }
   else if (which == ITIMER_PROF)
   {
     if (p_exp)
     {
-      u_now = p_exp - uclock();
-      rel   = p_rel;
+      expire = p_exp - u_now;
+      reload = p_rel;
     }
     else
-      u_now = rel = 0;
+      expire = reload = 0;
   }
   else
   {
     errno = EINVAL;
     return -1;
   }
-  value->it_value.tv_sec = u_now / UCLOCKS_PER_SEC;
-  value->it_value.tv_usec= (u_now - value->it_value.tv_sec*3433)/4096;
-  value->it_interval.tv_sec = rel / UCLOCKS_PER_SEC;
-  value->it_interval.tv_usec= (u_now - value->it_interval.tv_sec*3433)/4096;
+  value->it_value.tv_sec    = expire / UCLOCKS_PER_SEC;
+  value->it_value.tv_usec   = (expire % UCLOCKS_PER_SEC)*3433/4096;
+  value->it_interval.tv_sec = reload / UCLOCKS_PER_SEC;
+  value->it_interval.tv_usec= (reload % UCLOCKS_PER_SEC)*3433/4096;
   return 0;
 }
 
@@ -103,10 +103,8 @@ timer_action(int signum)
 
   u_now = uclock();
 
-  /* Check the real timer Add 64k, because the next timer interrupt
-     occurs after that time.  A bit less would be sufficient, but what
-     can you do?  */
-  if (r_exp && (r_exp + 65536L <= u_now) )
+  /* Check the real timer */
+  if (r_exp && (r_exp <= u_now) )
   {
     do_tmr = 1;
     if (r_rel)
@@ -116,7 +114,7 @@ timer_action(int signum)
   }
 
   /* Check profile timer */
-  if (p_exp && (p_exp + 65536L <= u_now))
+  if (p_exp && (p_exp <= u_now))
   {
     do_prof = 1;
     if (p_rel)
@@ -126,18 +124,31 @@ timer_action(int signum)
   }
 
   /* Now we have to schedule the next interrupt, if any pending */
-  if ((next = GetNextEvent()) != 0)
+  if (do_tmr || do_prof)
   {
-    next /= 65536L;
-    __djgpp_timer_countdown = next ? next : 1 ;
-  }
-  else
-    stop_timer();
+    if ((next = GetNextEvent()) != 0)
+    {
+      next /= 65536L;
+      /* Why do I subtract 1 from NEXT below?  Because the timer
+	 interrupt handler (see exceptn.S) checks whether the
+	 countdown variable is zero *before* it decrements it.  So
+	 setting it to zero means the timer will expire on the next
+	 tick, which is exactly what we want.
 
-  if (do_tmr)
-    raise(SIGALRM);
-  if (do_prof)
-    raise(SIGPROF);
+	 Note also that NEXT might be negative if the timer just
+	 fired, and if the reload value is smaller than u_now - X_exp.
+	 We treat that as if NEXT were zero, meaning that the timer
+	 will expire on the next tick.  */
+      __djgpp_timer_countdown = next > 0 ? next - 1 : 0 ;
+    }
+    else
+      stop_timer();
+
+    if (do_tmr)
+      raise(SIGALRM);
+    if (do_prof)
+      raise(SIGPROF);
+  }
 }
 
 static void
@@ -148,7 +159,9 @@ start_timer(void)
 
   next = GetNextEvent();
   next /= 65536L;
-  __djgpp_timer_countdown = next ? next : 1;
+  /* See the commentary above about subtracting 1 from NEXT, and about
+     negative values being returned by GetNextEvent.  */
+  __djgpp_timer_countdown = next > 0 ? next - 1 : 0;
 
   if (timer_on)
     return;
@@ -169,7 +182,7 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
 
   if (ovalue)
   {
-    if (getitimer(which,ovalue))
+    if (getitimer(which,ovalue)) /* also sets u_now */
       return -1;  /* errno already set */
   }
   else
@@ -196,12 +209,26 @@ setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
     }
   }
 
-  /* Rounding errors ?? First multiply and then divide could give
-     Overflow. */
-  *t_exp = value-> it_value.tv_sec              * UCLOCKS_PER_SEC
-    + (value->it_value.tv_usec * 4096)     / 3433;
-  *t_rel = value-> it_interval.tv_sec           * UCLOCKS_PER_SEC
-    + (value->it_interval.tv_usec * 4096) / 3433;
+  *t_exp = value->it_value.tv_sec    * UCLOCKS_PER_SEC;
+  *t_rel = value->it_interval.tv_sec * UCLOCKS_PER_SEC;
+
+  /* Rounding errors ?? First multiply and then divide gives an
+     overflow if the USEC member is larger than 524288. */
+  if (value->it_value.tv_usec < 524200)
+    *t_exp += (value->it_value.tv_usec * 4096) / 3433;
+  else
+    *t_exp += (value->it_value.tv_usec * 2048) / 1716;
+
+  if (value->it_interval.tv_usec < 524200)
+    *t_rel += (value->it_interval.tv_usec * 4096) / 3433;
+  else
+    *t_rel += (value->it_interval.tv_usec * 2048) / 1716;
+
+  /* u_now is returned zero first time uclock() is called.  That first
+     call could be the one we issued above, or it could be two days
+     ago, when the calling program started.  We need to make {rp}_exp
+     and u_now be relative to the same point of origin.  */
+  *t_exp += u_now;
 
   start_timer();
   return 0;
