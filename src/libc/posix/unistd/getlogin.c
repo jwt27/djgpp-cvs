@@ -14,6 +14,8 @@ getlogin(void)
   if (!p)
     p = getenv("LOGNAME");
   if (!p)
+    p = getenv("USERNAME");
+  if (!p)
     p = default_login;
   return p;
 }
