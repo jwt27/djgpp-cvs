@@ -15,13 +15,9 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-extern double      __dj_huge_val;
-extern float       __dj_huge_valf;
-extern long double __dj_huge_vall;
+extern double __dj_huge_val;
 
 #define HUGE_VAL  __dj_huge_val
-#define HUGE_VALF __dj_huge_valf
-#define HUGE_VALL __dj_huge_vall
 
 double	acos(double _x);
 double	asin(double _x);
@@ -45,6 +41,17 @@ double	sinh(double _x);
 double	sqrt(double _x);
 double	tan(double _x);
 double	tanh(double _x);
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+extern float       __dj_huge_valf;
+extern long double __dj_huge_vall;
+
+#define HUGE_VALF __dj_huge_valf
+#define HUGE_VALL __dj_huge_vall
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
   
 #ifndef __STRICT_ANSI__
 
