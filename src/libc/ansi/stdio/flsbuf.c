@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -26,6 +27,10 @@ _flsbuf(int c, FILE *f)
 
   if ((f->_flag&_IOWRT)==0)
     return EOF;
+
+  /* No-op for full string buffers */
+  if (f->_flag & _IOSTRG)
+    return c;
 
   /* if the buffer is not yet allocated, allocate it */
   if ((base = f->_base) == NULL && (f->_flag & _IONBF) == 0)

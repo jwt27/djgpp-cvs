@@ -12,6 +12,9 @@ int sprintf(char *buffer, const char *format, @dots{});
 Sends formatted output from the arguments (@dots{}) to the @var{buffer}.
 @xref{printf}.
 
+To avoid buffer overruns, it is safer to use @code{snprintf()}
+(@pxref{snprintf}).
+
 @subheading Return Value
 
 The number of characters written.

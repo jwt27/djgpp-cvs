@@ -1,3 +1,4 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
@@ -61,5 +62,7 @@ SRC += ungetc.c
 SRC += vfprintf.c
 SRC += vprintf.c
 SRC += vsprintf.c
+SRC += snprintf.c
+SRC += vsnprntf.c
 
 include $(TOP)/../makefile.inc

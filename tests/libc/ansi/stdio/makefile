@@ -16,5 +16,7 @@ SRC += printf.c
 SRC += sscanf.c
 SRC += tmpnam.c
 SRC += tscanf.c
+SRC += tsnprtf.c
+SRC += tsnprtf2.c
 
 include $(TOP)/../makefile.inc

@@ -13,6 +13,9 @@ int vsprintf(char *buffer, const char *format, va_list arguments);
 Sends formatted output from the @var{arguments} to the @var{buffer}.
 @xref{printf}. @xref{vfprintf}.
 
+To avoid buffer overruns, it is safer to use @code{vsnprintf()}
+(@pxref{vsnprintf}).
+
 @subheading Return Value
 
 The number of characters written.

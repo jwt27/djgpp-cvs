@@ -375,3 +375,7 @@ would lose the exit status.
 File handles connected to the console device are no longer reported by
 the @code{select} function as not ready for input when termios functions
 are used to read those handles in cooked mode.
+
+@findex snprintf
+@findex vsnprintf
+New functions @code{snprintf} and @code{vsnprintf} added.

@@ -1,0 +1,33 @@
+@node vsnprintf, stdio
+@subheading Syntax
+
+@example
+#include <stdio.h>
+#include <stdarg.h>
+
+int vsnprintf (char *@var{buffer}, size_t @var{n}, const char *@var{format},
+               va_list @var{ap});
+@end example
+
+@subheading Description
+
+This function works similarly to @code{vsprintf()} (@pxref{vsprintf}), but
+the size @var{n} of the @var{buffer} is also taken into account.  This
+function will write @var{n} - 1 characters.  The @var{n}th character is used
+for the terminating nul.  If @var{n} is zero, @var{buffer} is not touched.
+
+@subheading Return Value
+
+The number of characters that would have been written (excluding the trailing
+nul) is returned; otherwise -1 is returned to flag encoding or buffer space
+errors.
+
+The maximum accepted value of @var{n} is @code{INT_MAX}.  @code{INT_MAX} is
+defined in @code{<limits.h>}.  -1 is returned and @code{errno} is set to
+@code{EFBIG}, if @var{n} is greater than this limit.
+
+@subheading Portability
+
+@port-note ansi The buffer size limit is imposed by DJGPP.  Other systems may not have this limitation.
+
+@portability ansi
