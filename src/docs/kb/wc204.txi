@@ -38,10 +38,17 @@ externally callable.
 New functions @code{_get_fat_size}, @code{_get_fs_type} and
 @code{_is_fat32} added.
 
-@cindex stdarg.h@r{, GCC 2.96}
-@cindex varargs.h@r{, GCC 2.96}
+@cindex stdarg.h@r{, implemented with GCC builtins}
+@cindex varargs.h@r{, implemented with GCC builtins}
+@findex va_list@r{, implemented with GCC builtins}
+@findex va_start@r{, implemented with GCC builtins}
+@findex va_arg@r{, implemented with GCC builtins}
+@findex va_end@r{, implemented with GCC builtins}
+@findex va_alist@r{, implemented with GCC builtins}
+@findex va_dcl@r{, implemented with GCC builtins}
+
 When used together with GCC 2.96 or later, va_list facilities
-in <stdarg.h> and <varargs.h> are implemented using new
+in @file{stdarg.h} and @file{varargs.h} are implemented using new
 builtins from GCC 2.96.
 
 @findex fsdb@r{, check for EXE extension}
