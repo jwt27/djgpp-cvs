@@ -49,6 +49,7 @@ extern "C" {
 #define pow10 __pow10
 #define pow2 __pow2
 #define putenv __putenv
+#define readlink __readlink
 #define sbrk __sbrk
 #define setitimer __setitimer
 #define setmode __setmode
