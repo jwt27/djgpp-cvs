@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /*
  * File llseek.c.
@@ -10,11 +11,13 @@
  */
 
 #include <libc/stubs.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <dpmi.h>
 #include <errno.h>
 #include <libc/dosio.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include <libc/fd_props.h>
 
 offset_t
@@ -27,7 +30,8 @@ llseek( int handle, offset_t offset, int whence )
   if( func )
   {
     int rv;
-    if( func(__FSEXT_llseek, &rv, &handle) )
+    if( __FSEXT_func_wrapper(func, __FSEXT_llseek, &rv,
+			     handle, offset, whence) )
     {
       return rv;
     }
