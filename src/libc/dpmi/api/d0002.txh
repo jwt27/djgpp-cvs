@@ -27,5 +27,6 @@ resource.
 
 @example
 short video = __dpmi_segment_to_descriptor(0xa000);
+movedata(_my_ds(), buffer, video, 0, 320*200);
 @end example
 
