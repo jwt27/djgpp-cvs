@@ -789,11 +789,6 @@ set_scan_lines_and_font(int scan_lines, int font)
   regs.h.ah = 0x11;
   regs.h.al = font & 0xff;
   __dpmi_int(0x10, &regs);
-
-  /* Enable intensity bit.  */
-  regs.h.bl = 0;
-  regs.x.ax = 0x1003;
-  __dpmi_int(0x10, &regs);
 }
 
 /* Stretch a 8x8 font to the 8x10 character box.  This is required to
@@ -890,9 +885,6 @@ set_scan_lines_and_8x10_font(int scan_lines)
 
   /* Load our 8x10 font and enable intensity bit.  */
   load_8x10_font();
-  regs.h.bl = 0;
-  regs.x.ax = 0x1003;
-  __dpmi_int(0x10, &regs);
 }
 
 /* Switch to screen lines given by NLINES.  */
@@ -916,11 +908,6 @@ _set_screen_lines(int nlines)
               regs.h.bl = 0;
               regs.h.ah = 0x11;
               regs.h.al = (adapter_type > 1 ? 0x14 : 0x11);
-              __dpmi_int(0x10, &regs);
-
-              /* Enable intensity bit.  */
-              regs.h.bl = 0;
-              regs.x.ax = 0x1003;
               __dpmi_int(0x10, &regs);
             }
 
@@ -954,6 +941,28 @@ _set_screen_lines(int nlines)
 }
 
 void
+blinkvideo(void)
+{
+
+  /* Set intensity/blinking bit to BLINKING.  */
+  __dpmi_regs regs;
+  regs.h.bl = 1;
+  regs.x.ax = 0x1003;
+  __dpmi_int(0x10, &regs);
+}
+
+void
+intensevideo(void)
+{
+
+  /* Set intensity/blinking bit to INTENSE (bright background).  */
+  __dpmi_regs regs;
+  regs.h.bl = 0;
+  regs.x.ax = 0x1003;
+  __dpmi_int(0x10, &regs);
+}
+
+void
 gppconio_init(void)
 {
   /* Force initialization in restarted programs (emacs).  */
@@ -961,7 +970,7 @@ gppconio_init(void)
     {
       conio_count = __bss_count;
       oldattrib = -1;
-      last_mode = 0;
+      last_mode = 0xffff;
     }
 
   (void)isEGA();    /* sets the global ADAPTER_TYPE */
