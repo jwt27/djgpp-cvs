@@ -16,9 +16,9 @@ if that variable isn't already defined.
 
 @subheading Return Value
 
-Zero on success, -1 on failure; errno is set to the reason for failure:
-@code{EINVAL} if the @var{name} parameter is @code{NULL} or points to
-an empty string, or @code{ENOMEM} if there was insufficient memory to
+Zero on success, -1 on failure; @code{errno} is set to the reason for
+failure: @code{EINVAL} if the @var{name} parameter is @code{NULL} or points
+to an empty string, or @code{ENOMEM} if there was insufficient memory to
 add the variable to the environment.
 
 @subheading Portability
