@@ -371,9 +371,9 @@ static int getsib()
   int mod = modrm >> 6;
   int sib = *eip++;
   int ss = sib>>6;
-  int index = (sib>>3) & 7;
+  int s_index = (sib>>3) & 7;
   int base = sib & 7;
-  int rv = sregval(base, mod) + sregval(index, -1) * scale[ss];
+  int rv = sregval(base, mod) + sregval(s_index, -1) * scale[ss];
   int rv2;
   switch (mod)
   {
