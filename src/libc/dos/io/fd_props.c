@@ -232,7 +232,7 @@ exit_cleanup(void)
   while (fd < 255)
   {
     if (__fd_properties[fd])
-      close(fd);
+      _close(fd);
     ++fd;
   }
 }
