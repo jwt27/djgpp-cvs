@@ -235,6 +235,9 @@ malloc(size_t size)
     b++;
   }
 
+  /* Make sure sbrk below returns an aligned address so data is aligned */
+  brk((void *)( (int)((char *)sbrk(0)+(ALIGN-1)) & ~(ALIGN-1) ));
+  
   chunk_size = size+16; /* two ends plus two placeholders */
   rv = (BLOCK *)sbrk(chunk_size);
   if (rv == (BLOCK *)(-1))
