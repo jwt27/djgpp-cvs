@@ -98,7 +98,10 @@ A file ioctl handler (@pxref{ioctl (General description)}).
 
 @item __FSEXT_lseek
 
-A file lseek handler (@pxref{lseek}).
+A file lseek handler (@pxref{lseek}).  Here for backwards
+compatibility.  Use @code{__FSEXT_llseek} instead.  If you have a
+@code{__FSEXT_llseek} handler you don't need a @code{__FSEXT_lseek}
+handler as @code{lseek} calls @code{llseek} internally.
 
 @item __FSEXT_llseek
 

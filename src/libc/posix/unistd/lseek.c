@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -16,9 +17,8 @@
 off_t
 lseek(int handle, off_t offset, int whence)
 {
-  __dpmi_regs r;
-  int has_props;
-  
+  offset_t llseek_offset;
+
   __FSEXT_Function *func = __FSEXT_get_function(handle);
   if (func)
   {
@@ -27,39 +27,27 @@ lseek(int handle, off_t offset, int whence)
       return rv;
   }
 
-  has_props = __has_fd_properties(handle);
-
-  /* POSIX doesn't allow seek on a pipe.  */
-  if (has_props && (__fd_properties[handle]->flags & FILE_DESC_PIPE))
+  llseek_offset = llseek(handle, offset, whence);
+  if( offset == -1 )
   {
-    errno = ESPIPE;
-    return -1;
+    return -1; /* llseek sets errno. */
   }
 
-  r.h.ah = 0x42;
-  r.h.al = whence;
-  r.x.bx = handle;
-  r.x.cx = offset >> 16;
-  r.x.dx = offset & 0xffff;
-  __dpmi_int(0x21, &r);
-  if (r.x.flags & 1)
+  /* Here we rely on that llseek()'s return range is [-1, 2^32-2]. 
+   * All this removal of the bits 31-63 (of which only bit 31
+   * potentially could be set) in the long long (offset_t) and then
+   * merging it into the long (off_t) is because if a value is
+   * (de)promoted and it doesn't fit in the target variable
+   * implementation defined behaviour is invoked. So we make sure it
+   * temporarily fits. After that it's ok to or in the sign bit
+   * again. 
+   */
+  if( llseek_offset&0x80000000 )
   {
-    errno = __doserr_to_errno(r.x.ax);
-    return -1;
-  }  
-
-  if (!has_props ||
-      (__fd_properties[handle]->flags & FILE_DESC_DONT_FILL_EOF_GAP) == 0)
-  {
-    if (offset > 0)
-    {
-      if (!has_props)
-        has_props = (__set_fd_properties(handle, NULL, 0) == 0);
-      if (has_props)
-        __set_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
-    }
-    else if (has_props && (whence == SEEK_SET || whence == SEEK_END))
-      __clear_fd_flags(handle, FILE_DESC_ZERO_FILL_EOF_GAP);
+    return ((off_t)(llseek_offset&0x7fffffff))|0x80000000;
   }
-  return (r.x.dx << 16) + r.x.ax;
+  else
+  {
+    return llseek_offset&0x7fffffff;
+  }
 }
