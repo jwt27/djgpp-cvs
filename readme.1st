@@ -133,13 +133,19 @@ Installation
   or
 	unzip32 djdev203
 
-   On Windows 9X, use an unzip program which supports long file names.
-   Latest versions of InfoZip's UnZip and PKUnZip, as well as WinZip,
-   all support long file names.  unzip32.exe, available from the DJGPP
-   sites, also supports long file names.  One way to make sure you have
-   preserved long file names is to look for a file include/sys/sysmacros.h:
-   if you see only sysmacro.h instead, your unzip program does NOT
-   support long filenames, and you need to find another one.
+   On Windows 9X, Windows/ME and Windows 2000, use an unzip program
+   which supports long file names.  Latest versions of InfoZip's UnZip
+   and PKUnZip, as well as WinZip, all support long file names.
+   unzip32.exe, available from the DJGPP sites, also supports long
+   file names.  One way to make sure you have preserved long file
+   names is to look for a file include/sys/sysmacros.h: if you see
+   only sysmacro.h instead, your unzip program does NOT support long
+   filenames, and you need to find another one.
+
+   On Windows/NT (NT version 4 and below, not W2K!) use an unzip
+   program which does NOT support long file names, as DJGPP programs
+   cannot access long file names on NT4.  Again, unzip32.exe will do
+   The Right Thing for you, so using it is recommended.
 
 3. After unzipping all the zip files, set the DJGPP environment
    variable to point to the file DJGPP.ENV in the main DJGPP
