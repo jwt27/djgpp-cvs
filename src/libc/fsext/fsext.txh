@@ -28,7 +28,9 @@ A no-op.  This is currently unused by the library functions.
 @item __FSEXT_open
 
 An open handler.  This is called just before the library is about to
-issue the DOS OpenFile call on behalf of your program.
+issue the DOS OpenFile call on behalf of your program.  Do not use
+this extension to emulate symlinks.  Use @code{__FSEXT_readlink} handler
+instead.
 
 @item __FSEXT_creat
 
@@ -112,6 +114,16 @@ file descriptors are used to refer to the same open file.
 
 A file fstat handler (@pxref{fstat}).  The extension should fill in
 various status information about the emulated file.
+
+@item __FSEXT_readlink
+
+A file readlink handler (@pxref{readlink}).  This extension should be
+used to provide support for symlinks in some other than DJGPP format.
+
+@item __FSEXT_symlink
+
+A file symlink handler (@pxref{symlink}).  This extension should create
+symlinks in other than DJGPP symlink file format.
 
 @end table
 
