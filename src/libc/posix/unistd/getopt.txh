@@ -6,8 +6,7 @@
 
 int getopt(int argc, char * const *argv, const char *options);
 extern char *optarg;
-extern int optind, opterr;
-extern char optopt;
+extern int optind, opterr, optopt;
 @end example
 
 @subheading Description
@@ -54,7 +53,7 @@ while ((c=getopt(argc, argv, "vbf:")) != -1)
       output_filename = optarg;
       break;
     case '?':
-      printf("Unknown option %c\n", c);
+      printf("Unknown option %c\n", optopt);
       usage();
       exit(1);
   @}
