@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
 /* Written by Laurynas Biveinis                                */
@@ -23,6 +24,10 @@ extern "C" {
 __DJ_size_t
 #define _SIZE_T
 #endif
+
+/* Symlink files have fixed length - 510 bytes. Why this value? Why not? */
+/* It is big enough to hold longest possible path                        */
+#define _SYMLINK_FILE_LEN 510
 
 /* Semi-internal library function which reads symlink contents given  */
 /* either a file name or its handle.  Used by readlink(), fstat() and */
