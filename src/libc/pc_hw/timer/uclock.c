@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -10,6 +11,24 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/bss.h>
+#include <dos.h>
+#include <signal.h>
+#include <setjmp.h>
+#include <sys/exceptn.h>
+
+typedef void (*SignalHandler) (int);
+
+/* Catch rdtsc exception if opcode not legal and always return 0LL */
+static void catch_rdtsc(int val)
+{
+  short *eip = (short *)__djgpp_exception_state->__eip;
+  if (*eip == 0x310f) {					/* rdtsc opcode */
+    __djgpp_exception_state->__eip += 2;		/* skip over it */
+    __djgpp_exception_state->__edx = 0;			/* EDX = 0 */
+    longjmp(__djgpp_exception_state, 0);		/* EAX = 0 */
+  }
+  return;
+}
 
 static int uclock_bss = -1;
 
@@ -28,6 +47,40 @@ uclock(void)
   unsigned char lsb, msb;
   unsigned long tics, otics;
   uclock_t rv;
+
+  _farsetsel(_dos_ds);
+
+  if (_os_trueversion == 0x532) {	/* Windows NT, 2000, XP */
+    static double multiplier;
+    static unsigned long btics;
+
+    if (uclock_bss != __bss_count) {
+      SignalHandler saveold;
+      saveold = signal(SIGILL, catch_rdtsc);
+      tics = _farnspeekl(0x46c);
+      while ( (btics = _farnspeekl(0x46c)) == tics);
+      base = _rdtsc();
+      signal(SIGILL, saveold);
+      if (base == 0)
+        multiplier = 0.0;
+      else {
+        while ( (tics = _farnspeekl(0x46c)) == btics);
+        if (tics < btics) tics = btics + 1;		/* Midnight */
+        multiplier = ((tics - btics)*65536) / (double)(_rdtsc() - base);
+        uclock_bss = __bss_count;
+      }
+    }
+    if (multiplier != 0.0) {
+      rv = (_rdtsc() - base) * multiplier;
+      tics = _farnspeekl(0x46c) - btics;
+      while (tics <= 0) tics += 0x1800b0;		/* Midnight */
+      if ((unsigned long)(rv >> 16) != tics) {		/* Recalibrate */
+        rv = ((uclock_t)tics) << 16;
+        multiplier = (tics*65536) / (double)(_rdtsc() - base);
+      }
+      return rv;
+    }
+  }
 
   if (uclock_bss != __bss_count)
   {
@@ -51,7 +104,6 @@ uclock(void)
        first 55 msec after the timer was reprogrammed still look as
        if the timer worked in mode 3.  So we simply wait for one clock
        tick when we run on Windows.  */
-    _farsetsel(_dos_ds);
     otics = _farnspeekl(0x46c);
     do {
       errno = 0;
@@ -62,11 +114,11 @@ uclock(void)
 
   /* Make sure the numbers we get are consistent */
   do {
-    otics = _farpeekl(_dos_ds, 0x46c);
+    otics = _farnspeekl(0x46c);
     outportb(0x43, 0x00);
     lsb = inportb(0x40);
     msb = inportb(0x40);
-    tics = _farpeekl(_dos_ds, 0x46c);
+    tics = _farnspeekl(0x46c);
   } while (otics != tics);
 
   /* calculate absolute time */

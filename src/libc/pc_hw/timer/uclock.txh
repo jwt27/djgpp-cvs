@@ -37,6 +37,16 @@ Windows 3.X doesn't allow to reprogram the timer, so the values returned
 by @code{uclock} there are incorrect.  DOS and Windows 9X don't have
 this problem.
 
+Windows NT, 2000 and XP attempt to use the @code{rdtsc} feature of newer
+CPUs instead of the interval timer, because the timer tick and interval timer 
+are not coordinated.  During calibration the @code{SIGILL} signal handler
+is replaced to protect against systems which do not support or allow 
+@code{rdtsc}.  If @code{rdtsc} is available, uclock will keep the upper
+bits of the returned value consistent with the bios tick counter by 
+re-calibration if needed.  If @code{rdtsc} is not available, these systems 
+fall back to interval timer usage, which may show an absolute error of 65536 
+uclock ticks in the values and not be monotonically increasing.
+
 @subheading Return Value
 
 The number of tics.
