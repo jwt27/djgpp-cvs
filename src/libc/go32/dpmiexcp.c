@@ -36,6 +36,7 @@ extern int __djgpp_exception_table;
 extern int __djgpp_npx_hdlr;
 extern int __djgpp_kbd_hdlr;
 extern int __djgpp_kbd_hdlr_pc98;
+extern short __excep_ds_alias;
 extern int __djgpp_iret, __djgpp_i24;
 extern void __djgpp_cbrk_hdlr(void);
 extern int __djgpp_hw_lock_start, __djgpp_hw_lock_end;
@@ -166,7 +167,7 @@ dump_selector(const char *name, int sel)
 {
   unsigned long base;
   unsigned limit;
-  write(STDERR_FILENO, name, 2);
+  _write(STDERR_FILENO, name, 2);
   err(": sel="); itox(sel, 4);
   if (sel) {
     if (__dpmi_get_segment_base_address(sel, &base))
@@ -260,7 +261,7 @@ do_faulting_finish_message(int fake_exception)
   err(" program=");
   prog_name = __dos_argv0 ? __dos_argv0 : "<**UNKNOWN**>";
   for (i=0; prog_name[i]; i++);
-  write(STDERR_FILENO, prog_name, i);
+  _write(STDERR_FILENO, prog_name, i);
   err("\r\n");
   dump_selector("cs", __djgpp_exception_state->__cs);
   dump_selector("ds", __djgpp_exception_state->__ds);
@@ -518,6 +519,7 @@ __djgpp_exception_setup(void)
   __dpmi_meminfo lockmem;
   size_t i;
 
+  __excep_ds_alias = __djgpp_ds_alias;
   if (ScreenPrimary != 0xa0000)
     {
       __djgpp_set_sigint_key(DEFAULT_SIGINT);
