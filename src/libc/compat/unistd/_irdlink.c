@@ -27,7 +27,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
    long          file_size;
 
    /* Reject NULL and impossible arg combinations */
-   if (!__buf || (__path && __fhandle))
+   if (!__buf || (__path && __fhandle) || !(__path || __fhandle))
    {
       errno = EINVAL;
       return -1;
@@ -36,8 +36,16 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
    /* Provide ability to hook symlink support */
    if (__path)
    {
+      struct ffblk  file_info;
       if (__FSEXT_call_open_handlers(__FSEXT_readlink, &ret, &__path))
          return ret;
+      /* We will check if file exists by the way */
+      if (findfirst(__path, &file_info, 0))
+      {
+         errno = ENOENT;
+         return -1;
+      }
+      file_size = file_info.ff_fsize;
    }
    else if (__fhandle)
    {
@@ -48,29 +56,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
          if (func(__FSEXT_readlink, &rv, &__path))
             return rv;
       }
-   }
-   else
-   {
-      /* What the ?.. */
-      errno = EINVAL;
-      return -1;
-   }
-
-
-   /* Get file size */
-
-   if (__fhandle)
       file_size = filelength(__fhandle);
-   else
-   {
-      /* We will check if file exists by the way */
-      struct ffblk  file_info;
-      if (findfirst(__path, &file_info, 0))
-      {
-         errno = ENOENT;
-         return -1;
-      }
-      file_size = file_info.ff_fsize;
    }
 
    /* Is symlink file size a fixed magic value? */
@@ -82,7 +68,6 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
 
    /* Now we check for special DJGPP symlink format */
 
-   /* If we have file handle */
    if (__fhandle)
    {
       /* Remember old file pos */
