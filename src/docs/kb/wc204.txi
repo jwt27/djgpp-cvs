@@ -843,3 +843,8 @@ The functions @code{strlcat} and @code{strlcpy} were added.
 
 @pindex djasm@r{, wbinvd instruction}
 The mnemonic @code{wbinvd} has been added to @code{djasm}.
+
+@cindex C99 compliance, mathematics
+@vindex HUGE_VALF
+@vindex HUGE_VALL
+The constants @code{HUGE_VALF} and @code{HUGE_VALL} were added.
