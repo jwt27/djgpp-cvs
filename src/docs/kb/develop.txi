@@ -1,6 +1,58 @@
 @node Development, , , Top
 
-@section Internal header files
+@section Coding Standards
+
+@subsection Source indentation
+@cindex source indentation
+@cindex indentation standards
+
+Most of the DJGPP sources are formatted in a standard way; please
+observe and preserve this formatting when writing new code.
+
+The indentation style generally looks like this:
+
+@example
+ if (foo)
+ @{
+   bar(baz);
+ @}
+@end example
+
+@noindent
+That is, the braces are on a separate line and in the same column as the
+@code{if} (or @code{for}, or @code{while}) clause that opens the block.
+
+@pindex emacs@r{, and DJGPP-style indentation}
+Here's how to set up Emacs's C Mode for this indentation style:
+
+@lisp
+(c-add-style
+ "DJ"
+ '((c-basic-offset . 2)
+   (c-comment-only-line-offset . (0 . 0))
+   (c-offsets-alist . ((substatement-open . 0)
+		       (label . 0)
+		       (statement-case-open . +)
+		       (statement-cont . +)
+		       (arglist-intro . c-lineup-arglist-intro-after-paren)
+		       (arglist-close . c-lineup-arglist)
+		       ))
+   ))
+
+(c-set-style "DJ")
+@end lisp
+
+@noindent
+@pindex indent@r{, reindenting to DJGPP style}
+And here's the list of options for the GNU @code{indent} program, to be
+put on your @file{.indent.pro} profile file, in case you need to
+reformat your sources to comply with the DJGPP style:
+
+@example
+/* DJ */
+-nbad -bap -nbc -bbo -bl -bli0 -brs -ncdb -nce -cp1 -cs -di2
+-nfc1 -fca -hnl -i2 -ip2 -ci0 -lp -npcs -nprs -psl -nsc -nsob
+@end example
 
 @subsection libc/stubs.h
 @cindex libc/stubs.h
