@@ -34,7 +34,14 @@ struct statvfs @{
 @end example
 
 Note that if INT 21h is hooked by a TSR, the total size is limited
-to approximately 2GB.
+to approximately 2GB.  TSRs that hook INT 21h include:
+
+@itemize @bullet
+@item CD-ROM drivers;
+@item command-line enhancers such as CMDEDIT and Microsoft's DOSEdit.
+@end itemize
+
+These may be loaded by @file{autoexec.bat} or @file{config.sys}.
 
 @subheading Return Value
 

@@ -29,7 +29,7 @@ struct statfs
 @end example
 
 Note that if INT 21h is hooked by a TSR, the total size is limited
-to approximately 2GB.
+to approximately 2GB (@pxref{statvfs}).
 
 Note that there is a POSIX-compliant function @code{statvfs}
 (@pxref{statvfs}), which returns similar information.
