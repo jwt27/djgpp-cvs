@@ -1,6 +1,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <dpmi.h>
 #include <errno.h>
 #include <io.h>
@@ -12,6 +13,7 @@ dup2(int fd, int newfd)
   __dpmi_regs r;
   if (fd == newfd)
     return newfd;
+  __file_handle_set(newfd, __file_handle_modes[fd] ^ (O_BINARY|O_TEXT));
   r.h.ah = 0x46;
   r.x.bx = fd;
   r.x.cx = newfd;
