@@ -917,3 +917,7 @@ The functions @code{readv} and @code{writev} were added.
 
 @findex pwrite
 The function @code{pwrite} was added.
+
+@findex NAN
+The macro @code{NAN} was added.
+

@@ -51,6 +51,11 @@ extern long double __dj_huge_vall;
 #define HUGE_VALF __dj_huge_valf
 #define HUGE_VALL __dj_huge_vall
 
+#define INFINITY  HUGE_VALF
+
+extern float       __dj_nan;
+#define NAN        __dj_nan
+
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
   
 #ifndef __STRICT_ANSI__

@@ -3,5 +3,6 @@ TOP=../..
 
 SRC += hugevalf.c
 SRC += hugevall.c
+SRC += nan.c
 
 include $(TOP)/../makefile.inc
