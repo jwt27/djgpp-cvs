@@ -93,7 +93,7 @@ int main(void)
        !__file_exists("dir1/test5") || !__file_exists("dir1/test6") ||
        !__file_exists("dir1/test7") || access("dir1/dir2", D_OK))
    {
-       fprintf(stderr, "Required data files not found");
+       fprintf(stderr, "Required data files not found\n");
        exit(1);
    }
    puts("Running __solve_symlinks() and readlink() testsuite:");
