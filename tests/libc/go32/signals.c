@@ -20,7 +20,7 @@ void int_handler(int sig)
   if (sig != SIGINT)
     abort();
   puts ("\tSIGINT");
-  urand = ((double)rand()) / RAND_MAX;
+  urand = rand() * 1.0 / RAND_MAX;
   if (urand > 0.5)
     result = urand / (rand() < 0);
   else
