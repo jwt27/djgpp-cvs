@@ -12,21 +12,41 @@ int stat(const char *file, struct stat *sbuf);
 This function obtains the status of the file @var{file} and stores
 it in @var{sbuf}, which has this structure:
 
-@example
+@smallexample
 struct  stat @{
-        time_t   st_atime;     /* time of last modification */
-        time_t   st_ctime;     /*            ''             */
+        time_t   st_atime;     /* time of last access       */
+        time_t   st_ctime;     /* time of file's creation   */
         dev_t    st_dev;       /* The drive number (0 = a:) */
-        gid_t    st_gid;       /* getgid() */
-        ino_t    st_ino;       /* starting cluster or a unique identifier */
+        gid_t    st_gid;       /* what getgid() returns */
+        ino_t    st_ino;       /* starting cluster or unique identifier */
         mode_t   st_mode;      /* file mode - S_IF* and S_IRUSR/S_IWUSR */
-        time_t   st_mtime;     /*            ''             */
+        time_t   st_mtime;     /* time that the file was last written */
         nlink_t  st_nlink;     /* 2 + number of subdirs, or 1 for files */
         off_t    st_size;      /* size of file in bytes */
         off_t    st_blksize;   /* the size of transfer buffer */
-        uid_t    st_uid;       /* getuid() */
+        uid_t    st_uid;       /* what getuid() returns */
 @};
-@end example
+@end smallexample
+
+The @code{st_atime}, @code{st_ctime} and @code{st_mtime} have different
+values only when long file names are supported (e.g. on Windows 9X);
+otherwise, they all have the same value: the time that the file was last
+written@footnote{
+Even when long file names @emph{are} supported, the three time values
+returned by @code{stat} might be identical if the file was last written
+by a program which used legacy DOS functions that don't know about long
+file names.}.  Most Windows 9X VFAT filesystems only support the date of
+the file's last access (the time is set to zero); therefore, the DJGPP
+implementation of @code{stat} sets the @code{st_atime} member to the
+same value as @code{st_mtime} if the time part of @code{st_atime}
+returned by the filesystem is zero (to prevent the situation where the
+file appears to have been created @emph{after} it was last accessed,
+which doesn't look good).
+
+Some members of @code{struct stat} are very expensive to compute.  If
+your application is a heavy user of @code{stat} and is too slow, you can
+disable computation of the members your application doesn't need, as
+described in @ref{_djstat_flags}.
 
 @subheading Return Value
 
@@ -47,9 +67,9 @@ if (S_ISDIR(s.st_mode))
 
 @subheading Implementation Notes
 
-Supplying a 100% Unix-compatible @code{f?stat()} functions under DOS is an
+Supplying a 100% Unix-compatible @code{stat} function under DOS is an
 implementation nightmare.  The following notes describe some of the
-obscure points specific to their behavior in DJGPP.
+obscure points specific to @code{stat}s behavior in DJGPP.
 
 1. The @samp{drive} for character devices (like @code{con}, @code{/dev/null}
 and others is returned as -1.  For drives networked by Novell Netware, it
@@ -57,7 +77,8 @@ is returned as -2.
 
 2. The starting cluster number of a file serves as its inode number.  For
 files whose starting cluster number is inaccessible (empty files, files on
-networked drives, etc.) the @code{st_inode} field will be @cite{invented}
+Windows 9X, on networked drives, etc.) the @code{st_inode} field will be
+@emph{invented}
 in a way which guarantees that no two different files will get the same
 inode number (thus it is unique).  This invented inode will also be
 different from any real cluster number of any local file.  However, only

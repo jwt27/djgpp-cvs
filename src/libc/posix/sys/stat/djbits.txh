@@ -7,13 +7,13 @@
 extern unsigned short   _djstat_flags;
 @end example
 
-This variable contains bits for some fields of struct stat which are
+This variable contains bits for some fields of @code{struct stat} which are
 expensive to compute under DOS.  Any such computation is only done by
 @code{stat} (@pxref{stat}) or @code{fstat} (@pxref{fstat}) if the
 corresponding bit in @code{_djstat_flags} is @emph{cleared}.  By
 default, all the bits are cleared, so applications which don't care,
 automagically get a full version, possibly at a price of performance.
-To get the fastest possible @code{f?stat()} for your application, clear
+To get the fastest possible version for your application, clear
 only the bits which you need and set all the others.
 
 The following bits are currently defined:
@@ -22,16 +22,28 @@ The following bits are currently defined:
 
 @item _STAT_INODE
 
-Causes @code{f?stat()} to compute the @code{st_ino} (inode number) field.
+Causes @code{stat} and @code{fstat} to compute the @code{st_ino} (inode
+number) field.
 
 @item _STAT_EXEC_EXT
 
-Tells @code{f?stat()} to compute the execute access bit from extension.
+Tells @code{stat} and @code{fstat} to compute the execute access bit
+from the file-name extension.  @code{stat} and @code{fstat} know about
+many popular file-name extensions, to speed up the computation of the
+execute access bit.
 
 @item _STAT_EXEC_MAGIC
 
-Tells @code{f?stat()} to compute the execute access bit from magic
-signature (the first two bytes of the file, see @ref{_is_executable}.
+Tells @code{stat} and @code{fstat} to compute the execute access bit from
+magic signature (the first two bytes of the file), see @ref{_is_executable},
+if the file-name extension is not enough for this.
+
+Computing the execute access bit from the magic signature is by far the
+most expensive part of @code{stat} and @code{fstat} (because it requires
+to read the first two bytes of every file).  If your application doesn't
+care about execute access bit, setting @code{_STAT_EXEC_MAGIC} will
+significantly speed it up.
+
 Note that if @code{_STAT_EXEC_MAGIC} is set, but @code{_STAT_EXEC_EXT}
 is not, some files which shouldn't be flagged as executables (e.g., COFF
 @file{*.o} object files) will have their execute bit set, because they
@@ -46,15 +58,20 @@ entries (unless some friendly network redirector brought a true directory
 size with it).  Also computes the number of subdirectories and sets the
 number of links @code{st_nlink} field.
 
+This computation is also quite expensive, especially for directories
+with large sub-directories.  If your application doesn't care about size
+of directories and the @code{st_nlink} member, you should set the
+@code{_STAT_DIRSIZE} bit in @code{_djstat_flags}.
+
 @item _STAT_ROOT_TIME
 
-Causes @code{stat()} to try to get time stamp of root directory from its
+Causes @code{stat} to try to get time stamp of root directory from its
 volume label entry, if there is one.
 
 @item _STAT_WRITEBIT
 
-Tells @code{fstat()} that file's write access bit is required (this could
-be a problem only under some versions of Novell Netware).
+Tells @code{fstat} that file's write access bit is required (this needs
+special treatment only under some versions of Novell Netware).
 
 @end table
 

@@ -13,6 +13,11 @@ This function obtains the status of the open file @var{file} and stores
 it in @var{sbuf}.  @xref{stat}, for the description of members of
 @code{struct stat}.
 
+Some members of @code{struct stat} are very expensive to compute.  If
+your application is a heavy user of @code{fstat} and is too slow, you
+can disable computation of the members your application doesn't need, as
+described in @ref{_djstat_flags}.
+
 @subheading Return Value
 
 Zero on success, nonzero on failure (and @var{errno} set). 
@@ -39,7 +44,7 @@ incorrectly reported as if the file were non-executable.  This is
 because some executables are only recognized by reading their first
 two bytes, which cannot be done for files open in write-only mode.
 
-For @code{fstat()} to return correct info, you should make sure that all
+For @code{fstat} to return correct info, you should make sure that all
 the data written to the file has been delivered to the operating system,
 e.g. by calling both @code{fflush} and @code{fsync}.  Otherwise, the
 buffering of the library I/O functions and the OS might cause stale info
@@ -47,9 +52,9 @@ to be returned.
 
 @subheading Implementation Notes
 
-Supplying a 100% Unix-compatible @code{f?stat()} functions under DOS is an
+Supplying a 100% Unix-compatible @code{fstat} function under DOS is an
 implementation nightmare.  The following notes describe some of the
-obscure points specific to their behavior in DJGPP.
+obscure points specific to @code{fstat}s behavior in DJGPP.
 
 1. The @samp{drive} for character devices (like @code{con}, @code{/dev/null}
 and others is returned as -1.  For drives networked by Novell Netware, it
@@ -62,7 +67,7 @@ in a way which guarantees that no two different files will get the same
 inode number (thus it is unique).  This invented inode will also be
 different from any real cluster number of any local file.  However, only
 for local, non-empty files/directories the inode is guaranteed to be
-consistent between @code{stat()} and @code{fstat()} function calls.
+consistent between @code{stat} and @code{fstat} function calls.
 
 3. The WRITE access mode bit is set only for the user (unless the file is
 read-only, hidden or system).  EXECUTE bit is set for directories,  files
@@ -71,15 +76,6 @@ executables) or run by @code{go32-v2.exe}.  For files which reside on
 networked drives under Novell Netware, this can sometimes fail, in which
 case only the read access bit is set.
 
-4. Size of directories is reported as the number of its files (sans `.' and
-`..' entries) multiplied by 32 bytes (the size of directory entry).  On
-filesystems that support long file names, like Windows 9X, additional
-bytes per each directory entry are added, using the same algorithm as
-Windows does to allocate fake directory entries for the long file name.
-
-5. Time stamp for root directories is taken from the volume label entry,
-if that's available; otherwise, it is reported as 1-Jan-1980.
-
-6. The variable @code{_djstat_flags} (@pxref{_djstat_flags}) controls
+4. The variable @code{_djstat_flags} (@pxref{_djstat_flags}) controls
 what hard-to-get fields of @code{struct stat} are needed by the
 application.
