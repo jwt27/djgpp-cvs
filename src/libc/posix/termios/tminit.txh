@@ -16,7 +16,7 @@ this function is automatically called by the other termios functions.
 
 @subheading Portability
 
-@portability !ansi, !posi
+@portability !ansi, !posix
 
 @node __libc_termios_exist_queue, termios
 @subheading Syntax
