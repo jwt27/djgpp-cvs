@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -17,6 +18,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <io.h>
+#include <sys/fsext.h>
 
 #include <libc/dosio.h>
 #include <libc/fd_props.h>
@@ -24,9 +26,90 @@
 /* Extra share flags that can be indicated by the user */
 int __djgpp_share_flags;
 
+/* Move a file descriptor FD such that it is at least MIN_FD.
+   If the file descriptor is changed (meaning it was origially
+   *below* MIN_FD), the old one will be closed.
+   If the operation failed (no more handles available?), -1 will
+   be returned, in which case the original descriptor is still
+   valid.
+
+   This jewel is due to Morten Welinder <terra@diku.dk>.  */
+static int
+move_fd (int fd, int min_fd)
+{
+  int new_fd, tmp_fd;
+
+  if (fd == -1 || fd >= min_fd)
+    return fd;
+
+  tmp_fd = dup (fd);
+  if (tmp_fd == -1)
+    return tmp_fd;
+
+  new_fd = move_fd (tmp_fd, min_fd);
+  if (new_fd != -1)
+    close (fd);		/* success--get rid of the original descriptor */
+  else
+    close (tmp_fd);	/* failure--get rid of the temporary descriptor */
+  return new_fd;
+}
+
+static int
+opendir_as_fd (const char *filename, const int oflag)
+{
+  int fd, old_fd, flags, ret;
+
+  /* Check the flags. */
+  if ((oflag & (O_RDONLY|O_WRONLY|O_RDWR)) != O_RDONLY)
+  {
+    /* Only read-only access is allowed. */
+    errno = EISDIR;
+    return -1;
+  }
+
+  /*
+   * Allocate a file descriptor that:
+   *
+   * - is dup'd off nul, so that bogus operations at least go somewhere
+   *   sensible;
+   * - is in binary mode;
+   * - is non-inheritable;
+   * - is marked as a directory.
+   *
+   * __FSEXT_alloc_fd() conveniently handles the first two. File handles
+   * greater than 19 are not inherited, due to a misfeature
+   * of the DOS exec call.
+   */
+  old_fd = __FSEXT_alloc_fd(NULL);
+  if (old_fd < 0)
+    return -1; /* Pass through errno. */
+
+  fd = move_fd(old_fd, 20);
+  if (fd < 0)
+  {
+    close(old_fd);
+    errno = EMFILE;
+    return -1;
+  }
+
+  __set_fd_properties(fd, filename, 0);
+  __set_fd_flags(fd, FILE_DESC_DIRECTORY);
+
+  flags = fcntl(fd, F_GETFD);
+  if (flags < 0)
+    return -1; /* Pass through errno. */
+  flags |= FD_CLOEXEC;
+  ret = fcntl(fd, F_SETFD, flags);
+  if (ret < 0)
+    return -1; /* Pass through errno. */
+
+  return fd;
+}
+
 int
 open(const char* filename, int oflag, ...)
 {
+  const int original_oflag = oflag;
   int fd, dmode, bintext, dont_have_share;
   char real_name[FILENAME_MAX + 1];
   int should_create = (oflag & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL);
@@ -137,6 +220,12 @@ open(const char* filename, int oflag, ...)
 	fd = _creat(real_name, dmode);
     }
   }
+
+  /* Is the target a directory? If so, generate a file descriptor
+   * for the directory. Skip the rest of `open', because it does not
+   * apply to directories. */
+  if ((fd == -1) && (access(real_name, D_OK) == 0))
+    return opendir_as_fd(real_name, original_oflag);
 
   if (fd == -1)
     return fd;	/* errno already set by _open or _creat */

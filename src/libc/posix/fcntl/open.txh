@@ -111,6 +111,16 @@ You can specify the share flags (a DOS specific feature) in @var{mode}.
 And you can indicate default values for the share flags in
 @code{__djgpp_share_flags}. @xref{__djgpp_share_flags}.
 
+You can open directories using @code{open}, but there is limited
+support for POSIX file operations on directories.  In particular,
+directories cannot be read using @code{read} (@pxref{read})
+or written using @code{write} (@pxref{write}).  The principal reason
+for allowing @code{open} to open directories is to support changing
+directories using @code{fchdir} (@pxref{fchdir}).  If you wish to read
+the contents of a directory, use the @code{opendir} (@pxref{opendir})
+and @code{readdir} (@pxref{readdir}) functions instead.  File descriptors
+for directories are not inherited by child programs.
+
 @subheading Return Value
 
 If successful, the file descriptor is returned.  On error, a negative
