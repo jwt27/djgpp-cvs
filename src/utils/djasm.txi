@@ -14,7 +14,7 @@
 @end ignore
 
 @set EDITION 1.05
-@set DJGPP_VERSION 2.03
+@set DJGPP_VERSION 2.04
 @set UPDATED 19 June 2001
 @set UPDATED_MONTH June 2001
 
@@ -31,7 +31,7 @@
 @comment The following two commands start the copyright page.
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1999, 2000, 2001 DJ Delorie
+Copyright @copyright{} 1999-2002 DJ Delorie
 @end titlepage
 
 @comment node-name, next, previous, up
