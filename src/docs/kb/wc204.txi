@@ -668,3 +668,10 @@ name change file format allows skipping files and directories.
 The function @code{fgetpos} will now fail, if it is unable to determine
 the current offset for a stream.  Previously the failure would have been
 silently ignored.
+
+@findex _is_DOS83
+New function @code{_is_DOS83} added to the library to support filename
+case lowering.  This replaces the functionality used from @code{_lfn_gen_short_fname}
+which is hopelessly buggy on Windows 2000 and XP.  New function used in
+@file{srchpath.c}, @file{readdir.c}, @file{glob.c}, @file{fixpath.c},
+@file{lstat.c} and @file{getcwd.c}.
