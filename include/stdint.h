@@ -105,7 +105,7 @@ __extension__ typedef unsigned long long uintmax_t;
 #define WINT_MAX	2147483647
 #endif
 #ifndef WINT_MIN
-#define WINT_MIN	(-2147483647L-1)
+#define WINT_MIN	(-2147483647-1)
 #endif
 
 #endif /* !__cplusplus || __STDC_LIMIT_MACROS */
