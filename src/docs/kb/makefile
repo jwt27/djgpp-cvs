@@ -7,4 +7,4 @@ all :: $(INFO)/kb.inf
 K = $(wildcard *.txi)
 
 $(INFO)/kb.inf : $K
-	makeinfo kb.txi
+	makeinfo --no-split kb.txi
