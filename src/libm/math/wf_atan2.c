@@ -19,6 +19,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float atan2f(float y, float x)		/* wrapper atan2f */
@@ -30,9 +31,15 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_atan2f(y,x);
 #else
+	_float_long_union ux;
+	_float_long_union uy;
+	
+	ux.f = x;
+	uy.f = y;
+
 	float z;
 	z = __ieee754_atan2f(y,x);
-	if(_LIB_VERSION == _IEEE_||isnanf(x)||isnanf(y)) return z;
+	if(_LIB_VERSION == _IEEE_||isnanf(ux.l)||isnanf(uy.l)) return z;
 	if(x==(float)0.0&&y==(float)0.0) {
 		/* atan2f(+-0,+-0) */
 	        return (float)__kernel_standard((double)y,(double)x,103);

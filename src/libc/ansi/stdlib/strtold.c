@@ -70,12 +70,14 @@ strtold(const char *s, char **sret)
   /* Handle NAN and NAN(<whatever>). */
   if ( ! strnicmp( "NAN", s, 3 ) )
   {
-    long double ld = NAN;
-    long_double_t n = *(long_double_t *)(&ld);
+ longdouble_union_t t;
+
+    t.ld = NAN;
+
 
     if ( sign < 0 )
     {
-      n.sign = 1;
+      t.ldt.sign = 1;
     }
     
     if( s[3] == '(' )
@@ -91,14 +93,14 @@ strtold(const char *s, char **sret)
 							       bit. */
 	if( mantissa_bits )
 	{
-	  n.mantissal = mantissa_bits & 0xffffffff;
-	  n.mantissah = ((mantissa_bits >> 32) & 0xffffffff ) | 0x80000000;
+	  t.ldt.mantissal = mantissa_bits & 0xffffffff;
+	  t.ldt.mantissah = ((mantissa_bits >> 32) & 0xffffffff ) | 0x80000000;
 	}
 	if( sret )
 	{
           *sret = endptr+1;
 	}
-        return *(long double *)(&n);
+        return (t.ld);
       }
       
       /* The subject sequence didn't match NAN(<hex-number>), so match
@@ -109,7 +111,7 @@ strtold(const char *s, char **sret)
     {
       *sret = unconst((&s[3]), char *);
     }
-    return *(long double *)(&n);;
+    return (t.ld);
   }
 
   /* Handle ordinary numbers. */

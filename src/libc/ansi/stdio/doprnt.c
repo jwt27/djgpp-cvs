@@ -17,6 +17,7 @@
 #include <math.h>
 #include <libc/file.h>
 #include <libc/local.h>
+#include <libc/ieee.h>
 
 static char decimal = '.';
 
@@ -274,14 +275,11 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       }
       else
       {
-	struct IEEExp {
-	  unsigned manl:32;
-	  unsigned manh:32;
-	  unsigned exp:15;
-	  unsigned sign:1;
-	} ip = *(struct IEEExp *)&_ldouble;
+	longdouble_union_t ip;
 
-	if (ip.sign)
+	ip.ld = _ldouble;
+
+	if (ip.ldt.sign)
 	  neg_ldouble = 1;
 	else
 	  neg_ldouble = 0;
@@ -892,31 +890,40 @@ exponentl(char *p, int expv, unsigned char fmtch)
 static int
 isspeciall(long double d, char *bufp)
 {
-  struct IEEExp {
+  typedef struct {
     unsigned manl:32;
     unsigned manh:32;
     unsigned exp:15;
     unsigned sign:1;
-  } *ip = (struct IEEExp *)&d;
+  } IEEExp;
+
+  typedef union {
+    IEEExp ip;
+    long double ldouble;  /* double and long double precision arguments */
+  } ip_union;
+
+  ip_union ip;
+
+  ip.ldouble = d;
 
   nan_p = 0;  /* don't assume the static is 0 (emacs) */
 
   /* Unnormals: the MSB of mantissa is non-zero, but the exponent is
      not zero either.  */
-  if ((ip->manh & 0x80000000U) == 0 && ip->exp != 0)
+  if ((ip.ip.manh & 0x80000000U) == 0 && ip.ip.exp != 0)
   {
-    if (ip->sign)
+    if (ip.ip.sign)
       *bufp++ = '-';
     strcpy(bufp, UNNORMAL_REP);
-    return strlen(bufp) + ip->sign;
+    return strlen(bufp) + ip.ip.sign;
   }
-  if (ip->exp != 0x7fff)
+  if (ip.ip.exp != 0x7fff)
     return(0);
-  if ((ip->manh & 0x7fffffff) || ip->manl)
+  if ((ip.ip.manh & 0x7fffffff) || ip.ip.manl)
   {
     strcpy(bufp, "NaN");
-    nan_p = ip->sign ? -1 : 1; /* kludge: we don't need the sign, it's
-				not nice, but it should work */
+    nan_p = ip.ip.sign ? -1 : 1; /* kludge: we don't need the sign, it's
+				    not nice, but it should work */
   }
   else
     (void)strcpy(bufp, "Inf");

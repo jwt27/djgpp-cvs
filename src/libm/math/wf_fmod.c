@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float fmodf(float x, float y)	/* wrapper fmodf */
@@ -29,9 +30,15 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_fmodf(x,y);
 #else
+	_float_long_union ux;
+	_float_long_union uy;
+	
+	ux.f = x;
+	uy.f = y;
+
 	float z;
 	z = __ieee754_fmodf(x,y);
-	if(_LIB_VERSION == _IEEE_ ||isnanf(y)||isnanf(x)) return z;
+	if(_LIB_VERSION == _IEEE_ ||isnanf(uy.f)||isnanf(ux.f)) return z;
 	if(y==(float)0.0) {
 		/* fmodf(x,0) */
 	        return (float)__kernel_standard((double)x,(double)y,127);

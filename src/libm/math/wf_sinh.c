@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float sinhf(float x)		/* wrapper sinhf */
@@ -29,10 +30,16 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_sinhf(x);
 #else
+	_float_long_union ux;
+	_float_long_union uz;
+
+	ux.f = x;
+
 	float z; 
 	z = __ieee754_sinhf(x);
+	uz.f = z;
 	if(_LIB_VERSION == _IEEE_) return z;
-	if(!finitef(z)&&finitef(x)) {
+	if(!finitef(uz.l)&&finitef(ux.l)) {
 	    /* sinhf overflow */
 	    return (float)__kernel_standard((double)x,(double)x,125);
 	} else

@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float j0f(float x)		/* wrapper j0f */
@@ -29,8 +30,12 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_j0f(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z = __ieee754_j0f(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x)) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	if(fabsf(x)>(float)X_TLOSS) {
 		/* j0f(|x|>X_TLOSS) */
 	        return (float)__kernel_standard((double)x,(double)x,134);
@@ -49,9 +54,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_y0f(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z;
 	z = __ieee754_y0f(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x) ) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l) ) return z;
         if(x <= (float)0.0){
                 if(x==(float)0.0)
                     /* d= -one/(x-x); */

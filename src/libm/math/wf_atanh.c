@@ -17,6 +17,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float atanhf(float x)		/* wrapper atanhf */
@@ -28,9 +29,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_atanhf(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+	
 	float z,y;
 	z = __ieee754_atanhf(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x)) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	y = fabsf(x);
 	if(y>=(float)1.0) {
 	    if(y>(float)1.0)

@@ -20,6 +20,7 @@
 
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float asinf(float x)		/* wrapper asinf */
@@ -31,9 +32,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_asinf(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z;
 	z = __ieee754_asinf(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x)) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	if(fabsf(x)>(float)1.0) {
 	    /* asinf(|x|>1) */
 	    return (float)__kernel_standard((double)x,(double)x,102);

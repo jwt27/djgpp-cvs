@@ -16,6 +16,7 @@
 #define	SQRT_FLT_MAX	1.84467429742e+19  /* 0x5f7fffff */
 
 #include <float.h>
+#include <libc/ieee.h>
 #include "fdlibm.h"
 
 #ifdef __STDC__
@@ -28,9 +29,15 @@
 	float a=x,b=y,t1,t2,w;
 	__int32_t j,ha,hb;
 
-	if (isnanf(x) || isnanf(y))
+	_float_long_union ux;
+	_float_long_union uy;
+	
+	ux.f = x;
+	uy.f = y;
+
+	if (isnanf(ux.l) || isnanf(uy.l))
 		return (x-x)/(y-y);
-	if (isinff(x) || isinff(y))
+	if (isinff(ux.l) || isinff(uy.l))
 		return __kernel_standard(x, y, 104);
 	GET_FLOAT_WORD(ha,x);
 	ha &= 0x7fffffff;
@@ -40,7 +47,7 @@
 	SET_FLOAT_WORD(a,ha);	/* a <- |a| */
 	SET_FLOAT_WORD(b,hb);	/* b <- |b| */
 	t1 = (a > 0) ? (a/b) : 0;
-	if ((t1 >= SQRT_FLT_MAX) && finitef(x) && finitef(y))
+	if ((t1 >= SQRT_FLT_MAX) && finitef(ux.l) && finitef(uy.l))
 		return __kernel_standard(x, y, 104);
 	t1 *= t1;
 	t2 = sqrtf(++t1);

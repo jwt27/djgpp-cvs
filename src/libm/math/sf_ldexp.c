@@ -16,6 +16,7 @@
 #include "fdlibm.h"
 #include <errno.h>
 #include <float.h>
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float ldexpf(float value, int expon)
@@ -24,9 +25,13 @@
 	float value; int expon;
 #endif
 {
-	if(!finitef(value)||value==(float)0.0) return value;
+	_float_long_union uvalue;
+	
+	uvalue.f = value;
+
+	if(!finitef(uvalue.l)||value==(float)0.0) return value;
 	value = scalbnf(value,expon);
-	if(!finitef(value)||
+	if(!finitef(uvalue.l)||
 	   (value < FLT_MIN && value > -FLT_MIN)) errno = ERANGE;
 	return value;
 }

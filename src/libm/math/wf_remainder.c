@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float remainderf(float x, float y)	/* wrapper remainder */
@@ -29,9 +30,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_remainderf(x,y);
 #else
+	_float_long_union uy;
+	
+	uy.f = y;
+
 	float z;
 	z = __ieee754_remainderf(x,y);
-	if(_LIB_VERSION == _IEEE_ || isnanf(y)) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(uy.l)) return z;
 	if(y==(float)0.0) 
 	    /* remainder(x,0) */
 	    return (float)__kernel_standard((double)x,(double)y,128);

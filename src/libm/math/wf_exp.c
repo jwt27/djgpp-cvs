@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 static const float
@@ -37,10 +38,14 @@ u_threshold= -1.0397208405e+02;  /* 0xc2cff1b5 */
 #ifdef _IEEE_LIBM
 	return __ieee754_expf(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z;
 	z = __ieee754_expf(x);
 	if(_LIB_VERSION == _IEEE_) return z;
-	if(finitef(x)) {
+	if(finitef(ux.l)) {
 	    if(x>o_threshold)
 	        /* exp overflow */
 	        return (float)__kernel_standard((double)x,(double)x,106);

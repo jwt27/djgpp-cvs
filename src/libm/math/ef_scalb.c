@@ -15,6 +15,7 @@
 
 #include "fdlibm.h"
 #include <limits.h>
+#include <libc/ieee.h>
 
 #ifdef _SCALB_INT
 #ifdef __STDC__
@@ -35,8 +36,14 @@
 #ifdef _SCALB_INT
 	return scalbnf(x,fn);
 #else
-	if (isnanf(x)||isnanf(fn)) return x*fn;
-	if (!finitef(fn)) {
+	_float_long_union ux;
+	_float_long_union ufn;
+	
+	ux.f = x;
+	ufn.f = fn;
+	
+	if (isnanf(ux.l)||isnanf(ufn.l)) return x*fn;
+	if (!finitef(ufn.f)) {
 	    if(fn>(float)0.0) return x*fn;
 	    else       return x/(-fn);
 	}

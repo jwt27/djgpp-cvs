@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float coshf(float x)		/* wrapper coshf */
@@ -29,9 +30,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_coshf(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z;
 	z = __ieee754_coshf(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x)) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	if(fabsf(x)>(float)8.9415985107e+01) {	
 		/* cosh overflow */
 	        return (float)__kernel_standard((double)x,(double)x,105);

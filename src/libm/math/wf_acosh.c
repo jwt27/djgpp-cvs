@@ -19,6 +19,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float acoshf(float x)		/* wrapper acoshf */
@@ -30,9 +31,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_acoshf(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z;
 	z = __ieee754_acoshf(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x)) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	if(x<(float)1.0) {
 		/* acosh(x<1) */
 	        return (float)__kernel_standard((double)x,(double)x,129);

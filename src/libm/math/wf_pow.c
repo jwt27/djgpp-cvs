@@ -17,6 +17,7 @@
  * wrapper powf(x,y) return x**y
  */
 #include <float.h>
+#include <libc/ieee.h>
 #include "fdlibm.h"
 
 #ifdef __STDC__
@@ -29,10 +30,18 @@
 #ifdef _IEEE_LIBM
 	return  __ieee754_powf(x,y);
 #else
+	_float_long_union ux;
+	_float_long_union uy;
+	_float_long_union uz;
+
+	ux.f = x;
+	uy.f = y;
+
 	float z;
 	z=__ieee754_powf(x,y);
-	if(_LIB_VERSION == _IEEE_|| isnanf(y)) return z;
-	if(isnanf(x)) {
+	uz.f = z;
+	if(_LIB_VERSION == _IEEE_|| isnanf(uy.l)) return z;
+	if(isnanf(ux.l)) {
 	    if(y==(float)0.0) 
 	        /* powf(NaN,0.0) */
 	        return (float)__kernel_standard((double)x,(double)y,142);
@@ -43,14 +52,14 @@
 	    if(y==(float)0.0)
 	        /* powf(0.0,0.0) */
 	        return (float)__kernel_standard((double)x,(double)y,120);
-	    if(finitef(y)&&y<(float)0.0)
+	    if(finitef(uy.l)&&y<(float)0.0)
 	        /* powf(0.0,negative) */
 	        return (float)__kernel_standard((double)x,(double)y,123);
 	    return z;
 	}
-	if(!finitef(z)) {
-	    if(finitef(x)&&finitef(y)) {
-	        if(isnanf(z))
+	if(!finitef(uz.l )) {
+	    if(finitef(ux.l)&&finitef(uy.l)) {
+	        if(isnanf(uz.l))
 		    /* powf neg**non-int */
 	            return (float)__kernel_standard((double)x,(double)y,124);
 	        else 
@@ -58,7 +67,7 @@
 	            return (float)__kernel_standard((double)x,(double)y,121);
 	    }
 	} 
-	if(z < FLT_MIN &&finitef(x)&&finitef(y))
+	if(z < FLT_MIN &&finitef(ux.l)&&finitef(uy.l))
 	    /* powf underflow */
 	    return (float)__kernel_standard((double)x,(double)y,122);
 	return z;

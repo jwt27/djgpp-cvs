@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float logf(float x)		/* wrapper logf */
@@ -29,9 +30,13 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_logf(x);
 #else
+	_float_long_union ux;
+	
+	ux.f = x;
+
 	float z;
 	z = __ieee754_logf(x);
-	if(_LIB_VERSION == _IEEE_ || isnanf(x) || x > (float)0.0) return z;
+	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l) || x > (float)0.0) return z;
 	if(x==(float)0.0)
 	    /* logf(0) */
 	    return (float)__kernel_standard((double)x,(double)x,116);

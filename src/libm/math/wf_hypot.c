@@ -18,6 +18,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float hypotf(float x, float y)	/* wrapper hypotf */
@@ -29,10 +30,18 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_hypotf(x,y);
 #else
+	_float_long_union ux;
+	_float_long_union uy;
+	_float_long_union uz;
+	
+	ux.f = x;
+	uy.f = y;
+
 	float z;
 	z = __ieee754_hypotf(x,y);
+	uz.f = z;
 	if(_LIB_VERSION == _IEEE_) return z;
-	if((!finitef(z))&&finitef(x)&&finitef(y))
+	if((!finitef(uz.l))&&finitef(ux.l)&&finitef(uy.l))
 	    /* hypot overflow */
 	    return (float)__kernel_standard((double)x,(double)y,104);
 	else

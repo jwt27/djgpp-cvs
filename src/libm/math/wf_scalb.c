@@ -21,6 +21,7 @@
 
 #include "fdlibm.h"
 #include <errno.h>
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 #ifdef _SCALB_INT
@@ -40,10 +41,18 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_scalbf(x,fn);
 #else
+	_float_long_union ux;
+	_float_long_union uz;
+	_float_long_union ufn;
+
+	ux.f = x;
+	ufn.f = fn;
+
 	float z;
 	z = __ieee754_scalbf(x,fn);
+	uz.f = z;
 	if(_LIB_VERSION == _IEEE_) return z;
-	if(!(finitef(z)||isnanf(z))&&finitef(x)) {
+	if(!(finitef(uz.l)||isnanf(uz.l))&&finitef(ux.l )) {
 	    /* scalbf overflow */
 	    return (float)__kernel_standard((double)x,(double)fn,132);
 	}
@@ -52,7 +61,7 @@
 	    return (float)__kernel_standard((double)x,(double)fn,133);
 	} 
 #ifndef _SCALB_INT
-	if(!finitef(fn)) errno = ERANGE;
+	if(!finitef(ufn.l)) errno = ERANGE;
 #endif
 	return z;
 #endif 

@@ -15,6 +15,7 @@
  */
 
 #include "fdlibm.h"
+#include <libc/ieee.h>
 
 #ifdef __STDC__
 	float gammaf(float x)
@@ -26,10 +27,16 @@
 #ifdef _IEEE_LIBM
 	return __ieee754_gammaf_r(x,&signgam);
 #else
+	_float_long_union ux;
+	_float_long_union uy;
+	
+	ux.f = x;
+
         float y;
         y = __ieee754_gammaf_r(x,&signgam);
+		uy.f = y;
         if(_LIB_VERSION == _IEEE_) return y;
-        if(!finitef(y)&&finitef(x)) {
+        if(!finitef(uy.f)&&finitef(ux.f)) {
             if(floorf(x)==x&&x<=(float)0.0)
 	        /* gammaf pole */
                 return (float)__kernel_standard((double)x,(double)x,141);

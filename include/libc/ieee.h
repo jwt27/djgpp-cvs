@@ -38,6 +38,25 @@ typedef struct {
   unsigned sign:1;
 } long_double_t;
 
+
+typedef union
+{
+  double d;
+  double_t dt;
+} _double_union_t;
+
+typedef union
+{
+  long double ld;
+  long_double_t ldt;
+} longdouble_union_t;
+
+typedef union
+{
+  float f;
+  long  l;
+} _float_long_union;
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
