@@ -50,6 +50,7 @@ static char sccsid[] = "@(#)ctime.c	5.23 (Berkeley) 6/22/90";
 
 #include <libc/unconst.h>
 #include <libc/bss.h>
+#include <libc/environ.h>
 
 #include "posixrul.h"
 
@@ -152,6 +153,7 @@ static void		timesub P((const time_t * timep, long offset,
 				const struct state * sp, struct tm * tmp));
 static int		tmcomp P((const struct tm * atmp,
 				const struct tm * btmp));
+static void		tmnormalize P((struct tm * tmp));
 static time_t		transtime P((time_t janfirst, int year,
 				const struct rule * rulep, long offset));
 static int		tzload P((const char * name, struct state * sp));
@@ -171,8 +173,9 @@ static struct state gmtmem;
 #define gmtptr (&gmtmem)
 #endif /* State Farm */
 
-static int lcl_is_set;
+static int lcl_is_set;	/* 0: no, 1: set by tzset, -1: set by tzsetwall */
 static int gmt_is_set;
+static char lcl_tzstr[512];
 
 char * tzname[2] = {
   WILDABBR,
@@ -399,6 +402,12 @@ static const int mon_lengths[2][MONSPERYEAR] = {
 
 static const int year_lengths[2] = {
 DAYSPERNYEAR, DAYSPERLYEAR
+};
+
+static const long n_year_lengths[3] = {
+  3*DAYSPERNYEAR + DAYSPERLYEAR,		 /* 4-year cycle length */
+  25*(3*DAYSPERNYEAR + DAYSPERLYEAR) - 1,	 /* 100-year cycle length */
+  4*(25*(3*DAYSPERNYEAR + DAYSPERLYEAR) - 1) + 1 /* 400-year cycle length */
 };
 
 /*
@@ -908,14 +917,35 @@ void
 tzset(void)
 {
   const char * name;
+  static unsigned last_env_changed = 0;
 
+  /* If environ didn't changed since last time, don't waste time
+     looking at $TZ.  */
+  if (lcl_is_set > 0 && __environ_changed == last_env_changed)
+    return;
+
+  /* If environ did change, but $TZ wasn't changed since last time we
+     were called, we are all done here.  */
+  last_env_changed = __environ_changed;
   name = getenv("TZ");
+  /* Use stricmp, since if TZ points to a file name, we need to be
+     case-insensitive.  */
+  if (lcl_is_set > 0 && (name == NULL || stricmp(name, lcl_tzstr) == 0))
+    return;
+
+  /* On to some *real* work... */
   if (name == NULL)
   {
     tzsetwall();
     return;
   }
-  lcl_is_set = TRUE;
+  if (strlen(name) < sizeof(lcl_tzstr))
+  {
+    lcl_is_set = 1;
+    strcpy(lcl_tzstr, name);
+  }
+  else
+    lcl_is_set = 0;
 #ifdef ALL_STATE
   if (lclptr == NULL)
   {
@@ -947,7 +977,9 @@ tzset(void)
 void
 tzsetwall(void)
 {
-  lcl_is_set = TRUE;
+  if (lcl_is_set == -1)
+    return;
+  lcl_is_set = -1;
 #ifdef ALL_STATE
   if (lclptr == NULL)
   {
@@ -982,8 +1014,7 @@ localsub(const time_t * const timep, const long offset, struct tm * const tmp)
   int i;
   const time_t t = *timep;
 
-  if (!lcl_is_set)
-    tzset();
+  tzset();
   sp = lclptr;
 #ifdef ALL_STATE
   if (sp == NULL)
@@ -1078,6 +1109,51 @@ gmtime(const time_t * const timep)
   return &tm;
 }
 
+/* Return the year which is DAYS away from the year Y0.  */
+static int
+days_to_years(int y0, long *days)
+{
+  int y, dir, yleap;
+
+  y = y0;
+  dir = *days >= 0 ? 1 : -1;
+
+  /* We move by 400, 100, and 4 years at a time, to quickly reduce
+     DAYS to a reasonable value.  */
+  while (*days*dir > n_year_lengths[2])
+  {
+    y += dir*400;
+    *days -= dir*n_year_lengths[2];
+  }
+  while (*days*dir > n_year_lengths[1])
+  {
+    y += dir*100;
+    *days -= dir*n_year_lengths[1];
+  }
+  while (*days*dir > n_year_lengths[0])
+  {
+    y += dir*4;
+    *days -= dir*n_year_lengths[0];
+  }
+  if (dir == 1)
+    for ( ; ; )
+    {
+      yleap = isleap(y);
+      if (*days < (long) year_lengths[yleap])
+	break;
+      ++y;
+      *days = *days - (long) year_lengths[yleap];
+    }
+  else
+    do {
+    --y;
+    yleap = isleap(y);
+    *days = *days + (long) year_lengths[yleap];
+  } while (*days < 0);
+
+  return y;
+}
+
 static void
 timesub(const time_t * const timep, const long offset, const struct state * const sp, struct tm * const tmp)
 {
@@ -1147,22 +1223,8 @@ timesub(const time_t * const timep, const long offset, const struct state * cons
   tmp->tm_wday = (int) ((EPOCH_WDAY + days) % DAYSPERWEEK);
   if (tmp->tm_wday < 0)
     tmp->tm_wday += DAYSPERWEEK;
-  y = EPOCH_YEAR;
-  if (days >= 0)
-    for ( ; ; )
-    {
-      yleap = isleap(y);
-      if (days < (long) year_lengths[yleap])
-	break;
-      ++y;
-      days = days - (long) year_lengths[yleap];
-    }
-  else
-    do {
-    --y;
-    yleap = isleap(y);
-    days = days + (long) year_lengths[yleap];
-  } while (days < 0);
+  y = days_to_years(EPOCH_YEAR, &days);
+  yleap = isleap(y);
   tmp->tm_year = y - TM_YEAR_BASE;
   tmp->tm_yday = (int) days;
   ip = mon_lengths[yleap];
@@ -1251,6 +1313,46 @@ tmcomp(const struct tm * const atmp, const struct tm * const btmp)
   return result;
 }
 
+static void
+tmnormalize(struct tm *tmp)
+{
+  if (tmp->tm_sec >= SECSPERMIN + 2 || tmp->tm_sec < 0)
+    normalize(&tmp->tm_min, &tmp->tm_sec, SECSPERMIN);
+  normalize(&tmp->tm_hour, &tmp->tm_min, MINSPERHOUR);
+  normalize(&tmp->tm_mday, &tmp->tm_hour, HOURSPERDAY);
+  normalize(&tmp->tm_year, &tmp->tm_mon, MONSPERYEAR);
+
+  /* If tm_mday is negative, or positive and too large, bring it back
+     to the reasonable range [1..366].  */
+  if (tmp->tm_mday <= 0 || tmp->tm_mday > DAYSPERLYEAR)
+  {
+    long days = tmp->tm_mday;
+    int yleap = isleap(tmp->tm_year + TM_YEAR_BASE);
+
+    while (tmp->tm_mon--)
+      days += mon_lengths[yleap][tmp->tm_mon];
+    tmp->tm_year =
+      days_to_years(tmp->tm_year + TM_YEAR_BASE, &days) - TM_YEAR_BASE;
+    tmp->tm_mday = days;
+    tmp->tm_mon = 0;
+  }
+
+  /* Now correct tm_mon and tm_mday so that they are within their
+     normal ranges [0..11] and [1..mon_length[tm_mon]], respectively.  */
+  for ( ; ; )
+  {
+    int i = mon_lengths[isleap(tmp->tm_year + TM_YEAR_BASE)][tmp->tm_mon];
+    if (tmp->tm_mday <= i)
+      break;
+    tmp->tm_mday -= i;
+    if (++tmp->tm_mon >= MONSPERYEAR)
+    {
+      tmp->tm_mon = 0;
+      ++tmp->tm_year;
+    }
+  }
+}
+
 static time_t
 time2(struct tm *tmp, void (*const funcp)(const time_t *const,const long,struct tm *), const long offset, int * const okayp)
 {
@@ -1264,31 +1366,8 @@ time2(struct tm *tmp, void (*const funcp)(const time_t *const,const long,struct 
   struct tm yourtm, mytm;
 
   *okayp = FALSE;
+  tmnormalize(tmp);
   yourtm = *tmp;
-  if (yourtm.tm_sec >= SECSPERMIN + 2 || yourtm.tm_sec < 0)
-    normalize(&yourtm.tm_min, &yourtm.tm_sec, SECSPERMIN);
-  normalize(&yourtm.tm_hour, &yourtm.tm_min, MINSPERHOUR);
-  normalize(&yourtm.tm_mday, &yourtm.tm_hour, HOURSPERDAY);
-  normalize(&yourtm.tm_year, &yourtm.tm_mon, MONSPERYEAR);
-  while (yourtm.tm_mday <= 0)
-  {
-    --yourtm.tm_year;
-    yourtm.tm_mday +=
-      year_lengths[isleap(yourtm.tm_year + TM_YEAR_BASE)];
-  }
-  for ( ; ; )
-  {
-    i = mon_lengths[isleap(yourtm.tm_year +
-			   TM_YEAR_BASE)][yourtm.tm_mon];
-    if (yourtm.tm_mday <= i)
-      break;
-    yourtm.tm_mday -= i;
-    if (++yourtm.tm_mon >= MONSPERYEAR)
-    {
-      yourtm.tm_mon = 0;
-      ++yourtm.tm_year;
-    }
-  }
   saved_seconds = yourtm.tm_sec;
   yourtm.tm_sec = 0;
   /*
@@ -1412,6 +1491,7 @@ time1(struct tm * const tmp, void (*const funcp)(const time_t * const, const lon
 time_t
 mktime(struct tm * tmp)
 {
+  struct tm save_tm = *tmp;
   int rv = time1(tmp, localsub, 0L);
   if (rv == -1)
   {
@@ -1427,6 +1507,24 @@ mktime(struct tm * tmp)
     tmp->tm_hour -= delta;
     if (rv != -1)
       rv -= delta*60*60;
+    else
+    {
+      /* tmp might point to a time structure that's before 1/1/1970.
+	 This can happen if tmp is a result of a call to localtime(0)
+	 issued in a timezone with a negative offset, like PST8.
+	 Adding the timezone offset will bring the time structure into
+	 the valid range.  */
+      delta = 24 - tmp->tm_hour;
+      tmp->tm_hour += delta;
+      rv = time1(tmp, localsub, 0L);
+      tmp->tm_hour -= delta;
+      if (rv != -1)
+	rv -= delta*60*60;
+    }
+    if (rv == -1)
+      *tmp = save_tm;
+    else
+      tmnormalize(tmp);
   }
   return rv;
 }
