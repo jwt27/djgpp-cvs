@@ -118,6 +118,10 @@ A tab (@code{\t})
 The week of the year, with the first week defined by the first Sunday of
 the year, zero padded to two characters (@code{39})
 
+@item %u
+
+The day of the week (1-7) (@code{6})
+
 @item %W
 
 The week of the year, with the first week defined by the first Monday of
