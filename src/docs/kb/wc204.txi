@@ -973,3 +973,8 @@ DXEs which can be linked via library is as simple as a single command.
 @code{uclock} now uses rdtsc under Windows NT, 2000 and XP (if it is 
 available) to work around the bug with the interval timer not being 
 syncronized with the timer tick.
+
+@vindex __tb_size@r{ added}
+The macro @code{__tb_size} was added, to represent the size
+of the transfer buffer.  This complements the macro @code{__tb},
+which gives the linear address of the transfer buffer.
