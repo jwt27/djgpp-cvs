@@ -1,0 +1,41 @@
+@node imaxdiv, math
+@subheading Syntax
+
+@example
+#include <inttypes.h>
+
+imaxdiv_t imaxdiv (intmax_t numerator, intmax_t denominator);
+@end example
+
+@subheading Description
+
+Returns the quotient and remainder of the division @var{numerator}
+divided by @var{denominator}.  The return type is as follows:
+
+@example
+typedef struct @{
+  intmax_t quot;
+  intmax_t rem;
+@} imaxdiv_t;
+@end example
+
+@subheading Return Value
+
+The results of the division are returned.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+imaxdiv_t l = imaxdiv(42, 3);
+printf("42 = %" PRIdMAX " x 3 + %" PRIdMAX "\n", l.quot, l.rem);
+
+imaxdiv(+40, +3) = @{ +13, +1 @}
+imaxdiv(+40, -3) = @{ -13, -1 @}
+imaxdiv(-40, +3) = @{ -13, -1 @}
+imaxdiv(-40, -3) = @{ +13, -1 @}
+
+@end example

@@ -1,0 +1,107 @@
+@node SCN, stdio
+@subheading Syntax
+
+@example
+#include <inttypes.h>
+@end example
+
+@subheading Description
+
+The @code{SCN} family of macros allows integers to be input
+in a portable manner using the @code{scanf} family of functions
+(@pxref{scanf}).  They include a conversion qualifier, to specify
+the width of the type (e.g.: @code{l} for @code{long}),
+and the conversion type specifier (e.g.: @code{d} for decimal
+display of integers).
+
+The @code{SCN} family of macros should be used with the types defined
+in the header @code{<stdint.h>}.  For example: @code{int8_t},
+@code{uint_fast32_t}, @code{uintptr_t}, @code{intmax_t}.
+
+Below @var{N} can be 8, 16, 32 or 64.  The @code{SCN} macros are:
+
+@table @code
+
+@item SCNd@var{N}
+@itemx SCNi@var{N}
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{int@var{N}_t} of @var{N} bits.
+
+@item SCNdLEAST@var{N}
+@itemx SCNiLEAST@var{N}
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{int_least@var{N}_t} of @var{N} bits.
+
+@item SCNdFAST@var{N}
+@itemx SCNiFAST@var{N}
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{int_fast@var{N}_t} of @var{N} bits.
+
+@item SCNdMAX
+@itemx SCNiMAX
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{intmax_t}.
+
+@item SCNdPTR
+@itemx SCNiPTR
+
+The @code{d} and @code{i} type conversion specifier
+for a type @code{intptr_t}.
+
+@item SCNo@var{N}
+@itemx SCNu@var{N}
+@itemx SCNx@var{N}
+
+The @code{o}, @code{u} and @code{x} type conversion specifiers
+for a type @code{uint@var{N}_t} of @var{N} bits.
+
+@item SCNoLEAST@var{N}
+@itemx SCNuLEAST@var{N}
+@itemx SCNxLEAST@var{N}
+
+The @code{o}, @code{u} and @code{x} type conversion specifiers
+for a type @code{uint_LEAST@var{N}_t} of @var{N} bits.
+
+@item SCNoFAST@var{N}
+@itemx SCNuFAST@var{N}
+@itemx SCNxFAST@var{N}
+
+The @code{o}, @code{u} and @code{x} type conversion specifiers
+for a type @code{uint_FAST@var{N}_t} of @var{N} bits.
+
+@item SCNoMAX
+@itemx SCNuMAX
+@itemx SCNxMAX
+
+The @code{o}, @code{u} and @code{x} type conversion specifiers
+for a type @code{uintmax_t}.
+
+@item SCNoPTR
+@itemx SCNuPTR
+@itemx SCNxPTR
+
+The @code{o}, @code{u} and @code{x} type conversion specifiers
+for a type @code{uintptr_t}.
+
+@end table
+
+@subheading Return Value
+
+Not applicable.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+intmax_t m;
+int ret;
+
+ret = sscanf("0x1000", "%" SCNxMAX, &m);
+@end example

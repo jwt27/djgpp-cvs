@@ -1,0 +1,112 @@
+@node PRI, stdio
+@subheading Syntax
+
+@example
+#include <inttypes.h>
+@end example
+
+@subheading Description
+
+The @code{PRI} family of macros allows integers to be displayed
+in a portable manner using the @code{printf} family of functions
+(@pxref{printf}).  They include a conversion qualifier, to specify
+the width of the type (e.g.: @code{l} for @code{long}),
+and the conversion type specifier (e.g.: @code{d} for decimal
+display of integers).
+
+The @code{PRI} family of macros should be used with the types defined
+in the header @code{<stdint.h>}.  For example: @code{int8_t},
+@code{uint_fast32_t}, @code{uintptr_t}, @code{intmax_t}.
+
+Below @var{N} can be 8, 16, 32 or 64.  The @code{PRI} macros are:
+
+@table @code
+
+@item PRId@var{N}
+@itemx PRIi@var{N}
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{int@var{N}_t} of @var{N} bits.
+
+@item PRIdLEAST@var{N}
+@itemx PRIiLEAST@var{N}
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{int_least@var{N}_t} of @var{N} bits.
+
+@item PRIdFAST@var{N}
+@itemx PRIiFAST@var{N}
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{int_fast@var{N}_t} of @var{N} bits.
+
+@item PRIdMAX
+@itemx PRIiMAX
+
+The @code{d} and @code{i} type conversion specifiers
+for a type @code{intmax_t}.
+
+@item PRIdPTR
+@itemx PRIiPTR
+
+The @code{d} and @code{i} type conversion specifier
+for a type @code{intptr_t}.
+
+@item PRIo@var{N}
+@itemx PRIu@var{N}
+@itemx PRIx@var{N}
+@itemx PRIX@var{N}
+
+The @code{o}, @code{u}, @code{x} and @code{X} type conversion specifiers
+for a type @code{uint@var{N}_t} of @var{N} bits.
+
+@item PRIoLEAST@var{N}
+@itemx PRIuLEAST@var{N}
+@itemx PRIxLEAST@var{N}
+@itemx PRIXLEAST@var{N}
+
+The @code{o}, @code{u}, @code{x} and @code{X} type conversion specifiers
+for a type @code{uint_LEAST@var{N}_t} of @var{N} bits.
+
+@item PRIoFAST@var{N}
+@itemx PRIuFAST@var{N}
+@itemx PRIxFAST@var{N}
+@itemx PRIXFAST@var{N}
+
+The @code{o}, @code{u}, @code{x} and @code{X} type conversion specifiers
+for a type @code{uint_FAST@var{N}_t} of @var{N} bits.
+
+@item PRIoMAX
+@itemx PRIuMAX
+@itemx PRIxMAX
+@itemx PRIXMAX
+
+The @code{o}, @code{u}, @code{x} and @code{X} type conversion specifiers
+for a type @code{uintmax_t}.
+
+@item PRIoPTR
+@itemx PRIuPTR
+@itemx PRIxPTR
+@itemx PRIXPTR
+
+The @code{o}, @code{u}, @code{x} and @code{X} type conversion specifiers
+for a type @code{uintptr_t}.
+
+@end table
+
+@subheading Return Value
+
+Not applicable.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+uintmax_t foo = 500;
+
+printf("foo is %" PRIuMAX " in decimal and 0x%" PRIxMAX " in hex.\n",
+       foo, foo);
+@end example
