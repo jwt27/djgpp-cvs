@@ -34,7 +34,7 @@ case.
 
 @subheading Return Value
 
-The new offset is returned.
+The new offset is returned, or -1 and @code{errno} set on failure.
 
 @subheading Portability
 
