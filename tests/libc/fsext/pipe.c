@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 #include <sys/fsext.h>
 
 #ifndef PIPE_MAX
