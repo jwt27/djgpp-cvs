@@ -488,3 +488,22 @@ using a simplified form of the implementation suggested by
 is required.  Obsolete usage of @code{shld} and @code{shrd}
 for double-precision shifts is flagged.
 
+@findex l64a@r{, added}
+@findex a64l@r{, added}
+Two new functions, @code{l64a} and @code{a64l} (both part of the @sc{posix}
+draft standard), allow you to convert a 32-bit integer value to and from a
+base-64 encoding, respectively.
+Note that the encoding used is the one mandated by the @sc{posix} spec, and
+not the one used by either @command{uuencode} or the @sc{mime} base64
+encoding.
+
+@findex setenv@r{, minor changes for @sc{posix} compliance}
+@findex putenv@r{, minor changes for @sc{posix} compliance}
+@findex unsetenv@r{, added}
+The environment functions @code{setenv} and @code{putenv} are now both
+part of the @sc{posix} draft standard and were updated to match the
+specs set forth by that standard.  Both now set @code{errno} in case of
+failure, and @code{putenv}'s argument is now a @code{char*} instead of
+a @code{const char*}.
+A new function, @code{unsetenv}, which is also part of that standard, was
+added.
