@@ -1,9 +1,7 @@
 -MD
 -O2
--m486
--malign-loops=2
--malign-jumps=2
--malign-functions=2
+-mcpu=pentium
+-march=i386
 -fno-strength-reduce
 -Wall
 -nostdinc
