@@ -714,3 +714,11 @@ the @env{DJGPP} environment variable is not set.
 The functions @code{fstatvfs} and @code{statvfs} have been added.
 @code{statvfs} does much the same as @code{statfs}, but it is
 POSIX-compliant.
+
+@cindex @file{/dev/zero}
+@findex __install_dev_zero@r{, install support for @file{/dev/zero}}
+@cindex @file{/dev/full}
+@findex __install_dev_full@r{, install support for @file{/dev/full}}
+Optional support for the devices @file{/dev/zero} and @file{/dev/full} was
+added.  This is enabled using the @code{__install_dev_zero} and
+@code{__install_dev_zero} functions.

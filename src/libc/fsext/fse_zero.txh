@@ -1,0 +1,55 @@
+@node __install_dev_zero, file system
+
+@subheading Syntax
+
+@example
+#include <sys/xdevices.h>
+
+int __install_dev_zero (void);
+@end example
+
+@subheading Description
+
+This function activates support for the special file @file{/dev/zero}.
+When read, @file{dev/zero} always returns @samp{\0} characters.  When
+written, @file{/dev/zero} discards the data.  Seeks on @file{/dev/zero}
+will always succeed.
+
+The DJGPP debug support functions will interfere with @file{/dev/zero}
+(@pxref{File System Extensions}).
+
+@subheading Return Value
+
+On success, a non-zero value is returned; on failure, zero is returned.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@node __install_dev_full, file system
+
+@subheading Syntax
+
+@example
+#include <sys/xdevices.h>
+
+int __install_dev_full (void);
+@end example
+
+@subheading Description
+
+This function activates support for the special file @file{/dev/full}.
+When read, @file{dev/full} always returns @samp{\0} characters.  Writes
+to @file{/dev/full} will fail with @code{errno} set to @code{ENOSPC}.
+Seeks on @file{/dev/full} always succeed.
+
+The DJGPP debug support functions will interfere with @file{/dev/full}
+(@pxref{File System Extensions}).
+
+@subheading Return Value
+
+On success, a non-zero value is returned; on failure, zero is returned.
+
+@subheading Portability
+
+@portability !ansi, !posix
