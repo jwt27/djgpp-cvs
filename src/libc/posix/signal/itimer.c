@@ -1,38 +1,74 @@
 /* Copyright (C) 1995 Charles Sandmann (sandmann@clio.rice.edu)
    setitimer implmentation - used for profiling and alarm
    BUGS: ONLY ONE AT A TIME, first pass code
-   This software may be freely distributed, no warranty. */
+   This software may be freely distributed, no warranty.
+
+   Changed to work with SIGALRM & SIGPROF by Tom Demmer.
+   Gotchas:
+     - It relies on uclock(), which does not work under Windows 95.
+     - It screws up debuggers for reasons I cannot figure out.
+     - Both is true for the old version, too.
+*/
 
 #include <libc/stubs.h>
 #include <sys/time.h>
 #include <errno.h>
 #include <dpmi.h>
 #include <signal.h>
+#include <go32.h>
 
-static struct itimerval real, prof;
+static uclock_t r_exp, r_rel,  /* When REAL expires & reload value */
+                p_exp, p_rel;  /* When PROF expires & reload value */
 
-/* not right, should compute from current tic count.  Do later */
-int getitimer(int which, struct itimerval *value)
+static uclock_t u_now;
+
+int
+getitimer(int which, struct itimerval *value)
 {
-  if(which == ITIMER_REAL) {
-    *value = real;
-    return 0;
-  } else if(which == ITIMER_PROF) {
-    *value = prof;
-    return 0;
+  uclock_t rel;
+
+  u_now = uclock();
+  if (which == ITIMER_REAL)
+  {
+    if (r_exp)
+    {
+      u_now = r_exp - uclock();
+      rel   = r_rel;
+    }
+    else
+      r_exp =  rel = 0;
   }
-  errno = EINVAL;
-  return -1;
+  else if (which == ITIMER_PROF)
+  {
+    if (p_exp)
+    {
+      u_now = p_exp - uclock();
+      rel   = p_rel;
+    }
+    else
+      u_now = rel = 0;
+  }
+  else
+  {
+    errno = EINVAL;
+    return -1;
+  }
+  value->it_value.tv_sec = u_now / UCLOCKS_PER_SEC;
+  value->it_value.tv_usec= (u_now - value->it_value.tv_sec*3433)/4096;
+  value->it_interval.tv_sec = rel / UCLOCKS_PER_SEC;
+  value->it_interval.tv_usec= (u_now - value->it_interval.tv_sec*3433)/4096;
+  return 0;
 }
 
 extern unsigned __djgpp_timer_countdown;
 extern __dpmi_paddr __djgpp_old_timer;
 extern int __djgpp_timer_hdlr;
 static char timer_on = 0;
-static int sigtype = SIGALRM;
-static int reload = 0;
 
-static void stop_timer(void)
+/* Set back IRQ2 handler to default values and disable own signal
+   handler */
+static void
+stop_timer(void)
 {
   if(!timer_on)
     return;
@@ -42,60 +78,131 @@ static void stop_timer(void)
   signal(SIGTIMR, SIG_DFL);
 }
 
-static void timer_action(int signum)
+/* Returns the time to the next event in UCLOCK_PER_SEC u_now must be
+   set by calling routine.  Return 0 if no event pending. */
+
+static inline uclock_t
+GetNextEvent(void)
 {
-  if(reload)
-    __djgpp_timer_countdown = reload;
+  if (r_exp && p_exp)
+     return (r_exp < p_exp ? r_exp - u_now : p_exp - u_now );
+  else if (r_exp)
+     return  r_exp - u_now;
+  else if (p_exp)
+     return p_exp - u_now;
   else
-    stop_timer();
-  raise(sigtype);
+     return 0;
 }
 
-static void start_timer(void)
+/* Handler for SIGTIMR */
+static void
+timer_action(int signum)
 {
+  int do_tmr=0,do_prof=0;
+  uclock_t next;
+
+  u_now = uclock();
+
+  /* Check the real timer Add 64k, because the next timer interrupt
+     occurs after that time.  A bit less would be sufficient, but what
+     can you do?  */
+  if (r_exp && (r_exp + 65536L <= u_now) )
+  {
+    do_tmr = 1;
+    if (r_rel)
+      r_exp += r_rel;
+    else
+      r_exp = 0;
+  }
+
+  /* Check profile timer */
+  if (p_exp && (p_exp + 65536L <= u_now))
+  {
+    do_prof = 1;
+    if (p_rel)
+      p_exp += p_rel;
+    else
+      p_exp = 0;
+  }
+
+  /* Now we have to schedule the next interrupt, if any pending */
+  if ((next = GetNextEvent()) != 0)
+  {
+    next /= 65536L;
+    __djgpp_timer_countdown = next ? next : 1 ;
+  }
+  else
+    stop_timer();
+
+  if (do_tmr)
+    raise(SIGALRM);
+  if (do_prof)
+    raise(SIGPROF);
+}
+
+static void
+start_timer(void)
+{
+  uclock_t next;
   __dpmi_paddr int8;
 
-  if(timer_on)
+  next = GetNextEvent();
+  next /= 65536L;
+  __djgpp_timer_countdown = next ? next : 1;
+
+  if (timer_on)
     return;
+
   timer_on = 1;
   signal(SIGTIMR, timer_action);
   __dpmi_get_protected_mode_interrupt_vector(8, &__djgpp_old_timer);
-  asm("movw %%cs,%0" : "=g" (int8.selector) );
+  int8.selector = _my_cs();
   int8.offset32 = (unsigned) &__djgpp_timer_hdlr;
   __dpmi_set_protected_mode_interrupt_vector(8, &int8);
 }
 
-/* Note, this should have a scheduler to handle both, do later.  Currently
-   can't have both at same time */
 
-int setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
+int
+setitimer(int which, struct itimerval *value, struct itimerval *ovalue)
 {
-  if(ovalue)
-    if(getitimer(which,ovalue))
-      return -1;	/* errno already set */
+  uclock_t *t_exp, *t_rel;
 
-  if((value->it_value.tv_sec | value->it_value.tv_usec) == 0) {
-    stop_timer();
-    return 0;
+  if (ovalue)
+  {
+    if (getitimer(which,ovalue))
+      return -1;  /* errno already set */
   }
-  
-  if(which == ITIMER_REAL) {
-    sigtype = SIGALRM;
-  } else if(which == ITIMER_PROF) {
-    sigtype = SIGPROF;
-  } else {
+  else
+    u_now = uclock();
+
+  if ((which != ITIMER_REAL) && ( which != ITIMER_PROF ) )
+  {
     errno = EINVAL;
     return -1;
   }
-  
-  __djgpp_timer_countdown = value->it_value.tv_sec * 18;
-  __djgpp_timer_countdown += value->it_value.tv_sec / 5;
-  __djgpp_timer_countdown += (value->it_value.tv_usec + 54944) / 54955;
-  
-  reload = value->it_interval.tv_sec * 18;
-  reload += value->it_interval.tv_sec / 5;
-  reload += (value->it_interval.tv_usec + 54944) / 54955;
-  
+
+  t_exp = which == ITIMER_REAL ? &r_exp: &p_exp;
+  t_rel = which == ITIMER_REAL ? &r_rel: &p_rel;
+
+  if ((value->it_value.tv_sec|value->it_value.tv_usec)==0 )
+  {
+    /* Disable this timer */
+    *t_exp = *t_rel = 0;
+    /* If both stopped, stop timer */
+    if (( p_exp | r_exp ) == 0 )
+    {
+      stop_timer();
+      return 0;
+    }
+  }
+
+  /* Rounding errors ?? First multiply and then divide could give
+     Overflow. */
+  *t_exp = value-> it_value.tv_sec              * UCLOCKS_PER_SEC
+    + (value->it_value.tv_usec * 4096)     / 3433;
+  *t_rel = value-> it_interval.tv_sec           * UCLOCKS_PER_SEC
+    + (value->it_interval.tv_usec * 4096) / 3433;
+
   start_timer();
   return 0;
 }
