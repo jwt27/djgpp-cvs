@@ -1,7 +1,13 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
-../../bin/mkdoc.exe : mkdoc.o
-	ld ../../lib/crt0.o $^ -L../../lib/ -lgcc -lc -o ../../bin/mkdoc.exe -T ../../lib/djgpp.djl
-	../../bin/stubify -v ../../bin/mkdoc.exe
 
-mkdoc.o : mkdoc.cc
-	gcc -nostdinc -I../../include -c mkdoc.cc
+TOP = .
+include $(TOP)/../makefile.inc
+
+all :: $(HOSTBIN)/mkdoc.exe
+
+$(HOSTBIN)/mkdoc.exe : mkdoc.cc
+	$(GCC) mkdoc.cc -o $@
+
+clean ::
+	@-$(MISC) rm $(HOSTBIN)/mkdoc.exe
