@@ -72,6 +72,7 @@ int	rand(void);
 void *	realloc(void *_ptr, size_t _size);
 void	srand(unsigned _seed);
 double	strtod(const char *_s, char **_endptr);
+float	strtof(const char *_s, char **_endptr);
 long	strtol(const char *_s, char **_endptr, int _base);
 long double	strtold(const char *_s, char **_endptr);
 unsigned long	strtoul(const char *_s, char **_endptr, int _base);
