@@ -219,3 +219,12 @@ an @file{env} directory in the current working directory when library
 functions are passed the @file{/dev/env} file name.  This avoids
 creating spurious @file{env} directories in any directory where the
 standard GNU @code{mkinstalldirs} script is run.
+
+@findex rename@r{, and Windows 2000}
+@findex _rename@r{, and Windows 2000}
+@cindex linking programs on Windows 2000
+@pindex stubify@r{, and Windows 2000}
+Functions @code{rename} and @code{_rename} work on Windows 2000 when the
+file under the new name already exists.  This solves the problems with
+linking DJGPP programs and with running the @code{stubify} utility on
+that OS.

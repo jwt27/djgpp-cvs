@@ -133,7 +133,9 @@ int _rename(const char *old, const char *new)
     {
       if (i == 0
 	  && !identical_but_for_case /* don't nuke OLD! */
-	  && (r.x.ax == 5 || (r.x.ax == 2 && __file_exists(old))))
+	  && (r.x.ax == 5 || (r.x.ax == 2 && __file_exists(old))
+	      /* Windows 2000 returns B7h when the target file exists.  */
+	      || r.x.ax == 0xb7))
 	remove(new);		 /* and try again */
       else
       {
