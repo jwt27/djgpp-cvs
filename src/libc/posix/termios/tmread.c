@@ -23,8 +23,8 @@
 #define SENSE_REG_KEY	1
 #define SENSE_EXT_KEY	2
 
-struct tty_editline __libc_tty_editline = { 0, { 0 }, { 0 }, };
-unsigned char __libc_tty_queue_buffer[_TTY_QUEUE_SIZE];
+static struct tty_editline __libc_tty_editline = { 0, { 0 }, { 0 }, };
+static unsigned char __libc_tty_queue_buffer[_TTY_QUEUE_SIZE];
 
 /* static data */
 static unsigned ah_key_sense;
