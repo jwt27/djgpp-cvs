@@ -66,26 +66,32 @@ obscure points specific to @code{fstat}s behavior in DJGPP.
 and others is returned as -1.  For drives networked by Novell Netware, it
 is returned as -2.
 
-2. The starting cluster number of a file serves as its inode number.  For
-files whose starting cluster number is inaccessible (empty files, files on
-networked drives, etc.) the @code{st_inode} field will be @cite{invented}
-in a way which guarantees that no two different files will get the same
-inode number (thus it is unique).  This invented inode will also be
-different from any real cluster number of any local file.  However, only
-for local, non-empty files/directories the inode is guaranteed to be
-consistent between @code{stat} and @code{fstat} function calls.  (Note
-that two files whose names are identical but for the drive letter, will
-get the same invented inode, since each filesystem has its own
-independent inode numbering, and comparing files for identity should
-include the value of @code{st_dev}.)
+2. The starting cluster number of a file serves as its inode number.
+For files whose starting cluster number is inaccessible (empty files,
+all files on Windows, files on networked drives, etc.) the
+@code{st_inode} field will be @cite{invented} in a way which guarantees
+that no two different files will get the same inode number (thus it is
+unique).  This invented inode will also be different from any real
+cluster number of any local file.  However, only for local, non-empty
+files/directories the inode is guaranteed to be consistent between
+@code{stat} and @code{fstat} function calls.  (Note that files on
+different drives can have identical inode numbers, and thus comparing
+files for identity should include comparison of the @code{st_dev}
+member.)
 
-3. The WRITE access mode bit is set only for the user (unless the file is
+3. On all versions of Windows except Windows 3.X, the inode number is
+invented.  As Windows doesn't provide enough information to identify
+files by the handle on which they are open, @code{fstat} always returns
+different inode numbers for any two files open on different handles,
+even if the same file is open twice on two different handles.
+
+4. The WRITE access mode bit is set only for the user (unless the file is
 read-only, hidden or system).  EXECUTE bit is set for directories,  files
 which can be executed from the DOS prompt (batch files, .com, .dll and .exe
 executables) or run by @code{go32-v2.exe}.  For files which reside on
 networked drives under Novell Netware, this can sometimes fail, in which
 case only the read access bit is set.
 
-4. The variable @code{_djstat_flags} (@pxref{_djstat_flags}) controls
+5. The variable @code{_djstat_flags} (@pxref{_djstat_flags}) controls
 what hard-to-get fields of @code{struct stat} are needed by the
 application.
