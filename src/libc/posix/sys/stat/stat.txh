@@ -10,7 +10,11 @@ int stat(const char *file, struct stat *sbuf);
 @subheading Description
 
 This function obtains the status of the file @var{file} and stores
-it in @var{sbuf}, which has this structure:
+it in @var{sbuf}.  @code{stat} follows symbolic links.  To get
+information about a symbolic link, use @code{lstat} (@pxref{lstat})
+instead.
+
+@var{sbuf} has this structure:
 
 @smallexample
 struct  stat @{

@@ -10,7 +10,11 @@ int lstat(const char *file, struct stat *sbuf);
 @subheading Description
 
 This function obtains the status of the file @var{file} and stores
-it in @var{sbuf}, which has this structure:
+it in @var{sbuf}.  If @var{file} is a symbolic link, then @code{lstat}
+returns information about the symbolic link.  To get information about
+the target of a symbolic link, use @code{stat} (@pxref{stat}) instead.
+
+@var{sbuf} has this structure:
 
 @smallexample
 struct  stat @{
