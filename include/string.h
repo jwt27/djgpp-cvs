@@ -58,6 +58,7 @@ void *	memccpy(void *_to, const void *_from, int c, size_t n);
 int	memicmp(const void *_s1, const void *_s2, size_t _n);
 char *  rindex(const char *_string, int _c);
 char *	stpcpy(char *_dest, const char *_src);
+char *	stpncpy(char *_dest, const char *_src, size_t _n);
 char *	strdup(const char *_s);
 char *	strlwr(char *_s);
 int	strcasecmp(const char *_s1, const char *_s2);

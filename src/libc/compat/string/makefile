@@ -6,6 +6,7 @@ SRC += ffs.S
 SRC += memccpy.c
 SRC += memicmp.c
 SRC += stpcpy.c
+SRC += stpncpy.c
 SRC += strcasec.S
 SRC += strdup.c
 SRC += stricmp.c

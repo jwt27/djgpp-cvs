@@ -1,0 +1,23 @@
+@node stpncpy, string
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char *stpncpy(char *_dest, const char *_src, size_t _n);
+@end example
+
+@subheading Description
+
+Copies exactly @var{_n} characters from @var{_src} to @var{_dest}.
+If need be, @var{_dest} is padded with zeros to make @var{_n} characters.
+Like @code{strncpy} (@pxref{strncpy}), but return value different.
+
+@subheading Return Value
+
+Returns a pointer to the character following the last nonzero written.
+
+@subheading Portability
+
+@portability !ansi, !posix
+

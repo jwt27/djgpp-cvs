@@ -78,3 +78,7 @@ the caller's stack.
 @findex getlogin@r{, and @code{USERNAME} variable}
 @code{getlogin} now examines the environment variable @code{USERNAME} to
 determine the user's name, in addition to @code{USER} and @code{LOGNAME}.
+
+@findex stpncpy
+New function @code{stpncpy} has been added, thanks to 
+@email{restone@@skypoint.com, Richard E. Stone}.
