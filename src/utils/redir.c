@@ -72,7 +72,7 @@ usage(void)
   fprintf(stderr, "This program is protected by the GNU General Public License.\n\n");
   fprintf(stderr, "Usage: redir [-i file] [-o file] [-oa file] [-e file] [-ea file]\n");
   fprintf(stderr, "                [-eo] [-oe] [-x] [-t] command [args . . .]\n\n");
-  fprintf(stderr, "  -i file   redirect stdandard input from file\n");
+  fprintf(stderr, "  -i file   redirect standard input from file\n");
   fprintf(stderr, "  -o file   redirect standard output to file\n");
   fprintf(stderr, "  -oa file  append standard output to file\n");
   fprintf(stderr, "  -e file   redirect standard error to file\n");
