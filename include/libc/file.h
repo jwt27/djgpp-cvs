@@ -71,7 +71,7 @@ static __inline__ int __getc(FILE *const p)
       && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
   {
     /* first time we see this handle--see if termios hooked it */
-    if (isatty((p)->_file))
+    if (!((p)->_flag & _IOSTRG) && isatty((p)->_file))
       (p)->_flag |= _IOTERM;
     else
       (p)->_flag |= _IONTERM;
@@ -88,7 +88,7 @@ static __inline__ int __putc(const int x,FILE *const p)
       && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
   {
     /* first time we see this handle--see if termios hooked it */
-    if (isatty((p)->_file))
+    if (!((p)->_flag & _IOSTRG) && isatty((p)->_file))
       (p)->_flag |= _IOTERM;
     else
       (p)->_flag |= _IONTERM;

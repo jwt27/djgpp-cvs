@@ -9,7 +9,7 @@ sprintf(char *str, const char *fmt, ...)
   FILE _strbuf;
   int len;
 
-  _strbuf._flag = _IOWRT|_IOSTRG;
+  _strbuf._flag = _IOWRT|_IOSTRG|_IONTERM;
   _strbuf._ptr = str;
   _strbuf._cnt = INT_MAX;
   len = _doprnt(fmt, &(fmt)+1, &_strbuf);

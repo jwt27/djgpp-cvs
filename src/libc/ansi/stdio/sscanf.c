@@ -13,7 +13,7 @@ sscanf(const char *str, const char *fmt, ...)
 
   va_start(a, fmt);
 
-  _strbuf._flag = _IOREAD|_IOSTRG;
+  _strbuf._flag = _IOREAD|_IOSTRG|_IONTERM;
   _strbuf._ptr = _strbuf._base = unconst(str, char *);
   _strbuf._cnt = 0;
   while (*str++)

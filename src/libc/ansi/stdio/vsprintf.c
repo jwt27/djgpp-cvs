@@ -10,7 +10,7 @@ vsprintf(char *str, const char *fmt, va_list ap)
   FILE f;
   int len;
 
-  f._flag = _IOWRT|_IOSTRG;
+  f._flag = _IOWRT|_IOSTRG|_IONTERM;
   f._ptr = str;
   f._cnt = INT_MAX;
   len = _doprnt(fmt, ap, &f);
