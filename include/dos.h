@@ -135,6 +135,12 @@ extern int		_doserrno;
 
 unsigned short _get_dos_version(int);
 
+int _get_fat_size(const int drive);
+int _get_fs_type(const int drive, char *const result_str);
+int _is_cdrom_drive(const int drive);
+int _is_fat32(const int drive);
+int _is_ram_drive(const int drive);
+int _media_type(const int drive);
 
 int int86(int ivec, union REGS *in, union REGS *out);
 int int86x(int ivec, union REGS *in, union REGS *out, struct SREGS *seg);

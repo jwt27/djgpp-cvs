@@ -1,0 +1,45 @@
+@node _is_cdrom_drive, file system
+@subheading Syntax
+
+@example
+#include <dos.h>
+
+int _is_cdrom_drive( const int drive );
+@end example
+
+@subheading Description
+
+This function checks if drive number @var{drive} (1 == A:, 2 == B:,
+etc.) is a CD-ROM drive.  It works with MSCDEX 2.x and Windows 9X
+built-in CDFS support.  
+
+@subheading Return Value
+
+1 if the drive is a CDROM drive, otherwise 0.  
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+#include <stdio.h>
+#include <dos.h>
+
+int main(void)
+@{
+
+  if( _is_cdrom_drive( 'R' - 'A' + 1 ) )
+  @{
+    printf("C: is a CDROM drive.\n");
+  @}
+  else
+  @{
+    printf("C: is not a CDROM drive.\n");
+  @}
+
+  exit(0);
+@}
+
+@end example
