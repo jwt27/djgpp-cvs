@@ -99,8 +99,7 @@ _flsbuf(int c, FILE *f)
 	|| __libc_write_termios_hook(fileno(f), base, rn, &n) == 0)
     {
       int fd = fileno(f);
-      if (__has_fd_properties(fd)
-          && (__get_fd_flags(fd) & FILE_DESC_APPEND))
+      if (__get_fd_flags(fd) & FILE_DESC_APPEND)
       {
 	int save_errno = errno; /* We don't want llseek()'s setting 
 				   errno to remain. */

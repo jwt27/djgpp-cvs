@@ -31,8 +31,7 @@ fflush(FILE *f)
     return 0;
   }
 
-  if (__has_fd_properties(fileno(f))
-      && (__get_fd_flags(fileno(f)) & FILE_DESC_APPEND))
+  if (__get_fd_flags(fileno(f)) & FILE_DESC_APPEND)
   {
     int save_errno = errno; /* We don't want llseek()'s setting 
 			       errno to remain. */
