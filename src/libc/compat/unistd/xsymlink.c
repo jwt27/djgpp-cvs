@@ -53,7 +53,7 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    end = strpbrk(__real_path, "/\\");
    if (!end)
       end = __real_path + strlen(__real_path);
-   while (*start)
+   while (start && *start)
    {
       /* Extract path component we will be resolving */
       strcpy(resolved, __real_path);
