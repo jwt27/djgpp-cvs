@@ -301,3 +301,6 @@ New functions @code{_dos_lk64} and @code{_dos_unlk64} have been added to
 provide a FAT32-compatible interface to the DOS locking code.
 Compatible functions @code{lock64} and @code{unlock64} are direct
 interfaces to these two new @code{_dos_*} functions.
+
+@pindex djasm@r{, enumeration type}
+Support for enumeration type added to @code{djasm}.
