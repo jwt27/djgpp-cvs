@@ -310,3 +310,7 @@ altering it.
 The @code{termios} cooked-mode output now expands TABs into the
 appropriate number of spaces when writing to the console device.
 
+@findex setmode@r{, and termios}
+The @code{setmode} function now switches character devices to raw/cooked
+mode even when @code{termios} functions are used.
+

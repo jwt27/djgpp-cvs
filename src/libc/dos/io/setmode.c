@@ -34,10 +34,7 @@ setmode(int handle, int mode)
   else
     newmode &= ~0x20;
 
-  if (__libc_read_termios_hook != NULL
-      && (oldmode & 0x80) && (oldmode & 0x03) && handle == 0) /* for termios */
-    __djgpp_set_ctrl_c (! (mode & O_BINARY));
-  else if (oldmode & 0x80)	/* Only for character dev */
+  if (oldmode & 0x80)	/* Only for character dev */
   {
     regs.x.ax = 0x4401;
     regs.x.bx = handle;
