@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -19,6 +20,7 @@
 #include <unistd.h>
 #include <libc/environ.h>
 #include <dos.h> /* for _osmajor/_osminor */
+#include <libc/unconst.h>
 
 /* Global variables */
 
@@ -150,6 +152,13 @@ setup_environment(void)
     cp++; /* skip to next character */
   } while (*cp); /* repeat until two NULs */
   environ[env_count] = 0;
+
+  /*
+   * Call putenv so that its static counters are computed. If this
+   * is not done, programs that manipulate `environ' directly will crash,
+   * when `DJGPP' is not set in the environment.
+   */
+  putenv(unconst("", char *));
   
   __dos_argv0 = (char *)malloc(strlen(cp + 3)+1);
   if (__dos_argv0 == 0)
