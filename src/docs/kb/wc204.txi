@@ -536,3 +536,7 @@ exceed 2GB - 64KB.  This is because anything larger is not supported by
 sometimes allocate a very small buffer due to wrap-around of large
 unsigned numbers, and the calling program would then crash when it tried
 to use that buffer.
+
+@findex v2loadimage@r{, long command line support}
+@code{v2loadimage} now supports long command lines, instead of being
+restricted by the DOS 126-character limit.
