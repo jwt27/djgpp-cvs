@@ -122,7 +122,7 @@ directive in @file{CONFIG.SYS} is too small.
 @item 18
 
 EMLINK -- Too many links.  Not used in DJGPP (as DOS doesn't support
-links).
+hard links).
 
 @item 19
 
