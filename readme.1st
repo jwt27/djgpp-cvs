@@ -54,7 +54,7 @@ FAQ      A short file which points you to other documents you should
            read (including the full FAQ list).
 
 v2/
-unzip32  A free program to unzip the archive (like PKUNZIP) 
+unzip32  A free program to unzip the archive (like PKUNZIP)
 djdev203 DJGPP V2 Development Kit and Runtime
 djlsr203 DJGPP V2 Base Library Sources
 djtst203 DJGPP V2 Test Programs (for testing the C library)
@@ -111,13 +111,18 @@ services, so you don't need CWSDPMI in those environments.)  For more
 details, download faq*b.zip (the full FAQ list) and read Chapter 4,
 "Where and What to Download".
 
+If you have Windows ME, 2000 or XP, images dated before December 2001
+may not work properly, so make sure you get new distributions where
+possible if you are using a newer Windows release.
+
 
 Installation
 ------------
 
 1. Create a directory for DJGPP, say C:\DJGPP.  (WARNING: do NOT
    install DJGPP in a directory C:\DEV, D:\DEV, etc., or in any of their
-   subdirectories: it will not work!  See the FAQ for more details.)
+   subdirectories: it will not work!  See the FAQ for more details.)  Do
+   not use a long directory name or one with spaces or special characters.
 
    If you have version 1.x installed, it's best to delete the contents
    of its `bin/' subdirectory or move it to another directory (not on
@@ -126,6 +131,11 @@ Installation
    inadvertently mixing it with old v1.x programs.)  The only program
    from v1.x that you should keep is `go32.exe'.
 
+   If you are running under Windows NT 4.0, you need to decide if you
+   want to use long names or DOS 8.3 names before you install.  If you
+   plan to use long names you need to download and install the long file
+   name TSR (ntlfn*b.zip) before expanding the distributions.
+
 2. Unzip all the zip files from that directory, preserving the
    directory structure.  For example:
 
@@ -133,19 +143,24 @@ Installation
   or
 	unzip32 djdev203
 
-   On Windows 9X, Windows/ME and Windows 2000, use an unzip program
-   which supports long file names.  Latest versions of InfoZip's UnZip
-   and PKUnZip, as well as WinZip, all support long file names.
+   On Windows 9x, Windows/ME, Windows 2000 and Windows XP, use an unzip
+   program which supports long file names.  Latest versions of InfoZip's
+   UnZip and PKUnZip, as well as WinZip, all support long file names.
    unzip32.exe, available from the DJGPP sites, also supports long
    file names.  One way to make sure you have preserved long file
    names is to look for a file include/sys/sysmacros.h: if you see
    only sysmacro.h instead, your unzip program does NOT support long
    filenames, and you need to find another one.
 
+   You must make sure when you expand the distributions that you preserve
+   the directory structure.  If you use WinZip, you MUST check the box
+   "Use folder names".  If you use pkunzip, you must use the -d switch.
+
    On Windows/NT (NT version 4 and below, not W2K!) use an unzip
-   program which does NOT support long file names, as DJGPP programs
-   cannot access long file names on NT4.  Again, unzip32.exe will do
-   The Right Thing for you, so using it is recommended.
+   program which does NOT support long file names if you not plan on
+   using the LFN TSR, as DJGPP programs cannot access long file names
+   on NT4 without the TSR.  Again, unzip32.exe will do The Right Thing
+   for you, so using it is recommended.
 
 3. After unzipping all the zip files, set the DJGPP environment
    variable to point to the file DJGPP.ENV in the main DJGPP
@@ -162,11 +177,33 @@ Installation
      - Use the tab provided there for editing your AUTOEXEC.BAT as
        explained below.
 
+   * For Windows ME systems:
+
+     - Click START, choose Run, type msconfig.exe, click OK;
+     - Click the "Environment" tab;
+     - Edit the PATH system variable to add the DJGPP bin subdirectory;
+     - Add a new variable DJGPP and set its value to the full path
+       name of the DJGPP.ENV file as explained below.
+
    * For Windows NT systems:
 
      - Right-click "My Computer", then select "Properties";
      - Click the "Environment" tab;
      - Edit the PATH system variable to add the DJGPP bin subdirectory;
+       (if you are not an administrator, add the DJGPP bin directory to
+       the user PATH variable - or create one with only this directory
+       since it is added to the system path);
+     - Add a new variable DJGPP and set its value to the full path
+       name of the DJGPP.ENV file as explained below.
+
+   * For Windows 2000 or Windows XP systems:
+
+     - Right-click "My Computer", then select "Properties";
+     - Select the "Advanced" tab, then click "Environment Variables" button;
+     - Edit the PATH system variable to add the DJGPP bin subdirectory;
+       (if you are not an administrator, add the DJGPP bin directory to
+       the user PATH variable - or create one with only this directory
+       since it is added to the system path);
      - Add a new variable DJGPP and set its value to the full path
        name of the DJGPP.ENV file as explained below.
 
@@ -174,6 +211,11 @@ Installation
      text editor, e.g. the standard EDIT, to edit the file
      AUTOEXEC.BAT in the root directory of the boot drive (usually,
      C:).
+
+   Instead of editing your autoexec files and/or global environment,
+   you may wish to create a djgpp shortcut instead.  To do this, create
+   a BAT file which has the lines below in it.  This is often needed if
+   you have multiple compilers on the same system.
 
    No matter which method you use, assuming your DJGPP installation is
    rooted at C:\DJGPP, the values of the two environment variables
@@ -183,9 +225,9 @@ Installation
 	set PATH=C:\DJGPP\BIN;%PATH%
 
 4. Reboot.  This makes sure the two lines you added to autoexec.bat
-   will take effect.  (On Windows NT and Windows 2000, the changes
-   take effect immediately, so you don't need to reboot there, but
-   you do have to close and reopen the DOS box windows.)
+   will take effect.  (On Windows NT, Windows 2000 and Windows XP, the
+   changes take effect immediately, so you don't need to reboot there,
+   but you do have to close and reopen the DOS box windows.)
 
 5. Run the go32-v2.exe program without arguments:
 
@@ -353,7 +395,7 @@ name.  For example:
 To exit Info, press `q' (for Quit).
 
 Once inside Info, you can move around with the usual cursor motion
-keys: Up-arrow, Down-arrow, PageDown, PageUp, etc.  
+keys: Up-arrow, Down-arrow, PageDown, PageUp, etc.
 
 To read the entire manual in an orderly fashion, press SPACE every
 time you've completed reading a screenful.  This will take you through
