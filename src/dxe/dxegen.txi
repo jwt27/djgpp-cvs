@@ -1,0 +1,33 @@
+
+@c -----------------------------------------------------------------------------
+@node dxegen, , , Top
+@chapter @command{dxegen}
+
+Usage: @kbd{dxegen outfile.dxe _symbol infile.o [infile2.o ... -lgcc -lc]}
+
+@command{dxegen} is a utility which allows you to create files which contain
+dynamically loadable code (@acronym{DXE}).
+
+The image must be self-contained, and it cannot reference symbols from the
+main image.  As a consequence, you cannot do I/O and some other functions
+directly from a @acronym{DXE} loaded image.
+
+Constructors, destructors, and C@t{++} exceptions do not work.
+
+There is a single entry point (procedure or data block) returned.  This
+can be a vector of routines you have created.
+
+@file{outfile.dxe} is the name you want to contain your dynamic load code.
+
+@code{_symbol} is the procedure name (or data structure) you want a pointer to.
+You must add an initial underscore for most symbols created from C.
+
+@file{input.o} is created with GCC from your source.  Additional arguments
+on the command line (.o and .a files; or other ld options) are passed to
+ld to resolve references to build your code.
+
+The floating point emulator code provided by DJGPP is stored in a 
+@acronym{DXE}.
+
+See the documentation for @code{_dxe_load} (@pxref{_dxe_load, , _dxe_load, libc})
+for details on how to load the dynamic code.
