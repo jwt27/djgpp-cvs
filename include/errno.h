@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -15,6 +16,13 @@ extern "C" {
 #define ERANGE		2
 
 extern int errno;
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+#define EILSEQ		41
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
   
 #ifndef __STRICT_ANSI__
 
@@ -59,6 +67,7 @@ extern int errno;
 #define ENMFILE		38
 #define ELOOP           39
 #define EOVERFLOW	40
+/* EILSEQ		41 */
 
 extern char *		sys_errlist[];
 extern int		sys_nerr;
