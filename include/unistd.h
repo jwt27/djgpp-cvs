@@ -115,6 +115,7 @@ int		execlp(const char *_file, const char *_arg, ...);
 int		execv(const char *_path, char *const _argv[]);
 int		execve(const char *_path, char *const _argv[], char *const _envp[]);
 int		execvp(const char *_file, char *const _argv[]);
+int		fchdir(int _fd);
 pid_t		fork(void);
 long		fpathconf(int _fildes, int _name);
 char *		getcwd(char *_buf, size_t _size);
