@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -18,7 +19,7 @@ main(void)
   glob_t flist;
   glob(".../*", 0, 0, &flist); /**/
 
-  for (i = 0; i<flist.gl_pathc; i++)
+  for (i = 0; i<(ssize_t)flist.gl_pathc; i++)
   {
     char pathp[300], fname[100], ext[100];
     fnsplit(flist.gl_pathv[i], 0, pathp, fname, ext);
@@ -93,10 +94,14 @@ main(void)
 
     rename(tmp, flist.gl_pathv[i]);
 
+    // Don't set file time. If we set the file time, CVS will not notice
+    // that the file has changed.
+#if 0
     struct utimbuf ut;
     ut.actime = st.st_atime;
     ut.modtime = st.st_mtime;
     utime(flist.gl_pathv[i], &ut);
+#endif
   }
   return 0;
 }
