@@ -36,7 +36,7 @@ that this is @strong{not} a new buffer allocated with @code{malloc}.  If
 @subheading Example
 
 @example
-  if (strcmp (basename (file_name, "gcc.exe")) == 0)
+  if (strcmp (basename (file_name), "gcc.exe") == 0)
     printf ("The file %s is the GNU C/C++ compiler\n", file_name);
 @end example
 
