@@ -1,0 +1,76 @@
+@node fstat, stdio
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int fstat(int file, struct stat *sbuf);
+@end example
+
+@subheading Description
+
+This function obtains the status of the open file @var{file} and stores
+it in @var{sbuf}.  @xref{stat} for the description of @code{struct stat}
+fields.
+
+@subheading Return Value
+
+Zero on success, nonzero on failure (and @var{errno} set). 
+
+@subheading Example
+
+@example
+struct stat s;
+fstat(fileno(stdin), &s);
+if (S_ISREG(s.st_mode))
+  puts("STDIN is a redirected disk file");
+else if (S_ISCHR(s.st_mode))
+  puts("STDIN is a character device");
+@end example
+
+@subheading Bugs
+
+If a file was open in write-only mode, its execute mode bits might be
+incorrectly reported as if the file were non-executable.  This is
+because some executables are only recognized by reading their first
+two bytes, which cannot be done for files open in write-only mode.
+
+For @code{fstat()} to return valid info, you should make sure that all
+the data written to the file has been delivered to the operating system,
+e.g. by calling @code{fflush()}.  Otherwise, the buffering of the library
+I/O functions might cause stale info to be returned.
+
+@subheading Implementation Notes
+
+Supplying a 100% Unix-compatible @code{f?stat()} functions under DOS is an
+implementation nightmare.  The following notes describe some of the
+obscure points specific to their behavior in DJGPP.
+
+1. The @samp{drive} for character devices (like @code{con}, @code{/dev/nul}
+and others is returned as -1.  For drives networked by Novell Netware, it
+is returned as -2.
+
+2. The starting cluster number of a file serves as its inode number.  For
+files whose starting cluster number is inaccessible (empty files, files on
+networked drives, etc.) the @code{st_inode} field will be @cite{invented}
+in a way which guarantees that no two different files will get the same
+inode number (thus it is unique).  This invented inode will also be
+different from any real cluster number of any local file.  However, only
+for local, non-empty files/directories the inode is guaranteed to be
+consistent between @code{stat()} and @code{fstat()} function calls.
+
+3. The WRITE access mode bit is set only for the user (unless the file is
+read-only, hidden or system).  EXECUTE bit is set for directories,  files
+which can be executed from the DOS prompt (batch files, .com, .dll and .exe
+executables) or run by go32 extender.  For files which reside on networked
+drives under Novell Netware, this can sometimes fail, in which case only
+the read access bit is set.
+
+4. Size of directories is reported as the number of its files (sans `.' and
+`..' entries) multiplied by 32 bytes (the size of directory entry).
+
+5. Time stamp for root directories is taken from the volume label entry,
+if that's available; otherwise, it is reported as 1-Jan-1980.
+
+6. The variable @ref{_djstat_flags} controls what hard-to-get fields of
+@code{struct stat} are needed by the application.

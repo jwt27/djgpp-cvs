@@ -1,0 +1,41 @@
+@node _is_executable, io
+@subheading Syntax
+
+@example
+#include <sys/stat.h>
+
+int _is_executable(const char *path, int fhandle, const char *extension);
+@end example
+
+@subheading Description
+
+This function determines if a file is executable under DOS/DJGPP
+environment.  The file may be given either by its @var{path} or its file
+handle @var{fhandle}.  If @var{extension} is non-NULL and non-empty, it is
+used first to look up in a list of known extensions which determine
+whether the file is executable.  (If the _STAT_EXEC_EXT bit of the
+@ref{_djstat_flags} global variable is not set, this step is skipped.)
+If @var{extension} is unavailable or not enough to determine the result,
+the first 2 bytes of the file are checked to contain one of the known
+@cite{magic numbers} identifying the file as executable.  If the file's 2
+first bytes need to be read but the read fails, 0 is returned and errno is
+set.  (The file is only searched for magic number if the _STAT_EXEC_MAGIC
+bit of the @xref{_djstat_flags} variable is set.)
+
+Note that if _STAT_EXEC_MAGIC is set, but _STAT_EXEC_EXT is not, some
+files which shouldn't be flagged as executables (e.g., COFF *.o object
+files) will have their execute bit set, because they have the magic number
+signature at their beginning.  Therefore, only use the above combination
+if you want to debug the list of extensions provided in is_exec.c file.
+
+If the file passed by its handle was open as write-only, and the extension
+alone isn't enough to determine whether the file is executable, then this
+function returns 0, because it cannot look at the @cite{magic number}.
+
+This function is used internally by @code{f?stat()}; you are not supposed
+to call it directly.
+
+@subheading Return Value
+
+1 for executable file, 0 otherwise (including in case of errors in
+accessing the file).
