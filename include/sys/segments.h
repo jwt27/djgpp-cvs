@@ -17,7 +17,7 @@ static __inline__ int
 _my_cs(void)
 {
   unsigned short result;
-  __asm__("movl %%cs,%0" : "=r" (result));
+  __asm__("movw %%cs,%0" : "=r" (result));
   return result;
 }
 
@@ -25,7 +25,7 @@ static __inline__ int
 _my_ds(void)
 {
   unsigned short result;
-  __asm__("movl %%ds,%0" : "=r" (result));
+  __asm__("movw %%ds,%0" : "=r" (result));
   return result;
 }
 
@@ -33,7 +33,7 @@ static __inline__ int
 _my_ss(void)
 {
   unsigned short result;
-  __asm__("movl %%ss,%0" : "=r" (result));
+  __asm__("movw %%ss,%0" : "=r" (result));
   return result;
 }
 

@@ -18,7 +18,7 @@ ___pow2:
 	andw	$0xf3ff,LCW2
 	orw	$0x0400,LCW2
 	fldcww	LCW2
-	fldl	%st(0)
+	fld	%st(0)
 	frndint
 	fldcww	LCW1
 	fxch	%st(1)

@@ -15,14 +15,14 @@ _fmod:
 	fxch	%st(1)
 	sahf
 	jnz	next
-	fstpl	%st(0)
+	fstp	%st(0)
 	jmp	out
 next:
-	fpreml
+	fprem
 	fnstsw	%ax
 	sahf
 	jpe	next
-	fstpl	%st(1)
+	fstp	%st(1)
 out:
 	ret
 

@@ -37,7 +37,7 @@ __detect_80387:				/* returns 1 if 387 (or more), else 0 */
 	wait
 	andw	$0x0fffa,(%esi)		/* enable invalid operation exception */
 	fldcw	(%esi)
-	movw	$1,%eax
+	movl	$1,%eax
 	jmp	Lexit
 Lno_387:
 	xorl	%eax,%eax

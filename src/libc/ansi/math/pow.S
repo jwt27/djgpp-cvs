@@ -18,7 +18,7 @@ frac:
 	andw	$0xf3ff,LCW2
 	orw	$0x0400,LCW2
 	fldcww	LCW2
-	fldl	%st(0)
+	fld	%st(0)
 	frndint
 	fldcww	LCW1
 	fxch	%st(1)
@@ -52,14 +52,14 @@ xltez:
 	ja	ygtz
 	jb	error
 	fstp	%st(0) 
-	fld1l
+	fld1
 	fchs
 error:
 	fsqrt
 	ret
 ygtz:
 	fstp	%st(0)
-	fldzl
+	fldz
 	ret
 xltz:
 	fabs
