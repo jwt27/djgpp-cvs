@@ -127,7 +127,9 @@ extern ssize_t (*__libc_write_termios_hook)(int handle, const void *buffer, size
 extern int __libc_termios_hook_common_count;
 
 /* functions */
-void __libc_termios_init (void);
+void __libc_termios_init(void);
+void __libc_termios_init_read(void);
+void __libc_termios_init_write(void);
 extern int __libc_termios_exist_queue (void);
 
 #endif /* !_POSIX_SOURCE */
