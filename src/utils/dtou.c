@@ -14,7 +14,12 @@
 #define O_BINARY 0
 #endif
 
+#if defined(MSDOS) || defined(_Windows)
 #define IS_DIR_SEPARATOR(path) ((path) == '/' || (path) == '\\' || (path) == ':')
+#else
+#define IS_DIR_SEPARATOR(path) ((path) == '/')
+#endif
+
 #define IS_LAST_CR_IN_BUF  (i == l - 1)
 #define IS_LAST_CR_IN_FILE (position + i + 1 == st.st_size)
 #define SET_FLAG(flag)         \
@@ -33,6 +38,17 @@ do {                           \
 #define IO_ERROR      0x01  /* Some I/O error occurred. */
 
 
+static char *
+BaseName (char * name)
+{
+  char * bn, *w;
+  for (bn = w = name; *w; w++)
+    if (IS_DIR_SEPARATOR (*w))
+      bn = w+1;
+  return bn;
+}
+
+
 static int
 dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose, int vverbose, int preserve_timestamp)
 {
@@ -40,7 +56,7 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
   int CntlZ_flag = 0, CR_flag = 0, nCR_flag = 0, LF_flag = 0, exit_status = NO_ERROR;
   int buf_counter, nbufs, LF_counter, must_rewind, position, offset, whence;
   char buf[BUF_SIZE];
-  char bfname[FILENAME_MAX], tfname[FILENAME_MAX], *bn, *w;
+  char bfname[FILENAME_MAX], tfname[FILENAME_MAX], *bn;
   struct stat st;
   struct utimbuf tim1;
 
@@ -57,10 +73,8 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
   nbufs = st.st_size / BUF_SIZE;
 
   strcpy (tfname, fname);
-  for (bn = w = tfname; *w; w++) 
-    if (IS_DIR_SEPARATOR (*w))
-      bn = w+1;  
-  if (bn) *bn=0;
+  bn=BaseName(tfname);
+  *bn=0;
   strcat (tfname,"dtou.tm$");
   if (make_backup)
   {
@@ -249,7 +263,7 @@ usage(char *progname)
   printf ("are given at all. In this case, an occurrence of Cntl-Z will truncate the file,\n");
   printf ("MSDOS-style EOL (CRLF) are transformed into UNIX-style EOL (LF) and CR sequence\n");
   printf ("stripping will not happen at all. Also the timestamp will not be alterated and\n");
-  printf ("no backup of the original file will be done.");
+  printf ("no backup of the original file will be done.\n");
 }
 
 int
@@ -257,7 +271,7 @@ main(int argc, char **argv)
 {
   int exit_status = NO_ERROR, i, make_backup, repair_mode;
   int strip_mode, verbose, vverbose, preserve_timestamp;
-  char* progname = strlwr(strdup(argv[0]));
+  char* progname = BaseName(argv[0]);
 
   if (argc < 2)
   {
