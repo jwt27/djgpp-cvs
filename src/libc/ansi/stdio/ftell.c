@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
@@ -11,37 +12,17 @@ ftell(FILE *f)
 {
   long tres;
   int adjust=0;
-  int idx;
 
   if (f->_cnt < 0)
     f->_cnt = 0;
   if (f->_flag&_IOREAD)
   {
-    if (__file_handle_modes[f->_file] & O_TEXT) /* if a text file */
-    {
-      if (f->_cnt && f->_ptr != f->_base)
-      {
-	char *cp;
-	adjust = - f->_bufsiz + (f->_ptr-f->_base);
-	for (cp=f->_base; cp < f->_ptr; cp++) /* for every char in buf */
-	  if (*cp == '\n')	/* if it's LF */
-	    adjust++;		/* there was a CR also */
-      }
-    }
-    else
-      adjust = - f->_cnt;
+    adjust = - f->_cnt;
   }
   else if (f->_flag&(_IOWRT|_IORW))
   {
-    adjust = 0;
     if (f->_flag&_IOWRT && f->_base && (f->_flag&_IONBF)==0)
-    {
       adjust = f->_ptr - f->_base;
-      if (__file_handle_modes[f->_file] & O_TEXT)
-	for (idx=0; idx<adjust; idx++)
-	  if (f->_base[idx] == '\n')
-	    adjust++;
-    }
   }
   else
     return -1;
