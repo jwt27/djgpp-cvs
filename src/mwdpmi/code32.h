@@ -26,8 +26,6 @@
 #define DEBUG_MEMORY		(1 << 5)
 #define DEBUG_INT		(1 << 6)
 #define DEBUG_CALLBACK		(1 << 7)
-#else
-#define DEBUG_TEST(flag) 0
 #endif
 /* ---------------------------------------------------------------------- */
 

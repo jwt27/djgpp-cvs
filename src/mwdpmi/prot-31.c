@@ -113,6 +113,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 {
   int i, sel;
 
+#ifdef DEBUG
   if (DEBUG_TEST (DEBUG_31))
     {
       eprintf ("a=%08x b=%08x c=%08x d=%08x si=%08x di=%08x bp=%08x\r\n"
@@ -122,6 +123,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	       cs, eip, ds, es, fs, gs, ss, esp);
       if (DEBUG_TEST (DEBUG_31_PAUSE)) prot31_debug ();
     }
+#endif
   /* As default signal "no error".  */
   eflags &= ~(1 << FLAG_CF);
 
@@ -326,12 +328,14 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 
     show_ldt:
       /* When the LDT changes we go here.  */
+#ifdef DEBUG
       if (DEBUG_TEST (DEBUG_LDT))
 	{
 	  eprintf ("LDT:\r\n");
 	  ldt_print ();
 	  eprintf ("\r\n");
 	}
+#endif
       return;
     /* -------------------------------------------------------------------- */
     case 0x01: /* DOS memory allocation group.  */
@@ -371,12 +375,14 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	      }
 
 	    /* We have both memory and selectors.  */
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_MEMORY))
 	      eprintf ("Dos memory allocated.  "
 		       "Seg=%04x, size=%x, sels=%04x-%04x.\r\n",
 		       regs.x.ax,
 		       BX << 4,
 		       LDT_SEL (i), LDT_SEL (i + needed - 1));
+#endif
 	    set_dos_memory (i, needed, regs.x.ax << 4, BX << 4);
 	    AX = regs.x.ax;
 	    DX = LDT_SEL (i);
@@ -404,9 +410,11 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		regs.x.es = seg;
 		server_int (INT_DOS, &regs);
 		if (regs.x.flags & (1 << FLAG_CF)) ERROR (regs.x.ax);
+#ifdef DEBUG
 		if (DEBUG_TEST (DEBUG_MEMORY))
 		  eprintf ("Dos memory with selector %04x freed.\r\n",
 			   sel);
+#endif
 		if ((ds >> 3) >= i && (ds >> 3) < i + count) ds = 0;
 		if ((es >> 3) >= i && (es >> 3) < i + count) es = 0;
 		if ((fs >> 3) >= i && (fs >> 3) < i + count) fs = 0;
@@ -445,9 +453,11 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 
 	    p[0] = DX;
 	    p[1] = CX;
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_INT))
 	      eprintf ("Real-mode int 0x%02x set to %04x:%04x.\r\n",
 		       BL, CX, DX);
+#endif
 	    BARRIER ();
 	    return;
 	  }
@@ -475,6 +485,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		  current_client->exception_table_prot[BL].sel = CX;
 		  current_client->exception_table_prot[BL].offset = DX_OR_EDX;
 		  current_client->exception_handler_type[BL] = 0;  /* FIXME */
+#ifdef DEBUG
 		  if (DEBUG_TEST (DEBUG_INT))
 		    if (current_client->is_32bit)
 		      eprintf ("Protected-mode exception 0x%02x handler "
@@ -484,6 +495,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		      eprintf ("Protected-mode exception 0x%02x handler "
 			       "set to %04x:%04x.\r\n",
 			       BL, CX, DX);
+#endif
 		  BARRIER ();
 		  return;
 		}
@@ -506,6 +518,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    {
 	      current_client->interrupt_table[BL].sel = CX;
 	      current_client->interrupt_table[BL].offset = DX_OR_EDX;
+#ifdef DEBUG
 	      if (DEBUG_TEST (DEBUG_INT))
 		if (current_client->is_32bit)
 		  eprintf ("Protected-mode int 0x%02x set to %04x:%08x.\r\n",
@@ -513,6 +526,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		else 
 		  eprintf ("Protected-mode int 0x%02x set to %04x:%04x.\r\n",
 			   BL, CX, DX);
+#endif
 	      BARRIER ();
 	      return;
 	    }
@@ -541,6 +555,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		     point.  */
 		  current_client->exception_table_real[BL].sel = CX;
 		  current_client->exception_table_real[BL].offset = DX_OR_EDX;
+#ifdef DEBUG
 		  if (DEBUG_TEST (DEBUG_INT))
 		    if (current_client->is_32bit)
 		      eprintf ("Real-mode exception 0x%02x handler "
@@ -550,6 +565,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		      eprintf ("Real-mode exception 0x%02x handler "
 			       "set to %04x:%04x.\r\n",
 			       BL, CX, DX);
+#endif
 		  BARRIER ();
 		  return;
 		}
@@ -634,12 +650,14 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    if (err) ERROR (err);
 	    CX = seg;
 	    DX = ofs;
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_CALLBACK))
 	      eprintf ("Callback allocated at %04x:%04x, "
 		       "entry=%04x:%08x, data=%04x:%08x.\r\n",
 		       seg, ofs,
 		       ds, SI_OR_ESI,
 		       es, DI_OR_EDI);
+#endif
 	    BARRIER ();
 	    return;
 	  }
@@ -649,8 +667,10 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    int err = callback_free (CX, DX);
 
 	    if (err) ERROR (err);
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_CALLBACK))
 	      eprintf ("Callback at %04x:%04x freed.\r\n", CX, DX);
+#endif
 	    BARRIER ();
 	    return;
 	  }
@@ -752,10 +772,12 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    CX = linear;
 	    SI = handle >> 16;
 	    DI = handle;
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_MEMORY))
 	      eprintf ("Committed memory allocated.  "
 		       "Size=%08x, linear=%08x, handle=%08x.\r\n",
 		       size, linear, handle);
+#endif
 	    BARRIER ();
 	    return;
 	  }
@@ -766,8 +788,10 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    int err = client_free_memory (handle);
 
 	    if (err) ERROR (err);
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_MEMORY))
 	      eprintf ("Memory with handle %08x freed.\r\n", handle);
+#endif
 	    BARRIER ();
 	    return;
 	  }
@@ -781,12 +805,14 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 	    int err = client_resize_memory (&new_handle, &new_linear,
 					    new_size, 1);
 	    if (err) ERROR (err);
+#ifdef DEBUG
 	    if (DEBUG_TEST (DEBUG_MEMORY))
 	      eprintf ("Memory resized.  Handle %08x->%08x, "
 		       "size=%08x, linear=%08x.\r\n",
 		       old_handle, new_handle,
 		       new_size,
 		       new_linear);
+#endif
 	    BX = new_linear >> 16;
 	    CX = new_linear;
 	    SI = new_handle >> 16;

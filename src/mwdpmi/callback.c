@@ -29,10 +29,12 @@ callback_handler_part2 (int no, __dpmi_regs *data)
 {
   current_client->on_locked_stack++;
 
+#ifdef DEBUG
   if (DEBUG_TEST (DEBUG_CALLBACK))
     eprintf ("Callback %04x:%04x triggered.\r\n",
 	     current_client_handle,
 	     CALLBACK_OFS (no));
+#endif
 	     
   while (1);
 }
