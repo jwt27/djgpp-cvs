@@ -2,9 +2,6 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdlib.h>
-#include <pc.h>
-#include <go32.h>
-#include <libc/farptrgs.h>
 
 static unsigned long long next = 1;
 
