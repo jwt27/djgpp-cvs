@@ -34,6 +34,10 @@ invoked, but it might not always succeed.
 
 Zero on success, nonzero on failure.
 
+@subheading Portability
+
+@portability ansi, posix
+
 @subheading Example
 
 @example
@@ -56,7 +60,7 @@ int _rename(const char *oldname, const char *newname);
 
 This function renames an existing file or directory @var{oldname} to
 @var{newname}.  It is much smaller that @code{rename} (@pxref{rename}),
-but it can only rename a directory so it stays under the same perent, it
+but it can only rename a directory so it stays under the same parent, it
 cannot move directories between different branches of the directory
 tree.  This means that in the following example, the first call will
 succeed, while the second will fail:
@@ -79,3 +83,8 @@ If you don't need the extra functionality offered by @code{rename}
 @subheading Return Value
 
 Zero on success, nonzero on failure.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
