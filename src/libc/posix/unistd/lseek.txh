@@ -10,7 +10,7 @@ off_t lseek(int fd, off_t offset, int whence);
 @subheading Description
 
 This function moves the file pointer for @var{fd} according to
-@var{mode}:
+@var{whence}:
 
 @table @code
 

@@ -30,7 +30,7 @@ of the file.  The offset is usually nonpositive in this case.
 @end table
 
 @emph{Warning!} The ANSI standard only allows values of zero for
-@var{offset} when @var{whence} is not @code{SEEK_SET} and the file has
+@var{offset} when @var{mode} is not @code{SEEK_SET} and the file has
 been opened as a text file.  Although this restriction is not enforced,
 beware that there is not a one-to-one correspondence between file
 characters and text characters under MS-DOS, so some @code{fseek}
