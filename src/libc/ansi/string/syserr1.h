@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 extern char __syserr00[];
 extern char __syserr01[];
@@ -39,3 +40,4 @@ extern char __syserr36[];
 extern char __syserr37[];
 extern char __syserr38[];
 extern char __syserr39[];
+extern char __syserr40[];
