@@ -12,5 +12,6 @@ SRC += gormcb.c
 SRC += gormem.c
 SRC += gorvec.c
 SRC += infostrc.c
+SRC += overflow.S
 
 include $(TOP)/../makefile.inc
