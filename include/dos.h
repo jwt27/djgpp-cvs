@@ -136,7 +136,7 @@ int intdosx(union REGS *in, union REGS *out, struct SREGS *seg);
 int bdos(int func, unsigned dx, unsigned al);
 int bdosptr(int func, void *dx, unsigned al);
 
-#define bdosptr(a, b, c) bdos(a, (unsigned) b, c)
+#define bdosptr(a, b, c) bdos(a, (unsigned)(b), c)
 #define intdos(a, b) int86(0x21, a, b)
 #define intdosx(a, b, c) int86x(0x21, a, b, c)
 
