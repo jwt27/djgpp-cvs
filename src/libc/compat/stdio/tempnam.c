@@ -13,7 +13,6 @@
 
 static const char *tdirs[] = {"TMPDIR", "TEMP", "TMP", 0};
 static const char x8[] = "XXXXXXXX";
-static const size_t x8len = sizeof (x8) - 1;
 
 char *
 tempnam(const char *tmpdir, const char *pfx)
