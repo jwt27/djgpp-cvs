@@ -1,7 +1,9 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <libc/bss.h>
+#include <libc/symlink.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,6 +16,7 @@ mktemp (char *_template)
   static int count = 0;
   char *cp, *dp;
   int i, len, xcount, loopcnt;
+  char real_path[FILENAME_MAX];
 
   /* Reinitialize counter if we were restarted (emacs).  */
   if (__bss_count != mktemp_count)
@@ -58,7 +61,12 @@ mktemp (char *_template)
       int c = count++;
       for (i = 0; i < xcount; i++, c >>= 5)
 	cp[i] = "abcdefghijklmnopqrstuvwxyz012345"[c & 0x1f];
-      if (!__file_exists(_template))
+      if (!__solve_symlinks(_template, real_path)) 
+      {
+         *_template = 0;
+         return 0;
+      }	
+      if (!__file_exists(real_path))
 	return _template;
     }
   }
