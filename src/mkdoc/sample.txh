@@ -1,0 +1,47 @@
+@c ----------------------------------------------------------------------
+@node abort, process
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void volatile abort(void);
+@end example
+
+@subheading Description
+
+When you call @code{abort}, the message "Abort!" is printed on stdout
+and the program exits with an exit code of one. 
+
+@subheading Return Value
+
+This function does not return.
+
+@subheading Example
+
+@example
+if ((q = malloc(100)) == NULL)
+  abort();
+@end example
+
+@c ----------------------------------------------------------------------
+@node abs, math
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+int abs(int value);
+@end example
+
+@subheading Return Value
+
+The absolute value of @code{value} is returned.
+
+@subheading Example
+
+@example
+int sq = 7;
+sq = sq * abs(sq) + 1;
+@end example
+
