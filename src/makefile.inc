@@ -1,3 +1,4 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # -*- makefile -*-
@@ -63,6 +64,14 @@ else
 XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 endif
+
+# Find the necessary gcc options for building the profiling
+# support code (src/libc/crt0/mcount.c). We strip out profiling options
+# from the standard gcc options file, to avoid a chicken-and-egg problem
+# in a profiling version of libc (the profiling support code calling
+# profiling support code).
+#
+XNOPGGCC = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gcc.opt) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
 
 MISC = $(TOP)/../misc.exe
 
