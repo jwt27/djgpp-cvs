@@ -54,18 +54,39 @@ reformat your sources to comply with the DJGPP style:
 -nfc1 -fca -hnl -i2 -ip2 -ci0 -lp -npcs -nprs -psl -nsc -nsob
 @end example
 
-@subsection libc/stubs.h
-@cindex libc/stubs.h
+@cindex stubs
+@subsection Stubs
 
-The @strong{only} time you put something in @file{stubs.h} is if an
-ANSI/POSIX function in libc needs to call a non-ANSI/POSIX function
-in libc, in which case the non-ANSI/POSIX function needs to be listed
-in @file{stubs.h} (or, for ANSI functions calling POSIX-only functions).
+A C application's namespace should not be polluted with non-ANSI
+and non-POSIX functions from the C libraries, unless the application
+explicitly uses these symbols.  An example of a non-ANSI and
+non-POSIX function is @code{fsync} (@pxref{fsync, , fsync, libc}).
 
-There is no other reason why a function would get listed in stubs.
+But what happens if you wish to call a non-ANSI and/or
+non-POSIX function from C library code?  The actual implementation
+is placed in the C library's private namespace with a stub function
+that calls the implementation.  Consider @code{fsync} ---
+the library would use the @code{__fsync} function internally,
+but application code would use the stub @code{fsync}.
 
-@cindex stubbed name
-The @dfn{stubbed name} (@samp{__foo}) is @strong{not} part of
+@cindex @file{libc/stubs.h}
+Functions that are stubbed have an entry in the include file
+@file{libc/stubs.h}, e.g.:
+
+@example
+#define fsync __fsync
+@end example
+
+Any C library sources defining or calling the implementation
+should include @file{libc/stubs.h} as the first include file.
+This is so that we can refer to e.g. @code{fsync} as @code{fsync}
+in the library code, but the library code will actually define/call
+e.g. @code{__fsync} and will not pollute the application namespace.
+
+The stub files are assembly language files generated automagically
+from @file{libc/stubs.h} as part of the C library build process.
+
+NB: The private name, e.g. @code{__fsync}, is @strong{not} part of
 the published API.
 
 @subsection Far pointers usage
