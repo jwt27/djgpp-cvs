@@ -3,6 +3,7 @@ TOP=../..
 
 SRC += ffs.S
 SRC += memccpy.c
+STR += memicmp.c
 SRC += stpcpy.c
 SRC += strcasec.S
 SRC += strdup.c

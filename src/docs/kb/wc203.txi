@@ -512,3 +512,6 @@ actually needs to rename some of the files during unpacking.  In
 particular, simply listing the contents of an archive, as in @samp{djtar
 foo.tgz}, will not produce an empty @file{tarchange.lst} file anymore.
 
+@findex memicmp@r{, included in the library}
+The function @code{memicmp} was omitted from the library in version
+2.02.  This is fixed now.
