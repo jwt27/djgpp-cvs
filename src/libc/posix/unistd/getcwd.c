@@ -67,7 +67,7 @@ __getcwd(char *buf, size_t size)
   _farsetsel(_dos_ds);
   needed_length = 0;
   buf_off = 3;
-  if(_os_trueversion == 0x532 && use_lfn && _farnspeekb(__tb) == 0) {
+  if(use_lfn && _farnspeekb(__tb) == 0 && _get_dos_version(1) == 0x532) {
 
     /* Root path under WinNT/2K/XP with lfn (may be silent failure).
        If the short name equivalent of the current path is greater than
@@ -106,7 +106,7 @@ __getcwd(char *buf, size_t size)
   buf[2] = '/';
   for (bp = buf+3, name_start = bp - 1; *name_start; bp++)
   {
-    char long_name[FILENAME_MAX];
+    char long_name[FILENAME_MAX], short_name[13];
 
     if (*bp == '\\')
       *bp = '/';
@@ -114,7 +114,7 @@ __getcwd(char *buf, size_t size)
     {
       memcpy(long_name, name_start+1, bp - name_start - 1);
       long_name[bp - name_start - 1] = '\0';
-      if (_is_DOS83(long_name))
+      if (!strcmp(_lfn_gen_short_fname(long_name, short_name), long_name))
       {
 	while (++name_start < bp)
 	  if (*name_start >= 'A' && *name_start <= 'Z')
