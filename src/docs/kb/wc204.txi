@@ -798,13 +798,14 @@ of functions has changed.  Previously @code{%X} denoted
 a @code{long} version of the @code{%x} type conversion.  Now @code{%X}
 is equivalent to the @code{%x} type conversion, as required by C99.
 
-@findex _doprnt@r{, and }hh@r{ conversion qualifier}
-@findex printf@r{, and }hh@r{ conversion qualifier}
-@findex _doscan@r{, and }hh@r{ conversion qualifier}
-@findex scanf@r{, and }hh@r{ conversion qualifier}
-The @code{hh} conversion qualifier is now supported by @code{_doprnt},
-@code{_doscan}, the @code{printf} family of functions
-and the @code{scanf} family of functions.
+@findex _doprnt@r{, and C99 conversion qualifiers}
+@findex printf@r{, and C99 conversion qualifiers}
+@findex _doscan@r{, and C99 conversion qualifiers}
+@findex scanf@r{, and C99 conversion qualifiers}
+The @code{hh}, @code{j}, @code{t} and @code{z} conversion qualifiers
+are now supported by @code{_doprnt}, @code{_doscan},
+the @code{printf} family of functions and the @code{scanf} family
+of functions.
 
 @findex delay@r{, and Windows 2000 and XP}
 The @code{delay} function now works on Windows 2000 and XP.  However, the
