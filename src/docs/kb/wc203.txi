@@ -314,3 +314,8 @@ appropriate number of spaces when writing to the console device.
 The @code{setmode} function now switches character devices to raw/cooked
 mode even when @code{termios} functions are used.
 
+@findex freopen@r{, read/write access to files}
+@code{freopen} now correctly sets the read/write access flags when
+@samp{+} is the last (third) character of the @var{mode} string, like in
+@samp{wt+} or @samp{ab+}.
+

@@ -16,7 +16,7 @@ freopen(const char *file, const char *mode, FILE *f)
   if (file == 0 || mode == 0 || f == 0)
     return 0;
 
-  rw = (mode[1] == '+');
+  rw = (mode[1] == '+') || (mode[1] && (mode[2] == '+'));
 
   fclose(f);
 
