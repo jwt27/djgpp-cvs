@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -907,6 +908,16 @@ fstat(int handle, struct stat *statbuf)
   if (func && __FSEXT_func_wrapper(func, __FSEXT_fstat, &rv, handle, statbuf))
     {
        return rv;
+    }
+
+  /* See if this is a file descriptor for a directory. If so, just
+   * use a normal stat call. */
+  if (__get_fd_flags(handle) & FILE_DESC_DIRECTORY)
+    {
+      const char *filename = __get_fd_name(handle);
+
+      if (filename)
+	return stat(filename, statbuf);
     }
 
   if (fstat_assist(handle, statbuf) == -1)
