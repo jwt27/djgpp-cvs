@@ -853,3 +853,10 @@ The constants @code{HUGE_VALF} and @code{HUGE_VALL} were added.
 @tindex ssize_t
 @code{ssize_t} was changed from an @code{int} to a @code{signed long int}.
 @code{ssize_t} is now really a signed version of @code{size_t}.
+
+@vindex errno@r{, and C99 compliance}
+@findex perror@r{, and C99 compliance}
+@findex strerror@r{, and C99 compliance}
+The error code @code{EILSEQ} was added --- @code{errno} may be assigned it.
+@code{perror} and @code{strerror} were updated to display/return
+an error message for @code{EILSEQ}.
