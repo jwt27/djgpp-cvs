@@ -96,6 +96,9 @@ void __libc_termios_init_write(void)
   __tty_screen.norm_blink = (_farnspeekb(0x465) & 0x20) ? 1 : 0;
   __tty_screen.cur_blink = __tty_screen.norm_blink;
 
+  /* Get initial cursor shape and type.  */
+  __tty_screen.init_cursor_shape = _farnspeekw(0x460);
+
   /* Determine the current attribute.  */
   r.h.ah = 0x08;
   r.h.bh = __tty_screen.active_page;
@@ -355,6 +358,7 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
 {
   int col, row;
   int col_arg, row_arg;
+  __dpmi_regs r;
 
   switch (cmd)
   {
@@ -628,6 +632,25 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
     }
     break;
 
+    case 'v':  /* Change cursor shape.  DJGPP private command.  */
+      switch (GET_ARG(0, 0))
+      {
+        case 0:  /* Set to normal.  */
+          r.x.cx = 0x0607;
+          break;
+
+        case 1:  /* Make invisible.  */
+          r.x.cx = 0x2000;
+          break;
+
+        case 2:  /* Make enhanced.  */
+          r.x.cx = 0x0007;
+          break;
+      }
+      r.h.ah = 1;
+      __dpmi_int(0x10, &r);
+      break;
+
     /* Unrecognized command. Do nothing.  */
     default:
       break;
@@ -730,10 +753,16 @@ set_blink_attrib(int enable_blink)
 
 /* Restore the BIOS blinking bit to its original value.  Called at exit.  */
 static void __attribute__((destructor))
-restore_blink_bit(void)
+restore_video_state(void)
 {
+  __dpmi_regs r;
+
   if (__tty_screen.cur_blink != __tty_screen.norm_blink)
     set_blink_attrib(__tty_screen.norm_blink);
+
+  r.h.ah = 1;
+  r.x.cx = __tty_screen.init_cursor_shape;
+  __dpmi_int(0x10, &r);
 }
 
 
