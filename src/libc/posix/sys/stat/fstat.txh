@@ -85,10 +85,14 @@ files for identity should include comparison of the @code{st_dev}
 member.)
 
 3. On all versions of Windows except Windows 3.X, the inode number is
-invented.  As Windows doesn't provide enough information to identify
-files by the handle on which they are open, @code{fstat} always returns
-different inode numbers for any two files open on different handles,
-even if the same file is open twice on two different handles.
+invented using the file name.  @code{fstat} can probably use the file name
+that was used to open the file, when generating the inode.  This is done
+such that the same inode will be generated irrespective of the actual path
+used to open the file (e.g.: @file{foo.txt}, @file{./foo.txt},
+@file{../somedir/foo.txt}).  If file names cannot be used, @code{fstat}
+always returns different inode numbers for any two files open
+on different handles, even if the same file is open twice
+on two different handles.
 
 4. The WRITE access mode bit is set only for the user (unless the file is
 read-only, hidden or system).  EXECUTE bit is set for directories,  files

@@ -381,6 +381,8 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   unsigned short trusted_ftime = 0, trusted_fdate = 0;
   long           trusted_fsize = 0;
   int            is_link = 0;
+  const char    *fd_name = NULL;
+  const char    *filename = "";
 
   if ((dev_info = _get_dev_info(fhandle)) == -1)
     return -1;	/* errno set by _get_dev_info() */
@@ -434,16 +436,17 @@ fstat_assist(int fhandle, struct stat *stat_buf)
   stat_buf->st_gid = getgid();
   stat_buf->st_nlink = 1;
 
+  /* Get the file name from the file descriptor properties (fd_props),
+   * if possible, and fix it up. */
+  fd_name = __get_fd_name(fhandle);
+  if (fd_name != NULL)
+    filename = fd_name;
+
   /* Get the block size for the device associated with `fhandle'. */
 #ifndef  NO_ST_BLKSIZE
-  if (__get_fd_name(fhandle))
+  if (*filename)
     {
-      const char *filename;
-      char fixed_filename[PATH_MAX + 1];
-
-      filename = __get_fd_name(fhandle);
-      _fixpath(filename, fixed_filename);
-      stat_buf->st_blksize = _get_cached_blksize(fixed_filename);
+      stat_buf->st_blksize = _get_cached_blksize(filename);
       if (stat_buf->st_blksize == -1)
 	return -1; /* errno set by _get_cached_blksize() */
     }
@@ -804,13 +807,16 @@ fstat_assist(int fhandle, struct stat *stat_buf)
         }
       else
         {
-          /* Regular file.  The inode will be arbitrary, as we don't have
-           * this file's name.  Sigh...
+          /* Regular file.  We may have obtained this file's name
+	   * from the file descriptor properties (fd_props).  Otherwise
+	   * the inode will be arbitrary each time fstat is called.
+	   * Sigh...
            */
           if ( (_djstat_flags & _STAT_INODE) == 0 )
             {
               _djstat_fail_bits |= _STFAIL_HASH;
-              stat_buf->st_ino = _invent_inode("", dos_ftime, trusted_fsize);
+              stat_buf->st_ino
+		= _invent_inode(filename, dos_ftime, trusted_fsize);
             }
 
           if (trusted_fsize == 510)
