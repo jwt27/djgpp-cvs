@@ -58,6 +58,7 @@ struct tty_screen_info
   unsigned char active_page;
   unsigned int norm_blink : 1;
   unsigned int cur_blink : 1;
+  unsigned short init_cursor_shape;
   void (*set_cursor)(int col, int row);
   void (*get_cursor)(int *col, int *row);
 };
