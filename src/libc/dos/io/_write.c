@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -16,7 +17,7 @@
 #include <libc/farptrgs.h>
 #include <libc/getdinfo.h>
 
-int
+ssize_t
 _write(int handle, const void* buffer, size_t count)
 {
   __FSEXT_Function *func = __FSEXT_get_function(handle);

@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -12,7 +13,7 @@
 #include <libc/fsexthlp.h>
 #include <libc/dosio.h>
 
-int
+ssize_t
 _read(int handle, void* buffer, size_t count)
 {
   size_t j, k;
