@@ -79,7 +79,8 @@ glob_dirs(const char *rest, char *epathbuf, int first, /* rest is ptr to null or
   {
     if (*rest)
     {
-      if (glob2(rest, epathbuf, lower, caseless) == GLOB_NOSPACE)
+      if (glob2(rest, epathbuf, preserve_case ? 0 : 1,
+		preserve_case ? 0 : 1) == GLOB_NOSPACE)
 	return GLOB_NOSPACE;
     }
     else
@@ -128,7 +129,8 @@ glob_dirs(const char *rest, char *epathbuf, int first, /* rest is ptr to null or
       wildcard_nesting++;
       if (*rest)
       {
-	if (glob2(rest, tp, lower, caseless) == GLOB_NOSPACE)
+	if (glob2(rest, tp, preserve_case ? 0 : 1,
+		  preserve_case ? 0 : 1) == GLOB_NOSPACE)
 	  return GLOB_NOSPACE;
       }
       else
@@ -140,7 +142,8 @@ glob_dirs(const char *rest, char *epathbuf, int first, /* rest is ptr to null or
 	tp[-1] = slash;
       }
       *tp = 0;
-      if (glob_dirs(rest, tp, 0, lower, caseless) == GLOB_NOSPACE)
+      if (glob_dirs(rest, tp, 0, preserve_case ? 0 : 1,
+		    preserve_case ? 0 : 1) == GLOB_NOSPACE)
 	return GLOB_NOSPACE;
       wildcard_nesting--;
     }
@@ -161,12 +164,14 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
 
   if (strcmp(pattern, "...") == 0)
   {
-    return glob_dirs(pattern+3, epathbuf, 1, lower, caseless);
+    return glob_dirs(pattern+3, epathbuf, 1,
+		     preserve_case ? 0 : 1, preserve_case ? 0 : 1);
   }
   if (strncmp(pattern, "...", 3) == 0 && (pattern[3] == '\\' || pattern[3] == '/'))
   {
     slash = pattern[3];
-    return glob_dirs(pattern+4, epathbuf, 1, lower, caseless);
+    return glob_dirs(pattern+4, epathbuf, 1,
+		     preserve_case ? 0 : 1, preserve_case ? 0 : 1);
   }
 
   *epathbuf = 0;
@@ -179,6 +184,7 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
     if (*pp == ':' || *pp == '\\' || *pp == '/')
     {
       pslash = bp;
+      caseless = lower = preserve_case ? 0 : 1;
       if (strcmp(pp+1, "...") == 0
 	  || (strncmp(pp+1, "...", 3) == 0 && (pp[4] == '/' || pp[4] == '\\')))
       {
@@ -215,8 +221,6 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
 	  caseless = 0;
 	lower = 0;
       }
-      else if (*pp >= 'a' && *pp <= 'z')
-	lower = 1;
     }
 
     *bp++ = *pp++;
@@ -262,8 +266,6 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
 	  caseless = 0;
 	lower = 0;
       }
-      else if (*pslash >= 'a' && *pslash <= 'z')
-	lower = 1;
     }
 
   if (*pslash)
@@ -278,7 +280,8 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
 
   if (strcmp(my_pattern, "...") == 0)
   {
-    if (glob_dirs(*pslash ? pslash+1 : pslash, bp, 1, lower, caseless) == GLOB_NOSPACE)
+    if (glob_dirs(*pslash ? pslash+1 : pslash, bp, 1, preserve_case ? 0 : 1,
+		  preserve_case ? 0 : 1) == GLOB_NOSPACE)
       return GLOB_NOSPACE;
     return 0;
   }
@@ -310,7 +313,8 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
 	  *tp = 0;
 /*	  printf("nest: `%s' `%s'\n", pslash+1, pathbuf); */
 	  wildcard_nesting++;
-	  if (glob2(pslash+1, tp, lower, caseless) == GLOB_NOSPACE)
+	  if (glob2(pslash+1, tp, preserve_case ? 0 : 1,
+		    preserve_case ? 0 : 1) == GLOB_NOSPACE)
 	    return GLOB_NOSPACE;
 	  wildcard_nesting--;
 	}
@@ -352,7 +356,7 @@ glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _
   wildcard_nesting = 0;
   save_count = 0;
   save_list = 0;
-  use_lfn = _USE_LFN;
+  use_lfn = _use_lfn(_pattern);
   preserve_case = _preserve_fncase();
   slash = '/';
 
