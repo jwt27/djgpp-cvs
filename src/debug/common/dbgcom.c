@@ -1,3 +1,4 @@
+/* Copyright (C) 2004 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -1346,7 +1347,7 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
 int read_sel_addr(unsigned child_addr, void *buf, unsigned len, unsigned sel)
 {
   /* first clear memory */
-  memcpy(buf,0,len);
+  memset(buf,0,len);
   if (invalid_sel_addr(sel, child_addr, len, 0))
     return 1;
   movedata(sel, child_addr, my_ds, (int)buf, len);
