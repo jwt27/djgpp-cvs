@@ -1,6 +1,7 @@
 /* Check the built in globbing (ie test *.c) and creation/accessed times */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <time.h>
 
