@@ -382,13 +382,6 @@ This bug was known to cause all kinds of weird failures, like incorrect
 values produced by functions @code{sin} and @code{cos}, programs being
 trapped inside infinite loops when they called @code{acos}, etc.
 
-@cindex FP emulation, hangs on Windows
-Another bug in the floating-point emulation only happened on Windows: a
-program which used the @sc{fwait} instruction would be trapped in an
-infinite loop, because the emulation of @sc{fwait} didn't increment the
-@sc{eip} of the application.  The emulation of @sc{fwait} was corrected
-to avoid this problem.
-
 @pindex libemu.a@r{, missing} npxsetup.o
 The FP emulation library @file{libemu.a} omitted the specially-compiled
 FPU setup module @file{npxsetup.o} which arranges for floating-point
@@ -507,6 +500,10 @@ instantiation in C++ programs.
 The @code{tcgetpgrp} and @code{tcsetpgrp} are now provided in the
 library.
 
+@findex realloc@r{, crashes when memory is exhausted}
+@code{realloc} no longer crashes when the avialable virtual memory is
+not enough to satisfy the reallocation request.
+
 @findex symlink@r{, source and target in different directories}
 Previously, the @code{symlink} function would sometimes think that the
 source and the target of the link were in the same directory, when in
@@ -518,6 +515,10 @@ actually needs to rename some of the files during unpacking.  In
 particular, simply listing the contents of an archive, as in @samp{djtar
 foo.tgz}, will not produce an empty @file{tarchange.lst} file anymore.
 
+@findex memicmp@r{, included in the library}
+The function @code{memicmp} was omitted from the library in version
+2.02.  This is fixed now.
+
 @pindex fsdb@r{, Step Over bug}
 @pindex fsdb@r{, support for }SIGQUIT
 Previously, @code{fsdb} could not step over function calls when 4 or
@@ -526,9 +527,13 @@ more breakpoints were set: it would display an error message saying that
 @code{fsdb} now supports the @code{SIGQUIT} signal, if the program being
 debugged generates it.
 
-@pindex redir@r{, and FP emulation}
-@code{redir} no longer crashes when floating-point instructions are
-emulated.
+@pindex emu387.dxe@r{, on Windows}
+@pindex libemu.a@r{, on Windows}
+@cindex FP emulation, on Windows
+The floating-point emulation now works on Windows.  Previously, a bug in
+the emulation of the WAIT/FWAIT instructions caused the emulator to get
+stuck in an endless loop on Windows.  (On MS-DOS, these two instructions
+don't generate an FP exception, and so don't get into the emulator.)
 
 @cindex FP emulation, and @code{SIGFPE}
 @cindex @code{SIGFPE} and FP emulation
@@ -552,6 +557,20 @@ The emulator now correctly sets the condition code bits @code{C0},
 raised, and as result of emulating the @code{FPREM} and @code{FPREM1}
 instructions.
 
+@pindex emu387.dxe@r{, and FSQRT instruction}
+@pindex libemu.a@r{, and FSQRT instruction}
+@cindex FP emulator, and FSQRT instruction
+The floating-point emulator software had a bug in emulation of the
+@code{FSQRT} instruction, which could cause the calling program to hang.
+This was due to incorrect optimization by the version of GCC used to
+produce @file{djdev202.zip}.  The new version of the emulator works
+around this bug by preventinging the compiler from performing these
+incorrect optimizations.
+
+@findex fsetpos@r{, return value}
+@code{fsetpos} no longer returns zero when it fails to move the file
+position pointer.
+
 @pindex djtar@r{, file-name conversions}
 @code{djtar} now converts @file{.info-} into @file{.i} only if the
 character following @file{.info-} is a digit.  @file{.tar.gz} is
@@ -559,10 +578,6 @@ converted to @file{.tgz} only at the end of a file name.  @file{++} is
 converted to @file{xx} (instead of @file{plus} in previous versions),
 and this conversion is performed for all occurrences of @file{++} in a
 file name (previous versions only converted the first occurrence).
-
-@findex fsetpos@r{, return value}
-@code{fsetpos} no longer returns zero when it fails to move the file
-position pointer.
 
 @pindex gxx@r{, and missing libgpp.a}
 @cindex @file{libstdcxx.a}, and @code{gxx}
@@ -673,4 +688,5 @@ Operation exception for an @code{Inf} argument; this is what the Intel
 manuals require.  This affects functions @code{sin}, @code{cos},
 @code{sincos}, and @code{tan}.
 @end itemize
+
 
