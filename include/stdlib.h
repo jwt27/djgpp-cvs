@@ -80,6 +80,7 @@ int	wctomb(char *_s, wchar_t _wchar);
 long	a64l(const char *_string);
 char *	l64a(long _value);
 int	putenv(char *_val);
+char *	realpath(const char *_path, char *_resolved);
 int	setenv(const char *_var, const char *_val, int _overwrite);
 int	unsetenv(const char *_var);
 
