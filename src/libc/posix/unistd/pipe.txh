@@ -1,0 +1,7 @@
+@node pipe, unix
+
+@subheading Description
+
+This function is provided only to assist in porting from Unix.  It
+always returns an error condition. 
+
