@@ -12,7 +12,6 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdio.h>
-#include <libc/symlink.h>
 
 #ifdef TEST
 #include "xstat.h"
