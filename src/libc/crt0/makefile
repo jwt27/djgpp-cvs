@@ -1,3 +1,4 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=..
 
@@ -9,6 +10,7 @@ SRC += c1pglob.c
 SRC += crt1.c
 SRC += mcount.c
 SRC += memhandl.c
+SRC += rfinfo.c
 
 EXTRA_OBJS += $(LIB)/crt0.o
 EXTRA_OBJS += $(LIB)/gcrt0.o
@@ -16,15 +18,15 @@ EXTRA_OBJS += $(LIB)/gcrt0.o
 include $(TOP)/../makefile.inc
 
 exit16.ah : exit16.asm
-	djasm exit16.asm exit16.ah
+	$(HOSTBIN)/djasm.exe exit16.asm exit16.ah
 
 sbrk16.ah : sbrk16.asm
-	djasm sbrk16.asm sbrk16.ah
+	$(HOSTBIN)/djasm.exe sbrk16.asm sbrk16.ah
 
 $(LIB)/crt0.o : crt0.S exit16.ah sbrk16.ah
-	$(GCC) -o $@
+	$(XGCC) -MMD -c crt0.S -o $@
 	sed 's@crt0.o@$(LIB)/crt0.o@' crt0.d > crt02.d
 
-$(LIB)/gcrt0.o : gcrt0.S exit16.ah sbrk16.ah
-	$(GCC) -o $@
+$(LIB)/gcrt0.o : gcrt0.S crt0.S exit16.ah sbrk16.ah
+	$(XGCC) -MMD -c gcrt0.S -o $@
 	sed 's@gcrt0.o@$(LIB)/gcrt0.o@' gcrt0.d > gcrt02.d
