@@ -10,18 +10,89 @@ int fcntl (int fd, int cmd, ...);
 @subheading Description
 
 This function performs the operation specified by @var{cmd} on
-@var{fd}.  Note that it only supports @code{F_DUPFD} which acts like
-@code{dup(fd)} (@pxref{dup}) but searches empty descriptor from
-additional argument.
+the file open on handle @var{fd}.  The following operations are defined
+by the header @code{fcntl.h}:
+
+@table @code
+@item F_DUPFD
+Returns a file handle that duplicates @var{fd} like @code{dup} does
+(@pxref{dup}), except that @code{fcntl} also makes sure the returned
+handle is the lowest available handle greater than or equal to the
+integer value of the third argument.
+
+@item F_GETFD
+Get the @code{FD_CLOEXEC} close-on-exec (a.k.a.@: no-inherit) status of
+@var{fd}.  If the returned value has its least-significant bit set, the
+file will not be inherited by programs invoked by this process;
+otherwise, the file will remain open in the child processes.
+
+Note that only the first 20 handles can be passed to child processes by
+DOS/Windows; handles beyond that cannot be inherited.  In addition, the
+stub loader of the child DJGPP program will forcibly close handles 19
+and 18 (since otherwise it will be unable to read the COFF executable
+information and enter protected mode).  Therefore, the current
+implementation always returns 0 for handles below 18, meaning that all
+those handles are inherited, and @code{FD_CLOEXEC} for handles 18 and
+above.
+
+The no-inherit bit can be set when the file is open, by using the
+@code{O_NOINHERIT} in the open flags; see @ref{open}.
+
+@item F_SETFD
+Set the close-on-exec flag for the handle @var{fd} using the LSB of the
+integer value supplied as the third argument.  Currently, @code{fcntl}
+always fails this call and sets @code{errno} to @code{ENOSYS}, since
+DOS/Windows don't support changing the no-inherit status of an open
+file.
+
+@item F_GETFL
+Get the open mode and status flags associated with the handle @var{fd}.
+The flags are those supported by @code{open} and @code{creat} functions,
+like @code{O_READONLY}, @code{O_APPEND}, etc.  Currently, this command
+always returns zero, with no flags set.
+
+@item F_SETFL
+Set the open mode and status flags associated with the handle @var{fd}.
+This always fails and sets @code{errno} to @code{ENOSYS}, since DOS and
+Windows don't allow to change the descriptor flags after the file is
+open.
+
+@item F_GETLK
+Get a description of a file segment lock as specified in the structure
+pointed to by the third argument.  This is unsupported and will always
+fail.
+
+@item F_SETLK
+Set or clear a file segment lock according to the structure pointed to
+by the third argument.  This is unsupported and will always fail.
+
+@item F_SETLKW
+Same as @code{F_SETLK}, but if the lock is blocked, the call will wait
+until it is unblocked and the lock can be applied.  This is unsupported
+and will always fail.
+@end table
+
 
 @subheading Return Value
 
-If invalid @var{cmd} or @var{fd} was passed, it returns -1.
-In case F_DUPFD, it returns new descriptor or -1 for error.
-
+If an invalid or unsupported value is passed in @var{cmd}, or @var{fd}
+is an invalid file handle, the function returns -1 and sets @code{errno}
+to the appropriate value.  Unsupported values of @var{cmd} cause
+@code{ENOSYS} to be stored in @code{errno}.  If @var{cmd} is
+@code{F_DUPFD}, the function returns the new descriptor or -1 in case of
+a failure.
 
 
 @subheading Portability
 
+@port-note posix Contrary to Posix requirement, the handle returned by @code{F_DUPFD} shares the @code{FD_CLOEXEC} flag with @var{fd} (unless they are on different sides of the 20-handle mark), since DOS/Windows only maintain a single set of bits for all the handles associated with the same call to @code{open}.
 @portability !ansi, posix
 
+
+@subheading Example
+
+@example
+ /* Save the handle in a way that it won't be passed
+    to child processes.  */
+  int saved_fd = fcntl (fd, F_DUPFD, 20);
+@end example

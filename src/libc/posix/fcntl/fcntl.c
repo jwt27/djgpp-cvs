@@ -43,6 +43,11 @@ fcntl(int fd, int cmd, ...)
     va_end(ap);
 
     open_max = getdtablesize();
+    if (tofd < 0 || tofd >= open_max)
+    {
+      errno = EINVAL;
+      return -1;
+    }
     while (tofd < open_max)
     {
       if (! is_used_fd(tofd))
@@ -59,14 +64,33 @@ fcntl(int fd, int cmd, ...)
     return dup2(fd, tofd);
     
   case F_GETFD:
+    /* DOS only passes the first 20 handles to child programs.  In
+       addition, handles 19 and 18 will be closed by the stub of the
+       child program (if it is a DJGPP program).
+
+       FIXME: we should look at the no-inherit bit stashed in the SFT
+       entry pointed to by the handle, since some of the first 18
+       handles could have been opened with a no-inherit bit.  */
+    return fd >= 18 ? FD_CLOEXEC : 0;
   case F_SETFD:
+    if ((fd < 18) ^ ((cmd & FD_CLOEXEC) != 0))
+      return 0;
+    else
+      {
+	errno = ENOSYS;
+	return -1;
+      }
   case F_GETFL:
+    return 0;	/* FIXME: should use the data in the SFT */
   case F_SETFL:
-    return 0;
+    errno = ENOSYS;
+    return -1;
   case F_GETLK:
   case F_SETLK:
   case F_SETLKW:
+    errno = ENOSYS;
     return -1;
   }
+  errno = ENOSYS;
   return -1;
 }
