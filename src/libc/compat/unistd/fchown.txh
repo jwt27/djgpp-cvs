@@ -9,6 +9,9 @@ int fchown(int fd, int owner, int group);
 
 @subheading Description
 
+This function changes the ownership of the open file specified by @var{fd}
+to the user ID @var{owner} and group ID @var{group}.
+
 This function does almost nothing under MS-DOS: it just
 checks if the handle @code{fd} is valid.  This function can 
 be hooked by the @xref{File System Extensions}.
