@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* An implementation of select()
 
@@ -233,7 +234,7 @@ select(int nfds,
     {
       gettimeofday (&now, 0);
       if (now.tv_sec > then.tv_sec
-	  || (now.tv_sec = then.tv_sec && now.tv_usec >= then.tv_usec))
+	  || (now.tv_sec == then.tv_sec && now.tv_usec >= then.tv_usec))
 	return 0;
     }
 

@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
@@ -37,7 +38,7 @@ open(const char* filename, int oflag, ...)
 
   dmode = (*((&oflag)+1) & S_IWUSR) ? 0 : 1;
 
-  fd = _open(filename, oflag & 0xff);	/* only low byte used */
+  fd = _open(filename, oflag);
   if (fd == -1 && oflag & O_CREAT)
     fd = _creat(filename, dmode);
 
