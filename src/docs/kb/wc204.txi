@@ -921,3 +921,26 @@ The function @code{pwrite} was added.
 @findex NAN
 The macro @code{NAN} was added.
 
+@findex fchdir
+@findex open@r{, and directories}
+@findex read@r{, and directories}
+@findex write@r{, and directories}
+@findex lseek@r{, and directories}
+@findex ftruncate@r{, and directories}
+@findex fstat@r{, and directories}
+@findex select@r{, and directories}
+@findex fsync@r{, and directories}
+@findex fdopen@r{, and directories}
+@findex fopen@r{, and directories}
+@findex freopen@r{, and directories}
+@findex fclose@r{, and directories}
+@findex ftell@r{, and directories}
+@findex fseek@r{, and directories}
+@findex rewind@r{, and directories}
+@cindex Opening directories with @code{open}
+The function @code{fchdir} was added.  This required modifications
+to the POSIX functions @code{open}, @code{read}, @code{write},
+@code{lseek}, @code{ftruncate}, @code{fstat}, @code{select},
+@code{fsync} and @code{fdopen} and the ANSI functions @code{fopen},
+@code{freopen}, @code{fclose}, @code{ftell}, @code{fseek}
+and @code{rewind}, to make them aware of file descriptors for directories.
