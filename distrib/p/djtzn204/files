@@ -5,7 +5,6 @@ etc/zic.exe
 info/date.1
 info/newctime.3
 info/newtzset.3
-info/posix2time.3
 info/time2posix.3
 info/tzfile.5
 info/tzselect.8
