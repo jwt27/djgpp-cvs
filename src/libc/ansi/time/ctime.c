@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* This file has been modified by DJ Delorie.  These modifications are
 ** Copyright (C) 1995 DJ Delorie, 24 Kirsten Ave, Rochester NH,
@@ -47,6 +49,7 @@ static char sccsid[] = "@(#)ctime.c	5.23 (Berkeley) 6/22/90";
 #include <tzfile.h>
 
 #include <libc/unconst.h>
+#include <libc/bss.h>
 
 #include "posixrul.h"
 
@@ -232,7 +235,15 @@ settzname(void)
 static char *
 tzdir(void)
 {
-  static char dir[80]={0}, *cp;
+  static char dir[FILENAME_MAX + 1]={0}, *cp;
+  static int tzdir_bss_count = -1;
+
+  /* Force recomputation of cached values (Emacs).  */
+  if (tzdir_bss_count != __bss_count)
+  {
+    tzdir_bss_count = __bss_count;
+    dir[0] = 0;
+  }
   if (dir[0] == 0)
   {
     if ((cp = getenv("TZDIR")))
@@ -266,7 +277,7 @@ tzload(const char *name, struct state * const sp)
 
   if (name[0] == ':')
     ++name;
-  if (name[0] != '/')
+  if (name[0] && name[0] != '/' && name[0] != '\\' && name[1] != ':')
   {
     if ((p = tzdir()) == NULL)
       return -1;
@@ -281,6 +292,11 @@ tzload(const char *name, struct state * const sp)
   if ((fid = open(name, OPEN_MODE)) == -1)
   {
     const char *base = strrchr(name, '/');
+    const char *bslash = strrchr(name, '\\');
+    if (bslash && (!base || bslash > base))
+      base = bslash;
+    if (!base && name[1] == ':')
+      base = name + 1;
     if (base)
       base++;
     else
@@ -1396,5 +1412,21 @@ time1(struct tm * const tmp, void (*const funcp)(const time_t * const, const lon
 time_t
 mktime(struct tm * tmp)
 {
-  return time1(tmp, localsub, 0L);
+  int rv = time1(tmp, localsub, 0L);
+  if (rv == -1)
+  {
+    /* Try again, off a few hours.  This may get us out of the DST
+       switch zone (which has two valid time_t's) and into a "normal"
+       range, and we'll compensate the return value afterwards. */
+    int delta = 12;
+    if (tmp->tm_hour > 12)
+      delta = -12;
+
+    tmp->tm_hour += delta;
+    rv = time1(tmp, localsub, 0L);
+    tmp->tm_hour -= delta;
+    if (rv != -1)
+      rv -= delta*60*60;
+  }
+  return rv;
 }
