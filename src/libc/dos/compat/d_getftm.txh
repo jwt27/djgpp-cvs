@@ -39,10 +39,19 @@ seconds = 0-29 in two-second intervals
 
 @xref{_dos_setftime}.
 
+This function cannot be used to return last access and creation date and
+time, even on systems where the LFN API (@pxref{_use_lfn, LFN}) is
+available.  See @ref{_lfn_get_ftime}, for a function that can be used to
+get the other two times.  Also see @ref{fstat}, which is Posix-standard.
+
 @subheading Return Value
 
 Returns 0 if successful and return DOS error on error (and sets
 @var{errno}=EBADF).
+
+@subheading Portability
+
+@portability !ansi, !posix
 
 @subheading Example
 
