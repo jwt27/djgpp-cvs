@@ -63,13 +63,13 @@ extern "C" {
 #define NOFLSH	0x00008000
 #define TOSTOP	0x00010000
 
-#define TCIFLUSH
-#define TCIOFF
-#define TCIOFLUSH
-#define TCION
-#define TCOFLUSH
-#define TCOOFF
-#define TCOON
+#define TCIFLUSH	1
+#define TCOFLUSH	2
+#define TCIOFLUSH	3
+#define TCOOFF		1
+#define TCOON		2
+#define TCIOFF		3
+#define TCION		4
 
 #define TCSADRAIN	1
 #define TCSAFLUSH	2
@@ -98,12 +98,14 @@ struct termios {
   tcflag_t	c_iflag;
   tcflag_t	c_lflag;
   tcflag_t	c_oflag;
+  speed_t	c_ispeed;
+  speed_t	c_ospeed;
 };
 
 speed_t	cfgetispeed(const struct termios *_termios_p);
-speed_t cfgetospeed(const struct termios *_termios_p);
-int	cfsetispeed(const struct termios *_termios_p, speed_t _speed);
-int	cfsetospeed(const struct termios *_termios_p, speed_t _speed);
+speed_t	cfgetospeed(const struct termios *_termios_p);
+int	cfsetispeed(struct termios *_termios_p, speed_t _speed);
+int	cfsetospeed(struct termios *_termios_p, speed_t _speed);
 int	tcdrain(int _fildes);
 int	tcflow(int _fildes, int _action);
 int	tcflush(int _fildes, int _queue_selector);
@@ -112,6 +114,22 @@ int	tcsendbreak(int _fildes, int _duration);
 int	tcsetattr(int _fildes, int _optional_actions, const struct termios *_termios_p);
 
 #ifndef _POSIX_SOURCE
+
+/* Input flags */
+#define IMAXBEL	0x01000000	/* ring bell on input queue full */
+
+/* Local flags */
+#define ECHOKE	0x01000000	/* visual erase for line kill */
+#define ECHOCTL	0x02000000	/* echo control chars as ^x */
+
+/* Output flags */
+#define ONLCR	0x00000200	/* map NL to CRNL */
+#define OCRNL	0x00000400	/* map CR to NL */
+#define ONOEOT	0x00000800	/* discard EOT's (^D) on output */
+
+/* for compatibility */
+void	cfmakeraw(struct termios *_termios_p);
+int	cfsetspeed(struct termios *_termios_p, speed_t _speed);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
