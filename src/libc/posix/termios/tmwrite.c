@@ -333,7 +333,7 @@ parse_console_command(const unsigned char *buf, size_t count)
 
         /* Reset the parse state.  */
         cmd_state = need_esc;
-        ignore_cmd = 1;
+        ignore_cmd = 0;
         ++ptr;
         return ptr - buf;
       }
@@ -378,15 +378,30 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
       set_cursor(GET_ARG(0, 1) - 1, row);
       break;
 
-    /* CUP: Cursor to row and column.  */
+    /* CUP, HVP: Cursor to row and column.  */
     case 'H':
+    case 'f':
       set_cursor(GET_ARG(0, 1) - 1, GET_ARG(1, 1) - 1);
       break;
 
     /* VPA: Cursor to row.  */
     case 'd':
-      get_cursor(&row, &col);
-      set_cursor(row, GET_ARG(0, 1) - 1);
+      get_cursor(&col, &row);
+      set_cursor(col, GET_ARG(0, 1) - 1);
+      break;
+
+    /* CHT: Cursor to next tab stop.  */
+    case 'I':
+      get_cursor(&col, &row);
+      set_cursor(col / 8 * 8 + GET_ARG(0, 1) * 8, row);
+      break;
+
+    /* CBT: Cursor to previous tab stop.  */
+    case 'Z':
+      get_cursor(&col, &row);
+      if (col > 0 && GET_ARG(0, 1) > 0)
+        set_cursor((col - 1) / 8 * 8 - (GET_ARG(0, 1) - 1) * 8, row);
+      break;
 
     /* Unrecognized command. Do nothing.  */
     default:
