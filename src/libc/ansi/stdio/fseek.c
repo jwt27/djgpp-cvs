@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -7,11 +8,19 @@
 #include <libc/file.h>
 #include <fcntl.h>
 #include <libc/dosio.h>
+#include <libc/fd_props.h>
 
 int
 fseek(FILE *f, long offset, int ptrname)
 {
+  const int fd = fileno(f);
   long p = -1;			/* can't happen? */
+
+  /* If this is a FILE for a directory, we have no concept of position.
+   * The stream I/O functions cannot be used to read/write a FILE
+   * for directories. So, just return position 0. */
+  if (__get_fd_flags(fd) & FILE_DESC_DIRECTORY)
+    return 0;
 
   /* See comment in filbuf.c */
   f->_fillsize = 512;
@@ -41,7 +50,7 @@ fseek(FILE *f, long offset, int ptrname)
     if (f->_flag & _IORW)
       f->_flag &= ~_IOREAD;
 
-    p = lseek(fileno(f), offset, ptrname);
+    p = lseek(fd, offset, ptrname);
     f->_cnt = 0;
     f->_ptr = f->_base;
     f->_flag &= ~_IOUNGETC;
@@ -49,7 +58,7 @@ fseek(FILE *f, long offset, int ptrname)
   else if (f->_flag & (_IOWRT|_IORW))
   {
     p = fflush(f);
-    return lseek(fileno(f), offset, ptrname) == -1 || p == EOF ?
+    return lseek(fd, offset, ptrname) == -1 || p == EOF ?
       -1 : 0;
   }
   return p==-1 ? -1 : 0;
