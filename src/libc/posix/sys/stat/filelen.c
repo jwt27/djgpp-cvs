@@ -14,7 +14,7 @@
 #include <dpmi.h>
 #include <libc/dosio.h>
 #include <go32.h>
-#include <sys/farptr.h>
+#include <libc/farptrgs.h>
 #include <dos.h>
 #include <fcntl.h>
 #include <io.h>
