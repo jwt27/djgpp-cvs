@@ -785,3 +785,6 @@ to @code{struct lconv}, to comply with the C99 standard.
 
 @findex _Exit
 The function @code{_Exit} was added.
+
+@findex atoll
+The function @code{atoll} was added.
