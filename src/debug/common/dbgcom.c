@@ -1086,7 +1086,6 @@ static void call_app_exception(int signum, char return_to_debuggee)
     cur_pos[5] = eflags;
     cur_pos[6] = esp;
     cur_pos[7] = ss;
-    cur_pos   += 8;
     longjmp(load_state, load_state->__eax);
     }
 
