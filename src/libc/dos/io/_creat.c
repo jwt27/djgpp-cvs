@@ -30,6 +30,9 @@ _creat(const char* filename, int attrib)
   if(use_lfn) {
     r.x.ax = 0x716c;
     r.x.bx = 0x0002;		/* Open r/w. */
+    /* The FAT32 bit should _not_ be set on Windows 2000, because
+       that bit fails function 716Ch on W2K.  The test below is
+       based on the assumption that W2K returns DOS version 5.  */
     if (7 <= _osmajor && _osmajor < 10) {
       r.x.bx |= 0x1000; /* 0x1000 is FAT32 extended size. */
     }
