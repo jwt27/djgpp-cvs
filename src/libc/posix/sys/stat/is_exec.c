@@ -181,7 +181,7 @@ _is_executable(const char *filename, int fhandle, const char *extension)
   if ((_djstat_flags & _STAT_EXEC_EXT) == 0
       && extension
       && *extension
-      && strlen(extension) <= ((extension[0]=='.') ? 4 : 3))
+      && strlen(extension) <= ((extension[0]=='.') ? 4U : 3U))
     {
       /* Search the list of extensions in executables[]. */
       char tmp_buf[6], *tp = tmp_buf;

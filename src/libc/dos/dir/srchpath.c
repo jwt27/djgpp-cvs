@@ -15,7 +15,7 @@
 #include <libc/environ.h>
 #include <libc/bss.h>
 
-static int env_changed = 0;
+static unsigned env_changed = 0;
 static int srchpath_bss_count = -1;
  
 /* Search PATH for FILE.
