@@ -1,0 +1,9 @@
+README for regex tests
+~~~~~~~~~~~~~~~~~~~~~~
+
+The tests for the regex library can be found with the regex library.
+See the Makefile src/libc/posix/regex/makefile.tst. Run the tests
+like so:
+
+cd /path/to/djgpp/sources/src/libc/posix/regex
+make -f makefile.tst
