@@ -1,3 +1,4 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
@@ -12,14 +13,18 @@ SRC += _read.c
 SRC += _write.c
 SRC += crlf2nl.c
 SRC += dosio.c
+SRC += doslk64.c
 SRC += doslock.c
+SRC += dosunl64.c
 SRC += dosunloc.c
 SRC += fmode.c
 SRC += lock.c
+SRC += lock64.c
 SRC += putpath.c
 SRC += setmode.c
 SRC += tell.c
 SRC += unlock.c
+SRC += unlock64.c
 SRC += flushdc.c
 
 include $(TOP)/../makefile.inc
