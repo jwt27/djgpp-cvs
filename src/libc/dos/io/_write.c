@@ -13,7 +13,7 @@
 int
 _write(int handle, const void* buffer, size_t count)
 {
-  size_t j;
+  size_t j, i;
   int nput;
   unsigned long tbsize;
   __dpmi_regs r;
@@ -43,10 +43,11 @@ _write(int handle, const void* buffer, size_t count)
       errno = __doserr_to_errno(r.x.ax);
       return -1;
     }
-    count -= j;
-    buffer = (void *)((int)buffer + j);
-    nput += r.x.ax;
-  } while(count && (r.x.ax == j));
+    i = r.x.ax;
+    count -= i;
+    buffer = (void *)((int)buffer + i);
+    nput += i;
+  } while(count && (i == j));
 
   if (count && nput == 0)
   {
