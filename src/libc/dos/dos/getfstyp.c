@@ -14,7 +14,7 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
-#include <sys/farptr.h>
+#include <libc/farptrgs.h>
 
 /* Returns: -1 == error; 0 == result_str filled in. */
 int 

@@ -16,7 +16,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <errno.h>
-#include <sys/farptr.h>
+#include <libc/farptrgs.h>
 
 /* Returns number of bits in FAT; -1 == error. */
 int 

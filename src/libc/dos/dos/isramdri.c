@@ -2,7 +2,7 @@
 
 #include <dpmi.h>
 #include <go32.h>
-#include <sys/farptr.h>
+#include <libc/farptrgs.h>
 #include <dos.h>
 
 /* Macro to convert a segment and an offset to a "far offset" suitable
