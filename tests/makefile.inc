@@ -1,3 +1,4 @@
+# Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 
 include $(TOP)/../makefile.def
@@ -41,7 +42,10 @@ export LIBGCCA
 endif
 
 ifeq ($(DJGPP_DJL),)
+DJGPP_DJL := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=djgpp-x.djl)
+ifeq ($(DJGPP_DJL),djgpp-x.djl)
 DJGPP_DJL := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=djgpp.djl)
+endif
 DJGPP_DJL := $(subst \,/,$(DJGPP_DJL))
 export DJGPP_DJL
 endif
