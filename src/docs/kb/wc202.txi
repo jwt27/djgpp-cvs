@@ -79,11 +79,12 @@ longer crash when emulated.
 @findex s_floor
 @findex sf_floor
 
-@code{fixpath} and @code{readdir} support multibyte file names.
-@findex fixpath
+@code{_fixpath} and @code{readdir} support multibyte file names.
+@findex _fixpath
 @findex readdir
 @cindex multibyte
 
+@vindex 387@r{, set to Y}
 You may now @code{set 387=y} to avoid the auto-detection.
 
 @code{opendir("/")} works.
@@ -297,6 +298,7 @@ Windows 9X are no longer reported with bogus names taken from LFN
 directory entries (which have their volume label attribute bit set).
 @findex getmntent
 
+@cindex Unix device names
 File names which begin with @file{/dev/} or @file{x:/dev/} (where
 @file{x:} is any drive letter) are treated specially by all
 file-oriented library functions.  @file{/dev/tty} is converted to
@@ -308,6 +310,7 @@ unless they are devoid of the @file{x:/dev/} prefix.  File names of the
 form @file{/dev/x/foo} are converted to @file{x:/foo}; this allows to
 use Unix-style path names which always begin with a forward slash.
 
+@cindex Numeric exceptions, masked
 The startup code now masks @strong{all} numeric exceptions when a
 floating-point hardware is present.  This means that illegal operations
 like @code{sqrt(-1)} will now return @code{NaN} (Not-a-number) rather
@@ -338,7 +341,8 @@ extract directory and basename parts from file names.
 @findex basename
 @findex dirname
 
-_my_* work for selectors with the high bit set
+@code{_my_ds}, @code{_my_cs} and @code{_my_ss} work for selectors with
+the high bit set.
 
 The new function @code{_creatnew} creates a file only if it didn't
 already exist.
@@ -350,12 +354,13 @@ used by any other program.  It does so by repeatedly calling
 didn't exist before.  The temporary file is opened in DENY_ALL mode, so
 that no other process can neither read from nor write to it.  In case of
 a failure, @code{tmpfile} does not leak memory anymore.
+@findex tmpfile@r{, race conditions}
 
 Previously, there was a small probability that a call to @code{open}
 with the @code{O_CREAT} and @code{O_EXCL} bits set would succeed even
 though the named file already existed (created by another process).
 This window is now closed.
-@findex open
+@findex open@r{, race conditions}
 
 @code{mkstemp} now makes sure the file it creates is unique even if
 other processes can create files in the same directory, and opens the
@@ -368,10 +373,6 @@ by the value of the @samp{FILES=} parameter on your @file{CONFIG.SYS},
 but can allocate up to 254 handles (which is the maximum number allowed
 by DOS).
 @findex __FSEXT_alloc_fd
-@findex tmpfile
-
-Stack dumps will now fit the screen, instead of being limited to 10
-frames.
 
 @code{rename} will properly fail if the file doesn't exist.
 @findex rename
@@ -448,7 +449,7 @@ wildcards, and they will work as expected.
 Also, @code{redir} no longer crashes if the subsidiary program was
 interrupted or crashed, and reports the run time with millisecond
 resolution.
-@cindex redir
+@pindex redir
 
 The exit code now makes sure the timer interrupt is left pointing to its
 original handler, even if the program is aborted, or exits without
@@ -497,9 +498,17 @@ directory entries (which have their volume label attribute bit set).
 handles anymore when long file names are supported.  @code{rewinddir}
 and @code{seekdir} will not miss the (possibly faked) @file{.} and
 @file{..} entries in root directories.
-@findex opendir, does not lose search handles
-@findex closedir, does not lose search handles
-@findex rewinddir, does not lose search handles
-@findex seekdir, and @file{.} and @file{..} entries
-@findex rewinddir, and @file{.} and @file{..} entries
+@findex opendir@r{, does not lose search handles}
+@findex closedir@r{, does not lose search handles}
+@findex rewinddir@r{, does not lose search handles}
+@findex seekdir@r{, and @file{.} and @file{..} entries}
+@findex rewinddir@r{, and @file{.} and @file{..} entries}
+
+Asynchronous signals (@code{SIGINT}, @code{SIGQUIT}, @code{SIGALRM} and
+@code{SIGPROF}) no longer crash programs running on Windows when the
+signal happens inside the @code{__dpmi_int} function (@code{__dpmi_int}
+is called by every library function that requires DOS or BIOS services).
+We believe this problem caused crashes in multi-threading packages that
+used timers and @code{SIGALRM} to switch threads.
+@findex __dpmi_int@r{, and signals on Windows}
 
