@@ -10,6 +10,6 @@
 /makefile.rf/ d
 /makefile.sub/ d
 /src\/libm\/.*\.def$/ d
-/\/CVS\// d
+/\/[Cc][Vv]S\// d
 /src\/debug\/ar\.in/ d
 /src\/libc\/dpmi\/api\/_dpmi/ d
