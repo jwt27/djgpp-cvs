@@ -5,8 +5,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <coff.h>
-#include <sys/dxe.h>
+/* Linux violates POSIX.1 and defines this, but it shouldn't.  We fix it. */
+#undef _POSIX_SOURCE
+#include "../../include/coff.h"
+#include "../../include/sys/dxe.h"
+
+/* This next function is needed for cross-compiling when the machine
+   isn't little-endian like the i386 */
+
+static void
+dosswap(void *vdata, char *pattern)
+{
+  static int endian = 1;
+  unsigned char *data, c;
+  if (*(unsigned char *)(&endian) == 1)
+    return;
+
+  data = (unsigned char *)vdata;
+  while (*pattern)
+  {
+    if (*pattern >= '1' && *pattern <= '9')
+    {
+      data += (*pattern-'0');
+    }
+    else if (*pattern == 's')
+    {
+      c = data[1];
+      data[1] = data[0];
+      data[0] = c;
+      data += 2;
+    }
+    else if (*pattern == 'l')
+    {
+      c = data[3];
+      data[3] = data[0];
+      data[0] = c;
+      c = data[1];
+      data[1] = data[2];
+      data[2] = c;
+      data += 4;
+    }
+    else
+      data++;
+
+    pattern++;
+  }
+}
 
 void exit_cleanup(void)
 {
@@ -40,17 +84,35 @@ int main(int argc, char **argv)
   }
 
   fread(&fh, 1, FILHSZ, input_f);
+  dosswap(&fh, "sslllss");
   if (fh.f_nscns != 1 || argc > 4)
   {
-    char command[1024];
+    char command[1024], *libdir;
     fclose(input_f);
 
-    strcpy(command,"ld -X -S -r -o dxe__tmp.o -L");
-    strcat(command,getenv("DJDIR"));
-    strcat(command,"/lib ");
-    for(i=3;argv[i];i++) {
-      strcat(command,argv[i]);
-      strcat(command," ");
+#ifdef DXE_LD
+    strcpy(command, DXE_LD);
+#else
+    strcpy(command, "ld");
+#endif
+    strcat(command, " -X -S -r -o dxe__tmp.o -L");
+    libdir = getenv("DJDIR");
+    if (!libdir)
+    {
+      libdir = getenv("TOP");
+      if (!libdir)
+      {
+	fprintf(stderr, "Error: neither DJDIR nor TOP are set in environment\n");
+	exit(1);
+      }
+      strcat(command, "../../");
+    }
+    strcat(command, libdir);
+    strcat(command, "/lib ");
+    for(i=3;argv[i];i++)
+    {
+      strcat(command, argv[i]);
+      strcat(command, " ");
     }
     strcat(command," -T dxe.ld ");
       
@@ -68,6 +130,7 @@ int main(int argc, char **argv)
       atexit(exit_cleanup);
 
     fread(&fh, 1, FILHSZ, input_f);
+    dosswap(&fh, "sslllss");
     if (fh.f_nscns != 1) {
       printf("Error: input file has more than one section; use -M for map\n");
       return 1;
@@ -76,6 +139,7 @@ int main(int argc, char **argv)
 
   fseek(input_f, fh.f_opthdr, 1);
   fread(&sc, 1, SCNHSZ, input_f);
+  dosswap(&sc, "8llllllssl");
 
   dh.magic = DXE_MAGIC;
   dh.symbol_offset = -1;
@@ -90,6 +154,7 @@ int main(int argc, char **argv)
   fseek(input_f, fh.f_symptr, 0);
   fread(sym, fh.f_nsyms, SYMESZ, input_f);
   fread(&strsz, 1, 4, input_f);
+  dosswap(&strsz, "l");
   strings = malloc(strsz);
   fread(strings+4, 1, strsz-4, input_f);
   strings[0] = 0;
@@ -98,12 +163,16 @@ int main(int argc, char **argv)
     char tmp[9], *name;
     if (sym[i].e.e.e_zeroes)
     {
+      dosswap(sym+i, "8lscc");
       memcpy(tmp, sym[i].e.e_name, 8);
       tmp[8] = 0;
       name = tmp;
     }
     else
+    {
+      dosswap(sym+i, "lllscc");
       name = strings + sym[i].e.e.e_offset;
+    }
 #if 0
     printf("[%3d] 0x%08x 0x%04x 0x%04x %d %s\n",
 	   i,
@@ -145,6 +214,12 @@ int main(int argc, char **argv)
   fseek(input_f, sc.s_relptr, 0);
   fread(relocs, sc.s_nreloc, RELSZ, input_f);
 #if 0
+  /* Don't swap - it's in i386 order already */
+  for (i=0; i<sc.s_nreloc; i++)
+    dosswap(relocs+i, "lls");
+#endif
+#if 0
+  /* Thus, this won't work except on PCs */
   for (i=0; i<sc.s_nreloc; i++)
     printf("0x%08x %3d 0x%04x - 0x%08x\n",
 	   relocs[i].r_vaddr,
@@ -166,13 +241,14 @@ int main(int argc, char **argv)
   }
 
   for (i=0; i<sc.s_nreloc; i++)
-    if(relocs[i].r_type == 0x14)	/* Don't do these, they are relative */
+    if(*(char *)(&relocs[i].r_type) == 0x14)	/* Don't do these, they are relative */
       dh.nrelocs--;
 
+  dosswap(&dh, "llll");
   fwrite(&dh, 1, sizeof(dh), output_f);
   fwrite(data, 1, sc.s_size, output_f);
   for (i=0; i<sc.s_nreloc; i++)
-    if(relocs[i].r_type != 0x14)	/* Don't do these, they are relative */
+    if(*(char *)(&relocs[i].r_type) != 0x14)	/* Don't do these, they are relative */
       fwrite(&(relocs[i].r_vaddr), 1, sizeof(long), output_f);
 
   fclose(output_f);
