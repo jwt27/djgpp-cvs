@@ -158,8 +158,7 @@ Some @file{fsdb} bugs fixed
 buffer directly.
 @findex write
 
-@code{setrusage} and @code{getrusage} added.
-@findex setrusage
+@code{getrusage} added.
 @findex getrusage
 
 @code{readdir} will return "." and ".." even for root directories.
