@@ -1,3 +1,5 @@
+; Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
+; Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details
 ; Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 ; Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 ; -*- asm -*-
@@ -48,7 +50,7 @@
    .copyright "The STUB.EXE stub loader is Copyright (C) 1993-1995 DJ Delorie. "
    .copyright "Permission granted to use for any purpose provided this copyright "
    .copyright "remains present and unmodified. "
-   .copyright "This only applies to the stub, and not neccessarily the whole program.\n"
+   .copyright "This only applies to the stub, and not necessarily the whole program.\n"
    .id
 ;
 ;-----------------------------------------------------------------------------
@@ -67,11 +69,11 @@
 	.org	0			; just in case
 stubinfo:
 stubinfo_magic:				; char [16]
-	.db	"go32stub, v 2.00"	; version may change, [0..7] won't
+	.db	"go32stub, v 2.02"	; version may change, [0..7] won't
 stubinfo_size:				; unsigned long
 	.dd	stubinfo_end		; bytes in structure
 stubinfo_minstack:			; unsigned long
-	.dd	0x40000			; minimum amount of DPMI stack space (256K)
+	.dd	0x80000			; minimum amount of DPMI stack space (512K)
 stubinfo_memory_handle:			; unsigned long
 	.dd	0			; DPMI memory handle
 stubinfo_initial_size:			; unsigned long
@@ -116,22 +118,29 @@ stubinfo_end:
 	int	0x21
 	cmp	al, 3
 	jae	dos3ok
+	mov	al, 109
 	mov	dx, msg_bad_dos
 	jmpl	error
 dos3ok:
 	mov	[dos_major], al
+	mov	si, stubinfo_minkeep
 
 ;-----------------------------------------------------------------------------
 ;  Resize memory in case we need to exec a DPMI server
 
 resize_again:
+	mov	ax, [si]		; si=&stubinfo_minkeep
+	or	ax, ax
+	jnz	@f1
+;	mov	ax,0xfe00		; 0 was probably 64k, so max it! (mod 512)
+	mov	ah,0xfe			; al already 0
+@f1:
 	mov	bx, end_of_memory	; does not include PSP
-	mov	ax, [stubinfo_minkeep]
 	cmp	bx, ax			; is our program big enough to hold it?
 	jae	@f1
 	mov	bx, ax
 @f1:
-	mov	[stubinfo_minkeep], bx	; store for reference
+	mov	[si], bx		; si=&stubinfo_minkeep store for reference
 	inc	bh			; add 256 bytes for PSP
 	mov	cx, 0xff04		; 0xff is for below
 	shr	bx, cl			; bytes to paragraphs
@@ -141,7 +150,7 @@ resize_again:
 	jnc	@f1			; did it work?
 	shl	bx,cl			; calculate smaller [keep] value
 	dec	bh
-	mov	[stubinfo_minkeep], bx
+	mov	[si], bx		; si=&stubinfo_minkeep
 	jmp	resize_again		; and try again
 @f1:
 
@@ -172,6 +181,19 @@ not_path:
 	jne	scan_environment	; no, still environment
 	scasw				; adjust pointer to point to prog name
 
+;; When we are spawned from a program which has more than 20 handles in use,
+;; all the handles passed to us by DOS are taken (since only the first 20
+;; handles are inherited), and opening the .exe file will fail.
+;; Therefore, we forcefully close handles 18 and 19, to make sure at least two
+;; handles are available.
+
+	mov	ah, 0x3e
+	mov	bx, 19
+	int	0x21			; don't care about errors
+	mov	ah, 0x3e
+	mov	bx, 18
+	int	0x21			; don't care about errors
+
 ;-----------------------------------------------------------------------------
 ;  Get DPMI information before doing anything 386-specific
 
@@ -180,6 +202,7 @@ not_path:
 	xor	cx, cx			; flag for load attempt set cx = 0
 	jz	@f2			; We always jump, shorter than jmp
 @b1:
+	mov	al, 110
 	mov	dx, msg_no_dpmi
 	jmpl	error
 @b2:
@@ -227,9 +250,9 @@ not_path:
 	inc	bx
 	loop	@b1			; eight characters?
 @f1:
-	movd	[bx+0], 0x4558452e	; append ".EXE"
+	movd	[bx], 0x4558452e	; append ".EXE"
 	add	bx, 4
-	mov	[bx], al		; al = 0
+	movb	[bx], 0			; null terminate
 	mov	[loadname_nul], bx	; remember nul so we can change it to $
 
 no_symlink:
@@ -576,14 +599,17 @@ store_env_string:
 ;  Most errors come here, early ones jump direct (8088 instructions)
 
 error_no_progfile:
+	mov	al, 102
 	mov	dx, msg_no_progfile
 	jmp	error_fn
 
 error_not_exe:
+	mov	al, 103
 	mov	dx, msg_not_exe
 	jmp	error_fn
 
 error_not_coff:
+	mov	al, 104
 	mov	dx, msg_not_coff
 ;	jmp	error_fn
 
@@ -597,22 +623,27 @@ error_fn:
 error_no_dos_memory_umb:
 	call	restore_umb
 error_no_dos_memory:
+	mov	al, 105
 	mov	dx, msg_no_dos_memory
 	jmp	error
 
 error_in_modesw:
+	mov	al, 106
 	mov	dx, msg_error_in_modesw
 	jmp	error
 
 perror_no_selectors:
+	mov	al, 107
 	mov	dx, msg_no_selectors
 	jmp	error
 
 perror_no_dpmi_memory:
+	mov	al, 108
 	mov	dx, msg_no_dpmi_memory
 	jmp	error
 
 perror_no_dos_memory:
+	mov	al, 105
 	mov	dx, msg_no_dos_memory
 ;	jmp	error
 
@@ -626,13 +657,15 @@ error:
 exit:
 	mov	bx, crlfdollar
 	call	printstr
-	mov	ax, 0x4cff		; error exit
+	mov	ah, 0x4c		; error exit - exit code is in al
 	int	0x21
 
 printstr1:
 	inc	bx
+	push	ax			; have to preserve al set by error call
 	mov	ah, 2
 	int	0x21
+	pop	ax			; restore ax (John A.)
 printstr:
 	mov	dl, [bx]
 	cmp	dl, '$'
@@ -786,7 +819,7 @@ restore_umb:
 err_string:
 	.db	"Load error: $"
 msg_no_progfile:
-	.db	": cannot open$"
+	.db	": can't open$"
 msg_not_exe:
 	.db	": not EXE$"
 msg_not_coff:

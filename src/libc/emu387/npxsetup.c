@@ -17,12 +17,15 @@
 #include <libc/internal.h>
 #include <sys/exceptn.h>
 #include <float.h>
+#include <dos.h> /* for _8087 */
 #ifndef IMBED_EMU387
 #include <sys/dxe.h>
 static int (*_emu_entry)(jmp_buf exc);
 #else
 int _emu_entry(jmp_buf exc);
 #endif
+
+int _8087;
 
 /* crt0.o references __emu387_load_hook just to pull in this object in libemu.a.
    Using -lemu -lc brings in the static objects instead of a dynamic link. */
@@ -66,6 +69,11 @@ void _npxsetup(char *argv0)
 #endif
 
   cp = getenv("387");
+  if (cp && (tolower(cp[0]) == 'y'))
+  {
+    _control87(0x033f, 0xffff);	/* mask all numeric exceptions */
+    return;
+  }
   if (cp && (tolower(cp[0]) == 'n'))
     have_80387 = 0;
   else
@@ -74,6 +82,7 @@ void _npxsetup(char *argv0)
        nested FPU client fault - DJ */
     __dpmi_set_coprocessor_emulation(1);
     have_80387 = _detect_80387();
+    _8087 = (have_80387 ? 3 : 0);
   }
 
   if (cp && (tolower(cp[0]) == 'q')) {
@@ -83,8 +92,8 @@ void _npxsetup(char *argv0)
   }
 
   if(have_80387) {
-    /* mask all exceptions, except invalid operation */
-    _control87(0x033e, 0xffff);
+    /* mask all exceptions */
+    _control87(0x033f, 0xffff);
 
   } else {
     /* Flags value 3 means coprocessor emulation, exceptions to us */

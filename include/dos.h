@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_dos_h_
 #define __dj_include_dos_h_
@@ -9,6 +10,10 @@
 #ifndef _POSIX_SOURCE
 
 #include <pc.h>
+
+extern int _8087;
+
+int _detect_80387(void);
 
 struct DWORDREGS {
   unsigned long edi;
@@ -125,6 +130,7 @@ extern "C" {
 
 extern unsigned short   _osmajor, _osminor;
 extern const    char  * _os_flavor;
+extern int		_doserrno;
 
 unsigned short _get_dos_version(int);
 
@@ -230,7 +236,7 @@ unsigned int   _dos_read(int _handle, void *_buffer, unsigned int _count, unsign
 unsigned int   _dos_close(int _handle);
 unsigned int   _dos_commit(int _handle);
 
-unsigned int   _dos_findfirst(char *_name, unsigned int _attr, struct _find_t *_result);
+unsigned int   _dos_findfirst(const char *_name, unsigned int _attr, struct _find_t *_result);
 unsigned int   _dos_findnext(struct _find_t *_result);
 
 void           _dos_getdate(struct _dosdate_t *_date);
