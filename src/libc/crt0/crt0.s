@@ -18,6 +18,7 @@
 	.comm	__stubinfo, 4
 	.comm	___djgpp_base_address, 4
 	.comm	___djgpp_selector_limit, 4
+	.comm	___djgpp_stack_limit, 4
 	.lcomm	sel_buf, 8
 	/* ___djgpp_ds_alias defined in go32/exceptn.s */
 
@@ -42,12 +43,9 @@ sbrk16_api_seg:
 zero:
 	.long	0
 
-#define EXIT16 1
-#if EXIT16
 exit16_first_byte:
 #include "exit16.ah"
 exit16_last_byte:
-#endif
 
 hook_387_emulator:
 	.long	___emu387_load_hook
@@ -102,7 +100,7 @@ start:
 ds_alias_ok:
 	movw	%ax, ___djgpp_ds_alias
 	movl	%eax, %ebx
-	movw	$0x0009, %al
+	movw	$0x0009, %ax
 	movw	%cs, %cx	/* get CPL from %cs */
 	andl	$3, %ecx
 	shll	$5, %ecx		/* move it into place */
@@ -116,10 +114,15 @@ ds_alias_ok:
 	movl	%ecx, %edx
 	movw	$0x0008, %ax				/* reset alias limit to -1 */
 	int	$0x31
+	movw	%cs, %bx
+	movw	$0x0008, %ax				/* reset DS limit to -1 */
+	int	$0x31
 	movw	%ds, %bx
 	movw	$0x0008, %ax				/* reset DS limit to -1 */
 	int	$0x31
-	jnc	2f
+	lsl	%ebx, %ebx				/* Should be -1 */
+	incl	%ebx
+	jz	2f
 	andb	$0x7f, __crt0_startup_flags		/* clear it if failure */
 2:
 #ifdef MULTIBLOCK
@@ -258,6 +261,7 @@ use_stubinfo_stack_size:
 	call	___sbrk			/* allocate the memory */
 	cmpl	$-1, %eax
 	je	no_memory
+	movl	%eax, ___djgpp_stack_limit	/* Bottom of stack */
 	addl	__stklen, %eax
 	movw	%ds, %dx		/* set stack */
 	movw	%dx, %ss
@@ -275,9 +279,9 @@ no_memory:
 
 #define FREESEL(x) movw x, %bx; movw $0x0001, %ax; int $0x31
 
-	.global	__exit
+	.global	___exit
 	.align	2
-__exit:
+___exit:
 	movb	4(%esp), %al
 exit:
 	movb	%al, %cl
@@ -295,9 +299,27 @@ exit:
 	movw	sbrk16_first_byte+6,%dx /* selector for allocated DOS mem */
 	movw	$0x101, %ax
 	int	$0x31			/* Free block and selector */
+9:
+	movl	__stubinfo, %edx
+	movl	STUBINFO_CS_SELECTOR(%edx), %eax
+	movw	%ax, sbrk16_api_seg
+	xorl	%edi, %edi
+	movl	%edi, sbrk16_api_ofs	/* Offset is zero */
+
+	movw	STUBINFO_DS_SELECTOR(%edx), %es
+	movb	%cl, %dl		/* Exit status */
+	movl	$exit16_first_byte, %esi
+	movl	$(exit16_last_byte - exit16_first_byte), %ecx
+	cld
+	rep
+	movsb
+
+	movw	%es,%ax			/* We will free stack! */
+	movw	%ax,%ss
+	movl	$0x400,%esp		/* Transfer buffer >= 1024 bytes */
+
 #ifdef MULTIBLOCK
-9:	movl	___djgpp_memory_handle_pointer, %ebx
-	movl	$__exit, %esp		/* We will free stack! Old init code as temp stack */
+	movl	___djgpp_memory_handle_pointer, %ebx
 	jmp	7f
 6:	subl	$8, %ebx
 	movl	(%ebx), %edi
@@ -307,40 +329,15 @@ exit:
 7:	cmpl	$___djgpp_memory_handle_list+8, %ebx
 	jne	6b
 #endif /* MULTIBLOCK */
-	xorl	%ebp, %ebp
-	movl	__stubinfo, %edx
-#ifdef EXIT16
-	movl	STUBINFO_CS_SELECTOR(%edx), %eax
-	movw	%ax, sbrk16_api_seg
-	xorl	%edi, %edi
-	movl	%edi, sbrk16_api_ofs	/* Offset is zero */
-
-	movw	STUBINFO_DS_SELECTOR(%edx), %es
-	movb	%cl, %dl
-	movl	$exit16_first_byte, %esi
-	movl	$(exit16_last_byte - exit16_first_byte), %ecx
-	cld
-	rep
-	movsb
-
+	xorl	%ebp, %ebp				/* V1.10 bug fix */
 	movl	___djgpp_memory_handle_list, %edi
 	movl	___djgpp_memory_handle_list+2, %esi	/* Skip word prefixes */
 
-	movw	%es,%ax
-	movw	%ax,%ss
-	movl	$0x400,%esp		/* Transfer buffer >= 1024 bytes */
 	FREESEL(%ds)
 	movw	%cs, %bx
 /* Call exit procedure with BX=32-bit CS; SI+DI=32-bit handle; DL=exit status */
 	.byte 0x2e
 	ljmp	sbrk16_api_ofs
-#else
-	FREESEL(STUBINFO_DS_SELECTOR(%edx))
-	FREESEL(STUBINFO_CS_SELECTOR(%edx))
-	movb	%cl, %al
-	movb	$0x4c, %ah
-	int	$0x21
-#endif
 
 /*-----------------------------------------------------------------------------*/
 
@@ -500,6 +497,7 @@ brk_common:
 	jbe	12f
 #endif
 5:	movl	%edx, ___djgpp_selector_limit
+	orw	$0x0fff, %dx					/* low bits set */
 	movw	$0x0008, %ax					/* reset CS limit */
 	movw	%cs, %bx
 	movl	%edx, %ecx
