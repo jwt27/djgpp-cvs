@@ -968,3 +968,8 @@ New enhanced dynamic module support has been added with a Posix compliant
 interface.  You can now create complex DXEs which depend on each other
 and call code from the main image.  Converting libraries to standalone
 DXEs which can be linked via library is as simple as a single command.
+
+@findex uclock@r{, uses rdtsc on Windows NT, 2000, XP}
+@code{uclock} now uses rdtsc under Windows NT, 2000 and XP (if it is 
+available) to work around the bug with the interval timer not being 
+syncronized with the timer tick.
