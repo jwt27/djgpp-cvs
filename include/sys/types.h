@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -17,6 +18,8 @@ extern "C" {
 typedef int             blkcnt_t;
 typedef int             blksize_t;
 typedef int		dev_t;
+typedef unsigned long	fsblkcnt_t;
+typedef unsigned long	fsfilcnt_t;
 typedef int		ino_t;
 typedef int		mode_t;
 typedef int		nlink_t;
