@@ -957,3 +957,14 @@ would give different inodes.
 
 @code{stat} and @code{fstat} should now return the same inode for a file
 in most cases.
+
+@findex dlopen@r{ added}
+@findex dlsym@r{ added}
+@findex dlclose@r{ added}
+@findex dlerror@r{ added}
+@pindex dxe3gen@r{ added}
+@pindex dxe3res@r{ added}
+New enhanced dynamic module support has been added with a Posix compliant
+interface.  You can now create complex DXEs which depend on each other
+and call code from the main image.  Converting libraries to standalone
+DXEs which can be linked via library is as simple as a single command.
