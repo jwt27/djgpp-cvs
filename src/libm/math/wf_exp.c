@@ -39,10 +39,10 @@ u_threshold= -1.0397208405e+02;  /* 0xc2cff1b5 */
 	return __ieee754_expf(x);
 #else
 	_float_long_union ux;
+	float z;
 	
 	ux.f = x;
 
-	float z;
 	z = __ieee754_expf(x);
 	if(_LIB_VERSION == _IEEE_) return z;
 	if(finitef(ux.l)) {

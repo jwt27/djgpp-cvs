@@ -32,11 +32,11 @@
 #else
 	_float_long_union ux;
 	_float_long_union uy;
+	float z;
 	
 	ux.f = x;
 	uy.f = y;
 
-	float z;
 	z = __ieee754_fmodf(x,y);
 	if(_LIB_VERSION == _IEEE_ ||isnanf(uy.f)||isnanf(ux.f)) return z;
 	if(y==(float)0.0) {

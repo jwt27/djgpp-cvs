@@ -44,11 +44,11 @@
 	_float_long_union ux;
 	_float_long_union uz;
 	_float_long_union ufn;
+	float z;
 
 	ux.f = x;
 	ufn.f = fn;
 
-	float z;
 	z = __ieee754_scalbf(x,fn);
 	uz.f = z;
 	if(_LIB_VERSION == _IEEE_) return z;

@@ -31,10 +31,10 @@
 	return __ieee754_coshf(x);
 #else
 	_float_long_union ux;
+	float z;
 	
 	ux.f = x;
 
-	float z;
 	z = __ieee754_coshf(x);
 	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	if(fabsf(x)>(float)8.9415985107e+01) {	

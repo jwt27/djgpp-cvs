@@ -30,10 +30,10 @@
 	return __ieee754_atanhf(x);
 #else
 	_float_long_union ux;
+	float z,y;
 	
 	ux.f = x;
 	
-	float z,y;
 	z = __ieee754_atanhf(x);
 	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	y = fabsf(x);

@@ -32,10 +32,10 @@
 #else
 	_float_long_union ux;
 	_float_long_union uz;
+	float z; 
 
 	ux.f = x;
 
-	float z; 
 	z = __ieee754_sinhf(x);
 	uz.f = z;
 	if(_LIB_VERSION == _IEEE_) return z;

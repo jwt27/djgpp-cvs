@@ -31,10 +31,10 @@
 	return __ieee754_logf(x);
 #else
 	_float_long_union ux;
+	float z;
 	
 	ux.f = x;
 
-	float z;
 	z = __ieee754_logf(x);
 	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l) || x > (float)0.0) return z;
 	if(x==(float)0.0)

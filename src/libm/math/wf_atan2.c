@@ -33,11 +33,11 @@
 #else
 	_float_long_union ux;
 	_float_long_union uy;
+	float z;
 	
 	ux.f = x;
 	uy.f = y;
 
-	float z;
 	z = __ieee754_atan2f(y,x);
 	if(_LIB_VERSION == _IEEE_||isnanf(ux.l)||isnanf(uy.l)) return z;
 	if(x==(float)0.0&&y==(float)0.0) {

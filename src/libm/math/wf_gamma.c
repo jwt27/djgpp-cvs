@@ -29,10 +29,10 @@
 #else
 	_float_long_union ux;
 	_float_long_union uy;
+    float y;
 	
 	ux.f = x;
 
-        float y;
         y = __ieee754_gammaf_r(x,&signgam);
 		uy.f = y;
         if(_LIB_VERSION == _IEEE_) return y;

@@ -33,11 +33,11 @@
 	_float_long_union ux;
 	_float_long_union uy;
 	_float_long_union uz;
+	float z;
 	
 	ux.f = x;
 	uy.f = y;
 
-	float z;
 	z = __ieee754_hypotf(x,y);
 	uz.f = z;
 	if(_LIB_VERSION == _IEEE_) return z;

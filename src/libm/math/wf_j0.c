@@ -31,10 +31,10 @@
 	return __ieee754_j0f(x);
 #else
 	_float_long_union ux;
-	
+	float z;
 	ux.f = x;
 
-	float z = __ieee754_j0f(x);
+	z = __ieee754_j0f(x);
 	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l)) return z;
 	if(fabsf(x)>(float)X_TLOSS) {
 		/* j0f(|x|>X_TLOSS) */
@@ -55,10 +55,10 @@
 	return __ieee754_y0f(x);
 #else
 	_float_long_union ux;
+	float z;
 	
 	ux.f = x;
 
-	float z;
 	z = __ieee754_y0f(x);
 	if(_LIB_VERSION == _IEEE_ || isnanf(ux.l) ) return z;
         if(x <= (float)0.0){
