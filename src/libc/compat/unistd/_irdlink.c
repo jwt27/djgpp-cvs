@@ -1,3 +1,4 @@
+/* Copyright (C) 2004 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -28,7 +29,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
    int           fd;
    int           ret;
    off_t         old_pos = 0;
-   long          file_size;
+   long          file_size = 0;
 
    /* Reject NULL and impossible arg combinations */
    if (!__buf || (__path && __fhandle) || !(__path || __fhandle))
