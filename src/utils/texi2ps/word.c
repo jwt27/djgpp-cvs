@@ -70,7 +70,7 @@ static int baseline_offset = 0;
 static int bol_size = 0;
 static int ends_sentence = 0;
 static int in_word_ws = 0;
-static int marks_this_page = 1;
+static int marks_this_page = 0;
 static int need_lb = 0;
 static int need_wrap = 0;
 static int page_flushing = 0;
@@ -84,10 +84,12 @@ static int wp = 0;
 int prevailing_indent = 0;
 int current_page;
 int vskip_enabled = 0;
+int two_columns = 0;
 
-int MARGIN=54;
-int RIGHT=504;
-int TOP=684;
+int MARGIN;
+int RIGHT;
+int TOP;
+static int halfpage = 0;
 
 static int x, y;
 static int x_last_ws;
@@ -107,6 +109,11 @@ static char *ps_init_tab[] = {
   "/sp1 { save } def\n",
 #endif
   "/sp { restore showpage sp1 } def\n",
+  /* load these before the save - these are the popular ones */
+  "/Times-Roman findfont pop\n",
+  "/Courier findfont pop\n",
+  "/Helvetica findfont pop\n",
+  "/Helvetica-Bold findfont pop\n",
   "sp1\n",
   0
 };
@@ -114,7 +121,10 @@ static char *ps_init_tab[] = {
 void word_set_margins(int pts)
 {
   MARGIN = pts;
-  RIGHT = 612 - pts*2;
+  if (two_columns)
+    RIGHT = (612 - MARGIN*3)/2;
+  else
+    RIGHT = 612 - MARGIN*2;
   TOP = 792 - pts*2;
 }
 
@@ -163,9 +173,19 @@ static void check_eop()
   if (y < 0 || page_flushing)
   {
     page_flushing = 0;
-    pscomment("");    /* force line break */
-    psprintf("%s %d %d", "%%Page:", page_number, page_number); /* DSC page */
-    pscomment("Page %d", page_number);
+
+    if (halfpage == 0 && two_columns)
+      {
+	halfpage = 612 / 2 - MARGIN/2;
+	pscomment("");    /* force line break */
+	psprintf("%s %d %d", "%%Page:", page_number, page_number); /* DSC page */
+	pscomment("Page %d", page_number);
+      }
+    else
+      {
+	halfpage = 0;
+      }
+
     for (wc=word_cache; wc; wc=wc->next)
       if (wc->words)
       {
@@ -194,19 +214,22 @@ static void check_eop()
 	}
       }
     vskip_enabled = 0;
-    pscomment("End of Page %d", page_number);
-    psf_pushfont(PSF_helvetica);
-    psf_pushscale(8);
-    psprintf("restore save /Helvetica findfont 8 scalefont setfont");
-    psprintf("(-  Page %d  -) dup stringwidth pop 2 div neg 288 add %d m",
-	     page_number, MARGIN-15);
-    psf_pop();
-    psf_pop();
-    psprintf("sp");
-    current_page ++;
-    page_number ++;
-    marks_this_page = 0;
-    psf_setfont();
+    if (halfpage == 0)
+      {
+	pscomment("End of Page %d", page_number);
+	psf_pushfont(PSF_helvetica);
+	psf_pushscale(8);
+	psprintf("restore save /Helvetica findfont 8 scalefont setfont");
+	psprintf("(-  Page %d  -) dup stringwidth pop 2 div neg 288 add %d m",
+		 page_number, MARGIN-15);
+	psf_pop();
+	psf_pop();
+	psprintf("sp");
+	current_page ++;
+	page_number ++;
+	marks_this_page = 0;
+	psf_setfont();
+      }
     y = TOP - ps_fontsize;
   }
 }
@@ -217,6 +240,8 @@ static void lb()
     word_ws();
   if (need_lb || bol_size < ps_fontsize)
   {
+    page_flushing = 0;
+    check_eop();
     need_lb = 0;
     y -= ps_fontsize - bol_size;
     bol_size = ps_fontsize;
@@ -268,7 +293,7 @@ static void w(unsigned char *s)
   we->pskip = 0;
   we->word = (char *)malloc(strlen(s)+1);
   strcpy(we->word, s);
-  we->x = x+MARGIN;
+  we->x = x+MARGIN + halfpage;
   we->y = y+MARGIN + baseline_offset;
   
 #if 0
@@ -356,15 +381,25 @@ void word_ws(void)
     int dy = -ps_fontsize;
     WordCache *wc;
     Word *we;
+
     if (y + dy < 0)
     {
       dy = (TOP-ps_fontsize) - y;
+      if (two_columns)
+	{
+	  if (halfpage)
+	    dx -= halfpage;
+	  else
+	    dx += 612 / 2 - MARGIN/2;
+	}
       expect_new_page = 1;
     }
+
     for (wc=word_cache; wc; wc=wc->next)
       for (we=wc->words; we; we=we->next)
       {
-	if (we->x-MARGIN >= x_last_ws && we->y-MARGIN <= y)
+	if (we->x-MARGIN-halfpage >= x_last_ws
+	    && we->y-MARGIN <= y)
 	{
 	  we->x += dx;
 	  we->y += dy;
@@ -406,6 +441,16 @@ page_flush(void)
 {
   if (!marks_this_page)
     return;
+  page_flushing = 1;
+  check_eop();
+}
+
+void
+page_flush_final(void)
+{
+  if (!marks_this_page)
+    return;
+  halfpage = 1;
   page_flushing = 1;
   check_eop();
 }

@@ -38,6 +38,7 @@ static int bufp;
 static int capify=0;
 static int eat_skips = 0;
 static int fill_mode;
+static int show_menus = 0;
 
 typedef void FUNCTION ();	/* So I can say FUNCTION *foo; */
 
@@ -98,7 +99,7 @@ void remember_table_cmd(FUNCTION func, char *name)
   be->prev = table_stack;
   be->flags = 0;
   table_stack = be;
-  para_set_prevailing_indent(+36);
+  para_set_prevailing_indent(ps_fontsize*3);
   para_set_indent(0);
 }
 
@@ -110,7 +111,7 @@ void forget_table_cmd()
     table_stack = table_stack->prev;
     if (be->name) free(be->name);
     free(be);
-    para_set_prevailing_indent(-36);
+    para_set_prevailing_indent(-ps_fontsize*3);
   }
 }
 
@@ -165,8 +166,8 @@ big_font(int se, char *arg, int szup)
   }
   else
   {
-    psf_pop();
     line_break();
+    psf_pop();
     eat_skips = 1;
   }
 }
@@ -256,7 +257,7 @@ cm_bullet(int se)
 void
 cm_bye()
 {
-  page_flush();
+  page_flush_final();
   bye = 1;
 }
 
@@ -606,22 +607,28 @@ cm_italic(int se)
 void
 cm_item(int se, char *s)
 {
+  static int nesting=0;
+  if (nesting)
+    return;
+  nesting++;
   if (table_stack)
   {
     line_break();
-    para_set_indent(-20);
+    para_set_indent(-ps_fontsize*2);
     if (table_stack->flags & TABLE_LINE_BREAK)
       fileio_queue("@*");
     fileio_queue("}");
     fileio_queue(s);
     remember_brace_args(table_stack->proc, table_stack->name);
-    table_stack->proc(START, "");
+    if (table_stack->proc)
+      table_stack->proc(START, "");
     word_emit();
     if (!(table_stack->flags & TABLE_LINE_BREAK))
       para_set_indent(0);
   }
   else
-    fprintf(stderr, "\n@item without table_stack at %s\n", fileio_where());
+    fprintf(stderr, "@item without table_stack at %s\n", fileio_where());
+  nesting--;
 }
 
 void
@@ -672,6 +679,8 @@ cm_menu(int se)
 {
   if (se == START)
   {
+    if (!show_menus)
+      suspend_output ++;
     remember_table_cmd(0,0);
     if (fill_mode)
       table_stack->flags |= FILL_MODE;
@@ -681,6 +690,8 @@ cm_menu(int se)
   {
     fill_mode = (table_stack->flags & FILL_MODE) ? 1 : 0;
     forget_table_cmd();
+    if (!show_menus)
+      suspend_output --;
   }
 }
 
@@ -873,8 +884,8 @@ cm_title(int se, char *arg)
   }
   else
   {
-    psf_pop();
     line_break();
+    psf_pop();
     eat_skips = 1;
     line_skip();
     line_skip();
@@ -1222,6 +1233,8 @@ skip_until_setfilename()
   while (1)
   {
     int ch = fileio_get();
+    if (ch == EOF)
+      break;
     if (ch == str[match])
       match++;
     else
@@ -1386,13 +1399,15 @@ usage(void)
   printf("  -m = set margins (default 54 pts, 3/4\")\n");
   printf("  -D = set flag called `name\' to `val\' (default: empty value)\n");
   printf("  -U = clear (unset) flags called `name\'\n");
+  printf("  -2 = print two columns per page\n");
+  printf("  -menu = print menus\n");
   exit(0);
 }
 
 int
 main(int argc, char **argv)
 {
-  int arg;
+  int arg, margin=54;
   if (argc < 2)
     usage();
   for (arg=1; arg<argc && argv[arg][0] == '-'; arg++)
@@ -1415,10 +1430,10 @@ main(int argc, char **argv)
     }
     else if (strcmp(argv[arg], "-m") == 0)
     {
-      int margin = atoi(argv[++arg]);
+      int new_margin = atoi(argv[++arg]);
 
-      if (margin > 0)
-        word_set_margins(margin);
+      if (new_margin > 0)
+	margin = new_margin;
       else
       {
         fprintf(stderr, "illegal value for \"-m\" (ignored)\n");
@@ -1434,6 +1449,10 @@ main(int argc, char **argv)
     }
     else if (strcmp(argv[arg], "-v") == 0)
       screenio_enabled = 1;
+    else if (strcmp(argv[arg], "-2") == 0)
+      two_columns = 1;
+    else if (strcmp(argv[arg], "-menu") == 0)
+      show_menus = 1;
     else if (strncmp(argv[arg], "-D", 2) == 0 ||
              strncmp(argv[arg], "-U", 2) == 0)
     {
@@ -1452,6 +1471,7 @@ main(int argc, char **argv)
         clear_flag(name);
     }
   }
+  word_set_margins(margin);
   word_init();
   for (; arg < argc; arg++)
   {

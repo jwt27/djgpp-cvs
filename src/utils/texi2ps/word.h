@@ -3,6 +3,7 @@ void word_init(void);		/* called once at beginning */
 void word_set_margins(int);	/* set margins */
 
 void page_flush(void);		/* go to next page */
+void page_flush_final(void);	/* go to next sheet */
 
 void para_close(void);		/* close paragraph, start new one */
 void para_set_prevailing_indent(int); /* indent (unit = points) */
@@ -24,3 +25,4 @@ void word_adjust_baseline(int pts);	/* y += pts */
 extern int current_page;
 extern int prevailing_indent;
 extern int vskip_enabled;
+extern int two_columns;
