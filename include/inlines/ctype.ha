@@ -12,6 +12,7 @@
 #define __dj_ISSPACE	0x0100
 #define __dj_ISUPPER	0x0200
 #define __dj_ISXDIGIT	0x0400
+#define __dj_ISBLANK	0x0800
 
 extern unsigned short __dj_ctype_flags[];
 extern unsigned char __dj_ctype_toupper[];
@@ -19,6 +20,7 @@ extern unsigned char __dj_ctype_tolower[];
 
 #define isalnum(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISALNUM)
 #define isalpha(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISALPHA)
+#define isblank(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISBLANK)
 #define iscntrl(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISCNTRL)
 #define isdigit(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISDIGIT)
 #define isgraph(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISGRAPH)
@@ -32,4 +34,4 @@ extern unsigned char __dj_ctype_tolower[];
 #define tolower(c) (__dj_ctype_tolower[(int)(c)+1])
 #define toupper(c) (__dj_ctype_toupper[(int)(c)+1])
 
-#endif /* __dj_include_inline_ctype_hi_ */
+#endif /* __dj_include_inline_ctype_ha_ */

@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_ctype_h_
 #define __dj_include_ctype_h_
@@ -10,6 +11,7 @@ extern "C" {
 
 int	isalnum(int c);
 int	isalpha(int c);
+int	isblank(int c);
 int	iscntrl(int c);
 int	isdigit(int c);
 int	isgraph(int c);

@@ -1,0 +1,24 @@
+@c ----------------------------------------------------------------------
+@node isblank, ctype
+@subheading Syntax
+
+@example
+#include <ctype.h>
+
+int isblank(int c);
+@end example
+
+@subheading Description
+
+Tells if @var{c} is a blank character.  A blank character is used
+to separate words, e.g.: @samp{ } or @samp{\t}.
+
+@subheading Return Value
+
+Nonzero if @var{c} is a blank character, else zero.
+
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99, posix
+

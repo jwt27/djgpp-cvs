@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <ctype.h>
 #include <inlines/ctype.ha>
@@ -13,7 +14,7 @@ unsigned short __dj_ctype_flags[] = {
   __dj_ISCNTRL,											/* CTRL+F, 0x06 */
   __dj_ISCNTRL,											/* CTRL+G, 0x07 */
   __dj_ISCNTRL,											/* CTRL+H, 0x08 */
-  __dj_ISCNTRL | __dj_ISSPACE,									/* CTRL+I, 0x09 */
+  __dj_ISCNTRL | __dj_ISSPACE | __dj_ISBLANK,							/* CTRL+I, 0x09 */
   __dj_ISCNTRL | __dj_ISSPACE,									/* CTRL+J, 0x0a */
   __dj_ISCNTRL | __dj_ISSPACE,									/* CTRL+K, 0x0b */
   __dj_ISCNTRL | __dj_ISSPACE,									/* CTRL+L, 0x0c */
@@ -36,7 +37,7 @@ unsigned short __dj_ctype_flags[] = {
   __dj_ISCNTRL,											/* CTRL+], 0x1d */
   __dj_ISCNTRL,											/* CTRL+^, 0x1e */
   __dj_ISCNTRL,											/* CTRL+_, 0x1f */
-  __dj_ISPRINT | __dj_ISSPACE,									/* ` ', 0x20 */
+  __dj_ISPRINT | __dj_ISSPACE | __dj_ISBLANK,							/* ` ', 0x20 */
   __dj_ISGRAPH | __dj_ISPRINT | __dj_ISPUNCT,							/* `!', 0x21 */
   __dj_ISGRAPH | __dj_ISPRINT | __dj_ISPUNCT,							/* 0x22 */
   __dj_ISGRAPH | __dj_ISPRINT | __dj_ISPUNCT,							/* `#', 0x23 */

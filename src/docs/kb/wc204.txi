@@ -771,3 +771,6 @@ had a value outside the range describable by the @code{FA_*} constants.
 @findex realpath@r{, added to library to increase @sc{posix} compliance}
 The function @code{realpath} was added. @code{realpath} does much the same
 as @code{_fixpath}, but is @sc{posix} compliant and resolves symlinks.
+
+@findex isblank
+The function @code{isblank} was added.
