@@ -231,5 +231,5 @@ that OS.
 
 @findex lfilelength@r{, and FAT32}
 The function @code{lfilelength} added with return type @code{long long}
-to support file sizes of up to @math{2^63-2}.
+to support file sizes of up to @math{2^64-2}.
 
