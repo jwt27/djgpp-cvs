@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -13,12 +14,18 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <errno.h>
+#endif
 
+#ifdef __DJGPP__
 #define tbsize _go32_info_block.size_of_transfer_buffer
 #endif
 
 #ifndef O_BINARY
 #define O_BINARY 0
+#endif
+
+#ifndef SEEK_SET
+#define SEEK_SET 0
 #endif
 
 const unsigned char stub_bytes[] = {
@@ -27,6 +34,8 @@ const unsigned char stub_bytes[] = {
 
 #define v_printf if(verbose)printf
 int verbose=0;
+
+char *generate=NULL;
 
 unsigned long
 get32(unsigned char *ptr)
@@ -87,7 +96,7 @@ void coff2exe(char *fname)
   }
   while (1)
   {
-    lseek(ifile, coffset, 0);
+    lseek(ifile, coffset, SEEK_SET);
     read(ifile, buf, 6);
     if (buf[0] == 'M' && buf[1] == 'Z') /* stubbed already, skip stub */
     {
@@ -109,7 +118,7 @@ void coff2exe(char *fname)
   }
 
   coff_file_size = lseek(ifile, 0, SEEK_END) - coffset;
-  lseek(ifile, coffset, 0);
+  lseek(ifile, coffset, SEEK_SET);
 
   read(ifile, filehdr_buf, 20); /* get the COFF header */
   lseek(ifile, get16(filehdr_buf+16), SEEK_CUR); /* skip optional header */
@@ -133,7 +142,7 @@ void coff2exe(char *fname)
     /* it was built with "gcc -s" and has four too many bytes */
     drop_last_four_bytes = 1;
 
-  lseek(ifile, coffset, 0);
+  lseek(ifile, coffset, SEEK_SET);
 
   ofile = open(ofilename, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0777);
   if (ofile < 0)
@@ -227,40 +236,64 @@ void coff2exe(char *fname)
     if (rename(ifilename, ofilename))
 #endif
     {
-      printf("rename of %s to %s failed.\n", ifilename, ofilename);
+      fprintf(stderr, "rename of %s to %s failed.\n", ifilename, ofilename);
       perror("The error was");
     }
   }
+
+}
+
+void print_help(void)
+{
+  fprintf(stderr, "Usage: stubify [-v] [-g] [%sopt[,opt...] <program>\n"
+	  "<program> may be COFF or stubbed .exe, and may be COFF with .exe extension.\n"
+	  "Resulting file will have .exe\n"
+	  "-v -> verbose\n"
+	  "-g -> generate a stub\n"
+	  "\nThis program is NOT shareware or public domain.  It is copyrighted.\n"
+	  "It is redistributable but only as part of a complete package.  If you\n"
+	  "have a copy of this program, the place that you got it from is\n"
+	  "responsible for making sure you are able to get its sources as well.\n");
 }
 
 int main(int argc, char **argv)
 {
   int i;
-  if (argc > 1 && strcmp(argv[1], "-v")==0)
-  {
-    verbose = 1;
-    argv++;
-    argc--;
-  }
-  v_printf("stubify for djgpp V2.X executables, Copyright (C) 1995 DJ Delorie\n");
-  if (argc < 2)
-  {
-    fprintf(stderr, "Usage: stubify [-v] [-g] <program>  (program may be COFF or stubbed .exe,\n");
-    fprintf(stderr, "  and may be COFF with .exe extension.  Resulting file will have .exe)\n");
 
-    fprintf(stderr, "\nThis program is NOT shareware or public domain.  It is copyrighted.\n");
-    fprintf(stderr, "It is redistributable but only as part of a complete package.  If you\n");
-    fprintf(stderr, "have a copy of this program, the place that you got it from is\n");
-    fprintf(stderr, "responsible for making sure you are able to get its sources as well.\n");
-
-    exit(1);
+  while (argc > 1 && argv[1][0] == '-')
+  {
+    if (strcmp(argv[1], "-v")==0)
+    {
+      verbose = 1;
+      argv++;
+      argc--;
+    }
+    else if (strcmp(argv[1], "-g")==0)
+    {
+      if (argc < 2)
+      {
+	fprintf(stderr, "-g option requires file name\n");
+	return 1;
+      }
+      generate = argv[2];
+      argv += 2;
+      argc -= 2;
+    }
+    else
+    {
+      fprintf(stderr, "Unknow option: %s\n", argv[1]);
+      print_help();
+      return 1;
+    }
   }
-  if (argc > 2 && strcmp(argv[1], "-g") == 0)
+	
+  v_printf("stubify for djgpp V2.X executables, Copyright (C) 1995-2003 DJ Delorie\n");
+  if (generate)
   {
     char ofilename[256], *ofname, *ofext=0;
     int ofile;
 
-    strcpy(ofilename, argv[2]);
+    strcpy(ofilename, generate);
     for (ofname=ofilename; *ofname; ofname++)
     {
       if (strchr("/\\:", *ofname))
@@ -275,18 +308,27 @@ int main(int argc, char **argv)
     ofile = open(ofilename, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0666);
     if (ofile < 0)
     {
-      printf("Cannot open output file to generate\n");
+      fprintf(stderr, "Cannot open output file to generate\n");
       perror(ofilename);
       return 1;
     }
-    v_printf("stubify: generate %s\n", argv[2]);
+    v_printf("stubify: generate %s\n", generate);
 
     write(ofile, stub_bytes, sizeof(stub_bytes));
     close(ofile);
   }
   else
+  {
+    if (argc < 2)
+    {
+      print_help();
+      return 1;
+    }
+
     for (i=1; i<argc; i++)
       coff2exe(argv[i]);
+  }
+
   return 0;
 }
 
