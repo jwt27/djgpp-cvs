@@ -10,6 +10,7 @@
 
 #include <libc/stubs.h>
 #include <go32.h>
+#include <io.h>
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
@@ -29,9 +30,6 @@ enum cmd_parser_states { need_esc = 0, have_esc, have_lbracket,
 static enum cmd_parser_states cmd_state;
 
 /* static functions */
-static ssize_t __libc_termios_read (int handle, void *buffer, size_t count, ssize_t *rv);
-static ssize_t __libc_termios_read_cooked_tty (int handle, void *buffer, size_t count);
-static ssize_t __libc_termios_read_raw_tty (int handle, void *buffer, size_t count);
 static ssize_t __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv);
 static ssize_t __libc_termios_write_cooked_tty (int handle, const void *buffer, size_t count);
 static ssize_t __libc_termios_write_raw_tty (int handle, const void *buffer, size_t count);
