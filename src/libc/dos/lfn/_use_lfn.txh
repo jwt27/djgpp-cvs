@@ -132,10 +132,10 @@ that letter doesn't exist.
 @subheading Return value
 
 A combination of the above bits if the LFN API is supported, or 0 (and
-@code{errno} set to @code{ENOSYS}) if the LFN API is not supported by the
-OS.  If the drive letter is invalid, the function returns
-@code{_FILESYS_UNKNOWN} and sets @code{errno} to either @code{ENODEV} or
-@code{ENXIO}.
+@code{errno} set to @code{ENOSYS}) if the LFN API is not supported by
+the OS.  If the LFN API is supported, but the drive letter is invalid,
+the function returns @code{_FILESYS_UNKNOWN} and sets @code{errno} to
+either @code{ENODEV} or @code{ENXIO}.
 
 @subheading Portability
 
