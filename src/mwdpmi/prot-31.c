@@ -407,10 +407,10 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		if (DEBUG_TEST (DEBUG_MEMORY))
 		  eprintf ("Dos memory with selector %04x freed.\r\n",
 			   sel);
-		if ((ds >> 3) >= i && (ds << 3) < i + count) ds = 0;
-		if ((es >> 3) >= i && (es << 3) < i + count) es = 0;
-		if ((fs >> 3) >= i && (fs << 3) < i + count) fs = 0;
-		if ((gs >> 3) >= i && (gs << 3) < i + count) gs = 0;
+		if ((ds >> 3) >= i && (ds >> 3) < i + count) ds = 0;
+		if ((es >> 3) >= i && (es >> 3) < i + count) es = 0;
+		if ((fs >> 3) >= i && (fs >> 3) < i + count) fs = 0;
+		if ((gs >> 3) >= i && (gs >> 3) < i + count) gs = 0;
 		while (count--)
 		  current_client->ldt_types[i++] = LDT_TYPE_FREE;
 		BARRIER ();
