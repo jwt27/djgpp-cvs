@@ -8,6 +8,5 @@
 -Wpointer-arith
 -Wshadow
 -Wstrict-prototypes
--Wtraditional
 -Wwrite-strings
 -nostdinc
