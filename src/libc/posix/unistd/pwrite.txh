@@ -1,0 +1,53 @@
+@node pwrite, io
+@findex pwrite
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int pwrite(int file, const void *buffer, size_t count, off_t offset);
+@end example
+
+@subheading Description
+
+This function writes @var{count} bytes from @var{buffer} to
+@var{file} at position @var{offset}.  It returns the number of bytes
+actually written.  It will return zero or a number less than
+@var{count} if the disk is full, and may return less than @var{count}
+even under valid conditions.
+
+Note that if @var{file} is a text file, @code{pwrite} may write more
+bytes than it reports. 
+
+If @var{count} is zero, the function does nothing and returns zero.
+Use @code{_write} if you want to actually ask DOS to write zero bytes.
+
+The precise behavior of @code{pwrite} when the target filesystem is full
+are somewhat troublesome, because DOS doesn't fail the underlying system
+call.  If your application needs to rely on @code{errno} being set to
+@code{ENOSPC} in such cases, you need to invoke @code{pwrite} as shown in
+an example for @code{write} (@pxref{write}).  In a nutshell, the trick is
+to call @code{pwrite} one more time after it returns a value smaller
+than the @var{count} parameter; then it will @emph{always} set @code{errno}
+if the disk is full.
+
+@subheading Return Value
+
+The number of bytes written, zero at EOF, or -1 on error.
+
+@subheading Portability
+
+@portability !ansi, !posix-1003.2-1992, posix-1003.1-2001
+
+@subheading Example
+
+@example
+const char buf[] = "abc";
+const size_t bufsize = strlen(buf);
+
+/* Write out buf, then overwrite 'b' with 'd'. NB: We should check
+ * for errors. */
+lseek(fd, 0L, SEEK_SET);
+write(fd, buf, bufsize);
+pwrite(fd, "d", 1, 1);
+@end example

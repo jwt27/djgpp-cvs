@@ -1,3 +1,4 @@
+# Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
@@ -39,6 +40,7 @@ SRC += lseek.c
 SRC += pathconf.c
 SRC += pause.c
 SRC += pipe.c
+SRC += pwrite.c
 SRC += read.c
 SRC += rmdir.c
 SRC += setgid.c
