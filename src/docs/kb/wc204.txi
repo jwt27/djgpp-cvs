@@ -1,3 +1,4 @@
+
 @node Changes in 2.04, , Changes in 2.03, What Changed
 @section Changes in 2.04
 
@@ -359,3 +360,7 @@ If a tar archive contains DOS batch files that have been stored with
 UNIX-style LF-only EOLs, @code{djtar} will now convert them
 automatically to DOS-style EOLs.  This is because @file{COMMAND.COM}
 refuses to run batch files that contain UNIX-style EOLs.
+
+@findex pipe@r{, now implemented in the library}
+The function @code{pipe} is now implemented in the library.
+
