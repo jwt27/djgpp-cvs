@@ -7,6 +7,7 @@ SECTIONS {
     *(.text)
     *(.data)
     *(.bss)
+    *(.eh_fram)
     *(COMMON)
   }
 }
