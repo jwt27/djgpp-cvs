@@ -1,3 +1,4 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
@@ -11,9 +12,12 @@
 static _v2_prog_type type;
 static int type_initialized = 0;
 
+static
+const _v2_prog_type *_check_v2_prog_internal (int pf);
+
 const _v2_prog_type *_check_v2_prog(const char *program, int pf)
 {
-  unsigned short header[5];
+  const _v2_prog_type *prog_type;
 
   if (type_initialized && type.stubinfo)
     free(type.stubinfo);
@@ -28,9 +32,23 @@ const _v2_prog_type *_check_v2_prog(const char *program, int pf)
       return &type;
   }
 
+  prog_type = _check_v2_prog_internal(pf);
+
+  if (program)
+    close(pf);
+
+  if (prog_type)
+    type.valid = 1;
+  return &type;
+}
+
+static
+const _v2_prog_type *_check_v2_prog_internal (int pf)
+{
+  unsigned short header[5];
   lseek(pf, 0, SEEK_SET);
   if (read(pf, header, sizeof(header)) != sizeof(header))
-    return &type;
+    return NULL;
   if (header[0] == 0x010b || header[0] == 0x014c)
   {
     unsigned char firstbytes[1];
@@ -64,9 +82,9 @@ const _v2_prog_type *_check_v2_prog(const char *program, int pf)
       coff_start += (long)header[1] - 512L;
     exe_start = (unsigned long)header[4]*16L;
     if (lseek(pf, exe_start, SEEK_SET) != exe_start)
-      return &type;
+      return NULL;
     if (read(pf, go32stub, 8) != 8)
-      return &type;
+      return NULL;
     go32stub[8] = 0;
     if (strcmp(go32stub, "go32stub") == 0)
     {
@@ -82,30 +100,30 @@ const _v2_prog_type *_check_v2_prog(const char *program, int pf)
       unsigned short coff_id;
       type.version.v.major = 1;
       if (lseek(pf, coff_start - 4, SEEK_SET) != coff_start-4)
-        return &type;
+        return NULL;
       if (read(pf, &stub_offset, 4) != 4)
-        return &type;
+        return NULL;
       if (read(pf, &coff_id, 2) != 2)
-        return &type;
+        return NULL;
       if (coff_id == 0x010b || coff_id == 0x014c)
       {
         type.object_format = _V2_OBJECT_FORMAT_COFF;
         type.exec_format = _V2_EXEC_FORMAT_STUBCOFF;
       }
       if (lseek(pf, stub_offset, 0) != stub_offset)
-        return &type;
+        return NULL;
       if (read(pf, magic, 16) != 16)
-        return &type;
+        return NULL;
       if (memcmp(STUB_INFO_MAGIC, magic, 16) == 0)
       {
         if (read(pf, &struct_length, 4) != 4)
-          return &type;
+          return NULL;
         type.stubinfo = (_v1_stubinfo *)malloc(struct_length);
         memcpy(type.stubinfo->magic, magic, 16);
         type.stubinfo->struct_length = struct_length;
         if (read(pf, type.stubinfo->go32, struct_length - 20)
             != struct_length - 20)
-          return &type;
+          return NULL;
         type.has_stubinfo = 1;
       }
     }
@@ -114,12 +132,6 @@ const _v2_prog_type *_check_v2_prog(const char *program, int pf)
   {
     type.exec_format = _V2_EXEC_FORMAT_UNIXSCRIPT;
   }
-
-  if (program)
-    close(pf);
-
-  type.valid = 1;
   return &type;
 }
-
 

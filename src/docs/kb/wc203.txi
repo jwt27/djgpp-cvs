@@ -425,3 +425,7 @@ print the negative zero, @code{-0.0}, with an explicit negative sign.
 @findex access@r{, loss of} FileFind @r{handle}
 @code{access} no longer loses a @code{FileFind} handle on LFN platforms
 when called on a root directory or a character device.
+
+@findex _check_v2_prog@r{, leaks file descriptor}
+@code{_check_v2_prog} no longer leaks file descriptors when called on a
+corrupt executable by name.
