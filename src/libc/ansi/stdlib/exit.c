@@ -25,14 +25,16 @@ void
 exit(int status)
 {
   int i;
-  struct __atexit *a;
+  struct __atexit *a,*o;
 
   a = __atexit_ptr;
   __atexit_ptr = 0; /* to prevent infinite loops */
   while (a)
   {
     (a->__function)();
+    o = a;
     a = a->__next;
+    free(o);
   }
 
   /* Destructors should probably be called after functions registered
