@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_inline_ctype_ha_
 #define __dj_include_inline_ctype_ha_
 
@@ -20,7 +21,6 @@ extern unsigned char __dj_ctype_tolower[];
 
 #define isalnum(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISALNUM)
 #define isalpha(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISALPHA)
-#define isblank(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISBLANK)
 #define iscntrl(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISCNTRL)
 #define isdigit(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISDIGIT)
 #define isgraph(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISGRAPH)
@@ -30,6 +30,13 @@ extern unsigned char __dj_ctype_tolower[];
 #define isspace(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISSPACE)
 #define isupper(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISUPPER)
 #define isxdigit(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISXDIGIT)
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
+  || !defined(__STRICT_ANSI__)
+
+#define isblank(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISBLANK)
+
+#endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
 #define tolower(c) (__dj_ctype_tolower[(int)(c)+1])
 #define toupper(c) (__dj_ctype_toupper[(int)(c)+1])
