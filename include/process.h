@@ -34,9 +34,14 @@ int spawnve(int _mode, const char *_path, char *const _argv[], char *const _envp
 int spawnvp(int _mode, const char *_path, char *const _argv[]);
 int spawnvpe(int _mode, const char *_path, char *const _argv[], char *const _envp[]);
 
+int __djgpp_spawn(int _mode, const char *_path, char *const _argv[], char *const _envp[], unsigned long _flags);
+
 #define P_WAIT		1
 #define P_NOWAIT	2	/* always generates error */
 #define P_OVERLAY	3
+
+#define SPAWN_EXTENSION_SRCH   1
+#define SPAWN_INTERP_ONLY_SRCH 2
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
