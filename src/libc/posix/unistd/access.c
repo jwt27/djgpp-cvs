@@ -11,7 +11,7 @@
 
 int access(const char *fn, int flags)
 {
-  unsigned attr = _chmod(fn, 0);
+  int attr = _chmod(fn, 0);
 
   if (attr == -1) {
     struct ffblk ff;
@@ -28,9 +28,13 @@ int access(const char *fn, int flags)
         *fp++ = '.';
         *fp++ = '*';
         *fp++ = '\0';
-        /* Under LFN, we lose a handle here.  Solutions, anyone?  */
+        /* Use _lfn_close_handle so we don't lose a handle.  */
         if (findfirst(fixed_path, &ff, FA_DIREC) == 0)
+        {
+          if (strcmp(ff.lfn_magic, "LFN32") == 0)
+            _lfn_find_close(ff.lfn_handle);
           return 0;
+        }
       }
 
     /* Devices also fail `_chmod'; some programs won't write to
@@ -38,7 +42,11 @@ int access(const char *fn, int flags)
     if (findfirst(fn, &ff, FA_RDONLY | FA_ARCH) == 0
 	&& (ff.ff_attrib & 0x40) == 0x40
 	&& (flags & (X_OK | D_OK)) == 0)
+    {
+      if (strcmp(ff.lfn_magic, "LFN32") == 0)
+        _lfn_find_close(ff.lfn_handle);
       return 0;
+    }
 
     errno = ENOENT;
     return -1;
