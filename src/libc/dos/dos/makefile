@@ -1,0 +1,31 @@
+# Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
+TOP=../..
+
+SRC += bdos.c
+SRC += bdosptr.S
+SRC += delay.c
+SRC += fexistp.c
+SRC += getcbrk.c
+SRC += getdate.c
+SRC += getdfree.c
+SRC += getdinfo.c
+SRC += getdos_v.c
+SRC += getftime.c
+SRC += gettime.c
+SRC += gettimeo.c
+SRC += int86.c
+SRC += int86x.S
+SRC += intdos.c
+SRC += intdosx.c
+SRC += osflavor.c
+SRC += osmajor.c
+SRC += osminor.c
+SRC += remotdrv.c
+SRC += remothdl.c
+SRC += setcbrk.c
+SRC += setdate.c
+SRC += setftime.c
+SRC += settime.c
+SRC += truename.c
+
+include $(TOP)/../makefile.inc
