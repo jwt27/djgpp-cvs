@@ -22,6 +22,9 @@ extern "C" {
 /* Set when there can't be an EOF gap or it should be left alone.  */
 #define FILE_DESC_DONT_FILL_EOF_GAP 0x04
 
+/* Set when the descriptor is used for pipe emulation.  */
+#define FILE_DESC_PIPE              0x08
+
 typedef struct fd_properties fd_properties;
 
 struct fd_properties
