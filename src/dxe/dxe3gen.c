@@ -15,17 +15,18 @@
       otherwise the exit code of GNU ld is returned
 */
 
-#include <coff.h>
 #include <ctype.h>
-#include <process.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libc/unconst.h>
-#include <sys/dxe.h>
 
-#ifndef DXE_LD
+#ifndef DXE_LD			/* Cross compile ld name/location */
 #define DXE_LD "ld"
+#include <sys/dxe.h>
+#include <coff.h>
+#else
+#include "../../include/sys/dxe.h"
+#include "../../include/coff.h"
 #endif
 
 #define VERSION "1.0"
@@ -342,7 +343,18 @@ static void process_args (int argc, char *argv[], const char *new_argv[])
  new_argv[new_argc] = NULL;
 }
 
-
+static int myspawn(const char **argv)
+{
+  char cmd[65536];
+  strcpy(cmd, argv[0]);
+  argv++;
+  while (argv[0]) {
+    strcat(cmd, " ");
+    strcat(cmd, argv[0]);
+    argv++;
+  };
+  return system(cmd);
+}
 
 /* Desc: run linker to obtain relocatable output
  *
@@ -356,7 +368,7 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
  int rv;
  FILE *f;
 
- if ((rv = spawnvp(P_WAIT, DXE_LD, unconst(argv, char *const *))) != 0) {
+ if ((rv = myspawn(argv)) != 0) {
     if (rv == -1) {
        perror(DXE_LD);
     }
@@ -456,7 +468,7 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
        }
        argv[i] = NULL;
 
-       rv = spawnvp(P_WAIT, DXE_LD, unconst(argv, char *const *));
+       rv = myspawn(argv);
 
        if (init > 0) {
           remove("$$dxe$$i.o");
@@ -893,6 +905,7 @@ static int make_implib (void)
  char basename_fix[FILENAME_MAX]; /* changed size - chan kar heng 20030112 */
  char basename_org[FILENAME_MAX];
  dxe3_header dh;
+ char cmdbuf[FILENAME_MAX+100];
  FILE *implib, *f = open_dxe_file(opt.dxefile, &dh);
 
  fseek(f, dh.exp_table, SEEK_SET);
@@ -910,19 +923,21 @@ static int make_implib (void)
 
  if (opt.autoresolve) {
     /* Fire the resolver. It should take care of the dependencies (if any) */
-    if ((rv = spawnlp(P_WAIT, "dxe3res.exe", "dxe3res", "-o", "$$dxe$$.c", opt.dxefile, NULL)) != 0) {
+    strcpy(cmdbuf, "dxe3res -o $$dxe$$.c ");
+    strcat(cmdbuf, opt.dxefile);
+    if ((rv = system(cmdbuf)) != 0) {
        if (rv == -1) {
-          perror("dxe3res.exe");
+          perror("dxe3res");
        }
        exit(rv);
     }
 
-    /* Pre-compile the resolver's output. Too bad DOS gcc doesn't smoke (pipe) */
-    rv = spawnlp(P_WAIT, "gcc.exe", "gcc", "-o", TEMP_S_FILE, "-O2", "-S", "$$dxe$$.c", NULL);
+    /* Pre-compile the resolver's output. */
+    rv = system("gcc -o "TEMP_S_FILE" -O2 -S $$dxe$$.c");
     remove("$$dxe$$.c");
     if (rv != 0) {
        if (rv == -1) {
-          perror("gcc.exe");
+          perror("gcc");
        }
        exit(rv);
     }
@@ -1002,17 +1017,18 @@ static int make_implib (void)
  atexit(exit_cleanup);
 
  /* Allright, now run the assembler on the resulting file */
- if ((rv = spawnlp(P_WAIT, "as.exe", "as", "-o", TEMP_O_FILE, TEMP_S_FILE, NULL)) != 0) {
+ if ((rv = system("as -o "TEMP_O_FILE" "TEMP_S_FILE)) != 0) {
     if (rv == -1) {
-       perror("as.exe");
+       perror("as");
     }
     exit(rv);
  }
 
  /* Okey-dokey, let's stuff the object file into the archive */
- if ((rv = spawnlp(P_WAIT, "ar.exe", "ar", "crs", opt.implib, TEMP_O_FILE, NULL)) != 0) {
+ sprintf(cmdbuf, "ar crs %s "TEMP_O_FILE, opt.implib);
+ if ((rv = system(cmdbuf)) != 0) {
     if (rv == -1) {
-       perror("ar.exe");
+       perror("ar");
     }
     exit(rv);
  }

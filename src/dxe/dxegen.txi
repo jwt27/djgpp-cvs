@@ -45,7 +45,7 @@ Usage: @kbd{dxe3gen [-o output.dxe] [options] [object-files] [ld-options]}
 -o output.dxe	Define the name of output DXE file
 -P module.dxe	Specify dependency module (cumulative)
 -I import.a	Create an import library for given DXE file
--Y import.a	Create an autoresolved import library for given DXE file
+-Y import.a	Create autoresolved import library for given DXE file
 -D description	Set module description string
 -E prefix	Export only symbols that start with <prefix> (cumulative)
 -X prefix	Exclude symbols that start with <prefix> (cumulative)
@@ -60,7 +60,9 @@ Usage: @kbd{dxe3gen [-o output.dxe] [options] [object-files] [ld-options]}
 @command{dxe3gen} is a utility which allows you to create files which contain
 dynamically loadable code (@acronym{DXE}).  @acronym{DXE} is used as a synonym
 for `dynamically loadable executable module', also called sometimes `dynamic
-modules' or simply `modules' in this document.
+modules' or simply `modules' in this document.  File names provided as 
+arguments should not contain special characters that require quoting 
+or they may not be passed properly to @command{ld}.
 
 There are several ways to use @acronym{DXE} modules.  You may either
 load/unload modules at runtime or to link with them (or rather with so-called

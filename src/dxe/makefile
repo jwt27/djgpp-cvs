@@ -12,13 +12,12 @@ all :: native \
 	$(BIN)/dxe3res.exe \
 	$E
 
-native :: \
-	$(HOSTBIN)/dxegen.exe \
-	$E
+native :: $(HOSTBIN)/dxegen.exe
+	$(NOP)
 
 .o.h:
-	strip --strip-unneeded $<
-	bin2h $< $(basename $<) $@
+	$(CROSS_STRIP) --strip-unneeded $<
+	$(HOSTBIN)/bin2h.exe $< $(basename $<) $@
 
 $(BIN)/dxe3gen.exe : $(C) dxe3gen.o $(L) 
 	$(LINK)
@@ -33,7 +32,7 @@ $(BIN)/dxe3res.exe : $(C) dxe3res.o $(L)
 	$(EXE)
 
 $(HOSTBIN)/dxegen.exe : dxe3gen.c init1.h init2.h init3.h fini1.h fini2.h fini3.h
-	$(GCC) -I ../../include -DDXE_LD=\"$(CROSS_LD)\" dxe3gen.c -o $@
+	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" dxe3gen.c -o $@
 
 clean ::
 	@-$(MISC) rm *.o *.h $(HOSTBIN)/dxegen.exe
