@@ -94,10 +94,15 @@ static const test5_t tests5[] = {
   { "-Nan()",                      6,  1, 0 },
   { "nAN(0)",                      6,  0, 0 },
   { "-nan(0)",                     7,  1, 0 },
+  { "-nan(0x0)",                   9,  1, 0 },
+  { "nan(4198964)",               12,  0, 0x401234 }, /* QNaN */
   { "nan(0x401234)",              13,  0, 0x401234 }, /* QNaN */
   { "-nan(0x400088)",             14,  1, 0x400088 }, /* QNaN */
+  { "nan(1234)",                   9,  0, 1234 }, /* SNaN -> QNaN? */
   { "nan(0x1234)",                11,  0, 0x1234 }, /* SNaN -> QNaN? */
+  { "-nan(88)",                    8,  1, 88 }, /* SNaN -> QNaN? */
   { "-nan(0x88)",                 10,  1, 0x88 }, /* SNaN -> QNaN? */
+  { "-nan(12345678901234567890)", 26,  1, 0x7fffff }, /* Overflow. */
   { "-nan(0xaa7d7aa74)",          17,  1, 0x7fffff }, /* Overflow. */
   { "nan(0x12345678123456781)",   24,  0, 0x7fffff }, /* Overflow. */
   { "-nan(0x12345678123456781)",  25,  1, 0x7fffff }, /* Overflow. */
@@ -126,6 +131,7 @@ main (int argc, char *argv[])
   float f_res;
   int eq;
   size_t i;
+  int ok = 1;
 
   if ( 1 < argc ) {
     /* Fault on FPU exception. */
@@ -162,15 +168,19 @@ main (int argc, char *argv[])
     eq = (f_res == (HUGE_VALF * ((tests3[i].sign < 0) ? -1 : 1)));
 
     if (tests3[i].overflow) {
-      if (eq)
-	puts("Yes - OK");
-      else
+      if (eq) {
+	  puts("Yes - OK");
+      } else {
 	puts("No - FAIL");
+	ok = 0;
+      }
     } else {
-      if (eq)
+      if (eq) {
 	puts("Yes - FAIL");
-      else
+	ok = 0;
+      } else {
 	puts("No - OK");
+      }
     }
   }
   
@@ -181,21 +191,25 @@ main (int argc, char *argv[])
 
     f_res = strtof(tests4[i].str, &endptr);
       
-    printf("strtof(\"%s\", &endptr) -> %f, %ld - ", tests4[i].str,
+    printf("strtof(\"%s\", &endptr) -> %f, %td - ", tests4[i].str,
 	   f_res, endptr-tests4[i].str);
 
     /* Need to do the Inf detection ourselves. */
     float_bits = *(float_t *)(&f_res);
     if (float_bits.exponent != 0xff) {
       puts("exponent != 0xff - FAIL");
+      ok = 0;
     } else if (float_bits.mantissa != 0) {
       puts("mantissa != 0 - FAIL");
+      ok = 0;
     } else if ( (float_bits.sign && 0 < f_res ) || 
 		(!float_bits.sign && f_res < 0) ) {
       puts("Wrong sign - FAIL");
+      ok = 0;
     } else if ( endptr-tests4[i].str != tests4[i].diff) {
-      printf("endptr-(start_of_string) == %ld != %d - FAIL\n",
+      printf("endptr-(start_of_string) == %td != %td - FAIL\n",
 	     endptr-tests4[i].str, tests4[i].diff);
+      ok = 0;
     } else {
       puts("OK");
     }
@@ -208,21 +222,25 @@ main (int argc, char *argv[])
 
     f_res = strtof(tests5[i].str, &endptr);
 
-    printf("strtof(\"%s\", &endptr) -> %f, %ld - ", tests5[i].str,
+    printf("strtof(\"%s\", &endptr) -> %f, %td - ", tests5[i].str,
 	   f_res, endptr-tests5[i].str);
 
     /* Need to to the NaN detection ourselves. */
     float_bits = *(float_t *)(&f_res);
     if (float_bits.exponent != 0xff ) {
       puts("exponent != 0xff - FAIL");
+      ok = 0;
     } else if (float_bits.mantissa == 0) {
       puts("mantissa == 0 - FAIL");
+      ok = 0;
     } else if (tests5[i].sign != float_bits.sign) {
       printf("sign == %d != %d - FAIL\n", float_bits.sign,
 	     tests5[i].sign);
+      ok = 0;
     } else if ( endptr-tests5[i].str != tests5[i].diff) {
-      printf("endptr-(start_of_string) == %ld != %d - FAIL\n",
+      printf("endptr-(start_of_string) == %td != %td - FAIL\n",
 	     endptr-tests5[i].str, tests5[i].diff);
+      ok = 0;
     } else if (tests5[i].mantissa && 
 	       tests5[i].mantissa != float_bits.mantissa) { 
       printf("(note: mantissa == 0x%x != 0x%x) - OK\n",
@@ -231,6 +249,7 @@ main (int argc, char *argv[])
       puts("OK");
     }
   }
-  
-  return(EXIT_SUCCESS);
+
+  puts(ok ? "PASS" : "FAIL");
+  return(ok ? EXIT_SUCCESS : EXIT_FAILURE);
 }
