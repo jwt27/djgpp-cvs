@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_unistd_h_
 #define __dj_include_unistd_h_
@@ -16,6 +17,9 @@ extern "C" {
 #define SEEK_SET	0
 #define SEEK_CUR	1
 #define SEEK_END	2
+  
+/* Some programs think they know better... */
+#undef NULL
 
 #define NULL 0
 
@@ -120,7 +124,9 @@ ssize_t		write(int _fildes, const void *_buf, size_t _nbyte);
 /* additional access() checks */
 #define D_OK	0x10
 
+char *		basename(const char *_fn);
 int		brk(void *_heaptop);
+char *		dirname(const char *_fn);
 int		__file_exists(const char *_fn);
 int		fsync(int _fd);
 int		ftruncate(int, off_t);

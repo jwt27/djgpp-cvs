@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_time_h_
 #define __dj_include_time_h_
@@ -14,6 +15,10 @@ extern "C" {
 #define CLOCKS_PER_SEC	91
 
 #include <sys/djtypes.h>
+  
+/* Some programs think they know better... */
+#undef NULL
+
 #define NULL 0
 __DJ_clock_t
 #undef __DJ_clock_t

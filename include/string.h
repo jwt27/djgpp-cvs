@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_string_h_
 #define __dj_include_string_h_
@@ -9,7 +10,10 @@ extern "C" {
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #include <sys/djtypes.h>
-  
+    
+/* Some programs think they know better... */
+#undef NULL
+
 #define NULL 0
 __DJ_size_t
 #undef __DJ_size_t
@@ -50,6 +54,7 @@ void *	bzero(void *ptr, size_t _len);
 int	ffs(int _mask);
 char *  index(const char *_string, int _c);
 void *	memccpy(void *_to, const void *_from, int c, size_t n);
+int	memicmp(const void *_s1, const void *_s2, size_t _n);
 char *  rindex(const char *_string, int _c);
 char *	stpcpy(char *_dest, const char *_src);
 char *	strdup(const char *_s);
