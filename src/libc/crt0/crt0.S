@@ -257,6 +257,8 @@ dos_alloc_ok:
 	movl	STUBINFO_SIZE, %eax
 	pushl	%eax
 	call	___sbrk
+	cmpl	$-1, %eax
+	je	no_memory
 	movl	%eax, __stubinfo
 	movl	%eax, %edi
 	.byte 0x64 /* fs: */
