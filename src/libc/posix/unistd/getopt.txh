@@ -22,6 +22,9 @@ returns the option letter found.
 
 If an unexpected option is found, @code{getopt} will return @code{?},
 and if @code{opterr} is nonzero, will print an error message to stderr. 
+The example below shows how @code{?} can be still be used as an option
+(e.g., to request a summary of program usage) in addition to flagging
+an unexpected option.
 
 The special option @code{--} indicates that no more options follow on
 the command line, and cause @code{getopt} to stop looking. 
@@ -39,7 +42,7 @@ The option found, or -1 if no more options.
 @example
 int c;
 opterr = 0;
-while ((c=getopt(argc, argv, "vbf:")) != -1)
+while ((c=getopt(argc, argv, "?vbf:")) != -1)
 @{
   switch (c)
   @{
@@ -53,9 +56,14 @@ while ((c=getopt(argc, argv, "vbf:")) != -1)
       output_filename = optarg;
       break;
     case '?':
-      printf("Unknown option %c\n", optopt);
-      usage();
-      exit(1);
+      if (optopt == '?') @{
+        usage();
+        exit(0);
+     @} else @{
+        printf("Unknown option %c\n", optopt);
+        usage();
+        exit(1);
+     @}
   @}
 @}
 @end example
