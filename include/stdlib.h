@@ -77,6 +77,12 @@ int	wctomb(char *_s, wchar_t _wchar);
 
 #ifndef __STRICT_ANSI__
 
+long	a64l(const char *_string);
+char *	l64a(long _value);
+int	putenv(char *_val);
+int	setenv(const char *_var, const char *_val, int _overwrite);
+int	unsetenv(const char *_var);
+
 #ifndef _POSIX_SOURCE
 
 typedef struct {
@@ -106,9 +112,7 @@ unsigned long   lrand48(void);
 void *		memalign (size_t _amt, size_t _align);
 long            mrand48(void);
 unsigned long   nrand48(unsigned short _state[3]);
-int		putenv(const char *_val);
 unsigned short *seed48(unsigned short _state_seed[3]);
-int		setenv(const char *_var, const char *_val, int _replace);
 void            srand48(long _seedval);
 int		stackavail(void);
 long double	_strtold(const char *_s, char **_endptr);
