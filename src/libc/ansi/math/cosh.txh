@@ -10,7 +10,7 @@ double cosh(double x);
 
 @subheading Description
 
-This function computes the hyperbolic sine of @var{x}.
+This function computes the hyperbolic cosine of @var{x}.
 
 @subheading Return Value
 
