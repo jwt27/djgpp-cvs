@@ -53,7 +53,20 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    }
 
    strcpy(__real_path, __symlink_path);
-      
+   
+   /* Take a shortcut by checking if source path is a simple file or
+      directory. ``Simple'' in the sense of DOS, i.e. no /dev/env etc. */
+   old_errno = errno;
+   bytes_copied = __internal_readlink(__symlink_path, 0, fn_buf, FILENAME_MAX);
+   /* If __internal_readlink finds the path specified but it is not a symlink,
+      it returns -1 and sets errno to EINVAL. */
+   if ((bytes_copied == -1) && (errno == EINVAL))
+   {
+   	errno = old_errno;
+   	return 1;
+   }
+   errno = old_errno;   	
+   
    /* Begin by start pointing at the first character and end pointing 
       at the first path separator.  In the cases like "/foo" end will 
       point to the next path separator.  In all cases, if there are no
