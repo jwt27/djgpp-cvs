@@ -45,6 +45,7 @@ extern "C" {
 #define getdtablesize __getdtablesize
 #define getitimer __getitimer
 #define gettimeofday __gettimeofday
+#define lfilelength __lfilelength
 #define llseek __llseek
 #define modfl __modfl
 #define movedata __movedata
