@@ -297,6 +297,12 @@ correctly:
 @end itemize
 
 @item
+Use @code{@@uref} to refer to a URL.  texinfo also has @code{@@url}
+for inserting URLs, but @code{@@uref} is more useful when texinfo
+is formatted into HTML.  The Texinfo manual discourages
+the use of @code{@@url}.
+
+@item
 Under the subheading @samp{Portability}, @samp{@@portability} should be
 used to indicate whether a feature is specified in the ANSI C and POSIX
 standards.  For example:
