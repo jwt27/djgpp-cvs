@@ -891,3 +891,7 @@ lock the memory area or copy it to your handler's locked memory.
 @findex _rdtsc@r{, new timer function}
 Added @code{_rdtsc} as a direct call to the hardware instruction.  It 
 will inline to a single instruction when compiled with optimization.
+
+@cindex File System Extensions, and @code{chmod}
+@cindex File System Extensions, and @code{chown}
+@code{chmod} and @code{chown} can now be hooked by File System Extensions.
