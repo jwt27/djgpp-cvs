@@ -153,14 +153,15 @@ default, it will write all files exactly as found in the archive, but the
 
 @code{djtar} performs a number of file name conversions in an attempt
 to make the files fit into MS-DOS's restricted file names.  Any file
-ending in @file{.info-N} becomes @file{.iN}.  Any file ending in
-@file{.tar.gz} becomes @file{.tgz}.  Any file with @file{++} becomes
-@file{plus}.  Any leading dots are changed to underscores (but current
-and parent directories, @file{./} and @file{../} are left alone).  Any
-remaining multiple dots are changed to dashes, unless the part before the
-dot is shorter than 3 characters and there are more than 1 dot in the
-filename, in which case the dot also becomes an underscore.  As a result,
-e.g., @file{.foo.a.b} becomes @file{_foo.a-b}, and @file{sh.lex.c} becomes
+ending in @file{.info-@var{n}}, where @var{n} is a number, becomes
+@file{.i@var{n}}.  Any file ending in @file{.tar.gz} becomes
+@file{.tgz}.  Any @file{++} string within a file name becomes @file{xx}.
+Any leading dots are changed to underscores (but current and parent
+directories, @file{./} and @file{../} are left alone).  Any remaining
+multiple dots are changed to dashes, unless the part before the dot is
+shorter than 3 characters and there are more than 1 dot in the filename,
+in which case the dot also becomes an underscore.  As a result, e.g.,
+@file{.foo.a.b} becomes @file{_foo.a-b}, and @file{sh.lex.c} becomes
 @file{sh_lex.c}.
 
 While @code{djtar} is running, if it cannot successfully perform an

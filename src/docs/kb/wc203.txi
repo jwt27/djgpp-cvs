@@ -567,3 +567,11 @@ incorrect optimizations.
 @findex fsetpos@r{, return value}
 @code{fsetpos} no longer returns zero when it fails to move the file
 position pointer.
+
+@pindex djtar@r{, file-name conversions}
+@code{djtar} now converts @file{.info-} into @file{.i} only if the
+character following @file{.info-} is a digit.  @file{.tar.gz} is
+converted to @file{.tgz} only at the end of a file name.  @file{++} is
+converted to @file{xx} (instead of @file{plus} in previous versions),
+and this conversion is performed for all occurrences of @file{++} in a
+file name (previous versions only converted the first occurrence).

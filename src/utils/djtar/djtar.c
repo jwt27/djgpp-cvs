@@ -1,3 +1,4 @@
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -6,6 +7,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <errno.h>
+#include <ctype.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <io.h>
@@ -297,34 +299,40 @@ get_new_name(char *name_to_change, int *should_be_written)
   changed_name = get_entry(name_to_change);
   if (*should_be_written && !to_stdout && NO_LFN(changed_name))
   {
-    info = strstr(changed_name, ".info-");
-    if (info)
+    static char info_[] = ".info-";
+    info = strstr(changed_name, info_);
+    if (info && isdigit(info[sizeof(info_)-1]))
     {
       strcpy(new, changed_name);
-      info = strstr(new, ".info-");
-      strcpy(info+2, info+6);
+      info = strstr(new, info_);
+      strcpy(info+2, info+sizeof(info_)-1);
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
     }
     else
     {
-      char *tgz = strstr(changed_name, ".tar.gz");
-      if (tgz)
+      static char _tar_gz[] = ".tar.gz", _tgz[] = ".tgz";
+      char *tgz = strstr(changed_name, _tar_gz);
+      if (tgz && tgz[sizeof(_tar_gz)-1] == '\0')
       {
 	strcpy(new, changed_name);
-	tgz = strstr(new, ".tar.gz");
-	strcpy(tgz, ".tgz");
-	strcat(tgz, tgz+7);
+	tgz += new - changed_name;
+	strcpy(tgz, _tgz);
 	fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
       }
       else
       {
-	char *plus = strstr(changed_name, "++"), *plus2;
+	static char xx[] = "++";
+	register char *plus = strstr(changed_name, xx);
 	if (plus)
 	{
 	  strcpy(new, changed_name);
-	  plus2 = strstr(new, "++");
-	  strcpy(plus2, "plus");
-	  strcpy(plus2+4, plus+2);
+	  plus += new - changed_name;
+	  while (plus)
+	  {
+	    *plus++ = 'x';
+	    *plus++ = 'x';
+	    plus = strstr(plus, xx);
+	  }
 	  fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
 	}
 	else
