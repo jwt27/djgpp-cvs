@@ -1,0 +1,145 @@
+
+@c -----------------------------------------------------------------------------
+@node go32-v2, stubify, , Top
+@chapter @command{go32-v2}
+@pindex @command{go32-v2}
+
+@command{go32-v2} is a utility which allows you to run unstubbed
+@acronym{COFF} images.
+
+With no command-line arguments, it prints the available physical and
+virtual memory, much like @command{go32} did in v1.x.  It can run unstubified v2
+@acronym{COFF} images, like this:
+@smallexample
+ go32-v2 myprog
+@end smallexample
+
+If you rename it to @file{go32.exe} and put on your @env{PATH}
+before the v1.x @file{go32.exe}, it can also run v1 @acronym{COFF}
+images, by loading the v1.x @command{go32} and letting it do the job.
+With this setup, you can run v2 programs from v1.x programs, because
+the v1.x program will load @command{go32-v2} (since it found it first on
+the @env{PATH}) which knows how to run v2 images, instead the
+original @command{go32} which cannot.
+
+@vindex @env{GO32_V2_DEBUG}
+If you define the environment variable @env{GO32_V2_DEBUG}, @command{go32-v2}
+will provide additional debugging output when it executes.
+
+@c -----------------------------------------------------------------------------
+@node stubify, stubedit, go32-v2, Top
+@chapter @command{stubify}
+@pindex @command{stubify}
+
+Usage: @kbd{stubify [-v] [-g] files}
+
+@command{stubify} is a utility that adds a DOS exectuable stub loader to the
+front of a @acronym{COFF} image.  The input program may be @acronym{COFF}
+or a stubbed @file{.exe}, and may be @acronym{COFF} with @file{.exe}
+extension.  The resulting file will have @file{.exe} extension.
+
+@strong{Options:}
+
+@table @code
+
+@item -v
+
+Verbose mode.  When given this switch, @command{stubify} prints verbose output
+on the files processed.
+
+@item -g
+
+Generate mode.  When given this switch, @command{stubify} will create an
+image containing only the stub, which can be modified by
+@command{stubedit} (@pxref{stubedit}) to point to a different existing
+program in the same directory.  This is used to simulate links, so
+@code{argv[0]} can be used to change program behavior or create a small
+alias to the other program.
+
+@end table
+
+@c -----------------------------------------------------------------------------
+@node stubedit, exe2coff, stubify, Top
+@chapter @command{stubedit}
+@pindex @command{stubedit}
+
+Usage: @kbd{stubedit [-h] [-v] file.exe [field=value . . .]}
+
+@command{stubedit} is a utility that allows you to modify the DOS exectuable
+stub loader parameters.  These parameters allow you to set the default
+stack size, real mode memory transfer buffer size, the @code{argv0} value,
+and @acronym{DPMI} provider.
+
+If @code{-v} is not specified and no fields are provided after the file name,
+@command{stubedit} will enter an interactive mode which displays each field and
+allow you to change the values individually.
+
+@strong{Options:}
+
+@table @code
+
+@item -h
+
+Help mode.  When given this switch, @command{stubedit} prints internal help.
+
+@item -v
+
+View mode.  When given this switch, @command{stubedit} will display the
+current contents of the stub parameters instead of prompting to modify
+them.
+
+@item minstack=
+
+@cindex Stack size
+Specify the minimum amount of stack space.  The value may be specified
+in bytes, KBytes (with a K suffix), or MBytes (with a M suffix).
+
+@item bufsize=
+
+@cindex Transfer buffer size
+Specify the size of the convential memory transfer buffer size.  The value
+may be specified in bytes or KBytes (with a K suffix).  The value must
+be between 2 KByte and 63 KByte.
+
+@item runfile=
+
+Specify the base name of the file to actually run.  This is a string value
+of 8 maximum characters, and it is only used when this is a stub pointing
+to a different image (created by @command{stubify -g}).
+
+@item argv0=
+
+Specify the string to pass as file component of @code{argv[0]} (maximum of
+16 characters).
+
+@item dpmi=
+
+Specify the name of the program to load to provide @acronym{DPMI}
+services if @acronym{DPMI} is not currently available (maximum of 16
+characters).  The stub will search for this file first in the
+directory of the image, then each directory in your @env{PATH}, and
+finally the current default directory.
+
+@end table
+
+@c -----------------------------------------------------------------------------
+@node exe2coff, coff2exe, stubedit, Top
+@chapter @command{exe2coff}
+@pindex @command{exe2coff}
+
+@command{exe2coff} is a utility that strips the DOS exectuable stub loader
+from the front of @acronym{DJGPP} executable image and writes a
+@acronym{COFF} image.  This would be used as the first step in replacing
+the stub with a different stub.  For example:
+
+@example
+C:\> exe2coff myprog.exe
+C:\> copy /b cwsdstub.exe+myprog mynewprog.exe
+@end example
+
+@c -----------------------------------------------------------------------------
+@node coff2exe, , exe2coff, Top
+@chapter @command{coff2exe}
+@pindex @command{coff2exe}
+
+@command{coff2exe} is an alias to the @command{stubify} utility (@pxref{stubify}).
