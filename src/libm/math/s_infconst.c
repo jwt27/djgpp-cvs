@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Infinity as a constant value.   This is used for HUGE_VAL.
  * Added by Cygnus Support.
  */

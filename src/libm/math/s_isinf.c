@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /*
  * isinf(x) returns 1 if x is infinity, else 0;
  * no branching!

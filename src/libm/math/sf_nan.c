@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /*
  * nanf () returns a nan.
  * Added by Cygnus Support.
