@@ -17,6 +17,19 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
+#include <sys/djtypes.h>
+
+__DJ_size_t
+#undef __DJ_size_t
+#define __DJ_size_t
+
+/* Semi-internal library function which reads symlink contents given  */
+/* either a file name or its handle.  Used by readlink(), fstat() and */
+/* user supplied (if any) file fstat handler.                         */
+
+int __internal_readlink(const char * __path, int __fhandle, char * __buf, 
+                        size_t  __max);
+
 /* A prototype for internal library function for fully resolving symlink   */
 /* chain. Standard function readlink() solves only one symlink level.      */
 /* If path name passed appears to be not a symlink, it is copied to result */
