@@ -47,7 +47,8 @@ The number of tics.
 @subheading Example
 
 @example
-printf("%Ld seconds have elapsed\n",
-       (long long)(uclock()/UCLOCKS_PER_SEC));
+printf("%Ld ticks have elapsed\n", (long long)(uclock()));
+printf("%f second have elapsed\n",
+       ((double)uclock()/UCLOCKS_PER_SEC));
 @end example
 
