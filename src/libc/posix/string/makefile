@@ -2,5 +2,6 @@
 TOP=../..
 
 SRC += strtok_r.c
+SRC += strerr_r.c
 
 include $(TOP)/../makefile.inc

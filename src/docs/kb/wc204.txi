@@ -1055,4 +1055,5 @@ fails, if that function is compiled with C99 features enabled.
 The C99 file @file{stdbool.h} was added.
 
 @findex strtok_r@r{ added}
-The POSIX function @code{strtok_r} was added.
+@findex strerror_r@r{ added}
+The POSIX functions @code{strtok_r} and @code{strerror_r} were added.  

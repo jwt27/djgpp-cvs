@@ -54,6 +54,7 @@ size_t	strxfrm(char *  _s1, const char *  _s2, size_t _n);
 
 #ifndef __STRICT_ANSI__
 
+int	strerror_r(int _errnum, char *_strerrbuf, size_t _buflen);
 char *	strtok_r(char *  _s1, const char *  _s2, char ** _s3);
 
 #ifndef _POSIX_SOURCE

@@ -1,0 +1,53 @@
+@node strerror_r, stdio
+@findex strerror_r
+@subheading Syntax
+
+@example
+#include <string.h>
+
+int strerror_r(int error, char *strerrbuf, size_t buflen);
+@end example
+
+@subheading Description
+
+This function fills the @var{strerrbuf} of length @var{buflen} with a
+string that describes the @var{error}.  
+
+@subheading Return Value
+
+0 if successful or @code{ERANGE} if @var{buflen} is too small.  
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+f=fopen("foo", "r");
+if( f == NULL )
+@{
+  char buf[1];
+  int error_again;
+	
+  error_again = strerror_r(errno, buf, 1);
+  if( error_again )
+  @{
+    char buf2[1024];
+    int error_again2;
+
+    error_again2 = strerror_r(errno, buf2, 1024);
+    if( error_again2 )
+    @{
+      printf("Error while trying to decode error from calling strerror_r(). I give up!\n"
+      "Calling strerror: '%s'\n", strerror(error_again2));
+    @}
+    printf("Error while trying to decode error from calling fopen(): '%s'\n", 
+	buf2);
+  @}
+  else
+  @{
+    printf("Error from fopen(): %s\n", buf);
+  @}
+@end example
+
