@@ -10,6 +10,7 @@
 
 #include <search.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Local helper function that does the real work. */
 static void *
