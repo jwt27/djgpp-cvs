@@ -7,6 +7,7 @@ SRC += dbgcom.c
 SRC += syms.c
 SRC += v2load.c
 SRC += wild.c
+SRC += dbgredir.c
 
 include $(TOP)/../makefile.inc
 
