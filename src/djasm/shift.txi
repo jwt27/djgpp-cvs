@@ -1,6 +1,7 @@
 @cindex shld, obsolete usage
 @cindex shrd, obsolete usage
 
+@c Intel mnemonics
 @opindex SHL
 @opindex SAL
 @opindex SHR
@@ -8,6 +9,7 @@
 @opindex SHLD
 @opindex SHRD
 
+@c opcode description
 @opindex Shift logical left
 @opindex Shift arithmetic left
 @opindex Shift logical right
@@ -15,6 +17,7 @@
 @opindex Double-precision shift left
 @opindex Double-precision shift right
 
+@c djasm mnemonics
 @opindex shl
 @opindex sal
 @opindex shr
@@ -22,19 +25,32 @@
 @opindex dshl
 @opindex dshr
 
-@multitable {""""""""} {""""""""""} {""""""""""""""""""""""""""""""} {""""""""""""""""""""}
-@item Intel     @tab DJASM      @tab Meaning				@tab Notes
-@item """"""""  @tab """""""""" @tab """"""""""""""""""""""""""""""	@tab """"""""""""""""""""
-@item SHL       @tab shl[bwd]   @tab Shift logical left             	@tab (@pxref{shxd})
+@multitable {--------} {----------} {--------------------------------------------------}
+@item Intel     @tab DJASM      @tab Meaning
+@item ~~~~~~~~  @tab ~~~~~~~~~~ @tab ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@item SHL       @tab shl[bwd]   @tab Shift logical left [1]
 @item SAL       @tab sal[bwd]   @tab Shift arithmetic left
-@item SHR       @tab shr[bwd]   @tab Shift logical right            	@tab (@pxref{shxd})
+@item SHR       @tab shr[bwd]   @tab Shift logical right [1]
 @item SHR       @tab sar[bwd]   @tab Shift arithmetic right
-@item SHLD      @tab dshl       @tab Double precision shift left 	@tab No [bwd] suffix.
-@item SHRD      @tab dshr       @tab Double precision shift right	@tab No [bwd] suffix.
+@item SHLD      @tab dshl       @tab Double precision shift left [2]
+@item SHRD      @tab dshr       @tab Double precision shift right [2]
 @end multitable
 
+@subsubsection Notes
+
+@enumerate 1
+
+@item
+The mnemonics for the double-precision shifts have changed.
+@xref{shxd, Change in Mnemonic Usage}, for additional information.
+
+@item
+This mnemonic does not take a @code{b}, @code{d}, or @code{w} suffix.
+
+@end enumerate
+
 @anchor{shxd}
-@subheading Change in Mnemonic Usage
+@subsubheading Change in Mnemonic Usage
 
 Beginning with the version of @code{djasm} released with DJGPP v2.04,
 the mnemonics @code{shld} and @code{shrd} no longer denote Intel's
