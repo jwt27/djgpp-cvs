@@ -1,0 +1,30 @@
+@node nanf, math
+@findex nanf
+@subheading Syntax
+
+@example
+#include <math.h>
+
+float nanf(const char *tagp);
+@end example
+
+@subheading Description
+
+@code{nanf} returns a quiet NaN with contents indicated by @var{tagp}.
+
+@subheading Return Value
+
+The quiet NaN.
+
+If quiet NaNs are not supported, zero is returned. DJGPP supports
+quiet NaNs.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = nanf("0x1234");
+@end example

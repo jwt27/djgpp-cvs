@@ -75,9 +75,12 @@ extern float       __dj_nan;
 #define isnan(x)	(fpclassify(x)==FP_NAN)
 #define isnormal(x)	(fpclassify(x)==FP_NORMAL)
 
-int __fpclassifyf(float) __attribute__((const));
-int __fpclassifyd(double) __attribute__((const));
-int __fpclassifyld(long double) __attribute__((const));
+int		__fpclassifyf(float) __attribute__((const));
+int		__fpclassifyd(double) __attribute__((const));
+int		__fpclassifyld(long double) __attribute__((const));
+double		nan(const char *);
+float		nanf(const char *);
+long double	nanl(const char *);
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
   
@@ -139,7 +142,6 @@ extern double j0(double);
 extern double j1(double);
 extern double jn(int, double);
 extern double lgamma(double);
-extern double nan(void);
 extern double y0(double);
 extern double y1(double);
 extern double yn(int, double);
@@ -191,7 +193,6 @@ extern float j0f(float);
 extern float j1f(float);
 extern float jnf(int, float);
 extern float lgammaf(float);
-extern float nanf(void);
 extern float y0f(float);
 extern float y1f(float);
 extern float ynf(int, float);

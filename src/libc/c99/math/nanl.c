@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-double
-nan(const char *tagp)
+long double
+nanl(const char *tagp)
 {
-  double ret = NAN;
+  float ret = NAN;
   char buf[256];
-  ssize_t s;
+  int s;
 
   if (tagp)
   {
@@ -19,7 +19,7 @@ nan(const char *tagp)
      */
     s = snprintf(buf, sizeof(buf), "NAN(%s)", tagp);
     if (s < (ssize_t) sizeof(buf))
-      ret = strtod(buf, NULL);
+      ret = strtold(buf, NULL);
   }
 
   return ret;

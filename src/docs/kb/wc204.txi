@@ -1008,3 +1008,8 @@ into itself, when the current directory was a short filename.
 The C99 macro @code{fpclassify} and the supporting functions
 @code{__fpclassifyf}, @code{__fpclassifyd} and @code{__fpclassifyld}
 were added.
+
+@findex nan@r{ added}
+@findex nanf@r{ added}
+@findex nanl@r{ added}
+The C99 functions @code{nan}, @code{nanf} and @code{nanl} were added.
