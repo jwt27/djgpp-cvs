@@ -1,5 +1,6 @@
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <libc/stubs.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>

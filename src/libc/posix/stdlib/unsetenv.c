@@ -1,5 +1,6 @@
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 
+#include <libc/stubs.h>
 #include <libc/unconst.h>
 #include <errno.h>
 #include <stdlib.h>

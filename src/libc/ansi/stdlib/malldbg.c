@@ -1,5 +1,6 @@
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 
+#include <libc/stubs.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
