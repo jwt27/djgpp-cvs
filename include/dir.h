@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_dir_h_
 #define __dj_include_dir_h_
@@ -56,11 +57,11 @@ struct ffblklfn {
 #define FA_ARCH         32
 
 /* for fnmerge/fnsplit */
-#define MAXPATH   80
+#define MAXPATH   260
 #define MAXDRIVE  3
-#define MAXDIR	  66
-#define MAXFILE   9
-#define MAXEXT	  5
+#define MAXDIR	  256
+#define MAXFILE   256
+#define MAXEXT	  255
 
 #define WILDCARDS 0x01
 #define EXTENSION 0x02

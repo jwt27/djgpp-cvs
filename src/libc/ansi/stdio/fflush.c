@@ -1,7 +1,9 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdio.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -14,6 +16,18 @@ fflush(FILE *f)
 {
   char *base;
   int n, rn;
+
+  if (f == NULL)
+  {
+    int e = errno;
+
+    errno = 0;
+    _fwalk((void (*)(FILE *))fflush);
+    if (errno)
+      return EOF;
+    errno = e;
+    return 0;
+  }
 
   f->_flag &= ~_IOUNGETC;
   if ((f->_flag&(_IONBF|_IOWRT))==_IOWRT

@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_errno_h_
 #define __dj_include_errno_h_
@@ -59,6 +60,7 @@ extern char *		sys_errlist[];
 extern int		sys_nerr;
 extern const char *	__sys_errlist[];
 extern int		__sys_nerr;
+extern int		_doserrno;
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* zread.h -- common declarations for djtarx with decompression support
  * This is free software; you can redistribute it and/or modify it under the
@@ -8,8 +9,8 @@
 #define __zread_h_
 
 #include <stdio.h>
-#include <stddef.h>
 #include <string.h>
+
 #define memzero(s, n)   memset ((void *)(s), 0, (n))
 
 #define local static
@@ -127,8 +128,8 @@ extern int z_switch;
 #define get_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(0))
 #define try_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(1))
 
-#define put_ubyte(c) {window[outcnt++]=(uch)(c); if (outcnt==WSIZE)\
-   flush_window();}
+#define put_ubyte(c,f) {window[outcnt++]=(uch)(c); if (outcnt==WSIZE)\
+   flush_window(f);}
 
 /* Macros for getting two-byte and four-byte header values */
 #define SH(p) ((ush)(uch)((p)[0]) | ((ush)(uch)((p)[1]) << 8))
@@ -156,8 +157,20 @@ extern int z_switch;
 
 int (*decompressor)(void *);
 
-	/* in djtarx.c */
+typedef enum { DOS_BINARY, DOS_TEXT, UNIX_TEXT } File_type;
+
+	/* in djtar.c */
+extern int change        (char *, const char *, int);
+extern int isadir        (char *);
+extern void do_directories(char *);
+extern File_type guess_file_type(char *, register size_t);
+extern char* get_new_name(char *, int *);
+extern void make_directory(char *);
+extern void rename_if_dos_device(char *);
+
+	/* in untar.c */
 extern int tarread       (char *, long);
+extern void tar_gz_read  (char *);
 
 	/* in zmethod.c */
 extern int get_method    (void *);
@@ -172,33 +185,22 @@ extern int unpack        (void *);
 	/* in unlzh.c */
 extern int unlzh         (void *);
 
-        /* in trees.c */
-void ct_init             (ush *_attr, int *_method);
-int  ct_tally            (int _dist, int _lc);
-ulg  flush_block         (char *_buf, ulg _stored_len, int _eof);
-
-        /* in bits.c */
-void     bi_init         (void);
-void     send_bits       (int value, int length);
-unsigned bi_reverse      (unsigned value, int length);
-void     bi_windup       (void);
-void     copy_block      (char *buf, unsigned len, int header);
-extern   int (*read_buf) (char *buf, unsigned size);
-
 	/* in util.c: */
 extern int  copy         (void *);
 extern ulg  updcrc       (uch *s, unsigned n);
 extern void clear_bufs   (void);
 extern int  fill_inbuf   (int eof_ok);
 extern void flush_outbuf (void);
-extern void flush_window (void);
-extern char *basename    (char *fname);
+extern void flush_window (int (*)(char *, long));
 extern void error        (const char *m);
 extern void warn         (char *a, char *b);
 extern void read_error   (void);
 extern void *xmalloc     (unsigned int size);
 
 	/* in inflate.c */
-extern int inflate       (void);
+extern int inflate       (int (*)(char *, long));
+
+	/* in epunzip.c */
+extern void epunzip_read(char *);
 
 #endif  /* __zread_h_ */

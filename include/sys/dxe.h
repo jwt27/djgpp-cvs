@@ -13,4 +13,12 @@ typedef struct {
 
 /* data stored after dxe_header in file; then relocs, 4 bytes each */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void *_dxe_load(char *filename);
+
+#ifdef __cplusplus
+}
+#endif
