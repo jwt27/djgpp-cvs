@@ -11,7 +11,7 @@ int open(const char *file, int mode /*, int permissions */);
 @subheading Description
 
 This function opens the named @var{file} in the given @var{mode}, which
-is any combination of the following:
+is any combination of the following bits:
 
 @table @code
 
@@ -61,6 +61,12 @@ that use binary reads from the console will also want to get the
 @samp{^C} characters.  You can use the @code{__djgpp_set_ctrl_c} library
 function (@pxref{__djgpp_set_ctrl_c}) if you want @kbd{Ctrl-C} to
 generate interrupts while console is read in binary mode.
+
+@item O_NOINHERIT
+
+Child processes will not inherit this file handle.  This is also known
+as @dfn{close-on-exec}--see @ref{fcntl}.  This bit is DOS- and
+Windows-specific; portable programs should use @code{fcntl} instead.
 
 @item O_NOFOLLOW
 

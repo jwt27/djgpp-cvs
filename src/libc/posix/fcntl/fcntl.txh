@@ -35,8 +35,8 @@ implementation always returns 0 for handles below 18, meaning that all
 those handles are inherited, and @code{FD_CLOEXEC} for handles 18 and
 above.
 
-The no-inherit bit can be set when the file is open, by using the
-@code{O_NOINHERIT} in the open flags; see @ref{open}.
+The no-inherit bit can be set when the file is opened, by setting the
+@code{O_NOINHERIT} bit in the open flags; see @ref{open}.
 
 @item F_SETFD
 Set the close-on-exec flag for the handle @var{fd} using the LSB of the
