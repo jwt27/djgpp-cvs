@@ -265,7 +265,13 @@ static void process_coff(FILE *fd, long ofs)
   f_string_table = (char *)xmalloc(strsize);
   /* CWS note: must zero or pukes below.  Does not fill from file. */
   memset(f_string_table,0,strsize);
-  xfread(f_string_table+4, 1, strsize-4, fd);
+  /* Note: this is fread instead of xfread, because this fread fails
+     on a stripped program.  If we use xfread here, SYMIFY will bail out
+     with an error message, and worse, Edebug and FSDB will be unable to
+     debug stripped programs.  We can afford using fread here because we
+     have already zeroed out the entire string table, see above.  So
+     reading a partial table will never do any real harm.  */
+  fread(f_string_table+4, 1, strsize-4, fd);
   f_string_table[0] = 0;
 
   xfseek(fd, ofs+f_fh.f_symptr, 0);
