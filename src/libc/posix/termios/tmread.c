@@ -538,14 +538,15 @@ __libc_termios_fill_queue (void)
       /* exhausted inputs? */
       if (ext_key_string == NULL
           && (sense = __direct_keysense()) == SENSE_NO_KEY)
-	{
-	  if (__libc_tty_p->t_lflag & ICANON)
-	    {
-	      /* waiting for NL or EOT */
-	      sense = wait_keysense();
-	    }
-	  return;
-	}
+      {
+        if (__libc_tty_p->t_lflag & ICANON)
+        {
+          /* waiting for NL or EOT */
+          sense = wait_keysense();
+        }
+        else
+          return;
+      }
 
       /* Add a character to the output buffer. */
       if (ext_key_string)
