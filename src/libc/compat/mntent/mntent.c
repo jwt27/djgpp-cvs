@@ -1,9 +1,11 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
  * This is implementation of getmntent() and friends for DJGPP v2.x.
  *
- * Copyright (c) 1995-96 Eli Zaretskii <eliz@is.elta.co.il>
+ * Copyright (c) 1995-98 Eli Zaretskii <eliz@is.elta.co.il>
  *
  * This software may be used freely so long as this copyright notice is
  * left intact.  There is no warranty on this software.
@@ -41,12 +43,13 @@
 #include <go32.h>
 #include <libc/farptrgs.h>
 #include <sys/movedata.h>
-#include <libc/unconst.h>
+#include <libc/dosio.h>
 
 /* Macro to convert a segment and an offset to a "far offset" suitable
    for _farxxx() functions of DJGPP.  */
 #ifndef MK_FOFF
-#define MK_FOFF(s,o) ((int)((((unsigned long)(s)) << 4) + (unsigned short)(o)))
+#define MK_FOFF(s,o) ((int)((((unsigned long)(unsigned short)(s)) << 4) + \
+                      (unsigned short)(o)))
 #endif
 
 #define CDS_JOIN     0x2000
@@ -110,12 +113,13 @@ get_cds_entry(int drive_num, char *currdir)
   
   /* The current directory: 67-byte ASCIIZ string at the beginning
      of the CDS structure for our drive.  */
-  movedata(dos_mem_base, (cds_entry_address & 0xfffff),
+  movedata(dos_mem_base, cds_entry_address,
            our_mem_base, (unsigned int)currdir, 0x43);
 
   /* The drive attribute word is at the offset 43h, right after the
-     current directory string.  */
-  return _farpeekw(dos_mem_base, cds_entry_address + 0x43);
+     current directory string.  NT doesn't support this.  */
+  return
+    cds_elsize == 0x47 ? 0 : _farpeekw(dos_mem_base, cds_entry_address + 0x43);
 }
 
 /*
@@ -138,6 +142,22 @@ assigned_to(int drive_num)
   if (r.x.flags & 1)
     return 0;
   return r.h.al;
+}
+
+/* This function remaps the single physical floppy drive to
+ * the logical drive passed as the argument.
+ */
+static int
+assign_floppy_to(int drive_num)
+{
+  __dpmi_regs r;
+
+  r.x.ax = 0x440f;
+  r.h.bl = drive_num;
+  __dpmi_int(0x21, &r);
+  if (r.x.flags & 1)
+    return -1;
+  return 0;
 }
 
 /*
@@ -296,7 +316,7 @@ static int
 get_netredir_entry(int drive_num)
 {
   __dpmi_regs r;
-  unsigned long tb = __tb & 0xfffff;
+  unsigned long tb = __tb;
   unsigned char devname[2];
   int i = -1;
 
@@ -368,31 +388,59 @@ is_cdrom_drive(int drive_num)
 }
 
 /*
- * Return 1 if a CD-ROM drive DRIVE_NUM is ready, i.e. there is a
- * disk in the drive and that disk is a data (not AUDIO) disk.
+ * Return 1 if a CD-ROM drive DRIVE_NUM is ready, i.e. there
+ * is a disk in the drive and the tray door is closed.
  */
 static int
 cdrom_drive_ready(int drive_num)
 {
   __dpmi_regs r;
-  int i = 2;
 
-  /* Int 2Fh/AX=1505h (Read Volume Table Of Contents) will return
-     with error for empty drives or if the disk is an AUDIO disk.  */
-  r.x.es = __tb >> 4;
-  r.x.bx = __tb & 15;
-  r.x.cx = drive_num - 1;   /* 0 = A: */
-  r.x.dx = 0;   /* get the 1st descriptor (usually, the only one) */
+  /* We need to avoid reading any information off the CD-ROM,
+     because then the driver will dupe MSCDEX into thinking the
+     disk isn't ever changed, and DOS calls get stale info after
+     you change the disk.  (We cannot use DOS calls *before* this
+     function, because QDPMI will crash the program if we issue
+     a DOS call that hits the disk when the drive is empty or the
+     disk is an audio disk.)
 
-  /* First time after the door is closed the call might fail.
-     Therefore try twice before giving up.  */
-  do
-    {
-      r.x.ax = 0x1505;
-      __dpmi_int(0x2f, &r);
-    } while (--i && (r.x.flags & 1));
+     So we use the Read Device Status command and look for the
+     door open and drive empty bits (seems like door locked bit
+     is not universally supported).  This still leaves an unsolved
+     problem: an audio disk will be reported as a ready drive, and
+     under QDPMI will crash the program when we access the drive.
+     I don't see any way out of this mess (anybody?).  Well, at
+     least with data disks we don't screw up DOS operations anymore.
 
-  if ((r.x.flags & 1) == 0 && (r.x.ax == 0 || r.x.ax == 1))
+     Gosh, why is it always so tricky with Microsoft software??  */
+
+  unsigned char request_header[0x14];
+  int status;
+  unsigned dev_status;
+
+  /* Construct the request header for the CD-ROM device driver.  */
+  memset(request_header, 0, sizeof request_header);
+  request_header[0] = sizeof request_header;
+  request_header[2] = 3;	/* IOCTL READ command */
+  *(unsigned short *)&request_header[0xe]  = __tb_offset;
+  *(unsigned short *)&request_header[0x10] = __tb_segment;
+  request_header[0x12] = 5;	/* number of bytes to transfer */
+
+  /* Put control block into the transfer buffer.  */
+  _farpokeb(_dos_ds, __tb, 6);	/* read device status */
+  _farpokel(_dos_ds, __tb + 1, 0);	/* zero out the result field */
+
+  /* Put request header into the transfer buffer and call the driver.  */
+  dosmemput(request_header, sizeof (request_header), __tb + 5);
+  r.x.ax = 0x1510;
+  r.x.cx = drive_num - 1;
+  r.x.es = __tb_segment;
+  r.x.bx = __tb_offset + 5;
+  __dpmi_int(0x2f, &r);
+  status = _farpeekw(_dos_ds, __tb + 5 + 3);
+  dev_status = _farpeekl(_dos_ds, __tb + 1);
+  if (status == 0x100 && _farpeekw (_dos_ds, __tb + 5 + 0x12) == 5
+      && (dev_status & 0x801) == 0) /* door open and drive empty bits */
     return 1;
   return 0;
 }
@@ -473,6 +521,11 @@ setmntent(const char *filename, const char *type)
       cds_address_offset = 0x17;
       cds_elsize = 0x51;
     }
+  else if (true_dos_version == 0x0332) /* NT */
+    {
+      cds_address_offset = 0x16;
+      cds_elsize = 0x47;
+    }
   else
     {
       cds_address_offset = 0x16;
@@ -546,6 +599,12 @@ getmntent(FILE *filep)
       if (drive_number == 2 && skip_drive_b)
         continue;
 
+      /* See whether drive A: is mapped to B: and if it is, raise the
+	 flag to skip drive number 2 next time we are called (meaning
+	 there is only one floppy drive).  */
+      if (drive_number == 1 && (drive_a_mapping = assigned_to(1)) > 0)
+	skip_drive_b = 1;
+
       /* Work around a possible bug in QDPMI: _truename() would sometimes
          crash the calling program when there is no disk in a (floppy)
          drive.  To avoid this, we have to check if the drive is empty
@@ -554,6 +613,16 @@ getmntent(FILE *filep)
         {
           unsigned char buf[512];
           int bios_status, count = 0;
+	  int drive_a_remapped = drive_a_mapping == 2;
+
+	  /* When biosdisk is called, Windows 9X pops up the ugly
+	     "Insert a Disk for Drive A:" prompt (and messes the
+	     color palette while at that) if the single physical
+	     floppy drive is currently mapped to drive B:.  So we
+	     momentarily remap the drive back to A:, just for the
+	     duration of the BIOS calls, to avoid that lossage.  */
+	  if (drive_a_remapped)
+	    assign_floppy_to (1);
 
           /* Int 13h/AH=02h returns 6 for disk changed, even if the
              disk isn't readable (e.g., unformatted).  Retry the
@@ -564,19 +633,17 @@ getmntent(FILE *filep)
                  biosdisk(2, drive_number - 1, 0, 0, 1, 1, buf)) == 6)
             biosdisk(0, drive_number - 1, 0, 0, 0, 0, NULL);
 
+	  if (drive_a_remapped)
+	    assign_floppy_to (2);
+
           /* If the loop ends with nonzero status, fail.  */
           if (bios_status != 0)
             continue;
-        }
 
-      /* See whether drive A: is mapped to B: and if it is, change
-         DRIVE_NUMBER on the fly and raise the flag to skip drive
-         number 2 next time we are called (meaning there is only
-         one floppy drive).  */
-      if (drive_number == 1 && (drive_a_mapping = assigned_to(1)) > 0)
-        {
-          skip_drive_b = 1;
-          drive_number = drive_a_mapping;
+	  /* If there's only one floppy drive, change DRIVE_NUMBER on
+	     the fly to whatever logical drive it is currently mapped.  */
+	  if (skip_drive_b)
+	    drive_number = drive_a_mapping;
         }
 
       drvstr_len = sprintf(drive_string, "%c:\\", '@' + drive_number);
@@ -597,13 +664,20 @@ getmntent(FILE *filep)
          These are used in the above order.  */
 
       /* See what 2160 can tell us.  If it fails, there ain't no such
-         drive, as far as DOS is concerned.  */
+         drive, as far as DOS is concerned.  Some DOS clones, like NT,
+	 don't always upcase the drive letter, so we must do that here.  */
       truename_result = _truename(drive_string, mnt_fsname);
+      if (truename_result && mnt_fsname[0]
+	  && mnt_fsname[1] == ':' && islower(mnt_fsname[0]))
+	mnt_fsname[0] = toupper(mnt_fsname[0]);
 
       /* Get some info from the DOS Current Directory Structure (CDS).
-         We've already hit the disk with _truename(), so CDS now
-         contains valid and up to date data.  */
-      if (drive_number <= cds_drives)
+	 We've already hit the disk with _truename(), so CDS now
+	 contains valid and up to date data.  Don't look at the CDS
+	 for remote drives: they can't be JOINed anyway, and some
+	 DOS clones, such as NT, don't put them into the CDS.  */
+      if (drive_number <= cds_drives
+	  && !_is_remote_drive (drive_number - 1))
         cds_flags = get_cds_entry(drive_number, cds_path);
 
       if (truename_result != NULL)
@@ -631,14 +705,14 @@ getmntent(FILE *filep)
               if (is_ram_drive(drive_number))
                 mnt_type = NAME_ram;
               else if (is_cdrom_drive(drive_number))
-                {
-                  /* Empty CD-ROM drives do NOT fail _truename(),
-                     so we must see if there is a disk in the drive.  */
-                  if (cdrom_drive_ready(drive_number))
-                    mnt_type = NAME_cdrom;
-                  else
-                    continue;           /* don't report this drive */
-                }
+		{
+		  /* Empty CD-ROM drives do NOT fail _truename(),
+		     so we must see if there is a disk in the drive.  */
+		  if (cdrom_drive_ready(drive_number))
+		    mnt_type = NAME_cdrom;
+		  else
+		    continue;
+		}
               /* _is_remote_drive() needs zero-based disk number  */
               else if (_is_remote_drive(drive_number - 1) == 1)
                 mnt_type = NAME_net;
@@ -696,19 +770,34 @@ getmntent(FILE *filep)
 
       /* Some network redirectors don't set a UNC path to be
          returned by _truename().  See if 215F02 can help.  */
-      if ((!got_fsname || mnt_fsname[0] != '\\') &&
-           strcmp(mnt_type, "net") == 0)
+      if ((!got_fsname || mnt_fsname[0] != '\\') && mnt_type == NAME_net)
         if (get_netredir_entry(drive_number))
           got_fsname = 1;
-      if (!got_fsname || strcmp(mnt_type, "cdrom") == 0)
+      /* MSCDEX makes `_truename' return a dull "\\X.\A.", so
+	 try to get the label anyway.  */
+      if (!got_fsname || mnt_type == NAME_cdrom)
         {
           /* Look for the volume label.  */
           int e = errno;
+          int volume_found = 0;
 
           strcat(drive_string, "*.*");
           errno = 0;
+          volume_found = findfirst(drive_string, &mnt_ff, FA_LABEL) == 0;
+          /* Floppies and other disks written by Windows 9X include
+             entries that have volume label bit set, but they are
+             actually parts of some LFN entry.  We only accept volume
+             labels which have their HS bits reset; otherwise we
+             pretend we never saw that label.  */
+          while (volume_found &&
+		 (mnt_ff.ff_attrib & (FA_HIDDEN|FA_SYSTEM)) != 0)
+            {
+              volume_found = 0;
+              errno = ENMFILE;
+	      volume_found = findnext(&mnt_ff) == 0;
+            }
 
-          if (!findfirst(drive_string, &mnt_ff, FA_LABEL))
+          if (volume_found)
             {
               errno = e;
 
@@ -724,9 +813,29 @@ getmntent(FILE *filep)
 
               got_fsname = 1;
             }
-
+	  /* CD-ROM without a label is taken as an empty CD drive or an
+	     audio disk, and not reported.  This is because MSCDEX doesn't
+	     fail `_truename' for these cases and some DOS clones, such as
+	     NT, don't even emulate the drive empty bit reliably.
+	     I have never seen a CD-ROM without a label.  Anybody?  */
+	  else if (mnt_type == NAME_cdrom)
+	    got_fsname = 0;
           else if (errno == ENMFILE || errno == ENOENT)
             {
+	      /* Some device drivers for removable media (like JAZ on NT DOS
+		 box) pass all above tests when the drive is empty.  Force
+		 them to hit the disk with DOS Get Free Disk Space function,
+		 and if that fails, treat that drive as non-existing.  */
+	      if (mnt_type == NAME_fd)
+		{
+		  __dpmi_regs r;
+
+		  r.h.ah = 0x36;
+		  r.h.dl = drive_number;
+		  __dpmi_int(0x21, &r);
+		  if ( (r.x.ax & 0xffff) == 0xffff ) /* aha! an impostor! */
+		    continue;
+		}
               /* Valid drive, but no label.  Construct default
                  filesystem name.  If drive A: is mapped to B:,
                  call it ``Drive A:''.  */
@@ -763,14 +872,14 @@ getmntent(FILE *filep)
           mntent.mnt_opts   = dev_opts;
 
           /* Make CD-ROM drives read-only, others read-write.  */
-          if (strcmp(mnt_type, "cdrom") == 0)
+          if (mnt_type == NAME_cdrom)
             dev_opts[1] = 'o';
           else
             dev_opts[1] = 'w';
 
           /* Include "dev=XX" in the mnt_opts field, where XX should
              be consistent with what stat() returns in st_dev.  */
-          sprintf(xdrive, "%02x", strcmp(mnt_type, "subst")
+          sprintf(xdrive, "%02x", mnt_type != NAME_subst
                                   ? drive_number - 1
                                   : mnt_fsname[0] - 'A');
           dev_opts[7] = xdrive[0];
@@ -843,3 +952,5 @@ int main(void)
 }
 
 #endif
+
+
