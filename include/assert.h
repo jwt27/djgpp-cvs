@@ -4,9 +4,9 @@
 #undef assert
 
 #if defined(NDEBUG)
-#define assert(test) (void)0
+#define assert(test) ((void)0)
 #else
-#define assert(test) ((test)?0:__dj_assert(#test,__FILE__,__LINE__))
+#define assert(test) ((test)?(void)0:(void)__dj_assert(#test,__FILE__,__LINE__))
 #endif
 
 #ifndef __dj_include_assert_h_

@@ -44,7 +44,7 @@ extern "C" {
 #define K_Control_X            0x018
 #define K_Control_Y            0x019
 #define K_Control_Z            0x01a
-#define K_Control_LBracket     0x01a
+#define K_Control_LBracket     0x01b
 #define K_Escape               0x01b
 #define K_Control_BackSlash    0x01c
 #define K_Control_RBracket     0x01d
@@ -179,6 +179,7 @@ extern "C" {
 #define K_Alt_F8               0x16f
 #define K_Alt_F9               0x170
 #define K_Alt_F10              0x171
+#define K_Control_Print	       0x172
 #define K_Control_Left         0x173
 #define K_Control_Right        0x174
 #define K_Control_End          0x175
