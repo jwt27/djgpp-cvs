@@ -147,9 +147,14 @@ change(char *fname, const char *problem, int isadir)
   char *pos;
 
   for (ch=change_root; ch; ch = ch->next)
-    if ((strncmp(fname, ch->old, strlen(ch->old)) == 0) && ch->isdir
+  {
+    size_t old_len = strlen(ch->old);
+
+    if ((strncmp(fname, ch->old, old_len) == 0) && ch->isdir
 	/* Don't use change rules which failed to work before.  */
-	&& access(ch->new, D_OK) == 0)
+	&& access(ch->new, D_OK) == 0
+	/* Don't be tricked if fname has ch->old as its substring.  */
+	&& (fname[old_len] == '\0' || fname[old_len] == '/'))
     {
       if (ch->isdir == 2)
       {
@@ -157,11 +162,12 @@ change(char *fname, const char *problem, int isadir)
         return 0;
       }
 /*      fprintf(log_out, "  [ changing %s to ", fname); */
-      sprintf(new, "%s%s", ch->new, fname+strlen(ch->old));
+      sprintf(new, "%s%s", ch->new, fname+old_len);
       strcpy(fname, new);
 /*      fprintf(log_out, "%s ]\n", fname); */
       return 1;
     }
+  }
   
   fprintf(log_out, "  %s %s\n  new name : ", problem, fname);
   fflush(log_out);
@@ -287,7 +293,7 @@ char new[2048];  /* got to think about LFN's! */
 char *
 get_new_name(char *name_to_change, int *should_be_written)
 {
-  char *changed_name, *info;
+  char *changed_name;
 
   /* ONLY_DIR says to extract only files which are siblings
      of that directory.  */
@@ -300,46 +306,35 @@ get_new_name(char *name_to_change, int *should_be_written)
   if (*should_be_written && !to_stdout && NO_LFN(changed_name))
   {
     static char info_[] = ".info-";
-    info = strstr(changed_name, info_);
+    static char _tar_gz[] = ".tar.gz", _tgz[] = ".tgz";
+    static char xx[] = "++";
+    char *info, *tgz, *plus;
+
+    strcpy(new, changed_name);
+    info = strstr(new, info_);
     if (info && isdigit(info[sizeof(info_)-1]))
     {
-      strcpy(new, changed_name);
-      info = strstr(new, info_);
       strcpy(info+2, info+sizeof(info_)-1);
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
     }
-    else
+    tgz = strstr(new, _tar_gz);
+    if (tgz && tgz[sizeof(_tar_gz)-1] == '\0')
     {
-      static char _tar_gz[] = ".tar.gz", _tgz[] = ".tgz";
-      char *tgz = strstr(changed_name, _tar_gz);
-      if (tgz && tgz[sizeof(_tar_gz)-1] == '\0')
+      strcpy(tgz, _tgz);
+      fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
+    }
+    plus = strstr(new, xx);
+    if (plus)
+    {
+      register char *s = plus;
+
+      while (s)
       {
-	strcpy(new, changed_name);
-	tgz += new - changed_name;
-	strcpy(tgz, _tgz);
-	fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
+	*s++ = 'x';
+	*s++ = 'x';
+	s = strstr(s, xx);
       }
-      else
-      {
-	static char xx[] = "++";
-	register char *plus = strstr(changed_name, xx);
-	if (plus)
-	{
-	  strcpy(new, changed_name);
-	  plus += new - changed_name;
-	  while (plus)
-	  {
-	    *plus++ = 'x';
-	    *plus++ = 'x';
-	    plus = strstr(plus, xx);
-	  }
-	  fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
-	}
-	else
-	{
-	  strcpy(new, changed_name);
-	}
-      }
+      fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
     }
     changed_name = new;
 
