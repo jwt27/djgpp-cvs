@@ -17,10 +17,110 @@ scan code in @var{xkey_code}.
 
 @subheading Return Value
 
-A pointer to an @sc{ecma-48} compliant string if the scan code @var{xkey_code}
-has an encoding or @code{NULL} if there is not.
+A string based on the extended key's scan code @var{xkey_code}:
 
-Note that this function is DJGPP-specific.
+@multitable {@kbd{Page Down}} {@code{ESC[24~}} {with Shift} {with Ctrl} {@code{ESC[80~}}
+@item Key @tab Normal @tab with Shift  @tab with Ctrl   @tab with Alt
+
+@item @kbd{Up Arrow}
+@tab @code{ESC[A}   @tab @tab @code{ESC[37~} @tab @code{ESC[59~}
+
+@item @kbd{Down Arrow}
+@tab @code{ESC[B}   @tab @tab @code{ESC[38~} @tab @code{ESC[60~}
+
+@item @kbd{Left Arrow}
+@tab @code{ESC[C}   @tab @tab @code{ESC[39~} @tab @code{ESC[61~}
+
+@item @kbd{Right Arrow}
+@tab @code{ESC[D}   @tab @tab @code{ESC[40~} @tab @code{ESC[62~}
+
+@item @kbd{Home}
+@tab @code{ESC[1~}  @tab @tab @code{ESC[41~} @tab @code{ESC[63~}
+
+@item @kbd{Insert}
+@tab @code{ESC[2~}  @tab @tab @code{ESC[42~} @tab @code{ESC[64~}
+
+@item @kbd{Delete}
+@tab @code{ESC[3~}  @tab @tab @code{ESC[43~} @tab @code{ESC[65~}
+
+@item @kbd{End}
+@tab @code{ESC[4~}  @tab @tab @code{ESC[44~} @tab @code{ESC[66~}
+
+@item @kbd{Page Up}
+@tab @code{ESC[5~}  @tab @tab @code{ESC[45~} @tab @code{ESC[67~}
+
+@item @kbd{Page Down}
+@tab @code{ESC[6~}  @tab @tab @code{ESC[46~} @tab @code{ESC[68~}
+
+@item @kbd{F1}
+@tab @code{ESC[[A}  @tab @code{ESC[25~} @tab @code{ESC[47~} @tab @code{ESC[69~}
+
+@item @kbd{F2}
+@tab @code{ESC[[B}  @tab @code{ESC[26~} @tab @code{ESC[48~} @tab @code{ESC[70~}
+
+@item @kbd{F3}
+@tab @code{ESC[[C}  @tab @code{ESC[27~} @tab @code{ESC[49~} @tab @code{ESC[71~}
+
+@item @kbd{F4}
+@tab @code{ESC[[D}  @tab @code{ESC[28~} @tab @code{ESC[50~} @tab @code{ESC[72~}
+
+@item @kbd{F5}
+@tab @code{ESC[[E}  @tab @code{ESC[29~} @tab @code{ESC[51~} @tab @code{ESC[73~}
+
+@item @kbd{F6}
+@tab @code{ESC[17~} @tab @code{ESC[30~} @tab @code{ESC[52~} @tab @code{ESC[74~}
+
+@item @kbd{F7}
+@tab @code{ESC[18~} @tab @code{ESC[31~} @tab @code{ESC[53~} @tab @code{ESC[75~}
+
+@item @kbd{F8}
+@tab @code{ESC[19~} @tab @code{ESC[32~} @tab @code{ESC[54~} @tab @code{ESC[76~}
+
+@item @kbd{F9}
+@tab @code{ESC[20~} @tab @code{ESC[33~} @tab @code{ESC[55~} @tab @code{ESC[77~}
+
+@item @kbd{F10}
+@tab @code{ESC[21~} @tab @code{ESC[34~} @tab @code{ESC[56~} @tab @code{ESC[78~}
+
+@item @kbd{F11}
+@tab @code{ESC[23~} @tab @code{ESC[35~} @tab @code{ESC[57~} @tab @code{ESC[79~}
+
+@item @kbd{F12}
+@tab @code{ESC[24~} @tab @code{ESC[36~} @tab @code{ESC[58~} @tab @code{ESC[80~}
+
+@end multitable
+
+@multitable {@kbd{Alt-A}} {@code{ESC[83~}} {@code{Alt-Z}} {@code{ESC[113~}}
+@item Alt Key @tab  @tab Alt Key @tab
+@item @kbd{Alt-A} @tab @code{ESC[81~}
+ @tab @kbd{Alt-N} @tab @code{ESC[94~}
+@item @kbd{Alt-B} @tab @code{ESC[82~}
+ @tab @kbd{Alt-O} @tab @code{ESC[95~}
+@item @kbd{Alt-C} @tab @code{ESC[83~}
+ @tab @kbd{Alt-P} @tab @code{ESC[96~}
+@item @kbd{Alt-D} @tab @code{ESC[84~}
+ @tab @kbd{Alt-Q} @tab @code{ESC[97~}
+@item @kbd{Alt-E} @tab @code{ESC[85~}
+ @tab @kbd{Alt-R} @tab @code{ESC[98~}
+@item @kbd{Alt-F} @tab @code{ESC[86~}
+ @tab @kbd{Alt-S} @tab @code{ESC[99~}
+@item @kbd{Alt-G} @tab @code{ESC[87~}
+ @tab @kbd{Alt-T} @tab @code{ESC[100~}
+@item @kbd{Alt-H} @tab @code{ESC[88~}
+ @tab @kbd{Alt-U} @tab @code{ESC[101~}
+@item @kbd{Alt-I} @tab @code{ESC[89~}
+ @tab @kbd{Alt-V} @tab @code{ESC[102~}
+@item @kbd{Alt-J} @tab @code{ESC[90~}
+ @tab @kbd{Alt-W} @tab @code{ESC[103~}
+@item @kbd{Alt-K} @tab @code{ESC[91~}
+ @tab @kbd{Alt-X} @tab @code{ESC[104~}
+@item @kbd{Alt-L} @tab @code{ESC[92~}
+ @tab @kbd{Alt-Y} @tab @code{ESC[105~}
+@item @kbd{Alt-M} @tab @code{ESC[93~}
+ @tab @kbd{Alt-Z} @tab @code{ESC[106~}
+@end multitable
+
+@code{NULL} is returned if @var{xkey_code} has no translation.
 
 @subheading Portability
 
