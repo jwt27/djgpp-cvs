@@ -12,7 +12,7 @@ main (void)
   assert(!isatty(fileno(stdprn)));
 
   /* Check an invalid file descriptor. */
-  assert(isatty(99) < 0);
+  assert(!isatty(99));
 
   puts("PASS");
   return(EXIT_SUCCESS);
