@@ -8,7 +8,7 @@
  *   special thanks to Ryo Shimizu
  */
 /* ECMA-48 commands implemented by Mark E. <snowball3@softhome.net>
-   except color support ported from the version in GNU ls
+   except color support ported from GNU ls color support
    by Eli Zaretskii.  */
 
 #include <libc/stubs.h>
@@ -25,6 +25,7 @@
 
 #define NPAR 16
 
+/* Information about the screen.  */
 struct screen_info
 {
   unsigned char init_attrib;
@@ -38,14 +39,23 @@ struct screen_info
   unsigned int cur_blink : 1;
 };
 
-static struct screen_info screen;
+
+/* Pointers to functions that modify the screen.  */
+struct termios_screen_driver
+{
+  void (*write_ch)(unsigned char ch, int *x, int *y);
+  void (*scroll_up)(int y1, int y2, int delta);
+  void (*scroll_down)(int y1, int y2, int delta);
+  void (*scroll_forward)(int x1, int y1, int x2, int y2, int xdst, int ydst);
+  void (*scroll_backward)(int x1, int y1, int x2, int y2, int xdst, int ydst);
+  void (*clear_range)(int x1, int y1, int x2, int y2);
+};
+
 
 /* Console command parser */
 
 enum cmd_parser_states { need_esc = 0, have_esc, have_lbracket,
                          have_arg, have_cmd};
-
-static enum cmd_parser_states cmd_state;
 
 /* Color values. From conio.h.  */
 enum COLORS {
@@ -69,28 +79,46 @@ enum COLORS {
     WHITE
 };
 
+/* Static variables used by tmwrite.c  */
+static struct screen_info screen;
+
+static struct termios_screen_driver *screen_driver;
+
+static enum cmd_parser_states cmd_state;
+
 static enum COLORS screen_color[] = {BLACK, RED, GREEN, BROWN,
                                      BLUE, MAGENTA, CYAN, LIGHTGRAY};
-/* static functions */
+
+/* termios tty functions.  */
 static ssize_t __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv);
 static ssize_t __libc_termios_write_tty(int handle, const void *buffer, size_t count, int cooked);
+
+/* Output command functions.  */
 static size_t parse_console_command(const unsigned char *buf, size_t count);
 static void execute_console_command(const unsigned char cmd, unsigned char argc, unsigned int args[NPAR]);
-
-/* direct I/O functions */
-static inline unsigned long get_video_offset(int col, int row);
-static void __termios_write_ch(unsigned char ch, int *col, int *row);
 
 /* Screen manipulation functions.  */
 static void set_cursor(int col, int row);
 static void move_cursor(int x_delta, int y_delta);
 static void get_cursor(int *col, int *row);
-static void clear_screen(int x1, int y1, int x2, int y2);
-static void scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst);
-static void scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst);
 
-/* Color helpers.  */
+/* Attribute helpers.  */
 static void set_blink_attrib(int enable_blink);
+
+/* Functions to output directly to the video buffer.  */
+static inline unsigned long get_video_offset(int col, int row);
+static void direct_write_ch(unsigned char ch, int *col, int *row);
+static void direct_clear_range(int x1, int y1, int x2, int y2);
+static void direct_scroll_up(int y1, int y2, int delta);
+static void direct_scroll_down(int y1, int y2, int delta);
+static void direct_scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst);
+static void direct_scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst);
+
+/* This driver outputs directly to the video buffer.  */
+static struct termios_screen_driver direct_screen_driver =
+  { direct_write_ch, direct_scroll_up, direct_scroll_down,
+    direct_scroll_forward, direct_scroll_backward, direct_clear_range };
+
 
 /* Initialize the screen portion of termios.  */
 void __libc_termios_init_write(void)
@@ -120,6 +148,8 @@ void __libc_termios_init_write(void)
 
   screen.init_attrib = r.h.ah;
   screen.attrib = r.h.ah;
+
+  screen_driver = &direct_screen_driver;
 }
 
 /* Calculate the offset into the video buffer given the column and row.  */
@@ -134,61 +164,6 @@ static inline int
 is_command_char(unsigned char ch)
 {
   return isalpha(ch) || ch == '@' || ch == '`';
-}
-
-/******************************************************************************/
-/* direct I/O function (inlined) **********************************************/
-
-static inline void
-__bios_output(unsigned char ch)
-{
-  __dpmi_regs r;
-
-  if (ch == 0xff)
-    return;
-
-  r.h.ah = 0x0e;
-  r.h.al = ch;
-  r.h.bh = screen.active_page;
-  __dpmi_int (16, &r);
-}
-
-static void
-__termios_write_ch(unsigned char ch, int *col, int *row)
-{
-  if (ch == '\n')
-    ++(*row);
-  else if (ch == '\r')
-    *col = 0;
-  else if (ch == '\b')
-  {
-    if (*col > 0)
-      --(*col);
-    else if (*row > 0)
-    {
-      --(*row);
-      *col = screen.max_col;
-    }
-  }
-  else if (ch == 0x07)
-    __bios_output((unsigned char)ch);
-  else
-  {
-    unsigned long ptr = get_video_offset(*col, *row);
-    _farpokew(_dos_ds, ptr, ch | (screen.attrib << 8));
-    ++(*col);
-  }
-
-  if (*col > screen.max_col)
-  {
-    *col = 0;
-    ++(*row);
-  }
-  if (*row > screen.max_row)
-  {
-    scroll_backward(0, 1, screen.max_col, screen.max_row, 0, 0);
-    --(*row);
-  }
 }
 
 /******************************************************************************/
@@ -279,9 +254,9 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
     /* produce spaces until the next TAB stop */
     if (ch == '\t')
     {
-      __termios_write_ch(' ', &col, &row);
+      screen_driver->write_ch(' ', &col, &row);
       while ((col % 8) != 0)
-        __termios_write_ch(' ', &col, &row);
+        screen_driver->write_ch(' ', &col, &row);
       continue;
     }
 
@@ -290,12 +265,12 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
       /* NOTE: multibyte character don't contain control character */
       /* map NL to CRNL */
       if (ch == '\n' && (__libc_tty_p->t_oflag & ONLCR))
-        __termios_write_ch('\r', &col, &row);
+        screen_driver->write_ch('\r', &col, &row);
       /* map CR to NL */
       else if (ch == '\r' && (__libc_tty_p->t_oflag & OCRNL))
         ch = '\n';
     }
-    __termios_write_ch(ch, &col, &row);
+    screen_driver->write_ch(ch, &col, &row);
   }
 
   set_cursor(col, row);
@@ -494,18 +469,18 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
         /* Erase from cursor to end of screen.  */
         case 0:
           get_cursor(&col, &row);
-          clear_screen(col, row, screen.max_col, screen.max_row);
+          screen_driver->clear_range(col, row, screen.max_col, screen.max_row);
           break;
 
         /* Erase from start of screen to cursor.  */
         case 1:
           get_cursor(&col, &row);
-          clear_screen(0, 0, col, row);
+          screen_driver->clear_range(0, 0, col, row);
           break;
 
         /* Erase the whole screen.  */
         case 2:
-          clear_screen(0, 0, screen.max_col, screen.max_row);
+          screen_driver->clear_range(0, 0, screen.max_col, screen.max_row);
           break;
       }
 
@@ -516,62 +491,63 @@ execute_console_command(const unsigned char cmd, unsigned char argc,
         /* Clear from cursor to end of line.  */
         case 0:
           get_cursor(&col, &row);
-          clear_screen(col, row, screen.max_col, row);
+          screen_driver->clear_range(col, row, screen.max_col, row);
           break;
 
         /* Clear from start of line to cursor.  */
         case 1:
           get_cursor(&col, &row);
-          clear_screen(0, row, col, row);
+          screen_driver->clear_range(0, row, col, row);
           break;
 
         /* Clear the whole line.  */
         case 2:
           get_cursor(&col, &row);
-          clear_screen(0, row, screen.max_col, row);
+          screen_driver->clear_range(0, row, screen.max_col, row);
           break;
       }
 
     /* IL: Insert Line */
     case 'L':
       get_cursor(&col, &row);
-      scroll_forward(0, row, 0, screen.max_row, 0, row + GET_ARG(0, 1));
+      screen_driver->scroll_down(row, screen.max_row, row + GET_ARG(0, 1));
       break;
 
     /* DL: Delete Line */
     case 'M':
       get_cursor(&col, &row);
-      scroll_backward(0, row, 0, screen.max_row, 0, row - GET_ARG(0, 1));
+      screen_driver->scroll_up(row + GET_ARG(0, 1), screen.max_row, row);
       break;
 
     /* SU: Scroll Up */
     case 'S':
-      scroll_backward(0, GET_ARG(0, 1), 0, screen.max_row, 0, 0);
+      screen_driver->scroll_up(GET_ARG(0, 1), screen.max_row, 0);
       break;
 
     /* ST: Scroll Down */
     case 'T':
-      scroll_forward(0, 0, 0, screen.max_row, 0, GET_ARG(0, 1));
+      screen_driver->scroll_down(0, screen.max_row, GET_ARG(0,1));
       break;
 
     /* ICH: Insert Character */
     case '@':
       get_cursor(&col, &row);
-      scroll_forward(col, row, screen.max_col, screen.max_row,
-                     col + GET_ARG(0, 1), row);
+      screen_driver->scroll_forward(col, row, screen.max_col, row,
+                                    col + GET_ARG(0, 1), row);
       break;
 
     /* DCH: Delete Character */
     case 'P':
       get_cursor(&col, &row);
-      scroll_backward(col + GET_ARG(0, 1), row, screen.max_col, screen.max_row,
-                      col, row);
+      screen_driver->scroll_backward(col + GET_ARG(0, 1), row,
+                                     screen.max_col, row,
+                                     col, row);
       break;
 
     /* ECH: Erase Character */
     case 'X':
       get_cursor(&col, &row);
-      clear_screen(col, row, col + GET_ARG(0, 1),  row);
+      screen_driver->clear_range(col, row, col + GET_ARG(0, 1),  row);
       break;
 
     /* Color */
@@ -702,7 +678,6 @@ set_cursor(int col, int row)
 {
   __dpmi_regs r;
 
-
   if (row < 0)
     row = 0;
   else if (row > screen.max_row)
@@ -753,9 +728,64 @@ move_cursor(int x_delta, int y_delta)
   __dpmi_int(0x10, &r);
 }
 
+
+/* Functions to support direct output to the video buffer.  */
+
+static inline void
+__bios_output(unsigned char ch)
+{
+  __dpmi_regs r;
+
+  if (ch == 0xff)
+    return;
+
+  r.h.ah = 0x0e;
+  r.h.al = ch;
+  r.h.bh = screen.active_page;
+  __dpmi_int (16, &r);
+}
+
+static void
+direct_write_ch(unsigned char ch, int *col, int *row)
+{
+  if (ch == '\n')
+    ++(*row);
+  else if (ch == '\r')
+    *col = 0;
+  else if (ch == '\b')
+  {
+    if (*col > 0)
+      --(*col);
+    else if (*row > 0)
+    {
+      --(*row);
+      *col = screen.max_col;
+    }
+  }
+  else if (ch == 0x07)
+    __bios_output((unsigned char)ch);
+  else
+  {
+    unsigned long ptr = get_video_offset(*col, *row);
+    _farpokew(_dos_ds, ptr, ch | (screen.attrib << 8));
+    ++(*col);
+  }
+
+  if (*col > screen.max_col)
+  {
+    *col = 0;
+    ++(*row);
+  }
+  if (*row > screen.max_row)
+  {
+    direct_scroll_backward(0, 1, screen.max_col, screen.max_row, 0, 0);
+    --(*row);
+  }
+}
+
 /* Clear from (x1, y1) to (x2, y2).  */
 static void
-clear_screen(int x1, int y1, int x2, int y2)
+direct_clear_range(int x1, int y1, int x2, int y2)
 {
   unsigned long ptr, ptr_end;
   unsigned short fill;
@@ -790,7 +820,7 @@ clear_screen(int x1, int y1, int x2, int y2)
 /* Move the area (x1, y1), (x2, y2) to
    (xdst, ydst), ((xdst + (x2 - x1)), (ydst + (y2 - y1))). */
 static void
-scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
+direct_scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
 {
   unsigned short fill;
   unsigned long fill_l;
@@ -816,7 +846,7 @@ scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   /* Clear area if all of the destination area is off the screen.  */
   if (dst_end > screen_end)
   {
-    clear_screen(x1, y1, screen.max_col, screen.max_row);
+    screen_driver->clear_range(x1, y1, screen.max_col, screen.max_row);
     return;
   }
 
@@ -879,7 +909,7 @@ scroll_forward(int x1, int y1, int x2, int y2, int xdst, int ydst)
 /* Move the area (x1, y1), (x2, y2) to
    (xdst, ydst), ((xdst + (x2 - x1)), (ydst + (y2 - y1))). */
 static void
-scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
+direct_scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
 {
   unsigned short fill;
   unsigned long fill_l;
@@ -964,6 +994,16 @@ scroll_backward(int x1, int y1, int x2, int y2, int xdst, int ydst)
   /* Special handling when last character isn't on a 4-byte boundary.  */
   if (dst_end == src_end)
     _farnspokew(src_end, fill);
+}
+
+static void direct_scroll_up(int y1, int y2, int ydst)
+{
+  direct_scroll_backward(0, y1, screen.max_col, y2, 0, ydst);
+}
+
+static void direct_scroll_down(int y1, int y2, int ydst)
+{
+  direct_scroll_forward(0, y1, screen.max_col, y2, 0, ydst);
 }
 
 static void
