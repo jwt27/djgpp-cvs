@@ -7,8 +7,10 @@
 /* resolves only last filename component and one symlink level.)     */
 
 #include <libc/stubs.h>
+#include <libc/dosio.h>
 #include <libc/symlink.h>
 #include <errno.h>
+#include <go32.h>
 #include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -79,7 +81,24 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
             done_something = 1;
             link_level++;
             fn_buf[bytes_copied] = '\0';
-            strcpy(resolved, fn_buf);
+            /* We can get /dev/env/SOMEVARIABLE as a symlink target. Do not
+               restart processing in this case, but substitute /dev/env/SOMEVARIABLE
+               with expanded SOMEVARIABLE.  Note that SOMEVARIABLE may expand to 
+               either relative or absolute path. */
+            if (strncmp(fn_buf, "/dev/env/", strlen("/dev/env/")))
+            	strcpy(resolved, fn_buf);
+            else
+            {
+            	/* Fill `resolved' with expanded env variable. Do this by 
+            	   calling _put_path(). TODO: It could be nice to factor
+            	   out some code from _put_path2() to separate function to expand
+            	   /dev/env/FOO once, i.e. do not recurse as _put_path2() does.
+            	   However, it is not completely trivial, so current implementation
+            	   takes a performance hit there. */
+            	_put_path(fn_buf);
+            	dosmemget(__tb, FILENAME_MAX, resolved);
+            }               
+            
             /* FIXME: does absolute path check below work with chroot()? */
             if (((bytes_copied > 2) &&  (resolved[1] == ':')) ||
                 ((bytes_copied > 0) && ((resolved[0] == '/') ||
