@@ -76,7 +76,7 @@ union REGS {		/* Compatible with DPMI structure, except cflag */
 #ifdef _NAIVE_DOS_REGS
   struct WORDREGS x;
 #else
-#if _BORLAND_DOS_REGS
+#ifdef _BORLAND_DOS_REGS
   struct DWORDREGS x;
 #else
   struct DWORDREGS_W x;
