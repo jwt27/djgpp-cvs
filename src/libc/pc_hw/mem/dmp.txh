@@ -30,6 +30,6 @@ None.
 
 @example
 unsigned short save_screen[25][80];
-dosmemput(save_screen, 0xb8000, 80*2*25);
+dosmemput(save_screen, 80*2*25, 0xb8000);
 @end example
 
