@@ -36,13 +36,24 @@ _lfn_find_close(int handle)
 void
 __set_need_fake_dot_dotdot(DIR *dir)
 {
+  int oerrno = errno;
+
   dir->need_fake_dot_dotdot = 0;
   if (strlen(dir->name) == 6)	/* "d:/" + "*.*" */
-  {
+  {    
     /* see if findfirst finds "." anyway */
     if (findfirst(dir->name, &dir->ff, FA_ARCH|FA_RDONLY|FA_DIREC)
 	|| strcmp(dir->ff.ff_name, "."))
+    {
       dir->need_fake_dot_dotdot = 2;
+
+      /* Restore errno in certain cases. findfirst() will fail for empty
+	 root directories on drives, but this should not be considered
+	 an error. */
+      if ((errno == ENOENT) || (errno == ENMFILE))
+	errno = oerrno;
+    }
+
     if (_USE_LFN && dir->ff.lfn_handle)
     {
       _lfn_find_close(dir->ff.lfn_handle);
