@@ -433,12 +433,21 @@ direct_refresh_virtual_screen(int col, int row, int count)
    transition is present.  */
 static void vbios_write_ch(unsigned char ch, int *col, int *row)
 {
+  static unsigned char attrib_changed;
+
   __dpmi_regs r;
+
+  /* If a non-default attribute is ever used, then prefer the
+     int 0x10 ah=0x0e service because then the attribute under
+     the cursor could be anything.  */
+  if (attrib_changed == 0
+      && (__tty_screen.attrib != __tty_screen.init_attrib))
+    ++attrib_changed;
 
   r.h.al = ch;
   r.h.bh = __tty_screen.active_page;
   r.x.cx = 1;
-  if (__tty_screen.attrib == __tty_screen.init_attrib
+  if (((__tty_screen.attrib == __tty_screen.init_attrib) && !attrib_changed)
       || (ch == '\r' || ch == '\n' || ch == '\b' || ch == 0x07))
   {
     r.h.ah = 0x0e;
