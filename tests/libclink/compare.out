@@ -1,0 +1,7 @@
+Symbols in old library, but not in new one:
+_GLOBAL_$I$_gppconio_init  __atexit  __mb_cur_max  _cleanup  _ctype_
+_findenv  _findiop  _get_default_drive  _gppconio_init  _interrupt_stack_size
+_iob  _memcpy  _setmode  _setstack  _smallbuf  _stklen  _tztab  fchmod
+fcloseall  fgetpwent  longjmperror  nlist  on_exit  readcr  readv
+realloc_srchlen  sigsetmask  stat_assist  timezone  tzsetwall  unsetenv
+valloc  writecr  writev

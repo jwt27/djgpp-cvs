@@ -1,0 +1,7679 @@
+
+Archive index:
+___dj_assert in assert.o
+___dj_ctype_flags in ct_flags.o
+___dj_ctype_tolower in ct_lower.o
+___dj_ctype_toupper in ct_upper.o
+_isalnum in isalnum.o
+_isalpha in isalpha.o
+_isascii in isascii.o
+_iscntrl in iscntrl.o
+_isdigit in isdigit.o
+_isgraph in isgraph.o
+_islower in islower.o
+_isprint in isprint.o
+_ispunct in ispunct.o
+_isspace in isspace.o
+_isupper in isupper.o
+_isxdigit in isxdigit.o
+_toascii in toascii.o
+_tolower in tolower.o
+_toupper in toupper.o
+_errno in errno.o
+_localeconv in lconv.o
+___dj_mb_cur_max in mbcurmax.o
+_mblen in mblen.o
+_mbstowcs in mbstowcs.o
+_mbtowc in mbtowc.o
+_setlocale in setlocal.o
+_wcstombs in wcstombs.o
+_wctomb in wctomb.o
+_acos in acos.o
+_acosh in acosh.o
+_asin in asin.o
+_asinh in asinh.o
+_atan in atan.o
+_atan2 in atan2.o
+_atanh in atanh.o
+_ceil in ceil.o
+_cos in cos.o
+_cosh in cosh.o
+_exp in exp.o
+_fabs in fabs.o
+_floor in floor.o
+_fmod in fmod.o
+_frexp in frexp.o
+___dj_huge_val in huge_val.o
+_hypot in hypot.o
+_ldexp in ldexp.o
+_log in log.o
+_modf in modf.o
+___modfl in modfl.o
+_pow in pow.o
+___pow10 in pow10.o
+___pow2 in pow2.o
+_sin in sin.o
+_sinh in sinh.o
+_sqrt in sqrt.o
+_tan in tan.o
+_tanh in tanh.o
+_longjmp in longjmp.o
+_setjmp in setjmp.o
+___alloc_file in allocfil.o
+_clearerr in clearerr.o
+__doprnt in doprnt.o
+__doscan in doscan.o
+__doscan_low in doscan.o
+_fclose in fclose.o
+_feof in feof.o
+_ferror in ferror.o
+_fflush in fflush.o
+_fgetc in fgetc.o
+_fgetpos in fgetpos.o
+_fgets in fgets.o
+__filbuf in filbuf.o
+__flsbuf in flsbuf.o
+_fopen in fopen.o
+_fprintf in fprintf.o
+_fputc in fputc.o
+_fputs in fputs.o
+_fread in fread.o
+_freopen in freopen.o
+___file_rec_list in frlist.o
+_fscanf in fscanf.o
+_fseek in fseek.o
+_fsetpos in fsetpos.o
+_ftell in ftell.o
+__fwalk in fwalk.o
+_fwrite in fwrite.o
+_getc in getc.o
+_getchar in getchar.o
+_gets in gets.o
+_getw in getw.o
+_perror in perror.o
+_printf in printf.o
+_putc in putc.o
+_putchar in putchar.o
+_puts in puts.o
+_putw in putw.o
+_remove in remove.o
+_rename in rename.o
+__rename in _rename.o
+_rewind in rewind.o
+_scanf in scanf.o
+_setbuf in setbuf.o
+_setbuffer in setbuffe.o
+_setlinebuf in setlineb.o
+_setvbuf in setvbuf.o
+_sprintf in sprintf.o
+_sscanf in sscanf.o
+___dj_stdaux in stdaux.o
+___dj_stderr in stderr.o
+___dj_stdin in stdin.o
+___stdio_cleanup_proc in stdiohk.o
+___stdio_cleanup_hook in stdiohk.o
+___dj_stdout in stdout.o
+___dj_stdprn in stdprn.o
+_tmpfile in tmpfile.o
+_tmpnam in tmpnam.o
+_ungetc in ungetc.o
+_vfprintf in vfprintf.o
+_vprintf in vprintf.o
+_vsprintf in vsprintf.o
+_abort in abort.o
+_abs in abs.o
+_atexit in atexit.o
+_atof in atof.o
+_atoi in atoi.o
+_atol in atol.o
+__atold in atold.o
+_bsearch in bsearch.o
+_calloc in calloc.o
+_div in div.o
+___atexit_ptr in exit.o
+_exit in exit.o
+___stdio_cleanup_hook in exit.o
+_getenv in getenv.o
+_labs in labs.o
+_ldiv in ldiv.o
+_malloc in malloc.o
+_free in malloc.o
+_realloc in malloc.o
+_qsort in qsort.o
+_rand in rand.o
+_srand in rand.o
+_strtod in strtod.o
+_strtol in strtol.o
+__strtold in strtold.o
+_strtoul in strtoul.o
+___system_flags in system.o
+_system in system.o
+_memchr in memchr.o
+_memcmp in memcmp.o
+_memcpy in memcpy.o
+_memmove in memmove.o
+_memset in memset.o
+_strcat in strcat.o
+_strchr in strchr.o
+_strcmp in strcmp.o
+_strcoll in strcoll.o
+_strcpy in strcpy.o
+_strcspn in strcspn.o
+_strerror in strerror.o
+_strlen in strlen.o
+_strncat in strncat.o
+_strncmp in strncmp.o
+_strncpy in strncpy.o
+_strpbrk in strpbrk.o
+_strrchr in strrchr.o
+_strspn in strspn.o
+_strstr in strstr.o
+_strtok in strtok.o
+_strxfrm in strxfrm.o
+___syserr00 in syserr1.o
+___syserr01 in syserr1.o
+___syserr02 in syserr1.o
+___syserr03 in syserr1.o
+___syserr04 in syserr1.o
+___syserr05 in syserr1.o
+___syserr06 in syserr1.o
+___syserr07 in syserr1.o
+___syserr08 in syserr1.o
+___syserr09 in syserr1.o
+___syserr10 in syserr1.o
+___syserr11 in syserr1.o
+___syserr12 in syserr1.o
+___syserr13 in syserr1.o
+___syserr14 in syserr1.o
+___syserr15 in syserr1.o
+___syserr16 in syserr1.o
+___syserr17 in syserr1.o
+___syserr18 in syserr1.o
+___syserr19 in syserr1.o
+___syserr20 in syserr1.o
+___syserr21 in syserr1.o
+___syserr22 in syserr1.o
+___syserr23 in syserr1.o
+___syserr24 in syserr1.o
+___syserr25 in syserr1.o
+___syserr26 in syserr1.o
+___syserr27 in syserr1.o
+___syserr28 in syserr1.o
+___syserr29 in syserr1.o
+___syserr30 in syserr1.o
+___syserr31 in syserr1.o
+___syserr32 in syserr1.o
+___syserr33 in syserr1.o
+___syserr34 in syserr1.o
+___syserr35 in syserr1.o
+___syserr36 in syserr1.o
+___syserr37 in syserr1.o
+___syserr38 in syserr1.o
+___sys_errlist in syserr2.o
+___sys_nerr in syserr2.o
+_sys_errlist in syserr3.o
+_sys_nerr in syserr3.o
+__posixrules_data in ctime.o
+___tzname in ctime.o
+___tzset in ctime.o
+_localtime in ctime.o
+_gmtime in ctime.o
+_asctime in ctime.o
+_ctime in ctime.o
+_mktime in ctime.o
+_difftime in difftime.o
+_strftime in strftime.o
+_time in time.o
+___dj_double_epsilon in float_de.o
+___dj_double_min in float_dm.o
+___dj_double_max in float_dx.o
+___dj_float_epsilon in float_fe.o
+___dj_float_min in float_fm.o
+___dj_float_max in float_fx.o
+___dj_long_double_epsilon in float_le.o
+___dj_long_double_min in float_lm.o
+___dj_long_double_max in float_lx.o
+_bioscom in bioscom.o
+_biosdisk in biosdisk.o
+__bios_disk in biosdisk.o
+_biosequip in biosequi.o
+_bioskey in bioskey.o
+_biosmemory in biosmem.o
+_biosprint in biosprin.o
+_biostime in biostime.o
+__bios_timeofday in b_time.o
+_bcmp in bcmp.o
+_bcopy in bcopy.o
+_bzero in bzero.o
+_index in index.o
+_rindex in rindex.o
+_chsize in chsize.o
+_log10 in log10.o
+_log2 in log2.o
+_mprotect in mprotect.o
+_setmntent in mntent.o
+_getmntent in mntent.o
+_addmntent in mntent.o
+_hasmntopt in mntent.o
+_endmntent in mntent.o
+_insque in insque.o
+_qelem in insque.o
+_remque in remque.o
+_qelem in remque.o
+_mkstemp in mkstemp.o
+_mktemp in mktemp.o
+_tempnam in tempnam.o
+_alloca in alloca.o
+_cfree in cfree.o
+_getlongpass in getlongp.o
+_getpass in getpass.o
+_itoa in itoa.o
+___putenv in putenv.o
+_srandom in random.o
+_random in random.o
+_initstate in random.o
+_setstate in random.o
+_swab in swab.o
+_xfree in xfree.o
+_xmalloc in xmalloc.o
+_xrealloc in xrealloc.o
+_ffs in ffs.o
+_memccpy in memccpy.o
+_stpcpy in stpcpy.o
+_strcasecmp in strcasec.o
+_strdup in strdup.o
+___stricmp in stricmp.o
+_strlwr in strlwr.o
+_strncasecmp in strncase.o
+_strnicmp in strnicmp.o
+_strsep in strsep.o
+_strupr in strupr.o
+_getrusage in resource.o
+_mknod in mknod.o
+_statfs in statfs.o
+_rawclock in rawclock.o
+_select in select.o
+_settimeofday in settimeo.o
+_utimes in utimes.o
+___fsync in fsync.o
+_ftruncate in ftruncat.o
+_getdtablesize in getdtabl.o
+_gethostname in gethostn.o
+_getpagesize in getpages.o
+_getwd in getwd.o
+_nice in nice.o
+___sync in sync.o
+_truncate in truncate.o
+_usleep in usleep.o
+_vfork in vfork.o
+__bcopy in _bcopy.o
+_fpurge in fpurge.o
+_setenv in setenv.o
+___main in _main.o
+_brk in brk.o
+___crt0_setup_arguments in c1args.o
+___crt0_load_environment_file in c1loadef.o
+___crt0_glob_function in c1pglob.o
+___bss_count in crt1.o
+_environ in crt1.o
+___dos_argv0 in crt1.o
+___crt1_startup in crt1.o
+___crt0_argv in crt1.o
+___crt0_argc in crt1.o
+__crt0_startup_flags in crt1.o
+_mcount in mcount.o
+__mcount_init in mcount.o
+___djgpp_memory_handle in memhandl.o
+__dos_close in d_close.o
+__dos_commit in d_commit.o
+__dos_creat in d_creat.o
+__dos_creatnew in d_creatn.o
+__dosexterr in d_exterr.o
+__dos_findfirst in d_findf.o
+__dos_findnext in d_findn.o
+__dos_getdate in d_getdat.o
+__dos_getdiskfree in d_getdf.o
+__dos_getdrive in d_getdrv.o
+__dos_getfileattr in d_getfa.o
+__dos_getftime in d_getftm.o
+__dos_gettime in d_gettim.o
+__dos_open in d_open.o
+__dos_read in d_read.o
+__dos_setdate in d_setdat.o
+__dos_setdrive in d_setdrv.o
+__dos_setfileattr in d_setfa.o
+__dos_setftime in d_setftm.o
+__dos_settime in d_settim.o
+__dos_write in d_write.o
+___findfirst in findfirs.o
+___findnext in findnext.o
+_fnmerge in fnmerge.o
+_fnsplit in fnsplit.o
+___file_tree_walk in ftreewlk.o
+_ftw in ftw.o
+___getdisk in getdisk.o
+_setdisk in setdisk.o
+_searchpath in srchpath.o
+_bdos in bdos.o
+_bdosptr in bdosptr.o
+_delay in delay.o
+___file_exists in fexistp.o
+_getcbrk in getcbrk.o
+_getdate in getdate.o
+_getdfree in getdfree.o
+__get_dev_info in getdinfo.o
+__get_dos_version in getdos_v.o
+_getftime in getftime.o
+_gettime in gettime.o
+___gettimeofday in gettimeo.o
+_int86 in int86.o
+_int86x in int86x.o
+__int86 in int86x.o
+_intdos in intdos.o
+_intdosx in intdosx.o
+__os_flavor in osflavor.o
+__osmajor in osmajor.o
+__osminor in osminor.o
+__is_remote_drive in remotdrv.o
+__is_remote_handle in remothdl.o
+_setcbrk in setcbrk.o
+_setdate in setdate.o
+_setftime in setftime.o
+_settime in settime.o
+__truename in truename.o
+___doserr_to_errno in doserr2e.o
+__chmod in _chmod.o
+__close in _close.o
+__creat in _creat.o
+__open in _open.o
+__read in _read.o
+__write in _write.o
+___crlf2nl in crlf2nl.o
+___file_handle_modes in dosio.o
+___file_handle_set in dosio.o
+__dos_lock in doslock.o
+__dos_unlock in dosunloc.o
+__fmode in fmode.o
+_lock in lock.o
+__put_path in putpath.o
+__put_path2 in putpath.o
+___setmode in setmode.o
+___setmode_stdio_hook in setmode.o
+_tell in tell.o
+_unlock in unlock.o
+__use_lfn in _use_lfn.o
+___dosexec_in_system in dosexec.o
+__dos_exec in dosexec.o
+___dosexec_find_on_path in dosexec.o
+___dosexec_command_exec in dosexec.o
+___spawnve in dosexec.o
+_spawnl in spawnl.o
+_spawnle in spawnle.o
+_spawnlp in spawnlp.o
+_spawnlpe in spawnlpe.o
+_spawnv in spawnv.o
+_spawnvp in spawnvp.o
+___spawnvpe in spawnvpe.o
+_ftime in ftime.o
+___dpmi_yield in 2f_1680.o
+___dpmi_error in d0000.o
+___dpmi_allocate_ldt_descriptors in d0000.o
+___dpmi_error in d0001.o
+___dpmi_free_ldt_descriptor in d0001.o
+___dpmi_error in d0002.o
+___dpmi_segment_to_descriptor in d0002.o
+___dpmi_error in d0003.o
+___dpmi_get_selector_increment_value in d0003.o
+___dpmi_error in d0006.o
+___dpmi_get_segment_base_address in d0006.o
+___dpmi_error in d0007.o
+___dpmi_set_segment_base_address in d0007.o
+___dpmi_error in d0008.o
+___dpmi_set_segment_limit in d0008.o
+___dpmi_error in d0009.o
+___dpmi_set_descriptor_access_rights in d0009.o
+___dpmi_error in d000a.o
+___dpmi_create_alias_descriptor in d000a.o
+___dpmi_error in d000b.o
+___dpmi_get_descriptor in d000b.o
+___dpmi_error in d000c.o
+___dpmi_set_descriptor in d000c.o
+___dpmi_error in d000d.o
+___dpmi_allocate_specific_ldt_descriptor in d000d.o
+___dpmi_error in d000e.o
+___dpmi_get_multiple_descriptors in d000e.o
+___dpmi_error in d000f.o
+___dpmi_set_multiple_descriptors in d000f.o
+___dpmi_error in d0100.o
+___dpmi_allocate_dos_memory in d0100.o
+___dpmi_error in d0101.o
+___dpmi_free_dos_memory in d0101.o
+___dpmi_error in d0102.o
+___dpmi_resize_dos_memory in d0102.o
+___dpmi_error in d0200.o
+___dpmi_get_real_mode_interrupt_vector in d0200.o
+___dpmi_error in d0201.o
+___dpmi_set_real_mode_interrupt_vector in d0201.o
+___dpmi_error in d0202.o
+___dpmi_get_processor_exception_handler_vector in d0202.o
+___dpmi_error in d0203.o
+___dpmi_set_processor_exception_handler_vector in d0203.o
+___dpmi_error in d0204.o
+___dpmi_get_protected_mode_interrupt_vector in d0204.o
+___dpmi_error in d0205.o
+___dpmi_set_protected_mode_interrupt_vector in d0205.o
+___dpmi_error in d0210.o
+___dpmi_get_extended_exception_handler_vector_pm in d0210.o
+___dpmi_error in d0211.o
+___dpmi_get_extended_exception_handler_vector_rm in d0211.o
+___dpmi_error in d0212.o
+___dpmi_set_extended_exception_handler_vector_pm in d0212.o
+___dpmi_error in d0213.o
+___dpmi_set_extended_exception_handler_vector_rm in d0213.o
+___dpmi_error in d0300.o
+___dpmi_simulate_real_mode_interrupt in d0300.o
+___dpmi_error in d0300_z.o
+___dpmi_int_ss in d0300_z.o
+___dpmi_int_sp in d0300_z.o
+___dpmi_int_flags in d0300_z.o
+___dpmi_int in d0300_z.o
+___dpmi_error in d0301.o
+___dpmi_simulate_real_mode_procedure_retf in d0301.o
+___dpmi_error in d0301_s.o
+___dpmi_simulate_real_mode_procedure_retf_stack in d0301_s.o
+___dpmi_error in d0302.o
+___dpmi_simulate_real_mode_procedure_iret in d0302.o
+___dpmi_error in d0303.o
+___dpmi_allocate_real_mode_callback in d0303.o
+___dpmi_error in d0304.o
+___dpmi_free_real_mode_callback in d0304.o
+___dpmi_error in d0305.o
+___dpmi_get_state_save_restore_addr in d0305.o
+___dpmi_error in d0306.o
+___dpmi_get_raw_mode_switch_addr in d0306.o
+___dpmi_error in d0400.o
+___dpmi_get_version in d0400.o
+___dpmi_error in d0401.o
+___dpmi_get_capabilities in d0401.o
+___dpmi_error in d0500.o
+___dpmi_get_free_memory_information in d0500.o
+___dpmi_error in d0501.o
+___dpmi_allocate_memory in d0501.o
+___dpmi_error in d0502.o
+___dpmi_free_memory in d0502.o
+___dpmi_error in d0503.o
+___dpmi_resize_memory in d0503.o
+___dpmi_error in d0504.o
+___dpmi_allocate_linear_memory in d0504.o
+___dpmi_error in d0505.o
+___dpmi_resize_linear_memory in d0505.o
+___dpmi_error in d0506.o
+___dpmi_get_page_attributes in d0506.o
+___dpmi_error in d0507.o
+___dpmi_set_page_attributes in d0507.o
+___dpmi_error in d0508.o
+___dpmi_map_device_in_memory_block in d0508.o
+___dpmi_error in d0509.o
+___dpmi_map_conventional_memory_in_memory_block in d0509.o
+___dpmi_error in d050a.o
+___dpmi_get_memory_block_size_and_base in d050a.o
+___dpmi_error in d050b.o
+___dpmi_get_memory_information in d050b.o
+___dpmi_error in d0600.o
+___dpmi_lock_linear_region in d0600.o
+___dpmi_error in d0601.o
+___dpmi_unlock_linear_region in d0601.o
+___dpmi_error in d0602.o
+___dpmi_mark_real_mode_region_as_pageable in d0602.o
+___dpmi_error in d0603.o
+___dpmi_relock_real_mode_region in d0603.o
+___dpmi_error in d0604.o
+___dpmi_get_page_size in d0604.o
+___dpmi_error in d0702.o
+___dpmi_mark_page_as_demand_paging_candidate in d0702.o
+___dpmi_error in d0703.o
+___dpmi_discard_page_contents in d0703.o
+___dpmi_error in d0800.o
+___dpmi_physical_address_mapping in d0800.o
+___dpmi_error in d0801.o
+___dpmi_free_physical_address_mapping in d0801.o
+___dpmi_error in d09.o
+___dpmi_get_and_set_virtual_interrupt_state in d09.o
+___dpmi_error in d0900.o
+___dpmi_get_and_disable_virtual_interrupt_state in d0900.o
+___dpmi_error in d0901.o
+___dpmi_get_and_enable_virtual_interrupt_state in d0901.o
+___dpmi_error in d0902.o
+___dpmi_get_virtual_interrupt_state in d0902.o
+___dpmi_error in d0a00.o
+___dpmi_get_vendor_specific_api_entry_point in d0a00.o
+___dpmi_error in d0b00.o
+___dpmi_set_debug_watchpoint in d0b00.o
+___dpmi_error in d0b01.o
+___dpmi_clear_debug_watchpoint in d0b01.o
+___dpmi_error in d0b02.o
+___dpmi_get_state_of_debug_watchpoint in d0b02.o
+___dpmi_error in d0b03.o
+___dpmi_reset_debug_watchpoint in d0b03.o
+___dpmi_error in d0c00.o
+___dpmi_install_resident_service_provider_callback in d0c00.o
+___dpmi_error in d0c01.o
+___dpmi_terminate_and_stay_resident in d0c01.o
+___dpmi_error in d0d00.o
+___dpmi_allocate_shared_memory in d0d00.o
+___dpmi_error in d0d01.o
+___dpmi_free_shared_memory in d0d01.o
+___dpmi_error in d0d02.o
+___dpmi_serialize_on_shared_memory in d0d02.o
+___dpmi_error in d0d03.o
+___dpmi_free_serialization_on_shared_memory in d0d03.o
+___dpmi_error in d0e00.o
+___dpmi_get_coprocessor_status in d0e00.o
+___dpmi_error in d0e01.o
+___dpmi_set_coprocessor_emulation in d0e01.o
+___dpmi_error in dpmi_lar.o
+___dpmi_get_descriptor_access_rights in dpmi_lar.o
+___dpmi_error in dpmi_lsl.o
+___dpmi_get_segment_limit in dpmi_lsl.o
+___djgpp_map_physical_memory in mapmem.o
+___djgpp_set_page_attributes in setattr.o
+__dxe_load in dxeload.o
+__npxsetup in npxsetup.o
+___emu387_load_hook in npxsetup.o
+__detect_80387 in fpu.o
+___FSEXT_add_open_handler in fse_open.o
+___FSEXT_call_open_handlers in fse_open.o
+___FSEXT_alloc_fd in fsext.o
+___FSEXT_set_function in fsext.o
+___FSEXT_get_function in fsext.o
+_signal in dpmiexcp.o
+_raise in dpmiexcp.o
+___djgpp_exception_processor in dpmiexcp.o
+___djgpp_exception_toggle in dpmiexcp.o
+___djgpp_exception_setup in dpmiexcp.o
+___djgpp_set_ctrl_c in dpmiexcp.o
+___djgpp_exception_table in exceptn.o
+___djgpp_our_DS in exceptn.o
+___djgpp_exception_state_ptr in exceptn.o
+___djgpp_app_DS in exceptn.o
+___djgpp_save_interrupt_regs in exceptn.o
+___djgpp_hw_lock_start in exceptn.o
+___djgpp_cbrk_count in exceptn.o
+___djgpp_timer_countdown in exceptn.o
+___djgpp_dos_sel in exceptn.o
+___djgpp_hwint_flags in exceptn.o
+___djgpp_old_kbd in exceptn.o
+___djgpp_old_timer in exceptn.o
+___djgpp_ds_alias in exceptn.o
+___djgpp_npx_hdlr in exceptn.o
+___djgpp_hw_exception in exceptn.o
+___djgpp_kbd_hdlr in exceptn.o
+___djgpp_kbd_hdlr_pc98 in exceptn.o
+___djgpp_timer_hdlr in exceptn.o
+___djgpp_cbrk_hdlr in exceptn.o
+___djgpp_i24 in exceptn.o
+___djgpp_iret in exceptn.o
+___djgpp_hw_lock_end in exceptn.o
+__go32_want_ctrl_break in go32cbrk.o
+__go32_was_ctrl_break_hit in go32cbrk.o
+__go32_dpmi_get_free_memory_information in godefv1.o
+__go32_dpmi_simulate_int in godefv1.o
+__go32_dpmi_simulate_fcall in godefv1.o
+__go32_dpmi_simulate_fcall_iret in godefv1.o
+__go32_my_cs in godefv1.o
+__go32_my_ds in godefv1.o
+__go32_my_ss in godefv1.o
+__go32_conventional_mem_selector in godefv1.o
+__go32_interrupt_stack_size in gopint.o
+__go32_dpmi_lock_data in gopint.o
+__go32_dpmi_lock_code in gopint.o
+__go32_dpmi_chain_protected_mode_interrupt_vector in gopint.o
+__go32_dpmi_allocate_iret_wrapper in gopint.o
+__go32_dpmi_free_iret_wrapper in gopint.o
+__go32_dpmi_get_protected_mode_interrupt_vector in gopvec.o
+__go32_dpmi_set_protected_mode_interrupt_vector in gopvec.o
+__go32_dpmi_remaining_physical_memory in goqmem.o
+__go32_dpmi_remaining_virtual_memory in goqmem.o
+__go32_rmcb_stack_size in gormcb.o
+__go32_dpmi_allocate_real_mode_callback_retf in gormcb.o
+__go32_dpmi_allocate_real_mode_callback_iret in gormcb.o
+__go32_dpmi_free_real_mode_callback in gormcb.o
+__go32_dpmi_allocate_dos_memory in gormem.o
+__go32_dpmi_free_dos_memory in gormem.o
+__go32_dpmi_resize_dos_memory in gormem.o
+__go32_dpmi_get_real_mode_interrupt_vector in gorvec.o
+__go32_dpmi_set_real_mode_interrupt_vector in gorvec.o
+__go32_info_block in infostrc.o
+__wscroll in conio.o
+_directvideo in conio.o
+_puttext in conio.o
+_gettext in conio.o
+_gotoxy in conio.o
+_wherex in conio.o
+_wherey in conio.o
+_textmode in conio.o
+_gppconio_init in conio.o
+_textattr in conio.o
+_textcolor in conio.o
+_textbackground in conio.o
+_highvideo in conio.o
+_lowvideo in conio.o
+_normvideo in conio.o
+__setcursortype in conio.o
+_clreol in conio.o
+_clrscr in conio.o
+_putch in conio.o
+_delline in conio.o
+_getche in conio.o
+_getch in conio.o
+_ungetch in conio.o
+__conio_kbhit in conio.o
+_insline in conio.o
+_window in conio.o
+_cputs in conio.o
+_cprintf in conio.o
+_cgets in conio.o
+_cscanf in conio.o
+_movetext in conio.o
+_gettextinfo in conio.o
+__set_screen_lines in conio.o
+_ScreenAttrib in scattrib.o
+_ScreenClear in scclear.o
+_ScreenCols in sccols.o
+_ScreenGetCursor in scgetc.o
+_ScreenMode in scmode.o
+_ScreenPutChar in scputc.o
+_ScreenPutString in scputs.o
+_ScreenRetrieve in scretr.o
+_ScreenRows in scrows.o
+_ScreenSetCursor in scsetc.o
+_ScreenUpdate in scupdate.o
+_ScreenUpdateLine in scupdl.o
+_ScreenVisualBell in scvbell.o
+__my_cs in my_cs.o
+__my_ds in my_ds.o
+__my_ss in my_ss.o
+_htonl in htonl.o
+_htons in htons.o
+_ntohl in ntohl.o
+_ntohs in ntohs.o
+__farpokeb in farptr.o
+__farpokew in farptr.o
+__farpokel in farptr.o
+__farpeekb in farptr.o
+__farpeekw in farptr.o
+__farpeekl in farptr.o
+__farsetsel in farptr.o
+__farnspokeb in farptr.o
+__farnspokew in farptr.o
+__farnspokel in farptr.o
+__farnspeekb in farptr.o
+__farnspeekw in farptr.o
+__farnspeekl in farptr.o
+__clear87 in clear87.o
+__control87 in cntrl87.o
+__fpreset in fpreset.o
+__status87 in stat87.o
+_disable in disable.o
+_enable in enable.o
+_inportb in ib.o
+_inportl in il.o
+_inb in inb.o
+_inp in inp.o
+_inpw in inpw.o
+_inportsb in isb.o
+_inportsl in isl.o
+_inportsw in isw.o
+_inportw in iw.o
+_outportb in ob.o
+_outportl in ol.o
+_outportsb in osb.o
+_outportsl in osl.o
+_outportsw in osw.o
+_outb in outb.o
+_outp in outp.o
+_outpw in outpw.o
+_outportw in ow.o
+_getkey in getkey.o
+_getxkey in getxkey.o
+_kbhit in kbhit.o
+___dj_movedata in djmd.o
+___dosmemget in dmg.o
+__dosmemgetb in dmgb.o
+__dosmemgetl in dmgl.o
+__dosmemgetw in dmgw.o
+___dosmemput in dmp.o
+__dosmemputb in dmpb.o
+__dosmemputl in dmpl.o
+__dosmemputw in dmpw.o
+___movedata in md.o
+__movedatab in mdb.o
+__movedatal in mdl.o
+__movedataw in mdw.o
+__mono_clear in mono.o
+__mono_putc in mono.o
+__mono_printf in mono.o
+___djgpp_nearptr_enable in nearptr.o
+___djgpp_nearptr_disable in nearptr.o
+_sound in sound.o
+_clock in clock.o
+_uclock in uclock.o
+_closedir in closedir.o
+___opendir_flags in odflags.o
+_opendir in opendir.o
+_readdir in readdir.o
+_rewinddir in rewinddi.o
+_seekdir in seekdir.o
+_telldir in telldir.o
+_creat in creat.o
+_fcntl in fcntl.o
+___open in open.o
+___fnmatch in fnmatch.o
+___glob in glob.o
+_globfree in globfree.o
+_getgrent in getgrent.o
+_fgetgrent in getgrent.o
+_setgrent in getgrent.o
+_endgrent in getgrent.o
+_getgrgid in getgrgid.o
+_getgrnam in getgrgid.o
+_getpwnam in getpwnam.o
+_getpwuid in getpwuid.o
+_setpwent in pwent.o
+_getpwent in pwent.o
+_endpwent in pwent.o
+_regcomp in regcomp.o
+_regerror in regerror.o
+_regexec in regexec.o
+_regfree in regfree.o
+_siglongjmp in siglongj.o
+_sigsetjmp in sigsetjm.o
+___getitimer in itimer.o
+___setitimer in itimer.o
+_kill in kill.o
+_sigaction in sigactio.o
+_sigaddset in sigaddse.o
+_sigdelset in sigdelse.o
+_sigemptyset in sigempty.o
+_sigfillset in sigfills.o
+_sigismember in sigismem.o
+_sigpending in sigpendi.o
+_sigprocmask in sigprocm.o
+_sigsuspend in sigsuspe.o
+_fdopen in fdopen.o
+_fileno in fileno.o
+_popen in popen.o
+_pclose in popen.o
+_chmod in chmod.o
+___filelength in filelen.o
+__fixpath in fixpath.o
+_fstat in fstat.o
+__get_magic in is_exec.o
+__is_executable in is_exec.o
+___mkdir in mkdir.o
+_mkfifo in mkfifo.o
+__djstat_describe_lossage in st_loss.o
+_stat in stat.o
+_umask in umask.o
+__file_time_stamp in xstat.o
+__getftime in xstat.o
+__invent_inode in xstat.o
+__djstat_flags in xstat.o
+__djstat_fail_bits in xstat.o
+_times in times.o
+_wait in wait.o
+_waitpid in waitpid.o
+___access in access.o
+_alarm in alarm.o
+_chdir in chdir.o
+_chown in chown.o
+___close in close.o
+_ctermid in ctermid.o
+___dup in dup.o
+___dup2 in dup2.o
+_execl in execl.o
+_execle in execle.o
+_execlp in execlp.o
+_execlpe in execlpe.o
+_execv in execv.o
+_execve in execve.o
+_execvp in execvp.o
+_execvpe in execvpe.o
+_fork in fork.o
+_fpathconf in fpathcon.o
+_getcwd in getcwd.o
+_getegid in getegid.o
+_geteuid in geteuid.o
+_getgid in getgid.o
+_getgroups in getgroup.o
+_getlogin in getlogin.o
+_opterr in getopt.o
+_optind in getopt.o
+_optopt in getopt.o
+_optarg in getopt.o
+_getopt in getopt.o
+_getpgrp in getpgrp.o
+_getpid in getpid.o
+_getppid in getppid.o
+_getuid in getuid.o
+___isatty in isatty.o
+_link in link.o
+___lseek in lseek.o
+_pathconf in pathconf.o
+_pause in pause.o
+_pipe in pipe.o
+___read in read.o
+_rmdir in rmdir.o
+_setgid in setgid.o
+_setpgid in setpgid.o
+_setsid in setsid.o
+_setuid in setuid.o
+_sleep in sleep.o
+_sysconf in sysconf.o
+_ttyname in ttyname.o
+_unlink in unlink.o
+___write in write.o
+_utime in utime.o
+_uname in uname.o
+_access in stub0000.o
+_close in stub0001.o
+_dup in stub0002.o
+_dup2 in stub0003.o
+_fnmatch in stub0004.o
+_glob in stub0005.o
+_isatty in stub0006.o
+_lseek in stub0007.o
+_mkdir in stub0008.o
+_open in stub0009.o
+_read in stub0010.o
+_tzname in stub0011.o
+_tzset in stub0012.o
+_write in stub0013.o
+_crlf2nl in stub0014.o
+_dosmemget in stub0015.o
+_dosmemput in stub0016.o
+_filelength in stub0017.o
+_findfirst in stub0018.o
+_findnext in stub0019.o
+_fsync in stub0020.o
+_getdisk in stub0021.o
+_getitimer in stub0022.o
+_gettimeofday in stub0023.o
+_modfl in stub0024.o
+_movedata in stub0025.o
+_pow10 in stub0026.o
+_pow2 in stub0027.o
+_putenv in stub0028.o
+_sbrk in stub0029.o
+_setitimer in stub0030.o
+_setmode in stub0031.o
+_spawnve in stub0032.o
+_spawnvpe in stub0033.o
+_stricmp in stub0034.o
+_sync in stub0035.o
+___libc_ident_string in id_c.o
+___libc_sccs_ident in id_c.o
+
+assert.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+00000024 T ___dj_assert
+         U ___dj_stderr
+00000000 t ___gnu_compiled_c
+         U _exit
+         U _fprintf
+         U _raise
+00000000 t gcc2_compiled.
+
+ct_flags.o:
+00000204 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+ct_lower.o:
+00000104 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_ctype_tolower
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+ct_upper.o:
+00000104 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_ctype_toupper
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+isalnum.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isalnum
+00000000 t gcc2_compiled.
+
+isalpha.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isalpha
+00000000 t gcc2_compiled.
+
+isascii.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _isascii
+00000000 t gcc2_compiled.
+
+iscntrl.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _iscntrl
+00000000 t gcc2_compiled.
+
+isdigit.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isdigit
+00000000 t gcc2_compiled.
+
+isgraph.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isgraph
+00000000 t gcc2_compiled.
+
+islower.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _islower
+00000000 t gcc2_compiled.
+
+isprint.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isprint
+00000000 t gcc2_compiled.
+
+ispunct.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _ispunct
+00000000 t gcc2_compiled.
+
+isspace.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isspace
+00000000 t gcc2_compiled.
+
+isupper.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isupper
+00000000 t gcc2_compiled.
+
+isxdigit.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000000 T _isxdigit
+00000000 t gcc2_compiled.
+
+toascii.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _toascii
+00000000 t gcc2_compiled.
+
+tolower.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+00000000 t ___gnu_compiled_c
+00000000 T _tolower
+00000000 t gcc2_compiled.
+
+toupper.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+         U ___dj_ctype_toupper
+00000000 t ___gnu_compiled_c
+00000000 T _toupper
+00000000 t gcc2_compiled.
+
+errno.o:
+00000000 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000004 C _errno
+00000000 t gcc2_compiled.
+
+lconv.o:
+0000003c b .bss
+0000000c d .data
+00000000 t .text
+0000000d d _DSTR
+0000000c d _ESTR
+00000000 t ___gnu_compiled_c
+00000010 d ___lconv_
+00000000 T _localeconv
+00000000 t gcc2_compiled.
+
+mbcurmax.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_mb_cur_max
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+mblen.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _mblen
+00000000 t gcc2_compiled.
+
+mbstowcs.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _mbstowcs
+00000000 t gcc2_compiled.
+
+mbtowc.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _mbtowc
+00000000 t gcc2_compiled.
+
+setlocal.o:
+00000054 b .bss
+00000050 d .data
+00000000 t .text
+00000050 d _CLOCALE.2
+00000000 t ___gnu_compiled_c
+00000008 T _setlocale
+         U _strcmp
+00000000 t gcc2_compiled.
+
+wcstombs.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _wcstombs
+00000000 t gcc2_compiled.
+
+wctomb.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _wctomb
+00000000 t gcc2_compiled.
+
+acos.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000008 T _acos
+
+acosh.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _acosh
+         U _log
+         U _sqrt
+00000000 t gcc2_compiled.
+
+asin.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _asin
+
+asinh.o:
+00000090 b .bss
+00000090 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _asinh
+         U _log
+         U _sqrt
+00000000 t gcc2_compiled.
+
+atan.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _atan
+
+atan2.o:
+0000003c b .bss
+00000034 d .data
+00000000 t .text
+00000000 T _atan2
+         U _errno
+0000001a t doit
+0000001d t isanan
+00000034 d nan
+
+atanh.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 T _atanh
+         U _log
+00000000 t gcc2_compiled.
+
+ceil.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T _ceil
+
+cos.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000008 T _cos
+
+cosh.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 T _cosh
+         U _exp
+00000000 t gcc2_compiled.
+
+exp.o:
+00000058 b .bss
+0000004c d .data
+00000000 t .text
+00000000 T _exp
+
+fabs.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _fabs
+
+floor.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T _floor
+
+fmod.o:
+00000024 b .bss
+00000020 d .data
+00000000 t .text
+00000000 T _fmod
+00000015 t next
+0000001e t out
+
+frexp.o:
+0000008c b .bss
+0000008c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _frexp
+00000000 t gcc2_compiled.
+
+huge_val.o:
+00000008 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_huge_val
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+hypot.o:
+000000e4 b .bss
+000000e4 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000018 T _hypot
+         U _sqrt
+00000000 t gcc2_compiled.
+
+ldexp.o:
+0000005c b .bss
+0000005c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 T _ldexp
+00000000 t gcc2_compiled.
+
+log.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _log
+
+modf.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 T _modf
+
+modfl.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T ___modfl
+
+pow.o:
+000000c0 b .bss
+000000b8 d .data
+00000000 t .text
+00000052 T _pow
+0000007a t error
+00000008 t frac
+00000066 t xltez
+00000082 t xltz
+000000b5 t yeven
+0000007d t ygtz
+000000b8 d yint
+0000009b t yisint
+
+pow10.o:
+00000058 b .bss
+0000004c d .data
+00000000 t .text
+00000000 T ___pow10
+
+pow2.o:
+00000054 b .bss
+00000048 d .data
+00000000 t .text
+00000000 T ___pow2
+
+sin.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000008 T _sin
+
+sinh.o:
+00000054 b .bss
+00000054 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _exp
+00000008 T _sinh
+00000000 t gcc2_compiled.
+
+sqrt.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _sqrt
+
+tan.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000008 T _tan
+
+tanh.o:
+0000006c b .bss
+0000006c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _exp
+00000018 T _tanh
+00000000 t gcc2_compiled.
+
+longjmp.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___djgpp_exception_state_ptr
+00000000 T _longjmp
+
+setjmp.o:
+00000058 b .bss
+00000058 d .data
+00000000 t .text
+         U ___djgpp_exception_state_ptr
+00000000 T _setjmp
+
+allocfil.o:
+000000a8 b .bss
+000000a8 d .data
+00000000 t .text
+00000004 T ___alloc_file
+         U ___file_rec_list
+00000000 t ___gnu_compiled_c
+         U ___stdio_cleanup_proc
+         U _malloc
+         U _memset
+00000000 t gcc2_compiled.
+
+clearerr.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _clearerr
+00000000 t gcc2_compiled.
+
+doprnt.o:
+00001570 b .bss
+00001410 d .data
+00000000 t .text
+00001558 d _INVPREC
+00001418 d _NULL_REP
+00001564 d _PREC
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+         U ___modfl
+         U ___stdio_cleanup_proc
+00000028 T __doprnt
+         U __flsbuf
+00000a50 t _cvtl
+00001410 d _decimal
+000012e0 t _exponentl
+000013b8 t _isspeciall
+         U _localeconv
+         U _memchr
+         U _memcpy
+00001414 d _nan
+00001420 d _pten
+000014bc d _ptenneg
+         U _putc
+000011a8 t _roundl
+00000000 t gcc2_compiled.
+
+doscan.o:
+000008cc b .bss
+000007c8 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+         U __atold
+00000000 T __doscan
+0000001e T __doscan_low
+00000708 t __getccl
+0000029c t __innum
+0000060a t __instr
+000007c8 d __sctab
+         U _atof
+         U _fgetc
+000008c8 d _nchars
+         U _ungetc
+00000000 t gcc2_compiled.
+
+fclose.o:
+000000ac b .bss
+000000ac d .data
+00000000 t .text
+         U ___close
+00000000 t ___gnu_compiled_c
+00000000 T _fclose
+         U _fflush
+         U _free
+         U _remove
+00000000 t gcc2_compiled.
+
+feof.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _feof
+00000000 t gcc2_compiled.
+
+ferror.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _ferror
+00000000 t gcc2_compiled.
+
+fflush.o:
+00000078 b .bss
+00000078 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___write
+00000000 T _fflush
+00000000 t gcc2_compiled.
+
+fgetc.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __filbuf
+00000000 T _fgetc
+00000000 t gcc2_compiled.
+
+fgetpos.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _fgetpos
+         U _ftell
+00000000 t gcc2_compiled.
+
+fgets.o:
+00000068 b .bss
+00000068 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __filbuf
+00000000 T _fgets
+00000000 t gcc2_compiled.
+
+filbuf.o:
+00000120 b .bss
+00000120 d .data
+00000000 t .text
+         U ___dj_stderr
+         U ___dj_stdin
+         U ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U ___read
+         U ___stdio_cleanup_proc
+00000004 T __filbuf
+         U __go32_info_block
+         U _fflush
+         U _malloc
+00000000 t gcc2_compiled.
+
+flsbuf.o:
+00000140 b .bss
+00000140 d .data
+00000000 t .text
+         U ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U ___isatty
+         U ___write
+00000000 T __flsbuf
+         U __go32_info_block
+         U _malloc
+00000000 t gcc2_compiled.
+
+fopen.o:
+0000013c b .bss
+0000013c d .data
+00000000 t .text
+         U ___alloc_file
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___open
+         U __fmode
+00000000 T _fopen
+00000000 t gcc2_compiled.
+
+fprintf.o:
+00000084 b .bss
+00000084 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __doprnt
+         U _fflush
+00000000 T _fprintf
+00000000 t gcc2_compiled.
+
+fputc.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __flsbuf
+00000000 T _fputc
+00000000 t gcc2_compiled.
+
+fputs.o:
+000000a0 b .bss
+000000a0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __flsbuf
+         U _fflush
+00000000 T _fputs
+00000000 t gcc2_compiled.
+
+fread.o:
+00000084 b .bss
+00000084 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __filbuf
+00000000 T _fread
+         U _memcpy
+00000000 t gcc2_compiled.
+
+freopen.o:
+0000012c b .bss
+0000012c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___open
+         U __fmode
+         U _fclose
+00000000 T _freopen
+00000000 t gcc2_compiled.
+
+frlist.o:
+0000005c b .bss
+00000000 d .data
+00000000 t .text
+         U ___dj_stdaux
+         U ___dj_stderr
+         U ___dj_stdin
+         U ___dj_stdout
+         U ___dj_stdprn
+00000058 D ___file_rec_list
+00000000 t ___gnu_compiled_c
+00000000 d ___initial_file_rec
+00000000 t gcc2_compiled.
+
+fscanf.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __doscan
+00000000 T _fscanf
+00000000 t gcc2_compiled.
+
+fseek.o:
+000000ac b .bss
+000000ac d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U _fflush
+00000000 T _fseek
+         U _ftell
+00000000 t gcc2_compiled.
+
+fsetpos.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _fseek
+00000000 T _fsetpos
+00000000 t gcc2_compiled.
+
+ftell.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+         U ___file_handle_modes
+00000000 t ___gnu_compiled_c
+         U ___lseek
+00000000 T _ftell
+00000000 t gcc2_compiled.
+
+fwalk.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+         U ___file_rec_list
+00000000 t ___gnu_compiled_c
+00000000 T __fwalk
+00000000 t gcc2_compiled.
+
+fwrite.o:
+000000e0 b .bss
+000000e0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __flsbuf
+00000000 T _fwrite
+         U _memcpy
+00000000 t gcc2_compiled.
+
+getc.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __filbuf
+00000000 T _getc
+00000000 t gcc2_compiled.
+
+getchar.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dj_stdin
+00000000 t ___gnu_compiled_c
+         U __filbuf
+00000000 T _getchar
+00000000 t gcc2_compiled.
+
+gets.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getchar
+00000000 T _gets
+00000000 t gcc2_compiled.
+
+getw.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getc
+00000000 T _getw
+00000000 t gcc2_compiled.
+
+perror.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+         U ___dj_stderr
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _fprintf
+00000008 T _perror
+         U _strerror
+00000000 t gcc2_compiled.
+
+printf.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U __doprnt
+00000000 T _printf
+00000000 t gcc2_compiled.
+
+putc.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __flsbuf
+00000000 T _putc
+00000000 t gcc2_compiled.
+
+putchar.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+         U ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U __flsbuf
+00000000 T _putchar
+00000000 t gcc2_compiled.
+
+puts.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _putchar
+00000000 T _puts
+00000000 t gcc2_compiled.
+
+putw.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _putc
+00000000 T _putw
+00000000 t gcc2_compiled.
+
+remove.o:
+000000b0 b .bss
+000000b0 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __chmod
+         U __go32_info_block
+         U __use_lfn
+         U _errno
+00000000 T _remove
+00000000 t gcc2_compiled.
+
+rename.o:
+000006b4 b .bss
+000006b0 d .data
+00000000 t .text
+         U ___bss_count
+         U ___dj_ctype_toupper
+         U ___file_tree_walk
+         U ___getdisk
+00000000 t ___gnu_compiled_c
+         U ___mkdir
+         U __chmod
+         U __rename
+         U __truename
+000006b4 b _dirnames_pool
+000006bc b _dirstack
+         U _errno
+00000000 t _init_stack
+000001c0 t _is_parent
+000008d8 b _last
+         U _malloc
+000001f4 t _mover
+000006b8 b _pool_size
+00000194 t _pop_dir
+000000a0 t _push_dir
+         U _realloc
+         U _remove
+0000029c T _rename
+000006b0 d _rename_count
+000007d4 b _source
+000006c4 b _stack_size
+000006c0 b _stack_top
+         U _strcat
+         U _strchr
+         U _strcmp
+         U _strcpy
+         U _strrchr
+         U _strstr
+000006cc b _target
+00000000 t gcc2_compiled.
+
+_rename.o:
+000000b8 b .bss
+000000b8 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __put_path
+         U __put_path2
+00000000 T __rename
+         U __use_lfn
+         U _errno
+         U _remove
+00000000 t gcc2_compiled.
+
+rewind.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U _fflush
+00000000 T _rewind
+00000000 t gcc2_compiled.
+
+scanf.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+         U ___dj_stdin
+00000000 t ___gnu_compiled_c
+         U __doscan
+00000000 T _scanf
+00000000 t gcc2_compiled.
+
+setbuf.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _setbuf
+         U _setvbuf
+00000000 t gcc2_compiled.
+
+setbuffe.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _setbuffer
+         U _setvbuf
+00000000 t gcc2_compiled.
+
+setlineb.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _setlinebuf
+         U _setvbuf
+00000000 t gcc2_compiled.
+
+setvbuf.o:
+000000c0 b .bss
+000000c0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _fflush
+         U _free
+         U _malloc
+00000000 T _setvbuf
+00000000 t gcc2_compiled.
+
+sprintf.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __doprnt
+00000000 T _sprintf
+00000000 t gcc2_compiled.
+
+sscanf.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __doscan
+00000000 T _sscanf
+00000000 t gcc2_compiled.
+
+stdaux.o:
+00000020 b .bss
+00000004 d .data
+00000000 t .text
+00000004 D ___dj_stdaux
+00000000 t ___gnu_compiled_c
+         U ___stdio_cleanup_proc
+00000000 t gcc2_compiled.
+
+stderr.o:
+00000020 b .bss
+00000004 d .data
+00000000 t .text
+00000004 D ___dj_stderr
+00000000 t ___gnu_compiled_c
+         U ___stdio_cleanup_proc
+00000000 t gcc2_compiled.
+
+stdin.o:
+00000020 b .bss
+00000004 d .data
+00000000 t .text
+00000004 D ___dj_stdin
+00000000 t ___gnu_compiled_c
+         U ___stdio_cleanup_proc
+00000000 t gcc2_compiled.
+
+stdiohk.o:
+00000038 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000034 D ___stdio_cleanup_hook
+00000000 T ___stdio_cleanup_proc
+         U __fwalk
+         U _fclose
+00000010 t _fcloseall_helper
+         U _fflush
+00000000 t gcc2_compiled.
+
+stdout.o:
+00000020 b .bss
+00000004 d .data
+00000000 t .text
+00000004 D ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U ___stdio_cleanup_proc
+00000000 t gcc2_compiled.
+
+stdprn.o:
+00000020 b .bss
+00000004 d .data
+00000000 t .text
+00000004 D ___dj_stdprn
+00000000 t ___gnu_compiled_c
+         U ___stdio_cleanup_proc
+00000000 t gcc2_compiled.
+
+tmpfile.o:
+00000084 b .bss
+00000084 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __fmode
+         U _fopen
+         U _malloc
+         U _strcpy
+00000008 T _tmpfile
+         U _tmpnam
+00000000 t gcc2_compiled.
+
+tmpnam.o:
+00000284 b .bss
+00000270 d .data
+00000000 t .text
+         U ___access
+         U ___bss_count
+00000000 t ___gnu_compiled_c
+00000284 b _buf.2
+0000027d d _def.7
+         U _getenv
+0000038c b _static_buf.5
+         U _strcpy
+00000270 d _tmp_bss_count
+00000490 b _tmp_dir
+00000494 b _tmp_len
+00000274 d _tmpcount.6
+00000010 T _tmpnam
+00000000 t gcc2_compiled.
+
+ungetc.o:
+00000054 b .bss
+00000054 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _ungetc
+00000000 t gcc2_compiled.
+
+vfprintf.o:
+00000080 b .bss
+00000080 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __doprnt
+         U _fflush
+00000000 T _vfprintf
+00000000 t gcc2_compiled.
+
+vprintf.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U __doprnt
+00000000 T _vprintf
+00000000 t gcc2_compiled.
+
+vsprintf.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __doprnt
+00000000 T _vsprintf
+00000000 t gcc2_compiled.
+
+abort.o:
+00000024 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __exit
+         U __write
+00000000 T _abort
+00000018 d _msg
+00000000 t gcc2_compiled.
+
+abs.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _abs
+00000000 t gcc2_compiled.
+
+atexit.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___atexit_ptr
+00000000 t ___gnu_compiled_c
+00000000 T _atexit
+         U _malloc
+00000000 t gcc2_compiled.
+
+atof.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _atof
+         U _strtod
+00000000 t gcc2_compiled.
+
+atoi.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _atoi
+         U _strtol
+00000000 t gcc2_compiled.
+
+atol.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _atol
+         U _strtol
+00000000 t gcc2_compiled.
+
+atold.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __atold
+         U __strtold
+00000000 t gcc2_compiled.
+
+bsearch.o:
+00000054 b .bss
+00000054 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _bsearch
+00000000 t gcc2_compiled.
+
+calloc.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _calloc
+         U _malloc
+         U _memset
+00000000 t gcc2_compiled.
+
+div.o:
+00000058 b .bss
+00000058 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _div
+00000000 t gcc2_compiled.
+
+exit.o:
+00000060 b .bss
+0000005c d .data
+00000000 t .text
+0000005c D ___atexit_ptr
+00000000 t ___gnu_compiled_c
+         U ___setmode
+00000004 C ___stdio_cleanup_hook
+         U __exit
+00000000 T _exit
+         U djgpp_first_dtor
+         U djgpp_last_dtor
+00000000 t gcc2_compiled.
+
+getenv.o:
+00000068 b .bss
+00000068 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _environ
+00000000 T _getenv
+00000000 t gcc2_compiled.
+
+labs.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _labs
+00000000 t gcc2_compiled.
+
+ldiv.o:
+00000058 b .bss
+00000058 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _ldiv
+00000000 t gcc2_compiled.
+
+malloc.o:
+00000250 b .bss
+00000250 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___sbrk
+00000144 T _free
+00000000 T _malloc
+         U _memcpy
+000000dc t _morecore
+00000250 b _nextf
+000002cc b _pagebucket
+000002c8 b _pagesz
+00000174 T _realloc
+00000000 t gcc2_compiled.
+
+qsort.o:
+000002d4 b .bss
+000002d4 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+000002e0 b _mthresh
+000002d4 b _qcmp
+000001b0 T _qsort
+00000000 t _qst
+000002d8 b _qsz
+000002dc b _thresh
+00000000 t gcc2_compiled.
+
+rand.o:
+000000b4 b .bss
+000000ac d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+000000ac d _next
+00000000 T _rand
+00000096 T _srand
+00000000 t gcc2_compiled.
+
+strtod.o:
+0000018c b .bss
+0000018c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000010 T _strtod
+00000000 t gcc2_compiled.
+
+strtol.o:
+00000178 b .bss
+00000178 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _strtol
+00000000 t gcc2_compiled.
+
+strtold.o:
+00000248 b .bss
+000001ac d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+00000018 T __strtold
+000001ac d _powten
+00000000 t gcc2_compiled.
+
+strtoul.o:
+0000014c b .bss
+0000014c d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _strtoul
+00000000 t gcc2_compiled.
+
+system.o:
+0000096c b .bss
+00000968 d .data
+00000000 t .text
+         U ___close
+         U ___dj_ctype_flags
+         U ___dosexec_command_exec
+         U ___dosexec_find_on_path
+         U ___dosexec_in_system
+         U ___dup
+         U ___dup2
+00000000 t ___gnu_compiled_c
+         U ___open
+         U ___spawnve
+         U ___stricmp
+00000968 D ___system_flags
+         U ___write
+         U _environ
+         U _errno
+         U _getenv
+0000000c t _plainsystem
+         U _remove
+         U _strcpy
+         U _strncpy
+         U _strpbrk
+000004a8 T _system
+000001e4 t _system1
+         U _tmpnam
+00000000 t gcc2_compiled.
+
+memchr.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _memchr
+00000000 t gcc2_compiled.
+
+memcmp.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _memcmp
+00000000 t gcc2_compiled.
+
+memcpy.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+         U ___dj_movedata
+00000000 T _memcpy
+
+memmove.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 T _memmove
+
+memset.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 T _memset
+
+strcat.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strcat
+00000000 t gcc2_compiled.
+
+strchr.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strchr
+00000000 t gcc2_compiled.
+
+strcmp.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strcmp
+00000000 t gcc2_compiled.
+
+strcoll.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _strcmp
+00000000 T _strcoll
+00000000 t gcc2_compiled.
+
+strcpy.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strcpy
+00000000 t gcc2_compiled.
+
+strcspn.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strcspn
+00000000 t gcc2_compiled.
+
+strerror.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___sys_errlist
+         U ___sys_nerr
+000000d0 b _ebuf.2
+00000010 T _strerror
+00000000 t gcc2_compiled.
+
+strlen.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strlen
+00000000 t gcc2_compiled.
+
+strncat.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strncat
+00000000 t gcc2_compiled.
+
+strncmp.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strncmp
+00000000 t gcc2_compiled.
+
+strncpy.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strncpy
+00000000 t gcc2_compiled.
+
+strpbrk.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strpbrk
+00000000 t gcc2_compiled.
+
+strrchr.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strrchr
+00000000 t gcc2_compiled.
+
+strspn.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strspn
+00000000 t gcc2_compiled.
+
+strstr.o:
+0000005c b .bss
+0000005c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _strncmp
+00000000 T _strstr
+00000000 t gcc2_compiled.
+
+strtok.o:
+00000084 b .bss
+00000084 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000084 b _last.2
+00000000 T _strtok
+00000000 t gcc2_compiled.
+
+strxfrm.o:
+00000048 b .bss
+00000048 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strxfrm
+00000000 t gcc2_compiled.
+
+syserr1.o:
+00000468 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 D ___syserr00
+00000009 D ___syserr01
+0000002f D ___syserr02
+00000058 D ___syserr03
+00000077 D ___syserr04
+00000092 D ___syserr05
+000000bc D ___syserr06
+000000d8 D ___syserr07
+000000ee D ___syserr08
+0000010a D ___syserr09
+0000012e D ___syserr10
+00000143 D ___syserr11
+00000158 D ___syserr12
+0000016f D ___syserr13
+0000018f D ___syserr14
+000001a9 D ___syserr15
+000001c5 D ___syserr16
+000001dd D ___syserr17
+000001fa D ___syserr18
+00000212 D ___syserr19
+00000234 D ___syserr20
+0000025b D ___syserr21
+00000273 D ___syserr22
+00000296 D ___syserr23
+000002b7 D ___syserr24
+000002d3 D ___syserr25
+000002ee D ___syserr26
+0000030e D ___syserr27
+00000330 D ___syserr28
+0000034a D ___syserr29
+0000036a D ___syserr30
+00000397 D ___syserr31
+000003b9 D ___syserr32
+000003d9 D ___syserr33
+000003ed D ___syserr34
+0000040b D ___syserr35
+00000421 D ___syserr36
+00000439 D ___syserr37
+0000044f D ___syserr38
+00000000 t gcc2_compiled.
+
+syserr2.o:
+000000a0 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 D ___sys_errlist
+0000009c D ___sys_nerr
+         U ___syserr00
+         U ___syserr01
+         U ___syserr02
+         U ___syserr03
+         U ___syserr04
+         U ___syserr05
+         U ___syserr06
+         U ___syserr07
+         U ___syserr08
+         U ___syserr09
+         U ___syserr10
+         U ___syserr11
+         U ___syserr12
+         U ___syserr13
+         U ___syserr14
+         U ___syserr15
+         U ___syserr16
+         U ___syserr17
+         U ___syserr18
+         U ___syserr19
+         U ___syserr20
+         U ___syserr21
+         U ___syserr22
+         U ___syserr23
+         U ___syserr24
+         U ___syserr25
+         U ___syserr26
+         U ___syserr27
+         U ___syserr28
+         U ___syserr29
+         U ___syserr30
+         U ___syserr31
+         U ___syserr32
+         U ___syserr33
+         U ___syserr34
+         U ___syserr35
+         U ___syserr36
+         U ___syserr37
+         U ___syserr38
+00000000 t gcc2_compiled.
+
+syserr3.o:
+000000a0 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___syserr00
+         U ___syserr01
+         U ___syserr02
+         U ___syserr03
+         U ___syserr04
+         U ___syserr05
+         U ___syserr06
+         U ___syserr07
+         U ___syserr08
+         U ___syserr09
+         U ___syserr10
+         U ___syserr11
+         U ___syserr12
+         U ___syserr13
+         U ___syserr14
+         U ___syserr15
+         U ___syserr16
+         U ___syserr17
+         U ___syserr18
+         U ___syserr19
+         U ___syserr20
+         U ___syserr21
+         U ___syserr22
+         U ___syserr23
+         U ___syserr24
+         U ___syserr25
+         U ___syserr26
+         U ___syserr27
+         U ___syserr28
+         U ___syserr29
+         U ___syserr30
+         U ___syserr31
+         U ___syserr32
+         U ___syserr33
+         U ___syserr34
+         U ___syserr35
+         U ___syserr36
+         U ___syserr37
+         U ___syserr38
+00000000 D _sys_errlist
+0000009c D _sys_nerr
+00000000 t gcc2_compiled.
+
+ctime.o:
+000022a4 b .bss
+00001cb4 d .data
+00000000 t .text
+00000000 t _GMT
+00002246 d _WILDABBR
+         U ___close
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+         U ___open
+         U ___read
+0000224c D ___tzname
+00001048 T ___tzset
+00001cb4 D __posixrules_data
+000015cc T _asctime
+000022a4 b _cp.7
+00001614 T _ctime
+00002254 d _dir.6
+         U _getenv
+000006a8 t _getrule
+00000548 t _getsecs
+00003690 b _gmt_is_set
+00001330 T _gmtime
+00002cdc b _gmtmem
+0000368c b _lcl_is_set
+0000232c b _lclmem
+00001bf0 t _localsub
+00001258 T _localtime
+00001bdc T _mktime
+000004e0 t _mon_lengths
+00001586 t _mon_name.45
+0000230c b _result.46
+         U _sprintf
+         U _strcat
+         U _strcpy
+         U _strncpy
+         U _strrchr
+00001ac8 t _time1
+00001664 t _time2
+00001398 t _timesub
+000022ac b _tm.34
+000022dc b _tm.39
+000008fc t _transtime
+0000003c t _tzload
+00000b00 t _tzparse
+00001194 t _tzsetwall
+00001571 t _wday_name.44
+00000540 t _year_lengths
+00000000 t gcc2_compiled.
+
+difftime.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _difftime
+00000000 t gcc2_compiled.
+
+strftime.o:
+00000f3c b .bss
+00000ea4 d .data
+00000000 t .text
+00000ec0 d _Afmt
+00000f0c d _Bfmt
+00000000 t ___gnu_compiled_c
+0000012c t __fmt
+00000ea4 d _afmt
+00000edc d _bfmt
+00000f3c b _buf.4
+00000f48 b _gsize
+00000f4c b _pt
+00000e60 T _strftime
+00000000 t gcc2_compiled.
+
+time.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+         U ___gettimeofday
+00000000 t ___gnu_compiled_c
+00000000 T _time
+00000000 t gcc2_compiled.
+
+float_de.o:
+00000008 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_double_epsilon
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_dm.o:
+00000008 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_double_min
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_dx.o:
+00000008 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_double_max
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_fe.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_float_epsilon
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_fm.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_float_min
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_fx.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_float_max
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_le.o:
+0000000c b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_long_double_epsilon
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_lm.o:
+0000000c b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_long_double_min
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+float_lx.o:
+0000000c b .bss
+00000000 d .data
+00000000 t .text
+00000000 D ___dj_long_double_max
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+bioscom.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _bioscom
+00000000 t gcc2_compiled.
+
+biosdisk.o:
+000003a8 b .bss
+000003a0 d .data
+00000000 t .text
+         U ___dosmemget
+         U ___dosmemput
+         U ___dpmi_allocate_dos_memory
+         U ___dpmi_free_dos_memory
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+000001f8 T __bios_disk
+         U __go32_info_block
+         U _atexit
+00000000 T _biosdisk
+000003a0 d _dos_segment
+000003a4 d _dos_selector
+0000037c t _free_dos_buffer
+00000000 t gcc2_compiled.
+
+biosequi.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _biosequip
+00000000 t gcc2_compiled.
+
+bioskey.o:
+000000a0 b .bss
+000000a0 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _bioskey
+00000000 t gcc2_compiled.
+
+biosmem.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _biosmemory
+00000000 t gcc2_compiled.
+
+biosprin.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _biosprint
+00000000 t gcc2_compiled.
+
+biostime.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _biostime
+00000000 t gcc2_compiled.
+
+b_time.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __bios_timeofday
+00000000 t gcc2_compiled.
+
+bcmp.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _bcmp
+00000000 t gcc2_compiled.
+
+bcopy.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _bcopy
+         U _memmove
+00000000 t gcc2_compiled.
+
+bzero.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _bzero
+         U _memset
+00000000 t gcc2_compiled.
+
+index.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _index
+         U _strchr
+
+rindex.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _rindex
+         U _strrchr
+
+chsize.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _chsize
+         U _ftruncate
+00000000 t gcc2_compiled.
+
+log10.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _log10
+
+log2.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _log2
+
+mprotect.o:
+00000098 b .bss
+00000098 d .data
+00000000 t .text
+         U ___djgpp_memory_handle
+         U ___dpmi_set_page_attributes
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _mprotect
+00000000 t gcc2_compiled.
+
+mntent.o:
+00000b80 b .bss
+00000b44 d .data
+00000000 t .text
+00000b61 d _NAME_cdrom
+00000b52 d _NAME_dblsp
+00000b6b d _NAME_fd
+00000b6e d _NAME_hd
+00000b77 d _NAME_join
+00000b67 d _NAME_net
+00000b5d d _NAME_ram
+00000b58 d _NAME_stac
+00000b71 d _NAME_subst
+00000b7c d _NAME_unknown
+         U ___dj_ctype_tolower
+         U ___dpmi_int
+         U ___findfirst
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __get_dos_version
+         U __go32_info_block
+         U __is_remote_drive
+         U __truename
+00000af4 T _addmntent
+         U _biosdisk
+00000b80 b _cds_address
+00000b47 d _cds_drives
+00000b84 b _cds_elsize
+00000b48 d _dev_opts
+00000b88 b _dos_mem_base
+00000b46 d _drive_a_mapping
+00000b44 d _drive_number
+00000bb0 b _drive_string
+00000b14 T _endmntent
+         U _errno
+0000010c t _get_netredir_entry
+00000024 t _get_stacker_info
+000002fc T _getmntent
+00000b00 T _hasmntopt
+00000c38 b _mnt_dir
+00000cb8 b _mnt_fsname
+00000c30 b _mnt_type
+00000b90 b _mntent
+00000b8c b _our_mem_base
+         U _setdisk
+000001e8 T _setmntent
+00000b45 d _skip_drive_b
+         U _sprintf
+         U _strcat
+         U _strcpy
+         U _strstr
+00000000 t gcc2_compiled.
+
+insque.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _insque
+00000008 C _qelem
+00000000 t gcc2_compiled.
+
+remque.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 C _qelem
+00000000 T _remque
+00000000 t gcc2_compiled.
+
+mkstemp.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _creat
+         U _errno
+00000000 T _mkstemp
+         U _mktemp
+00000000 t gcc2_compiled.
+
+mktemp.o:
+00000188 b .bss
+00000180 d .data
+00000000 t .text
+         U ___bss_count
+         U ___file_exists
+00000000 t ___gnu_compiled_c
+00000184 d _count.2
+00000028 T _mktemp
+00000180 d _mktemp_count
+00000000 t gcc2_compiled.
+
+tempnam.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _tempnam
+         U _tmpnam
+00000000 t gcc2_compiled.
+
+alloca.o:
+00000074 b .bss
+00000070 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _abort
+00000000 T _alloca
+         U _free
+00000070 d _last_alloca_header
+         U _malloc
+00000000 t gcc2_compiled.
+
+cfree.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _cfree
+         U _free
+00000000 t gcc2_compiled.
+
+getlongp.o:
+000000b4 b .bss
+000000b4 d .data
+00000000 t .text
+         U ___dj_stderr
+         U ___dj_stdout
+00000000 t ___gnu_compiled_c
+         U _exit
+         U _fflush
+         U _fputc
+         U _fputs
+         U _getkey
+00000000 T _getlongpass
+00000000 t gcc2_compiled.
+
+getpass.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getlongpass
+00000000 T _getpass
+00000024 b _password_buffer.2
+00000000 t gcc2_compiled.
+
+itoa.o:
+000000b0 b .bss
+000000b0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _itoa
+         U _malloc
+00000000 t gcc2_compiled.
+
+putenv.o:
+00000220 b .bss
+00000214 d .data
+00000000 t .text
+         U ___bss_count
+00000000 t ___gnu_compiled_c
+00000000 T ___putenv
+00000214 d _ecount
+00000218 d _emax
+         U _environ
+         U _free
+         U _malloc
+         U _memcpy
+0000021c d _putenv_bss_count
+         U _strchr
+         U _strcmp
+         U _strcpy
+         U _strncmp
+00000000 t gcc2_compiled.
+
+random.o:
+00000468 b .bss
+000003a4 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+000003a4 d _degrees
+00000464 d _end_ptr
+0000044c d _fptr
+0000008c T _initstate
+0000045c d _rand_deg
+00000460 d _rand_sep
+00000458 d _rand_type
+0000031c T _random
+000003cc d _randtbl
+00000450 d _rptr
+000003b8 d _seps
+0000024a T _setstate
+00000000 T _srandom
+00000454 d _state
+00000000 t gcc2_compiled.
+
+swab.o:
+000000bc b .bss
+000000bc d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _swab
+00000000 t gcc2_compiled.
+
+xfree.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _free
+00000000 T _xfree
+00000000 t gcc2_compiled.
+
+xmalloc.o:
+00000058 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __exit
+         U __write
+         U _malloc
+00000038 d _msg
+00000000 T _xmalloc
+00000000 t gcc2_compiled.
+
+xrealloc.o:
+00000080 b .bss
+00000054 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __exit
+         U __write
+         U _malloc
+00000054 d _msg
+         U _realloc
+00000000 T _xrealloc
+00000000 t gcc2_compiled.
+
+ffs.o:
+0000000c t .Lzero
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T _ffs
+
+memccpy.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _memccpy
+00000000 t gcc2_compiled.
+
+stpcpy.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _stpcpy
+00000000 t gcc2_compiled.
+
+strcasec.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___stricmp
+00000000 T _strcasecmp
+
+strdup.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _malloc
+         U _strcpy
+00000000 T _strdup
+00000000 t gcc2_compiled.
+
+stricmp.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+00000000 t ___gnu_compiled_c
+00000000 T ___stricmp
+00000000 t gcc2_compiled.
+
+strlwr.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+00000000 t ___gnu_compiled_c
+00000000 T _strlwr
+00000000 t gcc2_compiled.
+
+strncase.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _strncasecmp
+         U _strnicmp
+
+strnicmp.o:
+00000058 b .bss
+00000058 d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+00000000 t ___gnu_compiled_c
+00000000 T _strnicmp
+00000000 t gcc2_compiled.
+
+strsep.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _strsep
+00000000 t gcc2_compiled.
+
+strupr.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dj_ctype_toupper
+00000000 t ___gnu_compiled_c
+00000000 T _strupr
+00000000 t gcc2_compiled.
+
+resource.o:
+00000078 b .bss
+00000078 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _clock
+         U _errno
+00000000 T _getrusage
+         U _memset
+00000000 t gcc2_compiled.
+
+mknod.o:
+000000a0 b .bss
+000000a0 d .data
+00000000 t .text
+         U ___close
+00000000 t ___gnu_compiled_c
+         U ___open
+         U _errno
+00000000 T _mknod
+         U _stat
+00000000 t gcc2_compiled.
+
+statfs.o:
+000000c4 b .bss
+000000c4 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _statfs
+00000000 t gcc2_compiled.
+
+rawclock.o:
+00000034 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000030 d _base.34
+00000000 T _rawclock
+00000000 t gcc2_compiled.
+
+select.o:
+000005b8 b .bss
+000005b8 d .data
+00000000 t .text
+         U ___FSEXT_get_function
+         U ___doserr_to_errno
+         U ___dpmi_int
+         U ___dpmi_yield
+         U ___file_rec_list
+         U ___gettimeofday
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _memset
+00000000 T _select
+00000000 t gcc2_compiled.
+
+settimeo.o:
+00000090 b .bss
+00000090 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U _localtime
+00000000 T _settimeofday
+00000000 t gcc2_compiled.
+
+utimes.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _utime
+00000000 T _utimes
+00000000 t gcc2_compiled.
+
+fsync.o:
+00000064 b .bss
+00000064 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 T ___fsync
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 t gcc2_compiled.
+
+ftruncat.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U __write
+00000000 T _ftruncate
+00000000 t gcc2_compiled.
+
+getdtabl.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getdtablesize
+00000000 t gcc2_compiled.
+
+gethostn.o:
+000000bc b .bss
+000000b8 d .data
+00000000 t .text
+         U ___dosmemget
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U _errno
+         U _getenv
+0000000c T _gethostname
+000000b8 d _pc_n
+         U _strcpy
+00000000 t gcc2_compiled.
+
+getpages.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getpagesize
+00000000 t gcc2_compiled.
+
+getwd.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getcwd
+00000000 T _getwd
+00000000 t gcc2_compiled.
+
+nice.o:
+0000006c b .bss
+00000068 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _getuid
+00000000 T _nice
+00000068 d _nice_val
+00000000 t gcc2_compiled.
+
+sync.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+         U ___fsync
+00000000 t ___gnu_compiled_c
+00000000 T ___sync
+00000000 t gcc2_compiled.
+
+truncate.o:
+00000054 b .bss
+00000054 d .data
+00000000 t .text
+         U ___close
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___open
+         U __write
+00000000 T _truncate
+00000000 t gcc2_compiled.
+
+usleep.o:
+00000048 b .bss
+00000048 d .data
+00000000 t .text
+         U ___dpmi_yield
+00000000 t ___gnu_compiled_c
+         U _clock
+00000000 T _usleep
+00000000 t gcc2_compiled.
+
+vfork.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _vfork
+00000000 t gcc2_compiled.
+
+_bcopy.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T __bcopy
+         U _bcopy
+
+fpurge.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _fpurge
+00000000 t gcc2_compiled.
+
+setenv.o:
+000000b0 b .bss
+000000b0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___putenv
+         U _getenv
+00000000 T _setenv
+         U _strchr
+         U _strcpy
+         U _strncpy
+00000000 t gcc2_compiled.
+
+_main.o:
+00000048 b .bss
+00000044 d .data
+00000000 t .text
+         U ___bss_count
+00000000 t ___gnu_compiled_c
+00000000 T ___main
+00000044 d _been_there_done_that.2
+         U djgpp_first_ctor
+         U djgpp_last_ctor
+00000000 t gcc2_compiled.
+
+brk.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+         U ___brk
+00000000 t ___gnu_compiled_c
+00000000 T _brk
+00000000 t gcc2_compiled.
+
+c1args.o:
+00000a1c b .bss
+00000a1c d .data
+00000000 t .text
+         U ___crt0_argc
+         U ___crt0_argv
+         U ___crt0_glob_function
+00000538 T ___crt0_setup_arguments
+         U ___dj_ctype_flags
+         U ___dj_ctype_tolower
+         U ___dos_argv0
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___movedata
+         U __close
+         U __crt0_startup_flags
+         U __exit
+         U __go32_info_block
+         U __open
+         U __read
+         U __stubinfo
+         U __write
+0000006c t _atohex
+00000020 t _c1xmalloc
+         U _calloc
+00000324 t _count_args
+000000c0 t _delete_arg
+00000160 t _delete_arglist
+00000420 t _expand_response_files
+000004d8 t _expand_wildcards
+0000004c t _far_strlen
+0000037c t _fill_args
+         U _free
+         U _malloc
+         U _memcpy
+         U _memset
+000000a0 t _new_arg
+00000128 t _new_arglist
+0000019c t _parse_bytes
+         U _strchr
+         U _strncat
+         U _strncpy
+00000000 t gcc2_compiled.
+
+c1loadef.o:
+00000510 b .bss
+00000510 d .data
+00000000 t .text
+00000014 T ___crt0_load_environment_file
+         U ___dj_ctype_tolower
+         U ___dj_ctype_toupper
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___putenv
+         U __close
+         U __open
+         U __read
+         U _free
+         U _getenv
+         U _malloc
+         U _strchr
+         U _strcmp
+00000000 t gcc2_compiled.
+
+c1pglob.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 T ___crt0_glob_function
+         U ___glob
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+crt1.o:
+00000314 b .bss
+00000310 d .data
+00000000 t .text
+00000310 D ___bss_count
+00000004 C ___crt0_argc
+00000004 C ___crt0_argv
+         U ___crt0_load_environment_file
+         U ___crt0_setup_arguments
+00000294 T ___crt1_startup
+         U ___djgpp_exception_setup
+00000004 C ___dos_argv0
+         U ___dpmi_allocate_ldt_descriptors
+         U ___dpmi_get_version
+         U ___dpmi_int
+         U ___dpmi_set_segment_limit
+00000000 t ___gnu_compiled_c
+         U ___main
+         U ___movedata
+         U __crt0_init_mcount
+00000004 C __crt0_startup_flags
+         U __go32_info_block
+         U __npxsetup
+         U __stubinfo
+         U _abort
+00000004 C _environ
+         U _exit
+         U _main
+         U _malloc
+00000000 t _setup_core_selector
+00000140 t _setup_environment
+000000ac t _setup_go32_info_block
+00000038 t _setup_screens
+         U _strcpy
+00000000 t gcc2_compiled.
+
+mcount.o:
+000002cc b .bss
+000002c4 d .data
+00000000 t .text
+         U ___close
+         U ___djgpp_exception_state_ptr
+00000000 t ___gnu_compiled_c
+         U ___open
+         U ___sbrk
+         U ___setitimer
+         U ___write
+00000124 T __mcount_init
+         U _atexit
+         U _etext
+000002cc b _h
+000002dc b _histlen
+000002d8 b _histogram
+00000000 T _mcount
+000002c4 d _mcount_skip
+00000288 t _mcount_tick
+000001c8 t _mcount_write
+         U _memset
+000002c8 d _mtab
+         U _signal
+00000000 t gcc2_compiled.
+         U start
+
+memhandl.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 T ___djgpp_memory_handle
+         U ___djgpp_memory_handle_list
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+d_close.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_close
+         U _errno
+00000000 t gcc2_compiled.
+
+d_commit.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_commit
+         U _errno
+00000000 t gcc2_compiled.
+
+d_creat.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_creat
+         U __go32_info_block
+         U __put_path
+         U _errno
+00000000 t gcc2_compiled.
+
+d_creatn.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_creatnew
+         U __go32_info_block
+         U __put_path
+         U _errno
+00000000 t gcc2_compiled.
+
+d_exterr.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dosexterr
+00000000 t gcc2_compiled.
+
+d_findf.o:
+000000e0 b .bss
+000000e0 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dosmemget
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_findfirst
+         U __go32_info_block
+         U __put_path
+         U _errno
+00000000 t gcc2_compiled.
+
+d_findn.o:
+00000088 b .bss
+00000088 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dosmemget
+         U ___dosmemput
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_findnext
+         U __go32_info_block
+         U _errno
+00000000 t gcc2_compiled.
+
+d_getdat.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_getdate
+00000000 t gcc2_compiled.
+
+d_getdf.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_getdiskfree
+         U _errno
+00000000 t gcc2_compiled.
+
+d_getdrv.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_getdrive
+00000000 t gcc2_compiled.
+
+d_getfa.o:
+00000084 b .bss
+00000084 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_getfileattr
+         U __go32_info_block
+         U __put_path
+         U _errno
+00000000 t gcc2_compiled.
+
+d_getftm.o:
+0000006c b .bss
+0000006c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_getftime
+         U _errno
+00000000 t gcc2_compiled.
+
+d_gettim.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_gettime
+00000000 t gcc2_compiled.
+
+d_open.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_open
+         U __go32_info_block
+         U __put_path
+         U _errno
+00000000 t gcc2_compiled.
+
+d_read.o:
+00000108 b .bss
+00000108 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_allocate_dos_memory
+         U ___dpmi_free_dos_memory
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U ___movedata
+00000000 T __dos_read
+         U _errno
+00000000 t gcc2_compiled.
+
+d_setdat.o:
+0000005c b .bss
+0000005c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_setdate
+         U _errno
+00000000 t gcc2_compiled.
+
+d_setdrv.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_setdrive
+00000000 t gcc2_compiled.
+
+d_setfa.o:
+00000064 b .bss
+00000064 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_setfileattr
+         U __go32_info_block
+         U __put_path
+         U _errno
+00000000 t gcc2_compiled.
+
+d_setftm.o:
+00000048 b .bss
+00000048 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_setftime
+         U _errno
+00000000 t gcc2_compiled.
+
+d_settim.o:
+00000060 b .bss
+00000060 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_settime
+         U _errno
+00000000 t gcc2_compiled.
+
+d_write.o:
+000000f4 b .bss
+000000f4 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_allocate_dos_memory
+         U ___dpmi_free_dos_memory
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U ___movedata
+00000000 T __dos_write
+         U _errno
+00000000 t gcc2_compiled.
+
+findfirs.o:
+000001fc b .bss
+000001fc d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dosmemget
+         U ___dpmi_int
+00000008 T ___findfirst
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __put_path
+         U __use_lfn
+         U _errno
+         U _strchr
+         U _strcpy
+00000000 t gcc2_compiled.
+
+findnext.o:
+000001c8 b .bss
+000001c8 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dosmemget
+         U ___dosmemput
+         U ___dpmi_int
+00000000 T ___findnext
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __use_lfn
+         U _errno
+         U _strcpy
+00000000 t gcc2_compiled.
+
+fnmerge.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000008 T _fnmerge
+         U _strcat
+         U _strchr
+00000000 t gcc2_compiled.
+
+fnsplit.o:
+000001a4 b .bss
+000001a4 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+0000000c T _fnsplit
+         U _strchr
+         U _strcpy
+         U _strcspn
+         U _strncpy
+         U _strrchr
+00000000 t gcc2_compiled.
+
+ftreewlk.o:
+000001ec b .bss
+000001ec d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+00000008 T ___file_tree_walk
+         U ___findfirst
+         U ___findnext
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _strchr
+         U _strcpy
+00000000 t gcc2_compiled.
+
+ftw.o:
+000002a0 b .bss
+000002a0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __chmod
+         U _closedir
+         U _errno
+00000188 T _ftw
+         U _opendir
+         U _readdir
+         U _stat
+         U _strcpy
+00000000 t _walk_dir
+00000000 t gcc2_compiled.
+
+getdisk.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 T ___getdisk
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+setdisk.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _setdisk
+00000000 t gcc2_compiled.
+
+srchpath.o:
+000001b4 b .bss
+000001b4 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+         U ___dj_ctype_tolower
+         U ___file_exists
+00000000 t ___gnu_compiled_c
+         U _calloc
+000001b4 b _found.2
+         U _getenv
+         U _memset
+000003b4 b _path.3
+0000000c T _searchpath
+         U _strchr
+         U _strcpy
+         U _strncpy
+         U _strpbrk
+00000000 t gcc2_compiled.
+
+bdos.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _bdos
+         U _int86
+00000000 t gcc2_compiled.
+
+bdosptr.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U _bdos
+00000000 T _bdosptr
+
+delay.o:
+00000058 b .bss
+00000058 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _delay
+00000000 t gcc2_compiled.
+
+fexistp.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 T ___file_exists
+00000000 t ___gnu_compiled_c
+         U __chmod
+         U _errno
+00000000 t gcc2_compiled.
+
+getcbrk.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _getcbrk
+00000000 t gcc2_compiled.
+
+getdate.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _getdate
+00000000 t gcc2_compiled.
+
+getdfree.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _getdfree
+00000000 t gcc2_compiled.
+
+getdinfo.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __get_dev_info
+         U _errno
+00000000 t gcc2_compiled.
+
+getdos_v.o:
+000002ec b .bss
+00000230 d .data
+00000000 t .text
+         U ___bss_count
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+0000012a T __get_dos_version
+         U __os_flavor
+         U __osmajor
+         U __osminor
+00000230 d _dos_flavors
+000002e8 d _getdosv_count
+00000000 t gcc2_compiled.
+
+getftime.o:
+0000005c b .bss
+0000005c d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _getftime
+00000000 t gcc2_compiled.
+
+gettime.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _gettime
+00000000 t gcc2_compiled.
+
+gettimeo.o:
+000000d8 b .bss
+000000d8 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 T ___gettimeofday
+00000000 t ___gnu_compiled_c
+         U _localtime
+         U _mktime
+00000000 t gcc2_compiled.
+
+int86.o:
+000003b0 b .bss
+000003b0 d .data
+00000000 t .text
+         U ___dosmemget
+         U ___dosmemput
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __int86
+00000000 T _int86
+00000000 t gcc2_compiled.
+
+int86x.o:
+000000c8 b .bss
+000000c0 d .data
+00000000 t .text
+00000017 T __int86
+00000000 T _int86x
+0000003b t int86_common
+00000087 t int86_vec
+000000c2 d s_ds
+000000c0 d s_es
+000000c4 d s_fs
+000000c6 d s_gs
+
+intdos.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _int86
+00000000 T _intdos
+00000000 t gcc2_compiled.
+
+intdosx.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _int86x
+00000000 T _intdosx
+00000000 t gcc2_compiled.
+
+osflavor.o:
+00000000 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000004 C __os_flavor
+00000000 t gcc2_compiled.
+
+osmajor.o:
+00000000 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000004 C __osmajor
+00000000 t gcc2_compiled.
+
+osminor.o:
+00000000 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000004 C __osminor
+00000000 t gcc2_compiled.
+
+remotdrv.o:
+00000090 b .bss
+00000090 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __get_dos_version
+00000000 T __is_remote_drive
+         U _errno
+00000000 t gcc2_compiled.
+
+remothdl.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __is_remote_handle
+         U _errno
+00000000 t gcc2_compiled.
+
+setcbrk.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _setcbrk
+00000000 t gcc2_compiled.
+
+setdate.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _setdate
+00000000 t gcc2_compiled.
+
+setftime.o:
+0000006c b .bss
+0000006c d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _setftime
+00000000 t gcc2_compiled.
+
+settime.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _settime
+00000000 t gcc2_compiled.
+
+truename.o:
+000001e8 b .bss
+000001e8 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __go32_info_block
+00000000 T __truename
+         U __use_lfn
+         U _errno
+         U _malloc
+         U _strcpy
+         U _strncpy
+00000000 t gcc2_compiled.
+
+doserr2e.o:
+00000090 b .bss
+00000020 d .data
+00000000 t .text
+00000000 T ___doserr_to_errno
+00000000 t ___gnu_compiled_c
+00000020 d _map
+00000000 t gcc2_compiled.
+
+_chmod.o:
+00000088 b .bss
+00000088 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __chmod
+         U __go32_info_block
+         U __put_path
+         U __use_lfn
+         U _errno
+00000000 t gcc2_compiled.
+
+_close.o:
+00000064 b .bss
+00000064 d .data
+00000000 t .text
+         U ___FSEXT_get_function
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __close
+         U _errno
+00000000 t gcc2_compiled.
+
+_creat.o:
+000000cc b .bss
+000000cc d .data
+00000000 t .text
+         U ___FSEXT_call_open_handlers
+         U ___doserr_to_errno
+         U ___dpmi_int
+         U ___file_handle_set
+00000000 t ___gnu_compiled_c
+00000000 T __creat
+         U __go32_info_block
+         U __put_path
+         U __use_lfn
+         U _errno
+00000000 t gcc2_compiled.
+
+_open.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+         U ___FSEXT_call_open_handlers
+         U ___doserr_to_errno
+         U ___dpmi_int
+         U ___file_handle_set
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T __open
+         U __put_path
+         U __use_lfn
+         U _errno
+00000000 t gcc2_compiled.
+
+_read.o:
+000000e0 b .bss
+000000e0 d .data
+00000000 t .text
+         U ___FSEXT_get_function
+         U ___doserr_to_errno
+         U ___dosmemget
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T __read
+         U _errno
+00000000 t gcc2_compiled.
+
+_write.o:
+000000ec b .bss
+000000ec d .data
+00000000 t .text
+         U ___FSEXT_get_function
+         U ___doserr_to_errno
+         U ___dosmemput
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T __write
+         U _errno
+00000000 t gcc2_compiled.
+
+crlf2nl.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 T ___crlf2nl
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+dosio.o:
+000000dc b .bss
+000000bc d .data
+00000000 t .text
+         U ___bss_count
+         U ___dpmi_int
+000000d8 D ___file_handle_modes
+00000000 T ___file_handle_set
+00000000 t ___gnu_compiled_c
+000000d4 d _count
+000000d0 d _dosio_bss_count
+000000bc d _init_file_handle_modes
+         U _malloc
+         U _memset
+00000000 t gcc2_compiled.
+
+doslock.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_lock
+00000000 t gcc2_compiled.
+
+dosunloc.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __dos_unlock
+00000000 t gcc2_compiled.
+
+fmode.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 D __fmode
+00000000 t gcc2_compiled.
+
+lock.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __dos_lock
+         U _errno
+00000000 T _lock
+00000000 t gcc2_compiled.
+
+putpath.o:
+000000f0 b .bss
+000000f0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T __put_path
+0000002c T __put_path2
+         U _abort
+         U _errno
+00000000 t gcc2_compiled.
+
+setmode.o:
+000000cc b .bss
+000000cc d .data
+00000000 t .text
+         U ___djgpp_set_ctrl_c
+         U ___doserr_to_errno
+         U ___dpmi_int
+         U ___file_handle_modes
+00000000 t ___gnu_compiled_c
+00000000 T ___setmode
+00000004 C ___setmode_stdio_hook
+         U _errno
+00000000 t gcc2_compiled.
+
+tell.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___lseek
+00000000 T _tell
+00000000 t gcc2_compiled.
+
+unlock.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __dos_unlock
+         U _errno
+00000000 T _unlock
+00000000 t gcc2_compiled.
+
+_use_lfn.o:
+000000e0 b .bss
+000000d8 d .data
+00000000 t .text
+         U ___bss_count
+         U ___dj_ctype_tolower
+         U ___dpmi_simulate_real_mode_interrupt
+00000000 t ___gnu_compiled_c
+         U __crt0_startup_flags
+         U __go32_info_block
+00000004 T __use_lfn
+         U _getenv
+000000dc d _use_lfn
+000000d8 d _use_lfn_bss_count
+00000000 t gcc2_compiled.
+
+dosexec.o:
+00000fe4 b .bss
+00000fa4 d .data
+00000000 t .text
+00000fa8 d _GO32_STRING
+         U ___access
+         U ___close
+         U ___dj_stdout
+         U ___doserr_to_errno
+00000948 T ___dosexec_command_exec
+00000c38 T ___dosexec_find_on_path
+00000fa4 D ___dosexec_in_system
+         U ___dosmemget
+         U ___dosmemput
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___open
+         U ___read
+00000e80 T ___spawnve
+         U ___spawnvpe
+         U ___stricmp
+         U ___sync
+000003cc T __dos_exec
+         U __go32_info_block
+         U __use_lfn
+000003f0 t _direct_exec
+00000000 t _direct_exec_tail
+         U _environ
+         U _errno
+         U _exit
+         U _fclose
+         U _fflush
+         U _fgets
+         U _fopen
+000004c8 t _go32_exec
+00000fb4 d _interpreters
+00000fe4 b _parm
+00000ae8 t _script_exec
+         U _sprintf
+         U _sscanf
+         U _strcat
+         U _strcpy
+         U _strncmp
+00000ff4 b _tbuf
+00000000 t gcc2_compiled.
+
+spawnl.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+         U _environ
+00000000 T _spawnl
+00000000 t gcc2_compiled.
+
+spawnle.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+00000000 T _spawnle
+00000000 t gcc2_compiled.
+
+spawnlp.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+         U _environ
+00000000 T _spawnlp
+00000000 t gcc2_compiled.
+
+spawnlpe.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+00000000 T _spawnlpe
+00000000 t gcc2_compiled.
+
+spawnv.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+         U _environ
+00000000 T _spawnv
+00000000 t gcc2_compiled.
+
+spawnvp.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+         U _environ
+00000000 T _spawnvp
+00000000 t gcc2_compiled.
+
+spawnvpe.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+         U ___dosexec_find_on_path
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+00000000 T ___spawnvpe
+         U _errno
+00000000 t gcc2_compiled.
+
+ftime.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+         U ___gettimeofday
+00000000 t ___gnu_compiled_c
+00000000 T _ftime
+00000000 t gcc2_compiled.
+
+2f_1680.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T ___dpmi_yield
+
+d0000.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 T ___dpmi_allocate_ldt_descriptors
+00000002 C ___dpmi_error
+
+d0001.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_ldt_descriptor
+
+d0002.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_segment_to_descriptor
+
+d0003.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_selector_increment_value
+
+d0006.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_segment_base_address
+
+d0007.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_segment_base_address
+
+d0008.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_segment_limit
+
+d0009.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_descriptor_access_rights
+
+d000a.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 T ___dpmi_create_alias_descriptor
+00000002 C ___dpmi_error
+
+d000b.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_descriptor
+
+d000c.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_descriptor
+
+d000d.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 T ___dpmi_allocate_specific_ldt_descriptor
+00000002 C ___dpmi_error
+
+d000e.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_multiple_descriptors
+
+d000f.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_multiple_descriptors
+
+d0100.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000000 T ___dpmi_allocate_dos_memory
+00000002 C ___dpmi_error
+
+d0101.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_dos_memory
+
+d0102.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_resize_dos_memory
+
+d0200.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_real_mode_interrupt_vector
+
+d0201.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_real_mode_interrupt_vector
+
+d0202.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_processor_exception_handler_vector
+
+d0203.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_processor_exception_handler_vector
+
+d0204.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_protected_mode_interrupt_vector
+
+d0205.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_protected_mode_interrupt_vector
+
+d0210.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_extended_exception_handler_vector_pm
+
+d0211.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_extended_exception_handler_vector_rm
+
+d0212.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_extended_exception_handler_vector_pm
+
+d0213.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_extended_exception_handler_vector_rm
+
+d0300.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000002 C ___dpmi_error
+00000000 T ___dpmi_simulate_real_mode_interrupt
+
+d0300_z.o:
+00000080 b .bss
+00000080 d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000002 C ___dpmi_error
+00000000 T ___dpmi_int
+00000002 C ___dpmi_int_flags
+00000002 C ___dpmi_int_sp
+00000002 C ___dpmi_int_ss
+00000080 b dpmi_busy
+
+d0301.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000002 C ___dpmi_error
+00000000 T ___dpmi_simulate_real_mode_procedure_retf
+
+d0301_s.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000002 C ___dpmi_error
+00000000 T ___dpmi_simulate_real_mode_procedure_retf_stack
+
+d0302.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000002 C ___dpmi_error
+00000000 T ___dpmi_simulate_real_mode_procedure_iret
+
+d0303.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000000 T ___dpmi_allocate_real_mode_callback
+00000002 C ___dpmi_error
+
+d0304.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_real_mode_callback
+
+d0305.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_state_save_restore_addr
+
+d0306.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_raw_mode_switch_addr
+
+d0400.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_version
+
+d0401.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_capabilities
+
+d0500.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_free_memory_information
+
+d0501.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 T ___dpmi_allocate_memory
+00000002 C ___dpmi_error
+
+d0502.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_memory
+
+d0503.o:
+00000048 b .bss
+00000048 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_resize_memory
+
+d0504.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000000 T ___dpmi_allocate_linear_memory
+00000002 C ___dpmi_error
+
+d0505.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_resize_linear_memory
+
+d0506.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_page_attributes
+
+d0507.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_page_attributes
+
+d0508.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_map_device_in_memory_block
+
+d0509.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_map_conventional_memory_in_memory_block
+
+d050a.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_memory_block_size_and_base
+
+d050b.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_memory_information
+
+d0600.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_lock_linear_region
+
+d0601.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_unlock_linear_region
+
+d0602.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_mark_real_mode_region_as_pageable
+
+d0603.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_relock_real_mode_region
+
+d0604.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_page_size
+
+d0702.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_mark_page_as_demand_paging_candidate
+
+d0703.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 T ___dpmi_discard_page_contents
+00000002 C ___dpmi_error
+
+d0800.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_physical_address_mapping
+
+d0801.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_physical_address_mapping
+
+d09.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_and_set_virtual_interrupt_state
+
+d0900.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_and_disable_virtual_interrupt_state
+
+d0901.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_and_enable_virtual_interrupt_state
+
+d0902.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_virtual_interrupt_state
+
+d0a00.o:
+00000048 b .bss
+00000048 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_vendor_specific_api_entry_point
+
+d0b00.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_debug_watchpoint
+
+d0b01.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 T ___dpmi_clear_debug_watchpoint
+00000002 C ___dpmi_error
+
+d0b02.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_state_of_debug_watchpoint
+
+d0b03.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_reset_debug_watchpoint
+
+d0c00.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_install_resident_service_provider_callback
+
+d0c01.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_terminate_and_stay_resident
+
+d0d00.o:
+00000024 b .bss
+00000024 d .data
+00000000 t .text
+00000000 T ___dpmi_allocate_shared_memory
+00000002 C ___dpmi_error
+
+d0d01.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_shared_memory
+
+d0d02.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_serialize_on_shared_memory
+
+d0d03.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_free_serialization_on_shared_memory
+
+d0e00.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_coprocessor_status
+
+d0e01.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_set_coprocessor_emulation
+
+dpmi_lar.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_descriptor_access_rights
+
+dpmi_lsl.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000002 C ___dpmi_error
+00000000 T ___dpmi_get_segment_limit
+
+mapmem.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+00000000 T ___djgpp_map_physical_memory
+         U ___djgpp_memory_handle
+         U ___dpmi_map_device_in_memory_block
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 t gcc2_compiled.
+
+setattr.o:
+0000010c b .bss
+0000010c d .data
+00000000 t .text
+         U ___djgpp_memory_handle
+00000000 T ___djgpp_set_page_attributes
+         U ___dpmi_set_page_attributes
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 t gcc2_compiled.
+
+dxeload.o:
+000000a4 b .bss
+000000a4 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __close
+00000000 T __dxe_load
+         U __open
+         U __read
+         U _errno
+         U _malloc
+00000000 t gcc2_compiled.
+
+npxsetup.o:
+0000022c b .bss
+0000022c d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+         U ___djgpp_exception_state_ptr
+         U ___dpmi_set_coprocessor_emulation
+00000004 C ___emu387_load_hook
+00000000 t ___gnu_compiled_c
+         U __detect_80387
+         U __dxe_load
+0000022c b __emu_entry
+000000e4 T __npxsetup
+         U __write
+         U _getenv
+         U _longjmp
+00000000 t _nofpsig
+         U _raise
+         U _signal
+         U _strcat
+00000000 t gcc2_compiled.
+
+fpu.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+00000000 T __detect_80387
+
+fse_open.o:
+00000074 b .bss
+00000070 d .data
+00000000 t .text
+00000000 T ___FSEXT_add_open_handler
+00000032 T ___FSEXT_call_open_handlers
+00000000 t ___gnu_compiled_c
+00000070 d _func_list
+         U _malloc
+00000000 t gcc2_compiled.
+
+fsext.o:
+00000178 b .bss
+00000174 d .data
+00000000 t .text
+00000004 T ___FSEXT_alloc_fd
+0000012c T ___FSEXT_get_function
+00000094 T ___FSEXT_set_function
+         U ___bss_count
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __put_path
+         U _errno
+0000017c b _func_list
+00000174 d _init_count.8
+00000178 b _num_fds
+         U _realloc
+00000000 t gcc2_compiled.
+
+dpmiexcp.o:
+00000b70 b .bss
+00000b08 d .data
+00000000 t .text
+         U ___djgpp_app_DS
+         U ___djgpp_base_address
+         U ___djgpp_cbrk_hdlr
+         U ___djgpp_dos_sel
+00000818 T ___djgpp_exception_processor
+0000098c T ___djgpp_exception_setup
+         U ___djgpp_exception_state_ptr
+         U ___djgpp_exception_table
+0000087c T ___djgpp_exception_toggle
+         U ___djgpp_hw_lock_end
+         U ___djgpp_hw_lock_start
+         U ___djgpp_hwint_flags
+         U ___djgpp_i24
+         U ___djgpp_iret
+         U ___djgpp_kbd_hdlr
+         U ___djgpp_kbd_hdlr_pc98
+         U ___djgpp_npx_hdlr
+         U ___djgpp_old_kbd
+         U ___djgpp_our_DS
+         U ___djgpp_selector_limit
+00000ad8 T ___djgpp_set_ctrl_c
+         U ___dpmi_allocate_real_mode_callback
+         U ___dpmi_free_real_mode_callback
+         U ___dpmi_get_processor_exception_handler_vector
+         U ___dpmi_get_protected_mode_interrupt_vector
+         U ___dpmi_get_real_mode_interrupt_vector
+         U ___dpmi_lock_linear_region
+         U ___dpmi_set_processor_exception_handler_vector
+         U ___dpmi_set_protected_mode_interrupt_vector
+         U ___dpmi_set_real_mode_interrupt_vector
+00000000 t ___gnu_compiled_c
+         U __crt0_startup_flags
+         U __go32_info_block
+         U __write
+         U _atexit
+00000b70 b _buf.46
+00000b6a d _cbrk_hooked
+00001120 b _cbrk_ori
+00001128 b _cbrk_regs
+00001124 b _cbrk_rmcb
+00000b0c d _cbrk_vect
+0000035c t _do_faulting_finish_message
+00001080 b _except_ori
+0000004c t _except_to_sig
+00000b10 d _exception_names
+         U _exit
+00000b58 d _has_error
+00000000 t _itox
+00001110 b _kbd_ori
+         U _longjmp
+00001118 b _npx_ori
+00000b08 d _old_video_mode
+0000070c T _raise
+0000011c t _show_call_frame
+00000654 T _signal
+00000b80 b _signal_list
+00000687 t _signames
+00000b6c d _veryfirst.63
+         U end
+00000000 t gcc2_compiled.
+
+exceptn.o:
+00000388 b .bss
+00000388 d .data
+00000000 t .text
+000001fe T ___djgpp_app_DS
+000001f4 T ___djgpp_cbrk_count
+00000318 T ___djgpp_cbrk_hdlr
+00000200 T ___djgpp_dos_sel
+00000258 T ___djgpp_ds_alias
+         U ___djgpp_exception_processor
+00000214 T ___djgpp_exception_state_ptr
+00000000 T ___djgpp_exception_table
+00000348 T ___djgpp_hw_exception
+00000384 T ___djgpp_hw_lock_end
+000001ec T ___djgpp_hw_lock_start
+00000202 T ___djgpp_hwint_flags
+00000344 T ___djgpp_i24
+00000346 T ___djgpp_iret
+00000274 T ___djgpp_kbd_hdlr
+000002b0 T ___djgpp_kbd_hdlr_pc98
+0000025c T ___djgpp_npx_hdlr
+00000204 T ___djgpp_old_kbd
+0000020c T ___djgpp_old_timer
+000001fc T ___djgpp_our_DS
+00000170 T ___djgpp_save_interrupt_regs
+000001f8 T ___djgpp_timer_countdown
+000002d8 T ___djgpp_timer_hdlr
+00000383 t already_forced
+0000015c t dpmi_exception_proc1
+000001ec t ds_limit
+00000048 t exception_handler
+00000388 b exception_stack
+00000218 t exception_state
+000001f0 t forced
+00000269 t hw_to_excp
+0000013c t limitFix
+00000065 t not_forced
+000000ff t stack_ok
+
+go32cbrk.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U ___djgpp_cbrk_count
+         U ___djgpp_hwint_flags
+00000000 t ___gnu_compiled_c
+00000000 T __go32_want_ctrl_break
+00000044 T __go32_was_ctrl_break_hit
+00000000 t gcc2_compiled.
+
+godefv1.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+         U ___dpmi_get_free_memory_information
+         U ___dpmi_simulate_real_mode_interrupt
+         U ___dpmi_simulate_real_mode_procedure_iret
+         U ___dpmi_simulate_real_mode_procedure_retf
+00000023 T __go32_conventional_mem_selector
+00000000 T __go32_dpmi_get_free_memory_information
+0000000a T __go32_dpmi_simulate_fcall
+0000000f T __go32_dpmi_simulate_fcall_iret
+00000005 T __go32_dpmi_simulate_int
+         U __go32_info_block
+00000014 T __go32_my_cs
+00000019 T __go32_my_ds
+0000001e T __go32_my_ss
+         U __my_cs
+         U __my_ds
+         U __my_ss
+
+gopint.o:
+00000508 b .bss
+000004a0 d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+         U ___dpmi_get_protected_mode_interrupt_vector
+         U ___dpmi_get_segment_base_address
+         U ___dpmi_lock_linear_region
+         U ___dpmi_set_protected_mode_interrupt_vector
+00000000 t ___gnu_compiled_c
+00000460 T __go32_dpmi_allocate_iret_wrapper
+000002b8 t __go32_dpmi_allocate_iret_wrapper_with_stack
+000002a4 T __go32_dpmi_chain_protected_mode_interrupt_vector
+000000b0 t __go32_dpmi_chain_protected_mode_interrupt_vector_with_stack
+00000474 T __go32_dpmi_free_iret_wrapper
+00000058 T __go32_dpmi_lock_code
+00000000 T __go32_dpmi_lock_data
+00000504 D __go32_interrupt_stack_size
+         U _free
+         U _malloc
+         U _memset
+000004f4 d _wrapper_intchain
+000004a0 d _wrapper_intcommon
+000004f3 d _wrapper_intiret
+00000000 t gcc2_compiled.
+
+gopvec.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dpmi_get_protected_mode_interrupt_vector
+         U ___dpmi_set_protected_mode_interrupt_vector
+00000000 t ___gnu_compiled_c
+00000000 T __go32_dpmi_get_protected_mode_interrupt_vector
+00000014 T __go32_dpmi_set_protected_mode_interrupt_vector
+00000000 t gcc2_compiled.
+
+goqmem.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_get_free_memory_information
+00000000 t ___gnu_compiled_c
+00000000 T __go32_dpmi_remaining_physical_memory
+00000022 T __go32_dpmi_remaining_virtual_memory
+00000000 t gcc2_compiled.
+
+gormcb.o:
+00000360 b .bss
+000002f0 d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+         U ___dpmi_allocate_real_mode_callback
+         U ___dpmi_free_real_mode_callback
+00000000 t ___gnu_compiled_c
+000002a8 T __go32_dpmi_allocate_real_mode_callback_iret
+0000015c t __go32_dpmi_allocate_real_mode_callback_iret_with_stack
+00000148 T __go32_dpmi_allocate_real_mode_callback_retf
+00000000 t __go32_dpmi_allocate_real_mode_callback_retf_with_stack
+000002bc T __go32_dpmi_free_real_mode_callback
+         U __go32_dpmi_lock_data
+0000035c D __go32_rmcb_stack_size
+         U _free
+         U _malloc
+000002f0 d _wrapper_common
+0000034b d _wrapper_iret
+00000344 d _wrapper_retf
+00000000 t gcc2_compiled.
+
+gormem.o:
+0000009c b .bss
+0000009c d .data
+00000000 t .text
+         U ___dpmi_allocate_dos_memory
+         U ___dpmi_error
+         U ___dpmi_free_dos_memory
+         U ___dpmi_resize_dos_memory
+00000000 t ___gnu_compiled_c
+00000000 T __go32_dpmi_allocate_dos_memory
+00000042 T __go32_dpmi_free_dos_memory
+00000066 T __go32_dpmi_resize_dos_memory
+00000000 t gcc2_compiled.
+
+gorvec.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___dpmi_get_real_mode_interrupt_vector
+         U ___dpmi_set_real_mode_interrupt_vector
+00000000 t ___gnu_compiled_c
+00000000 T __go32_dpmi_get_real_mode_interrupt_vector
+00000014 T __go32_dpmi_set_real_mode_interrupt_vector
+00000000 t gcc2_compiled.
+
+infostrc.o:
+00000000 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000028 C __go32_info_block
+00000000 t gcc2_compiled.
+
+conio.o:
+000014c4 b .bss
+000014d4 ? .ctor
+000014a0 d .data
+00000000 t .text
+000014a8 d _ScreenAddress
+         U _ScreenAttrib
+         U _ScreenCols
+         U _ScreenGetCursor
+         U _ScreenMode
+         U _ScreenPutChar
+         U _ScreenRows
+         U _ScreenSetCursor
+         U ___bss_count
+         U ___dosmemget
+         U ___dosmemput
+         U ___dpmi_allocate_dos_memory
+         U ___dpmi_free_dos_memory
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U ___movedata
+000006c0 T __conio_kbhit
+         U __doscan_low
+         U __go32_info_block
+00001450 t __scan_getche
+00001474 t __scan_ungetch
+00000ee4 T __set_screen_lines
+000002c8 T __setcursortype
+000014a0 D __wscroll
+000014b0 d _adapter_type
+00000d14 t _bell
+00000ac4 T _cgets
+000014ac d _char_avail
+0000031c T _clreol
+00000450 T _clrscr
+000014c0 d _conio_count
+00000a8c T _cprintf
+000008c0 T _cputs
+00000ba4 T _cscanf
+00000788 T _delline
+000014a4 D _directvideo
+         U _errno
+000003e8 t _fillrow
+000014b4 d _font_seg
+00000d30 t _get_screenattrib
+00000660 T _getch
+0000063c T _getche
+00000074 T _gettext
+00000cc0 T _gettextinfo
+00000cec t _getvideomode
+000000e8 T _gotoxy
+00001280 T _gppconio_init
+00000278 T _highvideo
+000006dc T _insline
+00000d54 t _isEGA
+         U _kbhit
+000014b8 d _last_mode
+00000294 T _lowvideo
+         U _malloc
+00000e10 t _maybe_create_8x10_font
+00000bc4 T _movetext
+000002b0 T _normvideo
+000014bc d _oldattrib
+00000528 T _putch
+00000000 T _puttext
+000002fc t _setcursor
+0000021c T _textattr
+00000254 T _textbackground
+00000230 T _textcolor
+00000178 T _textmode
+000014c4 b _txinfo
+00000698 T _ungetch
+000014d0 b _ungot_char
+         U _vsprintf
+00000128 T _wherex
+00000150 T _wherey
+00000844 T _window
+00000000 t gcc2_compiled.
+
+scattrib.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 D _ScreenAttrib
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+scclear.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+         U _ScreenAttrib
+00000000 T _ScreenClear
+         U _ScreenCols
+         U _ScreenRows
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+sccols.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 T _ScreenCols
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scgetc.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 T _ScreenGetCursor
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+scmode.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 T _ScreenMode
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scputc.o:
+00000068 b .bss
+00000068 d .data
+00000000 t .text
+         U _ScreenCols
+00000000 T _ScreenPutChar
+         U _ScreenRows
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scputs.o:
+00000074 b .bss
+00000074 d .data
+00000000 t .text
+         U _ScreenCols
+00000000 T _ScreenPutString
+         U _ScreenRows
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scretr.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+         U _ScreenCols
+00000000 T _ScreenRetrieve
+         U _ScreenRows
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scrows.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 T _ScreenRows
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scsetc.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 T _ScreenSetCursor
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 t gcc2_compiled.
+
+scupdate.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+         U _ScreenCols
+         U _ScreenRows
+00000000 T _ScreenUpdate
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scupdl.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+         U _ScreenCols
+00000000 T _ScreenUpdateLine
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+scvbell.o:
+00000054 b .bss
+00000054 d .data
+00000000 t .text
+         U _ScreenCols
+         U _ScreenRows
+00000000 T _ScreenVisualBell
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U _delay
+00000000 t gcc2_compiled.
+
+my_cs.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T __my_cs
+
+my_ds.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T __my_ds
+
+my_ss.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T __my_ss
+
+htonl.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _htonl
+
+htons.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _htons
+
+ntohl.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _ntohl
+
+ntohs.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _ntohs
+
+farptr.o:
+000000e0 b .bss
+000000e0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+000000b0 T __farnspeekb
+000000d2 T __farnspeekl
+000000c0 T __farnspeekw
+00000084 T __farnspokeb
+000000a2 T __farnspokel
+00000092 T __farnspokew
+00000038 T __farpeekb
+00000068 T __farpeekl
+00000050 T __farpeekw
+00000000 T __farpokeb
+00000026 T __farpokel
+00000012 T __farpokew
+0000007a T __farsetsel
+00000000 t gcc2_compiled.
+
+clear87.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T __clear87
+
+cntrl87.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 T __control87
+
+fpreset.o:
+00000004 b .bss
+00000004 d .data
+00000000 t .text
+00000000 T __fpreset
+
+stat87.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T __status87
+
+disable.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+         U ___dpmi_get_and_disable_virtual_interrupt_state
+00000000 t ___gnu_compiled_c
+00000000 T _disable
+00000000 t gcc2_compiled.
+
+enable.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+         U ___dpmi_get_and_enable_virtual_interrupt_state
+00000000 t ___gnu_compiled_c
+00000000 T _enable
+00000000 t gcc2_compiled.
+
+ib.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T _inportb
+
+il.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 T _inportl
+
+inb.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _inb
+         U _inportb
+
+inp.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _inp
+         U _inportb
+
+inpw.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U _inportw
+00000000 T _inpw
+
+isb.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _inportsb
+
+isl.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _inportsl
+
+isw.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _inportsw
+
+iw.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T _inportw
+
+ob.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T _outportb
+
+ol.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T _outportl
+
+osb.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _outportsb
+
+osl.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _outportsl
+
+osw.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 T _outportsw
+
+outb.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _outb
+         U _outportb
+
+outp.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 T _outp
+         U _outportb
+
+outpw.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U _outportw
+00000000 T _outpw
+
+ow.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T _outportw
+
+getkey.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _getkey
+00000000 t gcc2_compiled.
+
+getxkey.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T _getxkey
+00000000 t gcc2_compiled.
+
+kbhit.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T _kbhit
+00000000 t gcc2_compiled.
+
+djmd.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 T ___dj_movedata
+00000008 t align_mod_4
+0000001a t big_move
+0000000a t mod_4_check
+00000025 t small_move
+
+dmg.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 T ___dosmemget
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+dmgb.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __dosmemgetb
+         U __go32_info_block
+         U __movedatab
+00000000 t gcc2_compiled.
+
+dmgl.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __dosmemgetl
+         U __go32_info_block
+         U __movedatal
+00000000 t gcc2_compiled.
+
+dmgw.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __dosmemgetw
+         U __go32_info_block
+         U __movedataw
+00000000 t gcc2_compiled.
+
+dmp.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 T ___dosmemput
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __go32_info_block
+00000000 t gcc2_compiled.
+
+dmpb.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __dosmemputb
+         U __go32_info_block
+         U __movedatab
+00000000 t gcc2_compiled.
+
+dmpl.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __dosmemputl
+         U __go32_info_block
+         U __movedatal
+00000000 t gcc2_compiled.
+
+dmpw.o:
+00000020 b .bss
+00000020 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T __dosmemputw
+         U __go32_info_block
+         U __movedataw
+00000000 t gcc2_compiled.
+
+md.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+         U ___dj_movedata
+00000000 T ___movedata
+
+mdb.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T __movedatab
+
+mdl.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T __movedatal
+
+mdw.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 T __movedataw
+
+mono.o:
+000001f4 b .bss
+000001ec d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T __mono_clear
+0000019c T __mono_printf
+00000050 T __mono_putc
+000001ec d _initted
+000001f0 d _ofs
+         U _vsprintf
+00000000 t gcc2_compiled.
+
+nearptr.o:
+0000006c b .bss
+0000006c d .data
+00000000 t .text
+         U ___djgpp_ds_alias
+00000038 T ___djgpp_nearptr_disable
+00000000 T ___djgpp_nearptr_enable
+         U ___djgpp_selector_limit
+         U ___dpmi_set_segment_limit
+00000000 t ___gnu_compiled_c
+         U __crt0_startup_flags
+00000000 t gcc2_compiled.
+
+sound.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _sound
+00000000 t gcc2_compiled.
+
+clock.o:
+00000088 b .bss
+0000007c d .data
+00000000 t .text
+         U ___bss_count
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000080 d _base.34
+00000000 T _clock
+0000007c d _clock_bss
+00000084 d _last_tics.35
+00000000 t gcc2_compiled.
+
+uclock.o:
+0000015c b .bss
+0000014c d .data
+00000000 t .text
+         U ___bss_count
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000150 d _base.46
+00000158 d _last_tics.47
+00000000 T _uclock
+0000014c d _uclock_bss
+00000000 t gcc2_compiled.
+
+closedir.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _closedir
+         U _free
+00000000 t gcc2_compiled.
+
+odflags.o:
+00000004 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 D ___opendir_flags
+00000000 t gcc2_compiled.
+
+opendir.o:
+000000e4 b .bss
+000000e4 d .data
+00000000 t .text
+         U ___access
+00000000 t ___gnu_compiled_c
+         U ___opendir_flags
+         U __fixpath
+         U _free
+         U _malloc
+00000000 T _opendir
+00000000 t gcc2_compiled.
+
+readdir.o:
+000000c0 b .bss
+000000c0 d .data
+00000000 t .text
+         U ___dj_ctype_tolower
+         U ___findfirst
+         U ___findnext
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _readdir
+         U _strcpy
+00000000 t gcc2_compiled.
+
+rewinddi.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _rewinddir
+00000000 t gcc2_compiled.
+
+seekdir.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _readdir
+         U _rewinddir
+00000000 T _seekdir
+00000000 t gcc2_compiled.
+
+telldir.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _telldir
+00000000 t gcc2_compiled.
+
+creat.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___open
+00000000 T _creat
+00000000 t gcc2_compiled.
+
+fcntl.o:
+00000054 b .bss
+00000054 d .data
+00000000 t .text
+         U ___dup
+00000000 t ___gnu_compiled_c
+00000000 T _fcntl
+00000000 t gcc2_compiled.
+
+open.o:
+000000e4 b .bss
+000000e4 d .data
+00000000 t .text
+         U ___file_exists
+         U ___file_handle_set
+00000000 t ___gnu_compiled_c
+         U ___lseek
+00000000 T ___open
+         U ___setmode
+         U __creat
+         U __fmode
+         U __open
+         U __write
+         U _errno
+00000000 t gcc2_compiled.
+
+fnmatch.o:
+000002d4 b .bss
+000002d4 d .data
+00000000 t .text
+         U ___dj_ctype_toupper
+00000008 T ___fnmatch
+00000000 t ___gnu_compiled_c
+         U _strchr
+00000000 t gcc2_compiled.
+
+glob.o:
+00000a68 b .bss
+00000a68 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+         U ___dj_ctype_tolower
+         U ___file_exists
+         U ___findfirst
+         U ___findnext
+         U ___fnmatch
+00000850 T ___glob
+00000000 t ___gnu_compiled_c
+00000a74 b _errfunc
+00000a70 b _flags
+         U _free
+000002cc t _glob2
+00000004 t _glob_dirs
+         U _malloc
+         U _memset
+00000a78 b _pathbuf
+         U _qsort
+         U _realloc
+00000a6c b _save_count
+00000a68 b _save_list
+00000a84 b _slash
+00000a54 t _str_compare
+         U _strcmp
+         U _strcpy
+         U _strncmp
+         U _strncpy
+00000a80 b _use_lower_case
+00000a7c b _wildcard_nesting
+00000000 t gcc2_compiled.
+
+globfree.o:
+0000003c b .bss
+0000003c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _free
+00000000 T _globfree
+00000000 t gcc2_compiled.
+
+getgrent.o:
+00000074 b .bss
+00000070 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000060 T _endgrent
+00000028 T _fgetgrent
+         U _getgid
+00000000 T _getgrent
+         U _getgrgid
+00000050 T _setgrent
+00000070 d _tag
+00000000 t gcc2_compiled.
+
+getgrgid.o:
+00000168 b .bss
+00000154 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000161 d _def_grp
+0000015c d _def_name
+00000168 b _g
+         U _getenv
+         U _getgid
+000000f8 T _getgrgid
+00000124 T _getgrnam
+00000158 d _grp
+00000014 t _grp_init
+00000154 d _init
+         U _malloc
+00000178 b _mem
+         U _strcmp
+         U _strcpy
+00000000 t gcc2_compiled.
+
+getpwnam.o:
+000000b8 b .bss
+000000b0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getenv
+         U _getgid
+         U _getlogin
+00000014 T _getpwnam
+         U _getuid
+000000b8 b _rv.2
+000000b2 d _shell
+000000b0 d _slash
+         U _strcmp
+00000000 t gcc2_compiled.
+
+getpwuid.o:
+000000ac b .bss
+000000a4 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getenv
+         U _getgid
+         U _getlogin
+00000014 T _getpwuid
+         U _getuid
+000000ac b _rv.2
+000000a6 d _shell
+000000a4 d _slash
+00000000 t gcc2_compiled.
+
+pwent.o:
+0000004c b .bss
+00000048 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000048 d _count
+00000038 T _endpwent
+00000010 T _getpwent
+         U _getpwuid
+         U _getuid
+00000000 T _setpwent
+00000000 t gcc2_compiled.
+
+regcomp.o:
+00002900 b .bss
+00002564 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+         U ___dj_ctype_tolower
+         U ___dj_ctype_toupper
+00000000 t ___gnu_compiled_c
+00001c42 t _allocset
+00001928 t _bothcases
+00002182 t _categorize
+00002564 d _cclasses
+00002600 d _cnames
+00002276 t _doemit
+0000233c t _dofwd
+000022b8 t _doinsert
+0000221c t _dupl
+0000235e t _enlarge
+000023e2 t _findmust
+00001ee8 t _firstch
+         U _free
+00001daa t _freeset
+00001e06 t _freezeset
+000020dc t _isinsets
+         U _malloc
+00001f64 t _mcadd
+000020d6 t _mccase
+0000207c t _mcfind
+00002062 t _mcin
+000020d0 t _mcinvert
+00001fdc t _mcsub
+         U _memcpy
+         U _memmove
+         U _memset
+00001f20 t _nch
+000019ce t _nonnewline
+00002900 b _nuls
+00001966 t _ordinary
+000018f4 t _othercase
+000016ac t _p_b_cclass
+0000184c t _p_b_coll_elem
+0000178e t _p_b_eclass
+000017c0 t _p_b_symbol
+000014e2 t _p_b_term
+00001272 t _p_bracket
+00000dc2 t _p_bre
+00001206 t _p_count
+00000738 t _p_ere
+00000824 t _p_ere_exp
+00000e76 t _p_simp_re
+00000d8c t _p_str
+000024fa t _pluscount
+         U _realloc
+00000512 T _regcomp
+         U _regfree
+00001a0e t _repeat
+00002124 t _samesets
+00001c1e t _seterr
+         U _strcmp
+         U _strcpy
+0000239e t _stripsnug
+         U _strncmp
+00000000 t gcc2_compiled.
+
+regerror.o:
+0000046c b .bss
+000003a0 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000348 t _regatoi
+00000284 T _regerror
+000003a0 d _rerrs
+         U _sprintf
+         U _strcmp
+         U _strcpy
+         U _strncpy
+00000000 t gcc2_compiled.
+
+regexec.o:
+000028fc b .bss
+000028f8 d .data
+00000000 t .text
+         U ___dj_ctype_flags
+00000000 t ___gnu_compiled_c
+         U _free
+00001ad0 t _lbackref
+000017c4 t _ldissect
+00002086 t _lfast
+000013a2 t _lmatcher
+0000230c t _lslow
+0000256a t _lstep
+         U _malloc
+         U _memcpy
+         U _memset
+000028f8 d _nope
+00002892 T _regexec
+00000688 t _sbackref
+0000037c t _sdissect
+00000c3e t _sfast
+00000000 t _smatcher
+00000e58 t _sslow
+00001064 t _sstep
+00000000 t gcc2_compiled.
+
+regfree.o:
+00000078 b .bss
+00000078 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _free
+00000000 T _regfree
+00000000 t gcc2_compiled.
+
+siglongj.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U _longjmp
+00000000 T _siglongjmp
+
+sigsetjm.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U _setjmp
+00000000 T _sigsetjmp
+
+itimer.o:
+0000028c b .bss
+00000280 d .data
+00000000 t .text
+         U ___djgpp_old_timer
+         U ___djgpp_timer_countdown
+         U ___djgpp_timer_hdlr
+         U ___dpmi_get_protected_mode_interrupt_vector
+         U ___dpmi_set_protected_mode_interrupt_vector
+00000000 T ___getitimer
+00000000 t ___gnu_compiled_c
+0000006a T ___setitimer
+         U _errno
+0000029c b _prof
+         U _raise
+0000028c b _real
+00000286 d _reload
+         U _signal
+00000282 d _sigtype
+0000022a t _timer_action
+00000280 d _timer_on
+00000000 t gcc2_compiled.
+
+kill.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getpid
+00000000 T _kill
+         U _raise
+00000000 t gcc2_compiled.
+
+sigactio.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _sigaction
+         U _sigemptyset
+         U _signal
+00000000 t gcc2_compiled.
+
+sigaddse.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _sigaddset
+00000000 t gcc2_compiled.
+
+sigdelse.o:
+00000044 b .bss
+00000044 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _sigdelset
+00000000 t gcc2_compiled.
+
+sigempty.o:
+00000034 b .bss
+00000034 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _sigemptyset
+00000000 t gcc2_compiled.
+
+sigfills.o:
+00000030 b .bss
+00000030 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _sigemptyset
+00000000 T _sigfillset
+00000000 t gcc2_compiled.
+
+sigismem.o:
+00000050 b .bss
+00000050 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _sigismember
+00000000 t gcc2_compiled.
+
+sigpendi.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _sigemptyset
+00000000 T _sigpending
+00000000 t gcc2_compiled.
+
+sigprocm.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _sigprocmask
+00000000 t gcc2_compiled.
+
+sigsuspe.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _sigsuspend
+00000000 t gcc2_compiled.
+
+fdopen.o:
+00000128 b .bss
+00000128 d .data
+00000000 t .text
+         U ___alloc_file
+00000000 t ___gnu_compiled_c
+         U ___lseek
+         U ___setmode
+         U __fmode
+00000000 T _fdopen
+00000000 t gcc2_compiled.
+
+fileno.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _fileno
+00000000 t gcc2_compiled.
+
+popen.o:
+000002b8 b .bss
+000002b0 d .data
+00000000 t .text
+         U ___close
+         U ___dj_stdin
+         U ___dj_stdout
+         U ___dup
+         U ___dup2
+00000000 t ___gnu_compiled_c
+         U _fclose
+         U _fopen
+         U _free
+         U _freopen
+         U _malloc
+00000198 T _pclose
+000002b0 d _pl
+0000000c T _popen
+         U _remove
+         U _sprintf
+         U _strcpy
+         U _system
+         U _tmpnam
+000002b4 d _tn.2
+00000000 t gcc2_compiled.
+
+chmod.o:
+0000004c b .bss
+0000004c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U __chmod
+00000000 T _chmod
+00000000 t gcc2_compiled.
+
+filelen.o:
+000000b8 b .bss
+000000b8 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 T ___filelength
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 t gcc2_compiled.
+
+fixpath.o:
+00000270 b .bss
+00000270 d .data
+00000000 t .text
+         U ___dosmemget
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T __fixpath
+         U __go32_info_block
+         U __use_lfn
+         U _errno
+         U _memset
+         U _strcpy
+00000000 t gcc2_compiled.
+
+fstat.o:
+000009e8 b .bss
+000009bc d .data
+00000000 t .text
+         U ___bss_count
+         U ___dpmi_int
+         U ___filelength
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __djstat_fail_bits
+         U __djstat_flags
+         U __file_time_stamp
+         U __get_dev_info
+         U __get_dos_version
+         U __getftime
+         U __go32_info_block
+         U __invent_inode
+         U __is_executable
+         U __osmajor
+00000a3c b _dos_major
+000009e8 b _dos_mem_base
+00000a40 b _dos_minor
+         U _errno
+0000097c T _fstat
+00000284 t _fstat_assist
+000009cc d _fstat_count
+00000000 t _fstat_init
+00000a4c b _fstat_init_bits
+000000d0 t _get_sft_entry
+         U _getgid
+         U _getuid
+00000a38 b _htbl_ptr_addr
+         U _memset
+000009d0 d _name_pat.38
+000009ec b _our_mem_base
+000009f8 b _sft_buf
+000009f0 b _sft_size
+000009bc d _sft_size_list
+00000a48 b _sft_start_off
+00000a44 b _sft_start_seg
+         U _strcat
+         U _strcpy
+         U _time
+00000000 t gcc2_compiled.
+
+is_exec.o:
+00000458 b .bss
+000002a8 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __djstat_flags
+00000000 T __get_magic
+         U __go32_info_block
+0000019c T __is_executable
+         U __open
+         U _errno
+000002a8 d _executables
+000002c2 d _non_executables
+         U _strcat
+         U _strcpy
+         U _strstr
+00000000 t gcc2_compiled.
+
+mkdir.o:
+0000008c b .bss
+0000008c d .data
+00000000 t .text
+         U ___access
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T ___mkdir
+         U __go32_info_block
+         U __put_path
+         U __use_lfn
+         U _errno
+00000000 t gcc2_compiled.
+
+mkfifo.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _mkfifo
+00000000 t gcc2_compiled.
+
+st_loss.o:
+00000440 b .bss
+0000040c d .data
+00000000 t .text
+         U ___dj_stderr
+00000000 t ___gnu_compiled_c
+000003aa T __djstat_describe_lossage
+         U __djstat_fail_bits
+         U _fprintf
+0000040c d _stfail_message
+000003a2 t _used_bits
+00000000 t gcc2_compiled.
+
+stat.o:
+000009ac b .bss
+00000998 d .data
+00000000 t .text
+         U ___bss_count
+         U ___dj_ctype_flags
+         U ___dj_ctype_toupper
+         U ___dpmi_int
+         U ___findfirst
+         U ___findnext
+         U ___getdisk
+00000000 t ___gnu_compiled_c
+         U ___movedata
+         U __djstat_fail_bits
+         U __djstat_flags
+         U __file_time_stamp
+         U __get_dos_version
+         U __go32_info_block
+         U __invent_inode
+         U __is_executable
+         U __is_remote_drive
+         U __truename
+0000099c d _blanks_8
+000009ac b _dirent_count
+000009b4 b _dirent_place
+000009b0 b _dirent_table
+         U _errno
+000001bc t _get_inode_from_sda
+         U _getgid
+         U _getuid
+00000000 t _init_dirent_table
+000009b8 b _init_dirent_table_bits
+         U _malloc
+         U _memset
+000009a5 d _root_dir_pat.50
+000008dc T _stat
+00000328 t _stat_assist
+00000998 d _stat_count
+         U _strcat
+         U _strchr
+         U _strcmp
+         U _strcpy
+         U _strncat
+         U _strncmp
+         U _strncpy
+         U _strrchr
+         U _time
+00000000 t gcc2_compiled.
+
+umask.o:
+0000001c b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000018 d _the_mask.2
+00000000 T _umask
+00000000 t gcc2_compiled.
+
+xstat.o:
+0000025c b .bss
+00000250 d .data
+00000000 t .text
+         U ___bss_count
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000004 C __djstat_fail_bits
+00000004 C __djstat_flags
+00000000 T __file_time_stamp
+0000006c T __getftime
+000000c8 T __invent_inode
+00000254 d _dir.45
+         U _errno
+         U _free
+00000258 d _inode_count.46
+         U _malloc
+         U _memset
+         U _mktime
+0000025c b _name_list.44
+         U _strcmp
+         U _strcpy
+00000250 d _xstat_count
+00000000 t gcc2_compiled.
+
+times.o:
+00000040 b .bss
+00000040 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _clock
+         U _errno
+00000000 T _times
+00000000 t gcc2_compiled.
+
+wait.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _wait
+00000000 t gcc2_compiled.
+
+waitpid.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _waitpid
+00000000 t gcc2_compiled.
+
+access.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+00000000 T ___access
+         U ___findfirst
+00000000 t ___gnu_compiled_c
+         U __chmod
+         U __fixpath
+         U __is_executable
+         U _errno
+00000000 t gcc2_compiled.
+
+alarm.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___setitimer
+00000000 T _alarm
+00000000 t gcc2_compiled.
+
+chdir.o:
+000000d0 b .bss
+000000d0 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __put_path
+         U __use_lfn
+00000000 T _chdir
+         U _errno
+00000000 t gcc2_compiled.
+
+chown.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+         U ___file_exists
+00000000 t ___gnu_compiled_c
+00000000 T _chown
+         U _errno
+00000000 t gcc2_compiled.
+
+close.o:
+00000010 b .bss
+00000010 d .data
+00000000 t .text
+00000000 T ___close
+00000000 t ___gnu_compiled_c
+         U __close
+00000000 t gcc2_compiled.
+
+ctermid.o:
+0000002c b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _ctermid
+00000028 d _def_termid
+         U _strcpy
+00000000 t gcc2_compiled.
+
+dup.o:
+0000005c b .bss
+0000005c d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 T ___dup
+         U ___file_handle_modes
+00000000 t ___gnu_compiled_c
+         U ___setmode
+         U _errno
+00000000 t gcc2_compiled.
+
+dup2.o:
+00000068 b .bss
+00000068 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 T ___dup2
+         U ___file_handle_modes
+00000000 t ___gnu_compiled_c
+         U ___setmode
+         U _errno
+00000000 t gcc2_compiled.
+
+execl.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+         U _environ
+00000000 T _execl
+00000000 t gcc2_compiled.
+
+execle.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+00000000 T _execle
+00000000 t gcc2_compiled.
+
+execlp.o:
+0000001c b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+         U _environ
+00000000 T _execlp
+00000000 t gcc2_compiled.
+
+execlpe.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+00000000 T _execlpe
+00000000 t gcc2_compiled.
+
+execv.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+         U _environ
+00000000 T _execv
+00000000 t gcc2_compiled.
+
+execve.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnve
+00000000 T _execve
+00000000 t gcc2_compiled.
+
+execvp.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+         U _environ
+00000000 T _execvp
+00000000 t gcc2_compiled.
+
+execvpe.o:
+00000018 b .bss
+00000018 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___spawnvpe
+00000000 T _execvpe
+00000000 t gcc2_compiled.
+
+fork.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _fork
+00000000 t gcc2_compiled.
+
+fpathcon.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000002 T _fpathconf
+         U _pathconf
+00000000 t gcc2_compiled.
+
+getcwd.o:
+00000138 b .bss
+00000138 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __use_lfn
+         U _errno
+00000000 T _getcwd
+         U _malloc
+00000000 t gcc2_compiled.
+
+getegid.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getegid
+00000000 t gcc2_compiled.
+
+geteuid.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _geteuid
+00000000 t gcc2_compiled.
+
+getgid.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getgid
+00000000 t gcc2_compiled.
+
+getgroup.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getgroups
+00000000 t gcc2_compiled.
+
+getlogin.o:
+00000040 b .bss
+00000038 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000038 d _default_login
+         U _getenv
+0000000e T _getlogin
+00000000 t gcc2_compiled.
+
+getopt.o:
+000001d4 b .bss
+000001c0 d .data
+00000000 t .text
+         U ___dj_stderr
+00000000 t ___gnu_compiled_c
+         U _fprintf
+00000044 T _getopt
+000001cc D _optarg
+000001c0 D _opterr
+000001c4 D _optind
+000001c8 D _optopt
+000001d0 d _place.2
+         U _strchr
+         U _strrchr
+00000000 t gcc2_compiled.
+
+getpgrp.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getpgrp
+         U _getpid
+00000000 t gcc2_compiled.
+
+getpid.o:
+00000040 b .bss
+0000003c d .data
+00000000 t .text
+         U ___bss_count
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+00000000 T _getpid
+00000040 b _my_pid
+0000003c d _pid_count
+00000000 t gcc2_compiled.
+
+getppid.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getppid
+00000000 t gcc2_compiled.
+
+getuid.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 T _getuid
+00000000 t gcc2_compiled.
+
+isatty.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T ___isatty
+00000000 t gcc2_compiled.
+
+link.o:
+000001a0 b .bss
+000001a0 d .data
+00000000 t .text
+         U ___close
+00000000 t ___gnu_compiled_c
+         U ___open
+         U ___read
+         U ___write
+         U _chmod
+         U _errno
+         U _fstat
+00000000 T _link
+         U _stat
+         U _unlink
+         U _utime
+00000000 t gcc2_compiled.
+
+lseek.o:
+00000064 b .bss
+00000064 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+00000000 T ___lseek
+         U _errno
+00000000 t gcc2_compiled.
+
+pathconf.o:
+00000078 b .bss
+00000078 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _pathconf
+00000000 t gcc2_compiled.
+
+pause.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+         U ___dpmi_yield
+00000000 t ___gnu_compiled_c
+00000000 T _pause
+00000000 t gcc2_compiled.
+
+pipe.o:
+00000014 b .bss
+00000014 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _pipe
+00000000 t gcc2_compiled.
+
+read.o:
+00000078 b .bss
+00000078 d .data
+00000000 t .text
+         U ___crlf2nl
+         U ___file_handle_modes
+00000000 t ___gnu_compiled_c
+         U ___lseek
+00000000 T ___read
+         U __read
+00000000 t gcc2_compiled.
+
+rmdir.o:
+00000064 b .bss
+00000064 d .data
+00000000 t .text
+         U ___doserr_to_errno
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __go32_info_block
+         U __put_path
+         U __use_lfn
+         U _errno
+00000000 T _rmdir
+00000000 t gcc2_compiled.
+
+setgid.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _getgid
+00000000 T _setgid
+00000000 t gcc2_compiled.
+
+setpgid.o:
+00000028 b .bss
+00000028 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _getpid
+00000000 T _setpgid
+00000000 t gcc2_compiled.
+
+setsid.o:
+0000000c b .bss
+0000000c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _getpid
+00000000 T _setsid
+00000000 t gcc2_compiled.
+
+setuid.o:
+0000002c b .bss
+0000002c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+         U _getuid
+00000000 T _setuid
+00000000 t gcc2_compiled.
+
+sleep.o:
+00000038 b .bss
+00000038 d .data
+00000000 t .text
+         U ___dpmi_yield
+00000000 t ___gnu_compiled_c
+         U _clock
+00000000 T _sleep
+00000000 t gcc2_compiled.
+
+sysconf.o:
+00000094 b .bss
+00000094 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U _errno
+00000000 T _sysconf
+00000000 t gcc2_compiled.
+
+ttyname.o:
+00000020 b .bss
+0000001c d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+         U ___isatty
+0000001c d _dev_con
+00000000 T _ttyname
+00000000 t gcc2_compiled.
+
+unlink.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U _remove
+00000000 T _unlink
+
+write.o:
+00000120 b .bss
+00000114 d .data
+00000000 t .text
+         U ___bss_count
+         U ___file_handle_modes
+00000000 t ___gnu_compiled_c
+00000000 T ___write
+         U __write
+         U _errno
+         U _free
+         U _malloc
+00000114 d _sbuf
+00000118 d _sbuflen
+0000011c d _write_count
+00000000 t gcc2_compiled.
+
+utime.o:
+000000b4 b .bss
+000000b4 d .data
+00000000 t .text
+         U ___close
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U ___open
+         U _localtime
+         U _time
+00000000 T _utime
+00000000 t gcc2_compiled.
+
+uname.o:
+0000010c b .bss
+0000010c d .data
+00000000 t .text
+         U ___dosmemget
+         U ___dpmi_int
+00000000 t ___gnu_compiled_c
+         U __get_dos_version
+         U __go32_info_block
+         U __os_flavor
+         U _errno
+         U _sprintf
+         U _strncpy
+0000000c T _uname
+00000000 t gcc2_compiled.
+
+stub0000.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___access
+00000000 T _access
+
+stub0001.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___close
+00000000 T _close
+
+stub0002.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___dup
+00000000 T _dup
+
+stub0003.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___dup2
+00000000 T _dup2
+
+stub0004.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___fnmatch
+00000000 T _fnmatch
+
+stub0005.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___glob
+00000000 T _glob
+
+stub0006.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___isatty
+00000000 T _isatty
+
+stub0007.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___lseek
+00000000 T _lseek
+
+stub0008.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___mkdir
+00000000 T _mkdir
+
+stub0009.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___open
+00000000 T _open
+
+stub0010.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___read
+00000000 T _read
+
+stub0011.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___tzname
+00000000 T _tzname
+
+stub0012.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___tzset
+00000000 T _tzset
+
+stub0013.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___write
+00000000 T _write
+
+stub0014.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___crlf2nl
+00000000 T _crlf2nl
+
+stub0015.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___dosmemget
+00000000 T _dosmemget
+
+stub0016.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___dosmemput
+00000000 T _dosmemput
+
+stub0017.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___filelength
+00000000 T _filelength
+
+stub0018.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___findfirst
+00000000 T _findfirst
+
+stub0019.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___findnext
+00000000 T _findnext
+
+stub0020.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___fsync
+00000000 T _fsync
+
+stub0021.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___getdisk
+00000000 T _getdisk
+
+stub0022.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___getitimer
+00000000 T _getitimer
+
+stub0023.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___gettimeofday
+00000000 T _gettimeofday
+
+stub0024.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___modfl
+00000000 T _modfl
+
+stub0025.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___movedata
+00000000 T _movedata
+
+stub0026.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___pow10
+00000000 T _pow10
+
+stub0027.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___pow2
+00000000 T _pow2
+
+stub0028.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___putenv
+00000000 T _putenv
+
+stub0029.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___sbrk
+00000000 T _sbrk
+
+stub0030.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___setitimer
+00000000 T _setitimer
+
+stub0031.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___setmode
+00000000 T _setmode
+
+stub0032.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___spawnve
+00000000 T _spawnve
+
+stub0033.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___spawnvpe
+00000000 T _spawnvpe
+
+stub0034.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___stricmp
+00000000 T _stricmp
+
+stub0035.o:
+00000008 b .bss
+00000008 d .data
+00000000 t .text
+         U ___sync
+00000000 T _sync
+
+id_c.o:
+00000074 b .bss
+00000000 d .data
+00000000 t .text
+00000000 t ___gnu_compiled_c
+00000000 D ___libc_ident_string
+0000003a D ___libc_sccs_ident
+00000000 t gcc2_compiled.
