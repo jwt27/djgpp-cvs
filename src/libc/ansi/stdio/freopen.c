@@ -8,11 +8,12 @@
 #include <unistd.h>
 #include <libc/file.h>
 #include <libc/dosio.h>
+#include <io.h>
 
 FILE *
 freopen(const char *file, const char *mode, FILE *f)
 {
-  int fd, rw, oflags=0;
+  int fd, fdo, rw, oflags=0;
   char tbchar;
 
   if (file == 0 || mode == 0 || f == 0)
@@ -20,6 +21,7 @@ freopen(const char *file, const char *mode, FILE *f)
 
   rw = (mode[1] == '+') || (mode[1] && (mode[2] == '+'));
 
+  fdo = fileno(f);
   fclose(f);
 
   switch (*mode) {
@@ -49,6 +51,12 @@ freopen(const char *file, const char *mode, FILE *f)
   fd = open(file, oflags, 0666);
   if (fd < 0)
     return NULL;
+
+  if(fd != fdo) {	/* This should rarely happen, but if it does for */
+    dup2(fd, fdo);	/* stdin/stdout/stderr handles, we must fix it or */
+    _close(fd);		/* child processes won't popen properly. */
+    fd = fdo;
+  }
 
   f->_cnt = 0;
   f->_file = fd;
