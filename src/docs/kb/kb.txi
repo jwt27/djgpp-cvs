@@ -1,6 +1,6 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
-@setfilename kb.inf
+@setfilename ../../../info/kb.inf
 @settitle DJGPP Knowledge Base
 @c %**end of header
 
@@ -12,14 +12,6 @@
 
 @setchapternewpage odd
 @paragraphindent 0
-
-@ifinfo
-
-This document is a place to store random bits of information about
-using DJGPP efficiently.
-
-Copyright (c) 1995 DJ Delorie
-@end ifinfo
 
 @titlepage
 @sp 10
@@ -35,8 +27,17 @@ Copyright @copyright{} 1995 DJ Delorie
 @node    Top,       ,  (dir),    (dir)
 @comment node-name, next,          previous, up
 
+The DJGPP Knowledge Base
+
+This document is a place to store random bits of information about
+DJGPP and how to use it efficiently.
+
+Copyright (c) 1995,1996 DJ Delorie
+
 @menu
 * Introduction::
+
+* What Changed::        List of changes made to each release.
 
 * Known Bugs::		List of things that we know are broken,
 			but either we haven't fixed them yet
@@ -52,23 +53,24 @@ Copyright @copyright{} 1995 DJ Delorie
 * Index::
 @end menu
 
-@node    Introduction, Known Bugs, ,      Top
+@node    Introduction, What Changed, ,      Top
 @comment node-name,    next,       previous, up
 @chapter Introduction
 
 This is the intro.
-@cindex Introduction
-@findex intro()
-@vindex __dpmi_stack
-@kindex Ctrl-M
-@pindex go32.exe
-@tindex mode_t
 
-@node Known Bugs, Known Anti-Bugs, Introduction, Top
+@include wc.txi
+
+@node Known Bugs, Known Anti-Bugs, What Changed, Top
+@chapter Known Bugs
+
 @node Known Anti-Bugs, Hidden Features, Known Bugs, Top
-@node Hidden Features, , Known Anti-Bugs, Top
+@chapter Known Anti-Bugs
+
+@include hidden.txi
 
 @node Index,,,Top
+@chapter Index
 @printindex cp
 
 @contents

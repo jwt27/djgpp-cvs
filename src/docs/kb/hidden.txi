@@ -1,0 +1,8 @@
+@node Hidden Features, , Known Anti-Bugs, Top
+@chapter Hidden Features
+
+@menu
+* DJGPP.ENV::	All about the format of the DJGPP.ENV file
+@end menu
+
+@include djgppenv.txi
