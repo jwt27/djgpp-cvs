@@ -3,7 +3,7 @@
 int
 main(void)
 {
-  FILE *f = fopen("fprintf.out", "w");
+  FILE *f = fopen("fputc.out", "w");
   fputc('\n', f);
   fclose(f);
   return 0;
