@@ -61,9 +61,10 @@ The startup code now correctly sets up the keys that generate
 @code{putc} and @code{fputc} no longer return -1 when they write the
 value @code{(signed char)0xff} to a file.
 
-@cindex wctype.h
-The header @file{wctype.h} from v2.02 caused pre-processor errors.  This
-is now fixed.
+@cindex wctype.h, pre-processor and compilation errors
+The header @file{wctype.h} from v2.02 caused pre-processor errors, and
+could not be included @emph{before} @file{ctype.h}.  This is now fixed.
+
 
 @findex doprnt
 @findex printf

@@ -4,20 +4,17 @@
 
 /* Bare bones header to satisfy SGI STL's basic_string<> */
 
-#include <stddef.h>
-#include <sys/djtypes.h>
-#include <inlines/ctype.ha>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-#ifndef __STRICT_ANSI__
+#include <sys/djtypes.h>
 
-#ifndef _POSIX_SOURCE
-
+__DJ_wchar_t
+#undef __DJ_wchar_t
+#define __DJ_wchar_t
 __DJ_wint_t
 #undef __DJ_wint_t
 #define __DJ_wint_t
@@ -30,6 +27,9 @@ __DJ_wint_t
 typedef unsigned short wctype_t;
 typedef const unsigned char *wctrans_t;
 
+#ifndef __STRICT_ANSI__
+
+#ifndef _POSIX_SOURCE
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
@@ -42,5 +42,5 @@ typedef const unsigned char *wctrans_t;
 }
 #endif
 
-#endif
+#endif /* !__dj_include_wctype_h_ */
 

@@ -4,17 +4,13 @@
 
 /* Bare bones header to satisfy SGI STL's basic_string<> */
 
-#include <stddef.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-#ifndef __STRICT_ANSI__
-
-#ifndef _POSIX_SOURCE
+#include <stddef.h>
 
 __DJ_wint_t
 #undef __DJ_wint_t
@@ -29,6 +25,10 @@ typedef struct
   int shift_state;
 } mbstate_t;
 
+#ifndef __STRICT_ANSI__
+
+#ifndef _POSIX_SOURCE
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
@@ -40,5 +40,5 @@ typedef struct
 }
 #endif
 
-#endif
+#endif /* !__dj_include_wchar_h_ */
 
