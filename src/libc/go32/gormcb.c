@@ -187,7 +187,7 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info)
 {
   unsigned char *stack;
 
-  stack = (char *)(*(long *)((long) info->size+0x12) - 8);
+  stack = (char *)(*(long *)((long) info->size+0x12) - 4);
   if (*(long *) stack & STACK_WAS_MALLOCED)
       free(stack);
 
