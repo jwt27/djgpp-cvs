@@ -273,11 +273,15 @@ These functions now interrogate and use the value of the DOS flag
 
 @item
 @findex fcntl@r{ commands @code{F_GETFL} and @code{F_SETFL}}
-These functions are still effective no-ops, since DOS/Windows does not
-allow flags to be modified on an open file.  A small exception is made
-for @code{F_SETFL}:  You may use @code{F_SETFL} to remove the
-@code{O_NONBLOCK} flag, because it is not supported by DJGPP anyway, and
-it does no harm to allow this functionality.
+The @code{F_SETFL} function is still an effective no-op, since
+DOS/Windows does not allow flags to be modified on an open file.
+A small exception is made for @code{F_SETFL}:  You may use @code{F_SETFL}
+to remove the@code{O_NONBLOCK} flag, because it is not supported
+by DJGPP anyway, and it does no harm to allow this functionality.
+
+The @code{F_GETFL} function now computes the open mode and status flags.
+On Windows NT this cannot report the open mode correctly ---
+@code{O_RDONLY} is always returned.
 
 @item
 Documentation has been updated to reflect the new functionality and
