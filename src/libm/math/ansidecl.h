@@ -19,7 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 /* ANSI and traditional C compatibility macros
 
    Some ANSI environments are "broken" in the sense that __STDC__ cannot be
-   relied upon to have it's intended meaning.  Therefore we must use our own
+   relied upon to have its intended meaning.  Therefore we must use our own
    concoction: _HAVE_STDC.  Always use _HAVE_STDC instead of __STDC__ in newlib
    sources!
 

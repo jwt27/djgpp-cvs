@@ -317,7 +317,7 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info);
 
 /* The following two variables may be used to change the default stack size
    for interrupts and rmcb wrappers to a user defined size from the default
-   of 32Kbytes.  Each RMCB and chain/iret wrapper gets it's own stack. */
+   of 32Kbytes.  Each RMCB and chain/iret wrapper gets its own stack. */
 
 extern unsigned long _go32_interrupt_stack_size;
 extern unsigned long _go32_rmcb_stack_size;

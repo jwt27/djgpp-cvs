@@ -370,7 +370,7 @@ This function could be called to determine if a filename is valid on
 DOS before long file name support.  If this function returns 1 the 
 filename probably does not have a long name entry on a FAT file 
 system.  The library internally calls this function to determine
-if a file should have it's name lower cased when @pxref{_preserve_fncase} is
+if a file should have its name lower cased when @pxref{_preserve_fncase} is
 false.
 
 @subheading Return value

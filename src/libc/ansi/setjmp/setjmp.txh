@@ -16,7 +16,7 @@ implement coroutines.
 
 @subheading Return Value
 
-This function will return zero if it is returning from it's own call. 
+This function will return zero if it is returning from its own call. 
 If longjmp is used to restore the state, it will return whatever value
 was passed to longjmp, except if zero is passed to longjmp it will
 return one. 

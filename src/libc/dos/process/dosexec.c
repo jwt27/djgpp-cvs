@@ -443,7 +443,7 @@ static int direct_exec_tail (const char *program, const char *args,
     else {
 
       /* Test the DPMI provider to see how it behaves.  We allocate
-         a descriptor, get it's access rights and full 8 byte descriptor.
+         a descriptor, get its access rights and full 8 byte descriptor.
          We then free it, and see what changed.  The present bit, run
          ring and selector type (user) might change.  Algorithm 1: These
          can be detected with a single hardware instruction (LAR).

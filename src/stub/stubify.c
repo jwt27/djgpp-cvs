@@ -251,7 +251,7 @@ int main(int argc, char **argv)
     fprintf(stderr, "\nThis program is NOT shareware or public domain.  It is copyrighted.\n");
     fprintf(stderr, "It is redistributable but only as part of a complete package.  If you\n");
     fprintf(stderr, "have a copy of this program, the place that you got it from is\n");
-    fprintf(stderr, "responsible for making sure you are able to get it's sources as well.\n");
+    fprintf(stderr, "responsible for making sure you are able to get its sources as well.\n");
 
     exit(1);
   }
