@@ -69,8 +69,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.3 2001/06/20 16:54:33 ams Exp $
+$Id: ioctl.c,v 1.4 2001/08/08 17:03:19 snowball Exp $
 $Log: ioctl.c,v $
+Revision 1.4  2001/08/08 17:03:19  snowball
+Implement TIOCGWINSZ for retrieving the screen height and width.
+
 Revision 1.3  2001/06/20 16:54:33  ams
 Do not mix signed and unsigned.
 
@@ -107,9 +110,9 @@ import djgpp 2.02
 #include <stdlib.h>
 #include <sys/fsext.h>
 #include <sys/ioctl.h>
+#include <libc/farptrgs.h>
 
 
-      
 /****************************************************************************/
 /****************************************************************************/
 /* S T A R T   O F   I M P L E M E N T A T I O N  ***************************/
@@ -251,22 +254,36 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
 }
 
 
-static int _unix_ioctl(int fd,int cmd, int arg){
-/*
-** What to do _HERE_ ?
-*/
-    __FSEXT_Function *func = __FSEXT_get_function(fd);
-    if(func){
-        int rv;
-        if(func(__FSEXT_ioctl,&rv, &fd))
-           return rv;
-    }
+static int _unix_ioctl(int fd, int cmd, va_list args)
+{
+  __FSEXT_Function *func = __FSEXT_get_function(fd);
+  if(func)
+  {
+    int rv;
+    if (func(__FSEXT_ioctl,&rv, &fd))
+       return rv;
+  }
 
-    /*
-    ** All else fails so far.
-    */
-    errno =  ENOTTY;
-    return -1;
+  switch (cmd)
+  {
+    case TIOCGWINSZ:
+    {
+      struct winsize *win;
+
+      win = va_arg(args, struct winsize *);
+
+      _farsetsel(_dos_ds);
+      win->ws_row = _farnspeekb(0x0484) + 1;
+      win->ws_col = _farnspeekw(0x044a);
+      win->ws_xpixel = 1;
+      win->ws_ypixel = 1;
+      return 0;
+    }
+  }
+
+  /* All else fails.  */
+  errno =  ENOSYS;
+  return -1;
 }
 
 /*
@@ -274,12 +291,13 @@ static int _unix_ioctl(int fd,int cmd, int arg){
 ** The user callable entry point.
 **
 */
-int ioctl(int fd, int cmd, ...){
-  va_list args;
+int ioctl(int fd, int cmd, ...)
+{
   int argcx,argdx,argsi,argdi;
   int narg,xarg;
   __FSEXT_Function *func = __FSEXT_get_function(fd);
   int rv;
+  va_list args;
 
   /**
    ** see if this is a file system extension file
@@ -288,11 +306,10 @@ int ioctl(int fd, int cmd, ...){
   if (func && func(__FSEXT_ioctl, &rv, &fd))
     return rv;
 
-  va_start(args,cmd);
-  
-  if(__IS_UNIX_IOCTL(cmd)){
-    int arg = va_arg(args, int);
-    va_end(args);
+  va_start(args, cmd);
+
+  if(__IS_UNIX_IOCTL(cmd))
+  {
 #ifdef TEST
     {
     int inflg   = (cmd & IOC_IN)   == IOC_IN;
@@ -309,7 +326,7 @@ int ioctl(int fd, int cmd, ...){
            inflg,outflg,voidflg,size);
     }
 #endif
-     return _unix_ioctl(fd,cmd,arg);
+     return _unix_ioctl(fd, cmd, args);
   }
   /* Handle a DOS request */
   /* extract arguments */
@@ -335,7 +352,8 @@ int ioctl(int fd, int cmd, ...){
 #include <sys/stat.h>
 #include <unistd.h>
 
-int main (int argc, char **argv){
+int main (int argc, char **argv)
+{
     int fd;
     int res;
     short *s;
