@@ -11,7 +11,7 @@ int readlink(const char *filename, char *buffer, size_t size);
 MSDOS doesn't support symbolic links but DJGPP emulates them.
 This function checks if @var{filename} is a DJGPP symlink and
 the file name that the links points to is copied into buffer,
-up to maximum @var{size} characters. Only the last file name
+up to maximum @var{size} characters.  Only the last file name
 is resolved.
 Portable applications should not assume that @var{buffer} is
 terminated with @code{'\0'}.
@@ -19,9 +19,9 @@ terminated with @code{'\0'}.
 @subheading Return Value
 
 Number of copied characters; value -1 is returned in case of
-error and @code{errno} is set. When value returned is equal to 
+error and @code{errno} is set.  When value returned is equal to 
 @var{size}, you cannot determine if there was enough room to 
-copy whole name. So increase @var{size} and try again.
+copy whole name.  So increase @var{size} and try again.
 
 @subheading Portability
 
