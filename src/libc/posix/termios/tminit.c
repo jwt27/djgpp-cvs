@@ -214,7 +214,6 @@ static ssize_t
 __libc_termios_read (int handle, void *buffer, size_t count, ssize_t *rv)
 {
   short devmod;
-  ssize_t bytes;
 
   /* check handle whether valid or not */
   devmod = _get_dev_info (handle);
@@ -242,74 +241,7 @@ __libc_termios_read (int handle, void *buffer, size_t count, ssize_t *rv)
       return 1;
     }
 
-  if (__file_handle_modes[handle] & O_BINARY)
-    {
-      bytes = _read (handle, buffer, count);
-      if (bytes < 0)
-	{
-	  *rv = -1;
-	  return 1;
-	}
-    }
-  else
-    {
-      unsigned char *rp, *wp;
-      ssize_t n;
-
-      bytes = _read (handle, buffer, count);
-      if (bytes < 0)
-	{
-	  *rv = -1;
-	  return 1;
-	}
-
-      rp = wp = buffer;
-      n = bytes;
-      while (--n >= 0)
-	{
-	  unsigned char ch;
-
-	  ch = *rp++;
-	  if (ch == CPMEOF)
-	    {
-	      ++n;
-	      (void) lseek (handle, -n, SEEK_CUR);
-	      break;
-	    }
-	  else if (ch == '\r')
-	    {
-	      if (n > 0)
-		{
-		  /* peek next character */
-		  if (*rp == '\n')
-		    {
-		      /* if found '\n', delete '\r' */
-		      ch = *rp++;
-		      --n;
-		    }
-		}
-	      else
-		{
-		  unsigned char tmpch;
-
-		  /* read a character to peek */
-		  if (_read (handle, &tmpch, 1) == 1)
-		    {
-		      if (tmpch == '\n')
-			ch = tmpch;
-		      else
-			(void) lseek (handle, -1, SEEK_CUR);
-		    }
-		}
-	    }
-	  *wp++ = ch;
-	}
-      bytes = wp - (unsigned char *) buffer;
-    }
-
-  /* result of read() */
-  *rv =  bytes;
-  return 1;
+  return 0;
 }
 
 static ssize_t
@@ -437,16 +369,10 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
 /******************************************************************************/
 /* special write function *****************************************************/
 
-static unsigned char __libc_termios_write_sbuf_internal[64];
-static unsigned char *__libc_termios_write_sbuf = NULL;
-static size_t __libc_termios_write_sbuflen = 0;
-static int __libc_termios_write_count = -1;
-
 static ssize_t
 __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv)
 {
   short devmod;
-  ssize_t bytes;
 
   /* check handle whether valid or not */
   devmod = _get_dev_info (handle);
@@ -474,92 +400,7 @@ __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv)
       return 1;
     }
 
-  if (__file_handle_modes[handle] & O_BINARY)
-    {
-      bytes = _write (handle, buffer, count);
-      if (bytes < 0)
-	{
-	  *rv = -1;
-	  return 1;
-	}
-    }
-  else
-    {
-      const unsigned char *rp;
-      unsigned char *tp, *ep;
-      ssize_t n;
-
-      /* initialize local buffer */
-      if (__libc_termios_write_count != __bss_count)
-	{
-	  __libc_termios_write_count = __bss_count;
-	  __libc_termios_write_sbuflen = _go32_info_block.size_of_transfer_buffer;
-	  __libc_termios_write_sbuf = malloc (__libc_termios_write_sbuflen);
-	  if (__libc_termios_write_sbuf == NULL)
-	    {
-	      __libc_termios_write_sbuf = &__libc_termios_write_sbuf_internal[0];
-	      __libc_termios_write_sbuflen = sizeof (__libc_termios_write_sbuf_internal);
-	    }
-	}
-
-      rp = buffer;
-      tp = __libc_termios_write_sbuf;
-      ep = tp + __libc_termios_write_sbuflen;
-      n = count;
-      bytes = 0;
-      while (n >= 0)
-	{
-	  unsigned char *wp;
-	  unsigned char ch;
-	  ssize_t ncr, wbytes;
-
-	  /* fill local buffer */
-	  wp = tp;
-	  ncr = 0;
-	  while ((wp < ep) && (--n >= 0))
-	    {
-	      /* get character */
-	      ch = *rp++;
-
-	      /* LF conversion */
-	      if (ch == '\n')
-		{
-		  if (wp == (ep - 1))
-		    {
-		      n++;
-		      rp--;
-		      break;
-		    }
-		  *wp++ = '\r';
-		  ncr++;
-		}
-
-	      /* put character */
-	      *wp++ = ch;
-	    }
-
-	  /* write on handle */
-	  wbytes = _write (handle, tp, (size_t) (wp - tp));
-	  if (wbytes < 0)
-	    {
-	      *rv = -1;
-	      return 1;
-	    }
-	  if (wbytes < (ssize_t) (wp - tp))
-	    {
-	      /* detected disk full, but the result is not reality */
-	      *rv = bytes + (wbytes > ncr ? wbytes - ncr : 0);
-	      return 1;
-	    }
-
-	  /* don't count CR */
-	  bytes += wbytes - ncr;
-	}
-    }
-
-  /* result of write() */
-  *rv =  bytes;
-  return 1;
+  return 0;
 }
 
 static ssize_t
