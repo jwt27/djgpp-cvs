@@ -524,3 +524,10 @@ more breakpoints were set: it would display an error message saying that
 @code{fsdb} now supports the @code{SIGQUIT} signal, if the program being
 debugged generates it.
 
+@pindex emu387.dxe@r{, on Windows}
+@pindex libemu.a@r{, on Windows}
+@cindex FP emulation, on Windows
+The floating-point emulation now works on Windows.  Previously, a bug in
+the emulation of the WAIT/FWAIT instructions caused the emulator to get
+stuck in an endless loop on Windows.  (On MS-DOS, these two instructions
+don't generate an FP exception, and so don't get into the emulator.)

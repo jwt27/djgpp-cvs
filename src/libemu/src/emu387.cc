@@ -3507,7 +3507,8 @@ int _emu_entry(jmp_buf _exception_state)
     eip++;
   if (*eip == 0x9b) // fwait
   {
-//    _exception_state->__eip++;
+    eip++;
+    _exception_state->__eip = (unsigned long) eip;
     return 0;
   }
   jmpval = setjmp(jumpbuf);
