@@ -1,0 +1,137 @@
+@node File System Extensions, file system
+
+@subheading Description
+
+The File System Extensions are a part of the lowest level of I/O
+operations in the C runtime library of DJGPP.  These extensions are
+provided to allow for cases where Unix uses a file descriptor to
+access such items as serial ports, memory, and the network, but DOS
+does not.  It allows a set of functions (called an @i{extension}) to
+gain control when one of these low-level functions is called on a file
+descriptor set up by the extension.
+
+Each extension must provide one or two handler functions.  All handler
+functions take the same arguments:
+
+@example
+  int function(__FDEXT_Fnumber func_number, int *rv, va_args *args);
+@end example
+
+The @var{func_number} identifies which function is to be emulated.
+The file @code{<sys/fsext.h>} lists the function numbers.  @var{rv}
+points to a temporary return value pointer.  If the function is
+emulated, the return value should be stored here, and the function
+should return a nonzero value.  If the function returns zero, it is
+assumed to have not emulated the call, and the regular DOS I/O
+function will happen.  The @var{args} represent the arguments passed
+to the original function; these point to the actual arguments on the
+stack, so the emulation may choose to modify them and return zero to
+the regular function, which will then act on the modified arguments.
+
+A normal extension would provide these parts:
+
+@itemize @bullet
+
+@item
+
+Some function to create a connection to the extension.  This may be a
+custom function (such as @code{socket} for networking) or an extension
+to open (such as for @code{/dev/null} emulation).
+
+@item
+
+Initialization code that adds the open handler, if any.
+
+@item
+
+Overrides for the basic I/O functions, such as @code{read} and
+@code{write}.  This is a single function in the extension that uses
+the function number parameter to select an extension function.
+
+@item
+
+The core functionality of the extension, if any.
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@node __FSEXT_alloc_fd, file system
+@subheading Syntax
+
+@example
+#include <sys/fsext.h>
+
+int __FSEXT_alloc_fd(__FSEXT_Function *_function);
+@end example
+
+@subheading Description
+
+This function is part of the @ref{File System Extensions}.  It is used
+by extensions that fully emulate the I/O functions, and thus don't
+have a corresponding DOS file handle.  This function opens DOS's "nul"
+device, so as to allocate a handle that DOS won't then reuse.  It also
+assigns the handler function for that descriptor.
+
+The module is responsible for calling @code{_close} on the descriptor
+after setting the handler function to zero in the extended close
+handler.
+
+@subheading Example
+
+@example
+
+int socket()
+@{
+  int fd = __FSEXT_alloc_fd(socket_handler);
+  init_socket(fd);
+  return fd;
+@}
+@end example
+
+
+@c ----------------------------------------------------------------------
+@node __FSEXT_set_function, file system
+@subheading Syntax
+
+@example
+#include <sys/fsext.h>
+
+int __FSEXT_set_function(int _fd, __FSEXT_Function *_function);
+@end example
+
+@subheading Description
+
+This function is part of the @ref{File System Extensions}.  It is used
+to set the handler function for those extensions that use DOS files
+for I/O.  I can't think of any examples where you'd want to do this,
+but it's here in case you do.
+
+@c ----------------------------------------------------------------------
+@node __FSEXT_get_function, file system
+@subheading Syntax
+
+@example
+#include <sys/fsext.h>
+
+__FSEXT_Function *__FSEXT_get_function(int _fd);
+@end example
+
+This function is part of the @ref{File System Extensions}.  It is used
+internal to libc.a to redirect I/O requests to the appropriate
+extensions.
+
+@subheading Example
+
+@example
+_read(int fd, void *buf, int len)
+@{
+  __FSEXT_Function *func = __FSEXT_get_function(fd);
+  if (func)
+  @{
+    int rv;
+    if (func(__FSEXT_read, &rv, &fd))
+      return rv;
+  @}
+  /* rest of read() */
+@}
+@end example
