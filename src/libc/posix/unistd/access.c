@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -32,6 +33,13 @@ int access(const char *fn, int flags)
           return 0;
       }
 
+    /* Devices also fail `_chmod'; some programs won't write to
+       a device unless `access' tells them they are writeable.  */
+    if (findfirst(fn, &ff, FA_RDONLY | FA_ARCH) == 0
+	&& (ff.ff_attrib & 0x40) == 0x40
+	&& (flags & (X_OK | D_OK)) == 0)
+      return 0;
+
     errno = ENOENT;
     return -1;
   }
@@ -44,7 +52,7 @@ int access(const char *fn, int flags)
     return -1;			/* not a directory */
   }
 
-  if ((flags & W_OK) && (attr & 1))
+  if ((flags & W_OK) && (attr & 3)) /* read-only, system or hidden */
   {
     errno = EACCES;
     return -1;			/* not writable */
