@@ -2,9 +2,10 @@
 @subheading Syntax
 
 @example
+#include <stdarg.h>
 #include <stdio.h>
 
-int _doscan(FILE *file, const char *format, void **ptrs_to_args);
+int _doscan(FILE *file, const char *format, va_list argp);
 @end example
 
 @subheading Description
@@ -27,6 +28,9 @@ error.
 @subheading Example
 
 @example
+TODO: This example is bogus now!
+TODO: Rewrite this example!
+
 int x, y;
 int *args[2];
 args[0] = &x;

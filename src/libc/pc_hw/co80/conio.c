@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -722,8 +723,14 @@ cgets(char *string)
 int
 cscanf(const char *fmt, ...)
 {
-  return(_doscan_low(NULL, _scan_getche, _scan_ungetch, 
-		     fmt, (void **) unconst( ((&fmt)+1), char ** )));
+  va_list args;
+  int ret;
+
+  va_start(args, fmt);
+  ret = _doscan_low(NULL, _scan_getche, _scan_ungetch, fmt, args);
+  va_end(args);
+
+  return(ret);
 }
 
 int
