@@ -52,7 +52,7 @@ argok:
 	fabs
 	fldl2e				/* log2(e)   x			  */
 	fmulp				/* xs				  */
-	fldl	%st			/* xs	     xs			  */
+	fld	%st			/* xs	     xs			  */
 	frndint				/* nint(xs)  xs			  */
 	fxch	%st(1)			/* xs	     nint		  */
 	fsub	%st(1),%st		/* fract     nint		  */

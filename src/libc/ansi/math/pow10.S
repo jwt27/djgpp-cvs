@@ -16,7 +16,7 @@ argok:					/* N.B. log10(DBL_MAX) */
 	fldl	4(%esp)
 	fldl2t				/* log10(e)   x		    */
 	fmulp				/* log10(e)*x		    */
-	fldl	%st			/* xs	      xs	    */
+	fld	%st			/* xs	      xs	    */
 	frndint				/* nint(xs)   xs	    */
 	fxch	%st(1)			/* xs	      nint(xs)	    */
 	fsub	%st(1), %st		/* fract      nint	    */

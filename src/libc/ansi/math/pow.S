@@ -10,7 +10,7 @@ one:
 	.float	1.
 
 frac:					/* Calculate st(0) - nint(st(0)) */
-	fldl	%st(0)			/* x		x	*/
+	fld	%st(0)			/* x		x	*/
 	frndint				/* nint(x)	x	*/
 	fxch	%st(1)			/* x		nint(x) */
 	fsub	%st(1),%st

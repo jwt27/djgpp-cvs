@@ -14,7 +14,7 @@ _modf:
 	fld1				/* 1	    x        */
 	fld	%st(1)			/* x        1     x  */
 loop:
-	fpreml				/* fract(x) 1     x  */
+	fprem				/* fract(x) 1     x  */
 	fnstsw	%ax
 	sahf
 	jpe	loop

@@ -39,7 +39,7 @@ argok:
 	fldl	4(%esp)
 	fldl2e				/* log2(e)   x		   */
 	fmulp				/* log2(e)*x		   */
-	fldl	%st			/* xs	     xs		   */
+	fld	%st			/* xs	     xs		   */
 	frndint				/* nint(xs)  xs		   */
 	fxch	%st(1)			/* xs	     nint(xs)	   */
 	fsub	%st(1), %st		/* fract     nint	   */

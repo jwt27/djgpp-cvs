@@ -13,7 +13,7 @@ ___pow2:
 					/* 0 < |x| <= log2(DBL_MAX) */
 argok:					/* log2(DBL_MAX) = 0x4090000000000000 */
 	fldl	4(%esp)
-	fldl	%st			/* xs	    xs		  */
+	fld	%st			/* xs	    xs		  */
 	frndint				/* nint(xs) xs		  */
 	fxch	%st(1)			/* xs	    nint(xs)	  */
 	fsub	%st(1), %st		/* fract    nint	  */
