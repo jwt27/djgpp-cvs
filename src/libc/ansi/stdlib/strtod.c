@@ -89,7 +89,7 @@ strtod(const char *s, char **sret)
       mantissa_bits = strtoull(&s[4], &endptr, 16);
       if ( *endptr == ')' )
       {
-	mantissa_bits = mantissa_bits & 0xfffffffffffff;
+	mantissa_bits = mantissa_bits & 0xfffffffffffffULL;
 	if( mantissa_bits )
 	{
 	  n.mantissal = mantissa_bits & 0xffffffff;

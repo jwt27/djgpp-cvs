@@ -86,7 +86,7 @@ strtold(const char *s, char **sret)
       mantissa_bits = strtoull(&s[4], &endptr, 16);
       if ( *endptr == ')' )
       {
-	mantissa_bits = mantissa_bits & 0x7fffffffffffffff; /* Ignore
+	mantissa_bits = mantissa_bits & 0x7fffffffffffffffULL; /* Ignore
 							       integer
 							       bit. */
 	if( mantissa_bits )
