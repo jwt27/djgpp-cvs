@@ -19,7 +19,7 @@ pipe(int fildes[2])
   if (tname == NULL)
     return -1;
     
-  ofd = open(tname, O_WRONLY | O_CREAT | O_TRUNC | O_APPEND | O_TEMPORARY,
+  ofd = open(tname, O_WRONLY | O_CREAT | O_TRUNC | O_TEMPORARY,
              S_IWUSR);
   if (ofd < 0)
     return -1;
