@@ -267,7 +267,7 @@ static int
 tzload(const char *name, struct state * const sp)
 {
   const char * p;
-  int i;
+  size_t i;
   int fid;
   char fullname[FILENAME_MAX + 1];
   const struct tzhead * tzhp;
@@ -686,7 +686,7 @@ tzparse(const char *name, struct state * const sp, const int lastditch)
 {
   const char * stdname;
   const char * dstname=0;
-  int stdlen;
+  size_t stdlen;
   int dstlen;
   long stdoffset;
   long dstoffset;

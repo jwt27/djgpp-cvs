@@ -4,7 +4,7 @@
 
 void globfree(glob_t *_pglob)
 {
-  int i;
+  size_t i;
   if (!_pglob->gl_pathv)
     return;
   for (i=0; i<_pglob->gl_pathc; i++)
