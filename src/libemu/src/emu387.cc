@@ -94,7 +94,7 @@ static unsigned char *eip;
 static jmp_buf jumpbuf;
 
 static int status_word = 0;
-static int control_word = 0x77e;
+static int control_word = 0x37f;
 static reg regs[8] = {
  { SIGN_POS, TW_E, 0, 0x0, 0x0 },
  { SIGN_POS, TW_E, 0, 0x0, 0x0 },
@@ -1202,8 +1202,8 @@ static void emu_02()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -1233,8 +1233,8 @@ static void emu_02()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -1274,8 +1274,8 @@ static void emu_03()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -1307,8 +1307,8 @@ static void emu_03()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -1948,9 +1948,9 @@ static void fprem1()
   else
   {
     int c = 0;
-    if (q&4) c |= SW_C3;
-    if (q&2) c |= SW_C1;
-    if (q&1) c |= SW_C0;
+    if (q&4) c |= SW_C0;
+    if (q&2) c |= SW_C3;
+    if (q&1) c |= SW_C1;
     setcc(c);
   }
 }
@@ -1991,9 +1991,9 @@ static void fprem()
   else
   {
     int c = 0;
-    if (q&4) c |= SW_C3;
-    if (q&2) c |= SW_C1;
-    if (q&1) c |= SW_C0;
+    if (q&4) c |= SW_C0;
+    if (q&2) c |= SW_C3;
+    if (q&1) c |= SW_C1;
     setcc(c);
   }
 }
@@ -2223,8 +2223,8 @@ static void emu_22()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -2265,8 +2265,8 @@ static void emu_23()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -2330,8 +2330,8 @@ static void emu_25()
     int f=0;
     if (c & COMP_SNAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -2463,7 +2463,7 @@ static void fclex()
 
 static void finit()
 {
-  control_word = 0x037e;
+  control_word = 0x037f;
   status_word = 0;
   top = 0;
   for (int r=0; r<8; r++)
@@ -2599,8 +2599,8 @@ static void emu_42()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -2641,8 +2641,8 @@ static void emu_43()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -2837,8 +2837,8 @@ static void emu_54()
     int f=0;
     if (c & COMP_SNAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -2895,8 +2895,8 @@ static void emu_55()
     int f=0;
     if (c & COMP_SNAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -3027,8 +3027,8 @@ static void emu_62()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -3075,8 +3075,8 @@ static void emu_63()
     top++;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -3108,8 +3108,8 @@ static void emu_63()
     int f=0;
     if (c & COMP_NAN)
     {
+      setcc(SW_C3|SW_C2|SW_C0);
       exception(EX_I);
-      f = SW_C3 | SW_C2 | SW_C0;
     }
     else
       switch (c)
@@ -3513,7 +3513,10 @@ int _emu_entry(jmp_buf _exception_state)
   }
   jmpval = setjmp(jumpbuf);
   if(jmpval)
+  {
+    _exception_state->__signum = 16; // simulate SIGFPE
     return 1;           /* Emulator failed for some reason */
+  }
 #if 0
   int see = ((int)(eip[0] & 7) << 8) | eip[1];
   if (saw[see] != 42)
