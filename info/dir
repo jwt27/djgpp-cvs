@@ -285,8 +285,10 @@ Summarizing files
 * md5sum: (textutils)md5sum invocation.	Print or check message-digests.
 Operating on sorted files
 * sort: (textutils)sort invocation.	Sort text files.
+* tsort: (textutils)tsort invocation.	Topologically sort text files.
 * uniq: (textutils)uniq invocation.	Uniqify files.
 * comm: (textutils)comm invocation.	Compare sorted files by line.
+* ptx: (textutils)ptx invocation.	Produce permuted indexes.
 Operating on fields within a line
 * cut: (textutils)cut invocation.	Print selected parts of lines.
 * paste: (textutils)paste invocation.	Merge lines of files.
