@@ -47,7 +47,9 @@ preposterously long time when passed very large values in the members of
 @findex stat
 When passed an empty string as the file name, @code{stat} now fails and
 sets @code{errno} to @code{ENOENT}, instead of returning information
-about the current directory.
+about the current directory.  Also, @code{stat} no longer reports
+invalid time stamps for root directories of floppy disks that were
+written on Windows 9X or Windows NT.
 
 @cindex PC98, SIGINT and SIGQUIT
 @cindex SIGINT and SIGQUIT, PC98

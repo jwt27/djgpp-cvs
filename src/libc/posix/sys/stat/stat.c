@@ -677,10 +677,19 @@ stat_assist(const char *path, struct stat *statbuf)
       if ( (_djstat_flags & _STAT_ROOT_TIME) == 0 )
 	{
 	  char buf[7];
+	  int volume_found = 0;
 
 	  strcpy(buf, pathname);
 	  strcat(buf, "*.*");
-	  if (!__findfirst(buf, &ff_blk, FA_LABEL))
+	  /* Floppies written by Windows 9X and NT include entries
+	     that have volume label bit set, but are actually parts
+	     of an LFN entry.  Non-LFN platforms might be fooled to
+	     take them as volume labels, and report bogus time stamps.  */
+	  volume_found = __findfirst(buf, &ff_blk, FA_LABEL) == 0;
+	  while (volume_found
+		 && (ff_blk.ff_attrib & (FA_HIDDEN|FA_SYSTEM)) != 0)
+	    volume_found = __findnext(&ff_blk) == 0;
+	  if (volume_found)
 	    dos_ftime = ( (unsigned)ff_blk.ff_fdate << 16 ) + ff_blk.ff_ftime;
 	  else
 	    _djstat_fail_bits |= _STFAIL_LABEL;
