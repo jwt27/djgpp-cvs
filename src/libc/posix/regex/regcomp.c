@@ -823,9 +823,9 @@ int ch;
 {
 	assert(isalpha(ch));
 	if (isupper(ch))
-		return(tolower(ch));
+		return(tolower((unsigned char)ch));
 	else if (islower(ch))
-		return(toupper(ch));
+		return(toupper((unsigned char)ch));
 	else			/* peculiar, but could happen */
 		return(ch);
 }

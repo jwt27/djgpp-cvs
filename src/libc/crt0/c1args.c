@@ -376,7 +376,7 @@ __crt0_setup_arguments(void)
           argv0[i] = '/';
       if (!(_crt0_startup_flags & _CRT0_FLAG_PRESERVE_UPPER_CASE))
         if (isupper(argv0[i]))
-          argv0[i] = tolower(argv0[i]);
+          argv0[i] = tolower((unsigned char)argv0[i]);
     }
     if (_crt0_startup_flags & _CRT0_FLAG_DROP_EXE_SUFFIX)
     {

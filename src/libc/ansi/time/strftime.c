@@ -35,7 +35,7 @@ _add(const char *str, int upcase)
     if (!(*pt = *str++))
       return 1;
     if (upcase)
-      *pt = toupper(*pt);
+      *pt = toupper((unsigned char)*pt);
   }
 }
 

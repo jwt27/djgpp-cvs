@@ -669,7 +669,7 @@ getmntent(FILE *filep)
       truename_result = _truename(drive_string, mnt_fsname);
       if (truename_result && mnt_fsname[0]
 	  && mnt_fsname[1] == ':' && islower(mnt_fsname[0]))
-	mnt_fsname[0] = toupper(mnt_fsname[0]);
+	mnt_fsname[0] = toupper((unsigned char)mnt_fsname[0]);
 
       /* Get some info from the DOS Current Directory Structure (CDS).
 	 We've already hit the disk with _truename(), so CDS now
@@ -862,7 +862,7 @@ getmntent(FILE *filep)
               if (*p == '\\')
                 *p = '/';
               else
-                *p = tolower(*p);
+                *p = tolower((unsigned char)*p);
             }
 
           /* Should we convert ``\\HOST\PATH'' into ``HOST:PATH''?  */

@@ -8,7 +8,7 @@ strlwr(char *_s)
   char *rv = _s;
   while (*_s)
   {
-    *_s = tolower(*_s);
+    *_s = tolower((unsigned char)*_s);
     _s++;
   }
   return rv;

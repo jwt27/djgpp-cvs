@@ -41,13 +41,13 @@ rangematch(const char *pattern, char test, int nocase)
     {
       if (c <= test && test <= c2)
 	ok = 1;
-      if (nocase && toupper(c) <= toupper(test) && toupper(test) <= toupper(c2))
+      if (nocase && toupper((unsigned char)c) <= toupper((unsigned char)test) && toupper((unsigned char)test) <= toupper((unsigned char)c2))
 	ok = 1;
       pattern += 2;
     }
     else if (c == test)
       ok = 1;
-    else if (nocase && (toupper(c) == toupper(test)))
+    else if (nocase && (toupper((unsigned char)c) == toupper((unsigned char)test)))
       ok = 1;
   }
   return ok == negate ? NULL : pattern;
@@ -133,7 +133,7 @@ fnmatch(const char *pattern, const char *string, int flags)
       }
       if (flags & FNM_NOCASE)
       {
-	if (toupper(c) != toupper(*string++))
+	if (toupper((unsigned char)c) != toupper((unsigned char)*string++))
 	  return FNM_NOMATCH;
       }
       else

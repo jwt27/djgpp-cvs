@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <limits.h>
 
-#define TOLOWER(c) (isascii(c) && isupper(c) ? tolower (c) : (c))
+#define TOLOWER(c) (isascii(c) && isupper(c) ? tolower ((unsigned char)c) : (c))
 
 long
 pathconf(const char *path, int name)

@@ -70,7 +70,7 @@ _lfn_gen_short_fname (const char *long_fname, char *short_fname)
       const char *s = long_fname;
       char *d = short_fname;
 
-      while ((*d++ = msdos_toupper_fname (*s++)))
+      while ((*d++ = msdos_toupper_fname ((unsigned char)*s++)))
 	if (d - short_fname >= 12)
 	  {
 	    *d = '\0';

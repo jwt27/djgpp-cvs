@@ -452,7 +452,7 @@ stat_assist(const char *path, struct stat *statbuf)
 
   /* Get the drive number.  It is always explicit, since we
      called `_fixpath' on the original pathname.  */
-  drv_no = toupper(pathname[0]) - 'A';
+  drv_no = toupper((unsigned char)pathname[0]) - 'A';
 
   /* Produce canonical pathname, with all the defaults resolved and
      all redundant parts removed.  This calls undocumented DOS
@@ -521,7 +521,7 @@ stat_assist(const char *path, struct stat *statbuf)
              because SUBST.EXE and JOIN.EXE won't let you do it; so, for
              these cases, there is no problem in believing the drive
              number we've got from the original path (or is there?).  */
-          drv_no = toupper(canon_path[0]) - 'A';
+          drv_no = toupper((unsigned char)canon_path[0]) - 'A';
         }
     }
   else
@@ -579,7 +579,7 @@ stat_assist(const char *path, struct stat *statbuf)
               statbuf->st_ino =
                 _invent_inode(canon_path, dos_ftime, ff_blk.ff_fsize);
             }
-	  else if (toupper (canon_path[0]) != toupper (pathname[0])
+	  else if (toupper ((unsigned char)canon_path[0]) != toupper ((unsigned char)pathname[0])
 		   && canon_path[1] == ':'
 		   && canon_path[2] == '\\'
 		   && canon_path[3] == '\0')
@@ -707,7 +707,7 @@ stat_assist(const char *path, struct stat *statbuf)
 	  if (j >= i)
 	    {
 	      for ( ; i >= 0 && j >= 0; i--, j--)
-		if (toupper (ff_blk.ff_name[i]) != toupper (pathname[j]))
+		if (toupper ((unsigned char)ff_blk.ff_name[i]) != toupper ((unsigned char)pathname[j]))
 		  break;
 	    }
 	}

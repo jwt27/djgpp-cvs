@@ -12,7 +12,7 @@ memicmp(const void *s1, const void *s2, size_t n)
     do {
       if (*p1 != *p2)
       {
-        int c = toupper(*p1) - toupper(*p2);
+        int c = toupper((unsigned char)*p1) - toupper((unsigned char)*p2);
 	if (c)
 	  return c;
       }

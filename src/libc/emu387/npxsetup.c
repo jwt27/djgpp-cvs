@@ -69,12 +69,12 @@ void _npxsetup(char *argv0)
 #endif
 
   cp = getenv("387");
-  if (cp && (tolower(cp[0]) == 'y'))
+  if (cp && (tolower((unsigned char)cp[0]) == 'y'))
   {
     _control87(0x033f, 0xffff);	/* mask all numeric exceptions */
     return;
   }
-  if (cp && (tolower(cp[0]) == 'n'))
+  if (cp && (tolower((unsigned char)cp[0]) == 'n'))
     have_80387 = 0;
   else
   {
@@ -85,7 +85,7 @@ void _npxsetup(char *argv0)
     _8087 = (have_80387 ? 3 : 0);
   }
 
-  if (cp && (tolower(cp[0]) == 'q')) {
+  if (cp && (tolower((unsigned char)cp[0]) == 'q')) {
     if (!have_80387)
       _write(2, "No ", 3);
     _write(2, "80387 detected.\r\n", 17);

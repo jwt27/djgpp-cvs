@@ -5,7 +5,6 @@
 #include <stdio.h>		/* For FILENAME_MAX */
 #include <stdlib.h>
 #include <errno.h>		/* For errno */
-#include <ctype.h>		/* For tolower */
 #include <string.h>		/* For strlen() */
 #include <fcntl.h>		/* For LFN stuff */
 #include <go32.h>

@@ -190,7 +190,7 @@ _is_executable(const char *filename, int fhandle, const char *extension)
       if (*extension == '.')
  	extension++;
       while (*extension)
- 	*tp++ = toupper (*extension++);
+ 	*tp++ = toupper ((unsigned char)*extension++);
       *tp++ = '|';
       *tp = '\0';
       if (strstr(non_executables, tmp_buf))

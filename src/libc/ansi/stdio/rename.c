@@ -191,7 +191,7 @@ is_parent(const char *dir1, const char *dir2)
 {
   if (dir1 == 0 || dir2 == 0 || *dir1 == 0)
     return 0;
-  while (*dir1 && *dir2 && tolower(*dir1) == tolower(*dir2))
+  while (*dir1 && *dir2 && tolower((unsigned char)*dir1) == tolower((unsigned char)*dir2))
     {
       dir1++;
       dir2++;
@@ -284,11 +284,11 @@ rename(const char *old, const char *new)
 
   /* Fail with EXDEV, if old and new aren't on the same device.  */
   if (old[1] == ':')
-    old_dev = toupper(old[0]) - 'A';
+    old_dev = toupper((unsigned char)old[0]) - 'A';
   else
     old_dev = getdisk();
   if (new[1] == ':')
-    new_dev = toupper(new[0]) - 'A';
+    new_dev = toupper((unsigned char)new[0]) - 'A';
   else
     new_dev = getdisk();
   if (old_dev != new_dev)

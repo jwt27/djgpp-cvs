@@ -49,7 +49,7 @@ __crt0_load_environment_file(char *app_name)
 	if (strchr("\\/:", *a0p))
 	  bp = a0p+1;
       for (a0p=base+1; *bp && *bp != '.';)
-	*a0p++ = tolower(*bp++);
+	*a0p++ = tolower((unsigned char)*bp++);
       *a0p++ = ']';
       *a0p++ = 0;
 
@@ -136,8 +136,8 @@ __crt0_load_environment_file(char *app_name)
 		      char ec = *e++;
 		      if (strchr("\\/:", ec))
 			dirend=dp;
-		      if (mapup) ec = toupper(ec);
-		      if (maplow) ec = tolower(ec);
+		      if (mapup) ec = toupper((unsigned char)ec);
+		      if (maplow) ec = tolower((unsigned char)ec);
 		      if (mapfs && ec == '\\') ec = '/';
 		      if (mapbs && ec == '/') ec = '\\';
 		      *dp++ = ec;

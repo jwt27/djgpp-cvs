@@ -164,7 +164,7 @@ _use_lfn (const char *path)
     last_env_changed  = __environ_changed;
 
     lfnenv = getenv ("LFN");
-    if(lfnenv && (tolower (lfnenv[0]) == 'n'))
+    if(lfnenv && (tolower ((unsigned char)lfnenv[0]) == 'n'))
     {
       _lfnenv = 'n';
       last_drive = 0;

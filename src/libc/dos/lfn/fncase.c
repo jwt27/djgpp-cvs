@@ -11,5 +11,5 @@ _preserve_fncase (void)
   char *ep;
 
   return ((_crt0_startup_flags & _CRT0_FLAG_PRESERVE_FILENAME_CASE)
-	  || ((ep = getenv ("FNCASE")) && tolower (*ep) == 'y'));
+	  || ((ep = getenv ("FNCASE")) && tolower ((unsigned char)*ep) == 'y'));
 }
