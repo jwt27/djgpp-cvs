@@ -10,3 +10,6 @@ K = $(wildcard *.txi)
 
 $(INFO)/kb.info : $K
 	makeinfo --no-split kb.txi
+
+clean ::
+	$(MISC) rm $(INFO)/kb.info
