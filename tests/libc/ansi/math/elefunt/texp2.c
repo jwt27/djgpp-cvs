@@ -233,7 +233,7 @@ texp2()
     errno = 0;
     y = exp2(x);
     if (errno)
-	perror("exp()");
+	perror("exp2()");
     printf(" exp2 RETURNED THE VALUE" F13P6E "\n\n\n\n", y);
     x = -x;
     printf(" exp2 WILL BE CALLED WITH THE ARGUMENT" F13P6E "\n", x);
@@ -242,7 +242,7 @@ texp2()
     errno = 0;
     y = exp2(x);
     if (errno)
-	perror("exp()");
+	perror("exp2()");
     printf(" exp2 RETURNED THE VALUE" F13P6E "\n\n\n\n", y);
     printf(" THIS CONCLUDES THE TESTS\n");
 }
