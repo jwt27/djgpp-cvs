@@ -13,10 +13,12 @@
 #define	SPC	01
 #define	STP	02
 
-#define	SHORT	0
-#define	REGULAR	1
-#define	LONG	2
-#define LONGDOUBLE 4
+#define CHAR	0
+#define	SHORT	1
+#define	REGULAR	2
+#define	LONG	4
+#define LONGDOUBLE 8
+
 #define	INT	0
 #define	FLOAT	1
 
@@ -91,6 +93,11 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     else if (ch=='h') {
       size = SHORT;
       ch = *fmt++;
+      if (ch=='h')
+      {
+	size = CHAR;
+	ch = *fmt++;
+      }
     } else if (ch=='L') {
       size = LONGDOUBLE;
       ch = *fmt++;
@@ -107,10 +114,12 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
 	 This extension is supported by some compilers (e.g. Borland C).
 	 Old pre-ANSI compilers, such as Turbo C 2.0, also interpreted
 	 %E, %F and %G to store in a double (rather than a float), but
-	 this contradicts the ANSI Standard, so we don't support it.  */
-      if (ch == 'd' || ch == 'i' || ch == 'o' || ch == 'u' || ch == 'x')
+	 this contradicts the ANSI Standard, so we don't support it.
+         %X should be treated as per the ANSI Standard - no length
+	 is implied by the upper-case x. */
+      if (ch == 'd' || ch == 'i' || ch == 'o' || ch == 'u')
       {
-	if (size==LONG && ch != 'x') /* ANSI: %lX is long, not long long */
+	if (size == LONG)
 	  size = LONGDOUBLE;
 	else if (size != LONGDOUBLE)
 	  size = LONG;
@@ -125,6 +134,8 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
         break;
       if (size==LONG)
 	*(long*)ptr = nchars;
+      else if (size==CHAR)
+	*(char*)ptr = nchars;
       else if (size==SHORT)
         *(short*)ptr = nchars;
       else if (size==LONGDOUBLE)
@@ -292,6 +303,10 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
 
   case (FLOAT<<4) | LONGDOUBLE:
     *(long double *)ptr = _atold(numbuf);
+    break;
+
+  case (INT<<4) | CHAR:
+    *(char *)ptr = (char)lcval;
     break;
 
   case (INT<<4) | SHORT:
