@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +16,7 @@ main(void)
   int i;
 
   glob_t flist;
-  glob(".../*", 0, 0, &flist);
+  glob(".../*", 0, 0, &flist); /**/
 
   for (i = 0; i<flist.gl_pathc; i++)
   {
