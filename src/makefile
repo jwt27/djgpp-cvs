@@ -4,6 +4,11 @@
 # Note: you may have to stubedit make to have a transfer buffer of at
 # least 32k to pass the long lists of object files around.
 
+# You don't have to build the stuff in ../zoneinfo/src, but if you do
+# unzip djtzsNNN.zip, you will need a Unixy shell to build it.
+# If you don't have ../zoneinfo/src, Make will report (and ignore) an
+# error when it tries to build files there; disregard it.
+
 MAKEFLAGS := --no-print-directory
 
 DIRS = \
@@ -39,7 +44,7 @@ subs:
 	$(MAKE) -C libm
 	$(MAKE) -C utils
 	$(MAKE) -C docs/kb
-	$(MAKE) -C ../zoneinfo/src
+	-$(MAKE) -C ../zoneinfo/src
 	$(MAKE) -f makempty
 
 .PHONY : clean
@@ -53,6 +58,6 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C dxe clean
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs/kb clean
-	$(MAKE) -C ../zoneinfo/src clean
+	-$(MAKE) -C ../zoneinfo/src clean
 	$(MAKE) -f makempty clean
 		./misc.exe rm makemake.exe copyrite.exe misc.exe
