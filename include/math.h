@@ -99,24 +99,22 @@ extern long double __dj_huge_vall;
 extern float       __dj_nan;
 #define NAN        __dj_nan
 
-#define FP_INFINITE	0
-#define FP_NAN		1
-#define FP_NORMAL	2
-#define FP_SUBNORMAL	3
-#define FP_ZERO		4
+#define FP_INFINITE	0x00000001
+#define FP_NAN		0x00000002
+#define FP_NORMAL	0x00000004
+#define FP_SUBNORMAL	0x00000008
+#define FP_ZERO		0x00000010
 /* Extended with Unnormals (for long doubles). */
-#define FP_UNNORMAL	1024
+#define FP_UNNORMAL	0x00010000
 
 #define fpclassify(x) ((sizeof(x)==sizeof(float))? __fpclassifyf(x) : \
 		       (sizeof(x)==sizeof(double))? __fpclassifyd(x) : \
 		       __fpclassifyld(x))
 
-#define isfinite(x)	(fpclassify(x)==FP_NORMAL || \
-			 fpclassify(x)==FP_SUBNORMAL || \
-			 fpclassify(x)==FP_ZERO)
-#define isinf(x)	(fpclassify(x)==FP_INFINITE)
-#define isnan(x)	(fpclassify(x)==FP_NAN)
-#define isnormal(x)	(fpclassify(x)==FP_NORMAL)
+#define isfinite(x)   ((fpclassify(x) & (FP_NORMAL|FP_SUBNORMAL|FP_ZERO)) != 0)
+#define isinf(x)      (fpclassify(x)==FP_INFINITE)
+#define isnan(x)      (fpclassify(x)==FP_NAN)
+#define isnormal(x)   (fpclassify(x)==FP_NORMAL)
 
 int		__fpclassifyf(float) __attribute__((const));
 int		__fpclassifyd(double) __attribute__((const));
