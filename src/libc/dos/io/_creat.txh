@@ -24,8 +24,8 @@ if LFN is enabled. In plain DOS mode it plainly works.
 
 The file is set to binary mode.  
 
-This function can be hooked by the @dfn{File System Extensions}, see
-@ref{File System Extensions}.  If you don't want this, you should use
+This function can be hooked by File System Extensions
+(@pxref{File System Extensions}).  If you don't want this, you should use
 @code{_dos_creat} (@pxref{_dos_creat}) or @code{_dos_creatnew}
 (@pxref{_dos_creatnew}).
 

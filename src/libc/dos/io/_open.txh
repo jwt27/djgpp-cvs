@@ -56,7 +56,7 @@ deny-none mode: allow other processes to open the file if their open
 mode doesn't conflict with the open mode of this process
 @end table
 
-THIS function can be hooked by the @dfn{File System Extensions}
+This function can be hooked by File System Extensions
 (@pxref{File System Extensions}).  If you don't want this, you should
 use @code{_dos_open} (@pxref{_dos_open}) (but note that the latter
 doesn't support long file names).
