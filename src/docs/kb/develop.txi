@@ -154,6 +154,36 @@ myfunc (const int n)
 
 For more details see @file{src/libc/crt0/crt1.c} in the DJGPP libc sources.
 
+@section The DJGPP Build System
+
+@subsection Profiling
+
+@file{src/gcc.opt} controls how the DJGPP sources are compiled.
+To build the C libraries for profiling, add the profiling options
+(e.g. @samp{-pg}) to @file{gcc.opt}, one option per line.  The library
+will need to be rebuilt from scratch for the new options to take effect,
+so a @samp{make clean} is needed before rebuilding in
+the directory of interest, e.g.:
+
+@example
+cd /path/to/djgpp/sources
+cd src
+echo "Adding profiling option to gcc.opt"
+echo -pg >> gcc.opt
+cd libc
+echo "Building a profiling version of libc"
+make clean
+make
+@end example
+
+For example of how some of the sources are built without profiling,
+please see @file{src/libc/crt0/makefile} to see how the profiling
+support code, @file{src/libc/crt0/mcount.c}, is built.
+
+There are currently some problems with profiling support.
+The math co-processor support code, @file{emu387.dxe},
+in @file{src/libemu} cannot be built with profiling.
+
 @section Texinfo documentation
 
 @subsection Formatting
