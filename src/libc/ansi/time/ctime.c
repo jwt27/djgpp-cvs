@@ -1,3 +1,4 @@
+/* Copyright (C) 2005 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -1054,12 +1055,19 @@ localsub(const time_t * const timep, const long offset, struct tm * const tmp)
 }
 
 struct tm *
+localtime_r( const time_t * __restrict__ timep, struct tm * __restrict__ tm)
+{
+
+  localsub(timep, 0L, tm);
+  return tm;
+}
+
+struct tm *
 localtime(const time_t * const timep)
 {
   static struct tm tm;
 
-  localsub(timep, 0L, &tm);
-  return &tm;
+  return localtime_r(timep, &tm);
 }
 
 /*
@@ -1101,12 +1109,19 @@ gmtsub(const time_t * const timep, const long offset, struct tm * const tmp)
 }
 
 struct tm *
+gmtime_r(const time_t * __restrict__ timep, struct tm * __restrict__ tm)
+{
+
+  gmtsub(timep, 0L, tm);
+  return tm;
+}
+
+struct tm *
 gmtime(const time_t * const timep)
 {
   static struct tm tm;
 
-  gmtsub(timep, 0L, &tm);
-  return &tm;
+  return gmtime_r(timep, &tm);
 }
 
 /* Return the year which is DAYS away from the year Y0.  */
@@ -1240,7 +1255,7 @@ timesub(const time_t * const timep, const long offset, const struct state * cons
 */
 
 char *
-asctime(const struct tm *timeptr)
+asctime_r(const struct tm * __restrict__ timeptr, char * __restrict__ result)
 {
   static const char wday_name[DAYSPERWEEK][3] = {
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
@@ -1249,7 +1264,6 @@ asctime(const struct tm *timeptr)
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   };
-  static char result[26];
 
   (void) sprintf(result, "%.3s %.3s%3d %02d:%02d:%02d %d\n",
 		 wday_name[timeptr->tm_wday],
@@ -1258,6 +1272,22 @@ asctime(const struct tm *timeptr)
 		 timeptr->tm_min, timeptr->tm_sec,
 		 TM_YEAR_BASE + timeptr->tm_year);
   return result;
+}
+
+char *
+asctime(const struct tm *timeptr)
+{
+  static char result[26];
+
+  return asctime_r( timeptr, result);
+}
+
+char *
+ctime_r(const time_t *timep, char *result)
+{
+  struct tm tm;
+
+  return asctime_r(localtime_r(timep, &tm), result);
 }
 
 char *

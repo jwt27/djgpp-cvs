@@ -10,17 +10,65 @@ char *ctime(const time_t *cal);
 
 @subheading Description
 
-This function returns an ASCII representation of the time in @var{cal}. 
-This is equivalent to @code{asctime(localtime(cal))}.  @xref{asctime}.
+This function returns a string representing the time from @var{cal}.
+The string returned is always 26 characters and has this format:
+
+@example
+Sun Jan 01 12:34:56 1993\n\0
+@end example
+
+This function is equivalent to @code{asctime(localtime(cal))}.
+@xref{asctime}.
 @xref{localtime}.
+The string pointed to is in a static buffer and will be overwritten with
+each call to @code{ctime}.
+The string should be copied if it needs to be preserved.
+@xref{ctime_r}, for an alternate interface that allows the caller
+to provide a buffer to store the string.
 
 @subheading Return Value
 
-The ascii representation of the time.
+A pointer to a static buffer containing the string representing the time.
 
 @subheading Portability
 
 @portability ansi, posix
+
+@c ----------------------------------------------------------------------
+@node ctime_r, time
+@findex ctime_r
+@subheading Syntax
+
+@example
+#include <time.h>
+
+char *ctime_r(const time_t *cal, char *buf);
+@end example
+
+@subheading Description
+
+This function returns a string representing the time from @var{cal}.
+The string returned is always 26 characters and has this format:
+
+@example
+Sun Jan 01 12:34:56 1993\n\0
+@end example
+
+This function is equivalent to @code{asctime_r(localtime_r(cal,&tm), buf)}
+where @var{tm} is a variable of type @code{struct tm}.
+@xref{asctime_r}.
+@xref{localtime_r}.
+The buffer @var{buf} passed must be at least 26 bytes long.
+
+@xref{ctime}, for an alternate ISO Standard interface.
+
+@subheading Return Value
+
+A pointer to @var{buf} containing the string representing the time.
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @c ----------------------------------------------------------------------
 @node asctime, time
@@ -35,7 +83,7 @@ char *asctime(const struct tm *tptr);
 
 @subheading Description
 
-This function returns an ASCII representation of the time represented by
+This function returns a string representing the time from
 @var{tptr}.  The string returned is always 26 characters and has this
 format:
 
@@ -44,30 +92,16 @@ Sun Jan 01 12:34:56 1993\n\0
 @end example
 
 The string pointed to is in a static buffer and will be overwritten with
-each call to asctime.  The data should be copied if it needs to be
+each call to @code{asctime}.  The string should be copied if it needs to be
 preserved. 
+@xref{asctime_r}, for an alternate interface that allows the caller
+to provide a buffer to store the string.
 
-The layout of the @code{struct tm} structure is like this:
-
-@example
-struct tm @{
-  int    tm_sec;    /* seconds after the minute [0-60] */
-  int    tm_min;    /* minutes after the hour [0-59] */
-  int    tm_hour;   /* hours since midnight [0-23] */
-  int    tm_mday;   /* day of the month [1-31] */
-  int    tm_mon;    /* months since January [0-11] */
-  int    tm_year;   /* years since 1900 */
-  int    tm_wday;   /* days since Sunday [0-6] */
-  int    tm_yday;   /* days since January 1 [0-365] */
-  int    tm_isdst;  /* Daylight Savings Time flag */
-  long   tm_gmtoff; /* offset from GMT in seconds */
-  char * tm_zone;   /* timezone abbreviation */
-@};
-@end example
+@xref{gmtime}, for a description of type @code{struct tm}.
 
 @subheading Return Value
 
-A pointer to the string.
+A pointer to a static buffer containing the string representing the time.
 
 @subheading Portability
 
@@ -79,6 +113,50 @@ A pointer to the string.
 time_t now;
 time(&now);
 printf("The current time is %s", asctime(localtime(&now)));
+@end example
+
+@c ----------------------------------------------------------------------
+@node asctime_r, time
+@findex asctime_r
+@subheading Syntax
+
+@example
+#include <time.h>
+
+char *asctime_r(const struct tm * restrict tptr, char * restrict buf);
+@end example
+
+@subheading Description
+
+This function returns a string representing the time from @var{tptr}.
+The string returned is always 26 characters and has this
+format:
+
+@example
+Sun Jan 01 12:34:56 1993\n\0
+@end example
+
+@xref{asctime}, for an alternate ISO Standard interface.
+
+@xref{gmtime}, for a description of type @code{struct tm}.
+
+@subheading Return Value
+
+A pointer to @var{buf} containing the character representation of the time.
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+time_t now;
+struct tm tm;
+char buf[26];
+
+time(&now);
+printf("The current time is %s", asctime_r(localtime_r(&now,&tm),buf));
 @end example
 
 @c ----------------------------------------------------------------------
@@ -95,7 +173,7 @@ struct tm *gmtime(const time_t *tod);
 
 @subheading Description
 
-Converts the time represented by @var{tod} into a structure. 
+Converts the time represented by @var{tod} into a structure.
 
 The return structure has this format:
 
@@ -115,6 +193,15 @@ struct tm @{
 @};
 @end example
 
+The structure pointed to is static and will be overwritten with
+each call to @code{gmtime}.
+The structure should be copied if it needs to be preserved.
+@xref{gmtime_r}, for an alternate interface that allows the caller
+to provide the structure to be filled.
+
+@xref{localtime}, for a similar function that returns the information
+corrected for the local time zone instead of GMT.
+
 @subheading Return Value
 
 A pointer to a static structure which is overwritten with each call. 
@@ -133,6 +220,47 @@ t = gmtime(&x);
 @end example
 
 @c ----------------------------------------------------------------------
+@node gmtime_r, time
+@findex gmtime_r
+@subheading Syntax
+
+@example
+#include <time.h>
+
+struct tm *gmtime_r(const time_t * restrict tod, struct tm * restrict tptr);
+@end example
+
+@subheading Description
+
+Converts the time represented by @var{tod} into
+a broken down calendar time structure @var{tptr}.
+
+@xref{gmtime}, for a description of type @code{struct tm}.
+
+@xref{gmtime}, for an alternate ISO Standard interface.
+
+@xref{localtime_r}, for a similar function that returns the information
+corrected for the local time zone instead of GMT.
+
+@subheading Return Value
+
+A pointer to @var{tptr} containing the broken down calendar time.
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+time_t x;
+struct tm *t;
+struct tm tm;
+time(&x);
+t = gmtime_r(&x, &tm);
+@end example
+
+@c ----------------------------------------------------------------------
 @node localtime, time
 @findex localtime
 @subheading Syntax
@@ -146,8 +274,14 @@ struct tm *localtime(const time_t *tod);
 @subheading Description
 
 Converts the time represented by @var{tod} into a structure, correcting
-for the local timezone.  See @ref{gmtime}, for the description of
+for the local timezone.  @xref{gmtime}, for the description of
 @code{struct tm}.
+
+The structure pointed to is static and will be overwritten with
+each call to @code{localtime}.
+The structure should be copied if it needs to be preserved.
+@xref{localtime_r}, for an alternate interface that allows the caller
+to provide the structure to be filled.
 
 @subheading Return Value
 
@@ -156,6 +290,34 @@ A pointer to a static structure which is overwritten with each call.
 @subheading Portability
 
 @portability ansi, posix
+
+@c ----------------------------------------------------------------------
+@node localtime_r, time
+@findex localtime_r
+@subheading Syntax
+
+@example
+#include <time.h>
+
+struct tm *localtime_r(const time_t * restrict tod, struct tm * restrict tptr);
+@end example
+
+@subheading Description
+
+Converts the time represented by @var{tod} into structure @var{tptr},
+correcting for the local timezone.
+
+@xref{gmtime}, for the description of @code{struct tm}.
+
+@xref{localtime}, for an alternate ISO Standard interface.
+
+@subheading Return Value
+
+A pointer to @var{tptr} containing the broken down calendar time.
+
+@subheading Portability
+
+@portability !ansi, posix
 
 @c ----------------------------------------------------------------------
 @node mktime, time
