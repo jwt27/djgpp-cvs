@@ -16,14 +16,14 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
    if (!__symlink_path || !__real_path)
    {
       errno = EINVAL;
-      return -1;
+      return 0;
    }
                                   
    /* ...and empty strings */
    if (__symlink_path[0] == '\0')
    {
       errno = ENOENT;
-      return -1;
+      return 0;
    }
 
    strcpy(path_copy, __symlink_path);
