@@ -116,8 +116,8 @@ Installation
 ------------
 
 1. Create a directory for DJGPP, say C:\DJGPP.  (WARNING: do NOT
-   install DJGPP in a directory C:\DEV, D:\DEV, etc.: it will not
-   work!  See the FAQ for more details.)
+   install DJGPP in a directory C:\DEV, D:\DEV, etc., or in any of their
+   subdirectories: it will not work!  See the FAQ for more details.)
 
    If you have version 1.x installed, it's best to delete the contents
    of its `bin/' subdirectory or move it to another directory (not on
