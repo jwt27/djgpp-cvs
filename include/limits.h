@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_limits_h_
 #define __dj_include_limits_h_
@@ -22,20 +23,24 @@ extern "C" {
 #define UINT_MAX 4294967295U
 #define ULONG_MAX 4294967295UL
 #define USHRT_MAX 65535
+#define WCHAR_MIN 0
+#define WCHAR_MAX 127
+#define WINT_MIN 0
+#define WINT_MAX 32767
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #ifndef __STRICT_ANSI__
 
-#define _POSIX_ARG_MAX		4096	/* but only for exec's to other djgpp programs */
-#define _POSIX_CHILD_MAX	6	/* really limited by memory */
+#define _POSIX_ARG_MAX		16384	/* but only for exec's to other djgpp programs */
+#define _POSIX_CHILD_MAX	7	/* limited by memory; 7 for 386MAX */
 #define _POSIX_LINK_MAX		1	/* POSIX says 8, but DOS says 1 */
 #define _POSIX_MAX_CANON	126	/* POSIX says 255, but DOS says 126 */
 #define _POSIX_MAX_INPUT	126	/* POSIX says 255, but DOS says 126 */
 #define _POSIX_NAME_MAX		12	/* 8.3 */
 #define _POSIX_NGROUPS_MAX	0
 #define _POSIX_OPEN_MAX		20	/* can be bigger in DOS, but defaults to 20 */
-#define _POSIX_PATH_MAX		255	/* 80 for canonical paths */
+#define _POSIX_PATH_MAX		256	/* 80 for canonical paths */
 #define _POSIX_PIPE_BUF		512	/* but there aren't any pipes */
 #define _POSIX_SSIZE_MAX	2147483647
 #define _POSIX_STREAM_MAX	20	/* can be bigger in DOS */
@@ -43,7 +48,7 @@ extern "C" {
 
 #define NGROUPS_MAX		0
 
-#define ARG_MAX			4096
+/* #define ARG_MAX			4096 -- depends on tb size; use sysconf */
 #define CHILD_MAX		6
 /* #define OPEN_MAX		20 - DOS can change this */
 /* #define STREAM_MAX		20 - DOS can change this */
