@@ -15,7 +15,9 @@
 #define __DJ_time_t	typedef unsigned int time_t;
 #define __DJ_uid_t	typedef int uid_t;
 
-/* Under GCC 2.96 or later, we use its builtin va_list management.  */
+/* For GCC 2.96 or later we use its builtin va_list.                       */
+/* In most cases these definitions won't be used, because headers provided */
+/* by GCC hide them. But we can DTRT if GCC headers are missing.           */
 #if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
 #define __DJ_va_list    typedef __builtin_va_list va_list;
 #else

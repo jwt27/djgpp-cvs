@@ -20,7 +20,9 @@ __DJ_va_list
 #define _VA_LIST
 #endif
 
-/* For GCC 2.96 or later we use its builtin va_list */
+/* For GCC 2.96 or later we use its builtin va_list                        */
+/* In most cases these definitions won't be used, because headers provided */
+/* by GCC hide them. But we can DTRT if GCC headers are missing.           */
 #if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
 
 #define va_alist     __builtin_va_alist
