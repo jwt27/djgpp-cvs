@@ -9,6 +9,7 @@
  *
  */
 
+#include <libc/stubs.h>
 #include <errno.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
@@ -16,11 +17,11 @@
 #include <sys/farptr.h>
 #include <dos.h>
 #include <fcntl.h>
+#include <io.h>
 
-long __filelength(int);
 
 long
-__filelength(int fhandle)
+filelength(int fhandle)
 {
   __dpmi_regs    regs;
   unsigned short fpos_high, fpos_low;
@@ -42,7 +43,7 @@ __filelength(int fhandle)
          Offset 0x20 contains the high 32-bits.  */
       retval = _farpeekl(_dos_ds, __tb + 0x24);
 
-      if (_farpeekl(_dos_ds, __tb + 0x20) != 0)
+      if ((_farpeekl(_dos_ds, __tb + 0x20) != 0) || (retval == -1))
       {
         errno = EOVERFLOW;
         return -1L;
