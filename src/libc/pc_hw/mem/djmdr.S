@@ -6,7 +6,7 @@
 
 	.file "djmdr.s"
 	.text
-	.align 4
+	.balign 16,,7
 	.globl ___dj_movedata_rev
 ___dj_movedata_rev:
 	std

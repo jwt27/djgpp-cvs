@@ -81,6 +81,7 @@ hook_387_emulator:
 	.text
 
 	.globl	start
+	.balign	16,,7
 start:
 
 	pushl	%ds			/* set %es same as %ds */
@@ -307,7 +308,7 @@ no_memory:
 #define FREESEL(x) movw x, %bx; movw $0x0001, %ax; int $0x31
 
 	.global	___exit
-	.align	2
+	.balign	16,,7
 ___exit:
 	movb	4(%esp), %al
 exit:
@@ -402,7 +403,7 @@ ___sbrk_brk_hook:
 #endif
 
 	.global	___sbrk
-	.align	2
+	.balign	16,,7
 ___sbrk:
 	movl	__what_size_app_thinks_it_is, %eax
 	movl	4(%esp), %ecx			/* Increment size */
@@ -416,11 +417,12 @@ ___sbrk:
 	jmp	brk_common
 
 	.globl	___brk
-	.align	2
+	.balign	16,,7
 ___brk:
 	movl	4(%esp), %eax
 	clc
 
+	.balign	16,,7
 brk_common:
 	pushl	%esi
 	pushl	%edi

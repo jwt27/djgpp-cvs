@@ -18,7 +18,7 @@ Endif1:					/* } */
 	fxch	%st(1)
 
 	jmp	Test
-	.align 2,0x90
+	.balign 16,,7
 Loop:
 	testb	$1, %al			/*	  if (iy & 1) result *= x2p; */
 	je	Endif2

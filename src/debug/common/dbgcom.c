@@ -392,7 +392,7 @@ static unsigned int forced_address = 0;
 
 asm("\n\
         .text                                                           \n\
-        .align  2,0x90                                                  \n\
+        .balign  16,,7                                                  \n\
 _change_exception_handler:                                              \n\
         pushl   %eax                                                    \n\
         push    %es                                                     \n\
@@ -450,7 +450,7 @@ _not_in_current_app:                                                    \n\
 /* otherwise we can get into troubles */
 asm("\n\
         .text                                                           \n\
-        .align  2,0x90                                                  \n\
+        .balign  16,,7                                                  \n\
 _get_exception_handler:                                                 \n\
         pushl   %eax                                                    \n\
 	pushf								\n\
@@ -492,7 +492,7 @@ _app_exception_not_set:                                                 \n\
 /* for changing a value, we need our ds, because cs has no write access */
 asm(						       			"\n\
 	.text								\n\
-	.align  2,0x90							\n\
+	.balign  16,,7							\n\
 _change_handle:								\n\
 	pushl	%ecx							\n\
 	xorl	%ecx,%ecx						\n\
@@ -520,7 +520,7 @@ CL2:									\n\
 /* for changing a value, we need our ds, because cs has no write access */
 asm(						       			"\n\
 	.text								\n\
-	.align  2,0x90							\n\
+	.balign  16,,7							\n\
 _change_descriptor:							\n\
 	pushl	%ecx							\n\
 	pushl	%eax							\n\
@@ -550,7 +550,7 @@ CL4:									\n\
 /* Add descriptors to the list: AX is the first, CX is the count */
 asm(									"\n\
 	.text								\n\
-	.align  2,0x90							\n\
+	.balign  16,,7							\n\
 _add_descriptors:							\n\
 	pushl	%edx							\n\
 	pushl	%ecx							\n\
@@ -580,7 +580,7 @@ CL5:									\n\
 /* for changing a value, we need our ds, because cs has no write access */
 asm(						       			"\n\
 	.text								\n\
-	.align  2,0x90							\n\
+	.balign  16,,7							\n\
 _change_dos_descriptor:							\n\
 	pushl	%eax							\n\
 	pushl	%ecx							\n\
@@ -650,7 +650,7 @@ CL7:									\n\
 */ 
 asm(									"\n\
 	.text								\n\
-	.align  2,0x90							\n\
+	.balign  16,,7							\n\
 	.globl  _dbgcom_hook_i31					\n\
 _dbgcom_hook_i31:							\n\
 _i31_hook:								\n\
@@ -867,7 +867,7 @@ Lc31_set_exception_handler:                                             \n\
         .byte  0x2e                                                     \n\
         lcall   _old_i31                                                \n\
         jmp Lc31_set_flags_and_iret                                     \n\
-	.align  2,0x90							\n\
+	.balign  16,,7							\n\
         .globl  _dbgcom_hook_i21                                        \n\
 _dbgcom_hook_i21:                                                       \n\
 _i21_hook:								\n\
@@ -903,7 +903,7 @@ Lc21_exit:                                                              \n\
 
 /* complete code to return from an exception */
 asm (  ".text
-       .align 2,0x90
+       .balign 16,,7
        .globl    _dbgcom_exception_return_complete
 _dbgcom_exception_return_complete:       /* remove errorcode from stack */
        /* we must also switch stack back !! */
@@ -967,7 +967,7 @@ static jmp_buf here;
 
 /* simple code to return from an exception */
 asm (  ".text
-       .align 2,0x90
+       .balign 16,,7
        .globl    _dbgcom_exception_return
 _dbgcom_exception_return:       /* remove errorcode from stack */
         movl    %cs:___djgpp_our_DS,%eax                                \n\

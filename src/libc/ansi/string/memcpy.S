@@ -1,7 +1,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 	.file "memcpy.s"
 	.text
-	.align	4
+	.balign	16,,7
 	.globl	_memcpy
 _memcpy:
 	pushl	%ebp

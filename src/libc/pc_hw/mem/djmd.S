@@ -5,7 +5,7 @@
 
 	.file "djmd.s"
 	.text
-	.align 4
+	.balign 16,,7
 	.globl ___dj_movedata
 ___dj_movedata:
 	cld

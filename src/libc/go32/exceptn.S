@@ -23,11 +23,11 @@
 #define PREVEXC 60
 /* Length 64 bytes plus non-used FPU */
 	.data
-	.align 4
+	.balign 8
 	.comm	exception_stack, 8000
 
 	.text
-	.align	4
+	.balign	16,,7
 #define EXCEPTION_ENTRY(number)		\
 	pushl	number ;		\
 	jmp	exception_handler
@@ -162,7 +162,7 @@ stack_ok:
 	lret
 
 /* Code to fix fake exception, EBX destroyed.  Note, app_DS may == our_DS! */
-	.align 4
+	.balign 16,,7
 limitFix:
 	pushl	%eax
 	pushl	%ecx
@@ -182,7 +182,7 @@ limitFix:
 
 /* This local routine preprocesses a return request to the C code.  It checks
    to make sure the DS & SS are set OK for C code.  If not, it sets them up */
-	.align	4
+	.balign	16,,7
 dpmi_exception_proc1:
 	cld
    	.byte	0x2e				/* CS: !!! */
@@ -203,7 +203,7 @@ dpmi_exception_proc1:
 ;*	[  CALLING EIP  ]
 ;*/
 
-	.align	4
+	.balign	16,,7
 	.globl	___djgpp_save_interrupt_regs
 ___djgpp_save_interrupt_regs:
 	pushl	%esi
@@ -246,7 +246,7 @@ Lss_ok:	subl	$92, %esp		/* 64 plus extra for longjmp */
 	movsl					/* Copy structure to stack */
 	jmp	*%edx				/* A "return" */
 
-	.align	4		/* We will touch this; it must be locked */
+	.balign	8		/* We will touch this; it must be locked */
 	.global ___djgpp_hw_lock_start
 ___djgpp_hw_lock_start:
 ds_limit:			.long	0
@@ -281,7 +281,7 @@ exception_state:		.space	64
 	.global	___djgpp_ds_alias
 ___djgpp_ds_alias:		.word	0	/* used in dpmi/api/d0303.s (alloc rmcb) */
 
-	.align 4
+	.balign 16,,7
 	.global	___djgpp_npx_hdlr
 ___djgpp_npx_hdlr:
 	pushl	%eax
@@ -297,7 +297,7 @@ hw_to_excp:
 	sti
 	iret
 
-	.align 4
+	.balign 16,,7
 	.global	___djgpp_kbd_hdlr
 ___djgpp_kbd_hdlr:
 	pushl	%eax
@@ -340,7 +340,7 @@ Lkbd_chain:
 	popl	%eax
 	ljmp	%cs:___djgpp_old_kbd
 
-	.align 4
+	.balign 16,,7
 	.global	___djgpp_kbd_hdlr_pc98
 ___djgpp_kbd_hdlr_pc98:
 	pushl	%eax
@@ -370,7 +370,7 @@ ___djgpp_kbd_hdlr_pc98:
 984:	inb	$0x41,%al			/* Read the scan code */
 	jmp	99b
 
-	.align 4
+	.balign 16,,7
 	.global	___djgpp_timer_hdlr
 ___djgpp_timer_hdlr:
    	.byte	0x2e				/* CS: */
@@ -399,7 +399,7 @@ ___djgpp_timer_hdlr:
 	iret
 
 	/* On entry ES is the DS alias selector */
-	.align 4
+	.balign 16,,7
 	.global	___djgpp_cbrk_hdlr		/* A RMCB handler for 0x1b */
 ___djgpp_cbrk_hdlr:
 	cld
@@ -433,7 +433,7 @@ ___djgpp_iret:
    control away from via longjmp or exit(), common with SIGINT, SIGFPE, or
    if we want EIP information on timers. */
 
-	.align 4
+	.balign 16,,7
 	.global	___djgpp_hw_exception
 ___djgpp_hw_exception:
    	.byte	0x2e				/* CS: */
