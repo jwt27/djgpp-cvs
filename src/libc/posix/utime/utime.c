@@ -41,9 +41,8 @@ utime(const char *path, const struct utimbuf *times)
     (tm->tm_hour << 11);
 
 
-  if (_osmajor == 5 &&
-      (_USE_LFN)    &&
-      (_get_dos_version(1) == 0x532)) /* LFN and NT (or 2000 or XP) */
+  if ((_USE_LFN)    &&
+      (_os_trueversion == 0x532)) /* LFN and NT (or 2000 or XP) */
   {
 
      _put_path(path);
