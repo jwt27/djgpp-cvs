@@ -1,4 +1,3 @@
-
 @node Changes in 2.04, , Changes in 2.03, What Changed
 @section Changes in 2.04
 
@@ -911,3 +910,7 @@ The function @code{fchmod} was added.
 @findex _tolower
 @findex _toupper
 The functions @code{_tolower} and @code{_toupper} were added.
+
+@findex readv
+@findex writev
+The functions @code{readv} and @code{writev} were added.
