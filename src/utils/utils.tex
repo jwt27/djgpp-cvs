@@ -54,6 +54,8 @@ come with DJGPP.
 
 * djasm::       The DJGPP 16-bit assembler.
 
+* getconf::     Get system-dependent configuration values.
+
 @end menu
 
 @c -----------------------------------------------------------------------------
@@ -642,7 +644,7 @@ Note that the Postscript file is sent to standard output, so you must
 redirect the output to a file or a printer.
 
 @c -----------------------------------------------------------------------------
-@node update, djasm, texi2ps, Top
+@node update, getconf, texi2ps, Top
 @chapter update
 
 @code{update} is a fancy copy-if-needed program.  Basically, it compares
@@ -718,7 +720,45 @@ then you can omit the @samp{&& touch @var{copied_to}} bit in
 the above command strings.
 
 @c -----------------------------------------------------------------------------
-@node djasm, , update, Top
+@node getconf, djasm, update, Top
+@chapter getconf
+
+@code{getconf} writes the value of configuration dependent variables to
+standard output.
+
+Usage: @code{getconf} [@code{-v} @var{specification}] [@code{-h}] 
+[@var{system_variable}] [@var{path_variable} @var{path}]
+
+@table @code
+
+@item -v @var{specification}
+
+Return values for configuration variables from the compilation environment
+specified by @var{specification}.  Use @samp{getconf -h} to list all
+supported compilation environments.
+
+@item -h
+
+Write to standard error all recognized compilation environments and 
+configuration variables.  Those configuration variables requiring a
+@var{path} argument are listed with @code{[@var{path}]} after their names.
+
+@end table
+
+When @var{system_variable} is given, the value of @var{system_variable}
+is written to standard output.  When @var{path_variable} is given, the
+value of @var{path_variable} for the pathname @var{path} is written to
+standard output.
+
+Examples:
+@example
+getconf PATH
+getconf -v POSIX_V6_ILP32_OFF32 PATH
+getconf NAME_MAX c:/djgpp
+@end example
+
+@c -----------------------------------------------------------------------------
+@node djasm, , getconf, Top
 @chapter djasm
 @lowersections
 
