@@ -3,7 +3,7 @@
 # Constructed by Richard Dawe <richdawe@bigfoot.com> 2002-10-17
 #
 
-dsm-file-version: 1.0
+dsm-file-version: 1.1
 dsm-version: 0.6.0
 dsm-name: djlsr204
 
@@ -23,6 +23,7 @@ author: DJ Delorie
 author-email: dj@delorie.com
 web-site: http://www.delorie.com/djgpp/
 newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
 
 simtelnet-path: v2/
 zip: djlsr204.zip
