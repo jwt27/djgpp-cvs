@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -8,7 +9,7 @@
 #include <io.h>
 #include <errno.h>
 #include <libc/farptrgs.h>
-
+#include <sys/fsext.h>
 #include <libc/dosio.h>
 #include <libc/ttyprvt.h>
 
@@ -25,19 +26,24 @@ write(int handle, const void* buffer, size_t count)
   int offset_into_buf = 0;
   __dpmi_regs r;
 
+  ssize_t rv;
+  __FSEXT_Function *func = __FSEXT_get_function(handle);
+
   /* termios special hook */
   if (__libc_write_termios_hook != NULL)
-    {
-      ssize_t rv;
       if (__libc_write_termios_hook(handle, buffer, count, &rv) != 0)
         return rv;
-    }
 
   if (count == 0)
     return 0; /* POSIX.1 requires this */
 
   if(__file_handle_modes[handle] & O_BINARY)
     return _write(handle, buf, count);
+
+  /* Let's handle FSEXT_write ! */
+  if(func &&				/* if handler is installed, ...*/
+     func(__FSEXT_write, &rv, &handle)) /* ... call extension ... */
+      return rv;			/* ... and exit if handled. */
 
   while (offset_into_buf < count)
   {
