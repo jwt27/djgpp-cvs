@@ -385,11 +385,11 @@ are used to read those handles in cooked mode.
 New functions @code{snprintf} and @code{vsnprintf} added.
 
 @pindex djasm@r{, double-precision shift}
-The double-precision shift instructions `shld' and `shrd' are removed
-from @code{djasm} because they violate the established convention of
-using the `[bwd]' mnemonic suffix to specify the memory operand size.
-(The result is that they use up two mnemonics that should have been
-reserved for the basic shift/rotate instructions.)
+The double-precision shift instructions @code{shld} and @code{shrd} are
+removed from @code{djasm} because they violate the established convention
+of using the @code{b}, @code{w}, or @code{d} mnemonic suffix to specify
+the memory operand size.  (The result is that they use up two mnemonics
+that should have been reserved for the basic shift/rotate instructions.)
 
 @pindex djasm@r{, shift instructions}
 @pindex djasm@r{, rotate instructions}
