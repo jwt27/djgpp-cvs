@@ -9,8 +9,8 @@ int __dpmi_get_coprocessor_status(void);
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
+Please refer to @ref{DPMI Specification}, for details on DPMI
+function call operation.  Also see @ref{DPMI Overview}, for general
 information.
 
 DPMI function AX = 0x0e00 (DPMI 1.0 only).  Not supported by CWSDPMI and
@@ -23,7 +23,7 @@ meaning of each set bit:
 
 @table @asis
 @item bit 0
-If set, co-processor emulation is enabled.
+If set, co-processor is enabled.  If reset, co-processor is disabled.
 
 @item bit 1
 If set, the application is emulating the co-processor.

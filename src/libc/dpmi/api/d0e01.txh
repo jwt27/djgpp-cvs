@@ -9,19 +9,19 @@ int __dpmi_set_coprocessor_emulation(int flags);
 
 @subheading Description
 
-Please refer to @ref{DPMI Specification} for details on DPMI
-function call operation.  Also see @ref{DPMI Overview} for general
+Please refer to @ref{DPMI Specification}, for details on DPMI
+function call operation.  Also see @ref{DPMI Overview}, for general
 information.
 
-DPMI function AX = 0x0e01 (DPMI 1.0 only), but supported by most DPMI
-servers, including CWSDPMI, Windows, and QDPMI.
+DPMI function AX = 0x0e01 (DPMI v1.0 only, but supported by most
+@w{DPMI v0.9} servers, including CWSDPMI, Windows, and QDPMI).
 
 This function sets the co-processor emulation state as specified by
 @var{flags}.  The only two used bits in @var{flags} are:
 
 @table @code
 @item bit 0
-If set, enable the emulation.
+If set, enable the co-processor.  If reset, disable the co-processor.
 
 @item bit 1
 If set, the emulation of the floating-point instructions will be done by
@@ -29,7 +29,7 @@ the calling application.
 @end table
 
 DJGPP programs using one of the provided emulators should generally call
-this functions with an argument of 3.  (The DJGPP startup code does that
+this functions with an argument of 2.  (The DJGPP startup code does that
 automatically if no co-processor is detected.)
 
 @subheading Return Value
