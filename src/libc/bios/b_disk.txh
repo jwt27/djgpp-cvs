@@ -18,7 +18,7 @@ struct diskinfo_t @{
   unsigned drive;       /* Drive number. */
   unsigned head;        /* Head number. */
   unsigned track;       /* Track number. */
-  unsigned sector;      /* Sector number. */
+  unsigned sector;      /* Sector number. (1-63) */
   unsigned nsectors;    /* Number of sectors to read/write/verify. */
   void    *buffer;      /* Buffer for reading/writing/verifying. */
 @}
@@ -128,7 +128,7 @@ struct diskinfo_t di;
 di.drive    = 0x80;
 di.head     = 0;
 di.track    = 0;
-di.sector   = 0;
+di.sector   = 1;
 di.nsectors = 1;
 di.buffer   = &record_buffer;
 if ( _bios_disk(_DISK_READ, &di) )
