@@ -58,6 +58,9 @@ From gccNNNb.zip
 * GCC: (gcc).
 	The GNU C, C++, and Objective-C Compiler
 
+From g77NNNb.zip
+
+* g77: (g77).			The GNU Fortran compiler.
 
 From bnuNNNb.zip
 
