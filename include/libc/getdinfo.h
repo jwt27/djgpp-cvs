@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_libc_getdinfo_h__
@@ -18,6 +19,7 @@
 #define _DEV_CDEV	0x0080
 #define _DEV_NO_INHERIT	0x1000 /* Undocumented. */
 #define _DEV_IOCTRL	0x4000
+#define _DEV_REMOTE	0x8000
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
