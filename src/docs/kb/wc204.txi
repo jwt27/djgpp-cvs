@@ -1032,3 +1032,7 @@ from the current locale.
 @code{strftime} now uses the date format (for @code{%x})
 and time format (for @code{%X}) from the current locale.
 This means that @code{%T} and @code{%X} are no longer equivalent.
+
+@vindex __djgpp_stack_overflow_eip@r{ added}
+@findex __djgpp_stack_overflow_exit@r{ added}
+A stack overflow handler was added.
