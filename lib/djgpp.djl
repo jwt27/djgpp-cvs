@@ -15,11 +15,18 @@ SECTIONS
     *(.dtor)
     djgpp_last_dtor = . ;
     *(.data)
+    *(.gcc_exc)
+    ___EH_FRAME_BEGIN__ = . ;
+    *(.eh_fram)
+    ___EH_FRAME_END__ = . ;
+    LONG(0)
      edata  =  . ; _edata = .;
      . = ALIGN(0x200);
   }
   .bss  SIZEOF(.data) + ADDR(.data) :
   { 					
+    _object.2 = . ;
+    . += 24 ;
     *(.bss)
     *(COMMON)
      end = . ; _end = .;
