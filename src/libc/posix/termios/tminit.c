@@ -915,7 +915,7 @@ __libc_termios_fill_queue (void)
 		    __direct_outputs ("\r\nSuspended\r\n");
 		    /* keep cwd on exec */
 		    getcwd (oldcwd, sizeof (oldcwd));
-		    system (NULL);
+		    system ("");
 		    chdir (oldcwd);
 
 		    for (i = 0; i < 5; i++)

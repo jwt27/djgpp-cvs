@@ -22,7 +22,7 @@ program to run, and may optionally include its extension.  These
 functions will look for a file @var{path} with the extensions
 @file{.com}, @file{.exe}, @file{.bat}, @file{.btm}, @file{.sh},
 @file{.ksh}, @file{.pl} and @file{.sed}; if none is found, neither in
-the current directly nor along the @samp{PATH}, they will look for
+the current directory nor along the @samp{PATH}, they will look for
 @var{path} itself.
 
 @file{.com}
