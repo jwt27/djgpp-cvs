@@ -457,7 +457,7 @@ ignores the @var{pmatch} argument (but see below for the case where
 to an array of @var{nmatch} structures of type @code{regmatch_t}.  Such
 a structure has at least the members @code{rm_so} and @code{rm_eo}, both
 of type @code{regoff_t} (a signed arithmetic type at least as large as
-an @code{off_t} and a @code{ssize_t}, containing respectively the offset
+an @code{off_t} and a @code{ssize_t}), containing respectively the offset
 of the first character of a substring and the offset of the first
 character after the end of the substring.  Offsets are measured from the
 beginning of the @var{string} argument given to @code{regexec}.  An
@@ -472,7 +472,7 @@ subexpression @code{i}, with subexpressions counted (starting at 1) by
 the order of their opening parentheses in the RE, left to right.  Unused
 entries in the array---corresponding either to subexpressions that did
 not participate in the match at all, or to subexpressions that do not
-exist in the RE (that is, @code{@w{i > preg->re_nsub}}---have both
+exist in the RE (that is, @code{@w{i > preg->re_nsub}})---have both
 @code{rm_so} and @code{rm_eo} set to @code{-1}.  If a subexpression
 participated in the match several times, the reported substring is the
 last one it matched.  (Note, as an example in particular, that when the
