@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -14,6 +15,7 @@
 #include <libc/farptrgs.h>
 #include <libc/dosio.h>
 #include <libc/getdinfo.h>
+#include <libc/fd_props.h>
 #include <go32.h>
 
 
@@ -408,8 +410,52 @@ fcntl(int fd, int cmd, ...)
 
     case F_GETFL:
     {
-      return 0; /* FIXME: should use the data in the SFT, and the
-		   FILE_DESC_APPEND flag in __fd_properties */
+      unsigned long sft_entry_ptr;
+      unsigned char sft_open_flags;
+      int flags = 0;
+
+      /*
+       * Use the data in the SFT.
+       *
+       * This seems to work on Windows 2000 and therefore probably works
+       * on Windows XP. It does not work on Windows NT 4, where the file
+       * will always appear to have been opened read-only. It's hard
+       * to distinguish Windows 2000 and Windows NT 4 with an LFN TSR,
+       * so we can't have a special case for Windows NT 4.
+       */
+      sft_entry_ptr = _get_sft_entry_ptr(fd);
+      if (sft_entry_ptr)
+      {
+	/* Offset 2 in the SFT contains the open flags. */
+	sft_open_flags = _farpeekw(_dos_ds, sft_entry_ptr + 2);
+
+	switch(sft_open_flags & 0x7)
+	{
+	case 0: flags |= O_RDONLY; break;
+	case 1: flags |= O_WRONLY; break;
+	case 2: flags |= O_RDWR;   break;
+
+	default:
+	  break;
+	}
+      }
+      else
+      {
+	/* If we've failed to get an SFT pointer, pretend that the file
+	 * is read-write, since that's most likely to be correct. */
+	flags |= O_RDWR;
+      }
+
+      /* Check the FILE_DESC_APPEND flag in __fd_properties. */
+      if (__has_fd_properties(fd))
+      {
+	unsigned long fd_flags = __get_fd_flags(fd);
+
+	if (fd_flags & FILE_DESC_APPEND)
+	  flags |= O_APPEND;
+      }
+
+      return flags;
     }
 
 
