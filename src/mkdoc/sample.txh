@@ -19,7 +19,7 @@ This function does not return.
 
 @subheading Portability
 
-@port-node posix The return-value of one is DJGPP-specific.
+@port-note posix The return-value of one is DJGPP-specific.
 @portability ansi, posix
 
 @subheading Example
