@@ -30,11 +30,14 @@ _open(const char* filename, int oflag)
 
   if(use_lfn) {
     r.x.ax = 0x716c;
-    r.x.bx = (oflag & 0xff) | 0x1000; /* 0x1000 is FAT32 extended size. */
+    r.x.bx = (oflag & 0xff);
+    if (7 <= _osmajor && _osmajor < 10) {
+      r.x.bx |= 0x1000; /* 0x1000 is FAT32 extended size. */
+    }
     r.x.dx = 1;			/* Open existing file */
     r.x.si = __tb_offset;
   } else {
-    if(7 <= _osmajor && _osmajor < 10) {
+    if (7 <= _osmajor && _osmajor < 10) {
       r.x.ax = 0x6c00;
       r.x.bx = (oflag & 0xff) | 0x1000; /* 0x1000 is FAT32 extended size. */
       /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It

@@ -29,11 +29,14 @@ _creat(const char* filename, int attrib)
 
   if(use_lfn) {
     r.x.ax = 0x716c;
-    r.x.bx = 0x1002;		/* Open r/w with extended size. */
+    r.x.bx = 0x0002;		/* Open r/w. */
+    if (7 <= _osmajor && _osmajor < 10) {
+      r.x.bx |= 0x1000; /* 0x1000 is FAT32 extended size. */
+    }
     r.x.dx = 0x0012;		/* Create, truncate if exists */
     r.x.si = __tb_offset;
   } else {
-    if(7 <= _osmajor && _osmajor < 10) {
+    if (7 <= _osmajor && _osmajor < 10) {
       r.x.ax = 0x6c00;
       r.x.bx = 0x1002;           /* Open r/w with FAT32 extended size. */
       /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
