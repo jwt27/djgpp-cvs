@@ -1,7 +1,9 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <libc/symlink.h>
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -18,14 +20,19 @@ remove(const char *fn)
   unsigned attr;
   int directory_p;
   int use_lfn = _USE_LFN;
+  char real_name[FILENAME_MAX];
   int rv;
 
   /* see if a file system extension wants to handle this */
   if (__FSEXT_call_open_handlers(__FSEXT_unlink, &rv, &fn))
     return rv;
 
+  /* Handle symlinks */
+  if (!__solve_dir_symlinks(fn, real_name))
+    return -1;
+
   /* Get the file attribute byte.  */
-  attr = _chmod(fn, 0);
+  attr = _chmod(real_name, 0);
 
   /* The above _chmod will return -1 if the file
      does not exist.  If it doesn't, don't bother
@@ -41,7 +48,7 @@ remove(const char *fn)
  
   /* Now, make the file writable.  We must reset Vol, Dir, Sys and Hidden bits 
      in addition to the Read-Only bit, or else 214301 will fail.  */
-  _chmod(fn, 1, attr & 0xffe0);
+  _chmod(real_name, 1, attr & 0xffe0);
 
   /* Now delete it.  Note, _chmod leaves dir name in transfer buffer. */
   if (directory_p)
@@ -67,7 +74,7 @@ remove(const char *fn)
     if(e == ENOENT)
       e = EACCES;
  
-    _chmod(fn, 1, attr & 0xffe7);
+    _chmod(real_name, 1, attr & 0xffe7);
     errno = e;
     return -1;
   }
