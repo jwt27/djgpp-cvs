@@ -30,6 +30,7 @@ static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
 extern unsigned _stklen;
 extern unsigned __djgpp_stack_limit;
+extern unsigned __djgpp_stack_top;
 
 /* These are all defined in exceptn.S and only used here */
 extern int __djgpp_exception_table;
@@ -269,7 +270,7 @@ do_faulting_finish_message(int fake_exception)
   dump_selector("fs", __djgpp_exception_state->__fs);
   dump_selector("gs", __djgpp_exception_state->__gs);
   dump_selector("ss", __djgpp_exception_state->__ss);
-  err("App stack: ["); itox(__djgpp_stack_limit+_stklen, 8);
+  err("App stack: ["); itox(__djgpp_stack_top, 8);
   err(".."); itox(__djgpp_stack_limit, 8);
   err("]  Exceptn stack: ["); itox(excpt_stack_addr+8000, 8);
   err(".."); itox(excpt_stack_addr, 8); err("]\r\n");
