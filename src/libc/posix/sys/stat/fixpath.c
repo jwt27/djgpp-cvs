@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -117,7 +118,8 @@ is_term(int c)
   return c == '/' || c == '\\' || c == '\0';
 }
 
-/* Takes as input an arbitrary path.  Fixes up the path by:
+/* Wrapper for the functions realpath and _fixpath.
+   Takes as input an arbitrary path.  Fixes up the path by:
    1. Removing consecutive slashes
    2. Removing trailing slashes
    3. Making the path absolute if it wasn't already
@@ -125,9 +127,10 @@ is_term(int c)
    5. Removing ".." entries in the path (and the directory above them)
    6. Adding a drive specification if one wasn't there
    7. Converting all slashes to '/'
- */
-void
-_fixpath(const char *in, char *out)
+*/
+
+char *
+__canonicalize_path(const char *in, char *out, size_t path_max)
 {
   int		drive_number;
   char		in1[FILENAME_MAX];
@@ -136,8 +139,14 @@ _fixpath(const char *in, char *out)
   int		preserve_case = _preserve_fncase();
   char		*name_start;
   int		mbsize;
+  char		*op_limit;
 
   use_lfn = _use_lfn(in);
+
+  if (path_max > FILENAME_MAX)
+    path_max = FILENAME_MAX;
+
+  op_limit = op + path_max;
 
   /* Perform the same magic conversions that _put_path does.  */
   _put_path(in);
@@ -160,7 +169,7 @@ _fixpath(const char *in, char *out)
       if (*ip <= 'Z')
 	*op++ = drive_number + 'a';
       else
-	*op++ = *ip;
+	* op++ = *ip;
       ++ip;
     }
     *op++ = *ip++;
@@ -213,6 +222,13 @@ _fixpath(const char *in, char *out)
       continue;
     }
 
+    /* Buffer overflow check.  */
+    if (op >= op_limit)
+    {
+      errno = ENAMETOOLONG;
+      return NULL;
+    }
+
     /* Copy path component from in to out */
     *op++ = '/';
 #if 0
@@ -229,6 +245,13 @@ _fixpath(const char *in, char *out)
 	  }
 	else
 	  *op++ = *ip++;
+
+        /* Check for buffer overflow.  */
+        if (op >= op_limit)
+        {
+          errno = ENAMETOOLONG;
+          return NULL;
+        }
       }
 #endif
   }
@@ -236,13 +259,20 @@ _fixpath(const char *in, char *out)
   /* If root directory, insert trailing slash */
   if (op == out + 2) *op++ = '/';
 
+  /* Check for buffer overflow.  */
+  if (op >= op_limit)
+  {
+    errno = ENAMETOOLONG;
+    return NULL;
+  }
+
   /* Null terminate the output */
   *op = '\0';
 
   /* switch FOO\BAR to foo/bar, downcase where appropriate */
   for (op = out + 3, name_start = op - 1; *name_start; op++)
   {
-    char long_name[FILENAME_MAX];
+    char long_name[path_max];
 
 #if 1
     /* skip multibyte character */
@@ -286,6 +316,14 @@ _fixpath(const char *in, char *out)
     else if (*op == '\0')
       break;
   }
+
+  return out;
+}
+
+void
+_fixpath(const char *in, char *out)
+{
+  __canonicalize_path(in, out, FILENAME_MAX);
 }
 
 #ifdef TEST
