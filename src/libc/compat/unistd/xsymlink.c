@@ -67,7 +67,7 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
          or not trivial symlink (in form 'dir/file').  */
       do
       {
-         bytes_copied = readlink(resolved, fn_buf, FILENAME_MAX);
+         bytes_copied = __internal_readlink(resolved, 0, fn_buf, FILENAME_MAX);
          if (bytes_copied != -1)
          {
             done_something = 1;
