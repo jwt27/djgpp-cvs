@@ -9,7 +9,8 @@ void		sound(int _frequency);
 
 @subheading Description
 
-Enables the PC speaker at the given frequency.
+Enables the PC speaker at the given frequency.  The argument
+@var{_frequency} should be given in Hertz units.
 
 @subheading Portability
 
