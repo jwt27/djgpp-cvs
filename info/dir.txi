@@ -67,10 +67,10 @@ From gccNNNb.zip
         A List of frequently-asked questions for users of the GNU C++
           compiler g++.
 
-* gxxint (gxxint).
+* gxxint: (gxxint).
         Documentation of the GNU C++ front-end internals.
 
-* Cpplib: (cppinternals).      
+* Cpplib: (cppinternals).
 	Cpplib internals.
 
 * ObjC (objc-features).
@@ -136,13 +136,13 @@ From txiNNNb.zip
         full description of the Texinfo language and related facilities,
         including Emacs commands to work with Texinfo files.
 
-* install-info: (texinfo)Invoking install-info. 
+* install-info: (texinfo)Invoking install-info.
 	How to update info/dir entries when installing GNU packages.
 
 * texi2dvi: (texinfo)Format with texi2dvi.
 	Printing Texinfo documentation with TeX.
 
-* texindex: (texinfo)Format with tex/texindex.	
+* texindex: (texinfo)Format with tex/texindex.
 	Sorting Texinfo index files automatically.
 
 From gdbNNNb.zip
@@ -156,7 +156,7 @@ From gdbNNNb.zip
 Miscellaneous GNU utilities
 
 * Autoconf: (autoconf).
-	GNU Autoconf, a tool to generate shell scripts which 
+	GNU Autoconf, a tool to generate shell scripts which
         automatically configure a package for a given computer.
 
 * automake: (automake).		Making Makefile.in's
@@ -168,7 +168,7 @@ Miscellaneous GNU utilities
 * Bash: (bash).                 The GNU Bourne-Again SHell.
 
 * cpio: (cpio).
-	A program to manage tape or disk archives, or to copy 
+	A program to manage tape or disk archives, or to copy
         entire directory trees.
 
 * CVS: (cvs).                   A distributed configuration management
@@ -275,7 +275,7 @@ GNU Gettext Utilities
 
 * Marst: (marst).       The GNU Algol-to-C Translator.
 
-* recode: (recode).     Conversion between character sets and surfaces.
+* recode: (recode).     Conversion between character sets and encodings.
 
 * Sed: (sed).
 	A Stream EDitor.
