@@ -1,3 +1,4 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
@@ -7,6 +8,7 @@ SRC += alarm.c
 SRC += chdir.c
 SRC += chown.c
 SRC += close.c
+SRC += confstr.c
 SRC += ctermid.c
 SRC += dup.c
 SRC += dup2.c
