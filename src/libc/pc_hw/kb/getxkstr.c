@@ -172,7 +172,7 @@ ecma48_encoding_table[] =
 const unsigned char *
 __get_extended_key_string(int xkey_code)
 {
-  int idx;
+  size_t idx;
 
   /* Strip flags added by getxkey.  */
   xkey_code &= 0xff;
