@@ -15,7 +15,6 @@ lib/libemu.a
 lib/libg.a
 lib/libm.a
 lib/libpc.a
-lib/specs
 src/stub/stub.h
 src/stub/stubedit.c
 src/stub/stubify.c
