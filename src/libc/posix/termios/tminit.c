@@ -198,7 +198,7 @@ __libc_termios_read (int handle, void *buffer, size_t count, ssize_t *rv)
   if ((devmod & _DEV_CDEV) && (devmod & (_DEV_STDIN|_DEV_STDOUT)))
     {
       /* character device */
-      if (devmod & _DEV_RAW)
+      if ((devmod & _DEV_RAW) && (__file_handle_modes[handle] & O_BINARY))
 	*rv = __libc_termios_read_raw_tty (handle, buffer, count);
       else
 	*rv = __libc_termios_read_cooked_tty (handle, buffer, count);
@@ -401,7 +401,7 @@ __libc_termios_write (int handle, const void *buffer, size_t count, ssize_t *rv)
   if ((devmod & _DEV_CDEV) && (devmod & (_DEV_STDIN|_DEV_STDOUT)))
     {
       /* character device */
-      if (devmod & _DEV_RAW)
+      if ((devmod & _DEV_RAW) && (__file_handle_modes[handle] & O_BINARY))
 	*rv = __libc_termios_write_raw_tty (handle, buffer, count);
       else
 	*rv = __libc_termios_write_cooked_tty (handle, buffer, count);

@@ -291,3 +291,8 @@ call to @code{uclock} on Windows now waits until the next timer tick
 before returning, to ensure that all the values returned hence are
 monotonously increasing.
 
+@cindex termios, and binary I/O
+The termios emulation now uses raw input/output only if the file handle
+referring to a device is put into binary mode, and the device itself is
+in raw mode.
+
