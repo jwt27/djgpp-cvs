@@ -9,14 +9,27 @@ void delay(unsigned msec);
 
 @subheading Description
 
-This function causes the program to pause for @var{msec} milliseconds. 
+This function causes the program to pause for @var{msec} milliseconds.
 It uses the @code{int 15h} delay function to relinquish the CPU to other
 programs that might need it.
 
-Some operating systems that emulate DOS, such as OS/2 and Windows/NT,
-hang the DOS session when the @key{Pause} key is pressed during the call
-to @code{delay}.  Plain DOS and Windows 3.X and 9X are known to not have
-this bug.
+Some operating systems that emulate DOS, such as OS/2, Windows/NT,
+Windows 2000 and Windows XP hang the DOS session when
+the @key{Pause} key is pressed during the call to @code{delay}.
+Plain DOS and Windows 3.X and 9X are known to not have this bug.
+On Windows 2000 and XP to exit the pause press any key.
+
+Some operating systems, such as Windows 2000 and XP which do not support
+@code{int 15h}.  @code{int 1ah} is used instead on these operating
+systems.  This method has lower accuracy in the delay length.
+
+Windows 2000 and XP delay resolution is 54.9 millisecond.  Under Windows
+2000 and XP the delay function uses the Time Of Day Tick which occurs
+18.2 times per second.  This limits the accuracy of the delay to around
+27 milliseconds on Windows 2000 and XP.  On Windows 2000 and XP
+the Programable Interval Timer works and is a source of higher resolution
+than delay currently uses.  Unfortunately PIT and Time Of Day tic
+does not appear to be coordinated.
 
 @subheading Return Value
 

@@ -796,3 +796,8 @@ The function @code{strtold} was added.
 @findex printf@r{, and }hh@r{ conversion qualifier}
 The @code{hh} conversion qualifier is now supported by @code{_doprnt}
 and the @code{printf} family of functions.
+
+@findex delay@r{, and Windows 2000 and XP}
+The @code{delay} function now works on Windows 2000 and XP.  However, the
+accuracy in the delay is limited, by the timing method it has to use on
+Windows 2000 and XP.
