@@ -1,3 +1,4 @@
+/* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <libc/file.h>
@@ -20,7 +21,12 @@ ungetc(int c, FILE *f)
   }
 
   f->_cnt++;
-  *--f->_ptr = c;
+  f->_ptr--;
+  if(*f->_ptr != c)
+  {
+    f->_flag |= _IOUNGETC;
+    *f->_ptr = c;
+  }
 
   return c;
 }
