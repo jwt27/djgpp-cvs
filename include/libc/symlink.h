@@ -38,6 +38,10 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
 
 int __solve_symlinks(const char * __symlink_path, char * __real_path);
 
+/* Internal library function for fully resolving symlinks in `__symlink_path' */
+/* except the last its component. Otherwise it is similar to __solve_symlinks */
+int __solve_dir_symlinks(const char * __symlink_path, char * __real_path);
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
