@@ -37,7 +37,15 @@ fflush(FILE *f)
     f->_ptr = base;
     f->_cnt = (f->_flag&(_IOLBF|_IONBF)) ? 0 : f->_bufsiz;
     do {
-      n = _write(fileno(f), base, rn);
+      /* If termios hooked this handle, call the termios hook.
+	 We only do this with handles marked by putc and fwrite,
+	 to prevent double conversion of NL to CR-LF and avoid
+	 messing up the special termios conversions the user
+	 might have requested for CR and NL.  */
+      if ((f->_flag & _IOTERM) == 0
+	  || __libc_write_termios_hook == NULL
+	  || __libc_write_termios_hook(fileno(f), base, rn, &n) == 0)
+	n = _write(fileno(f), base, rn);
       if (n <= 0) {
 	f->_flag |= _IOERR;
 	return EOF;
