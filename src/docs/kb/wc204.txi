@@ -722,3 +722,11 @@ POSIX-compliant.
 Optional support for the devices @file{/dev/zero} and @file{/dev/full} was
 added.  This is enabled using the @code{__install_dev_zero} and
 @code{__install_dev_zero} functions.
+
+@pindex mkdoc@r{, clearer style for portability information}
+@pindex mkdoc@r{, support for multiple versions of standards}
+The @code{mkdoc} program is used to build the C library documentation.
+@code{mkdoc} now produces portability information in a clearer manner,
+to avoid ambiguity.  @code{mkdoc} also now allows multiple versions of
+standards to be specified in the portability information,
+e.g.@: ANSI C89 and C99.

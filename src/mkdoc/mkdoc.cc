@@ -1,3 +1,5 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -29,19 +31,67 @@ int count_nodes = 0;
 
 typedef void (*TFunc)(Node *);
 
-
-#define NUM_PORT_TARGETS 2
+#define PORT_TARGET_NONE              0x00
+/* ANSI/ISO C */
+#define PORT_TARGET_ANSI_C89          0x10
+#define PORT_TARGET_ANSI_C99          0x11
+/* POSIX */
+#define PORT_TARGET_POSIX_1003_2_1992 0x20
+#define PORT_TARGET_POSIX_1003_1_2001 0x21
+/* Single Unix Specification(s) (SUS) */
+#define PORT_TARGET_UNIX_98           0x30
 
 #define PORT_UNKNOWN 0
 #define PORT_NO      1
 #define PORT_PARTIAL 2
 #define PORT_YES     3
 
-/* Tokens for use in .txh files */
-char *port_target[NUM_PORT_TARGETS] = { "ansi", "posix" };
-/* Strings to output in .txi files */
-char *port_target_string[NUM_PORT_TARGETS] = { "ANSI", "POSIX" };
+/* This structure is used to store both the default information about a
+ * particular porting target and the information parsed from the texinfo.
+ * For the default case, complete specifies the default value for this
+ * qualifier if the prefix is matched, but the suffix is not. */
+typedef struct {
+  char *suffix_token;  /* Suffix token used in texinfo, e.g. 'c89' */
+  char *suffix_name;   /* Portability qualifier name, e.g. C89 */
+  int target;          /* One of PORT_TARGET_* */
+  int complete;        /* One of PORT_UNKNOWN, etc. */
+} PortQualifier;
 
+#define MAX_PORT_QUALIFIERS 2
+
+typedef struct {
+  char *prefix_token; /* Token used in texinfo, e.g. 'ansi' */
+  char *prefix_name;  /* Actual textual name for token, e.g. ANSI/ISO C */
+  PortQualifier pq[MAX_PORT_QUALIFIERS];
+} PortInfo;
+
+#define NUM_PORT_TARGETS    3
+
+PortInfo port_target[] = {
+  /* ANSI/ISO C */
+  { "ansi",  "ANSI/ISO C",
+    {
+      { "c89", "C89", PORT_TARGET_ANSI_C89, PORT_YES },
+      { "c99", "C99", PORT_TARGET_ANSI_C99, PORT_YES }
+    }
+  },
+  /* POSIX */
+  { "posix", "POSIX",
+    {
+      { "1003.2-1992", "1003.2-1992",
+	PORT_TARGET_POSIX_1003_2_1992, PORT_YES },
+      { "1003.1-2001", "1003.1-2001",
+	PORT_TARGET_POSIX_1003_1_2001, PORT_YES }
+    }
+  },
+  /* SUSv2 */
+  { "unix",  "Unix",
+    {
+      { "98", "Unix98", PORT_TARGET_UNIX_98, PORT_UNKNOWN },
+      { 0 }
+    }
+  }
+};
 
 struct Tree {
   TreeNode *nodes;
@@ -59,7 +109,8 @@ struct Line {
 
 struct PortNote {
   struct PortNote *next;
-  int target;
+  PortInfo *pi;
+  PortQualifier *pq;
   int number;
   char *note;
 };
@@ -73,7 +124,7 @@ struct Node {
   Line *lastline;
   Tree subnodes;
   char *filename;
-  int port_info[NUM_PORT_TARGETS];
+  PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
   PortNote *last_port_note;
   Node(char *name, char *cat);
@@ -107,7 +158,8 @@ Node::Node(char *Pname, char *Pcat)
   cat = strdup(Pcat);
   lines = 0;
   lastline = 0;
-  for (int i = 0; i < NUM_PORT_TARGETS; i++) port_info[i] = PORT_UNKNOWN;
+  for (int i = 0; i < NUM_PORT_TARGETS; i++)
+    bzero(&port_info[i], sizeof(port_info[i]));
   port_notes = NULL;
   last_port_note = NULL;
 }
@@ -151,9 +203,9 @@ void
 Node::read_portability_note(char *str)
 {
   char *work_str = strdup (str);
-  char *s = work_str;
+  char *s = work_str, *x = NULL;
   char *target;
-  int targ_num;
+  int i, j;
 
   while (isspace(*s)) s++;
   target = s;
@@ -162,21 +214,42 @@ Node::read_portability_note(char *str)
   while (isspace(*s)) s++;
   dj_strlwr (target);
 
-  for (targ_num = 0; targ_num < NUM_PORT_TARGETS; targ_num++)
-    if (!strcmp (target, port_target[targ_num])) break;
+  for (i = 0; i < NUM_PORT_TARGETS; i++) {
+    if (   (strlen (target) >= strlen (port_target[i].prefix_token))
+	&& !strncmp (target, port_target[i].prefix_token,
+		     strlen (port_target[i].prefix_token))) {
+      /* If matched, check that the next character is either: null, a dash
+       * (to indicate a qualifier) or null. */
+      x = target + strlen (port_target[i].prefix_token);
+      if ((*x == '\0') || (*x == '-') || isspace((int) *x))
+	break;
+    }
+  }  
 
-  if (targ_num == NUM_PORT_TARGETS)
-  {
+  if (i == NUM_PORT_TARGETS) {
     error ("unrecognised portability note target `%s' ignored.\n", target);
-  }
-  else
-  {
+  } else {
     PortNote *p = new PortNote;
     p->next = NULL;
     p->number = 0;
-    p->target = targ_num;
+    p->pi = &port_target[i];
+    p->pq = NULL;
     p->note = strdup ("");
+    
+    /* Try to match the portability note to a portability qualifier. */
+    x = target + strlen (p->pi->prefix_token);
+    if (*x == '-')
+      x++;
 
+    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      if (p->pi->pq[j].suffix_token == NULL) continue;
+      if (!strcmp (x, p->pi->pq[j].suffix_token)) break;
+    }
+
+    if (j < MAX_PORT_QUALIFIERS)
+      p->pq = &p->pi->pq[j];
+
+    /* Attach portability note to note chain. */
     if (port_notes)
     {
       last_port_note->next = p;
@@ -196,12 +269,11 @@ void
 Node::read_portability(char *str)
 {
   char *targets = dj_strlwr (strdup (str));
-  char *x, *target = targets;
-  int type,i;
+  char *p = NULL, *x = NULL, *target = targets;
+  int type, i, j;
 
   while (isspace (*target)) target++;
   while (*target) {
-
     type = PORT_YES;
     if (*target == '~')
     {
@@ -216,13 +288,56 @@ Node::read_portability(char *str)
     for (x = target; *x && !isspace(*x) && (*x != ','); x++);
     if (*x) *x++ = 0;
 
-    for (i = 0; i < NUM_PORT_TARGETS; i++)
-      if (!strcmp (target, port_target[i])) break;
+    for (i = 0; i < NUM_PORT_TARGETS; i++) {
+      if (   (strlen (target) >= strlen (port_target[i].prefix_token))
+	  && !strncmp (target, port_target[i].prefix_token,
+		       strlen (port_target[i].prefix_token))) {
+	/* If matched, check that the next character is either: null, a dash
+	 * (to indicate a qualifier) or null. */
+	p = target + strlen (port_target[i].prefix_token);
+	if ((*p == '\0') || (*p == '-') || isspace((int) *p))
+	  break;
+      }
+    }
 
-    if (i < NUM_PORT_TARGETS)
-      port_info[i] = type;
-    else
+    if (i < NUM_PORT_TARGETS) {
+      /* Now match the portability qualifier, if present. */
+      p = target + strlen (port_target[i].prefix_token);
+
+      if (port_info[i].prefix_name == NULL) {
+	/* Copy default portability information to uninitialised port
+	 * info, qualifier list. */
+	memcpy(&port_info[i], &port_target[i], sizeof(port_target[i]));
+      }
+
+
+      if (*p == '-') {
+	/* A qualifier is present, so set the portability type for just
+	 * this qualifier. */
+	p++;
+
+	for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+	  if (port_target[i].pq[j].suffix_token == NULL)
+	    continue;
+
+	  if (!strcmp (p, port_target[i].pq[j].suffix_token))
+	    break;
+	}
+
+	if (j < NUM_PORT_TARGETS)
+	  port_info[i].pq[j].complete = type;
+      } else {
+	/* A qualifier is not present, so set the type for all qualifiers. */
+	/* TODO: If the bare prefix appears after the prefix has appeared
+	 * with qualifiers in the line, then this will reset all qualifiers.
+	 * This is a bug. The solution is to be careful with @portability. */
+	for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+	  port_info[i].pq[j].complete = type;
+	}
+      }
+    } else {
       error ("unrecognised portability target `%s' ignored.\n", target);
+    }
 
     target = x;
     while (isspace (*target)) target++;
@@ -233,31 +348,112 @@ Node::read_portability(char *str)
 
 void
 Node::write_portability()
-{
+{  
+  /* Column-width calculation variables */
+  size_t maxsize = 0;
+  ssize_t size = 0;
+  static int largest_target = -1;
+  static char rightpad[80] = { 0 };
+
   char buffer[1024] = { 0 };
+  int qualifier_number = 0;
+  PortNote *p = NULL;
   int note_number = 1;
 
-  for (int i = 0; i < NUM_PORT_TARGETS; i++)
-  {
-    switch (port_info[i])
+  /* If all qualifiers are set to a particular value, store it here
+   * (one of PORT_*). Otherwise it should be set to -1. */
+  int all_port_qualifiers = -1;
+
+  int i, j;
+
+  /* Deduce the largest target name length, for table's left-hand column. */
+  if (largest_target == -1)
+  {    
+    for (i = 0; i < NUM_PORT_TARGETS; i++)
     {
-      case PORT_NO:
-	strcat (buffer, "not ");
-	strcat (buffer, port_target_string[i]);
-	break;
-      case PORT_YES:
-	strcat (buffer, port_target_string[i]);
-	break;
-      case PORT_PARTIAL:
-	strcat (buffer, "partially ");
-	strcat (buffer, port_target_string[i]);
-	break;
-    }
-    if (port_info[i] != PORT_UNKNOWN)
-    {
-      for (PortNote *p = port_notes; p; p = p->next)
+      if (strlen(port_target[i].prefix_name) > maxsize)
       {
-	if (p->target == i)
+	maxsize = strlen(port_target[i].prefix_name);
+	largest_target = i;
+      }
+    }
+  }
+
+  /* Make the right-hand column 80 columns less the left-hand column width,
+   * less some more for safety. */
+  if (rightpad[0] == '\0') {
+    size = sizeof(rightpad) - maxsize - 10;
+    if (size > 0) memset(rightpad, (int) 'x', size);
+  }
+
+  strcat (buffer, "@multitable {");
+  strcat (buffer, port_target[largest_target].prefix_name);
+  strcat (buffer, "} {");  
+  strcat (buffer, rightpad);
+  strcat (buffer, "}\n");
+
+  for (i = 0; i < NUM_PORT_TARGETS; i++)
+  {
+    /* No information given => unknown => skip it. */
+    if (port_info[i].prefix_name == NULL)
+      continue;
+
+    /* Are all qualifiers set to the same value of one of PORT_*? */
+    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      /* Skip unnamed suffixes */
+      if (port_info[i].pq[j].suffix_name == NULL)
+	continue;
+
+      if (all_port_qualifiers == -1) {
+	all_port_qualifiers = port_info[i].pq[j].complete;
+      } else {
+	if (all_port_qualifiers != port_info[i].pq[j].complete) {
+	  /* Not all port qualifiers have the same completion status. */
+	  all_port_qualifiers = -1;
+	  break;
+	}
+      }
+    }
+
+    /* If all qualifiers are all set to unknown, skip this target. */
+    if (all_port_qualifiers == PORT_UNKNOWN)
+      continue;
+
+    /* Add an entry to the table. */
+    strcat (buffer, "@item ");
+    strcat (buffer, port_target[i].prefix_name);
+    strcat (buffer, " @tab ");    
+
+    qualifier_number = 0;
+
+    /* Add positive or partial qualifiers to the list. */
+    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      /* Skip unnamed suffixes */
+      if (port_info[i].pq[j].suffix_name == NULL)
+	continue;
+
+      if (   (port_info[i].pq[j].complete != PORT_YES)
+	  && (port_info[i].pq[j].complete != PORT_PARTIAL))
+	continue;
+
+      /* Add separator, if this isn't the first entry. */
+      qualifier_number++;
+      if (qualifier_number > 1)
+	strcat (buffer, "; ");
+      
+      if (port_info[i].pq[j].complete == PORT_YES) {
+	strcat (buffer, port_info[i].pq[j].suffix_name);
+      } else if (port_info[i].pq[j].complete == PORT_PARTIAL) {
+	strcat (buffer, port_info[i].pq[j].suffix_name);
+	strcat (buffer, " (partial)");
+      }
+
+      /* Attach any qualifier-specific portability notes. */
+      for (p = port_notes; p; p = p->next)
+      {
+	if (   !strcmp (p->pi->prefix_token, port_info[i].prefix_token)
+	    && (p->pq != NULL)
+	    && !strcmp (p->pq->suffix_token, port_info[i].pq[j].suffix_token))
 	{
 	  char smallbuffer[20];
 	  p->number = note_number++;
@@ -266,19 +462,67 @@ Node::write_portability()
 	  break;
 	}
       }
-      strcat (buffer, ", ");
     }
+
+    /* Add negative qualifiers to the list. */
+    if (all_port_qualifiers == PORT_NO)
+      strcat (buffer, "No");
+
+    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      /* Skip unnamed suffixes */
+      if (port_info[i].pq[j].suffix_name == NULL)
+	continue;
+
+      if (port_info[i].pq[j].complete != PORT_NO)
+	continue;
+
+      /* If all port qualifiers == PORT_NO, then we've already output. */
+      if (all_port_qualifiers != PORT_NO) {
+	/* Add separator, if this isn't the first entry. */
+	qualifier_number++;
+	if (qualifier_number > 1)
+	  strcat (buffer, "; ");
+	
+	strcat (buffer, "not ");
+	strcat (buffer, port_info[i].pq[j].suffix_name);
+      }
+
+      /* Attach any qualifier-specific portability notes. */
+      for (p = port_notes; p; p = p->next)
+      {
+	if (   !strcmp (p->pi->prefix_token, port_info[i].prefix_token)
+	    && (p->pq != NULL)
+	    && !strcmp (p->pq->suffix_token, port_info[i].pq[j].suffix_token))
+	{
+	  char smallbuffer[20];
+	  p->number = note_number++;
+	  sprintf (smallbuffer, " (see note %d)", p->number);
+	  strcat (buffer, smallbuffer);
+	  break;
+	}
+      }
+    }
+
+    /* Attach any target-specific portability notes. */
+    for (p = port_notes; p; p = p->next)
+    {
+      if (   (port_info[i].prefix_token != NULL)
+	  && !strcmp (p->pi->prefix_token, port_info[i].prefix_token)
+	  && (p->pq == NULL))
+      {
+	char smallbuffer[20];
+	p->number = note_number++;
+	sprintf (smallbuffer, " (see note %d)", p->number);
+	strcat (buffer, smallbuffer);
+	break;
+      }
+    }
+
+    strcat (buffer, "\n");
   }
 
-  {
-    char *ch = strchr (buffer, 0) - 2;
-    if (*ch == ',')
-      *ch = 0;
-    else
-      strcpy (buffer, "Unknown.");
-  }
+  strcat (buffer, "@end multitable\n\n");
 
-  strcat (buffer, "\n\n");
   add(buffer);
 
   if (note_number > 1)
@@ -288,7 +532,7 @@ Node::write_portability()
     add("\n");
     add("@enumerate\n");
 
-    for (int i = 1; i < note_number; i++)
+    for (i = 1; i < note_number; i++)
     {
       add("@item\n");
       for (PortNote *p = port_notes; p; p = p->next)
@@ -495,7 +739,7 @@ void scan_directory(char *which)
   Node *curnode;
   DIR *d = opendir(which);
   struct dirent *de;
-  while (de = readdir(d))
+  while ((de = readdir(d)) != NULL)
   {
     if (de->d_name[0] == '.')
       continue;
@@ -560,13 +804,78 @@ void scan_directory(char *which)
     }
   }
 }
+
 //-----------------------------------------------------------------------------
 
-main(int argc, char **argv)
+void list_portability (void)
 {
-  if (argc < 3)
-  {
-    fprintf(stderr, "Usage: mkdoc <directory> <output file>\n");
+  int i, j;
+  char buffer[40];
+
+  printf("Built-in portability targets:\n");
+
+  for (i = 0; i < NUM_PORT_TARGETS; i++) {    
+    if (port_target[i].pq[0].suffix_token  == NULL) {
+      printf("%-32s = %-32s\n",
+	     port_target[i].prefix_token,
+	     port_target[i].prefix_name);
+    } else {
+      for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+	if (port_target[i].pq[j].suffix_token == NULL) break;
+
+	strcpy(buffer, port_target[i].prefix_token);
+	strcat(buffer, "-");
+	strcat(buffer, port_target[i].pq[j].suffix_token);
+
+	printf("%-32s = ", buffer);
+
+	strcpy(buffer, port_target[i].prefix_name);
+	strcat(buffer, ": ");
+	strcat(buffer, port_target[i].pq[j].suffix_name);
+
+	printf("%-32s\n", buffer);
+      }
+    }
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+void usage (void)
+{
+  fprintf(stderr,
+	  "Usage: mkdoc [<switches>] <directory> <output file>\n"
+	  "\n"
+	  "Switches:\n"
+	  "       -h, -?, --help      -  Display this help\n"
+	  "       -l, --list-targets  -  List built-in portability targets\n"
+	  "\n");
+}
+
+//-----------------------------------------------------------------------------
+
+int main (int argc, char **argv)
+{
+  int i;  
+
+  // Scan for help options
+  for (i = 1; i < argc; i++) {
+    if (   !strcmp (argv[i], "-h")
+	|| !strcmp (argv[i], "--help")
+	|| !strcmp (argv[i], "-?") ) {
+      usage();
+      return 1;
+    }
+
+    if (   !strcmp (argv[i], "-l")
+	|| !strcmp (argv[i], "--list-targets") ) {
+      list_portability();
+      return 1;
+    }
+  }
+
+  if (argc < 3) {
+    usage();
     return 1;
   }
 
