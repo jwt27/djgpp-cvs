@@ -363,3 +363,12 @@ by stubediting the debugger's executable.
 part of the real-mode stack with garbage.  The parameters specification
 was changed so that the second argument is now the number of 16-bit
 words to copy to the real-mode stack, like the DPMI spec requires.
+
+@pindex emu387.dxe@r{, comparison, addition and subtraction}
+@pindex libemu.a@r{, comparison, addition and subtraction}
+@cindex FP emulator, comparison, addition and subtraction
+The floating-point emulator software had a bug in emulation of
+subtraction, addition, and comparison instructions, whereby the results
+produced for some rare pairs of numbers with the same exponent but
+different mantissa were grossly incorrect.  This is now fixed.
+

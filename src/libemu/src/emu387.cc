@@ -220,8 +220,8 @@ static int compare(reg& a, reg& b)
     b.exp--;
   }
   int diff = a.exp - b.exp;
-  if (diff == 0) diff = a.sigh - b.sigh;
-  if (diff == 0) diff = a.sigl - b.sigl;
+  if (diff == 0) diff = a.sigh > b.sigh ? 1 : (a.sigh < b.sigh ? -1 : 0);
+  if (diff == 0) diff = a.sigl > b.sigl ? 1 : (a.sigl < b.sigl ? -1 : 0);
   if (a.sign == SIGN_NEG)
     diff = -diff;
   if (diff > 0) return COMP_A_GT_B;
@@ -457,8 +457,8 @@ static void r_uadd(reg& a, reg& b, reg& s) // signs ignored
 {
   reg t;
   int dif = a.exp - b.exp;
-  if (!dif) dif = a.sigh - b.sigh;
-  if (!dif) dif = a.sigl - b.sigl;
+  if (!dif) dif = a.sigh > b.sigh ? 1 : (a.sigh < b.sigh ? -1 : 0);
+  if (!dif) dif = a.sigl > b.sigl ? 1 : (a.sigl < b.sigl ? -1 : 0);
   if (dif > 0)
   {
     s = a;
@@ -583,9 +583,9 @@ static void r_sub(reg& a, reg& b, reg& d)
   int mdif;
   mdif = a.exp - b.exp;
   if (!mdif)
-    mdif = a.sigh - b.sigh;
+    mdif = a.sigh > b.sigh ? 1 : (a.sigh < b.sigh ? -1 : 0);
   if (!mdif)
-    mdif = a.sigl - b.sigl;
+    mdif = a.sigl > b.sigl ? 1 : (a.sigl < b.sigl ? -1 : 0);
 
   switch (a.sign*2 + b.sign)
   {
