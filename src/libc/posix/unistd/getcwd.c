@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -10,6 +11,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <crt0.h>
+#include <dos.h>
 #include <libc/farptrgs.h>
 #include <libc/dosio.h>
 
@@ -18,7 +20,7 @@ __getcwd(char *buf, size_t size)
 {
   char *bp;
   __dpmi_regs r;
-  size_t needed_length;
+  size_t needed_length, buf_off;
   int c;
   unsigned use_lfn = _USE_LFN;
   int preserve_case = _preserve_fncase();
@@ -64,17 +66,40 @@ __getcwd(char *buf, size_t size)
      end of buffer. */
   _farsetsel(_dos_ds);
   needed_length = 0;
+  buf_off = 3;
+  if(_os_trueversion == 0x532 && use_lfn && _farnspeekb(__tb) == 0) {
+
+    /* Root path under WinNT/2K/XP with lfn (may be silent failure).
+       If the short name equivalent of the current path is greater than
+       64 characters, Windows 2000 and XP do not return the correct long
+       path name - they return the root directory instead without any
+       failure code.  We check for this bug and try and fix the path. */
+
+    r.x.ax = 0x7160;
+    r.x.cx = 0x8002;	/* Get Long Path Name, using subst drive basis */
+    r.x.es = __tb_segment;
+    r.x.si = __tb_offset + FILENAME_MAX;
+    r.x.di = __tb_offset;
+  
+    _farnspokew(__tb + FILENAME_MAX, '.');	/* Null terminated */
+    __dpmi_int(0x21, &r);
+
+    if (r.x.flags & 1)
+      _farnspokeb(__tb, 0);		/* Put back as root if failure */
+    else
+      buf_off = 0;
+  }
   while ((c = _farnspeekb(__tb+needed_length)))
   {
-    if (needed_length+3 >= size)
+    if (needed_length + buf_off >= size)
     {
       errno = ERANGE;
       return 0;
     }
-    buf[3+needed_length] = c;
+    buf[buf_off + needed_length] = c;
     needed_length++;
   }
-  buf[needed_length+3] = 0;
+  buf[needed_length + buf_off] = 0;
 
   /* switch FOO\BAR to foo/bar, downcase where appropriate */
   buf[1] = ':';
@@ -113,8 +138,15 @@ __getcwd(char *buf, size_t size)
 
 #ifdef TEST
 
-int main(void)
+int main(int argc, char** argv)
 {
+  if(argc > 1) {
+    if(chdir(argv[1]) == -1)
+      perror("Change dir failed");
+    else
+      printf("Change dir to %s\n",argv[1]);
+  }
+
   printf (getcwd ((char *)0, FILENAME_MAX + 10));
   return 0;
 }
