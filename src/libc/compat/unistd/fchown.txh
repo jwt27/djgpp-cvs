@@ -1,0 +1,23 @@
+@node fchown, unix
+@subheading Syntax
+
+@example
+#include <unistd.h>
+
+int fchown(int fd, int owner, int group);
+@end example
+
+@subheading Description
+
+This function does almost nothing under MS-DOS: it just
+checks if the handle @code{fd} is valid.  This function can 
+be hooked by the @xref{File System Extensions}.
+
+@subheading Return Value
+
+This function returns zero if the handle is valid, non-zero
+otherwise.
+
+@subheading Portability
+
+@portability !ansi, !posix

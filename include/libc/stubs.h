@@ -40,6 +40,7 @@ extern "C" {
 #define crlf2nl __crlf2nl
 #define dosmemget __dosmemget
 #define dosmemput __dosmemput
+#define fchown __fchown
 #define filelength __filelength
 #define findfirst __findfirst
 #define findnext __findnext

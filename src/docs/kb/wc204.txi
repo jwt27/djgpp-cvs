@@ -737,3 +737,5 @@ The debug support routines in @file{libdbg.a} now support exceptions
 longer overwrite memory when exceptions higher than 19 are used by
 the debuggee.
 
+@findex fchmod
+The function @code{fchmod} was added.

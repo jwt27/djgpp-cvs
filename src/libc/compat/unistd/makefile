@@ -1,3 +1,4 @@
+# Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
@@ -5,6 +6,7 @@ TOP=../..
 SRC += _irdlink.c
 SRC += basename.c
 SRC += dirname.c
+SRC += fchown.c
 SRC += fsync.c
 SRC += ftruncat.c
 SRC += getdtabl.c

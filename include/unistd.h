@@ -149,6 +149,7 @@ char *		basename(const char *_fn);
 int		brk(void *_heaptop);
 char *		dirname(const char *_fn);
 int		__file_exists(const char *_fn);
+int             fchown(int fd, uid_t owner, gid_t group);
 int		fsync(int _fd);
 int		ftruncate(int, off_t);
 int		getdtablesize(void);

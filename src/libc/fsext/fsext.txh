@@ -131,6 +131,11 @@ used to provide support for symlinks in some other than DJGPP format.
 A file symlink handler (@pxref{symlink}).  This extension should create
 symlinks in other than DJGPP symlink file format.
 
+@item __FSEXT_fchown
+
+A file fchown handler (@pxref{fchown}).  This is called when file
+attributes are changed for an open file.
+
 @end table
 
 
