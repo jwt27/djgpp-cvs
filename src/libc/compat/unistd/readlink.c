@@ -45,7 +45,17 @@ int readlink(const char * filename, char * buffer, size_t size)
    /* Now we check for special DJGPP symlink format */
    fd = _open(filename, O_RDONLY);
    if (fd < 0)
-      return -1; /* errno from open() call */
+   {
+      /* Retry with DENY-NONE share bit set. It might help in some cases
+       * when symlink file is opened by another program. We don't try with
+       * DENY-NONE set in the first _open() call, because it might fail under
+       * some circumstances. For details, see Ralf Brown's Interrupt List,
+       * description of INT 0x21, function 0x3D.
+       */
+      fd = _open(filename, O_RDONLY | SH_DENYNO);
+      if (fd < 0)
+         return -1; /* errno from open() call */
+   } 
 
    bytes_read = read(fd, &buf, _SYMLINK_FILE_LEN);
    _close(fd);
