@@ -19,7 +19,7 @@ The size of the file in bytes, or (if any error occured) -1LL and
 @var{errno} set to a value describing the cause of the failure.
 
 The return value is of type @code{long long} which allows file sizes of
-@math{2^64-2} bytes to be returned.  Note that FAT16 limits files to near
+@math{2^63-1} bytes to be returned.  Note that FAT16 limits files to near
 @math{2^31} bytes and FAT32 limits files to @math{2^32-2} bytes.
 
 @subheading Portability
