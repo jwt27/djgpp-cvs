@@ -590,3 +590,10 @@ space.
 Change the round up size for memory block allocations to increase with
 the number of handles allocated.  This helps keep the number of handles
 to the 256 allocated and reduce problems exhausting DPMI handle resources.
+
+@findex dup@r{, duplicates @code{FSEXT} hooks}
+@findex dup2@r{, duplicates @code{FSEXT} hooks}
+The functions @code{dup} and @code{dup2} now copy to the new handle any
+Filesystem Extensions which hooked the original handle.  Thus, the
+duplicate handle now behaves exactly like the original one, in that it
+is also hooked by the extension.

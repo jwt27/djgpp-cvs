@@ -5,6 +5,7 @@
 #include <dpmi.h>
 #include <errno.h>
 #include <io.h>
+#include <sys/fsext.h>
 #include <libc/dosio.h>
 #include <libc/fd_props.h>
 
@@ -20,8 +21,10 @@ dup(int fd)
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
-  setmode(r.x.ax, __file_handle_modes[fd]);
 
+  /* Copy the fsext hook, the handle modes, and the properties.  */
+  __FSEXT_set_function(r.x.ax, __FSEXT_get_function(fd));
+  setmode(r.x.ax, __file_handle_modes[fd]);
   if (__has_fd_properties(fd))
     __dup_fd_properties(fd, r.x.ax);
 
