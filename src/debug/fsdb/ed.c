@@ -21,11 +21,11 @@ static void
 usage (char *myself)
 {
   fprintf (stderr, "\
-Usage: %s [debug args] debug-image [image args]
-
-Options:  -p path    Specify path for source files.
-          -d         Enable dual monitor display.
-          -s file    Load setup from specified file.
+Usage: %s [debug args] debug-image [image args]\n\
+\n\
+Options:  -p path    Specify path for source files.\n\
+          -d         Enable dual monitor display.\n\
+          -s file    Load setup from specified file.\n\
 ", myself);
   exit (1);
 }
