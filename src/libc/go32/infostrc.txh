@@ -54,6 +54,10 @@ This expands to _go32_info_block.selector_for_linear_memory
 
 This expands to _go32_info_block.linear_address_of_transfer_buffer
 
+@item __tb_size
+
+This expands to _go32_info_block.size_of_transfer_buffer
+
 @end table
 
 The @code{run_mode} field indicates the mode that the program is running
