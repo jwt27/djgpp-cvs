@@ -1,3 +1,4 @@
+/* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -18,7 +19,16 @@ extern "C" {
 #define SEEK_SET	0
 #define SEEK_CUR	1
 #define SEEK_END	2
-  
+
+/* `lockf' is a simpler interface to the locking facilities of `fcntl'.
+   LEN is always relative to the current file position.
+   The CMD argument is one of the following.  */
+
+# define F_ULOCK 0     /* Unlock a previously locked region.  */
+# define F_LOCK  1     /* Lock a region for exclusive use.  */
+# define F_TLOCK 2     /* Test and lock a region for exclusive use.  */
+# define F_TEST  3     /* Test a region for other processes locks.  */
+
 /* Some programs think they know better... */
 #undef NULL
 
@@ -61,7 +71,7 @@ extern "C" {
 #define _SC_TZNAME_MAX		9
 #define _SC_VERSION		10
 
-#ifndef _SIZE_T 
+#ifndef _SIZE_T
 __DJ_size_t
 #define _SIZE_T
 #endif
@@ -138,6 +148,8 @@ int		gethostname(char *buf, int size);
 int		getpagesize(void);
 char *		getwd(char *__buffer);
 int             lchown(const char * file, int owner, int group);
+int		lockf(int _fildes, int _cmd, off_t _len);
+int		llockf(int _fildes, int _cmd, offset_t _len);
 offset_t	llseek(int _fildes, offset_t _offset, int _whence);
 int		nice(int _increment);
 int             readlink(const char * __file, char * __buffer, size_t __size);
