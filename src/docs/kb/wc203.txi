@@ -568,7 +568,7 @@ The floating-point emulator software had a bug in emulation of the
 @code{FSQRT} instruction, which could cause the calling program to hang.
 This was due to incorrect optimization by the version of GCC used to
 produce @file{djdev202.zip}.  The new version of the emulator works
-around this bug by preventinging the compiler from performing these
+around this bug by preventing the compiler from performing these
 incorrect optimizations.
 
 @findex fsetpos@r{, return value}
