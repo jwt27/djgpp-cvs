@@ -44,6 +44,9 @@
 #include <libc/farptrgs.h>
 #include <sys/movedata.h>
 #include <libc/dosio.h>
+#include <libc/unconst.h>
+#include <stdlib.h>
+#include <fcntl.h>
 
 /* Macro to convert a segment and an offset to a "far offset" suitable
    for _farxxx() functions of DJGPP.  */
@@ -62,6 +65,7 @@
 static char          drive_number = -1;
 static char          skip_drive_b = 0;
 static char          drive_a_mapping = 0;
+static char          w2k_bug;
 static char          cds_drives   = 0;
 static unsigned long cds_address;
 static int           cds_elsize;
@@ -434,10 +438,11 @@ setmntent(const char *filename, const char *type)
   __dpmi_regs r;
   int cds_address_offset;
   /* Need TRUE DOS version. */
-  unsigned short true_dos_version = _get_dos_version(1);
+  unsigned short true_dos_version = _os_trueversion;
 
   dos_mem_base = _go32_info_block.selector_for_linear_memory;
   our_mem_base = _my_ds();
+  w2k_bug = (_USE_LFN && _os_trueversion == 0x532);
 
   drive_number = 0;
   skip_drive_b = 0;
@@ -456,7 +461,7 @@ setmntent(const char *filename, const char *type)
       cds_address_offset = 0x17;
       cds_elsize = 0x51;
     }
-  else if (true_dos_version == 0x0332) /* NT */
+  else if (true_dos_version == 0x0532) /* NT */
     {
       cds_address_offset = 0x16;
       cds_elsize = 0x47;
@@ -532,6 +537,10 @@ getmntent(FILE *filep)
          I assume there is only one such drive in the system, and that
          it is drive A:, otherwise the logic below will fail miserably.  */
       if (drive_number == 2 && skip_drive_b)
+        continue;
+
+      /* Windows 2000 dislikes drives higher than Z */
+      if (drive_number > cds_drives && _os_trueversion == 0x532)
         continue;
 
       /* See whether drive A: is mapped to B: and if it is, raise the
@@ -718,6 +727,9 @@ getmntent(FILE *filep)
 
           strcat(drive_string, "*.*");
           errno = 0;
+          /* Windows 2000/XP can't find labels with LFN=y, so help it */
+          if (w2k_bug)
+            putenv(unconst("LFN=n",char *));
           volume_found = findfirst(drive_string, &mnt_ff, FA_LABEL) == 0;
           /* Floppies and other disks written by Windows 9X include
              entries that have volume label bit set, but they are
@@ -731,6 +743,8 @@ getmntent(FILE *filep)
               errno = ENMFILE;
 	      volume_found = findnext(&mnt_ff) == 0;
             }
+          if (w2k_bug)
+            putenv(unconst("LFN=y",char *));
 
           if (volume_found)
             {
