@@ -66,3 +66,8 @@ The function @code{remove} works around a DOS bug, whereby DOS returns a
 
 @findex rand@r{, increased period}
 The series produced by @code{rand} have a longer period.
+
+@findex drand48@r{, increased speed}
+@findex erand48@r{, increased speed}
+The execution speed of @code{drand48} and @code{erand48} has been improved.
+

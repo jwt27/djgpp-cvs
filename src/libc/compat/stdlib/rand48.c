@@ -1,7 +1,7 @@
 /*
  * File rand48.c.
  *
- * Copyright (C) 1999 Martin Str”mberg <ams@ludd.luth.se>.
+ * Copyright (C) 1999, 2000 Martin Str@"omberg <ams@ludd.luth.se>.
  *
  * This software may be used freely so long as this copyright notice is
  * left intact. There is no warranty on this software.
@@ -54,32 +54,16 @@ double erand48(
 	       unsigned short state[3]
 	       )
 {
-  int i; /* Counter. */
-  double pot = 0.5; /* A potential of 0.5. */
-  double result = 0.0;
+  /* Thanks to Dieter Buerssner for showing how it ought to be done. */
+  signed long long ll; /* Temporary result holder. */
 
   next(state);
 
-  for(i = 0; i < 8*sizeof(unsigned short); i++)
-  {
-    if( (state[2] << i) & 0x8000 )
-    {
-      result += pot;
-    }
-    pot /= 2.0;
-    if( (state[1] << i) & 0x8000 )
-    {
-      result += pot;
-    }
-    pot /= 2.0;
-    if( (state[0] << i) & 0x8000 )
-    {
-      result += pot;
-    }
-    pot /= 2.0;
-  }
+  ll = (signed long long)( state[0] 
+		       | ( (unsigned long)state[1] ) << 16 
+		       | ( (unsigned long long)state[2] ) << 32 );
 
-  return(result);
+  return(ll * ( 1.0 / ( 1LL << 48 ) ) );
 
 }
 
