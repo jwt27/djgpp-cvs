@@ -174,7 +174,8 @@ static float zero  =  0.0000000000e+00;
 	int n; float x;
 #endif
 {
-	__int32_t i,hx,ix,ib;
+	__int32_t i,hx,ix;
+	__uint32_t ib;
 	__int32_t sign;
 	float a, b, temp;
 

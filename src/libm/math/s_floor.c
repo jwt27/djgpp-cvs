@@ -120,7 +120,7 @@ static double huge = 1.0e300;
 		    if(j_0==20) i0+=1; 
 		    else {
 			j = i1+(1<<(52-j_0));
-			if(j<i1) i0 +=1 ; 	/* got a carry */
+			if( (0<=i1) && (j<(__uint32_t)i1) ) i0 +=1 ; 	/* got a carry */
 			i1=j;
 		    }
 		}

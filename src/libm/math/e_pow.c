@@ -109,7 +109,7 @@ ivln2_l  =  1.92596299112661746887e-08; /* 0x3E54AE0B, 0xF85DDF44 =1/ln2 tail*/
 	double y_1,t1,t2,r,s,t,u,v,w;
 	__int32_t i,j,k,yisint,n;
 	__int32_t hx,hy,ix,iy;
-	__uint32_t lx,ly;
+	__uint32_t lx,ly,ju;
 
 	EXTRACT_WORDS(hx,lx,x);
 	EXTRACT_WORDS(hy,ly,y);
@@ -134,8 +134,8 @@ ivln2_l  =  1.92596299112661746887e-08; /* 0x3E54AE0B, 0xF85DDF44 =1/ln2 tail*/
 	    else if(iy>=0x3ff00000) {
 		k = (iy>>20)-0x3ff;	   /* exponent */
 		if(k>20) {
-		    j = ly>>(52-k);
-		    if((j<<(52-k))==ly) yisint = 2-(j&1);
+		    ju = ly>>(52-k);
+		    if((ju<<(52-k))==ly) yisint = 2-(ju&1);
 		} else if(ly==0) {
 		    j = iy>>(20-k);
 		    if((j<<(20-k))==iy) yisint = 2-(j&1);

@@ -217,7 +217,7 @@ ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 	}
 	else if ((j&0x7fffffff)>0x43160000)		/* z <= -150 */
 	    return s*tiny*tiny;				/* underflow */
-	else if (j==0xc3160000U){			/* z == -150 */
+	else if (j==(__int32_t)0xc3160000U){		/* z == -150 */
 	    if(p_l<=z-p_h) return s*tiny*tiny;		/* underflow */
 	}
     /*

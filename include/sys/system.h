@@ -22,7 +22,7 @@ extern unsigned int _shell_cmdline_limit (const char *_prog);
 
 typedef struct {
   char magic[16];
-  int struct_length;
+  unsigned int struct_length;
   char go32[16];
   unsigned char buffer[0];
 } _v1_stubinfo;

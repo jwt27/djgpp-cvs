@@ -941,7 +941,10 @@ cache_fopen(char *name)
   while (f == NULL && s && *s)
     {
       t = index (s, ';');
-      l = t ? t - s : strlen (s);
+      if (t)
+	l = t - s;
+      else
+	l = strlen (s);
       strncpy (u, s, l);
       if (l > 0 && u[l - 1] != '/' && u[l - 1] != '\\')
 	u[l++] = '/';
