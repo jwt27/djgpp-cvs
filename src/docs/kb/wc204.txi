@@ -39,8 +39,8 @@ externally callable.
 New functions @code{_get_fat_size}, @code{_get_fs_type} and
 @code{_is_fat32} added.
 
-@cindex stdarg.h@r{, implemented with GCC builtins}
-@cindex varargs.h@r{, implemented with GCC builtins}
+@cindex @file{stdarg.h}, implemented with GCC builtins
+@cindex @file{varargs.h}, implemented with GCC builtins
 @findex va_list@r{, implemented with GCC builtins}
 @findex va_start@r{, implemented with GCC builtins}
 @findex va_arg@r{, implemented with GCC builtins}
@@ -403,7 +403,7 @@ shift/rotate instructions.  This feature taken from a version of
 @findex fprintf@r{, append mode}
 @findex fwrite@r{, append mode}
 @findex write@r{, append mode}
-@cindex libc/dosio.h@r{, append mode}
+@cindex @file{libc/dosio.h}, append mode
 The functions @code{fopen} and @code{freopen} improved to handle the
 append mode properly.
 The functions @code{fputc}, @code{fprintf}, @code{fwrite} and
@@ -417,7 +417,7 @@ Type of @code{__file_handle_modes} extended to be able to hold the
 @findex flsbuf.c@r{, no longer uses _IOAPPEND flag}
 @findex fopen.c@r{, no longer uses _IOAPPEND flag}
 @findex freopen.c@r{, no longer uses _IOAPPEND flag}
-@cindex libc/file.h@r{, _IOAPPEND flag deleted}
+@cindex @file{libc/file.h}, _IOAPPEND flag deleted
 Due to the improved append mode implementation, the functions @code{fopen},
 @code{fflush}, @code{_flsbuf}, @code{fopen}, and @code{freopen} no longer
 use the @code{_IOAPPEND} flag.  And since the flag is no longer used, the
