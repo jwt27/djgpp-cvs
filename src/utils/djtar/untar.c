@@ -44,6 +44,7 @@ typedef struct {
 } TARREC;
 
 static TARREC header;
+static int error_message_printed;
 static int looking_for_header;
 static char *changed_name;
 static int first_block = 1;
@@ -123,7 +124,15 @@ tarread(char *buf, long buf_size)
       if (head_csum && !ignore_csum)
       {
         /* Probably corrupted archive.  Bail out.  */
-        fprintf(log_out, "--- !!Directory checksum error!! ---\n");
+        if (!error_message_printed)
+        {
+          error_message_printed = 1;
+          fprintf(log_out, "--- !!Directory checksum error!! ---\n");
+        }
+        /* We have still not found a valid tar header in this buf[],
+           so we MUST continue looking for a header next time that
+           tarread() is called with a new buf[]. */
+        looking_for_header = 1;
         bytes_out += buf_size;
         return EOF;
       }
@@ -344,6 +353,7 @@ tar_gz_read(char *fname)
             method == DEFLATED ? (pkzip ? "PKZip" : "GZip") : "");
 
   bytes_out = 0;
+  error_message_printed = 0;
   looking_for_header = 1;
   posn = 0;
 
