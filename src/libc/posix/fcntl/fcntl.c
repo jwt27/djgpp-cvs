@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -110,7 +111,14 @@ _fcntl_lk64(int fd, int cmd, struct flock64 *lock_r64)
   offset_t pos, cur_pos, lock_pos, len;
   long long int flen;
 
-  /* First check if SHARE is loaded */
+  /* Is this a directory? If so, fail. */
+  if (__get_fd_flags(fd) & FILE_DESC_DIRECTORY)
+  {
+    errno = EINVAL;
+    return -1;
+  }
+
+  /* Check if SHARE is loaded */
   ret = _get_SHARE_status();
 
   if (!ret) /* Then SHARE is NOT loaded, just return success */

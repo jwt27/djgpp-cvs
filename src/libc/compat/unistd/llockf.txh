@@ -85,6 +85,7 @@ section is already locked.
 
 @item EINVAL
 Parameter @var{function} is not one of the implemented functions.
+Or: An attempt was made to lock a directory, which is not supported.
 @end table
 
 All lock requests in this implementation are coded as exclusive locks

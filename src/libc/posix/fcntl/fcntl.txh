@@ -100,6 +100,8 @@ obtained, -1 is returned and @code{errno} is set to the reason (which
 will be one of @code{EINVAL}, @code{EBADF}, @code{EACCES} or
 @code{ENOLCK}).
 
+Locking of directories is not supported.
+
 @item F_SETLK
 Set or clear a file segment lock according to the structure pointed to
 by the third argument.  The lock is set when @code{l_type} is
@@ -114,12 +116,16 @@ if it were @code{F_WRLCK} for a write lock.
 This is because DOS/Win9x only supports one kind of lock, and it is the
 exclusive kind.
 
+Locking of directories is not supported.
+
 @item F_SETLKW
 Same as @code{F_SETLK}, but if the lock is blocked, the call will wait
 (using @code{__dpmi_yield}, see @pxref{__dpmi_yield}) until it is
 unblocked and the lock can be applied.  This call will @strong{never
 exit} if the program making the call is the program which already owns
 the lock.
+
+Locking of directories is not supported.
 
 @item F_GETLK64
 @item F_SETLK64
@@ -134,6 +140,8 @@ gigabytes minus 1.  True 64-bit file locking is @strong{not} supported.
 The @code{struct flock64} members @var{l_start} and @var{l_len} are
 declared to be of type @code{offset_t}, which is in turn typedef'ed to
 be a @code{long long}.
+
+Locking of directories is not supported.
 @end table
 
 This function can be hooked by the @dfn{Filesystem extensions}, see
