@@ -39,6 +39,7 @@ check_cpu:
 	or	eax, eax
 	mov	ah, 5
 	jz	@f5
+	xor	eax, eax
 	inc	ax		; call with eax = 1
 	cpuid			; edx=features; ah&0f = family; al=model/step
 	and	ah, 0x0f
