@@ -52,7 +52,7 @@ When used together with GCC 2.96 or later, va_list facilities
 in @file{stdarg.h} and @file{varargs.h} are implemented using new
 builtins from GCC 2.96.
 
-@findex fsdb@r{, check for EXE extension}
+@pindex fsdb@r{, check for EXE extension}
 @code{fsdb} checks for executables and loads them even if
 the extension @file{.exe} isn't given in the command line.
 
