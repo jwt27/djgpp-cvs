@@ -60,13 +60,6 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   case '%':
     if ((ch = *fmt++) == '%')
       goto def;
-    if (ch == 'n')
-    {
-      **(int **)argp++ = nchars;
-      break;
-    }
-    if (fileended)
-      return(nmatch? nmatch: -1);
     ptr = 0;
     if (ch != '*')
       ptr = (int **)argp++;
@@ -80,10 +73,18 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     }
     if (len == 0)
       len = 30000;
-    if (ch=='l') {
+    
+    if (ch=='l') 
+    {
       size = LONG;
       ch = *fmt++;
-    } else if (ch=='h') {
+      if (ch=='l')
+      {
+        size = LONGDOUBLE; /* for long long 'll' format */
+        ch = *fmt++;
+      }
+    }
+    else if (ch=='h') {
       size = SHORT;
       ch = *fmt++;
     } else if (ch=='L') {
@@ -96,17 +97,41 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
 	 gcc gives warning: ANSI C forbids braced
 	 groups within expressions */
       ch += 'a' - 'A';
-      size = LONG;
+      if (size==LONG)
+        size = LONGDOUBLE;
+      else
+        size = LONG;
     }
     if (ch == '\0')
       return(-1);
+
+    if (ch == 'n')
+    {
+      if (!ptr)
+        break;
+      if (size==LONG)
+	**(long**)ptr = nchars;
+      else if (size==SHORT)
+        **(short**)ptr = nchars;
+      else if (size==LONGDOUBLE)
+        **(long long**)ptr = nchars;
+      else
+        **(int**)ptr = nchars;
+      break;
+    }
+      
     if (_innum(ptr, ch, len, size, iop, scan_getc, scan_ungetc,
-	       &fileended) && ptr)
-      nmatch++;
-/* breaks %n */
-/*    if (fileended) {
-      return(nmatch? nmatch: -1);
-    } */
+	       &fileended))
+    {
+      if (ptr)
+        nmatch++;
+    }
+    else
+    {
+      if (fileended && nmatch==0)
+        return(-1);
+      return(nmatch);
+    }
     break;
   case ' ':
   case '\n':
@@ -129,7 +154,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     if (ch1 != EOF) nchars++;
     if (ch1 != ch) {
       if (ch1==EOF)
-	return(-1);
+	return(nmatch? nmatch: -1);
       scan_ungetc(ch1, iop);
       nchars--;
       return(nmatch);
@@ -145,7 +170,7 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
   char numbuf[64];
   register c, base;
   int expseen, scale, negflg, c1, ndigit;
-  long lcval;
+  long long lcval;
   int cpos;
 
   if (type=='c' || type=='s' || type=='[')
@@ -233,8 +258,10 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
   } else
     *eofptr = 1;
   nchars--;
-  if (ptr==NULL || np==numbuf || (negflg && np==numbuf+1) ) /* gene dykes*/
+  if (np==numbuf || (negflg && np==numbuf+1) ) /* gene dykes*/
     return(0);
+  if (ptr==NULL)
+    return(1);
   *np++ = 0;
   switch((scale<<4) | size) {
 
@@ -260,8 +287,11 @@ _innum(int **ptr, int type, int len, int size, FILE *iop,
     break;
 
   case (INT<<4) | LONG:
-  case (INT<<4) | LONGDOUBLE:
     **(long **)ptr = lcval;
+    break;
+
+  case (INT<<4) | LONGDOUBLE:
+    **(long long **)ptr = lcval;
     break;
   }
   return(1);
@@ -309,7 +339,9 @@ _instr(char *ptr, int type, int len, FILE *iop,
     nchars--;
     *eofptr = 1;
   }
-  if (ptr && ptr!=optr) {
+  if (!ptr)
+    return(1);
+  if (ptr!=optr) {
     if (type!='c')
       *ptr++ = '\0';
     return(1);
