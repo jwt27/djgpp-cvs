@@ -7,8 +7,9 @@
  *        symlink file itself.
  *   3. Open simple file in a symlink subdir with O_NOFOLLOW flag. Check if
  *        we really have opened a referred file.
- *   4. Open symlink in a symlink subdir with O_NOFOLLOW flag. Should fail with ELOOP.
+ *   4. Open symlink in a symlink subdir with O_NOFOLLOW flag. Should fail with
  *        ELOOP. 
+ *   5. Open a symlink with O_NOLINK but with symlinks in leading dirs.
  */
 #include <errno.h>
 #include <fcntl.h>
@@ -44,6 +45,7 @@ int main(void)
       exit(1);
    }
    printf("Test 4 passed\n");
+   test_success(5, "test2/test1", O_RDONLY | O_NOLINK, 10, "!<symlink>");
    return 0;
 } 
 
