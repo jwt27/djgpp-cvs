@@ -351,3 +351,11 @@ libc.a reference}.
 The documentation for the debug support functions in @file{libdbg.a} is
 now part of the library reference.
 
+@cindex debuggers, and the stack length
+@cindex debuggers, and the transfer buffer size
+When a raw COFF image (i.e., without a stub) is debugged, its stack
+length and the size of transfer buffer are now taken from the values
+used by the debugger.  This means that you can have predictable results
+by stubediting the debugger's executable.
+
+
