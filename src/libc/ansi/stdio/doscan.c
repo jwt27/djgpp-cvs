@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -95,11 +96,25 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       ch = *fmt++;
       if (ch=='h')
       {
+	/* C99 */
+	/* for 'hh' - char */
 	size = CHAR;
 	ch = *fmt++;
       }
     } else if (ch=='L') {
       size = LONGDOUBLE;
+      ch = *fmt++;
+    } else if (ch=='j') {
+      /* C99 */
+      size = LONGDOUBLE; /* for long long */
+      ch = *fmt++;
+    } else if (ch=='z') {
+      /* C99 */
+      size = LONG;
+      ch = *fmt++;
+    } else if (ch=='t') {
+      /* C99 */
+      size = REGULAR;
       ch = *fmt++;
     } else if (ch=='[')
       fmt = _getccl((const unsigned char *)fmt);

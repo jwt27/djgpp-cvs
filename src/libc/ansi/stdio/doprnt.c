@@ -1,3 +1,4 @@
+/* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -194,6 +195,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       goto rflag;
     case 'h':
       if (flags&SHORTINT) {
+	/* C99 */
+	/* for 'hh' - char */
 	flags |= CHARINT;
 	flags &= ~SHORTINT;
       } else {
@@ -205,6 +208,15 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	flags |= LONGDBL; /* for 'll' - long long */
       else
 	flags |= LONGINT;
+      goto rflag;
+    case 'j': /* C99 */
+      flags |= LONGDBL; /* long long */
+      goto rflag;
+    case 'z': /* C99 */
+      flags |= LONGINT;
+      goto rflag;
+    case 't': /* C99 */
+      /* t => int, which is the default. */
       goto rflag;
     case 'c':
       *(t = buf) = va_arg(argp, int);
