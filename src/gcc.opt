@@ -1,5 +1,10 @@
 -MD
--O3
+-O2
+-fno-strength-reduce
+-m486
+-malign-loops=2
+-malign-jumps=2
+-malign-functions=2
 -Wall
 -Wbad-function-cast
 -Wcast-qual
@@ -12,3 +17,4 @@
 -Wtraditional
 -Wwrite-strings
 -nostdinc
+
