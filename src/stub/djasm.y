@@ -230,7 +230,7 @@ void write_MODEND(FILE *outfile, int main_obj, int start_ptr);
 %token <i> ARITH2 ARITH2B ARITH2D ARITH2W
 %token <i> LXS MOVSZX MOVSZXB MOVSZXW
 %token <i> JCC JCCL JCXZ LOOP SETCC
-%token <i> SHIFT SHLRD
+%token <i> SHIFT
 %token <i> ONEBYTE TWOBYTE ASCADJ
 %token <i> BITTEST GROUP3 GROUP3B GROUP3D GROUP3W GROUP6 GROUP7 STRUCT
 %token ALIGN ARPL
@@ -571,9 +571,7 @@ struct opcode opcodes[] = {
   {"sldt", GROUP6, 0},
   {"sal", SHIFT, 4},
   {"shl", SHIFT, 4},
-  {"shld", SHLRD, 0xa4},
   {"shr", SHIFT, 5},
-  {"shrd", SHLRD, 0xac},
   {"smsw", GROUP7, 4},
   {"str", GROUP6, 1},
   {"sub", ARITH2, 5},
@@ -1015,17 +1013,6 @@ line
 	| SHIFT REG16 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0xd3); modrm(3, $1, $2); }
 	| SHIFT REG32 ',' const       	{ emitb(0x66); emitb($4 == 1 ? 0xd1 : 0xc1); modrm(3, $1, $2); if ($4 != 1) emitb($4); }
 	| SHIFT REG32 ',' REG8		{ if ($4 != 1) djerror ("Non-constant shift count must be `cl'"); emitb(0x66); emitb(0xd3); modrm(3, $1, $2); }
-
-	| SHLRD REG16 ',' REG16 ',' const
-	  { emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
-	| SHLRD REG16 ',' REG16 ',' REG8
-	  { if ($6 != 1) djerror ("Non-constant shift count must be `cl'");
-	    emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
-	| SHLRD REG32 ',' REG32 ',' const
-	  { emitb(0x66); emitb(0x0f); emitb($1); modrm(3, $4, $2); emitb($6); }
-	| SHLRD REG32 ',' REG32 ',' REG8
-	  { if ($6 != 1) djerror ("Non-constant shift count must be `cl'");
-	    emitb(0x66); emitb(0x0f); emitb($1+1); modrm(3, $4, $2); }
 
 	| STACK				{ stack_ptr = pc; }
 	| START				{ start_ptr = pc; main_obj=1; }
