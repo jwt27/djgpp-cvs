@@ -20,7 +20,7 @@
 static unsigned long _get_sft_entry_ptr(int fd)
 {
   __dpmi_regs regs;
-  unsigned char index;
+  unsigned char ind;
   unsigned long es, di;
 
 
@@ -40,14 +40,14 @@ static unsigned long _get_sft_entry_ptr(int fd)
   /* Get the SFT entry number for this handle.  */
   es = regs.x.es;
   di = regs.x.di;
-  index = _farpeekb(_dos_ds, es * 16 + di);
+  ind = _farpeekb(_dos_ds, es * 16 + di);
 
 
-  if (index < 0xff)
+  if (ind < 0xff)
   {
     /* Now get the address of the entry.  */
     regs.x.ax = 0x1216;
-    regs.x.bx = index;
+    regs.x.bx = ind;
     __dpmi_int (0x2f, &regs);
   }
   else
