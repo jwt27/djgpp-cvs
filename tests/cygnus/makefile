@@ -31,6 +31,7 @@ RM = rm -f
 DEFS     = -D_USE_LIBM_MATH_H -D_HAVE_STDC
 CPPFLAGS = -nostdinc -I$(HERE) -I$(TOP)/../include
 CFLAGS   = $(DEFS) -O2 -g
+LIBS     = -lm
 
 OFILES = test.o string.o convert.o conv_vec.o iconv_vec.o test_is.o \
          dvec.o sprint_vec.o sprint_ivec.o math.o math2.o test_ieee.o
@@ -116,7 +117,7 @@ tgen/g%vec.exe: tgen/g%vec.cpp tgen/genmathv.h
 	 QFLOAT=$(HERE)/tgen/qfloat TEST=$(HERE) MATH=$(TOP)/../lib
 
 mtest.exe: $(OFILES)  $(VEC_OFILES)
-	$(CC) -o $@ $(LDFLAGS) -L$(TOP)/../lib $(OFILES) $(VEC_OFILES) -lm
+	$(CC) -o $@ $(LDFLAGS) -L$(TOP)/../lib $(OFILES) $(VEC_OFILES) $(LIBS)
 
 $(OFILES) $(VEC_OFILES) : test.h
 
