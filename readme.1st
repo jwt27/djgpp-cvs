@@ -116,16 +116,19 @@ there.
 Installation
 ------------
 
-1. Create a directory for DJGPP, say C:\DJGPP.  If you have version
-   1.x installed, it's best to delete the contents of its `bin/'
-   subdirectory or move it to another directory (not on your PATH),
-   and delete everything else from that installation.  (Some of the
-   problems reported by users of DJGPP v2 were caused by inadvertently
-   mixing it with old v1.x programs.)  The only program from v1.x that
-   you should keep is `go32.exe'.
+1. Create a directory for DJGPP, say C:\DJGPP.  (WARNING: do NOT
+   install DJGPP in a directory C:\DEV, D:\DEV, etc.: it will not
+   work!  See the FAQ for more details.)
 
-2. Unzip the zip files from that directory, preserving the directory
-   structure.  For example:
+   If you have version 1.x installed, it's best to delete the contents
+   of its `bin/' subdirectory or move it to another directory (not on
+   your PATH), and delete everything else from that installation.
+   (Some of the problems reported by users of DJGPP v2 were caused by
+   inadvertently mixing it with old v1.x programs.)  The only program
+   from v1.x that you should keep is `go32.exe'.
+
+2. Unzip all the zip files from that directory, preserving the
+   directory structure.  For example:
 
 	pkunzip -d djdev202
   or
