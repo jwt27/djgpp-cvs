@@ -9,7 +9,7 @@
  */
 /* ECMA-48 commands implemented by Mark E. <snowball3@softhome.net>
    except color support ported from the version in GNU ls
-   by Eli Zaretskii and Richard Dawe.  */
+   by Eli Zaretskii.  */
 
 #include <libc/stubs.h>
 #include <go32.h>
