@@ -41,7 +41,7 @@ char *ansi_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "strncpy", "strpbrk", "strrchr", "strspn", "strstr", "strtod",
 "strtok", "strtol", "strtoul", "strxfrm", "system", "tan", "tanh",
 "time", "tmpfile", "tmpnam", "tolower", "toupper", "tzname", "ungetc",
-"wcstombs", "vfprintf", "vprintf", "vsprintf", "wcstombs", "wctomb", 0
+"vfprintf", "vprintf", "vsprintf", "wcstombs", "wctomb", 0
 };
 
 char *posix_fns[] = { "_exit", "access", "alarm", "cfgetispeed",
