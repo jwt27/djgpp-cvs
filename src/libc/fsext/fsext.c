@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -81,6 +82,9 @@ __FSEXT_alloc_fd(__FSEXT_Function *_function)
 static int
 grow_table(int _fd)
 {
+  /* Allocate table in chunks of chunk_sz */
+  const int chunk_sz = 1<<8; /* 256 */
+
   init();
 
   if (_fd < 0)
@@ -88,11 +92,20 @@ grow_table(int _fd)
 
   if (num_fds <= _fd)
   {
+    __FSEXT_entry *temp;
     int old_fds = num_fds, i;
-    num_fds = (_fd+256) & ~255;
-    fsext_list = (__FSEXT_entry *)realloc(fsext_list, num_fds * sizeof(__FSEXT_entry));
-    if (fsext_list == 0)
+
+    num_fds = (_fd+chunk_sz) & ~(chunk_sz-1);
+    temp = realloc(fsext_list, num_fds * sizeof(__FSEXT_entry));
+    if (temp == 0)
+    {
+      /* Keep the current fsext_list, so that we can tidy the FSEXTs
+	 up properly. */
+      num_fds = old_fds;
       return 1;
+    }
+
+    fsext_list = temp;
     for (i=old_fds; i<num_fds; i++)
     {
       fsext_list[i].function = 0;

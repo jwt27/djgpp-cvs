@@ -739,3 +739,8 @@ the debuggee.
 
 @findex fchmod
 The function @code{fchmod} was added.
+
+@cindex File System Extensions, and large numbers of file descriptors
+A bug was fixed in the File System Extensions mechanism that could be
+exposed in environments where it is possible to have large numbers of
+file descriptors (> 256) and low memory.
