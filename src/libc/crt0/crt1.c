@@ -35,7 +35,7 @@
    the static storage.  */
 int __bss_count = 1;
 
-char **environ;
+extern char **_environ;
 
 int __crt0_argc;
 char **__crt0_argv;
@@ -137,25 +137,25 @@ setup_environment(void)
     while (*cp) cp++; /* skip to NUL */
     cp++; /* skip to next character */
   } while (*cp); /* repeat until two NULs */
-  environ = (char **)malloc((env_count+1) * sizeof(char *));
-  if (environ == 0)
+  _environ = (char **)malloc((env_count+1) * sizeof(char *));
+  if (_environ == 0)
     return;
 
   cp = dos_environ;
   env_count = 0;
   do {
     /* putenv assumes each string is malloc'd */
-    environ[env_count] = (char *)malloc(strlen(cp)+1);
-    strcpy(environ[env_count], cp);
+    _environ[env_count] = (char *)malloc(strlen(cp)+1);
+    strcpy(_environ[env_count], cp);
     env_count++;
     while (*cp) cp++; /* skip to NUL */
     cp++; /* skip to next character */
   } while (*cp); /* repeat until two NULs */
-  environ[env_count] = 0;
+  _environ[env_count] = 0;
 
   /*
    * Call putenv so that its static counters are computed. If this
-   * is not done, programs that manipulate `environ' directly will crash,
+   * is not done, programs that manipulate `_environ' directly will crash,
    * when `DJGPP' is not set in the environment.
    */
   putenv(unconst("", char *));
@@ -231,6 +231,6 @@ __crt1_startup(void)
   _crt0_init_mcount();
   __main();
   errno = 0;	/* ANSI says errno should be zero at program startup */
-  exit(main(__crt0_argc, __crt0_argv, environ));
+  exit(main(__crt0_argc, __crt0_argv, _environ));
 }
 

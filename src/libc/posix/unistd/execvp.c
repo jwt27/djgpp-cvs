@@ -3,9 +3,9 @@
 #include <unistd.h>
 #include <process.h>
 
-extern char *const *environ;
+extern char *const *_environ;
 
 int execvp(const char *path, char * const argv[])
 {
-  return spawnvpe(P_OVERLAY, path, argv, environ);
+  return spawnvpe(P_OVERLAY, path, argv, _environ);
 }

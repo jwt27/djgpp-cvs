@@ -11,13 +11,13 @@
 
 /*
 
-   This routine assumes that the environ array and all strings it
+   This routine assumes that the _environ array and all strings it
    points to were malloc'd.  Nobody else should modify the environment
    except crt1.c
 
 */
 
-extern char **environ;
+extern char **_environ;
 static char **prev_environ = NULL; /* to know when it's safe to call `free' */
 static int ecount = -1;
 static int emax = -1;
@@ -49,14 +49,14 @@ putenv(char *val)
   /* Force recomputation of the static counters.
 
      The second condition of the next if clause covers the case that
-     somebody pointed environ to another array, which invalidates
+     somebody pointed _environ to another array, which invalidates
      `ecount' and `emax'.  This can be used to change the environment
      to something entirely different, or to effectively discard it
      altogether.  GNU `env' from Sh-utils does just that.  */
   if (putenv_bss_count != __bss_count
-      || environ       != prev_environ)
+      || _environ      != prev_environ)
   {
-    for (ecount=0; environ[ecount]; ecount++);
+    for (ecount=0; _environ[ecount]; ecount++);
     emax = ecount;
     /* Bump the count to a value no function has yet seen,
        even if they were dumped with us.  */
@@ -64,29 +64,29 @@ putenv(char *val)
     if (putenv_bss_count != __bss_count)
     {
       putenv_bss_count = __bss_count;
-      prev_environ = environ;	/* it's malloced by crt1.c */
+      prev_environ = _environ;	/* it's malloced by crt1.c */
     }
   }
 
-  for (eindex=0; environ[eindex]; eindex++)
-    if (strncmp(environ[eindex], val, nlen) == 0
-	&& (epos || environ[eindex][nlen] == '='))
+  for (eindex=0; _environ[eindex]; eindex++)
+    if (strncmp(_environ[eindex], val, nlen) == 0
+	&& (epos || _environ[eindex][nlen] == '='))
     {
-      char *oval = environ[eindex];
+      char *oval = _environ[eindex];
       int olen = strlen(oval);
 
       if (val[nlen] == 0 && !epos) /* delete the entry */
       {
 	free(oval);
-	environ[eindex] = environ[ecount-1];
-	environ[ecount-1] = 0;
+	_environ[eindex] = _environ[ecount-1];
+	_environ[ecount-1] = 0;
 	ecount--;
 	__environ_changed++;
 	return 0;
       }
 
       /* change existing entry */
-      if (strcmp(environ[eindex]+nlen, val+nlen) == 0)
+      if (strcmp(_environ[eindex]+nlen, val+nlen) == 0)
 	return 0; /* they're the same */
 
       /* If new is the same length as old, reuse the same
@@ -95,19 +95,19 @@ putenv(char *val)
       if (vlen != olen)
       {
 	if (vlen > olen)
-	  environ[eindex] = (char *)malloc(vlen+1);
+	  _environ[eindex] = (char *)malloc(vlen+1);
 	else	/* vlen < olen */
-	  environ[eindex] = (char *)realloc(oval, vlen+1);
-	if (environ[eindex] == 0)
+	  _environ[eindex] = (char *)realloc(oval, vlen+1);
+	if (_environ[eindex] == 0)
 	{
-	  environ[eindex] = oval;
+	  _environ[eindex] = oval;
 	  errno = ENOMEM;
 	  return -1;
 	}
 	if (vlen > olen)
 	  free(oval);
       }
-      strcpy(environ[eindex], val);
+      strcpy(_environ[eindex], val);
       __environ_changed++;
       return 0;
     }
@@ -127,25 +127,25 @@ putenv(char *val)
       errno = ENOMEM;
       return -1;
     }
-    memcpy(enew, environ, ecount * sizeof(char *));
-    /* If somebody set environ to another array, we can't
+    memcpy(enew, _environ, ecount * sizeof(char *));
+    /* If somebody set _environ to another array, we can't
        safely free it.  Better leak memory than crash.  */
-    if (environ == prev_environ)
-      free(environ);
-    environ = enew;
-    prev_environ = environ;
+    if (_environ == prev_environ)
+      free(_environ);
+    _environ = enew;
+    prev_environ = _environ;
   }
 
-  environ[ecount] = (char *)malloc(vlen+1);
-  if (environ[ecount] == 0)
+  _environ[ecount] = (char *)malloc(vlen+1);
+  if (_environ[ecount] == 0)
   {
     errno = ENOMEM;
     return -1;
   }
-  strcpy(environ[ecount], val);
+  strcpy(_environ[ecount], val);
 
   ecount++;
-  environ[ecount] = 0;
+  _environ[ecount] = 0;
 
   __environ_changed++;
 

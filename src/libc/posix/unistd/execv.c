@@ -3,9 +3,9 @@
 #include <unistd.h>
 #include <process.h>
 
-extern char * const *environ;
+extern char * const *_environ;
 
 int execv(const char *path, char * const *argv)
 {
-  return spawnve(P_OVERLAY, path, argv, environ);
+  return spawnve(P_OVERLAY, path, argv, _environ);
 }

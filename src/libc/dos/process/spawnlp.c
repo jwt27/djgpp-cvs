@@ -4,10 +4,10 @@
 #include <libc/unconst.h>
 #include <process.h>
 
-extern char **environ;
+extern char **_environ;
 
 int spawnlp(int mode, const char *path, const char *argv0, ...)
 {
   return spawnvpe(mode, path, unconst(&argv0,char * const *),
-                              (char * const *)environ);
+                              (char * const *)_environ);
 }

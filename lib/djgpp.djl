@@ -19,6 +19,9 @@ SECTIONS
     djgpp_first_dtor = . ;
     *(.dtor)
     djgpp_last_dtor = . ;
+    __environ = . ;
+    PROVIDE(_environ = .)
+    LONG(0)
     *(.data)
     *(.data.*)
     *(.gnu.linkonce.d*)

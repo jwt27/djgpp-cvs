@@ -34,7 +34,7 @@
 /* Maximum length of the command we can pass through CMDLINE=.  */
 #define CMDLINE_MAX  1023
 
-extern char **environ;
+extern char **_environ;
 
 int __dosexec_in_system = 0;
 
@@ -1167,9 +1167,9 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
     if (strncmp(envp[i], "COMSPEC=", 8) == 0)
       comspec = envp[i]+8;
   if (!comspec)
-    for (i=0; environ[i]; i++)
-      if (strncmp(environ[i], "COMSPEC=", 8) == 0)
-        comspec = environ[i]+8;
+    for (i=0; _environ[i]; i++)
+      if (strncmp(_environ[i], "COMSPEC=", 8) == 0)
+        comspec = _environ[i]+8;
   if (!comspec)
     comspec = "c:\\command.com";
 
@@ -1535,7 +1535,7 @@ int __djgpp_spawn(int mode, const char *path, char *const argv[],
 
   /* Set defaults for the environment and search method.  */
   if (envpp == NULL)
-    envpp = environ;
+    envpp = _environ;
 
   if (flags == 0)
     flags |= SPAWN_EXTENSION_SRCH;

@@ -6,13 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern char **environ;
+extern char **_environ;
 
 int
 unsetenv(const char *name)
 {
   /* No environment == success */
-  if (environ == 0)
+  if (_environ == 0)
     return 0;
 
   /* Check for the failure conditions */

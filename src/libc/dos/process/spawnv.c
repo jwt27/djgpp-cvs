@@ -2,9 +2,9 @@
 #include <libc/stubs.h>
 #include <process.h>
 
-extern char **environ;
+extern char **_environ;
 
 int spawnv(int mode, const char *path, char *const argv[])
 {
-  return spawnve(mode, path, (char * const *)argv, environ);
+  return spawnve(mode, path, (char * const *)argv, _environ);
 }

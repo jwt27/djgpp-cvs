@@ -23,7 +23,7 @@
 #include <libc/unconst.h>
 #include <libc/file.h> /* for fileno() */
 
-extern char **environ;
+extern char **_environ;
 #define alloca __builtin_alloca
 
 typedef enum {
@@ -92,7 +92,7 @@ _shell_command (const char *prog, const char *cmdline)
   {
     /* Special case: zero or empty command line means just invoke
        the command interpreter and let the user type ``exit''.  */
-    return _dos_exec (shell, "", environ, 0);
+    return _dos_exec (shell, "", _environ, 0);
   }
   else if (_is_dos_shell (shell))
   {
@@ -170,11 +170,11 @@ _shell_command (const char *prog, const char *cmdline)
 	  return emiterror ("Command line too long.", 0);
 	}
 	else
-	  return _dos_exec(shell, cmd_tail, environ, cmdline_var);
+	  return _dos_exec(shell, cmd_tail, _environ, cmdline_var);
       }
     }
     else
-      return _dos_exec (shell, cmd_tail, environ, 0);
+      return _dos_exec (shell, cmd_tail, _environ, 0);
   }
   else
   {
@@ -209,7 +209,7 @@ _shell_command (const char *prog, const char *cmdline)
       fclose (respf);
       strcpy (cmd_tail, " ");
       strcat (cmd_tail, atfile);
-      retval = _dos_exec (shell, cmd_tail, environ, 0);
+      retval = _dos_exec (shell, cmd_tail, _environ, 0);
       remove (atfile);
       return retval;
     }
@@ -235,7 +235,7 @@ plainsystem(const char *prog, char *args)
   char found_at[FILENAME_MAX];
   int e = errno;
 
-  if (__dosexec_find_on_path (prog, environ, found_at))
+  if (__dosexec_find_on_path (prog, _environ, found_at))
   {
     char **pargv, **this_arg;
     int    pargc = 2;		/* PROG is one, terminating 0 is another */
@@ -250,7 +250,7 @@ plainsystem(const char *prog, char *args)
 	return emiterror ("Command line too long.", 0);
       }
 
-      return _dos_exec (found_at, args, environ, 0);
+      return _dos_exec (found_at, args, _environ, 0);
     }
   
     /* Pass 1: how many arguments do we have?  */
@@ -282,7 +282,7 @@ plainsystem(const char *prog, char *args)
     }
     *this_arg = 0;
 
-    return __spawnve(P_WAIT, found_at, pargv, (char * const *)environ);
+    return __spawnve(P_WAIT, found_at, pargv, (char * const *)_environ);
   }
   else
   {

@@ -4,9 +4,9 @@
 #include <libc/unconst.h>
 #include <process.h>
 
-extern char **environ;
+extern char **_environ;
 
 int spawnl(int mode, const char *path, const char *argv0, ...)
 {
-  return spawnve(mode, path, unconst(&argv0,char * const *), environ);
+  return spawnve(mode, path, unconst(&argv0,char * const *), _environ);
 }

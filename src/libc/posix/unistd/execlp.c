@@ -6,9 +6,9 @@
 #include <libc/dosexec.h>
 #include <libc/unconst.h>
 
-extern char * const *environ;
+extern char * const *_environ;
 
 int execlp(const char *path, const char *argv0, ...)
 {
-  return spawnvpe(P_OVERLAY, path, unconst(&argv0,char * const *), environ);
+  return spawnvpe(P_OVERLAY, path, unconst(&argv0,char * const *), _environ);
 }

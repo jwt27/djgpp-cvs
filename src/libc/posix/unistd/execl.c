@@ -5,9 +5,9 @@
 #include <process.h>
 #include <libc/unconst.h>
 
-extern char *const *environ;
+extern char *const *_environ;
 
 int execl(const char *path, const char *argv0, ...)
 {
-  return spawnve(P_OVERLAY, path, unconst(&argv0,char *const*), environ);
+  return spawnve(P_OVERLAY, path, unconst(&argv0,char *const*), _environ);
 }
