@@ -102,22 +102,22 @@ FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
       goto error;
 
     /* redirect stdout */
-    if (!(l1->fp = freopen(temp_name, "wb", stdout)))
+    if (!freopen(temp_name, "wb", stdout))
       goto error;
 
     /* make sure file is removed on abnormal exit */
-    l1->fp->_flag |= _IORMONCL;
-    l1->fp->_name_to_remove = temp_name;
+    stdout->_flag |= _IORMONCL;
+    stdout->_name_to_remove = temp_name;
 
     /* execute command */
     l1->exit_status = system(cm);
 
-    /* don't remove file while closing */
-    l1->fp->_flag &= ~_IORMONCL;
-    l1->fp->_name_to_remove = NULL;
+    /* don't remove file */
+    stdout->_flag &= ~_IORMONCL;
+    stdout->_name_to_remove = NULL;
 
-    /* close file */
-    fclose(l1->fp);
+    /* flush file just in case */
+    fflush(stdout);
 
     /* reopen real stdout */
     if (dup2(fd, fileno(stdout)) == -1)
@@ -205,17 +205,25 @@ int pclose(FILE *pp)
       goto exit;
 
     /* redirect stdin */
-    if (!(l1->fp = freopen(temp_name, "rb", stdin)))
+    if (!freopen(temp_name, "rb", stdin))
       goto exit;
 
     /* make sure file is removed on abnormal exit */
-    l1->fp->_flag |= _IORMONCL;
-    l1->fp->_name_to_remove = temp_name;
+    stdin->_flag |= _IORMONCL;
+    stdin->_name_to_remove = temp_name;
 
     /* execute command */
     retval = system(l1->command);
 
-    /* reopen stdin */
+    /* don't remove file */
+    stdin->_flag &= ~_IORMONCL;
+    stdin->_name_to_remove = NULL;
+
+    /* close and remove file */
+    close(fileno(stdin));
+    remove(temp_name);
+
+    /* reopen real stdin */
     if (dup2(fd, fileno(stdin)) == -1)
     {
       retval = -1;
@@ -227,15 +235,17 @@ int pclose(FILE *pp)
   }
   /* if pipe was opened to read, return the exit status we saved */
   else if (l1->mode[0] == 'r')
+  {
     retval = l1->exit_status;
+
+    /* close and remove file */
+    fclose(l1->fp);
+  }
   else
     /* invalid mode */
     retval = -1;
 
  exit:
-
-  /* close and remove file */
-  fclose(l1->fp);
 
   if (l1->command)
     free(l1->command);
