@@ -121,9 +121,12 @@ a @sc{coff} image.  As a result, the @code{symify} utility should no
 longer crash in rare cases, especially when invoked on large programs.
 
 @cindex lib/djgpp.djl@r{, polluting the namespace unnecessarily}
+@cindex linker script@r{, polluting the namespace unnecessarily}
+@cindex etext{, polluting the namespace unnecessarily}
+@cindex edata{, polluting the namespace unnecessarily}
+@cindex end{, polluting the namespace unnecessarily}
 @cindex profiling@r{, polluting the namespace unnecessarily}
 The linker script @code{lib/djgpp.djl} corrected to not unnecessarily
 pollute the name space with the symbols @code{etext}, @code{edata} and
 @code{end}.  The profiling code was also changed to not pollute the name
 space with @code{etext}.
-
