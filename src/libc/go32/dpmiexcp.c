@@ -624,13 +624,22 @@ void __maybe_fix_w2k_ntvdm_bug(void)
 {
   if (_osmajor == 5 && _get_dos_version(1) == 0x532) /* Windows NT, 2000 or XP? */
   {
+   if(_stubinfo->size < STUBINFO_END)	/* V2load'ed image, stubinfo PSP bad */
+
     /* Protected mode call to SetPSP - uses BX from GetPSP (0x51) */
     asm volatile("movb $0x51, %%ah                        \n\
                   int  $0x21                              \n\
                   movb $0x50, %%ah                        \n\
                   int  $0x21                              "
+                  : : : "ax", "bx" );             /* output, input, regs */
+   else
+
+    /* Protected mode call to SetPSP - may destroy RM PSP if not extended */
+    asm volatile("movw %0, %%bx                           \n\
+                  movb $0x50, %%ah                        \n\
+                  int  $0x21                              "
                   :                               /* output */
-                  :                               /* input */
+                  : "g" (_stubinfo->psp_selector) /* input */
                   : "ax", "bx" );                 /* regs */
   }
 }
