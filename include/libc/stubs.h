@@ -1,3 +1,4 @@
+/* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_libc_stubs_h__
@@ -40,7 +41,9 @@ extern "C" {
 #define crlf2nl __crlf2nl
 #define dosmemget __dosmemget
 #define dosmemput __dosmemput
+#define ecvtbuf __ecvtbuf
 #define fchown __fchown
+#define fcvtbuf __fcvtbuf
 #define filelength __filelength
 #define findfirst __findfirst
 #define findnext __findnext
@@ -65,8 +68,10 @@ extern "C" {
 #define spawnvpe __spawnvpe
 #define statfs __statfs
 #define stricmp __stricmp
+#define strnicmp __strnicmp
 #define sync __sync
 #define tell __tell
+#define tzsetwall __tzsetwall
 #define uclock __uclock
 
 #endif /* !_POSIX_SOURCE */
