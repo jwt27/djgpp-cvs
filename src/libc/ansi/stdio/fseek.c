@@ -1,3 +1,4 @@
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -11,6 +12,9 @@ int
 fseek(FILE *f, long offset, int ptrname)
 {
   long p = -1;			/* can't happen? */
+
+  /* See comment in filbuf.c */
+  f->_fillsize = 512;
 
   f->_flag &= ~_IOEOF;
   if (f->_flag & _IOREAD)
