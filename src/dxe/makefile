@@ -1,20 +1,22 @@
+# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
-BIN=../../bin
-CFLAGS=-O2 -nostdinc -I../../include
-LIBRARY_PATH := ../../lib
-PATH := $(PATH);$(BIN)
-export
 
-all :: \
+TOP=.
+include $(TOP)/../makefile.inc
+
+all :: native \
 	$(BIN)/dxegen.exe \
 	$E
 
-$(BIN)/% : %
-	cp $< $@
+native :: \
+	$(HOSTBIN)/dxegen.exe \
+	$E
 
-dxegen.exe : dxegen
-	strip dxegen
-	stubify dxegen
+$(BIN)/dxegen.exe : dxegen.c $(L)
+	$(XLGCC) -s dxegen.c -o $@
+
+$(HOSTBIN)/dxegen.exe : dxegen.c
+	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" dxegen.c -o $@
 
 clean ::
-	-rm -f dxegen *.exe *.o
+	@-$(MISC) rm *.o $(HOSTBIN)/dxegen.exe

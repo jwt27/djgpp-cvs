@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -105,7 +107,8 @@ glob_dirs(const char *rest, char *epathbuf, int first, /* rest is ptr to null or
   {
     char short_name[13];
 
-    if ((ff.ff_name[0] != '.') && (ff.ff_attrib & FA_DIREC))
+    if ((ff.ff_attrib & FA_DIREC)
+	&& (strcmp(ff.ff_name, ".") && strcmp(ff.ff_name, "..")))
     {
       int i;
       char *tp;
@@ -287,7 +290,8 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
   {
     int i;
     char fshort[13];
-    if (ff.ff_name[0] != '.')
+    if ((ff.ff_attrib & FA_DIREC) == 0
+	|| (strcmp(ff.ff_name, ".") && strcmp(ff.ff_name, "..")))
     {
       /* Long filenames are never lower-cased!  */
       if (lower
@@ -333,7 +337,7 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
 static int
 str_compare(const void *va, const void *vb)
 {
-  return strcmp(*(char * const *)va, *(char * const *)vb);
+  return strcmp(*(const char * const *)va, *(const char * const *)vb);
 }
 
 int
@@ -352,6 +356,13 @@ glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _
   preserve_case = _preserve_fncase();
   slash = '/';
 
+  if (!(_flags & GLOB_APPEND)) 
+    {
+      _pglob->gl_pathc = 0;
+      _pglob->gl_pathv = NULL;
+      if (!(flags & GLOB_DOOFFS))
+        _pglob->gl_offs = 0;
+    }
   if (glob2(_pattern, pathbuf, preserve_case ? 0 : 1, preserve_case ? 0 : 1) == GLOB_NOSPACE)
     {
       return GLOB_NOSPACE;

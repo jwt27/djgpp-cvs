@@ -1,3 +1,5 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -11,11 +13,14 @@
 #include <libc/farptrgs.h>
 #include <conio.h>
 #include <libc/bss.h>
+#include <libc/unconst.h>
 
 int _wscroll = 1;
 
 int directvideo = 1;  /* We ignore this */
 
+static void refreshvirtualscreen(int c, int r, int count);
+static void mayrefreshline(int c, int r, int *srow, int *scol, int *ecol);
 static void setcursor(unsigned int shape);
 static int getvideomode(void);
 static void bell(void);
@@ -27,6 +32,8 @@ static int _scan_ungetch(int c, FILE *fp);
 #define DBGGTINFO   0
 
 static unsigned ScreenAddress = 0xb8000UL; /* initialize just in case */
+static unsigned short ScreenVirtualSegment = 0; /* 0: non DOS/V */
+static unsigned short ScreenVirtualOffset = 0;  /* !0: DOS/V virtual VRAM address */
 static struct text_info txinfo;
 static int ungot_char;
 static int char_avail = 0;
@@ -39,6 +46,28 @@ static int oldattrib =  -1;         /* text attribute before program start */
 static int conio_count = -1;
 
 #define VIDADDR(r,c) (ScreenAddress + 2*(((r) * txinfo.screenwidth) + (c)))
+#define VOFFSET(r,c) (ScreenVirtualOffset + 2*(((r) * txinfo.screenwidth) + (c)))
+
+static void
+refreshvirtualscreen(int c, int r, int count)
+{
+  __dpmi_regs regs;
+
+  regs.x.es = ScreenVirtualSegment;
+  regs.x.di = VOFFSET(r, c);
+  regs.h.ah = 0xff;	/* Refresh Screen */
+  regs.x.cx = count;	/* number of characters */
+  __dpmi_int(0x10, &regs);
+}
+
+static void
+mayrefreshline(int c, int r, int *srow, int *scol, int *ecol)
+{
+  if (*ecol != *scol)
+    refreshvirtualscreen(*scol, *srow, *ecol-*scol);
+  *srow = r;
+  *scol = *ecol = c;
+}
 
 int
 puttext(int c, int r, int c2, int r2, void *buf)
@@ -50,6 +79,8 @@ puttext(int c, int r, int c2, int r2, void *buf)
   {
     dosmemput(cbuf, (c2-c+1)*2, VIDADDR(r, c));
     cbuf += c2-c+1;
+    if (ScreenVirtualSegment != 0)
+      refreshvirtualscreen(c, r, c2-c+1);
   }
   return 1;
 }
@@ -256,6 +287,8 @@ fillrow(int row, int left, int right, int fill)
   for (col = left; col <= right; col++)
     filler[col-left] = fill;
   dosmemput(filler, (right-left+1)*2, VIDADDR(row, left));
+  if (ScreenVirtualSegment != 0)
+    refreshvirtualscreen(left, row, right-left+1);
 }
 
 void
@@ -266,8 +299,12 @@ clrscr(void)
   for (col=0; col < txinfo.winright - txinfo.winleft + 1; col++)
     filler[col] = ' ' | (ScreenAttrib << 8);
   for (row=txinfo.wintop-1; row < txinfo.winbottom; row++)
-    dosmemput(filler, (txinfo.winright - txinfo.winleft + 1)*2,
-     VIDADDR(row, txinfo.winleft - 1));
+    {
+      dosmemput(filler, (txinfo.winright - txinfo.winleft + 1)*2,
+		VIDADDR(row, txinfo.winleft - 1));
+      if (ScreenVirtualSegment != 0)
+	refreshvirtualscreen(txinfo.winleft - 1, row, txinfo.winright - txinfo.winleft + 1);
+    }
   gotoxy(1, 1);
 }
 
@@ -304,6 +341,8 @@ putch(int c)
     bell();
   else {
     ScreenPutChar(c, ScreenAttrib, col, row);
+    if (ScreenVirtualSegment != 0)
+      refreshvirtualscreen(col, row, 1);
     col++;
   }
   
@@ -436,6 +475,8 @@ insline(void)
     movedata(_dos_ds, VIDADDR(bot-1, left),
 	     _dos_ds, VIDADDR(bot, left),
 	     nbytes);
+    if (ScreenVirtualSegment != 0)
+      refreshvirtualscreen(left, bot-1, nbytes/2);
     bot--;
   }
   fillrow(row,left,right,fill);
@@ -457,6 +498,8 @@ delline(void)
     movedata(_dos_ds, VIDADDR(row+1, left),
 	     _dos_ds, VIDADDR(row, left),
 	     nbytes);
+    if (ScreenVirtualSegment != 0)
+      refreshvirtualscreen(left, row, nbytes/2);
     row++;
   }
   fillrow(bot,left,right,fill);
@@ -485,8 +528,15 @@ cputs(const char *s)
   const unsigned char *ss = (const unsigned char *)s;
   short *viaddr;
   short sa = ScreenAttrib << 8;
+  int srow, scol, ecol;
   ScreenGetCursor(&row, &col);
   viaddr = (short *)VIDADDR(row,col);
+  /*
+   * DOS/V: simply it refreshes screen between scol and ecol when cursor moving.
+   */
+  srow = row;
+  scol = ecol = col;
+
   /* 
    * Instead of just calling putch; we do everything by hand here,
    * This is much faster. We don't move the cursor after each character,
@@ -501,11 +551,15 @@ cputs(const char *s)
     {
       row++;
       viaddr += txinfo.screenwidth;
+      if (ScreenVirtualSegment != 0)
+	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
     else if (c == '\r')
     {
       col = txinfo.winleft - 1;
       viaddr = (short *)VIDADDR(row,col);
+      if (ScreenVirtualSegment != 0)
+	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
     else if (c == '\b')
     {
@@ -525,6 +579,8 @@ cputs(const char *s)
 	col = txinfo.winright-1;
 	viaddr = (short *)VIDADDR(row,col);
       }
+      if (ScreenVirtualSegment != 0)
+	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
     else if (c == 0x07)
       bell();
@@ -533,6 +589,7 @@ cputs(const char *s)
       dosmemput(&q, 2, (int)viaddr);
       viaddr++;
       col++;
+      ecol++;
     }
       
     /* now, readjust the window     */
@@ -541,19 +598,28 @@ cputs(const char *s)
       col = txinfo.winleft - 1;
       row++;
       viaddr = (short *)VIDADDR(row,col);
+      if (ScreenVirtualSegment != 0)
+	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
       
     if (row >= txinfo.winbottom) {
+      /* refresh before scroll */
+      if (ScreenVirtualSegment != 0)
+	mayrefreshline(col, row, &srow, &scol, &ecol);
       if (_wscroll)
       {
 	ScreenSetCursor(txinfo.wintop-1,0); /* goto first line in window */
 	delline();		/* and delete it */
       }
       row--;
+      srow--;
       viaddr -= txinfo.screenwidth;
     }
   }
   
+  /* refresh the rest of cols */
+  if (ScreenVirtualSegment != 0)
+    mayrefreshline(col, row, &srow, &scol, &ecol);
   ScreenSetCursor(row, col);
   txinfo.cury = row - txinfo.wintop + 2;
   txinfo.curx = col - txinfo.winleft + 2;
@@ -640,7 +706,7 @@ int
 cscanf(const char *fmt, ...)
 {
   return(_doscan_low(NULL, _scan_getche, _scan_ungetch, 
-		     fmt, (void **)((&fmt)+1)));
+		     fmt, (void **) unconst( ((&fmt)+1), char ** )));
 }
 
 int
@@ -799,7 +865,6 @@ set_scan_lines_and_font(int scan_lines, int font)
 static void
 maybe_create_8x10_font(void)
 {
-  unsigned char *p;
   unsigned long src, dest, i, j;
 
   if (font_seg == -1)
@@ -814,14 +879,6 @@ maybe_create_8x10_font(void)
         return;
 
       /* Get the pointer to the 8x8 font table.  */
-      p = (unsigned char *)malloc(2560); /* 256 chars X 8x10 pixels */
-      if (p == (unsigned char *)0)
-        {
-          errno = ENOMEM;
-          __dpmi_free_dos_memory(buf_pm_sel);
-          font_seg = -1;
-          return;
-        }
       regs.h.bh = 3;
       regs.x.ax = 0x1130;
       __dpmi_int(0x10, &regs);
@@ -965,12 +1022,15 @@ intensevideo(void)
 void
 gppconio_init(void)
 {
+  __dpmi_regs regs;
+
   /* Force initialization in restarted programs (emacs).  */
   if (conio_count != __bss_count)
     {
       conio_count = __bss_count;
       oldattrib = -1;
       last_mode = 0xffff;
+      font_seg = -1;
     }
 
   (void)isEGA();    /* sets the global ADAPTER_TYPE */
@@ -984,6 +1044,15 @@ gppconio_init(void)
     ScreenAddress = 0xb0000UL;
   else
     ScreenAddress = 0xb8000UL;
+
+  regs.x.es = regs.x.di = 0;	/* Dummy for checking */
+  regs.h.ah = 0xfe;		/* Get Video Buffer */
+  __dpmi_int(0x10, &regs);
+  ScreenVirtualSegment = regs.x.es;
+  ScreenVirtualOffset = regs.x.di;
+  if (ScreenVirtualSegment != 0)
+    ScreenAddress = (ScreenVirtualSegment << 4UL) + ScreenVirtualOffset;
+  ScreenPrimary = ScreenAddress;
 
 #if 0
   /* Why should gppconio_init() restore OLDATTRIB?  I think it

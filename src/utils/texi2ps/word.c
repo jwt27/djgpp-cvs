@@ -79,7 +79,6 @@ static int para_open = 0;
 static int pending_whitespace = 0;
 static int ps_col = 0;
 static int saw_indent = 0;
-static int symbol_font = 0;
 static int wp = 0;
 
 int prevailing_indent = 0;
@@ -159,7 +158,6 @@ void para_set_indent(int amount)
 
 static void check_eop()
 {
-  int i;
   WordCache *wc;
   Word *we, *wet;
   if (y < 0 || page_flushing)
@@ -236,7 +234,6 @@ static void w(unsigned char *s)
 {
   WordCache *wc;
   Word *we;
-  char psbuf[100];
   float width = 0;
   int i;
   bol_size = 0;
@@ -274,9 +271,14 @@ static void w(unsigned char *s)
   we->x = x+MARGIN;
   we->y = y+MARGIN + baseline_offset;
   
-/*  psputw(s);
-  sprintf(psbuf, "%d %d m", x+MARGIN, y+MARGIN);
-  psprintf(psbuf); */
+#if 0
+  {
+    char psbuf[100];
+    psputw(s);
+    sprintf(psbuf, "%d %d m", x+MARGIN, y+MARGIN);
+    psprintf(psbuf);
+  }
+#endif
 
   need_lb = 1;
   bol_size = 0;

@@ -216,7 +216,7 @@ take_name(char *arg)
   char *p = arg;
   int quote = 0;
 
-  while (quote || *p && *p != ' ' && *p != '\t')
+  while (quote || (*p && *p != ' ' && *p != '\t'))
     {
       if (quote == 0 && (*p == '"' || *p == '\''))
         quote = *p;

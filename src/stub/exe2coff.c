@@ -1,3 +1,4 @@
+/* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,6 +6,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <io.h>
+#include <unistd.h>
+#include <ctype.h>
 
 
 static void
@@ -15,6 +18,16 @@ exe2aout(char *fname)
   int ofile;
   char buf[4096];
   int rbytes;
+  char *dot = strrchr(fname, '.');
+  if (!dot || strlen(dot) != 4
+      || tolower(dot[1]) != 'e'
+      || tolower(dot[2]) != 'x'
+      || tolower(dot[3]) != 'e')
+  {
+    fprintf(stderr, "%s: Arguments MUST end with a .exe extension\n", fname);
+    return;
+  }
+
   ifile = open(fname, O_RDONLY|O_BINARY);
   if (ifile < 0)
   {
@@ -32,18 +45,18 @@ exe2aout(char *fname)
     read(ifile, header, sizeof(header));
     if ((header[0] != 0x010b) && (header[0] != 0x014c))
     {
-      fprintf(stderr, "%s does not have an a.out file appended to it\n", fname);
-      exit(1);
+      fprintf(stderr, "`%s' does not have a COFF/AOUT program appended to it\n", fname);
+      return;
     }
     lseek(ifile, header_offset, 0);
   }
   else
   {
-    fprintf(stderr, "%s is not an .EXE file\n", fname);
-    exit(1);
+    fprintf(stderr, "`%s' is not an .EXE file\n", fname);
+    return;
   }
   
-  *strrchr(fname, '.') = 0;
+  *dot = 0;
   ofile = open(fname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0666);
   if (ofile < 0)
   {
@@ -61,7 +74,7 @@ exe2aout(char *fname)
     }
     if (wb < rbytes)
     {
-      fprintf(stderr, "%s: disk full\n", fname);
+      fprintf(stderr, "`%s': disk full\n", fname);
       exit(1);
     }
   }
