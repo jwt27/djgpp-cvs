@@ -1,3 +1,6 @@
+# Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
+
+include $(TOP)/../makefile.def
 
 .SUFFIXES: .o .i .c .cc .s
 
@@ -31,7 +34,19 @@ L = ${LIB}/libc.a
 EXES := $(addsuffix .exe, $(basename $(SRC)))
 ERRS := $(addsuffix .err, $(basename $(SRC)))
 
-LINK = ld $(LDFLAGS) $^ -o $@ ${LIB}/libgcc.a -T ${TOP}/../../lib/djgpp.djl
+ifeq ($(LIBGCCA),)
+LIBGCCA := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=libgcc.a)
+LIBGCCA := $(subst \,/,$(LIBGCCA))
+export LIBGCCA
+endif
+
+ifeq ($(DJGPP_DJL),)
+DJGPP_DJL := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=djgpp.djl)
+DJGPP_DJL := $(subst \,/,$(DJGPP_DJL))
+export DJGPP_DJL
+endif
+
+LINK = ld $(LDFLAGS) $^ -o $@ $(LIBGCCA) -T $(DJGPP_DJL)
 EXE = @${TOP}/../../bin/stubify.exe $@
 
 .PRECIOUS: %.exe %.out %.err
