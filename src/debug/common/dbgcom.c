@@ -1398,7 +1398,8 @@ void edi_init(jmp_buf start_state)
 
   app_ds = a_tss.tss_ds;
   app_cs = a_tss.tss_cs;
-  edi.app_base = 0;
+  if (__dpmi_get_segment_base_address(app_ds, &edi.app_base) == -1)
+    abort ();
   /* Save debugger's FPU state.  */
   asm ("fnsave %0" : :"m" (debugger_npx));
   /* Fill the debuggee's FPU state with the default values, taken from

@@ -706,7 +706,7 @@ activate_breakpoints (void)
 	bep->saved = 0;
 	edi.dr[7] |= ((bep->type + ((bep->length - 1) << 2)) << (16 + 4 * no)
 		      | (2 << (2 * no)));
-	edi.dr[no] = bep->addr + edi.app_base;
+	edi.dr[no] = bep->addr;
 	no++;
       }
 
@@ -718,7 +718,7 @@ activate_breakpoints (void)
 	{
 	  bep->saved = 0;
 	  edi.dr[7] |= ((BP_Code << (16 + 4 * no)) | (2 << (2 * no)));
-	  edi.dr[no] = bep->addr + edi.app_base;
+	  edi.dr[no] = bep->addr;
 	  no++;
 	  edi.dr[7] |= 0x00000300L;  /* For 386s we set GE & LE bits.  */
 	}
@@ -1136,7 +1136,7 @@ step (KIND_TYPE kind)
 	  {
 	    no = get_breakpoint (((edi.dr[7] >> (16 + 4 * b)) & 3),
 				 ((edi.dr[7] >> (18 + 4 * b)) & 3) + 1,
-				 edi.dr[b] - edi.app_base);
+				 edi.dr[b]);
 	    break;
 	  }
       if (no == -1)

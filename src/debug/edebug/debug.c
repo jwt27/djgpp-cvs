@@ -295,10 +295,10 @@ void debugger(void)
   int32 delta;
 
   syms_printwhy = 1;
-  dr0 = dr1 = dr2 = edi.app_base;
-  dr3 = syms_name2val("_main") + edi.app_base;
+  dr0 = dr1 = dr2 = 0;
+  dr3 = syms_name2val("_main");
   if (undefined_symbol)
-    dr3 = a_tss.tss_eip + edi.app_base;
+    dr3 = a_tss.tss_eip;
   can_longjmp = 1;
   setjmp(debugger_jmpbuf);
   rem_cmd = Zero;
@@ -356,7 +356,7 @@ void debugger(void)
           v = syms_name2val(buf);
           if (undefined_symbol)
             break;
-          dr3 = v + edi.app_base;
+          dr3 = v;
           dr7 |= 0xc0;
         }
         else
@@ -375,7 +375,7 @@ void debugger(void)
             tssprint(&a_tss);
         }
         print_reason();
-        dr3 = unassemble(a_tss.tss_eip, 1) + edi.app_base;
+        dr3 = unassemble(a_tss.tss_eip, 1);
         break;
 
       case STEP:
@@ -391,7 +391,7 @@ void debugger(void)
           run_child();
           dr7 = olddr7;
           q = print_reason();
-          dr3 = unassemble(a_tss.tss_eip, 1) + edi.app_base;
+          dr3 = unassemble(a_tss.tss_eip, 1);
           if ((a_tss.tss_irqn != 1) || q)
             break;
         }
@@ -415,7 +415,7 @@ void debugger(void)
           run_child();
           dr7 = olddr7;
           print_reason();
-          dr3 = unassemble(a_tss.tss_eip, 1) + edi.app_base;
+          dr3 = unassemble(a_tss.tss_eip, 1);
           if (a_tss.tss_irqn != 1)
             break;
         }
@@ -601,7 +601,7 @@ void debugger(void)
           vaddr = syms_name2val(buf2);
         if (undefined_symbol)
           break;
-        edi.dr[n] = vaddr + edi.app_base;
+        edi.dr[n] = vaddr;
         if (vaddr == 0)
           dr7 &= ~(2 << (n*2));
         else
@@ -612,12 +612,12 @@ void debugger(void)
         for (n=0; n<4; n++)
         {
           s = 1;
-          name = syms_val2name(edi.dr[n] - edi.app_base, &delta);
+          name = syms_val2name(edi.dr[n], &delta);
           printf("  dr%d  %s", n, name);
           if (delta)
             printf("+%#lx", delta);
           if (name[0] != '0')
-            printf(" (0x%lx)", edi.dr[n] - edi.app_base);
+            printf(" (0x%lx)", edi.dr[n]);
           if (!(dr7 & (3 << (n*2))))
             printf(" (disabled)");
           putchar('\n');
