@@ -77,6 +77,8 @@ int	fcntl(int _fildes, int _cmd, ...);
 #define O_NOLINK        0x4000
 #define O_NOFOLLOW      0x8000
 
+#define O_TEMPORARY	0x10000 /* Delete on close.  */
+
 #define SH_COMPAT	0x0000
 #define SH_DENYRW	0x0010
 #define SH_DENYWR	0x0020
