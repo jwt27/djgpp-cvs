@@ -836,3 +836,7 @@ to @code{getenv} which are not needed.
 
 @findex strtof
 The function @code{strtof} was added.
+
+@findex strlcat
+@findex strlcpy
+The functions @code{strlcat} and @code{strlcpy} were added.
