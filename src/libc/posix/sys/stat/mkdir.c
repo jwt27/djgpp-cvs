@@ -1,3 +1,4 @@
+/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -10,7 +11,9 @@
 #include <fcntl.h>
 #include <io.h>
 #include <dos.h>
+#include <stdio.h>
 #include <libc/dosio.h>
+#include <libc/symlink.h>
  
 int
 mkdir(const char *mydirname, mode_t mode)
@@ -18,8 +21,12 @@ mkdir(const char *mydirname, mode_t mode)
   __dpmi_regs r;
   int use_lfn = _USE_LFN;
   unsigned attr;
+  char dir_name[FILENAME_MAX];
 
-  _put_path(mydirname);
+  if (!__solve_symlinks(mydirname, dir_name))
+     return -1;
+  
+  _put_path(dir_name);
  
   if(use_lfn)
     r.x.ax = 0x7139;
@@ -56,12 +63,12 @@ mkdir(const char *mydirname, mode_t mode)
   }
 
   /* mkdir is stub'd, and we don't want to stub chmod also.  */
-  attr = _chmod(mydirname, 0, 0);
+  attr = _chmod(dir_name, 0, 0);
 
   /* Must clear the directory and volume bits, otherwise 214301 fails.
      Unused bits left alone (some network redirectors use them).  Only
      care about read-only attribute.  */
-  if (_chmod(mydirname, 1, (attr & 0xffe6) | ((mode & S_IWUSR) == 0)) == -1)
+  if (_chmod(dir_name, 1, (attr & 0xffe6) | ((mode & S_IWUSR) == 0)) == -1)
     return -1;
   return 0;
 }
