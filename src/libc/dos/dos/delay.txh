@@ -11,7 +11,12 @@ void delay(unsigned msec);
 
 This function causes the program to pause for @var{msec} milliseconds. 
 It uses the @code{int 15h} delay function to relinquish the CPU to other
-programs that might need it. 
+programs that might need it.
+
+Some operating systems that emulate DOS, such as OS/2 and Windows/NT,
+hang the DOS session when the @key{Pause} key is pressed during the call
+to @code{delay}.  Plain DOS and Windows 3.X and 9X are known to not have
+this bug.
 
 @subheading Return Value
 
