@@ -26,6 +26,14 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
       return 0;
    }
 
+   /* Handle root directories */
+   if ((__symlink_path[1] == '\0') && 
+      ((__symlink_path[0] == '/') || (__symlink_path[0] == '\\')))
+   {
+      strcpy(__real_path, __symlink_path);
+      return 1;
+   }
+
    strcpy(path_copy, __symlink_path);
    last_part = basename(path_copy);
    if (*last_part == '\0')
