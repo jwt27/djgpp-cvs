@@ -2,6 +2,8 @@
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <io.h>
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
@@ -11,14 +13,70 @@ int _rename(const char *old, const char *new)
   __dpmi_regs r;
   int olen    = strlen(old) + 1;
   int i;
+  int use_lfn = _USE_LFN;
+  char tempfile[FILENAME_MAX];
+  const char *orig = old;
+  int lfn_fd = -1;
 
   r.x.dx = __tb_offset;
   r.x.di = __tb_offset + olen;
   r.x.ds = r.x.es = __tb_segment;
 
+  if (use_lfn)
+  {
+    /* Windows 95 bug: for some filenames, when you rename
+       file -> file~ (as in Emacs, to leave a backup), the
+       short 8+3 alias doesn't change, which effectively
+       makes OLD and NEW the same file.  We must rename
+       through a temporary file to work around this.  */
+
+    char *pbase = 0, *p;
+    static char try_char[] = "abcdefghijklmnopqrstuvwxyz012345789";
+    int idx = sizeof(try_char)-1;
+
+    /* Generate a temporary name.  Can't use `tmpnam', since $TMPDIR
+       might point to another drive, which will fail the DOS call.  */
+    strcpy(tempfile, old);
+    for (p = tempfile; *p; p++)	/* ensure temporary is on the same drive */
+      if (*p == '/' || *p == '\\' || *p == ':')
+	pbase = p;
+    if (pbase)
+      pbase++;
+    else
+      pbase = tempfile;
+    strcpy(pbase, "X$$djren$$.$$temp$$");
+
+    do
+    {
+      if (idx <= 0)
+	return -1;
+      *pbase = try_char[--idx];
+    } while (_chmod(tempfile, 0) != -1);
+
+    r.x.ax = 0x7156;
+    _put_path2(tempfile, olen);
+    _put_path(old);
+    __dpmi_int(0x21, &r);
+    if (r.x.flags & 1)
+    {
+      errno = __doserr_to_errno(r.x.ax);
+      return -1;
+    }
+
+    /* Now create a file with the original name.  This will
+       ensure that NEW will always have a 8+3 alias
+       different from that of OLD.  (Seems to be required
+       when NameNumericTail in the Registry is set to 0.)  */
+    lfn_fd = _creat(old, 0);
+
+    olen = strlen(tempfile) + 1;
+    old  = tempfile;
+    r.x.di = __tb_offset + olen;
+  }
+
   for (i=0; i<2; i++)
   {
-    if(_USE_LFN)
+    if(use_lfn)
       r.x.ax = 0x7156;
     else
       r.h.ah = 0x56;
@@ -32,12 +90,49 @@ int _rename(const char *old, const char *new)
       else
       {
 	errno = __doserr_to_errno(r.x.ax);
+
+	/* Restore to original name if we renamed it to temporary.  */
+	if (use_lfn)
+	{
+	  if (lfn_fd != -1)
+	  {
+	    _close (lfn_fd);
+	    remove (orig);
+	  }
+	  _put_path2(orig, olen);
+	  _put_path(tempfile);
+	  r.x.ax = 0x7156;
+	  __dpmi_int(0x21, &r);
+	}
 	return -1;
       }
     }
     else
       break;
   }
+
+  /* Success.  Delete the file possibly created to work
+     around the Windows 95 bug.  */
+  if (lfn_fd != -1)
+    return (_close (lfn_fd) == 0) ? remove (orig) : -1;
   return 0;
 }
 
+#ifdef TEST
+
+#include <string.h>
+
+int main(int argc, char *argv[])
+{
+  if (argc > 2)
+    {
+      printf ("%s -> %s: ", argv[1], argv[2]);
+      if (_rename (argv[1], argv[2]))
+	printf ("%s\n", strerror (errno));
+      else
+	printf ("Done\n");
+    }
+  return 0;
+}
+
+#endif
