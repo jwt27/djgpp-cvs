@@ -29,11 +29,11 @@ following table lists the supported control functions the default
 characters which invoke those functions, and the default values for MIN
 and TIME parameters:
 
-@multitable {Index} {VERASE} {Delete previous character} {Backspase}
+@multitable {Index} {VERASE} {Delete previous character} {Backspace}
 @item Index @tab Name @tab Function @tab Default Value
 @item 1 @tab VEOF @tab Signal End-Of-Input @tab Ctrl-D
-@item 2 @tab VEOL @tab Erase till end of line @tab [Disabled]
-@item 3 @tab VERASE @tab Delete previous character @tab Backspase
+@item 2 @tab VEOL @tab Signal End-Of-Line @tab [Disabled]
+@item 3 @tab VERASE @tab Delete previous character @tab Backspace
 @item 4 @tab VINTR @tab Generate SIGINT @tab Ctrl-C
 @item 5 @tab VKILL @tab Erase current line @tab Ctrl-U
 @item 6 @tab VMIN @tab The MIN value @tab 1
@@ -44,10 +44,24 @@ and TIME parameters:
 @item 11 @tab VTIME @tab TIME value @tab 0
 @end multitable
 
+The special characters (like @code{VEOL}, @code{VKILL}, etc.) produce
+their effect only under the @dfn{canonical input processing}, that is,
+when the @code{ICANON} bit in the @code{c_lflag} member of @code{struct
+termios} (see below) is set.  If @code{ICANON} is @strong{not} set, all
+characters are processed as regular characters and returned to the
+caller; only the @code{VMIN} and @code{VTIME} parameters are meaningful
+in the @dfn{non-canonical processing} mode.
+
+The @code{VEOL} character can be used to signal end of line (and thus
+end of input in the canonical mode) in addition to the normal @kbd{RET}
+key.  In the non-canonical mode, input ends as soon as at least
+@code{VMIN} characters are received.
+
 Note that the values of @code{VMIN} and @code{VTIME} are currently
-ignored.  Other functions are supported (for console devices only),
-except that VSTOP and VSTART characters are not inserted to the input,
-but otherwise produce no effect.
+ignored; @code{termios} functions always work as if @code{VMIN} were 1
+and @code{VTIME} were zero.  Other parameters are supported (for console
+devices only), except that VSTOP and VSTART characters are not inserted
+to the input, but otherwise produce no effect.
 
 The @code{c_cflag} member of @code{struct termios} describes the
 hardware terminal control, as follows:
