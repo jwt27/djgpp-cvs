@@ -1,3 +1,5 @@
+include ../makefile.def
+
 %.o : %.cc
 	gcc -O2 -g -c $<
 
@@ -15,13 +17,13 @@ check.out : check.exe ../../lib/crt0.o ../../lib/libc.a
 	@nm -g ../../lib/crt0.o ../../lib/libc.a | check > check.out
 
 check.exe : check.o slist.o objs.o
-	gcc -o $@ $^
+	gcc -o $@ $^ $(LIBSTDCXX)
 
 compare.out : compare oldlibc.arm newlibc.arm
 	@compare oldlibc.arm newlibc.arm > compare.out
 
 compare : compare.o slist.o
-	gcc -o $@ $^
+	gcc -o $@ $^ $(LIBSTDCXX)
 	coff2exe $@
 
 oldlibc.arm : /v1/lib/libc.a /v1/lib/libpc.a /v1/lib/libm.a

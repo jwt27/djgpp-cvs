@@ -36,6 +36,7 @@ AR = ar
 LD = ld
 STRIP = strip
 BISON = bison
+LIBSTDCXX = -lstdcxx
 
 else
 
@@ -58,6 +59,7 @@ AR = ar
 LD = ld
 STRIP = strip
 BISON = bison
+LIBSTDCXX = -lstdc++
 
 # You may need to replace coff-go32 with coff-i386 in lib/djgpp.djl or
 # edit your cross_ld to replace coff-i386 with coff-go32 (as I did)
