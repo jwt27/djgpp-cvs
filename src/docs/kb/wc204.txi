@@ -581,19 +581,19 @@ versions of Windows do not allow to change time stamps of directories).
 A fix has been applied to the memory allocation routines in @code{sbrk}
 to prevent use of memory which would require address wrap when the host
 DPMI provider does not allow 4Gb address limits.  This feature may also
-be enabled in other environments which does not require it to get better
+be enabled in other environments which do not require it to get better
 memory protection.  @code{_CRT0_DISABLE_SBRK_ADDRESS_WRAP} flag was added
 to @code{_crt0_startup_flags} in file @file{crt0.h}
 
 @vindex __djgpp_memory_handle_size@r{, added to library}
 @cindex @file{crt0.h}, declaration of memory size array
 @cindex array of DPMI memory block sizes
-A list of memory block sizes was added for use in core dumps of the address
-space.
+A list of memory block sizes @code{__djgpp_memory_handle_size} was added for 
+use in core dumps of the address space.
 
 @findex sbrk@r{, changed allocation size algorithm}
 @cindex DPMI memory block allocation sizes dynamic
-Change the round up size for memory block allocations to increase with
+Change the round up size for memory block allocations in @code{sbrk} to increase with
 the number of handles allocated.  This helps keep the number of handles
 to the 256 allocated and reduce problems exhausting DPMI handle resources.
 
@@ -702,4 +702,4 @@ for certain files in the C libraries' sources.  The build system for
 modified, so that it can be built against a profiled version of libc.
 
 @findex strftime@r{, and z format}
-Corrected problem with negative gmt offsets with z format.
+Corrected problem with negative gmt offsets with z format in @code{strftime}.
