@@ -134,6 +134,7 @@ off_t		lseek(int _fildes, off_t _offset, int _whence);
 long		pathconf(const char *_path, int _name);
 int		pause(void);
 int		pipe(int _fildes[2]);
+ssize_t		pwrite(int _fildes, const void *_buf, size_t _nbyte, off_t _offset);
 ssize_t		read(int _fildes, void *_buf, size_t _nbyte);
 int		rmdir(const char *_path);
 int		setgid(gid_t _gid);
