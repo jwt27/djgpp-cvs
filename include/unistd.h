@@ -43,7 +43,10 @@ extern "C" {
 #define STDOUT_FILENO		1
 #define STDERR_FILENO		2
 
-#define _CS_PATH		1
+#define _CS_PATH				1
+#define _CS_POSIX_V6_ILP32_OFF32_CFLAGS		2
+#define _CS_POSIX_V6_ILP32_OFF32_LDFLAGS	3
+#define _CS_POSIX_V6_ILP32_OFF32_LIBS		4
 
 #define _PC_CHOWN_RESTRICTED	1
 #define _PC_LINK_MAX		2
