@@ -1091,3 +1091,6 @@ Modifies the character classes used by functions defined in headers
 character used by functions for converting numeric strings from input
 and to output, and function @code{strftime} uses the appropriate NLS
 formats for @code{"%x"} and @code{"%X"} conversions. 
+
+@pindex djasm@r{, cr4 register}
+@code{djasm} recognises the fourth control register, @code{cr4}.

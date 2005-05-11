@@ -1,3 +1,4 @@
+/* Copyright (C) 2005 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -655,6 +656,7 @@ struct opcode opcodes[] = {
   {"cr0", CRREG, 0},
   {"cr2", CRREG, 2},
   {"cr3", CRREG, 3},
+  {"cr4", CRREG, 4},
 
   {"dr0", DRREG, 0},
   {"dr1", DRREG, 1},
