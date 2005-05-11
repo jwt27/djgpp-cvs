@@ -1,3 +1,4 @@
+/* Copyright (C) 2005 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdlib.h>
@@ -6,8 +7,9 @@ size_t
 wcstombs(char *s, const wchar_t *wcs, size_t n)
 {
   size_t i;
-  for (i=0; wcs[i] && (i+1<n); i++)
+  for (i=0; (i+1<n) && wcs[i]; i++)
     s[i] = wcs[i];
-  s[i] = 0;
+  if (i+1<n)
+    s[i] = 0;
   return i;
 }
