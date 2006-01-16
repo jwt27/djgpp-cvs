@@ -317,7 +317,7 @@ None.
 @subheading Example
 
 @example
-ScreenGetCursor(&wherex, &wherey);
+ScreenGetCursor(&where_r, &where_c);
 @end example
 
 @c ----------------------------------------------------------------------
