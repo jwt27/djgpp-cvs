@@ -64,6 +64,7 @@ remove(const char *fn)
     r.h.ah = 0x71;
     r.x.si = 0;			/* No Wildcards */
   }
+  r.x.cx = 0;			/* Fix for ROM-DOS */
   r.x.dx = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
