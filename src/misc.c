@@ -1,5 +1,6 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 /* Miscellaneous things that are hard to do the same
