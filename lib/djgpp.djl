@@ -42,7 +42,7 @@ SECTIONS
   .bss  SIZEOF(.data) + ADDR(.data) :
   { 					
     _object.2 = . ;
-    . += 24 ;
+    . += 32 ;
     *(.bss .bss.* .gnu.linkonce.b.*)
     *(COMMON)
     end = . ;
