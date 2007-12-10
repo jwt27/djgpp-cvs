@@ -28,12 +28,6 @@ __chdir (const char *mydirname)
      return -1;
   _fixpath(real_name, path);
 
-  if (path == 0)
-  {
-    errno = EINVAL;
-    return -1;
-  }
-
   if (path[0] == 0)
   {
     errno = ENOENT;
