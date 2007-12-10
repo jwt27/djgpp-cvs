@@ -32,10 +32,11 @@ AS := $(subst \,/,$(AS))
 
 # Figure out GAS version for use in *.S and inline asm compile flags
 #
-GAS_VERSION    := $(subst ., ,$(shell $(AS) --version))
-GAS_MAJOR      := $(word 3,$(GAS_VERSION))
-GAS_MINOR      := $(word 4,$(GAS_VERSION))
-GAS_MINORMINOR := $(word 5,$(GAS_VERSION))
+GAS_VERSION_STR:= $(shell $(AS) --version | sed 1q | sed -e 's:^.*\([0-9]\.[0-9][\.0-9]*\).*$$:\1:')
+GAS_VERSION    := $(subst ., ,$(GAS_VERSION_STR))
+GAS_MAJOR      := $(word 1,$(GAS_VERSION))
+GAS_MINOR      := $(word 2,$(GAS_VERSION))
+GAS_MINORMINOR := $(word 3,$(GAS_VERSION))
 
 # Defaults for GAS version numbers
 ifeq ($(GAS_MAJOR),)
