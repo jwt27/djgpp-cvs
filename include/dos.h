@@ -214,12 +214,12 @@ struct _dostime_t {
 #define dostime_t _dostime_t
 
 struct _find_t {
-  char reserved[21] __attribute__((packed));
-  unsigned char attrib __attribute__((packed));
+  char reserved[21];
+  unsigned char attrib;
   unsigned short wr_time __attribute__((packed));
   unsigned short wr_date __attribute__((packed));
   unsigned long size __attribute__((packed));
-  char name[256] __attribute__((packed));
+  char name[256];
 };
 #define find_t _find_t
 
