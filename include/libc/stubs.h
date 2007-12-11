@@ -54,7 +54,11 @@ extern "C" {
 #define filelength __filelength
 #define findfirst __findfirst
 #define findnext __findnext
+#define fseeko __fseeko
+#define fseeko64 __fseeko64
 #define fsync __fsync
+#define ftello __ftello
+#define ftello64 __ftello64
 #define getdisk __getdisk
 #define getdtablesize __getdtablesize
 #define getitimer __getitimer

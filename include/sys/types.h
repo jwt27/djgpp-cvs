@@ -40,6 +40,10 @@ __DJ_gid_t
 __DJ_off_t
 #define _OFF_T
 #endif
+#ifndef _OFF64_T
+__DJ_off64_t
+#define _OFF64_T
+#endif
 #ifndef _OFFSET_T
 __DJ_offset_t
 #define _OFFSET_T

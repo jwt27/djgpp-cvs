@@ -165,6 +165,19 @@ void	setbuffer(FILE *_f, void *_buf, int _size);
 void	setlinebuf(FILE *_f);
 int	_rename(const char *_old, const char *_new);	/* Simple (no directory) */
 
+#ifndef _OFF_T
+__DJ_off_t
+#define _OFF_T
+#endif
+#ifndef _OFF64_T
+__DJ_off64_t
+#define _OFF64_T
+#endif
+int	fseeko(FILE *_stream, off_t _offset, int _mode);
+off_t	ftello(FILE *_stream);
+int	fseeko64(FILE *_stream, off64_t _offset, int _mode);
+off64_t	ftello64(FILE *_stream);
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */

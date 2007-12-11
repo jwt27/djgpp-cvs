@@ -2,6 +2,10 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
+SRC += fseeko.c
+SRC += fseeko64.c
+SRC += ftello.c
+SRC += ftello64.c
 SRC += mkstemp.c
 SRC += mktemp.c
 SRC += tempnam.c
