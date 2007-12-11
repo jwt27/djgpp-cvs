@@ -8,6 +8,8 @@ static char	elsieid[] = "@(#)strftime.c	7.57";
 #endif /* !defined NOID */
 #endif /* !defined lint */
 
+#ifndef __DJGPP__
+
 #include "private.h"
 
 /*
@@ -664,3 +666,5 @@ no_locale:
 	return &localebuf;
 }
 #endif /* defined LOCALE_HOME */
+
+#endif /* !__DJGPP__ */
