@@ -20,7 +20,7 @@ DIRS = \
 	../info		\
 	../lib
 
-all : misc.exe $(DIRS) makemake.exe subs ../lib/libg.a ../lib/libpc.a
+all : misc.exe config $(DIRS) makemake.exe subs ../lib/libg.a ../lib/libpc.a
 
 misc.exe : misc.c
 	gcc -O2 misc.c -o misc.exe
@@ -68,3 +68,6 @@ clean : misc.exe makemake.exe
 	$(MAKE) -f makempty clean
 	./misc.exe rm gpp.opt
 	./misc.exe rm makemake.exe copyrite.exe misc.exe
+
+config:
+	$(MAKE) -f makefile.cfg

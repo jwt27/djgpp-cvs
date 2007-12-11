@@ -61,13 +61,13 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 # Moved setting of $(GCC{L}_OPT) to top of file
 #
 ifneq ($(CROSS_BUILD),1)
-XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
-XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -isystem $(TOP)/../../include $(CFLAGS)
+XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -isystem $(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -isystem $(TOP)/../../include $(CFLAGS)
 else
-XGCC = $(CROSS_GCC) $(GCC_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
-XGPP = $(CROSS_GCC) $(GPP_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) $(GCCL_OPT) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XGCC = $(CROSS_GCC) $(GCC_OPT) -isystem $(TOP)/../../include $(CFLAGS)
+XGPP = $(CROSS_GCC) $(GPP_OPT) -isystem $(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) $(GCCL_OPT) -isystem $(TOP)/../../include $(CFLAGS)
 endif
 
 # Find the necessary gcc options for building the profiling
@@ -160,10 +160,6 @@ $(HOSTBIN)/%.exe : %
 
 all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
 	$(NOP)
-
-$(TOP)/../gpp.opt : $(TOP)/../gcc.opt
-	sed -f $(TOP)/../gpp.sed $< > $@
-
 
 ifneq ($(MAKEFILE_LIB),1)
 all :: makefile.oh
