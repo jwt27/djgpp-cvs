@@ -23,13 +23,19 @@ extern "C" {
 
 /* Some programs think they know better... */
 #undef NULL
+#if (__GNUC__ >= 4) && defined(__cplusplus)
+#  define NULL          __null
+#elif defined(__cplusplus)
+#  define NULL          0
+#else
+#  define NULL          ((void*)0)
+#endif
 
 #define BUFSIZ		16384
 #define EOF		(-1)
 #define FILENAME_MAX	260
 #define FOPEN_MAX	20
 #define L_tmpnam	260
-#define NULL		0
 #define TMP_MAX		999999
 
 #define SEEK_SET	0

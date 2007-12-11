@@ -16,8 +16,13 @@ extern "C" {
     
 /* Some programs think they know better... */
 #undef NULL
-
-#define NULL 0
+#if (__GNUC__ >= 4) && defined(__cplusplus)
+#  define NULL          __null
+#elif defined(__cplusplus)
+#  define NULL          0
+#else
+#  define NULL          ((void*)0)
+#endif
 
 #ifndef _SIZE_T
 __DJ_size_t

@@ -11,8 +11,17 @@ namespace std {
 #endif
 
 #include <sys/djtypes.h>
-  
-#define NULL 0
+
+/* Some programs think they know better... */
+#undef NULL
+#if (__GNUC__ >= 4) && defined(__cplusplus)
+#  define NULL          __null
+#elif defined(__cplusplus)
+#  define NULL          0
+#else
+#  define NULL          ((void*)0)
+#endif
+
 #ifdef __cplusplus
 #define offsetof(s_type, mbr) ((std::size_t) &((s_type *)0)->mbr)
 #else

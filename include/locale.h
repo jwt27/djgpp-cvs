@@ -19,7 +19,16 @@ extern "C" {
 #define LC_MONETARY	0x04
 #define LC_NUMERIC	0x08
 #define LC_TIME		0x10
-#define NULL		0
+
+/* Some programs think they know better... */
+#undef NULL
+#if (__GNUC__ >= 4) && defined(__cplusplus)
+#  define NULL          __null
+#elif defined(__cplusplus)
+#  define NULL          0
+#else
+#  define NULL          ((void*)0)
+#endif
 
 struct lconv {
   char *currency_symbol;

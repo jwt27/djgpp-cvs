@@ -21,8 +21,14 @@ extern "C" {
   
 /* Some programs think they know better... */
 #undef NULL
+#if (__GNUC__ >= 4) && defined(__cplusplus)
+#  define NULL          __null
+#elif defined(__cplusplus)
+#  define NULL          0
+#else
+#  define NULL          ((void*)0)
+#endif
 
-#define NULL 0
 #ifndef _CLOCK_T
 __DJ_clock_t
 #define _CLOCK_T
