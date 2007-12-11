@@ -72,7 +72,7 @@ ENTRY *hsearch(ENTRY item, ACTION action)
 {
   unsigned long hash_value, hash_value_start, increment;
 
-  hash_value = _hash2v(item.key, &increment);
+  hash_value = _hash2v((const unsigned char *) item.key, &increment);
   hash_value &= mask;
   hash_value_start = hash_value;
   increment = 2*increment+1; /* Make sure increment is odd. */

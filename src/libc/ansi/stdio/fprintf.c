@@ -22,7 +22,7 @@ fprintf(register FILE *iop, const char *fmt, ...)
     fflush(iop);
     iop->_flag |= _IONBF;
     iop->_base = NULL;
-    iop->_bufsiz = NULL;
+    iop->_bufsiz = 0;
     iop->_cnt = 0;
   }
   else

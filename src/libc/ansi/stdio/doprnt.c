@@ -290,7 +290,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        * buffer, i.e. ``intf("%.2f", (double)9.999);'';
        * if the first char isn't NULL, it did.
        */
-      *buf = NULL;
+      *buf = '\0';
       size = cvtl(_ldouble, prec, flags, &softsign, *fmt, buf,
 		  buf + sizeof(buf));
       /*

@@ -94,8 +94,8 @@ static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
 #define	MALLOC_STACK()					\
   do {							\
       if (!stack_length) {				\
-	  stack_length = _go32_rmcb_stack_size;	\
-	  stack = (char *)malloc(stack_length);		\
+	  stack_length = _go32_rmcb_stack_size;		\
+	  stack = (unsigned char *)malloc(stack_length);\
 	  if (stack == 0) {				\
 	    free(wrapper);				\
 	    return 0x8015;				\
@@ -195,7 +195,7 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info)
 {
   unsigned char *stack;
 
-  stack = (char *)(*(long *)((long) info->size+0x12) - 4);
+  stack = (unsigned char *)(*(long *)((long) info->size+0x12) - 4);
   if (*(long *) stack & STACK_WAS_MALLOCED)
       free(stack);
 

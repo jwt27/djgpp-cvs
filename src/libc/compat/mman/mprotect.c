@@ -37,7 +37,7 @@ int mprotect(void *addr, size_t len, int prot)
     meminfo.address = start - handle_info->address;
     meminfo.size = npage;
 
-    i = __dpmi_set_page_attributes(&meminfo, pageprot);
+    i = __dpmi_set_page_attributes(&meminfo, (short *) pageprot);
     if(i)
       errno = EACCES;
     return i;

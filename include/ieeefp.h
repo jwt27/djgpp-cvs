@@ -73,13 +73,13 @@ int _EXFUN(finitef, (float));
 #define __IEEE_FLT_NAN_EXP 0xff
 
 
-#define isnanf(x) (((*(long *)&(x) & 0x7f800000L)==0x7f800000L) && \
-		   ((*(long *)&(x) & 0x007fffffL)!=0000000000L))
+#define isnanf(x) (((*(long *)(void *)&(x) & 0x7f800000L)==0x7f800000L) && \
+		   ((*(long *)(void *)&(x) & 0x007fffffL)!=0000000000L))
 
-#define isinff(x) (((*(long *)&(x) & 0x7f800000L)==0x7f800000L) && \
-		   ((*(long *)&(x) & 0x007fffffL)==0000000000L))
+#define isinff(x) (((*(long *)(void *)&(x) & 0x7f800000L)==0x7f800000L) && \
+		   ((*(long *)(void *)&(x) & 0x007fffffL)==0000000000L))
 
-#define finitef(x) (((*(long *)&(x) & 0x7f800000L)!=0x7f800000L))
+#define finitef(x) (((*(long *)(void *)&(x) & 0x7f800000L)!=0x7f800000L))
 
 #ifdef __cplusplus
 }

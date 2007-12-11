@@ -21,7 +21,8 @@ unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned in
 {
   __dpmi_regs r;
   int dos_segment;
-  unsigned int dos_selector, dos_buffer_size, read_size;
+  int dos_selector;
+  unsigned int dos_buffer_size, read_size;
   unsigned char *p_buffer;
 
   /* Allocate ~64K or less transfer buffer from DOS */

@@ -148,6 +148,8 @@ select(int nfds,
   FD_ZERO (&oexcept);
   ready = 0;
 
+  then.tv_sec = 0;
+  then.tv_usec = 0;
   if (timeout)
   {
     if (timeout->tv_usec < 0)

@@ -58,7 +58,7 @@ mix() was built out of 36 single-cycle latency instructions in a
   c -= a; c -= b; c ^= (b>>15); \
 }
 
-unsigned long _hash2v( unsigned char *k, unsigned long *v2 )
+unsigned long _hash2v( const unsigned char *k, unsigned long *v2 )
 {
   int cont, which;
   unsigned long a, b, c, len;

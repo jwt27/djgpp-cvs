@@ -74,6 +74,6 @@ strtoull(const char *nptr, char **endptr, int base)
   else if (neg)
     acc = -acc;
   if (endptr != 0)
-    *endptr = any ? unconst(s, char *) - 1 : unconst(nptr, char *);
+    *endptr = any ? (char *) unconst(s, unsigned char *) - 1 : unconst(nptr, char *);
   return acc;
 }

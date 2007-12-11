@@ -22,7 +22,7 @@ pathconf(const char *path, int name)
     {
       int name_max, path_max;
       int e = errno;
-      unsigned char *lfnenv = getenv ("LFN");
+      const char *lfnenv = getenv ("LFN");
 
       if (!lfnenv || TOLOWER (*lfnenv) != 'n')
 	{

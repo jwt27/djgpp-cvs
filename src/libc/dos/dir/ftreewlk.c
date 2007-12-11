@@ -30,8 +30,8 @@ __file_tree_walk(const char *dir,
                int (*func)(const char *, const struct ffblk *))
 {
   struct ffblk  ff;
-  unsigned char searchspec[FILENAME_MAX];
-  unsigned char found[FILENAME_MAX], *dir_end;
+  char searchspec[FILENAME_MAX];
+  char found[FILENAME_MAX], *dir_end;
   int e = errno;
 
   if (dir == 0 || func == 0)

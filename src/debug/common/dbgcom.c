@@ -35,6 +35,12 @@
 #include <sys/fsext.h>
 #include <io.h>
 
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4))
+# define __attribute_used __attribute__ ((__used__))
+#else
+# define __attribute_used
+#endif
+
 extern char __libdbg_ident_string[];
 static char *id = __libdbg_ident_string;
 
@@ -77,8 +83,8 @@ TSS a_tss;
 static jmp_buf jumper;
 
 static int my_ds,my_cs,app_cs,app_exit_cs,app_ds;
-static unsigned int app_ds_size[DS_SIZE_COUNT];
-static int app_ds_index = 0;
+static unsigned int app_ds_size[DS_SIZE_COUNT] __attribute_used;
+static int app_ds_index __attribute_used = 0;
 static jmp_buf load_state;
 
 static int nset, breakhandle[4];

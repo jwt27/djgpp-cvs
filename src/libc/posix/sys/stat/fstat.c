@@ -527,7 +527,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
             {
               /* Character device names are all at most 8-character long. */
               short i   = 8;
-              char *src = sft_buf + name_ofs;
+              unsigned char *src = sft_buf + name_ofs;
               char dev_name[16], *dst = dev_name + 7;
 
               strcpy(dev_name, "@:\\dev\\        "); /* pad with 8 blanks */

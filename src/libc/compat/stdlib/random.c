@@ -141,8 +141,8 @@ static unsigned long randtbl[DEG_3 + 1] = { TYPE_3,
  * to point to randtbl[1] (as explained below).
  */
 
-static  long		*fptr			= &randtbl[ SEP_3 + 1 ];
-static  long		*rptr			= &randtbl[ 1 ];
+static  long		*fptr			= (long*) &randtbl[ SEP_3 + 1 ];
+static  long		*rptr			= (long*) &randtbl[ 1 ];
 
 /*
  * The following things are the pointer to the state information table,
@@ -156,11 +156,11 @@ static  long		*rptr			= &randtbl[ 1 ];
  * the front and rear pointers have wrapped.
  */
 
-static  long		*state			= &randtbl[ 1 ];
+static  long		*state			= (long*) &randtbl[ 1 ];
 static  int		rand_type		= TYPE_3;
 static  int		rand_deg		= DEG_3;
 static  int		rand_sep		= SEP_3;
-static  long		*end_ptr		= &randtbl[ DEG_3 + 1 ];
+static  long		*end_ptr		= (long*) &randtbl[ DEG_3 + 1 ];
 
 /*
  * srandom:

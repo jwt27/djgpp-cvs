@@ -63,7 +63,7 @@
 
 /* Static variables.  */
 
-static char          drive_number = -1;
+static signed char   drive_number = -1;
 static char          skip_drive_b = 0;
 static char          drive_a_mapping = 0;
 static char          w2k_bug;
@@ -72,11 +72,11 @@ static unsigned long cds_address;
 static int           cds_elsize;
 static unsigned short dos_mem_base, our_mem_base;
 static struct mntent mntent;
-static unsigned char drive_string[128];
+static char          drive_string[128];
 static char          *mnt_type;
-static unsigned char mnt_dir[128];
-static unsigned char mnt_fsname[128];
-static          char dev_opts[] = "r ,dev=  ";
+static char          mnt_dir[128];
+static char          mnt_fsname[128];
+static char          dev_opts[] = "r ,dev=  ";
 
 static char NAME_dblsp[] = "dblsp";
 static char NAME_stac[] = "stac";
@@ -516,10 +516,10 @@ getmntent(FILE *filep)
      allows for 32 disks (A-Z plus 6 more characters from '[' to '\'') */
   while (drive_number < 32)
     {
-      unsigned char *p, *q;
+      char          *p, *q;
       char *truename_result;
       struct ffblk   mnt_ff;
-      unsigned char  cds_path[128];
+      char           cds_path[128];
       unsigned short cds_flags = 0;
       int            drvstr_len;
       int            got_fsname = 0;
@@ -613,7 +613,7 @@ getmntent(FILE *filep)
 	 don't always upcase the drive letter, so we must do that here.  */
       truename_result = _truename(drive_string, mnt_fsname);
       if (truename_result && mnt_fsname[0]
-	  && mnt_fsname[1] == ':' && islower(mnt_fsname[0]))
+	  && mnt_fsname[1] == ':' && islower((unsigned char)mnt_fsname[0]))
 	mnt_fsname[0] = toupper((unsigned char)mnt_fsname[0]);
 
       /* Get some info from the DOS Current Directory Structure (CDS).

@@ -144,7 +144,7 @@ static int _go32_dpmi_chain_protected_mode_interrupt_vector_with_stack(int vecto
   do {							\
       if (!stack_length) {				\
 	  stack_length = _go32_interrupt_stack_size;	\
-	  stack = (char *)malloc(stack_length);		\
+	  stack = (unsigned char *)malloc(stack_length);\
 	  if (stack == 0) {				\
 	    free(wrapper);				\
 	    return 0x8015;				\

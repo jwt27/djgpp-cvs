@@ -155,8 +155,8 @@ static void eprintf(const char *f, ...)
 #endif
 
 /* extern "C" void djshld(void *); */
-#define djshld(q) ((*(long long unsigned *)(q)) <<= 1)
-#define djshrd(q) ((*(long long unsigned *)(q)) >>= 1)
+#define djshld(q) ((*(long long unsigned *)(void *)(q)) <<= 1)
+#define djshrd(q) ((*(long long unsigned *)(void *)(q)) >>= 1)
 
 static int nan_type(reg& r)
 {
@@ -489,8 +489,8 @@ static void r_uadd(reg& a, reg& b, reg& s) // signs ignored
   }
   unsigned short *ss, *ts;
   unsigned long tmp;
-  ss = (unsigned short *)&s.sigl;
-  ts = (unsigned short *)&t.sigl;
+  ss = (unsigned short *)(void *)&s.sigl;
+  ts = (unsigned short *)(void *)&t.sigl;
   tmp = 0;
   for (int i=4; i>0; i--)
   {
@@ -538,8 +538,8 @@ static void r_usub(reg& a, reg& b, reg& d) // a > b
   }
   unsigned short *ss, *ts;
   long tmp;
-  ss = (unsigned short *)&d.sigl;
-  ts = (unsigned short *)&t.sigl;
+  ss = (unsigned short *)(void *)&d.sigl;
+  ts = (unsigned short *)(void *)&t.sigl;
   tmp = 0;
   for (int i=4; i>0; i--)
   {
@@ -745,8 +745,8 @@ static void r_mul(reg& a, reg& b, reg& s)
   else
   {
     unsigned short sl[9], carry[10];
-    unsigned short *as = (unsigned short *)(&a.sigl);
-    unsigned short *bs = (unsigned short *)(&b.sigl);
+    unsigned short *as = (unsigned short *)(void *)(&a.sigl);
+    unsigned short *bs = (unsigned short *)(void *)(&b.sigl);
     unsigned long l, sum;
     int ai, bi;
     for (ai=0; ai<8; ai++)
@@ -842,8 +842,8 @@ static void r_div(reg& a, reg& b, reg& q)
     {
       unsigned long long al, bl, ql, f;
       int i;
-      al = *(unsigned long long *)(&a.sigl);
-      bl = *(unsigned long long *)(&b.sigl);
+      al = *(unsigned long long *)(void *)(&a.sigl);
+      bl = *(unsigned long long *)(void *)(&b.sigl);
       ql = 0;
       f = (unsigned long long)1 << 63;
       for (i=0; i<64; i++)
@@ -856,7 +856,7 @@ static void r_div(reg& a, reg& b, reg& q)
         bl >>= 1;
         f >>= 1;
       }
-      *(unsigned long long *)(&q.sigl) = ql;
+      *(unsigned long long *)(void *)(&q.sigl) = ql;
       q.tag = TW_V;
     }
   }
@@ -1079,18 +1079,18 @@ static void round_to_int(reg& r) // r gets mangled such that sig is int, sign
     case RC_RND:
       if (half_or_more)
         if (more_than_half) // nearest
-          (*(long long *)(&r.sigl)) ++;
+          (*(long long *)(void *)(&r.sigl)) ++;
         else
           if (r.sigl & 1) // odd?
-            (*(long long *)(&r.sigl)) ++;
+            (*(long long *)(void *)(&r.sigl)) ++;
       break;
     case RC_DOWN:
       if ((half_or_more||more_than_half) && r.sign)
-        (*(long long *)(&r.sigl)) ++;
+        (*(long long *)(void *)(&r.sigl)) ++;
       break;
     case RC_UP:
       if ((half_or_more||more_than_half) && !r.sign)
-        (*(long long *)(&r.sigl)) ++;
+        (*(long long *)(void *)(&r.sigl)) ++;
       break;
     case RC_CHOP:
       break;
@@ -1303,7 +1303,7 @@ static void r_mov(reg& s, char *d)
   reg t;
   t = s;
   round_to_int(t);
-  long long ll = *(long long *)(&t.sigl);
+  long long ll = *(long long *)(void *)(&t.sigl);
   int side = 0;
   int r, i;
   for (i=0; i<10; i++)
@@ -2347,7 +2347,7 @@ static void fsqrt()
     return;
   }
 
-  unsigned long long val = *(unsigned long long *)(&st().sigl);
+  unsigned long long val = *(unsigned long long *)(void *)(&st().sigl);
   unsigned long long result = 0;
   unsigned long long side = 0;
   unsigned long long left = 0;
@@ -2357,12 +2357,12 @@ static void fsqrt()
     st().exp++;
   }
   int exp = (st().exp - EXP_BIAS - 1)/2 - 64;
-  while (!(((long *)&result)[1] & 0x80000000))
+  while (!(((long *)(void *)&result)[1] & 0x80000000))
   {
     /* GCC between 2.8 and EGCS 1.1.1 optimizes this loop
        all wrong; the asm works around it. */
     asm volatile("" : : : "memory");
-    left = (left << 2) + (((unsigned *)&val)[1] >> 30);
+    left = (left << 2) + (((unsigned *)(void *)&val)[1] >> 30);
     djshld(&val);
     djshld(&val);
     if (left >= side*2 + 1)

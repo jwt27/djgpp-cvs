@@ -108,8 +108,8 @@ ftw(const char *dir, int (*func)(const char *, struct stat *, int),
     int ignored)
 {
   int flag;
-  unsigned char pathbuf[FILENAME_MAX];
-  unsigned char real_path[FILENAME_MAX];
+  char pathbuf[FILENAME_MAX];
+  char real_path[FILENAME_MAX];
   int dirattr;
   int len;
   int e = errno;

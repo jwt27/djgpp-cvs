@@ -260,7 +260,7 @@ typedef struct {
   unsigned long reserved[3];
 } _go32_dpmi_meminfo;
 
-#define _go32_dpmi_get_free_memory_information(x) __dpmi_get_free_memory_information((__dpmi_free_mem_info *)(x))
+#define _go32_dpmi_get_free_memory_information(x) __dpmi_get_free_memory_information((__dpmi_free_mem_info *)(void *)(x))
 
 #define _go32_dpmi_simulate_int		__dpmi_simulate_real_mode_interrupt
 #define _go32_dpmi_simulate_fcall	__dpmi_simulate_real_mode_procedure_retf

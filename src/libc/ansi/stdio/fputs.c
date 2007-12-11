@@ -29,7 +29,7 @@ fputs(const char *s, FILE *f)
       r = EOF;
     f->_flag |= _IONBF;
     f->_base = NULL;
-    f->_bufsiz = NULL;
+    f->_bufsiz = 0;
     f->_cnt = 0;
   }
 

@@ -10,7 +10,7 @@
    The encodings for unshifted arrow keys, F1-F12, Home, Insert, etc.
    match the encodings used by other x86 environments.  All others
    are invented for DJGPP.  */
-static const unsigned char *
+static const char *
 ecma48_encoding_table[] =
 {
 		/* 0x01: Alt-Escape */
@@ -184,6 +184,6 @@ __get_extended_key_string(int xkey_code)
   if (idx > ARRAY_SIZEOF(ecma48_encoding_table))
     return NULL;
 
-  return ecma48_encoding_table[idx];
+  return (const unsigned char *) ecma48_encoding_table[idx];
 }
 

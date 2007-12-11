@@ -23,7 +23,7 @@
 #define SENSE_REG_KEY	1
 #define SENSE_EXT_KEY	2
 
-static struct tty_editline __libc_tty_editline = { 0, { 0 }, { 0 }, };
+struct tty_editline __libc_tty_editline = { 0, { 0 }, { 0 }, };
 unsigned char __libc_tty_queue_buffer[_TTY_QUEUE_SIZE];
 
 /* static data */
@@ -403,7 +403,7 @@ __libc_termios_insert_editline (unsigned char ch)
 		   && __libc_tty_editline.flag[col - 1] != _TTY_EDITLINE_INVALID))
     {
       /* check multibyte length */
-      mbsize = mblen (__libc_tty_editline.buf + col, 1);
+      mbsize = mblen ((const char *)__libc_tty_editline.buf + col, 1);
       if (mbsize == 1)
 	{
 	  /* single character */
@@ -431,7 +431,7 @@ __libc_termios_insert_editline (unsigned char ch)
 	  break;
 
       /* check whether it's multibyte sequence */
-      mbsize = mblen (__libc_tty_editline.buf + pcol, (col - pcol + 1));
+      mbsize = mblen ((const char *)__libc_tty_editline.buf + pcol, (col - pcol + 1));
       if (mbsize > 1)
 	{
 	  /* multibyte sequence is good */
@@ -625,9 +625,9 @@ __libc_termios_fill_queue (void)
 
 		    for (i = 0; i < 5; i++)
 		      if ((fds[i] = fcntl (i, F_DUPFD, 20)) < 0)
-		        __tty_screen_intface->puts("Suspend: cannot save fds\r\n");
+		        __tty_screen_intface->puts((const unsigned char *)"Suspend: cannot save fds\r\n");
 
-		    __tty_screen_intface->puts("\r\nSuspended\r\n");
+		    __tty_screen_intface->puts((const unsigned char *)"\r\nSuspended\r\n");
 		    /* keep cwd on exec */
 		    getcwd (oldcwd, sizeof (oldcwd));
 		    system ("");

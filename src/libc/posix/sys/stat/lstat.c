@@ -140,15 +140,16 @@ int __findnext(struct ffblk *);
    it to be sure it will still work for future versions of GCC.  */
 
 struct full_dirent {
-  char           fname[8]      __attribute__ ((packed));
-  char           fext[3]       __attribute__ ((packed));
-  unsigned char  fattr         __attribute__ ((packed));
-  unsigned char  freserved[10] __attribute__ ((packed));
-  unsigned short ftime         __attribute__ ((packed));
-  unsigned short fdate         __attribute__ ((packed));
-  unsigned short fcluster      __attribute__ ((packed));
-  unsigned int   fsize         __attribute__ ((packed));
-};
+  char           fname[8];
+  char           fext[3];
+  unsigned char  fattr;
+  unsigned char  freserved[10];
+  unsigned short ftime;
+  unsigned short fdate;
+  unsigned short fcluster;
+  unsigned int   fsize;
+}
+__attribute__ ((packed));
 
 
 /* Static variables to speed up SDA DOS Swappable Data Area access on
@@ -270,7 +271,8 @@ init_dirent_table (void)
       dirent_count = _farpeekw(_dos_ds, sda_list_walker); /* number of SDA's */
 
       /* Allocate storage for table.  */
-      tbl = dirent_table = (int *)malloc(dirent_count*sizeof(int));
+      dirent_table = (unsigned *)malloc(dirent_count*sizeof(int));
+      tbl = (int *) dirent_table;
       if (!dirent_table)
         {
           /* If malloc() failed, maybe later it will succeed, so don't
@@ -799,10 +801,10 @@ stat_assist(const char *path, struct stat *statbuf)
   if ( ! strcmp(ff_blk.lfn_magic,"LFN32") )
     {
       unsigned xtime;
-      xtime = *(unsigned *)&ff_blk.lfn_ctime;
+      xtime = *(unsigned *)(void *)&ff_blk.lfn_ctime;
       if(xtime)			/* May be zero if file written w/o lfn active */
         statbuf->st_ctime = _file_time_stamp(xtime);
-      xtime = *(unsigned *)&ff_blk.lfn_atime;
+      xtime = *(unsigned *)(void *)&ff_blk.lfn_atime;
       if(xtime > dos_ftime)	/* Accessed time is date only, no time */
         statbuf->st_atime = _file_time_stamp(xtime);
     }

@@ -58,25 +58,25 @@ epunzip_read(char *zipfilename)
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
 
-      if(*(short *)&buffer != *(short *)"PK")
+      if(*(short *)(void *)&buffer != *(const short *)(const void *)"PK")
 	break;
 
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
 
-      if(*(short *)&buffer == *(short *)"\x3\x4")
+      if(*(short *)(void *)&buffer == *(const short *)(const void *)"\x3\x4")
 	{
 	  /* local header */
 	  at_local_header = 1;
 	  break;
 	}
-      else if(*(short *)&buffer == *(short *)"\x30\x30")
+      else if(*(short *)(void *)&buffer == *(const short *)(const void *)"\x30\x30")
 	{
 	  /* spanning marker, but only one segment
 	   * => need to find local header. */
 	  continue;
 	}
-      else if(*(short *)&buffer == *(short *)"\x7\x8")
+      else if(*(short *)(void *)&buffer == *(const short *)(const void *)"\x7\x8")
 	{
 	  /* spanning marker, multiple segments. */
 	  fprintf(log_out, "%s: spanning is not supported\n", zipfilename);
@@ -108,7 +108,7 @@ epunzip_read(char *zipfilename)
 	  ((char *)&buffer)[0] = (char)get_byte();
 	  ((char *)&buffer)[1] = (char)get_byte();
 
-	  if(*(short *)&buffer != *(short *)"PK")
+	  if(*(short *)(void *)&buffer != *(short *)(void *)"PK")
 	    {
 	      fprintf(log_out, "%s: invalid zip file structure\n", zipfilename);
 	      break;
@@ -117,7 +117,7 @@ epunzip_read(char *zipfilename)
 	  ((char *)&buffer)[0] = (char)get_byte();
 	  ((char *)&buffer)[1] = (char)get_byte();
 
-	  if(*(short *)&buffer != *(short *)"\x3\x4")
+	  if(*(short *)(void *)&buffer != *(short *)(void *)"\x3\x4")
 	    {
 	      /* not a local header - all done */
 	      break;
@@ -135,17 +135,17 @@ epunzip_read(char *zipfilename)
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
 
-      if(*(short *)&buffer & CRYFLG)
+      if(*(short *)(void *)&buffer & CRYFLG)
 	{
 	  fprintf(log_out, "%s has encrypted file(s) - use unzip\n", zipfilename);
 	  break;
 	}
-      ext_header = *(short *)&buffer & EXTFLG ? 1 : 0;
+      ext_header = *(short *)(void *)&buffer & EXTFLG ? 1 : 0;
 
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
 
-      method = *(short *)&buffer;
+      method = *(short *)(void *)&buffer;
       if(method != 8 && method != 0)
 	{
 	  fprintf(log_out, "%s has file(s) compressed with unsupported method - use unzip\n", zipfilename);
@@ -178,11 +178,11 @@ epunzip_read(char *zipfilename)
 
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
-      name_length = *(short *)&buffer;
+      name_length = *(short *)(void *)&buffer;
 
       ((char *)&buffer)[0] = (char)get_byte();
       ((char *)&buffer)[1] = (char)get_byte();
-      extra_length = *(short *)&buffer;
+      extra_length = *(short *)(void *)&buffer;
 
       for(count = 0; count < name_length; count++)
 	{
@@ -320,7 +320,7 @@ epunzip_read(char *zipfilename)
       if(real_file)
 	{
 	  epoutfile = open(changed_name, O_RDONLY);
-	  setftime(epoutfile, (struct ftime *)&timedate);
+	  setftime(epoutfile, (struct ftime *)(void *)&timedate);
 	  close(epoutfile);
 	  real_file = 0;
 	}

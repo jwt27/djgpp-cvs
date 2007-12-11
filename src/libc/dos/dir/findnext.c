@@ -52,11 +52,11 @@ findnext(struct ffblk *ffblk)
       dosmemget(__tb, sizeof(struct ffblklfn), &ffblk32);
 
       ffblk->ff_attrib = (char)ffblk32.fd_attrib;
-      *(long *)&ffblk->ff_ftime = _Win32_to_DOS(ffblk32.fd_mtime);
+      *(long *)(void *)&ffblk->ff_ftime = _Win32_to_DOS(ffblk32.fd_mtime);
       ffblk->ff_fsize = ffblk32.fd_size;
       strcpy(ffblk->ff_name, ffblk32.fd_longname);
-      *(long *)&ffblk->lfn_ctime = _Win32_to_DOS(ffblk32.fd_ctime);
-      *(long *)&ffblk->lfn_atime = _Win32_to_DOS(ffblk32.fd_atime);
+      *(long *)(void *)&ffblk->lfn_ctime = _Win32_to_DOS(ffblk32.fd_ctime);
+      *(long *)(void *)&ffblk->lfn_atime = _Win32_to_DOS(ffblk32.fd_atime);
 
       return 0;
     }

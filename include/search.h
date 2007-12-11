@@ -54,7 +54,7 @@ typedef struct qelem {
   char q_data[0];
 } qelem;
 
-unsigned long _hash2v(unsigned char *s, unsigned long *v2);
+unsigned long _hash2v(const unsigned char *s, unsigned long *v2);
 void insque(struct qelem *_elem, struct qelem *_pred);
 void remque(struct qelem *_elem);
 
