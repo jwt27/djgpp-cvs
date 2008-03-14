@@ -246,6 +246,14 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	_ldouble = va_arg(argp, long double);
       else
 	_ldouble = (long double)va_arg(argp, double);
+      if (flags & ZEROPAD)
+      {
+        _longdouble_union_t ip;
+
+        ip.ld = _ldouble;
+        if (ip.ldt.exponent == 0x7fff)
+          flags &= ~ZEROPAD;
+      }
       /*
        * don't do unrealistic precision; just pad it with
        * zeroes later, so buffer size stays rational.
