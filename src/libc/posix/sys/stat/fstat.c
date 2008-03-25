@@ -66,8 +66,8 @@
  *         to a file.  For these the inode is also invented.
  *      4. If the st_ino field is a 16 bit number, the invented inode
  *         numbers are from 65535 and down, assuming that most disks have
- *         unised portions near their end.  Valid cluster numbers are 16-bit
- *         unisgned integers, so a possibility of a clash exists, although
+ *         unused portions near their end.  Valid cluster numbers are 16-bit
+ *         unisigned integers, so a possibility of a clash exists, although
  *         the last 80 or more cluster numbers are unused on all drives
  *         I've seen.  If the st_ino is 32 bit, then invented inodes are
  *         all greater than 64k, which totally eliminates a possibility
