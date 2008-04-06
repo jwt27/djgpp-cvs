@@ -12,6 +12,9 @@ SRC += nanl.c
 SRC += fpclassf.S
 SRC += fpclassd.S
 SRC += fpclassl.S
+SRC += sgnbitd.c
+SRC += sgnbitf.c
+SRC += sgnbitld.c
 
 include $(TOP)/../makefile.inc
 
