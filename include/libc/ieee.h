@@ -41,6 +41,12 @@ typedef struct {
 
 typedef union
 {
+  float f;
+  float_t ft;
+} _float_union_t;
+
+typedef union
+{
   double d;
   double_t dt;
 } _double_union_t;
