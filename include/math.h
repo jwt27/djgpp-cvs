@@ -111,6 +111,12 @@ extern float       __dj_nan;
 		       (sizeof(x)==sizeof(double))? __fpclassifyd(x) : \
 		       __fpclassifyld(x))
 
+#define signbit(x)    (__extension__ ({__typeof__(x) __x = (x); \
+                                       (sizeof(__x) == sizeof(float)) ? __signbitf(__x) :  \
+                                       (sizeof(__x) == sizeof(double)) ? __signbitd(__x) : \
+                                       __signbitld(__x); \
+                                      }))
+
 #define isfinite(x)   ((fpclassify(x) & (FP_NORMAL|FP_SUBNORMAL|FP_ZERO)) != 0)
 #define isinf(x)      (fpclassify(x)==FP_INFINITE)
 #define isnan(x)      (fpclassify(x)==FP_NAN)
@@ -122,6 +128,9 @@ int		__fpclassifyld(long double) __attribute__((const));
 double		nan(const char *);
 float		nanf(const char *);
 long double	nanl(const char *);
+int		__signbitf(float x) __attribute__((const));
+int		__signbitd(double x) __attribute__((const));
+int		__signbitld(long double x) __attribute__((const));
 
 #define MATH_ERRNO     1
 #define MATH_ERREXCEPT 2
