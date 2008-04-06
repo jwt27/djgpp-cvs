@@ -1094,3 +1094,11 @@ formats for @code{"%x"} and @code{"%X"} conversions.
 
 @pindex djasm@r{, cr4 register}
 @code{djasm} recognises the fourth control register, @code{cr4}.
+
+@findex signbit@r{ added}
+@findex __signbitf@r{ added}
+@findex __signbitd@r{ added}
+@findex __signbitld@r{ added}
+The C99 macro @code{signbit} and the supporting functions
+@code{__signbitf}, @code{__signbitd} and @code{__signbitld}
+were added.
