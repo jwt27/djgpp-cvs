@@ -1102,3 +1102,11 @@ formats for @code{"%x"} and @code{"%X"} conversions.
 The C99 macro @code{signbit} and the supporting functions
 @code{__signbitf}, @code{__signbitd} and @code{__signbitld}
 were added.
+
+@findex asnprintf@r{, added to the library}
+@findex asprintf@r{, added to the library}
+@findex vasnprintf@r{, added to the library}
+@findex vasprintf@r{, added to the library}
+New BSD/GNU compatibility functions @code{asnprintf}, @code{asprintf},
+@code{vasnprintf} and @code{vasprintf} added.
+
