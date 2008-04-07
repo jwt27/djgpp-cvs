@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include <sys/movedata.h>
 #include <libc/farptrgs.h>
 #include <libc/dosio.h>
@@ -274,7 +275,7 @@ fcntl(int fd, int cmd, ...)
   if (func)
   {
     int rv;
-    if (func(__FSEXT_fcntl, &rv, &fd))
+    if (__FSEXT_func_wrapper(func, __FSEXT_fcntl, &rv, fd))
       return rv;
   }
 

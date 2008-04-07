@@ -71,8 +71,13 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.7 2003/05/10 15:26:11 richdawe Exp $
+$Id: ioctl.c,v 1.8 2008/04/07 20:35:57 juan.guerrero Exp $
 $Log: ioctl.c,v $
+Revision 1.8  2008/04/07 20:35:57  juan.guerrero
+Use __FSEXT_func_wrapper instead of calling functions directly
+with wrong type of arguments.
+Patch by Ozkan Sezer, 2008-03-26.
+
 Revision 1.7  2003/05/10 15:26:11  richdawe
 __tb_size is defined in <go32.h> now.
 
@@ -120,6 +125,7 @@ import djgpp 2.02
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sys/fsext.h>
+#include <libc/fsexthlp.h>
 #include <sys/ioctl.h>
 #include <libc/farptrgs.h>
 
@@ -266,7 +272,7 @@ static int _unix_ioctl(int fd, int cmd, va_list args)
   if(func)
   {
     int rv;
-    if (func(__FSEXT_ioctl,&rv, &fd))
+    if (__FSEXT_func_wrapper(func, __FSEXT_ioctl, &rv, fd))
        return rv;
   }
 
@@ -322,7 +328,7 @@ int ioctl(int fd, int cmd, ...)
    ** see if this is a file system extension file
    **
    */
-  if (func && func(__FSEXT_ioctl, &rv, &fd))
+  if (func && __FSEXT_func_wrapper(func, __FSEXT_ioctl, &rv, fd))
     return rv;
 
   va_start(args, cmd);
