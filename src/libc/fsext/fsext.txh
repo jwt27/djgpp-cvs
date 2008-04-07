@@ -396,7 +396,7 @@ _read(int fd, void *buf, int len)
   if (func)
   @{
     int rv;
-    if (func(__FSEXT_read, &rv, &fd))
+    if (__FSEXT_func_wrapper(func, __FSEXT_read, &rv, fd))
       return rv;
   @}
   /* rest of read() */
