@@ -1,0 +1,36 @@
+@node signbit, math
+@findex signbit
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int signbit(@var{x});
+@end example
+
+@subheading Description
+
+The macro @code{signbit} returns 0 if the sign of the mantissa of the floating
+point number @var{x} is positive else it returns non-zero.
+
+@subheading Return Value
+
+zero for positive floating point numbers;
+non-zero for negative floating point numbers.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = 1;
+double d = INFINITY;
+long double ld = NAN;
+
+printf("value is %s.\n", (signbit(f)) ? "negative" : "positive");
+printf("value is %s.\n", (signbit(d)) ? "negative" : "positive");
+printf("value is %s.\n", (signbit(ld)) ? "negative" : "positive");
+
+@end example
