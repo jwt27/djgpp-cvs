@@ -32,9 +32,6 @@ strtod(const char *s, char **sret)
   e = 0;
   esign = 1;
 
-  if (sret)
-    *sret = unconst(s, char *);
-
   while (isspace((unsigned char) *s))
     s++;
 
@@ -75,7 +72,7 @@ strtod(const char *s, char **sret)
   /* Handle NAN and NAN(<whatever>). */
   if ( ! strnicmp( "NAN", s, 3 ) )
   {
- _double_union_t t;
+    _double_union_t t;
 
     t.d = NAN;
 
@@ -137,12 +134,12 @@ strtod(const char *s, char **sret)
       d *= 0.1L;
     }
   }
-
   if (flags == 0)
-    return 0;
-
-  if (sret)
-    *sret = unconst(s, char *);
+  {
+    if (sret)
+      *sret = unconst(s, char *);
+    return 0.0;
+  }
 
   if ((*s == 'e') || (*s == 'E'))
   {
@@ -154,9 +151,6 @@ strtod(const char *s, char **sret)
       s++;
       esign = -1;
     }
-    if ((*s < '0') || (*s > '9'))
-      return r * sign;
-
     while ((*s >= '0') && (*s <= '9'))
     {
       e *= 10;
