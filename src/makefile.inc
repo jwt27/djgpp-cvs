@@ -76,8 +76,8 @@ endif
 # in a profiling version of libc (the profiling support code calling
 # profiling support code).
 #
-XNOPGGCC = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gcc.opt) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
-XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -I. -I- -isystem $(TOP)/../../include $(CFLAGS)
+XNOPGGCC = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gcc.opt) -isystem $(TOP)/../../include $(CFLAGS)
+XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -isystem $(TOP)/../../include $(CFLAGS)
 
 MISC = $(TOP)/../misc.exe
 
