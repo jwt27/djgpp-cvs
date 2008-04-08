@@ -73,17 +73,13 @@ strtof(const char *s, char **sret)
   /* Handle NAN and NAN(<hex-number>). */
   if( ! strnicmp( "NAN", s, 3 ) )
   {
-	union a_union 
-	{
-	    float f;
-	    float_t n;
-	} t;
+    _float_union_t t;
 
-	t.f = NAN;
+    t.f = NAN;
 
     if( sign < 0 )
     {
-      t.n.sign = 1;
+      t.ft.sign = 1;
     }
 
     if( s[3] == '(' )
@@ -97,7 +93,7 @@ strtof(const char *s, char **sret)
 	mantissa_bits = mantissa_bits & 0x7fffff;
 	if( mantissa_bits )
 	{
-	    t.n.mantissa = mantissa_bits;
+	  t.ft.mantissa = mantissa_bits;
 	}
 	if( sret )
 	{
@@ -114,7 +110,7 @@ strtof(const char *s, char **sret)
     {
       *sret = unconst((&s[3]), char *);
     }
-	return (t.f);
+    return (t.f);
   }
 
   /* Handle ordinary numbers. */
