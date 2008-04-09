@@ -801,10 +801,10 @@ stat_assist(const char *path, struct stat *statbuf)
   if ( ! strcmp(ff_blk.lfn_magic,"LFN32") )
     {
       unsigned xtime;
-      xtime = *(unsigned *)(void *)&ff_blk.lfn_ctime;
+      xtime = ff_blk.lfn_ctime | (((unsigned)ff_blk.lfn_cdate) << 16);
       if(xtime)			/* May be zero if file written w/o lfn active */
         statbuf->st_ctime = _file_time_stamp(xtime);
-      xtime = *(unsigned *)(void *)&ff_blk.lfn_atime;
+      xtime = ff_blk.lfn_atime | (((unsigned)ff_blk.lfn_adate) << 16);
       if(xtime > dos_ftime)	/* Accessed time is date only, no time */
         statbuf->st_atime = _file_time_stamp(xtime);
     }

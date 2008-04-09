@@ -54,11 +54,16 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
     __dpmi_int(0x21, &r);
     if(!(r.x.flags & 1)) {
       struct ffblklfn ffblk32;
+      unsigned long t1;
       /* Recover results */
       dosmemget(__tb+pathlen, sizeof(struct ffblklfn), &ffblk32);
 
       ffblk->ff_attrib = (char)ffblk32.fd_attrib;
-      *(long *)(void *)(&ffblk->ff_ftime) = _Win32_to_DOS(ffblk32.fd_mtime);
+
+      t1 = _Win32_to_DOS(ffblk32.fd_mtime);
+      ffblk->ff_ftime = t1;
+      ffblk->ff_fdate = t1 >> 16;
+
       ffblk->ff_fsize = ffblk32.fd_size;
       strcpy(ffblk->ff_name, ffblk32.fd_longname);
       strcpy(ffblk->lfn_magic, "LFN32");
@@ -72,8 +77,13 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
       }
         
       ffblk->lfn_handle = r.x.ax;
-      *(long *)(void *)(&ffblk->lfn_ctime) = _Win32_to_DOS(ffblk32.fd_ctime);
-      *(long *)(void *)(&ffblk->lfn_atime) = _Win32_to_DOS(ffblk32.fd_atime);
+      t1 = _Win32_to_DOS(ffblk32.fd_ctime);
+      ffblk->lfn_ctime = t1;
+      ffblk->lfn_cdate = t1 >> 16;
+
+      t1 = _Win32_to_DOS(ffblk32.fd_atime);
+      ffblk->lfn_atime = t1;
+      ffblk->lfn_adate = t1 >> 16;
 
       return 0;
     }
