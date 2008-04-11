@@ -1110,3 +1110,11 @@ were added.
 New BSD/GNU compatibility functions @code{asnprintf}, @code{asprintf},
 @code{vasnprintf} and @code{vasprintf} were added.
 
+@findex strtod@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex strtof@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex strtold@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex _strtold@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+The functions @code{strtod}, @code{strtof}, @code{strtold} and
+@code{_strtold} now understand hex floating point strings like
+@code{[+|-]0xH.HHHp[+|-]DDD} and any variations of case in the
+input string.
