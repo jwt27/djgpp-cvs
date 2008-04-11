@@ -1,3 +1,4 @@
+/* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -15,6 +16,18 @@
 #include <string.h>
 #include <libc/unconst.h>
 #include <libc/ieee.h>
+
+#define HEX_DIGIT_SIZE    (4)
+#define FLOAT_BIAS        (0x7FU)
+#define MAX_BIN_EXPONENT  (127)   /*  Max. and min. binary exponent (inclusive) as  */
+#define MIN_BIN_EXPONENT  (-126)  /*  defined in Intel manual (253665.pdf, Table 4.2).  */
+#define IS_DEC_DIGIT(x)   (((x) >= '0') && ((x) <= '9'))
+#define IS_HEX_DIGIT(x)   ((((x) >= 'A') && ((x) <= 'F')) || \
+                           (((x) >= 'a') && ((x) <= 'f')) || \
+                           IS_DEC_DIGIT(x))
+#define IS_EXPONENT(x)    (((x[0]) == 'P' || (x[0]) == 'p') && \
+                           (x[1] == '+' || x[1] == '-' || IS_DEC_DIGIT(x[1])))
+
 
 float
 strtof(const char *s, char **sret)
@@ -113,8 +126,164 @@ strtof(const char *s, char **sret)
     return (t.f);
   }
 
+  /* Handle 0xH.HHH[p|P][+|-]DDD. */
+  if ( ! strnicmp( "0x", s, 2 ) && (s[2] == '.' || IS_HEX_DIGIT(s[2])) )
+  {
+    int digits, integer_digits;
+    int bin_exponent;
+    unsigned long int mantissa;
+    _float_union_t ieee754;
+
+
+    /*
+     *  Mantissa.
+     *  6 hex digits fit into the mantissa
+     *  including the implicit integer bit.
+     */
+    bin_exponent = 0;
+    integer_digits = 0;
+    mantissa = 0x00U;
+    s += 2;
+    while (integer_digits < 8 && IS_HEX_DIGIT(*s))
+    {
+      flags = 1;
+      mantissa <<= HEX_DIGIT_SIZE;
+      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+                  ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
+      if (mantissa)  /*  Discarts leading zeros.  */
+        integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */
+      s++;
+    }
+    if (integer_digits)
+    {
+      /*
+       *  Compute the binary exponent for a normalized mantissa by
+       *  shifting the decimal point inside the most significant hex digit.
+       */
+      unsigned long bit = 0x01ULL;
+
+      for (digits = 0; IS_HEX_DIGIT(*s); s++)
+        digits++;  /*  Counts hex digits.  */
+      bin_exponent = integer_digits * HEX_DIGIT_SIZE - 1;  /*  2**bin_exponent.  */
+      for (bit <<= bin_exponent; !(mantissa & bit); bin_exponent--)
+        bit >>= 1;
+      bin_exponent += digits * HEX_DIGIT_SIZE;
+    }
+
+    if (*s == decimal)
+    {
+      int fraction_zeros = 0;
+
+      s++;
+      digits = integer_digits;
+      while ((digits - fraction_zeros) < 8 && IS_HEX_DIGIT(*s))
+      {
+        flags = 1;
+        digits++;  /*  Counts hex digits.  */
+        mantissa <<= HEX_DIGIT_SIZE;
+        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+                    ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
+        if (mantissa == 0)
+          fraction_zeros++;  /*  Counts hex zeros.  16**(-fraction_zeros + 1).  */
+        s++;
+      }
+      if (!integer_digits && mantissa)
+      {
+        /*
+         *  Compute the binary exponent for a normalized mantissa by
+         *  shifting the decimal point inside the most significant hex digit.
+         */
+        unsigned long long bit = 0x01ULL;
+
+        bin_exponent = -fraction_zeros * HEX_DIGIT_SIZE;  /*  2**bin_exponent.  */
+        for (bit <<= (digits * HEX_DIGIT_SIZE + bin_exponent); !(mantissa & bit); bin_exponent--)
+          bit >>= 1;
+      }
+    }
+
+    if (!flags)
+    {
+      if (sret)
+        *sret = unconst(s, char *);
+      errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
+      return 0.0;
+    }
+
+    if (mantissa)
+    {
+      /*
+       *  Normalize mantissa.
+       */
+      while (!(mantissa & 0x80000000ULL))
+        mantissa <<= 1;  /*  Shift a binary 1 into the integer part of the mantissa.  */
+      mantissa >>= (31 - 23);
+      /*  At this point the mantissa is normalized and the exponent has been adjusted accordingly.  */
+    }
+
+
+    /*
+     *  After discarting all hex digits left,
+     *  if the next character is P or p
+     *  continue with the extracting of the
+     *  exponent, else any other character
+     *  that have appeared terminates the number.
+     */
+    while (IS_HEX_DIGIT(*s))
+      s++;
+
+    /*
+     *  Exponent.
+     */
+    if (IS_EXPONENT(s))
+    {
+      int exponent = 0.0;
+      s++;
+      if (*s == '+')
+        s++;
+      else if (*s == '-')
+      {
+        esign = -1;
+        s++;
+      }
+
+      while ((esign * exponent + bin_exponent) < (MAX_BIN_EXPONENT + 1) && IS_DEC_DIGIT(*s))
+      {
+        exponent *= 10;
+        exponent += *s - '0';
+        s++;
+      }
+      bin_exponent += esign * exponent;  /*  2**bin_exponent.  */
+      while (IS_DEC_DIGIT(*s))
+        s++;  /*  Discart rest of exponent.  */
+    }
+
+
+    if (sret)
+      *sret = unconst(s, char *);
+    if (mantissa)
+    {
+      if (bin_exponent > MAX_BIN_EXPONENT)
+      {
+        errno = ERANGE;
+        return sign * HUGE_VALF;
+      }
+      else if(bin_exponent < MIN_BIN_EXPONENT)
+      {
+        errno = ERANGE;
+        return 0.0;
+      }
+      ieee754.ft.sign     = (sign == 1) ? 0 : 1;
+      ieee754.ft.exponent = 0x07FFU & (bin_exponent + FLOAT_BIAS);
+      ieee754.ft.mantissa = 0x007FFFFFU & mantissa;
+    }
+    else
+      ieee754.f = sign * 0.0;
+
+    return ieee754.f;
+  }
+
   /* Handle ordinary numbers. */
-  while ((*s >= '0') && (*s <= '9'))
+  while (IS_DEC_DIGIT(*s))
   {
     flags |= 1;
     r *= 10.0;
@@ -151,7 +320,7 @@ strtof(const char *s, char **sret)
       s++;
       esign = -1;
     }
-    while ((*s >= '0') && (*s <= '9'))
+    while (IS_DEC_DIGIT(*s))
     {
       e *= 10;
       e += *s - '0';
