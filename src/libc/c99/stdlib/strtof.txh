@@ -5,19 +5,19 @@
 @example
 #include <stdlib.h>
 
-float strtof(const char *s, char **endp);
+float strtof(const char *@var{s}, char **@var{endp});
 @end example
 
 @subheading Description
 
-This function converts as many characters of @var{s} as look like a
-floating point number into that number.  It also recognises
-(case-insensitively) ``Inf'', ``Infinity'', ``NaN'',
-``NaN(@var{optional decimal-number})'',
-``NaN(@var{optional octal-number})''
-and ``NaN(@var{optional hex-number})''.  If @var{endp} is not a null
-pointer, a pointer to the first unconverted character will be stored
-in the location pointed to by @var{endp}.
+This function converts as many characters of @var{s} that look like a
+floating point number into that number.  The floating point number may
+also take the form of a hex floating point number (case-insensitively)
+like this [+|-]0xH.HHHp[+|-]DDD.  It also recognises (case-insensitively)
+``Inf'', ``Infinity'', ``NaN'', ``NaN(@var{optional decimal-number})'',
+``NaN(@var{optional octal-number})'' and ``NaN(@var{optional hex-number})''.
+If @var{endp} is not a null pointer, a pointer to the first unconverted
+character will be stored in the location pointed to by @var{endp}.  
 
 @subheading Return Value
 
@@ -65,6 +65,7 @@ char buf[] = "123ret";
 char buf2[] = "0x123ret";
 char buf3[] = "NAN(123)";
 char buf4[] = "NAN(0x123)";
+char buf5[] = "0x1234567.89ABCDefP+12";
 char *bp;
 float x, x2, x3, x4;
 
@@ -72,4 +73,5 @@ x = strtof(buf, &bp);
 x2 = strtof(buf2, &bp);
 x3 = strtof(buf3, &bp);
 x4 = strtof(buf4, &bp);
+x5 = strtod(buf5, &bp);
 @end example
