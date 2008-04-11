@@ -37,6 +37,7 @@ There is  no
 
 #include "ansidecl.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <unistd.h>
