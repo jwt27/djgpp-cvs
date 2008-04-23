@@ -41,7 +41,9 @@ static char decimal = '.';
 		flags&CHARINT ? (char basetype)va_arg(argp, int) : \
 		(basetype)va_arg(argp, int)
 
-static int nan_p = 0;
+#define IS_ZERO(x)  ((x).ldt.exponent == 0x0U && (x).ldt.mantissah == 0x0UL && (x).ldt.mantissal == 0x0UL)
+#define IS_NAN(x)   ((x).ldt.exponent == 0x7FFFU && ((x).ldt.mantissah & 0x7FFFFFFFUL || (x).ldt.mantissal))
+
 
 static __inline__ int todigit(char c)
 {
@@ -275,6 +277,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        * softsign avoids negative 0 if _double is < 0 and
        * no significant digits will be shown
        */
+      softsign = 0;
       if (_ldouble < 0)
       {
 	softsign = '-';
@@ -288,10 +291,13 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	ip.ld = _ldouble;
 
 	if (ip.ldt.sign)
+	{
 	  neg_ldouble = 1;
+	  if (IS_ZERO(ip) || IS_NAN(ip))
+	    softsign = '-';
+	}
 	else
 	  neg_ldouble = 0;
-	softsign = 0;
       }
       /*
        * cvt may have to round up past the "start" of the
@@ -307,9 +313,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        * will be shown, and we also print a sign for a NaN.  In
        * other words, "%+f" might print -0.000000, +NaN and -NaN.
        */
-      if (softsign || (sign == '+' && (neg_ldouble || nan_p == -1)))
+      if (softsign || (sign == '+' && neg_ldouble))
 	sign = '-';
-      nan_p = 0;
       t = *buf ? buf : buf + 1;
       goto pforw;
     case 'n':
@@ -916,7 +921,6 @@ isspeciall(long double d, char *bufp)
 
   ip.ldouble = d;
 
-  nan_p = 0;  /* don't assume the static is 0 (emacs) */
 
   /* Unnormals: the MSB of mantissa is non-zero, but the exponent is
      not zero either.  */
@@ -930,11 +934,7 @@ isspeciall(long double d, char *bufp)
   if (ip.ip.exp != 0x7fff)
     return(0);
   if ((ip.ip.manh & 0x7fffffff) || ip.ip.manl)
-  {
     strcpy(bufp, "NaN");
-    nan_p = ip.ip.sign ? -1 : 1; /* kludge: we don't need the sign, it's
-				    not nice, but it should work */
-  }
   else
     (void)strcpy(bufp, "Inf");
   return(3);
