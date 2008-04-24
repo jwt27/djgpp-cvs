@@ -290,10 +290,10 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 
 	ip.ld = _ldouble;
 
-	if (ip.ldt.sign)
+	if (ip.ldt.sign && !IS_NAN(ip))
 	{
 	  neg_ldouble = 1;
-	  if (IS_ZERO(ip) || IS_NAN(ip))
+	  if (IS_ZERO(ip))
 	    softsign = '-';
 	}
 	else
