@@ -1118,3 +1118,8 @@ The functions @code{strtod}, @code{strtof}, @code{strtold} and
 @code{_strtold} now understand hex floating point strings like
 @code{[+|-]0xH.HHHp[+|-]DDD} and any variations of case in the
 input string.
+
+@findex _doprnt@r{, and C99 conversion flags}
+@findex printf@r{, and C99 conversion flags}
+The @code{'} conversion flag is now supported by @code{_doprnt}
+and the @code{printf} family of functions.
