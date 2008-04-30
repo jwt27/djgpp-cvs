@@ -24,6 +24,11 @@ an optional flag, which may alter the conversion:
 
 @table @code
 
+@item '
+
+Formats the integer portion of the result of a decimal conversion (%i, %d, %u,
+%f, %F, %g and %G) using the non-monetary thousends' grouping character.
+
 @item -
 
 left-justify the field.
