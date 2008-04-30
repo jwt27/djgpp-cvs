@@ -1123,3 +1123,11 @@ input string.
 @findex printf@r{, and C99 conversion flags}
 The @code{'} conversion flag is now supported by @code{_doprnt}
 and the @code{printf} family of functions.
+
+@findex _doprnt@r{, and return string for special numbers like @code{pseudo-nan}}
+@findex printf@r{, and return string for special numbers like @code{pseudo-nan}}
+To increase compatibility with GNU glibc's @code{printf}, @code{printf} will
+return for the following special numbers @code{Quiet NaN},  @code{Signalling NaN},
+@code{Pseudo-Denormal}, @code{Pseudo-NaN}, @code{Pseudo-Infinity},
+@code{Pseudo-Zero} and denormalized numbers @code{nan} or @code{NAN} instead
+of @code{Unnormal}.
