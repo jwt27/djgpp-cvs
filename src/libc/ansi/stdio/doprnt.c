@@ -1,3 +1,4 @@
+/* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -44,12 +45,12 @@ static char *grouping;
 
 #define	PUTC(ch)	(void) putc(ch, fp)
 
-#define ARG(basetype) _ulonglong = \
-		flags&LONGDBL ? va_arg(argp, long long basetype) : \
-		flags&LONGINT ? va_arg(argp, long basetype) : \
-		flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
-		flags&CHARINT ? (char basetype)va_arg(argp, int) : \
-		(basetype)va_arg(argp, int)
+#define ARG(basetype) _ulonglong =                        \
+  flags & LONGDBL  ? va_arg(argp, long long basetype) :   \
+  flags & LONGINT  ? va_arg(argp, long basetype) :        \
+  flags & SHORTINT ? (short basetype)va_arg(argp, int) :  \
+  flags & CHARINT  ? (char basetype)va_arg(argp, int) :   \
+  (basetype)va_arg(argp, int)
 
 #define CONVERT(type, value, base, string, case)               \
   do {                                                         \
@@ -65,20 +66,20 @@ static char *grouping;
                               || ((x).ldt.exponent == 0x0000U && !((x).ldt.mantissah & 0x80000000UL)))
 #define IS_ZERO(x)           ((x).ldt.exponent == 0x0U && (x).ldt.mantissah == 0x0UL && (x).ldt.mantissal == 0x0UL)
 #define IS_NAN(x)            ((x).ldt.exponent == 0x7FFFU && ((x).ldt.mantissah & 0x7FFFFFFFUL || (x).ldt.mantissal))
-#define IS_PSEUDO_NUMBER(x)  (((x).ldt.exponent != 0x0000U && !((x).ldt.mantissah & 0x80000000UL))   /*  Pseudo-NaN, Pseudo-Infinity and Unnormal.  */ \
+#define IS_PSEUDO_NUMBER(x)  (((x).ldt.exponent != 0x0000U && !((x).ldt.mantissah & 0x80000000UL))   /*  Pseudo-NaN, Pseudo-Infinity and Unnormal.  */  \
                               || ((x).ldt.exponent == 0x0000U && (x).ldt.mantissah & 0x80000000UL))  /*  Pseudo-Denormal.  */
 
 static __inline__ int todigit(char c)
 {
-  if (c<='0') return 0;
-  if (c>='9') return 9;
+  if (c <= '0') return 0;
+  if (c >= '9') return 9;
   return c-'0';
 }
 static __inline__ char tochar(int n)
 {
-  if (n>=9) return '9';
-  if (n<=0) return '0';
-  return n+'0';
+  if (n >= 9) return '9';
+  if (n <= 0) return '0';
+  return n + '0';
 }
 
 /* have to deal with the negative buffer count kludge */
@@ -105,6 +106,7 @@ static char *exponentl(char *p, int expv, unsigned char fmtch, int flags);
 static int isspeciall(long double d, char *bufp, int flags);
 #endif
 static __inline__ char * __grouping_format(char *string_start, char *string_end, char *buffer_end, int flags);
+static __inline__ va_list __traverse_argument_list(int index_of_arg_to_be_fetched, const char *format_string, va_list arg_list);
 
 static char NULL_REP[] = "(null)";
 static const char LOWER_DIGITS[] = "0123456789abcdef";
@@ -136,6 +138,10 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char buf[BUF];		/* space for %c, %[diouxX], %[aAeEfFgG] */
   int neg_ldouble = FALSE;	/* TRUE if _ldouble is negative */
   struct lconv *locale_info;    /* current locale information */
+  int using_numeric_conv_spec;  /* TRUE if using numeric specifier, FALSE else */
+  va_list arg_list;		/* argument list */
+  va_list to_be_printed = NULL;	/* argument to be printed if numeric specifier are used */
+  const char *pos;		/* position in format string when checking for numeric conv spec */
 
 
   locale_info = localeconv();
@@ -149,6 +155,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   if ((fp->_flag & _IOWRT) == 0)
     return (EOF);
 
+  using_numeric_conv_spec = FALSE;
+  arg_list = argp;
   fmt = fmt0;
   for (cnt = 0;; ++fmt)
   {
@@ -197,6 +205,16 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        *	-- ANSI X3J11
        * They don't exclude field widths read from args.
        */
+      pos = fmt;
+      for (n = 0, fmt++; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
+        n = 10 * n + todigit(*fmt);
+      if (*fmt == '$')
+      {
+        using_numeric_conv_spec = TRUE;
+        argp = __traverse_argument_list(n, fmt0, arg_list);
+      }
+      else
+        fmt = pos;
       if ((width = va_arg(argp, int)) >= 0)
 	goto rflag;
       width = -width;
@@ -209,7 +227,19 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       goto rflag;
     case '.':
       if (*++fmt == '*')
-	n = va_arg(argp, int);
+      {
+        pos = fmt;
+        for (n = 0, fmt++; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
+          n = 10 * n + todigit(*fmt);
+        if (*fmt == '$')
+        {
+          using_numeric_conv_spec = TRUE;
+          argp = __traverse_argument_list(n, fmt0, arg_list);
+        }
+        else
+          fmt = pos;
+        n = va_arg(argp, int);
+      }
       else
       {
 	n = 0;
@@ -233,21 +263,30 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       do {
 	n = 10 * n + todigit(*fmt);
       } while (isascii((unsigned char)*++fmt) && isdigit((unsigned char)*fmt));
-      width = n;
-      --fmt;
+      if (*fmt == '$')
+      {
+        using_numeric_conv_spec = TRUE;
+        to_be_printed = __traverse_argument_list(n, fmt0, arg_list);
+      }
+      else
+      {
+        width = n;
+        --fmt;
+      }
       goto rflag;
     case 'L':
       flags |= LONGDBL;
       goto rflag;
     case 'h':
-      if (flags & SHORTINT) {
+      if (flags & SHORTINT)
+      {
 	/* C99 */
 	/* for 'hh' - char */
 	flags |= CHARINT;
 	flags &= ~SHORTINT;
-      } else {
-	flags |= SHORTINT;
       }
+      else
+	flags |= SHORTINT;
       goto rflag;
     case 'l':
       if (flags & LONGINT)
@@ -274,6 +313,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       /*FALLTHROUGH*/
     case 'd':
     case 'i':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       ARG(signed);
       if ((long long)_ulonglong < 0)
       {
@@ -292,6 +333,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
     case 'e':
     case 'f':
     case 'g':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       flags |= FLOAT;
       if (*fmt == 'A' || *fmt == 'a')
       {
@@ -378,6 +421,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       base = flags & HEXPREFIX ? 16 : 10;
       goto pforw;
     case 'n':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       if (flags & LONGDBL)
         *va_arg(argp, long long *) = cnt;
       else if (flags & LONGINT)
@@ -393,6 +438,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       flags |= LONGINT;
       /*FALLTHROUGH*/
     case 'o':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       ARG(unsigned);
       base = 8;
       flags |= FINITENUMBER;
@@ -406,10 +453,14 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        *	-- ANSI X3J11
        */
       /* NOSTRICT */
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       _ulonglong = (unsigned long)va_arg(argp, void *);
       base = 16;
       goto nosign;
     case 's':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       if (!(t = va_arg(argp, char *)))
 	t = NULL_REP;
       if (prec >= 0)
@@ -438,6 +489,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       flags |= LONGINT;
       /*FALLTHROUGH*/
     case 'u':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       ARG(unsigned);
       base = 10;
       flags |= FINITENUMBER;
@@ -446,6 +499,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       flags |= UPPERCASE;
       /* FALLTHROUGH */
     case 'x':
+      if (using_numeric_conv_spec)
+        argp = to_be_printed;
       ARG(unsigned);
       base = 16;
       flags |= FINITENUMBER;
@@ -803,7 +858,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     if (integer > INVPREC)
     {
       integer *= PREC;
-      while(lp >= 0) {
+      while(lp >= 0)
+      {
 	if (integer >= pten[lp])
 	{
 	  expcnt += pt;
@@ -936,7 +992,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
 #endif
       }
       /* adjust expcnt for digit in front of decimal */
-      for (			/* expcnt = -1 */ ;; --expcnt)
+      for (/* expcnt = -1 */ ;; --expcnt)
       {
 	fract = modfl(fract * 10.0L, &tmp);
 	if (tmp)
@@ -979,14 +1035,16 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     break;
   case 'g':
   case 'G':
-    if (prec) {
-        /* If doing zero and precision is greater than 0 count the
-         * 0 before the decimal place */
-        if (doingzero) --prec;
+    if (prec)
+    {
+      /* If doing zero and precision is greater than 0 count the
+       * 0 before the decimal place */
+      if (doingzero) --prec;
     }
-    else {
-        /* a precision of 0 is treated as precision of 1 unless doing zero */
-        if (!doingzero) ++prec;
+    else
+    {
+      /* a precision of 0 is treated as precision of 1 unless doing zero */
+      if (!doingzero) ++prec;
     }
     /*
      * ``The style used depends on the value converted; style e
@@ -1250,4 +1308,159 @@ __grouping_format(char *string_start, char *string_end, char *buffer_end, int fl
       }
 
   return (*dst == thousands_sep) ? dst + 1 : dst;  /*  Remove leading thousands separator character.  */
+}
+
+static __inline__ va_list
+__traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_list argp)
+{
+  /*
+   *  Traverse an argument list until certain position.
+   *  The argument list of type va_list is traversed
+   *  according to the information extracted from the
+   *  format string fmt. It stops at position given by
+   *  index_of_arg_to_be_fetched so the next access by
+   *  the calling context using va_arg() fetches the
+   *  wanted element from the list.
+   */
+
+  const char *fmt = fmt0;
+  int arg_index = 0, prec_index = 0, list_index;
+  int ch, flags, n = index_of_arg_to_be_fetched + 1;
+  unsigned long long _ulonglong;  /* discard value retrieved by ARG() */
+
+
+  for (list_index = 1; list_index < n;)
+  {
+    while ((ch = *fmt) && ch != '%')
+      fmt++;
+    if (!ch)
+    {
+      if (list_index < n)
+        fmt = fmt0;
+      else
+        return argp;
+    }
+
+    flags = 0;
+  rflag:
+    switch (*++fmt)
+    {
+    /* Flags */
+    case ' ': case '#': case '\'':
+    case '-': case '+':
+      goto rflag;
+
+    /* Numeric conversion specifier field width and precision:  *n$.*m$ */
+    case '*':
+      for (prec_index = 0, fmt++; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
+        prec_index = 10 * prec_index + todigit(*fmt);
+      if (prec_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+        return argp;
+      if (prec_index == list_index)
+      {
+        va_arg(argp, int);  /* discard */
+        list_index++;
+      }
+      goto rflag;
+    case '.':
+      if (*++fmt == '*')
+      {
+        for (prec_index = 0, fmt++; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
+          prec_index = 10 * prec_index + todigit(*fmt);
+        if (prec_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+          return argp;
+        if (prec_index == list_index)
+        {
+          va_arg(argp, int);  /* discard */
+          list_index++;
+        }
+      }
+      goto rflag;
+
+    /* Numeric conversion specifier %n$ */
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9':
+      for (arg_index = 0; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
+        arg_index = 10 * arg_index + todigit(*fmt);
+      goto rflag;
+
+    /* Length modifiers */
+    case 'h': case 't': case 'z':  /* promoted to int */
+      goto rflag;
+    case 'L': /* a, A, e, E, f, F, g, G applies to long double */
+      flags |= LONGDBL;
+      goto rflag;
+    case 'l':
+      if (flags & LONGINT)
+        flags |= LONGDBL; /* d, i o, u, x, X applies to long long */
+      else
+        flags |= LONGINT; /* d, i o, u, x, X applies to long */
+      goto rflag;
+    case 'j': /* d, i o, u, x, X applies to intmax_t */
+      flags |= LONGDBL; /* long long */
+      goto rflag;
+
+    /* Conversion specifiers */
+    case 'c':
+      if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+        return argp;
+      if (arg_index == list_index)
+      {
+        va_arg(argp, int);  /* discard */
+        list_index++;
+      }
+      break;
+    case 'D':
+      flags |= LONGINT;
+      /*FALLTHROUGH*/
+    case 'd': case 'i':
+      if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+        return argp;
+      if (arg_index == list_index)
+      {
+        ARG(signed);  /* discard */
+        list_index++;
+      }
+      break;
+    case 'A': case 'E': case 'F': case 'G':
+    case 'a': case 'e': case 'f': case 'g':
+      if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+        return argp;
+      if (arg_index == list_index)
+      {
+        if (flags & LONGDBL)
+          va_arg(argp, long double);  /* discard */
+        else
+          va_arg(argp, double);  /* discard */
+        list_index++;
+      }
+      break;
+    case 'O': case 'U': case 'X':
+      flags |= LONGINT;
+      /*FALLTHROUGH*/
+    case 'o': case 'u': case 'x':
+      if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+        return argp;
+      if (arg_index == list_index)
+      {
+        ARG(unsigned);  /* discard */
+        list_index++;
+      }
+      break;
+    case 'n': case 'p': case 's':
+      if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
+        return argp;
+      if (arg_index == list_index)
+      {
+        va_arg(argp, void *);  /* discard */
+        list_index++;
+      }
+      break;
+
+    case '\0':
+      return argp;
+    }
+  }
+
+  return argp;
 }
