@@ -24,6 +24,13 @@ static char decimal_point;
 static char thousands_sep;
 static char *grouping;
 
+#ifndef FALSE
+# define FALSE  0
+#endif
+#ifndef TRUE
+# define TRUE   1
+#endif
+
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define	MAXEXP		308
 #define MAXEXPLD        4952 /* this includes subnormal numbers */
@@ -43,6 +50,16 @@ static char *grouping;
 		flags&SHORTINT ? (short basetype)va_arg(argp, int) : \
 		flags&CHARINT ? (char basetype)va_arg(argp, int) : \
 		(basetype)va_arg(argp, int)
+
+#define CONVERT(type, value, base, string, case)               \
+  do {                                                         \
+    const char *digit = (case) ? UPPER_DIGITS : LOWER_DIGITS;  \
+    register type _value = (type)(value);                      \
+                                                               \
+    do {                                                       \
+      *--(string) = digit[(_value) % (base)];                  \
+    } while ((_value) /= (base));                              \
+  } while (0)
 
 #define IS_FINITE(x)         (((x).ldt.exponent < 0x7FFFU && (x).ldt.exponent > 0x0000U && (x).ldt.mantissah & 0x80000000UL)  \
                               || ((x).ldt.exponent == 0x0000U && !((x).ldt.mantissah & 0x80000000UL)))
@@ -90,6 +107,8 @@ static int isspeciall(long double d, char *bufp, int flags);
 static __inline__ char * __grouping_format(char *string_start, char *string_end, char *buffer_end, int flags);
 
 static char NULL_REP[] = "(null)";
+static const char LOWER_DIGITS[] = "0123456789abcdef";
+static const char UPPER_DIGITS[] = "0123456789ABCDEF";
 
 
 int
@@ -101,23 +120,23 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   int n;			/* random handy integer */
   char *t;			/* buffer pointer */
   long double _ldouble;		/* double and long double precision arguments
-				   %L.[eEfgG] */
+				   %L.[aAeEfFgG] */
   unsigned long long _ulonglong=0; /* integer arguments %[diouxX] */
   int base;			/* base for [diouxX] conversion */
   int dprec;			/* decimal precision in [diouxX] */
   int fieldsz;			/* field size expanded by sign, etc */
   int flags;			/* flags as above */
-  int fpprec;			/* `extra' floating precision in [eEfgG] */
+  int fpprec;			/* `extra' floating precision in [eEfFgG] */
   int prec;			/* precision from format (%.3d), or -1 */
   int realsz;			/* field size expanded by decimal precision */
   int size;			/* size of converted field or string */
   int width;			/* width from format (%8d), or 0 */
   char sign;			/* sign prefix (' ', '+', '-', or \0) */
   char softsign;		/* temporary negative sign for floats */
-  const char *digs;		/* digits for [diouxX] conversion */
-  char buf[BUF];		/* space for %c, %[diouxX], %[eEfgG] */
-  int neg_ldouble = 0;		/* non-zero if _ldouble is negative */
+  char buf[BUF];		/* space for %c, %[diouxX], %[aAeEfFgG] */
+  int neg_ldouble = FALSE;	/* TRUE if _ldouble is negative */
   struct lconv *locale_info;    /* current locale information */
+
 
   locale_info = localeconv();
   decimal_point = locale_info->decimal_point[0];
@@ -131,7 +150,6 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
     return (EOF);
 
   fmt = fmt0;
-  digs = "0123456789abcdef";
   for (cnt = 0;; ++fmt)
   {
     _longdouble_union_t ieee_value;
@@ -265,13 +283,21 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       base = 10;
       flags |= FINITENUMBER;
       goto number;
+    case 'A':
     case 'E':
+    case 'F':
     case 'G':
       flags |= UPPERCASE;
+    case 'a':
     case 'e':
     case 'f':
     case 'g':
       flags |= FLOAT;
+      if (*fmt == 'A' || *fmt == 'a')
+      {
+        flags |= HEXPREFIX;
+        flags &= ~LONGINT;
+      }
       if (flags & LONGDBL)
 	_ldouble = va_arg(argp, long double);
       else
@@ -296,6 +322,15 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       {
 	if (flags & LONGINT)
 	  prec = DEFLPREC;
+	else if (flags & HEXPREFIX)
+	  /*
+	   *  C99 imposes that precision must be sufficient
+	   *  for an exact representation of the mantissa.
+	   *  If no explicit precision is given, the required
+	   *  precision for exact representation will be
+	   *  determinated in the conversion function itself.
+	   */
+	  prec = -1;
 	else
 	  prec = DEFPREC;
       }
@@ -308,7 +343,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       {
 	softsign = '-';
 	_ldouble = -_ldouble;
-	neg_ldouble = 1;
+	neg_ldouble = TRUE;
       }
       else
       {
@@ -316,12 +351,12 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 
 	if (ieee_value.ldt.sign && !IS_NAN(ieee_value) && !IS_PSEUDO_NUMBER(ieee_value))
 	{
-	  neg_ldouble = 1;
+	  neg_ldouble = TRUE;
 	  if (IS_ZERO(ieee_value))
 	    softsign = '-';
 	}
 	else
-	  neg_ldouble = 0;
+	  neg_ldouble = FALSE;
       }
       /*
        * cvt may have to round up past the "start" of the
@@ -340,7 +375,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       if (softsign || (sign == '+' && neg_ldouble))
 	sign = '-';
       t = *buf ? buf : buf + 1;
-      base = 10;
+      base = flags & HEXPREFIX ? 16 : 10;
       goto pforw;
     case 'n':
       if (flags & LONGDBL)
@@ -408,7 +443,6 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       flags |= FINITENUMBER;
       goto nosign;
     case 'X':
-      digs = "0123456789ABCDEF";
       flags |= UPPERCASE;
       /* FALLTHROUGH */
     case 'x':
@@ -442,24 +476,14 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       {
         /* conversion is done separately since operations
            with long long are much slower */
-#define CONVERT(type)                            \
-        do {                                     \
-           register type _n = (type)_ulonglong;  \
-           do {                                  \
-             *--t = digs[_n % base];             \
-             _n /= base;                         \
-           } while (_n);                         \
-        } while (0)
 	if (flags & LONGDBL)
-	  CONVERT(unsigned long long);
+	  CONVERT(unsigned long long, _ulonglong, base, t, flags & UPPERCASE);
 	else
-	  CONVERT(unsigned long);
-#undef CONVERT
+	  CONVERT(unsigned long, _ulonglong, base, t, flags & UPPERCASE);
         if ((flags & ALT) && base == 8 && *t != '0')
           *--t = '0';		/* octal leading 0 */
       }
 
-      digs = "0123456789abcdef";
       size = buf + BUF - t;
 
     pforw:
@@ -495,8 +519,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       realsz = dprec > fieldsz ? dprec : fieldsz;
       if (sign)
 	realsz++;
-      if (flags & HEXPREFIX)
-	realsz += 2;
+      if ((flags & HEXPREFIX) && (flags & FINITENUMBER))
+	realsz += 2;  /* hex leading 0x */
 
       /* right-adjusting blank padding */
       if ((flags & (LADJUST | ZEROPAD)) == 0 && width)
@@ -505,10 +529,10 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       /* prefix */
       if (sign)
 	PUTC(sign);
-      if (flags & HEXPREFIX)
+      if ((flags & HEXPREFIX) && (flags & FINITENUMBER))
       {
 	PUTC('0');
-	PUTC((char)*fmt);
+	PUTC((*fmt == 'A') ? 'X' : (*fmt == 'a') ? 'x' : (char)*fmt);
       }
       /* right-adjusting zero padding */
       if ((flags & (LADJUST | ZEROPAD)) == ZEROPAD)
@@ -571,14 +595,196 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
      char *startp, char *endp)
 {
   char *p, *t;
-  long double fract=0;
+  long double fract = 0;
   int dotrim, expcnt, gformat;
-  int doextradps=0;    /* Do extra decimal places if the precision needs it */
-  int doingzero=0;     /* We're displaying 0.0 */
+  int doextradps = FALSE;    /* Do extra decimal places if the precision needs it */
+  int doingzero = FALSE;     /* We're displaying 0.0 */
   long double integer, tmp;
 
   if ((expcnt = isspeciall(number, startp, flags)))
     return(expcnt);
+
+  if (fmtch == 'a' || fmtch == 'A')
+  {
+    /*
+     *  We are dealing with intel's extended double format.
+     *  The 64-bit mantissa explicitly contains the leading integer binary digit.
+     *  C99 standard defines hex float format as: 0xh.hhhp+ddd
+     *  where h is a hex digit, d is a decimal digit and p represents base 2.
+     *  The 64 bit of the mantissa can be subdivided into 16 nibbles,
+     *  so exact hex representation of the binary coded mantissa is
+     *  possible.  To get a single hex digit in the integer part of
+     *  the mantissa the period must be shifted by three places
+     *  to the right if the number is a normalized finite one.
+     *  If it is a denormalized finite number, then it may become necessary
+     *  to shift the period by ont to fifteen places.  Accordingly the exponent
+     *  must be adjusted.
+     */
+#define CHAR_SIZE                       8
+#define HEX_DIGIT_SIZE                  4
+#define IEEE754_LONG_DOUBLE_BIAS        0x3FFFU
+
+
+    long_double_t ip = *(long_double_t *)(void *)&number;
+    char *fraction_part;
+    int left_shifts, precision_given, positive_exponent, exponent = ip.exponent;
+    unsigned long long int mantissa = (unsigned long long int) ip.mantissah << 32 | ip.mantissal;
+
+    p = endp;
+    t = startp;
+    precision_given = (prec != -1) ? TRUE : FALSE;
+
+    /*
+     *  Compute the amount of left shifts necessary
+     *  to have one single hex digit (nibble) in the
+     *  integer part of the mantissa.  For normalized
+     *  finite numbers these are 3.  For denormalized
+     *  finte numbers these will range from 1 to 15.
+     *  Accordingly to these shifts the exponent will
+     *  be adjusted.
+     */
+    left_shifts = 0;  /*  No shifts for 0.0  */
+    if (mantissa)
+    {
+      unsigned long long int m = mantissa;
+
+      for (; !(mantissa & 0x8000000000000000ULL); left_shifts++)
+        mantissa <<= 1;
+      if (left_shifts)  /*  Denormalized finite.  */
+      {
+        if (precision_given == FALSE)
+          mantissa = m;
+
+        if (left_shifts < (int)(sizeof(mantissa) * CHAR_SIZE - HEX_DIGIT_SIZE))
+        {
+          /*
+           *  For an exact representation of the mantissa
+           *  there must be a integral number of nibbles
+           *  (hex digit) in the fraction part of the mantissa.
+           *  A fraction part of a nibble will be shifted
+           *  into the integer part of the mantissa.
+           *  The converted mantisssa will look like:
+           *    0xh.hhhh
+           *  and the exponent will be adjusted accordingly.
+           */
+          unsigned int bin_digits, digits = (sizeof(mantissa) * CHAR_SIZE - 1 - left_shifts) % HEX_DIGIT_SIZE;  /*  Number of digits that do not build a nibble in the fraction part.  */
+
+          /*
+           *  Shift the period to the left
+           *  until no fraction of a nibble remains
+           *  in the fraction part of the mantissa.
+           */
+          for (bin_digits = 0; bin_digits < digits; bin_digits++)
+            left_shifts++;
+
+          /*
+           *  If no binary digits are shifted into the integer part,
+           *  then the nibble of the integer part must be filled with zeros.
+           */
+          if (precision_given == TRUE && bin_digits == 0)
+            mantissa >>= (HEX_DIGIT_SIZE - 1);
+        }
+        else
+          left_shifts = sizeof(mantissa) * CHAR_SIZE - 1;
+      }
+      else              /*  Normalized finite.  */
+        left_shifts = HEX_DIGIT_SIZE - 1;
+    }
+
+    /*
+     *  Mantissa.
+     *  The mantissa representation shall be exact
+     *  except that trailing zeros may be omitted.
+     */
+    if (precision_given == TRUE)
+    {
+      unsigned int fraction_hex_digits = sizeof(mantissa) * CHAR_SIZE / HEX_DIGIT_SIZE - 1;  /*  Number of hex digits (nibbles) in the fraction part.  */
+
+      if (prec < (int)fraction_hex_digits)
+      {
+        /*
+         *  If requested precision is less than the size of
+         *  the mantissa's fraction do rounding to even.
+         */
+#define MUST_ROUND_TO_EVEN(value)  ((((value) & 0x0FULL) == 0x08ULL) && ((((value) & 0xF0ULL) >> HEX_DIGIT_SIZE) % 2))
+        unsigned int n = fraction_hex_digits - prec - 1;  /*  One nibble more than precision.  */
+
+        mantissa >>= n * HEX_DIGIT_SIZE;  /*  The least significant nibble will determinate the rounding.  */
+        if (((mantissa & 0x0FULL) > 0x08ULL) || MUST_ROUND_TO_EVEN(mantissa))
+          mantissa += 0x10ULL;            /*  Round up.  */
+        mantissa >>= HEX_DIGIT_SIZE;      /*  Discard least significant nibble used for rounding.  */
+
+        n = fraction_hex_digits - n;
+        if ((mantissa >> (n * HEX_DIGIT_SIZE)) & 0x01ULL)  /*  Carry ?  */
+        {
+          /*
+           *  The rounding has produced a 2 hex digit long integer part
+           *  of the mantissa, so the mantissa must be shifted to the right
+           *  by one hex digit and the exponent adjusted accordingly.
+           */
+          mantissa >>= HEX_DIGIT_SIZE;
+          left_shifts -= HEX_DIGIT_SIZE;
+        }
+#undef MUST_ROUND_TO_EVEN
+      }
+    }
+
+    CONVERT(unsigned long long int, mantissa, 16, p, fmtch == 'A');
+    *t++ = *p++;
+    *t++ = decimal_point;
+
+    fraction_part = t;
+    for (; p < endp; *t++ = *p++)
+      ;
+    if (precision_given == FALSE)
+    {
+      /*
+       *  C99 imposes that, if the precision is omitted,
+       *  the precision must be sufficient for an exact
+       *  representation of the mantissa except that the
+       *  trailing zeros may be omitted.
+       */
+      while (*--t == '0')
+        ;  /*  Discard trailing zeros. */
+      t++;  /*  Points to first free place.  */
+    }
+    else
+      while (t - fraction_part < prec && t < endp)
+        *t++ = '0';  /*  Pad with zeros to the right.  At the end of the loop points to first free place.  */
+    if (t[-1] == decimal_point && !(flags & ALT))
+      t--;  /*  Do not output a decimal point.  */
+
+    /*
+     *  Exponent.
+     */
+    if (exponent == 0)
+    {
+      if (mantissa)     /*  Denormalized finite number.  */
+        exponent = 1 - IEEE754_LONG_DOUBLE_BIAS;
+    }
+    else                /*  Normalized finite number.  */
+      exponent -= IEEE754_LONG_DOUBLE_BIAS;
+    exponent -= left_shifts;
+    if (exponent < 0)
+    {
+      exponent = -exponent;
+      positive_exponent = FALSE;
+    }
+    else
+      positive_exponent = TRUE;
+
+    CONVERT(int, exponent, 10, p, flags & UPPERCASE);
+    *--p = (positive_exponent) ? '+' : '-';
+    *--p = (flags & UPPERCASE) ? 'P' : 'p';
+    for (; p < endp; *t++ = *p++)
+      ;
+
+    return t - startp;
+
+#undef IEEE754_LONG_DOUBLE_BIAS
+#undef HEX_DIGIT_SIZE
+#undef CHAR_SIZE
+  }
 
   dotrim = expcnt = gformat = 0;
   /* fract = modfl(number, &integer); */
@@ -627,9 +833,9 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   if (integer < 1)
   {
     /* If fract is zero the zero before the decimal point is a sig fig */
-    if (fract == 0.0) doingzero = 1;
+    if (fract == 0.0) doingzero = TRUE;
     /* If fract is non-zero all sig figs are in fractional part */
-    else doextradps = 1;
+    else doextradps = TRUE;
   }
   /*
    * get integer portion of number; put into the end of the buffer.
@@ -648,6 +854,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   switch(fmtch)
   {
   case 'f':
+  case 'F':
     /* reverse integer into beginning of buffer */
     if (expcnt)
       for (; ++p < endp; *t++ = *p);
@@ -815,11 +1022,11 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
      */
     if (prec || (flags & ALT))
     {
-      dotrim = 1;
+      dotrim = TRUE;
       *t++ = decimal_point;
     }
     else
-      dotrim = 0;
+      dotrim = FALSE;
     /* if requires more precision and some fraction left */
     while (prec && fract)
     {
@@ -828,9 +1035,9 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
       /* If we're not adding 0s
        * or we are but they're sig figs:
        * decrement the precision */
-      if ((doextradps != 1) || ((int)tmp != 0))
+      if ((doextradps != TRUE) || ((int)tmp != 0))
       {
-        doextradps = 0;
+        doextradps = FALSE;
         prec--;
       }
     }
