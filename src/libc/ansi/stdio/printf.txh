@@ -13,8 +13,23 @@ int printf(const char *@var{format}, @dots{});
 Sends formatted output from the arguments (@dots{}) to @code{stdout}.
 
 The format string contains regular characters to print, as well as
-conversion specifiers, which begin with a percent symbol.  Each
-conversion speficier contains the following fields:
+conversion specifiers, which begin with a percent symbol.  Conversions can
+be applied to the nth argument after the format string in the argument list,
+rather than to the next unused argument.  In this case, the conversion
+specifier character @code{%} is replaced by the sequence @code{"%n$"}, where
+@code{n} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
+giving the position of the argument in the argument list.  The format string
+can contain either numbered argument conversion specifiers (that is, +@code{"%n$"}
+and @code{"*m$"}), or unnumbered argument conversion specifiers (that is @code{%}
+and @code{*}), but not both.  The only exception to this is that @code{%%} can
+be mixed with @code{"%n$"} form.  When numbered argument specifications are
+used, specifying the Nth argument requires that all the leading arguments,
+from the first to the (N-1)th, are specified in the format string.  In format
+strings containing the @code{"%n$"} form of conversion specification, numbered
+arguments in the argument list can be referenced from the format string as many
+times as required.
+
+Each conversion specifier contains the following fields:
 
 @itemize @bullet
 
@@ -59,6 +74,11 @@ A field width specifier, which specifies the minimum width of the field.
 This may also be an asterisk (@code{*}), which means that the actual
 width will be obtained from the next argument.  If the argument is
 negative, it supplies a @code{-} flag and a positive width. 
+In format strings containing the @code{"%n$"} form of a conversion
+specifier, a field width can be indicated by the sequence @code{"*m$"},
+where m is a decimal integer in the range [@code{1}, @code{number of the last argument}],
+giving the position in the argument list (after the format argument) of
+an integer argument containing the field width.
 
 @item
 
@@ -68,6 +88,11 @@ The precision specifies the minimum number of digits to print for an
 integer, the number of fraction digits for a floating point number (max
 for @code{g} or @code{G}, actual for others), or the maximum number of
 characters for a string. 
+In format strings containing the @code{"%n$"} form of a conversion
+specifier, a precision can be indicated by the sequence @code{"*m$"},
+where m is a decimal integer in the range [@code{1}, @code{number of the last argument}],
+giving the position in the argument list (after the format argument) of
+an integer argument containing the precision.
 
 @item
 
@@ -220,4 +245,38 @@ specifiers first appeared in the ANSI C99 standard.
 
 @example
 printf("%-3d %10.2f%% Percent of %s\n", index, per[index], name[index]);
+@end example
+
+The following statement can be used to print date and time
+using language-independent format:
+
+@example
+printf(format, weekday, month, day, hour, precision, min);
+@end example
+
+
+For American usage, the format string could look like:
+
+@example
+"%s, %s %d, %d:%.*d\n"
+@end example
+
+The integer precision has the value 2.
+The above example will produce the following message:
+
+@example
+Sunday, October 27, 9:09
+@end example
+
+
+For German usage, the format string could look like:
+
+@example
+"%1$s, %3$d. %2$s, %4$d:%6$.*5$d\n"
+@end example
+
+The above example will produce the following message:
+
+@example
+Sonntag, 27. Oktober, 9:09
 @end example
