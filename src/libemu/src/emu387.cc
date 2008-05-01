@@ -185,18 +185,22 @@ static int compare(reg& a, reg& b)
   if (a_inf || b_inf)
   {
     if (a_inf == 1)
+    {
       if (b_inf == 1)
-        return COMP_A_EQ_B;
+	return COMP_A_EQ_B;
       else
         return COMP_A_GT_B;
+    }
     if (b_inf == 1)
       return COMP_A_LT_B;
 
     if (a_inf == -1)
+    {
       if (b_inf == -1)
         return COMP_A_EQ_B;
       else
         return COMP_A_LT_B;
+    }
     if (b_inf == -1)
       return COMP_A_GT_B;
   }
@@ -1078,11 +1082,13 @@ static void round_to_int(reg& r) // r gets mangled such that sig is int, sign
   {
     case RC_RND:
       if (half_or_more)
+      {
         if (more_than_half) // nearest
           (*(long long *)(void *)(&r.sigl)) ++;
         else
           if (r.sigl & 1) // odd?
             (*(long long *)(void *)(&r.sigl)) ++;
+      }
       break;
     case RC_DOWN:
       if ((half_or_more||more_than_half) && r.sign)
