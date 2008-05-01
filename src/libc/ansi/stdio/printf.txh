@@ -5,7 +5,7 @@
 @example
 #include <stdio.h>
 
-int printf(const char *format, @dots{});
+int printf(const char *@var{format}, @dots{});
 @end example
 
 @subheading Description
@@ -106,6 +106,17 @@ The conversion type specifier:
 
 @table @code
 
+@item a
+@itemx A
+
+A floating point number (float or double) printed in the style
+@code{"[-]0xh.hhhhp[+|-]d"}, where @code{h} represents a hexadecimal
+digit, @code{d} represents a decimal digit and @code{p} stands for the
+base 2.  For long double, use @code{"La"} or @code{"LA"}.  The case of
+the exponent, the case of the letters @code{"abcdef"} and the case of
+@code{"x"} matches the specifier case.  The representation always has
+an exponent.
+
 @item c
 
 A single character.
@@ -127,6 +138,7 @@ A floating point number (float or double).  For long double, use
 case.  The representation always has an exponent.
 
 @item f
+@itemx F
 
 A floating point number (float or double).  For long double, use
 @code{"Lf"}.  The representation never has an exponent.
@@ -193,12 +205,14 @@ The number of characters written.
 
 @subheading Portability
 
-@port-note ansi The @code{D}, @code{O} and @code{U} conversion types
-are non-standard.  gcc may generate warnings, if you use them.
+@port-note ansi The @code{D}, @code{O} and @code{U} conversion type
+specifiers are non-standard.  gcc may generate warnings, if you use them.
 
-@port-note ansi-c99 The @code{hh}, @code{j}, @code{t}
-and @code{z} conversion specifiers first appeared
-in the ANSI C99 standard.
+@port-note ansi-c99 The @code{hh}, @code{j}, @code{t} and @code{z}
+conversion qualifiers first appeared in the ANSI C99 standard.
+
+@port-note ansi The @code{a}, @code{A} and @code{F} conversion type
+specifiers first appeared in the ANSI C99 standard.
 
 @portability ansi, posix
 
