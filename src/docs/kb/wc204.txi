@@ -1131,3 +1131,9 @@ return for the following special numbers @code{Quiet NaN},  @code{Signalling NaN
 @code{Pseudo-Denormal}, @code{Pseudo-NaN}, @code{Pseudo-Infinity},
 @code{Pseudo-Zero} and denormalized numbers @code{nan} or @code{NAN} instead
 of @code{Unnormal}.
+
+@findex _doprnt@r{, and C99 conversion specifiers}
+@findex printf@r{, and C99 conversion specifiers}
+The @code{a}, @code{A} and @code{F} conversion specifiers
+are now supported by @code{_doprnt} and the @code{printf}
+family of functions.
