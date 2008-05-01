@@ -1137,3 +1137,9 @@ of @code{Unnormal}.
 The @code{a}, @code{A} and @code{F} conversion specifiers
 are now supported by @code{_doprnt} and the @code{printf}
 family of functions.
+
+@findex _doprnt@r{, and numeric conversion specifiers}
+@findex printf@r{, and numeric conversion specifiers}
+The @code{%n$} and @code{*m$} numeric conversion specifiers
+are now supported by @code{_doprnt} and the @code{printf}
+family of functions.
