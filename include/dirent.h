@@ -33,7 +33,13 @@ typedef struct __dj_DIR DIR;
 #define DT_FIFO	    0x5
 #define DT_LABEL    0x6
 #define DT_LNK	    0x7
+#if 0
+/* S_IFSOCK is not defined and to be consistent DT_SOCK is also not defined.
+   This shall avoid that code that checks for DT_SOCK assumes that S_IFSOCK
+   is available and that djgpp provides working socks.
+*/
 #define DT_SOCK	    0x8
+#endif
 #define DT_UNKNOWN  0xf
 
 #define DTTOIF(dt)  (((dt) == DT_UNKNOWN ? 0 : (dt) - 1) << 12)
