@@ -95,7 +95,7 @@ static __inline__ char tochar(int n)
 #define	ZEROPAD		0x0100		/* zero (as opposed to blank) pad */
 #define	HEXPREFIX	0x0200		/* add 0x or 0X prefix */
 #define	GROUPING	0x0400		/* non monetary thousands grouping */
-#define	UPPERCASE	0x0800		/* INF/NAN for [EFG] */
+#define	UPPERCASE	0x0800		/* INF/NAN for [AEFG] */
 
 static int cvtl(long double number, int prec, int flags, char *signp,
 	        unsigned char fmtch, char *startp, char *endp);
@@ -679,12 +679,15 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
 #define HEX_DIGIT_SIZE                  4
 #define IEEE754_LONG_DOUBLE_BIAS        0x3FFFU
 
-
-    long_double_t ip = *(long_double_t *)(void *)&number;
+    _longdouble_union_t ieee_value;
     char *fraction_part;
-    int left_shifts, precision_given, positive_exponent, exponent = ip.exponent;
-    unsigned long long int mantissa = (unsigned long long int) ip.mantissah << 32 | ip.mantissal;
+    int left_shifts, precision_given, positive_exponent, exponent;
+    unsigned long long int mantissa;
 
+
+    ieee_value.ld = number;
+    exponent = ieee_value.ldt.exponent;
+    mantissa = (unsigned long long int) ieee_value.ldt.mantissah << 32 | ieee_value.ldt.mantissal;
     p = endp;
     t = startp;
     precision_given = (prec != -1) ? TRUE : FALSE;
