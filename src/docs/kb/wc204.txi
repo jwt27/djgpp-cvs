@@ -1143,3 +1143,7 @@ family of functions.
 The @code{%n$} and @code{*m$} numeric conversion specifiers
 are now supported by @code{_doprnt} and the @code{printf}
 family of functions.
+
+@findex strftime@r{, and C99 conversion modifiers}
+The modifiers @code{%}@code{E} and @code{%}@code{O} of the conversion specifiers
+are ignored because djgpp only supports C/POSIX locale.
