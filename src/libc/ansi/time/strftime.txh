@@ -47,6 +47,12 @@ Short for @code{%a %b %e %H:%M:%S %Y} (@code{Fri Oct  1 15:30:34 1993})
 
 Short for @code{%m/%d/%y %H:%M:%S} (@code{10/01/93 15:30:34})
 
+@item %Ex
+In some locales, the @code{E} modifier selects alternative representations
+of certain conversion specifiers @code{x}.  But in the "C" locale supported
+by djgpp, it is ignored, and treated as @code{%x}.  E.G.: @code{%EC} will be
+mapped to @code{%C}.
+
 @item %e
 
 The day of the month, blank padded to two characters (@code{ 2})
@@ -90,6 +96,12 @@ The month (1-12), zero padded to two characters (@code{10})
 @item %n
 
 A newline (@code{\n})
+
+@item %Ox
+In some locales, the @code{O} modifier selects alternative digit characters
+for certain conversion specifiers @code{x}.  But in the "C" locale supported
+by djgpp, it is ignored, and treated as @code{%x}.  E.G.: @code{%OH} will be
+mapped to @code{%H}.
 
 @item %p
 
