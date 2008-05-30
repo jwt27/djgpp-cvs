@@ -1,3 +1,4 @@
+/* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -78,6 +79,8 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	pad = space = '0', format++;
       if (format[1] == '^')
 	upcase = 1, format++;
+      if (format[1] == 'E' || format[1] == 'O')
+	format++;  /*  Only C/POSIX locale is supported.  */
 
       switch(*++format)
       {
