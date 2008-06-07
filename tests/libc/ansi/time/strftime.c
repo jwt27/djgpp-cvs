@@ -1,7 +1,6 @@
 /* this is the Autoconf test program that GNU programs use
    to detect if strftime is working.
-   Apart from missing formats (which probably can be ignored)
-   it seems that the results from "%c" and "%C" are wrong.
+   The results are checked against strftime() from GNU libc.
 */
 
 #include <stdlib.h>
@@ -9,7 +8,10 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
+#ifdef DJGPP
+/*  Do not include this if the code shall be compiled with linux too.  */
 #include <libc/unconst.h>
+#endif
 
 static int
 compare (const char *fmt, const struct tm *tm, const char *expected)
@@ -37,7 +39,9 @@ main (void)
 
   /* This is necessary to make strftime give consistent zone strings and
      e.g., seconds since the epoch (%s).  */
+#ifdef DJGPP
   putenv (unconst("TZ=GMT0", char *));
+#endif
 
 #undef CMP
 #define CMP(Fmt, Expected) n_fail += compare ((Fmt), tm, (Expected))
@@ -53,7 +57,7 @@ main (void)
   CMP ("%H", "13");
   CMP ("%I", "01");
   CMP ("%M", "06");
-  CMP ("%M", "06");
+  CMP ("%P", "pm");
   CMP ("%R", "13:06");		/* POSIX.2 */
   CMP ("%S", "07");
   CMP ("%T", "13:06:07");	/* POSIX.2 */
@@ -90,7 +94,74 @@ main (void)
   CMP ("%y", "70");
   CMP ("%z", "+0000");		/* GNU */
 
+  /*  Check GNU flag #. Inverts the case.  */
+  CMP ("%#A", "FRIDAY");
+  CMP ("%#^A", "FRIDAY");
+  CMP ("%^#A", "FRIDAY");
+  CMP ("%#a", "FRI");
+  CMP ("%#^a", "FRI");
+  CMP ("%^#a", "FRI");
+  CMP ("%#B", "JANUARY");
+  CMP ("%#^B", "JANUARY");
+  CMP ("%^#B", "JANUARY");
+  CMP ("%#b", "JAN");
+  CMP ("%#^b", "JAN");
+  CMP ("%^#b", "JAN");
+  CMP ("%p", "PM");
+  CMP ("%#p", "pm");
+  CMP ("%#Z", "gmt");
+
+  /*  Check E and O mofifier. Ignore it.  */
+  CMP ("%EC", "19");
+  CMP ("%Ec", "Fri Jan  9 13:06:07 1970");
+  CMP ("%EX", "13:06:07");
+  CMP ("%Ex", "01/09/70");
+  CMP ("%EY", "1970");
+  CMP ("%Ey", "70");
+  CMP ("%Od", "09");
+  CMP ("%Oe", " 9");
+  CMP ("%OH", "13");
+  CMP ("%OI", "01");
+  CMP ("%OM", "06");
+  CMP ("%Om", "01");
+  CMP ("%OS", "07");
+  CMP ("%Ou", "5");
+  CMP ("%OU", "01");
+  CMP ("%OV", "02");
+  CMP ("%OW", "01");
+  CMP ("%Ow", "5");
+  CMP ("%Oy", "70");
+
+  /*  Check G, g and V specifiers.
+      The first two examples are from:
+        <http://www.opengroup.org/onlinepubs/000095399/functions/strftime.html>
+  */
+  t = 883441421;  /*  Tue Dec 30 0:23:41 1997.  */
+  tm = gmtime (&t);
+  CMP ("%V", "01");
+  CMP ("%W", "52");
+  CMP ("%G", "1998");
+  CMP ("%Y", "1997");
+  CMP ("%g", "98");
+  CMP ("%y", "97");
+
+  t = 915245172;  /*  Sat Jan  2 02:46:12 1999.  */
+  tm = gmtime (&t);
+  CMP ("%V", "53");
+  CMP ("%W", "00");
+  CMP ("%G", "1998");
+  CMP ("%Y", "1999");
+  CMP ("%g", "98");
+  CMP ("%y", "99");
+
+  t = 1212808584;  /*  Sat Jun  7 03:16:24 2008.  */
+  tm = gmtime (&t);
+  CMP ("%V", "23");
+  CMP ("%W", "22");
+  CMP ("%G", "2008");
+  CMP ("%Y", "2008");
+  CMP ("%g", "08");
+  CMP ("%y", "08");
+
   exit (n_fail ? 1 : 0);
 }
-
-
