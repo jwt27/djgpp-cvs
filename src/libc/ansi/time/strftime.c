@@ -7,8 +7,15 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <stdbool.h>
 
-#define TM_YEAR_BASE 1900
+
+#define THURSDAY       4
+#define SATURDAY       6
+#define SUNDAY         7
+
+#define TM_YEAR_BASE   1900
+#define IS_LEAP(year)  ((((year) % 4) == 0) && ((((year) % 100) != 0) || (((year) % 400) == 0)))
 
 static const char *afmt[] = {
   "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
@@ -25,11 +32,96 @@ static const char *Bfmt[] = {
   "January", "February", "March", "April", "May", "June", "July",
   "August", "September", "October", "November", "December",
 };
+static const char __ISO8601_date_format[] = "%Y-%m-%d";
 char __dj_date_format[10] = "%m/%d/%y";
 char __dj_time_format[16] = "%H:%M:%S";
 
 static size_t gsize;
 static char *pt;
+
+static __inline__ int
+_compute_iso_wday_of_jan_01(const struct tm *t)
+{
+  /*
+   *  ISO week starts with Monday = 1 and ends with Sunday = 7.
+   */
+
+  int wday_jan_01;
+
+
+  wday_jan_01 = (7 + t->tm_wday - t->tm_yday % 7) % 7;
+  if (wday_jan_01 == 0)
+    wday_jan_01 = 7;
+
+  return wday_jan_01;
+}
+
+static int
+_compute_iso_standard_week(const struct tm *t)
+{
+  /*
+   *  In ISO 8601:2000 standard week-based year system,
+   *  weeks begin on a Monday and week 1 of the year is
+   *  the week that includes January 4th, which is also
+   *  the week that includes the first Thursday of the
+   *  year, and is also the first week that contains at
+   *  least four days in the year.
+   */
+
+  int iso_wday_of_jan_01, iso_week;
+
+
+  iso_wday_of_jan_01 = _compute_iso_wday_of_jan_01(t);  /*  Mon = 1, ..., Sun = 7.  */
+  iso_week = (6 + t->tm_yday - (6 + t->tm_wday) % 7) / 7;
+  if (iso_week == 0 && iso_wday_of_jan_01 > THURSDAY)   /*  Week belongs to the previous year.  */
+  {
+    if ((iso_wday_of_jan_01 == SUNDAY) ||
+        (iso_wday_of_jan_01 == SATURDAY && !IS_LEAP(t->tm_year - 1 + TM_YEAR_BASE)))
+      iso_week = 52;
+    else
+      iso_week = 53;
+  }
+  else
+  {
+    int is_leap_year = IS_LEAP(t->tm_year + TM_YEAR_BASE);
+    int iso_wday_of_dec_31 = (365 + is_leap_year - t->tm_yday + (6 + t->tm_wday) % 7) % 7;  /*  Mon = 1, ..., Sun = 7.  */
+
+    if (t->tm_yday > (360 + is_leap_year) && iso_wday_of_dec_31 < THURSDAY)  /*  Belongs to the following year.  */
+      iso_week = 1;
+    else  /*  Belongs to the current year.  */
+      iso_week++;
+  }
+
+  return iso_week;
+}
+
+static int
+_compute_iso_week_based_year(const struct tm *t)
+{
+  /*
+   *  ISO 8601:2000 standard week-based year system.
+   */
+
+  int iso_wday_of_jan_01, iso_year, week;
+
+
+  iso_wday_of_jan_01 = _compute_iso_wday_of_jan_01(t);  /*  Mon = 1, ..., Sun = 7.  */
+  week = (6 + t->tm_yday - (6 + t->tm_wday) % 7) / 7;
+  if (week == 0 && iso_wday_of_jan_01 > THURSDAY)  /*  Belongs to the previous year.  */
+    iso_year = t->tm_year - 1 + TM_YEAR_BASE;
+  else
+  {
+    int is_leap_year = IS_LEAP(t->tm_year + TM_YEAR_BASE);
+    int iso_wday_of_dec_31 = (365 + is_leap_year - t->tm_yday + (6 + t->tm_wday) % 7) % 7;  /*  Mon = 1, ..., Sun = 7.  */
+
+    if (t->tm_yday > (360 + is_leap_year) && iso_wday_of_dec_31 < THURSDAY)  /*  Belongs to the following year.  */
+      iso_year = t->tm_year + 1 + TM_YEAR_BASE;
+    else  /*  Belongs to the current year.  */
+      iso_year = t->tm_year + TM_YEAR_BASE;
+  }
+
+  return iso_year;
+}
 
 static int
 _add(const char *str, int upcase)
@@ -70,15 +162,24 @@ _fmt(const char *format, const struct tm *t, int upcase)
   {
     if (*format == '%')
     {
-      int pad = '0', space=' ';
-      if (format[1] == '_')
-	pad = space = ' ', format++;
-      if (format[1] == '-')
-	pad = space = 0, format++;
-      if (format[1] == '0')
-	pad = space = '0', format++;
-      if (format[1] == '^')
-	upcase = 1, format++;
+      int flag_seen, pad = '0', space=' ', swap_case = false;
+
+      /*  Parse flags.  */
+      do {
+        flag_seen = false;
+        if (format[1] == '_')
+          flag_seen = true, pad = space = ' ', format++;
+        if (format[1] == '-')
+          flag_seen = true, pad = space = 0, format++;
+        if (format[1] == '0')
+          flag_seen = true, pad = space = '0', format++;
+        if (format[1] == '^')
+          flag_seen = true, upcase = true, format++;
+        if (format[1] == '#')
+          flag_seen = true, swap_case = true, format++;
+      } while (flag_seen);
+
+      /*  Parse modifiers.  */
       if (format[1] == 'E' || format[1] == 'O')
 	format++;  /*  Only C/POSIX locale is supported.  */
 
@@ -88,18 +189,24 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	--format;
 	break;
       case 'A':
+	if (swap_case)
+	  upcase = true;
 	if (t->tm_wday < 0 || t->tm_wday > 6)
 	  return 0;
 	if (!_add(Afmt[t->tm_wday], upcase))
 	  return 0;
 	continue;
       case 'a':
+	if (swap_case)
+	  upcase = true;
 	if (t->tm_wday < 0 || t->tm_wday > 6)
 	  return 0;
 	if (!_add(afmt[t->tm_wday], upcase))
 	  return 0;
 	continue;
       case 'B':
+	if (swap_case)
+	  upcase = true;
 	if (t->tm_mon < 0 || t->tm_mon > 11)
 	  return 0;
 	if (!_add(Bfmt[t->tm_mon], upcase))
@@ -107,6 +214,8 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	continue;
       case 'b':
       case 'h':
+	if (swap_case)
+	  upcase = true;
 	if (t->tm_mon < 0 || t->tm_mon > 11)
 	  return 0;
 	if (!_add(bfmt[t->tm_mon], upcase))
@@ -130,6 +239,18 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	continue;
       case 'd':
 	if (!_conv(t->tm_mday, 2, pad))
+	  return 0;
+	continue;
+      case 'F':
+	if (!_fmt(__ISO8601_date_format, t, upcase))
+	  return 0;
+	continue;
+      case 'G':
+	if (!_conv(_compute_iso_week_based_year(t), 4, pad))
+	  return 0;
+	continue;
+      case 'g':
+	if (!_conv(_compute_iso_week_based_year(t) % 100, 2, pad))
 	  return 0;
 	continue;
       case 'H':
@@ -166,8 +287,13 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	if (!_add("\n", upcase))
 	  return 0;
 	continue;
+      case 'P':
+	if (!_add(t->tm_hour >= 12 ? "pm" : "am", upcase))
+	  return 0;
+	continue;
       case 'p':
-	if (!_add(t->tm_hour >= 12 ? "PM" : "AM", upcase))
+	upcase = swap_case ? false : true;
+	if (!_add(t->tm_hour >= 12 ? "pm" : "am", upcase))
 	  return 0;
 	continue;
       case 'R':
@@ -181,6 +307,17 @@ _fmt(const char *format, const struct tm *t, int upcase)
       case 'S':
 	if (!_conv(t->tm_sec, 2, pad))
 	  return 0;
+	continue;
+      case 's':
+	{
+	  struct tm _t;
+	  time_t _time;
+
+	  _t = *t;
+	  _time = mktime(&_t);
+          if (_time == (time_t)-1 || !_conv(_time, -1, pad))
+	    return 0;
+	}
 	continue;
       case 'T':
 	if (!_fmt("%H:%M:%S", t, upcase))
@@ -197,6 +334,10 @@ _fmt(const char *format, const struct tm *t, int upcase)
       case 'U':
 	if (!_conv((t->tm_yday + 7 - t->tm_wday) / 7,
 		   2, pad))
+	  return 0;
+	continue;
+      case 'V':
+	if (!_conv(_compute_iso_standard_week(t), 2, pad))
 	  return 0;
 	continue;
       case 'W':
@@ -218,12 +359,10 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'y':
-      case 'g':
 	if (!_conv((t->tm_year + TM_YEAR_BASE) % 100, 2, pad))
 	  return 0;
 	continue;
       case 'Y':
-      case 'G':
 	if (!_conv(t->tm_year + TM_YEAR_BASE, 4, pad))
 	  return 0;
 	continue;
@@ -234,9 +373,27 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'Z':
-	if (!t->tm_zone || !_add(t->tm_zone, upcase))
+	if (t->tm_zone)
+	{
+	  char tm_zone[32];
+
+	  strcpy(tm_zone, t->tm_zone);
+	  if (swap_case)
+	  {
+	    upcase = false;
+	    strlwr(tm_zone);
+	  }
+	  if (!_add(tm_zone, upcase))
+	    return 0;
+	}
+	else
 	  return 0;
 	continue;
+      case '+':
+	/*
+	 *  The date and time in date(1) format.  An extension introduced
+	 *  with Olson's timezone package and still not supported.
+	 */
       case '%':
 	/*
 	 * X311J/88-090 (4.12.3.5): if conversion char is
@@ -260,7 +417,7 @@ strftime(char *s, size_t maxsize, const char *format, const struct tm *t)
   pt = s;
   if ((gsize = maxsize) < 1)
     return 0;
-  if (_fmt(format, t, 0))
+  if (_fmt(format, t, false))
   {
     *pt = '\0';
     return maxsize - gsize;
