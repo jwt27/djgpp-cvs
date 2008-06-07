@@ -41,11 +41,19 @@ The abbreviated month name (@code{Oct})
 
 @item %C
 
-Short for @code{%a %b %e %H:%M:%S %Y} (@code{Fri Oct  1 15:30:34 1993})
+The century number (year/100) as a 2-digit integer (@code{19})
 
 @item %c
 
 Short for @code{%m/%d/%y %H:%M:%S} (@code{10/01/93 15:30:34})
+
+@item %D
+
+Short for @code{%m/%d/%y} (@code{10/01/93})
+
+@item %d
+
+The day of the month (1-31), zero padded to two characters (@code{02})
 
 @item %Ex
 In some locales, the @code{E} modifier selects alternative representations
@@ -55,15 +63,22 @@ mapped to @code{%C}.
 
 @item %e
 
-The day of the month, blank padded to two characters (@code{ 2})
+The day of the month (1-31), blank padded to two characters (@code{ 2})
 
-@item %D
+@item %F
 
-Short for @code{%m/%d/%y} (@code{10/01/93})
+The ISO 8601:2000 date format, in the form @code{%Y-%m-%d} (@code{1993-10-01})
 
-@item %d
+@item %G
 
-The day of the month, zero padded to two characters (@code{02})
+The ISO 8601:2000 standard week-based year with century as a decimal number.
+The 4-digit year corresponding to the ISO week number (see @code{%V}).  This has the
+same format and value as @code{%Y}, except that if the ISO week number belongs to the
+previous or next year, that year is used instead (@code{1993})
+
+@item %g
+
+Like @code{%G}, but without century, i.e., with a 2-digit year (@code{93})
 
 @item %H
 
@@ -75,7 +90,7 @@ The hour (1-12), zero padded to two characters (@code{03})
 
 @item %j
 
-The Julian day, zero padded to three characters (@code{275})
+The Julian day (1-366), zero padded to three characters (@code{275})
 
 @item %k
 
@@ -87,7 +102,7 @@ The hour (1-12), space padded to two characters(@code{ 3})
 
 @item %M
 
-The minutes, zero padded to two characters (@code{30})
+The minutes (0-59), zero padded to two characters (@code{30})
 
 @item %m
 
@@ -107,6 +122,10 @@ mapped to @code{%H}.
 
 AM or PM (@code{PM})
 
+@item %P
+
+Like @code{%p} but in lowercase: am or pm (@code{pm})
+
 @item %R
 
 Short for @code{%H:%M} (@code{15:30})
@@ -117,7 +136,11 @@ Short for @code{%I:%M:%S %p} (@code{03:30:35 PM})
 
 @item %S
 
-The seconds, zero padded to two characters (@code{35})
+The seconds (0-60), zero padded to two characters (@code{35})
+
+@item %s
+
+The seconds since the Epoch, i.e., since 1970-01-01 00:00:00 UTC (@code{749489433})
 
 @item %T
 
@@ -129,21 +152,26 @@ A tab (@code{\t})
 
 @item %U
 
-The week of the year, with the first week defined by the first Sunday of
-the year, zero padded to two characters (@code{39})
+The week of the year (0-53), with the first week defined by the first Sunday of
+the year, and earlier days are in week 0, zero padded to two characters (@code{39})
 
 @item %u
 
-The day of the week (1-7) (@code{6})
+The day of the week (1-7), Monday being 1 (@code{6})
+
+@item %V
+
+The ISO week of the year (01-53), where weeks start on Monday, with the first
+week defined by the first Thursday of the year, zero padded to two characters (@code{39})
 
 @item %W
 
-The week of the year, with the first week defined by the first Monday of
-the year, zero padded to two characters (@code{39})
+The week of the year (0-53), with the first week defined by the first Monday of
+the year, and earlier days are in week 0, zero padded to two characters (@code{39})
 
 @item %w
 
-The day of the week (0-6) (@code{5})
+The day of the week (0-6), Sunday being 0 (@code{5})
 
 @item %x
 
@@ -165,9 +193,50 @@ The year, zero padded to four digits (@code{1993})
 
 The timezone abbreviation (@code{EDT})
 
+@item %z
+
+The time-zone as hour offset from GMT in the ISO 8601:2000 standard format (@code{+hhmm} or @code{-hhmm}),
+or by no characters if no timezone is determinable.  Required to emit RFC 822-conformant
+dates using @code{%a, %d %b %Y  %H:%M:%S  %z} (@code{Fri, 01 Oct 1993  03:30:34  -0500})
+
+@item %+
+
+The date and time in date(1) format.  Not supported in djgpp
+
 @item %%
 
 A percent symbol (@code{%})
+
+@end table
+
+
+The following flag characters, preceding the conversion specifier characters described
+above, are permitted:
+
+@table @code
+
+@item _
+
+(underscore) Pad a numeric result string with spaces
+
+
+@item -
+
+(dash) Do not pad a numeric result string
+
+@item 0
+
+Pad a numeric result string with zeros even if the conversion specifier character
+uses space-padding by default
+
+@item ^
+
+Convert alphabetic characters in result string to upper case
+
+@item #
+
+Swap the case of the result string.  (This flag only works with certain conversion specifier characters,
+and of these, it is only really useful with %Z).
 
 @end table
 
