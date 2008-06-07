@@ -1145,5 +1145,9 @@ are now supported by @code{_doprnt} and the @code{printf}
 family of functions.
 
 @findex strftime@r{, and C99 conversion modifiers}
-The modifiers @code{%}@code{E} and @code{%}@code{O} of the conversion specifiers
-are ignored because djgpp only supports C/POSIX locale.
+The modifiers @code{%E} and @code{%O} of the conversion specifiers are ignored
+because djgpp only supports C/POSIX locale.
+
+@findex strftime@r{, and C99 conversion specifiers}
+The conversion specifiers @code{%F}, @code{%G}, @code{%g}, @code{%P}, @code{%s}, and @code{%V} have been added.
+Also the @code{#} flag has been added.
