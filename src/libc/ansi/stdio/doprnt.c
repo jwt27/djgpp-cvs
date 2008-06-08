@@ -17,6 +17,7 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
+#include <stdbool.h>
 #include <libc/file.h>
 #include <libc/local.h>
 #include <libc/ieee.h>
@@ -24,13 +25,6 @@
 static char decimal_point;
 static char thousands_sep;
 static char *grouping;
-
-#ifndef FALSE
-# define FALSE  0
-#endif
-#ifndef TRUE
-# define TRUE   1
-#endif
 
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define	MAXEXP		308
@@ -136,7 +130,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char sign;			/* sign prefix (' ', '+', '-', or \0) */
   char softsign;		/* temporary negative sign for floats */
   char buf[BUF];		/* space for %c, %[diouxX], %[aAeEfFgG] */
-  int neg_ldouble = FALSE;	/* TRUE if _ldouble is negative */
+  int neg_ldouble = false;	/* TRUE if _ldouble is negative */
   struct lconv *locale_info;    /* current locale information */
   int using_numeric_conv_spec;  /* TRUE if using numeric specifier, FALSE else */
   va_list arg_list;		/* argument list */
@@ -155,7 +149,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   if ((fp->_flag & _IOWRT) == 0)
     return (EOF);
 
-  using_numeric_conv_spec = FALSE;
+  using_numeric_conv_spec = false;
   arg_list = argp;
   fmt = fmt0;
   for (cnt = 0;; ++fmt)
@@ -210,7 +204,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
         n = 10 * n + todigit(*fmt);
       if (*fmt == '$')
       {
-        using_numeric_conv_spec = TRUE;
+        using_numeric_conv_spec = true;
         argp = __traverse_argument_list(n, fmt0, arg_list);
       }
       else
@@ -233,7 +227,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
           n = 10 * n + todigit(*fmt);
         if (*fmt == '$')
         {
-          using_numeric_conv_spec = TRUE;
+          using_numeric_conv_spec = true;
           argp = __traverse_argument_list(n, fmt0, arg_list);
         }
         else
@@ -265,7 +259,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       } while (isascii((unsigned char)*++fmt) && isdigit((unsigned char)*fmt));
       if (*fmt == '$')
       {
-        using_numeric_conv_spec = TRUE;
+        using_numeric_conv_spec = true;
         to_be_printed = __traverse_argument_list(n, fmt0, arg_list);
       }
       else
@@ -386,7 +380,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       {
 	softsign = '-';
 	_ldouble = -_ldouble;
-	neg_ldouble = TRUE;
+	neg_ldouble = true;
       }
       else
       {
@@ -394,12 +388,12 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 
 	if (ieee_value.ldt.sign && !IS_NAN(ieee_value) && !IS_PSEUDO_NUMBER(ieee_value))
 	{
-	  neg_ldouble = TRUE;
+	  neg_ldouble = true;
 	  if (IS_ZERO(ieee_value))
 	    softsign = '-';
 	}
 	else
-	  neg_ldouble = FALSE;
+	  neg_ldouble = false;
       }
       /*
        * cvt may have to round up past the "start" of the
@@ -652,8 +646,8 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   char *p, *t;
   long double fract = 0;
   int dotrim, expcnt, gformat;
-  int doextradps = FALSE;    /* Do extra decimal places if the precision needs it */
-  int doingzero = FALSE;     /* We're displaying 0.0 */
+  int doextradps = false;    /* Do extra decimal places if the precision needs it */
+  int doingzero = false;     /* We're displaying 0.0 */
   long double integer, tmp;
 
   if ((expcnt = isspeciall(number, startp, flags)))
@@ -690,7 +684,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     mantissa = (unsigned long long int) ieee_value.ldt.mantissah << 32 | ieee_value.ldt.mantissal;
     p = endp;
     t = startp;
-    precision_given = (prec != -1) ? TRUE : FALSE;
+    precision_given = (prec != -1) ? true : false;
 
     /*
      *  Compute the amount of left shifts necessary
@@ -710,7 +704,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
         mantissa <<= 1;
       if (left_shifts)  /*  Denormalized finite.  */
       {
-        if (precision_given == FALSE)
+        if (precision_given == false)
           mantissa = m;
 
         if (left_shifts < (int)(sizeof(mantissa) * CHAR_SIZE - HEX_DIGIT_SIZE))
@@ -739,7 +733,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
            *  If no binary digits are shifted into the integer part,
            *  then the nibble of the integer part must be filled with zeros.
            */
-          if (precision_given == TRUE && bin_digits == 0)
+          if (precision_given == true && bin_digits == 0)
             mantissa >>= (HEX_DIGIT_SIZE - 1);
         }
         else
@@ -754,7 +748,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
      *  The mantissa representation shall be exact
      *  except that trailing zeros may be omitted.
      */
-    if (precision_given == TRUE)
+    if (precision_given == true)
     {
       unsigned int fraction_hex_digits = sizeof(mantissa) * CHAR_SIZE / HEX_DIGIT_SIZE - 1;  /*  Number of hex digits (nibbles) in the fraction part.  */
 
@@ -794,7 +788,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     fraction_part = t;
     for (; p < endp; *t++ = *p++)
       ;
-    if (precision_given == FALSE)
+    if (precision_given == false)
     {
       /*
        *  C99 imposes that, if the precision is omitted,
@@ -826,10 +820,10 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
     if (exponent < 0)
     {
       exponent = -exponent;
-      positive_exponent = FALSE;
+      positive_exponent = false;
     }
     else
-      positive_exponent = TRUE;
+      positive_exponent = true;
 
     CONVERT(int, exponent, 10, p, flags & UPPERCASE);
     *--p = (positive_exponent) ? '+' : '-';
@@ -892,9 +886,9 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   if (integer < 1)
   {
     /* If fract is zero the zero before the decimal point is a sig fig */
-    if (fract == 0.0) doingzero = TRUE;
+    if (fract == 0.0) doingzero = true;
     /* If fract is non-zero all sig figs are in fractional part */
-    else doextradps = TRUE;
+    else doextradps = true;
   }
   /*
    * get integer portion of number; put into the end of the buffer.
@@ -1083,11 +1077,11 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
      */
     if (prec || (flags & ALT))
     {
-      dotrim = TRUE;
+      dotrim = true;
       *t++ = decimal_point;
     }
     else
-      dotrim = FALSE;
+      dotrim = false;
     /* if requires more precision and some fraction left */
     while (prec && fract)
     {
@@ -1096,9 +1090,9 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
       /* If we're not adding 0s
        * or we are but they're sig figs:
        * decrement the precision */
-      if ((doextradps != TRUE) || ((int)tmp != 0))
+      if ((doextradps != true) || ((int)tmp != 0))
       {
-        doextradps = FALSE;
+        doextradps = false;
         prec--;
       }
     }
