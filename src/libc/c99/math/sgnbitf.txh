@@ -5,7 +5,7 @@
 @example
 #include <math.h>
 
-int __signbitf(float @var{x});
+int __signbitf(float x);
 @end example
 
 @subheading Description

@@ -5,7 +5,7 @@
 @example
 #include <math.h>
 
-int signbit(@var{x});
+int signbit(x);
 @end example
 
 @subheading Description

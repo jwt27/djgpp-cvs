@@ -5,7 +5,7 @@
 @example
 #include <stdlib.h>
 
-double strtod(const char *@var{s}, char **@var{endp});
+double strtod(const char *s, char **endp);
 @end example
 
 @subheading Description

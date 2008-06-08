@@ -5,7 +5,7 @@
 @example
 #include <math.h>
 
-int __signbitd(double @var{x});
+int __signbitd(double x);
 @end example
 
 @subheading Description

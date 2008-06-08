@@ -5,7 +5,7 @@
 @example
 #include <stdlib.h>
 
-long double _strtold(const char *@var{s}, char **@var{endp});
+long double _strtold(const char *s, char **endp);
 @end example
 
 @subheading Description
@@ -81,7 +81,7 @@ x5 = _strtold(buf5, &bp);
 @example
 #include <stdlib.h>
 
-long double strtold(const char *@var{s}, char **@var{endp});
+long double strtold(const char *s, char **endp);
 @end example
 
 @subheading Description

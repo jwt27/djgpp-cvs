@@ -6,8 +6,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-int vasprintf(char **@var{bufferp}, const char *@var{format},
-              va_list @var{ap});
+int vasprintf(char **bufferp, const char *format, va_list ap);
 @end example
 
 @subheading Description

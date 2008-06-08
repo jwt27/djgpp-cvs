@@ -5,7 +5,7 @@
 @example
 #include <stdio.h>
 
-int asprintf(char **@var{bufferp}, const char *@var{format}, @dots{});
+int asprintf(char **bufferp, const char *format, @dots{});
 @end example
 
 @subheading Description

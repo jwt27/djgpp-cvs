@@ -5,7 +5,7 @@
 @example
 #include <stdlib.h>
 
-float strtof(const char *@var{s}, char **@var{endp});
+float strtof(const char *s, char **endp);
 @end example
 
 @subheading Description

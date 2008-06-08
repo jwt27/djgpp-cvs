@@ -5,7 +5,7 @@
 @example
 #include <stdio.h>
 
-int asnprintf(char **@var{bufferp}, size_t @var{n}, const char *@var{format}, @dots{});
+int asnprintf(char **bufferp, size_t n, const char *format, @dots{});
 @end example
 
 @subheading Description

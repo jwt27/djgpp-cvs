@@ -5,7 +5,7 @@
 @example
 #include <math.h>
 
-int __signbitld(long double @var{x});
+int __signbitld(long double x);
 @end example
 
 @subheading Description

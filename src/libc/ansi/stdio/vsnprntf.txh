@@ -6,8 +6,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-int vsnprintf (char *@var{buffer}, size_t @var{n}, const char *@var{format},
-               va_list @var{ap});
+int vsnprintf (char *buffer, size_t n, const char *format, va_list ap);
 @end example
 
 @subheading Description
