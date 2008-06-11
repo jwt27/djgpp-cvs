@@ -2167,7 +2167,7 @@ static void fpatan()
     return;
   }
   if (st(1).tag == TW_S
-      && val_same(st(1), CONST_NINF) || val_same(st(1), CONST_PINF))
+      && (val_same(st(1), CONST_NINF) || val_same(st(1), CONST_PINF)))
   {
     char nsign = st(1).sign;
     st(1) = CONST_PI2;
