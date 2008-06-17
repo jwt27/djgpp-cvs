@@ -108,6 +108,7 @@ readdir(DIR *dir)
 	  if (__internal_readlink(NULL, fhandle, sbuf, _SYMLINK_FILE_LEN) > 0)
 	    dir->de.d_type = DT_LNK;
 	  _close(fhandle);
+          errno = oerrno;
 	}
       }
       /* FIXME: anything else DOS can return? */
