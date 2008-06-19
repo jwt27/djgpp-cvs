@@ -5,7 +5,7 @@
 @example
 #include <stdlib.h>
 
-void realpath(const char *in_path, char *out_path);
+char *realpath(const char *in_path, char *out_path);
 @end example
 
 @subheading Description
