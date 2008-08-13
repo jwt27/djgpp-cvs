@@ -400,14 +400,14 @@ get_inode_from_sda(const char *mybasename)
   return 0;
 }
 
-int _ioctl_get_first_cluster(const char *);
+static int _ioctl_get_first_cluster(const char *);
 
 /* Get the number of the first cluster of PATHNAME using
    the IOCTL call Int 21h/AX=440Dh/CX=0871h, if that call
    is supported by the OS.  Return the cluster number, or
    a negative number if this service isn't supported.  */
 
-int
+static int
 _ioctl_get_first_cluster(const char *pathname)
 {
   __dpmi_regs r;
