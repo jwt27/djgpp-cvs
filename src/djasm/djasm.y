@@ -185,7 +185,7 @@ void do_sreg_push(int sreg);
 void do_align(int p2, int val);
 void set_lineaddr();
 void add_copyright(char *buf);
-void add_rcs_ident(char *buf);
+void add_rcs_ident(void);
 
 void set_out_type(char *type);
 void set_image_type(char *type);
@@ -809,7 +809,7 @@ line
 	| CALLFD const ':' constID	{ emitb(0x66); emitb(0x9a); emits($4.sym,$4.ofs,REL_abs32); emitw($2); }
 
 	| COPYRIGHT STRING		{ strbuf[strbuflen] = 0; add_copyright(strbuf); }
-	| RCS_ID			{ strbuf[strbuflen] = 0; add_rcs_ident(strbuf); }
+	| RCS_ID			{ add_rcs_ident(); }
 
 	| DB dblist
 	| DW dwlist
@@ -2642,7 +2642,7 @@ void add_copyright(char *buf)
   copyright = tmp;
 }
 
-void add_rcs_ident(char *buf)
+void add_rcs_ident()
 {
   char tmp[500];
   time_t now;
