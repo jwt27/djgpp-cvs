@@ -675,6 +675,7 @@ Tree::find(char *name)
   {
     if (strcmp(tn->node->sname, sname) == 0)
     {
+      free(sname);
       return tn->node;
     }
     if (strcmp(sname, tn->node->sname) < 0)
@@ -682,6 +683,7 @@ Tree::find(char *name)
     else
       tn = tn->after;
   }
+  free(sname);
   Node *n = new Node(name, "");
   add(n);
   return n;
