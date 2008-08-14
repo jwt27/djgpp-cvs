@@ -51,20 +51,20 @@ typedef void (*TFunc)(Node *);
  * particular porting target and the information parsed from the texinfo.
  * For the default case, complete specifies the default value for this
  * qualifier if the prefix is matched, but the suffix is not. */
-typedef struct {
+struct PortQualifier {
   char *suffix_token;  /* Suffix token used in texinfo, e.g. 'c89' */
   char *suffix_name;   /* Portability qualifier name, e.g. C89 */
   int target;          /* One of PORT_TARGET_* */
   int complete;        /* One of PORT_UNKNOWN, etc. */
-} PortQualifier;
+};
 
 #define MAX_PORT_QUALIFIERS 2
 
-typedef struct {
+struct PortInfo {
   char *prefix_token; /* Token used in texinfo, e.g. 'ansi' */
   char *prefix_name;  /* Actual textual name for token, e.g. ANSI/ISO C */
   PortQualifier pq[MAX_PORT_QUALIFIERS];
-} PortInfo;
+};
 
 #define NUM_PORT_TARGETS    3
 
