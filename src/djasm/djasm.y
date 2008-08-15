@@ -1463,7 +1463,7 @@ int main(int argc, char **argv)
   if (argv[2] == 0)
   {
     char *dot=0, *sl=0, *cp;
-    outfilename = (char *)malloc(strlen(argv[1])+5);
+    outfilename = (char *)alloca(strlen(argv[1])+5);
     strcpy(outfilename, argv[1]);
     for (cp=outfilename; *cp; cp++)
     {
@@ -1498,7 +1498,7 @@ int main(int argc, char **argv)
     }
     if (!dot)
     {
-      sl = (char *)malloc(strlen(outfilename)+5);
+      sl = (char *)alloca(strlen(outfilename)+5);
       strcpy(sl, outfilename);
       outfilename = sl;
       dot = outfilename + strlen(outfilename);
