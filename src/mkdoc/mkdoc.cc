@@ -105,6 +105,7 @@ struct Tree {
 struct Line {
   struct Line *next;
   char *line;
+  Line(char *l);
 };
 
 struct PortNote {
@@ -113,6 +114,7 @@ struct PortNote {
   PortQualifier *pq;
   int number;
   char *note;
+  PortNote(PortInfo *pt);
 };
 
 struct Node {
@@ -171,9 +173,7 @@ Node::Node(char *Pname, char *Pcat)
 void
 Node::add(char *l)
 {
-  Line *lp = new Line;
-  lp->next = 0;
-  lp->line = strdup(l);
+  Line *lp = new Line(l);
   if (lastline)
     lastline->next = lp;
   if (!lines)
@@ -251,12 +251,7 @@ Node::read_portability_note(char *str)
   if (i == NUM_PORT_TARGETS) {
     error ("unrecognised portability note target `%s' ignored.\n", target);
   } else {
-    PortNote *p = new PortNote;
-    p->next = NULL;
-    p->number = 0;
-    p->pi = &port_target[i];
-    p->pq = NULL;
-    p->note = strdup ("");
+    PortNote *p = new PortNote(&port_target[i]);
     
     /* Try to match the portability note to a portability qualifier. */
     x = target + strlen (p->pi->prefix_token);
@@ -606,6 +601,21 @@ Node::process(char *line)
 }
 
 //-----------------------------------------------------------------------------
+
+Line::Line(char *l)
+{
+  next = NULL;
+  line = strdup(l);
+}
+
+PortNote::PortNote(PortInfo *pt)
+{
+  next = NULL;
+  number = 0;
+  pi = pt;
+  pq = NULL;
+  note = strdup ("");
+}
 
 TreeNode::TreeNode(Node *n)
 {
