@@ -98,7 +98,6 @@ struct Tree {
   TreeNode *nodes;
   Tree();
   void add(Node *n);
-  static void Traverse(TreeNode *tn, TFunc tf);
   void Traverse(TFunc tf);
   Node *find(char *name);
 };
@@ -144,6 +143,7 @@ struct TreeNode {
   TreeNode *before, *after;
   Node *node;
   TreeNode(Node *n);
+  void Traverse(TFunc tf);
 };
 
 Tree categories;
@@ -613,6 +613,16 @@ TreeNode::TreeNode(Node *n)
   node = n;
 }
 
+void
+TreeNode::Traverse(TFunc tf)
+{
+  if (before)
+    before->Traverse(tf);
+  tf(node);
+  if (after)
+    after->Traverse(tf);
+}
+
 Tree::Tree()
 {
   nodes = 0;
@@ -645,21 +655,11 @@ set_np(Node *n)
 }
 
 void
-Tree::Traverse(TreeNode *tn, TFunc tf)
-{
-  if (!tn)
-    return;
-  Traverse(tn->before, tf);
-  tf(tn->node);
-  Traverse(tn->after, tf);
-}
-
-void
 Tree::Traverse(TFunc tf)
 {
   set_np_prev = 0;
-  Traverse(nodes, set_np);
-  Traverse(nodes, tf);
+  nodes->Traverse(set_np);
+  nodes->Traverse(tf);
 }
 
 Node *
