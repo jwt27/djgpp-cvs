@@ -138,6 +138,7 @@ struct Node {
   PortNote *last_port_note;
   int written_portability;
   Node(char *name, char *fn);
+  ~Node();
   void add(char *line);
   void process(char *line);
   void error(char *str, ...);
@@ -170,7 +171,7 @@ Tree<Node> nodes;
 Node::Node(char *Pname, char *fn)
 {
   name = strdup(Pname);
-  filename = fn;
+  filename = strdup(fn);
   lines = 0;
   lastline = 0;
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
@@ -178,6 +179,19 @@ Node::Node(char *Pname, char *fn)
   port_notes = NULL;
   last_port_note = NULL;
   written_portability = 0;
+}
+
+Node::~Node()
+{
+  free(name);
+  free(filename);
+  while (lines)
+  {
+    Line *l = lines->next;
+    free(lines->line);
+    delete lines;
+    lines = l;
+  }
 }
 
 void
