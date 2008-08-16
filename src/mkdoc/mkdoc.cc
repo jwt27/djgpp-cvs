@@ -780,14 +780,9 @@ TreeNode<N>::pnode(char *up)
   fprintf(co, "@unnumberedsec %s\n", name);
 }
 
+template <typename N>
 void
-cprint1(TreeNode<Tree<void> > *n)
-{
-  fprintf(co, "* %s::\n", n->name);
-}
-
-void
-cprint2b(TreeNode<void> *n)
+print1(TreeNode<N> *n)
 {
   fprintf(co, "* %s::\n", n->name);
 }
@@ -797,14 +792,8 @@ cprint2(TreeNode<Tree<void> > *n)
 {
   n->pnode("Functional Categories");
   fprintf(co, "@menu\n");
-  n->node->Traverse(cprint2b);
+  n->node->Traverse(print1);
   fprintf(co, "@end menu\n");
-}
-
-void
-nprint1(TreeNode<Node> *n)
-{
-  fprintf(co, "* %s::\n", n->name);
 }
 
 void
@@ -988,7 +977,7 @@ int main (int argc, char **argv)
   fprintf(co, "@unnumbered Functional Categories\n");
   fprintf(co, "\n");
   fprintf(co, "@menu\n");
-  categories.Traverse(cprint1);
+  categories.Traverse(print1);
   fprintf(co, "@end menu\n");
 
   categories.Traverse(cprint2);
@@ -999,7 +988,7 @@ int main (int argc, char **argv)
   fprintf(co, "@unnumbered Alphabetical List\n");
   fprintf(co, "\n");
   fprintf(co, "@menu\n");
-  nodes.Traverse(nprint1);
+  nodes.Traverse(print1);
   fprintf(co, "@end menu\n");
 
   nodes.Traverse(nprint2);
