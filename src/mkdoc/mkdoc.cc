@@ -119,7 +119,6 @@ struct PortNote {
 
 struct Node {
   char *name;
-  char *sname;
   char *cat;
   Line *lines;
   Line *lastline;
@@ -143,8 +142,10 @@ struct Node {
 struct TreeNode {
   TreeNode *before, *after;
   TreeNode *prev, *next;
+  char *name;
+  char *sname;
   Node *node;
-  TreeNode(Node *n);
+  TreeNode(char *name, Node *n);
   void Traverse(TFunc tf);
 };
 
@@ -155,11 +156,7 @@ Tree nodes;
 
 Node::Node(char *Pname, char *Pcat)
 {
-  char *cp;
   name = strdup(Pname);
-  for (cp=name; *cp == '_'; cp++);
-  sname = strdup(cp);
-  dj_strlwr(sname);
   cat = strdup(Pcat);
   lines = 0;
   lastline = 0;
@@ -617,9 +614,14 @@ PortNote::PortNote(PortInfo *pt)
   note = strdup ("");
 }
 
-TreeNode::TreeNode(Node *n)
+TreeNode::TreeNode(char *Pname, Node *n)
 {
   before = after = prev = next = NULL;
+  name = strdup(Pname);
+  char *cp;
+  for (cp=name; *cp == '_'; cp++);
+  sname = strdup(cp);
+  dj_strlwr(sname);
   node = n;
 }
 
@@ -644,7 +646,7 @@ Tree::add(TreeNode *tp)
   TreeNode **np = &nodes;
   while (*np)
   {
-    if (strcmp((*np)->node->sname, tp->node->sname) < 0)
+    if (strcmp((*np)->sname, tp->sname) < 0)
     {
       tp->prev = *np;
       np = &((*np)->after);
@@ -679,18 +681,18 @@ Tree::find(char *name)
   TreeNode *tn = nodes;
   while (tn)
   {
-    if (strcmp(tn->node->sname, sname) == 0)
+    if (strcmp(tn->sname, sname) == 0)
     {
       free(sname);
       return tn;
     }
-    if (strcmp(sname, tn->node->sname) < 0)
+    if (strcmp(sname, tn->sname) < 0)
       tn = tn->before;
     else
       tn = tn->after;
   }
   free(sname);
-  tn = new TreeNode(new Node(name, ""));
+  tn = new TreeNode(name, new Node(name, ""));
   add(tn);
   return tn;
 }
@@ -706,7 +708,7 @@ pnode(TreeNode *tn, char *up)
   Node *n = tn->node;
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
   fprintf(co, "@node %s, %s, %s, %s\n", n->name,
-	  tn->next ? tn->next->node->name : "", tn->prev ? tn->prev->node->name : "", up);
+	  tn->next ? tn->next->name : "", tn->prev ? tn->prev->name : "", up);
   fprintf(co, "@unnumberedsec %s\n", n->name);
   if (print_filenames)
     fprintf(co, "@c From file %s\n", n->filename);
@@ -715,13 +717,13 @@ pnode(TreeNode *tn, char *up)
 void
 cprint1(TreeNode *n)
 {
-  fprintf(co, "* %s::\n", n->node->name);
+  fprintf(co, "* %s::\n", n->name);
 }
 
 void
 cprint2b(TreeNode *n)
 {
-  fprintf(co, "* %s::\n", n->node->name);
+  fprintf(co, "* %s::\n", n->name);
 }
 
 void
@@ -736,7 +738,7 @@ cprint2(TreeNode *n)
 void
 nprint1(TreeNode *n)
 {
-  fprintf(co, "* %s::\n", n->node->name);
+  fprintf(co, "* %s::\n", n->name);
 }
 
 void
@@ -822,10 +824,10 @@ void scan_directory(char *which)
 	  count_nodes ++;
 	  curnode->filename = filename;
 
-	  nodes.add(new TreeNode(curnode));
+	  nodes.add(new TreeNode(name, curnode));
 	  Node *catn = categories.find(cat)->node;
 	  catn->filename = filename;
-	  catn->subnodes.add(new TreeNode(curnode));
+	  catn->subnodes.add(new TreeNode(name, NULL));
 	}
 	else
 	{
