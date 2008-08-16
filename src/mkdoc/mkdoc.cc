@@ -26,6 +26,15 @@ char *dj_strlwr(char *s)
   return p;
 }
 
+char *make_sname(char *name)
+{
+  char *sname;
+  for (sname = name; *sname == '_'; sname++);
+  sname = strdup(sname);
+  dj_strlwr(sname);
+  return sname;
+}
+
 template <typename N>
 struct TreeNode;
 struct Node;
@@ -619,10 +628,7 @@ TreeNode<N>::TreeNode(char *Pname, N *n)
 {
   before = after = prev = next = NULL;
   name = strdup(Pname);
-  char *cp;
-  for (cp=name; *cp == '_'; cp++);
-  sname = strdup(cp);
-  dj_strlwr(sname);
+  sname = make_sname(name);
   node = n;
 }
 
@@ -679,11 +685,7 @@ template <typename N>
 TreeNode<N> *
 Tree<N>::find(char *name)
 {
-  char *sname;
-  for (sname = name; *sname == '_'; sname++);
-  sname = strdup(sname);
-  dj_strlwr(sname);
-
+  char *sname = make_sname(name);
   TreeNode<N> *tn = nodes;
   while (tn)
   {
