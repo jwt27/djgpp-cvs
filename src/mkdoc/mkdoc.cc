@@ -26,11 +26,10 @@ char *dj_strlwr(char *s)
   return p;
 }
 
+template <typename N>
 struct TreeNode;
 struct Node;
 int count_nodes = 0;
-
-typedef void (*TFunc)(TreeNode *);
 
 #define PORT_TARGET_NONE              0x00
 /* ANSI/ISO C */
@@ -94,12 +93,13 @@ PortInfo port_target[] = {
   }
 };
 
+template <typename N>
 struct Tree {
-  TreeNode *nodes;
+  TreeNode<N> *nodes;
   Tree();
-  void add(TreeNode *n);
-  void Traverse(TFunc tf);
-  TreeNode *find(char *name);
+  void add(TreeNode<N> *n);
+  void Traverse(void (*tf)(TreeNode<N> *));
+  TreeNode<N> *find(char *name);
 };
 
 struct Line {
@@ -122,7 +122,6 @@ struct Node {
   char *cat;
   Line *lines;
   Line *lastline;
-  Tree subnodes;
   char *filename;
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
@@ -139,19 +138,20 @@ struct Node {
   void write_portability();
 };
 
+template <typename N>
 struct TreeNode {
   TreeNode *before, *after;
   TreeNode *prev, *next;
   char *name;
   char *sname;
-  Node *node;
-  TreeNode(char *name, Node *n);
-  void Traverse(TFunc tf);
+  N *node;
+  TreeNode(char *name, N *n);
+  void Traverse(void (*tf)(TreeNode *));
   void pnode(char *up);
 };
 
-Tree categories;
-Tree nodes;
+Tree<Tree<void> > categories;
+Tree<Node> nodes;
 
 //-----------------------------------------------------------------------------
 
@@ -615,7 +615,8 @@ PortNote::PortNote(PortInfo *pt)
   note = strdup ("");
 }
 
-TreeNode::TreeNode(char *Pname, Node *n)
+template <typename N>
+TreeNode<N>::TreeNode(char *Pname, N *n)
 {
   before = after = prev = next = NULL;
   name = strdup(Pname);
@@ -626,8 +627,9 @@ TreeNode::TreeNode(char *Pname, Node *n)
   node = n;
 }
 
+template <typename N>
 void
-TreeNode::Traverse(TFunc tf)
+TreeNode<N>::Traverse(void (*tf)(TreeNode *))
 {
   if (before)
     before->Traverse(tf);
@@ -636,15 +638,17 @@ TreeNode::Traverse(TFunc tf)
     after->Traverse(tf);
 }
 
-Tree::Tree()
+template <typename N>
+Tree<N>::Tree()
 {
   nodes = 0;
 }
 
+template <typename N>
 void
-Tree::add(TreeNode *tp)
+Tree<N>::add(TreeNode<N> *tp)
 {
-  TreeNode **np = &nodes;
+  TreeNode<N> **np = &nodes;
   while (*np)
   {
     if (strcmp((*np)->sname, tp->sname) < 0)
@@ -665,21 +669,23 @@ Tree::add(TreeNode *tp)
   *np = tp;
 }
 
+template <typename N>
 void
-Tree::Traverse(TFunc tf)
+Tree<N>::Traverse(void (*tf)(TreeNode<N> *))
 {
   nodes->Traverse(tf);
 }
 
-TreeNode *
-Tree::find(char *name)
+template <typename N>
+TreeNode<N> *
+Tree<N>::find(char *name)
 {
   char *sname;
   for (sname = name; *sname == '_'; sname++);
   sname = strdup(sname);
   dj_strlwr(sname);
 
-  TreeNode *tn = nodes;
+  TreeNode<N> *tn = nodes;
   while (tn)
   {
     if (strcmp(tn->sname, sname) == 0)
@@ -693,7 +699,7 @@ Tree::find(char *name)
       tn = tn->after;
   }
   free(sname);
-  tn = new TreeNode(name, new Node(name, ""));
+  tn = new TreeNode<N>(name, new Tree<void>);
   add(tn);
   return tn;
 }
@@ -702,8 +708,9 @@ Tree::find(char *name)
 
 FILE *co;
 
+template <typename N>
 void
-TreeNode::pnode(char *up)
+TreeNode<N>::pnode(char *up)
 {
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
   fprintf(co, "@node %s, %s, %s, %s\n", name,
@@ -712,34 +719,34 @@ TreeNode::pnode(char *up)
 }
 
 void
-cprint1(TreeNode *n)
+cprint1(TreeNode<Tree<void> > *n)
 {
   fprintf(co, "* %s::\n", n->name);
 }
 
 void
-cprint2b(TreeNode *n)
+cprint2b(TreeNode<void> *n)
 {
   fprintf(co, "* %s::\n", n->name);
 }
 
 void
-cprint2(TreeNode *n)
+cprint2(TreeNode<Tree<void> > *n)
 {
   n->pnode("Functional Categories");
   fprintf(co, "@menu\n");
-  n->node->subnodes.Traverse(cprint2b);
+  n->node->Traverse(cprint2b);
   fprintf(co, "@end menu\n");
 }
 
 void
-nprint1(TreeNode *n)
+nprint1(TreeNode<Node> *n)
 {
   fprintf(co, "* %s::\n", n->name);
 }
 
 void
-nprint2(TreeNode *n)
+nprint2(TreeNode<Node> *n)
 {
   n->pnode("Alphabetical List");
   fprintf(co, "@c From file %s\n", n->node->filename);
@@ -822,10 +829,9 @@ void scan_directory(char *which)
 	  count_nodes ++;
 	  curnode->filename = filename;
 
-	  nodes.add(new TreeNode(name, curnode));
-	  Node *catn = categories.find(cat)->node;
-	  catn->filename = filename;
-	  catn->subnodes.add(new TreeNode(name, NULL));
+	  nodes.add(new TreeNode<Node>(name, curnode));
+	  Tree<void> *tree = categories.find(cat)->node;
+	  tree->add(new TreeNode<void>(name, NULL));
 	}
 	else
 	{
