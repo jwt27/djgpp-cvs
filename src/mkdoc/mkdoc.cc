@@ -147,6 +147,7 @@ struct TreeNode {
   Node *node;
   TreeNode(char *name, Node *n);
   void Traverse(TFunc tf);
+  void pnode(char *up);
 };
 
 Tree categories;
@@ -700,18 +701,14 @@ Tree::find(char *name)
 //-----------------------------------------------------------------------------
 
 FILE *co;
-int print_filenames = 0;
 
 void
-pnode(TreeNode *tn, char *up)
+TreeNode::pnode(char *up)
 {
-  Node *n = tn->node;
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
-  fprintf(co, "@node %s, %s, %s, %s\n", n->name,
-	  tn->next ? tn->next->name : "", tn->prev ? tn->prev->name : "", up);
-  fprintf(co, "@unnumberedsec %s\n", n->name);
-  if (print_filenames)
-    fprintf(co, "@c From file %s\n", n->filename);
+  fprintf(co, "@node %s, %s, %s, %s\n", name,
+	  next ? next->name : "", prev ? prev->name : "", up);
+  fprintf(co, "@unnumberedsec %s\n", name);
 }
 
 void
@@ -729,7 +726,7 @@ cprint2b(TreeNode *n)
 void
 cprint2(TreeNode *n)
 {
-  pnode(n, "Functional Categories");
+  n->pnode("Functional Categories");
   fprintf(co, "@menu\n");
   n->node->subnodes.Traverse(cprint2b);
   fprintf(co, "@end menu\n");
@@ -744,7 +741,8 @@ nprint1(TreeNode *n)
 void
 nprint2(TreeNode *n)
 {
-  pnode(n, "Alphabetical List");
+  n->pnode("Alphabetical List");
+  fprintf(co, "@c From file %s\n", n->node->filename);
   Line *l;
   for (l=n->node->lines; l; l=l->next)
   {
@@ -938,8 +936,6 @@ int main (int argc, char **argv)
   fprintf(co, "@menu\n");
   nodes.Traverse(nprint1);
   fprintf(co, "@end menu\n");
-
-  print_filenames = 1;
 
   nodes.Traverse(nprint2);
   printf("%d nodes processed\n", count_nodes);
