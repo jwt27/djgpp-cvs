@@ -155,6 +155,7 @@ struct TreeNode {
   N *node;
   TreeNode(char *name, N *n);
   void Traverse(void (*tf)(TreeNode *));
+  int Compare(char *sn);
   void pnode(char *up);
 };
 
@@ -644,6 +645,13 @@ TreeNode<N>::Traverse(void (*tf)(TreeNode *))
 }
 
 template <typename N>
+int
+TreeNode<N>::Compare(char *sn)
+{
+  return strcmp(sname, sn);
+}
+
+template <typename N>
 Tree<N>::Tree()
 {
   nodes = 0;
@@ -656,7 +664,7 @@ Tree<N>::add(TreeNode<N> *tp)
   TreeNode<N> **np = &nodes;
   while (*np)
   {
-    if (strcmp((*np)->sname, tp->sname) < 0)
+    if ((*np)->Compare(tp->sname) < 0)
     {
       tp->prev = *np;
       np = &((*np)->after);
@@ -689,12 +697,13 @@ Tree<N>::find(char *name)
   TreeNode<N> *tn = nodes;
   while (tn)
   {
-    if (strcmp(tn->sname, sname) == 0)
+    int c = tn->Compare(sname);
+    if (c == 0)
     {
       free(sname);
       return tn;
     }
-    if (strcmp(sname, tn->sname) < 0)
+    if (c > 0)
       tn = tn->before;
     else
       tn = tn->after;
