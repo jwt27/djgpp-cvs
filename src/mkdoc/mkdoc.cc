@@ -30,7 +30,7 @@ struct TreeNode;
 struct Node;
 int count_nodes = 0;
 
-typedef void (*TFunc)(Node *);
+typedef void (*TFunc)(TreeNode *);
 
 #define PORT_TARGET_NONE              0x00
 /* ANSI/ISO C */
@@ -118,7 +118,6 @@ struct PortNote {
 };
 
 struct Node {
-  Node *prev, *next;
   char *name;
   char *sname;
   char *cat;
@@ -143,6 +142,7 @@ struct Node {
 
 struct TreeNode {
   TreeNode *before, *after;
+  TreeNode *prev, *next;
   Node *node;
   TreeNode(Node *n);
   void Traverse(TFunc tf);
@@ -619,7 +619,7 @@ PortNote::PortNote(PortInfo *pt)
 
 TreeNode::TreeNode(Node *n)
 {
-  before = after = 0;
+  before = after = prev = next = NULL;
   node = n;
 }
 
@@ -628,7 +628,7 @@ TreeNode::Traverse(TFunc tf)
 {
   if (before)
     before->Traverse(tf);
-  tf(node);
+  tf(this);
   if (after)
     after->Traverse(tf);
 }
@@ -646,29 +646,26 @@ Tree::add(Node *n)
   while (*np)
   {
     if (strcmp((*np)->node->sname, n->sname) < 0)
+    {
+      tp->prev = *np;
       np = &((*np)->after);
+    }
     else
+    {
+      tp->next = *np;
       np = &((*np)->before);
+    }
   }
+  if (tp->prev)
+    tp->prev->next = tp;
+  if (tp->next)
+    tp->next->prev = tp;
   *np = tp;
-}
-
-Node *set_np_prev = 0;
-void
-set_np(Node *n)
-{
-  n->prev = set_np_prev;
-  n->next = 0;
-  if (set_np_prev)
-    set_np_prev->next = n;
-  set_np_prev = n;
 }
 
 void
 Tree::Traverse(TFunc tf)
 {
-  set_np_prev = 0;
-  nodes->Traverse(set_np);
   nodes->Traverse(tf);
 }
 
@@ -705,49 +702,50 @@ FILE *co;
 int print_filenames = 0;
 
 void
-pnode(Node *n, char *up)
+pnode(TreeNode *tn, char *up)
 {
+  Node *n = tn->node;
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
   fprintf(co, "@node %s, %s, %s, %s\n", n->name,
-	  n->next ? n->next->name : "", n->prev ? n->prev->name : "", up);
+	  tn->next ? tn->next->node->name : "", tn->prev ? tn->prev->node->name : "", up);
   fprintf(co, "@unnumberedsec %s\n", n->name);
   if (print_filenames)
     fprintf(co, "@c From file %s\n", n->filename);
 }
 
 void
-cprint1(Node *n)
+cprint1(TreeNode *n)
 {
-  fprintf(co, "* %s::\n", n->name);
+  fprintf(co, "* %s::\n", n->node->name);
 }
 
 void
-cprint2b(Node *n)
+cprint2b(TreeNode *n)
 {
-  fprintf(co, "* %s::\n", n->name);
+  fprintf(co, "* %s::\n", n->node->name);
 }
 
 void
-cprint2(Node *n)
+cprint2(TreeNode *n)
 {
   pnode(n, "Functional Categories");
   fprintf(co, "@menu\n");
-  n->subnodes.Traverse(cprint2b);
+  n->node->subnodes.Traverse(cprint2b);
   fprintf(co, "@end menu\n");
 }
 
 void
-nprint1(Node *n)
+nprint1(TreeNode *n)
 {
-  fprintf(co, "* %s::\n", n->name);
+  fprintf(co, "* %s::\n", n->node->name);
 }
 
 void
-nprint2(Node *n)
+nprint2(TreeNode *n)
 {
   pnode(n, "Alphabetical List");
   Line *l;
-  for (l=n->lines; l; l=l->next)
+  for (l=n->node->lines; l; l=l->next)
   {
     fputs(l->line, co);
     if (strncmp(l->line, "@heading ", 9) == 0)
