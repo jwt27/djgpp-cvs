@@ -97,9 +97,9 @@ PortInfo port_target[] = {
 struct Tree {
   TreeNode *nodes;
   Tree();
-  void add(Node *n);
+  void add(TreeNode *n);
   void Traverse(TFunc tf);
-  Node *find(char *name);
+  TreeNode *find(char *name);
 };
 
 struct Line {
@@ -639,13 +639,12 @@ Tree::Tree()
 }
 
 void
-Tree::add(Node *n)
+Tree::add(TreeNode *tp)
 {
-  TreeNode *tp = new TreeNode(n);
   TreeNode **np = &nodes;
   while (*np)
   {
-    if (strcmp((*np)->node->sname, n->sname) < 0)
+    if (strcmp((*np)->node->sname, tp->node->sname) < 0)
     {
       tp->prev = *np;
       np = &((*np)->after);
@@ -669,7 +668,7 @@ Tree::Traverse(TFunc tf)
   nodes->Traverse(tf);
 }
 
-Node *
+TreeNode *
 Tree::find(char *name)
 {
   char *sname;
@@ -683,7 +682,7 @@ Tree::find(char *name)
     if (strcmp(tn->node->sname, sname) == 0)
     {
       free(sname);
-      return tn->node;
+      return tn;
     }
     if (strcmp(sname, tn->node->sname) < 0)
       tn = tn->before;
@@ -691,9 +690,9 @@ Tree::find(char *name)
       tn = tn->after;
   }
   free(sname);
-  Node *n = new Node(name, "");
-  add(n);
-  return n;
+  tn = new TreeNode(new Node(name, ""));
+  add(tn);
+  return tn;
 }
 
 //-----------------------------------------------------------------------------
@@ -823,10 +822,10 @@ void scan_directory(char *which)
 	  count_nodes ++;
 	  curnode->filename = filename;
 
-	  nodes.add(curnode);
-	  Node *catn = categories.find(cat);
+	  nodes.add(new TreeNode(curnode));
+	  Node *catn = categories.find(cat)->node;
 	  catn->filename = filename;
-	  catn->subnodes.add(curnode);
+	  catn->subnodes.add(new TreeNode(curnode));
 	}
 	else
 	{
