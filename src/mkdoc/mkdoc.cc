@@ -758,6 +758,7 @@ nprint2(TreeNode<Node> *n)
   }
 }
 
+#ifndef D_OK
 int is_directory(char *name)
 {
       struct stat statbuf;
@@ -770,6 +771,7 @@ int is_directory(char *name)
 	      return 1;
       else    return 0;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 
