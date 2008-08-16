@@ -115,6 +115,7 @@ struct Line {
   struct Line *next;
   char *line;
   Line(char *l);
+  ~Line();
 };
 
 struct PortNote {
@@ -190,7 +191,6 @@ Node::~Node()
   while (lines)
   {
     Line *l = lines->next;
-    free(lines->line);
     delete lines;
     lines = l;
   }
@@ -631,6 +631,11 @@ Line::Line(char *l)
 {
   next = NULL;
   line = strdup(l);
+}
+
+Line::~Line()
+{
+  free(line);
 }
 
 PortNote::PortNote(PortInfo *pt)
