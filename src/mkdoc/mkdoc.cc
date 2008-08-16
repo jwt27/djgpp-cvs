@@ -38,7 +38,6 @@ char *make_sname(char *name)
 template <typename N>
 struct TreeNode;
 struct Node;
-int count_nodes = 0;
 
 #define PORT_TARGET_NONE              0x00
 /* ANSI/ISO C */
@@ -137,6 +136,7 @@ struct Node {
   PortNote *port_notes;
   PortNote *last_port_note;
   int written_portability;
+  static int count_nodes;
   Node(char *name, char *fn);
   ~Node();
   void add(char *line);
@@ -165,6 +165,7 @@ struct TreeNode {
 
 Tree<Tree<void> > categories;
 Tree<Node> nodes;
+int Node::count_nodes(0);
 
 //-----------------------------------------------------------------------------
 
@@ -179,6 +180,7 @@ Node::Node(char *Pname, char *fn)
   port_notes = NULL;
   last_port_note = NULL;
   written_portability = 0;
+  count_nodes++;
 }
 
 Node::~Node()
@@ -881,8 +883,6 @@ void scan_directory(char *which)
 	  sscanf(buf, "%*s %[^,\n], %[^\n]", name, cat);
 	  strcat(cat, " functions");
 	  curnode = new Node(name, filename);
-	  count_nodes ++;
-
 	  nodes.add(new TreeNode<Node>(name, curnode));
 	  categories.find(cat)->node->add(new TreeNode<void>(name, NULL));
 	}
@@ -998,7 +998,7 @@ int main (int argc, char **argv)
   fprintf(co, "@end menu\n");
 
   nodes.Traverse(nprint2);
-  printf("%d nodes processed\n", count_nodes);
+  printf("%d nodes processed\n", Node::count_nodes);
   fclose(co);
   return 0;
 }
