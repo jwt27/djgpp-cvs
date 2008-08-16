@@ -106,6 +106,7 @@ template <typename N>
 struct Tree {
   TreeNode<N> *nodes;
   Tree();
+  ~Tree();
   void add(TreeNode<N> *n);
   void Traverse(void (*tf)(TreeNode<N> *));
   TreeNode<N> *find(char *name);
@@ -155,6 +156,7 @@ struct TreeNode {
   char *sname;
   N *node;
   TreeNode(char *name, N *n);
+  ~TreeNode();
   void Traverse(void (*tf)(TreeNode *));
   int Compare(char *sn);
   void pnode(char *up);
@@ -639,6 +641,24 @@ TreeNode<N>::TreeNode(char *Pname, N *n)
 }
 
 template <typename N>
+TreeNode<N>::~TreeNode()
+{
+  delete before;
+  delete after;
+  free(name);
+  free(sname);
+  delete node;
+}
+
+TreeNode<void>::~TreeNode()
+{
+  delete before;
+  delete after;
+  free(name);
+  free(sname);
+}
+
+template <typename N>
 void
 TreeNode<N>::Traverse(void (*tf)(TreeNode *))
 {
@@ -660,6 +680,12 @@ template <typename N>
 Tree<N>::Tree()
 {
   nodes = 0;
+}
+
+template <typename N>
+Tree<N>::~Tree()
+{
+  delete nodes;
 }
 
 template <typename N>
