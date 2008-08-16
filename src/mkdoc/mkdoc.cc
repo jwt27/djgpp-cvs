@@ -833,7 +833,6 @@ int is_directory(char *name)
 
 void scan_directory(char *which)
 {
-  Node *curnode;
   DIR *d = opendir(which);
   struct dirent *de;
   while ((de = readdir(d)) != NULL)
@@ -860,15 +859,14 @@ void scan_directory(char *which)
 	     && !strchr(buf, '~')
 	     && !strchr(buf, '#'))
     {
-      char *filename = new char[strlen(buf)+1];
-      strcpy(filename, buf);
+      char *filename = strdup(buf);
       FILE *ci = fopen(buf, "r");
       if (!ci)
       {
 	perror(buf);
 	continue;
       }
-      curnode = 0;
+      Node *curnode = NULL;
       while (fgets(buf, 4000, ci))
       {
 	if (strncmp(buf, "@c ---", 6) == 0)
@@ -886,8 +884,7 @@ void scan_directory(char *which)
 	  count_nodes ++;
 
 	  nodes.add(new TreeNode<Node>(name, curnode));
-	  Tree<void> *tree = categories.find(cat)->node;
-	  tree->add(new TreeNode<void>(name, NULL));
+	  categories.find(cat)->node->add(new TreeNode<void>(name, NULL));
 	}
 	else
 	{
@@ -896,6 +893,7 @@ void scan_directory(char *which)
 	}
       }
       fclose(ci);
+      free(filename);
     }
   }
   closedir(d);
