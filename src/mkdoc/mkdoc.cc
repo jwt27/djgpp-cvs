@@ -119,7 +119,6 @@ struct PortNote {
 
 struct Node {
   char *name;
-  char *cat;
   Line *lines;
   Line *lastline;
   char *filename;
@@ -127,7 +126,7 @@ struct Node {
   PortNote *port_notes;
   PortNote *last_port_note;
   int written_portability;
-  Node(char *name, char *cat);
+  Node(char *name, char *fn);
   void add(char *line);
   void process(char *line);
   void error(char *str, ...);
@@ -155,10 +154,10 @@ Tree<Node> nodes;
 
 //-----------------------------------------------------------------------------
 
-Node::Node(char *Pname, char *Pcat)
+Node::Node(char *Pname, char *fn)
 {
   name = strdup(Pname);
-  cat = strdup(Pcat);
+  filename = fn;
   lines = 0;
   lastline = 0;
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
@@ -825,9 +824,8 @@ void scan_directory(char *which)
 	  cat[0] = 0;
 	  sscanf(buf, "%*s %[^,\n], %[^\n]", name, cat);
 	  strcat(cat, " functions");
-	  curnode = new Node(name, cat);
+	  curnode = new Node(name, filename);
 	  count_nodes ++;
-	  curnode->filename = filename;
 
 	  nodes.add(new TreeNode<Node>(name, curnode));
 	  Tree<void> *tree = categories.find(cat)->node;
