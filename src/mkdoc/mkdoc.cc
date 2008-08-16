@@ -124,6 +124,7 @@ struct PortNote {
   int number;
   char *note;
   PortNote(PortInfo *pt);
+  ~PortNote();
 };
 
 struct Node {
@@ -571,7 +572,6 @@ Node::write_portability()
   while (port_notes) {
     PortNote *p = port_notes;
     port_notes = p->next;
-    free (p->note);
     delete p;
   }
   last_port_note = NULL;
@@ -622,6 +622,11 @@ PortNote::PortNote(PortInfo *pt)
   pi = pt;
   pq = NULL;
   note = strdup ("");
+}
+
+PortNote::~PortNote()
+{
+  free(note);
 }
 
 template <typename N>
