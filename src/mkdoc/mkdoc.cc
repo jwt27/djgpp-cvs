@@ -16,7 +16,7 @@
 
 #include <string>
 
-char *dj_strlwr(char *s)
+static char *dj_strlwr(char *s)
 {
   char *p = s;
   while (*s)
@@ -28,11 +28,11 @@ char *dj_strlwr(char *s)
   return p;
 }
 
-char *make_sname(char *name)
+static char *make_sname(const char *name)
 {
   char *sname;
-  for (sname = name; *sname == '_'; sname++);
-  sname = strdup(sname);
+  for (; *name == '_'; name++);
+  sname = strdup(name);
   dj_strlwr(sname);
   return sname;
 }
@@ -57,8 +57,8 @@ char *make_sname(char *name)
  * For the default case, complete specifies the default value for this
  * qualifier if the prefix is matched, but the suffix is not. */
 struct PortQualifier {
-  char *suffix_token;  /* Suffix token used in texinfo, e.g. 'c89' */
-  char *suffix_name;   /* Portability qualifier name, e.g. C89 */
+  const char *suffix_token;  /* Suffix token used in texinfo, e.g. 'c89' */
+  const char *suffix_name;   /* Portability qualifier name, e.g. C89 */
   int target;          /* One of PORT_TARGET_* */
   int complete;        /* One of PORT_UNKNOWN, etc. */
 };
@@ -66,14 +66,14 @@ struct PortQualifier {
 #define MAX_PORT_QUALIFIERS 2
 
 struct PortInfo {
-  char *prefix_token; /* Token used in texinfo, e.g. 'ansi' */
-  char *prefix_name;  /* Actual textual name for token, e.g. ANSI/ISO C */
+  const char *prefix_token; /* Token used in texinfo, e.g. 'ansi' */
+  const char *prefix_name;  /* Actual textual name for token, e.g. ANSI/ISO C */
   PortQualifier pq[MAX_PORT_QUALIFIERS];
 };
 
 #define NUM_PORT_TARGETS    3
 
-PortInfo port_target[] = {
+static const PortInfo port_target[] = {
   /* ANSI/ISO C */
   { "ansi",  "ANSI/ISO C",
     {
@@ -106,12 +106,12 @@ struct TreeNode {
   char *name;
   char *sname;
   N *node;
-  TreeNode(char *name, N *n);
+  TreeNode(const char *name, N *n);
   ~TreeNode();
-  void Traverse(void (*tf)(TreeNode *));
-  int Compare(char *sn);
-  void Pnode(void);
-  const char *up(void);
+  void Traverse(void (*tf)(const TreeNode *)) const;
+  int Compare(const char *sn) const;
+  void Pnode(void) const;
+  const char *up(void) const;
 };
 
 template <typename N>
@@ -120,15 +120,15 @@ struct Tree {
   Tree();
   ~Tree();
   void add(TreeNode<N> *n);
-  void Traverse(void (*tf)(TreeNode<N> *));
-  TreeNode<N> *find(char *name);
-  void Print1();
+  void Traverse(void (*tf)(const TreeNode<N> *)) const;
+  TreeNode<N> *find(const char *name);
+  void Print1(void) const;
 };
 
 class Line {
   const std::string line;
 public:
-  class Line *next;
+  Line *next;
   Line(const std::string &l) : line(l), next(NULL) {}
   Line(const char *l) : line(l), next(NULL) {}
   void Print(FILE *) const;
@@ -157,12 +157,12 @@ public:
 };
 
 struct PortNote {
-  struct PortNote *next;
-  PortInfo *pi;
-  PortQualifier *pq;
+  PortNote *next;
+  const PortInfo *pi;
+  const PortQualifier *pq;
   int number;
   char *note;
-  PortNote(PortInfo *pt);
+  PortNote(const PortInfo *pt);
   ~PortNote();
 };
 
@@ -174,22 +174,22 @@ struct Node {
   PortNote *last_port_note;
   int written_portability;
   static int count_nodes;
-  Node(char *name, char *fn);
-  void process(char *line);
-  void extend_portability_note(char *str);
-  void read_portability_note(char *str);
-  void read_portability(char *str);
-  void write_portability();
-  void Print1(void);
+  Node(const char *name, const char *fn);
+  void process(const char *line);
+  void extend_portability_note(const char *str) const;
+  void read_portability_note(const char *str);
+  void read_portability(const char *str);
+  void write_portability(void);
+  void Print1(void) const;
 };
 
-Tree<Tree<void> > categories;
-Tree<Node> nodes;
+static Tree<Tree<void> > categories;
+static Tree<Node> nodes;
 int Node::count_nodes(0);
 
 //-----------------------------------------------------------------------------
 
-Node::Node(char *n, char *fn)
+Node::Node(const char *n, const char *fn)
   : source(n, fn)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
@@ -201,7 +201,7 @@ Node::Node(char *n, char *fn)
 }
 
 void
-Node::extend_portability_note(char *str)
+Node::extend_portability_note(const char *str) const
 {
   int newsize = strlen (last_port_note->note) + strlen (str) + 1;
   char *newstring = (char *) realloc (last_port_note->note, newsize);
@@ -210,7 +210,7 @@ Node::extend_portability_note(char *str)
 }
 
 void
-Node::read_portability_note(char *str)
+Node::read_portability_note(const char *str)
 {
   char *work_str = strdup (str);
   char *s = work_str, *x = NULL;
@@ -276,7 +276,7 @@ Node::read_portability_note(char *str)
 }
 
 void
-Node::read_portability(char *str)
+Node::read_portability(const char *str)
 {
   char *targets = dj_strlwr (strdup (str));
   char *p = NULL, *x = NULL, *target = targets;
@@ -357,7 +357,7 @@ Node::read_portability(char *str)
 }
 
 void
-Node::write_portability()
+Node::write_portability(void)
 {  
   /* Column-width calculation variables */
   size_t maxsize = 0;
@@ -565,7 +565,7 @@ Node::write_portability()
 }
 
 void
-Node::process(char *line)
+Node::process(const char *line)
 {
   if (line[0] == '@') {
     if ((strncmp (line, "@portability", 12) == 0) && isspace (line[12]))
@@ -670,7 +670,7 @@ NodeSource::Print(FILE *fp) const
   fprintf(fp, "@c From file %s\n", filename.c_str());
 }
 
-PortNote::PortNote(PortInfo *pt)
+PortNote::PortNote(const PortInfo *pt)
 {
   next = NULL;
   number = 0;
@@ -685,7 +685,7 @@ PortNote::~PortNote()
 }
 
 template <typename N>
-TreeNode<N>::TreeNode(char *Pname, N *n)
+TreeNode<N>::TreeNode(const char *Pname, N *n)
 {
   before = after = prev = next = NULL;
   name = strdup(Pname);
@@ -713,7 +713,7 @@ TreeNode<void>::~TreeNode()
 
 template <typename N>
 void
-TreeNode<N>::Traverse(void (*tf)(TreeNode *))
+TreeNode<N>::Traverse(void (*tf)(const TreeNode *)) const
 {
   if (before)
     before->Traverse(tf);
@@ -724,17 +724,17 @@ TreeNode<N>::Traverse(void (*tf)(TreeNode *))
 
 template <typename N>
 int
-TreeNode<N>::Compare(char *sn)
+TreeNode<N>::Compare(const char *sn) const
 {
   return strcmp(sname, sn);
 }
 
-const char *TreeNode<Tree<void> >::up(void)
+const char *TreeNode<Tree<void> >::up(void) const
 {
   return "Functional Categories";
 }
 
-const char *TreeNode<Node>::up(void)
+const char *TreeNode<Node>::up(void) const
 {
   return "Alphabetical List";
 }
@@ -778,14 +778,14 @@ Tree<N>::add(TreeNode<N> *tp)
 
 template <typename N>
 void
-Tree<N>::Traverse(void (*tf)(TreeNode<N> *))
+Tree<N>::Traverse(void (*tf)(const TreeNode<N> *)) const
 {
   nodes->Traverse(tf);
 }
 
 template <typename N>
 TreeNode<N> *
-Tree<N>::find(char *name)
+Tree<N>::find(const char *name)
 {
   char *sname = make_sname(name);
   TreeNode<N> *tn = nodes;
@@ -810,11 +810,11 @@ Tree<N>::find(char *name)
 
 //-----------------------------------------------------------------------------
 
-FILE *co;
+static FILE *co;
 
 template <typename N>
 void
-TreeNode<N>::Pnode(void)
+TreeNode<N>::Pnode(void) const
 {
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
   fprintf(co, "@node %s, %s, %s, %s\n", name,
@@ -823,15 +823,15 @@ TreeNode<N>::Pnode(void)
 }
 
 template <typename N>
-void
-print1(TreeNode<N> *n)
+static void
+print1(const TreeNode<N> *n)
 {
   fprintf(co, "* %s::\n", n->name);
 }
 
 template <typename N>
 void
-Tree<N>::Print1()
+Tree<N>::Print1(void) const
 {
   fputs("@menu\n", co);
   Traverse(print1);
@@ -839,22 +839,22 @@ Tree<N>::Print1()
 }
 
 void
-Node::Print1(void)
+Node::Print1(void) const
 {
   source.Print(co);
   lines.Print(co);
 }
 
 template <typename N>
-void
-print2(TreeNode<N> *n)
+static void
+print2(const TreeNode<N> *n)
 {
   n->Pnode();
   n->node->Print1();
 }
 
 #ifndef D_OK
-int is_directory(char *name)
+static int is_directory(const char *name)
 {
       struct stat statbuf;
       int result;
@@ -870,7 +870,7 @@ int is_directory(char *name)
 
 //-----------------------------------------------------------------------------
 
-void scan_directory(char *which)
+static void scan_directory(const char *which)
 {
   DIR *d = opendir(which);
   struct dirent *de;
@@ -938,7 +938,7 @@ void scan_directory(char *which)
 
 //-----------------------------------------------------------------------------
 
-void list_portability (void)
+static void list_portability (void)
 {
   int i, j;
   char buffer[40];
@@ -972,7 +972,7 @@ void list_portability (void)
 
 //-----------------------------------------------------------------------------
 
-void usage (void)
+static void usage (void)
 {
   fprintf(stderr,
 	  "Usage: mkdoc [<switches>] <directory> <output file>\n"
