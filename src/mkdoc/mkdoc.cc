@@ -35,10 +35,6 @@ char *make_sname(char *name)
   return sname;
 }
 
-template <typename N>
-struct TreeNode;
-struct Node;
-
 #define PORT_TARGET_NONE              0x00
 /* ANSI/ISO C */
 #define PORT_TARGET_ANSI_C89          0x10
@@ -102,6 +98,20 @@ PortInfo port_target[] = {
 };
 
 template <typename N>
+struct TreeNode {
+  TreeNode *before, *after;
+  TreeNode *prev, *next;
+  char *name;
+  char *sname;
+  N *node;
+  TreeNode(char *name, N *n);
+  ~TreeNode();
+  void Traverse(void (*tf)(TreeNode *));
+  int Compare(char *sn);
+  void pnode(char *up);
+};
+
+template <typename N>
 struct Tree {
   TreeNode<N> *nodes;
   Tree();
@@ -148,20 +158,6 @@ struct Node {
   void read_portability_note(char *str);
   void read_portability(char *str);
   void write_portability();
-};
-
-template <typename N>
-struct TreeNode {
-  TreeNode *before, *after;
-  TreeNode *prev, *next;
-  char *name;
-  char *sname;
-  N *node;
-  TreeNode(char *name, N *n);
-  ~TreeNode();
-  void Traverse(void (*tf)(TreeNode *));
-  int Compare(char *sn);
-  void pnode(char *up);
 };
 
 Tree<Tree<void> > categories;
