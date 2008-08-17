@@ -179,6 +179,7 @@ struct Node {
   void read_portability_note(char *str);
   void read_portability(char *str);
   void write_portability();
+  void Print1(void);
 };
 
 Tree<Tree<void> > categories;
@@ -827,6 +828,13 @@ Tree<N>::Print1()
 }
 
 void
+Node::Print1(void)
+{
+  source.Print(co);
+  lines.Print(co);
+}
+
+void
 cprint2(TreeNode<Tree<void> > *n)
 {
   n->pnode("Functional Categories");
@@ -837,8 +845,7 @@ void
 nprint2(TreeNode<Node> *n)
 {
   n->pnode("Alphabetical List");
-  n->node->source.Print(co);
-  n->node->lines.Print(co);
+  n->node->Print1();
 }
 
 #ifndef D_OK
