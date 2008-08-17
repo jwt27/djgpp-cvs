@@ -131,7 +131,7 @@ struct PortNote {
 struct Node {
   char *name;
   Line *lines;
-  Line *lastline;
+  Line **next_line;
   char *filename;
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
@@ -174,8 +174,8 @@ Node::Node(char *Pname, char *fn)
 {
   name = strdup(Pname);
   filename = strdup(fn);
-  lines = 0;
-  lastline = 0;
+  lines = NULL;
+  next_line = &lines;
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
     memset(&port_info[i], 0, sizeof(port_info[i]));
   port_notes = NULL;
@@ -199,12 +199,8 @@ Node::~Node()
 void
 Node::add(char *l)
 {
-  Line *lp = new Line(l);
-  if (lastline)
-    lastline->next = lp;
-  if (!lines)
-    lines = lp;
-  lastline = lp;
+  *next_line = new Line(l);
+  next_line = &(*next_line)->next;
 }
 
 void
