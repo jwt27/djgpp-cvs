@@ -110,7 +110,8 @@ struct TreeNode {
   ~TreeNode();
   void Traverse(void (*tf)(TreeNode *));
   int Compare(char *sn);
-  void pnode(char *up);
+  void Pnode(void);
+  const char *up(void);
 };
 
 template <typename N>
@@ -728,6 +729,16 @@ TreeNode<N>::Compare(char *sn)
   return strcmp(sname, sn);
 }
 
+const char *TreeNode<Tree<void> >::up(void)
+{
+  return "Functional Categories";
+}
+
+const char *TreeNode<Node>::up(void)
+{
+  return "Alphabetical List";
+}
+
 template <typename N>
 Tree<N>::Tree()
 {
@@ -803,11 +814,11 @@ FILE *co;
 
 template <typename N>
 void
-TreeNode<N>::pnode(char *up)
+TreeNode<N>::Pnode(void)
 {
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
   fprintf(co, "@node %s, %s, %s, %s\n", name,
-	  next ? next->name : "", prev ? prev->name : "", up);
+	  next ? next->name : "", prev ? prev->name : "", up());
   fprintf(co, "@unnumberedsec %s\n", name);
 }
 
@@ -834,17 +845,11 @@ Node::Print1(void)
   lines.Print(co);
 }
 
+template <typename N>
 void
-cprint2(TreeNode<Tree<void> > *n)
+print2(TreeNode<N> *n)
 {
-  n->pnode("Functional Categories");
-  n->node->Print1();
-}
-
-void
-nprint2(TreeNode<Node> *n)
-{
-  n->pnode("Alphabetical List");
+  n->Pnode();
   n->node->Print1();
 }
 
@@ -1016,7 +1021,7 @@ int main (int argc, char **argv)
   fprintf(co, "\n");
   categories.Print1();
 
-  categories.Traverse(cprint2);
+  categories.Traverse(print2);
 
   // Alphabetical List
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
@@ -1025,7 +1030,7 @@ int main (int argc, char **argv)
   fprintf(co, "\n");
   nodes.Print1();
 
-  nodes.Traverse(nprint2);
+  nodes.Traverse(print2);
   printf("%d nodes processed\n", Node::count_nodes);
   fclose(co);
   return 0;
