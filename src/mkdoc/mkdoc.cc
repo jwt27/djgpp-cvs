@@ -121,6 +121,7 @@ struct Tree {
   void add(TreeNode<N> *n);
   void Traverse(void (*tf)(TreeNode<N> *));
   TreeNode<N> *find(char *name);
+  void Print1();
 };
 
 class Line {
@@ -816,13 +817,20 @@ print1(TreeNode<N> *n)
   fprintf(co, "* %s::\n", n->name);
 }
 
+template <typename N>
+void
+Tree<N>::Print1()
+{
+  fputs("@menu\n", co);
+  Traverse(print1);
+  fputs("@end menu\n", co);
+}
+
 void
 cprint2(TreeNode<Tree<void> > *n)
 {
   n->pnode("Functional Categories");
-  fprintf(co, "@menu\n");
-  n->node->Traverse(print1);
-  fprintf(co, "@end menu\n");
+  n->node->Print1();
 }
 
 void
@@ -999,9 +1007,7 @@ int main (int argc, char **argv)
   fprintf(co, "@node Functional Categories, Alphabetical List, Introduction, Top\n");
   fprintf(co, "@unnumbered Functional Categories\n");
   fprintf(co, "\n");
-  fprintf(co, "@menu\n");
-  categories.Traverse(print1);
-  fprintf(co, "@end menu\n");
+  categories.Print1();
 
   categories.Traverse(cprint2);
 
@@ -1010,9 +1016,7 @@ int main (int argc, char **argv)
   fprintf(co, "@node Alphabetical List, Unimplemented, Functional Categories, Top\n");
   fprintf(co, "@unnumbered Alphabetical List\n");
   fprintf(co, "\n");
-  fprintf(co, "@menu\n");
-  nodes.Traverse(print1);
-  fprintf(co, "@end menu\n");
+  nodes.Print1();
 
   nodes.Traverse(nprint2);
   printf("%d nodes processed\n", Node::count_nodes);
