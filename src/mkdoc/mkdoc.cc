@@ -132,6 +132,17 @@ public:
   void Print(FILE *) const;
 };
 
+class Lines {
+  Line *list;
+  Line **tail;
+public:
+  Lines() : list(NULL), tail(&list) {}
+  ~Lines();
+  void Add(const std::string &);
+  void Add(const char *);
+  void Print(FILE *) const;
+};
+
 struct PortNote {
   struct PortNote *next;
   PortInfo *pi;
@@ -144,8 +155,7 @@ struct PortNote {
 
 struct Node {
   char *name;
-  Line *lines;
-  Line **next_line;
+  Lines lines;
   char *filename;
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
@@ -154,7 +164,6 @@ struct Node {
   static int count_nodes;
   Node(char *name, char *fn);
   ~Node();
-  void add(char *line);
   void process(char *line);
   void error(char *str, ...);
   void warning(char *str, ...);
@@ -174,8 +183,6 @@ Node::Node(char *Pname, char *fn)
 {
   name = strdup(Pname);
   filename = strdup(fn);
-  lines = NULL;
-  next_line = &lines;
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
     memset(&port_info[i], 0, sizeof(port_info[i]));
   port_notes = NULL;
@@ -188,19 +195,6 @@ Node::~Node()
 {
   free(name);
   free(filename);
-  while (lines)
-  {
-    Line *l = lines->next;
-    delete lines;
-    lines = l;
-  }
-}
-
-void
-Node::add(char *l)
-{
-  *next_line = new Line(l);
-  next_line = &(*next_line)->next;
 }
 
 void
@@ -562,24 +556,24 @@ Node::write_portability()
 
   strcat (buffer, "@end multitable\n\n");
 
-  add(buffer);
+  lines.Add(buffer);
 
   if (note_number > 1)
   {
-    add("@noindent\n");
-    add("Notes:\n");
-    add("\n");
-    add("@enumerate\n");
+    lines.Add("@noindent\n");
+    lines.Add("Notes:\n");
+    lines.Add("\n");
+    lines.Add("@enumerate\n");
 
     for (i = 1; i < note_number; i++)
     {
-      add("@item\n");
+      lines.Add("@item\n");
       for (PortNote *p = port_notes; p; p = p->next)
 	if (p->number == i)
-	  add(p->note);
+	  lines.Add(p->note);
     }
 
-    add("@end enumerate\n");
+    lines.Add("@end enumerate\n");
   }
 
   /* Now free the portability notes */
@@ -617,7 +611,7 @@ Node::process(char *line)
   }
   else
   {
-    add(line);
+    lines.Add(line);
   }
 }
 
@@ -630,6 +624,38 @@ Line::Print(FILE *fp) const
   fputs(l, fp);
   if (strncmp(l, "@heading ", 9) == 0)
     fputs("@iftex\n@donoderef()\n@end iftex\n", fp);
+}
+
+Lines::~Lines()
+{
+  while (list)
+  {
+    Line *l = list->next;
+    delete list;
+    list = l;
+  }
+}
+
+void
+Lines::Add(const std::string &l)
+{
+  *tail = new Line(l);
+  tail = &(*tail)->next;
+}
+
+void
+Lines::Add(const char *l)
+{
+  *tail = new Line(l);
+  tail = &(*tail)->next;
+}
+
+void
+Lines::Print(FILE *fp) const
+{
+  Line *l;
+  for (l = list; l; l = l->next)
+    l->Print(fp);
 }
 
 PortNote::PortNote(PortInfo *pt)
@@ -795,9 +821,7 @@ nprint2(TreeNode<Node> *n)
 {
   n->pnode("Alphabetical List");
   fprintf(co, "@c From file %s\n", n->node->filename);
-  Line *l;
-  for (l=n->node->lines; l; l=l->next)
-    l->Print(co);
+  n->node->lines.Print(co);
 }
 
 #ifndef D_OK
