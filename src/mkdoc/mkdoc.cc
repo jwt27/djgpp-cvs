@@ -143,6 +143,17 @@ public:
   void Print(FILE *) const;
 };
 
+class NodeSource {
+  const std::string name;
+  const std::string filename;
+  void Message(const char *, const char *, va_list) const;
+public:
+  NodeSource(const char *n, const std::string &fn) : name(n), filename(fn) {}
+  void Print(FILE *) const;
+  void Error(const char *str, ...) const;
+  void Warning(const char *str, ...) const;
+};
+
 struct PortNote {
   struct PortNote *next;
   PortInfo *pi;
@@ -154,19 +165,15 @@ struct PortNote {
 };
 
 struct Node {
-  char *name;
+  NodeSource source;
   Lines lines;
-  char *filename;
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
   PortNote *last_port_note;
   int written_portability;
   static int count_nodes;
   Node(char *name, char *fn);
-  ~Node();
   void process(char *line);
-  void error(char *str, ...);
-  void warning(char *str, ...);
   void extend_portability_note(char *str);
   void read_portability_note(char *str);
   void read_portability(char *str);
@@ -179,48 +186,15 @@ int Node::count_nodes(0);
 
 //-----------------------------------------------------------------------------
 
-Node::Node(char *Pname, char *fn)
+Node::Node(char *n, char *fn)
+  : source(n, fn)
 {
-  name = strdup(Pname);
-  filename = strdup(fn);
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
     memset(&port_info[i], 0, sizeof(port_info[i]));
   port_notes = NULL;
   last_port_note = NULL;
   written_portability = 0;
   count_nodes++;
-}
-
-Node::~Node()
-{
-  free(name);
-  free(filename);
-}
-
-void
-Node::error (char *str, ...)
-{
-  va_list arg;
-  char s[1024];
-
-  va_start (arg, str);
-  vsprintf (s, str, arg);
-  va_end (arg);
-
-  fprintf (stderr, "Error (file %s, node %s): %s\n", filename, name, s);
-}
-
-void
-Node::warning (char *str, ...)
-{
-  va_list arg;
-  char s[1024];
-
-  va_start (arg, str);
-  vsprintf (s, str, arg);
-  va_end (arg);
-
-  fprintf (stderr, "Warning (file %s, node %s): %s\n", filename, name, s);
 }
 
 void
@@ -241,8 +215,8 @@ Node::read_portability_note(char *str)
   int i, j;
 
   if (written_portability) {
-    warning("%s", "@port-note must come before @portability.");
-    warning("%s", "Ignoring all @port-note for this node.");
+    source.Warning("%s", "@port-note must come before @portability.");
+    source.Warning("%s", "Ignoring all @port-note for this node.");
   }
 
   while (isspace(*s)) s++;
@@ -265,7 +239,7 @@ Node::read_portability_note(char *str)
   }  
 
   if (i == NUM_PORT_TARGETS) {
-    error ("unrecognised portability note target `%s' ignored.\n", target);
+    source.Error ("unrecognised portability note target `%s' ignored.\n", target);
   } else {
     PortNote *p = new PortNote(&port_target[i]);
     
@@ -369,7 +343,7 @@ Node::read_portability(char *str)
 	}
       }
     } else {
-      error ("unrecognised portability target `%s' ignored.\n", target);
+      source.Error ("unrecognised portability target `%s' ignored.\n", target);
     }
 
     target = x;
@@ -658,6 +632,41 @@ Lines::Print(FILE *fp) const
     l->Print(fp);
 }
 
+void
+NodeSource::Message(const char *msg, const char *str, va_list arg) const
+{
+  char s[1024];
+
+  vsprintf (s, str, arg);
+  fprintf (stderr, "%s (file %s, node %s): %s\n", msg, filename.c_str(), name.c_str(), s);
+}
+
+void
+NodeSource::Error(const char *str, ...) const
+{
+  va_list arg;
+
+  va_start (arg, str);
+  Message("Error", str, arg);
+  va_end (arg);
+}
+
+void
+NodeSource::Warning(const char *str, ...) const
+{
+  va_list arg;
+
+  va_start (arg, str);
+  Message("Warning", str, arg);
+  va_end (arg);
+}
+
+void
+NodeSource::Print(FILE *fp) const
+{
+  fprintf(fp, "@c From file %s\n", filename.c_str());
+}
+
 PortNote::PortNote(PortInfo *pt)
 {
   next = NULL;
@@ -820,7 +829,7 @@ void
 nprint2(TreeNode<Node> *n)
 {
   n->pnode("Alphabetical List");
-  fprintf(co, "@c From file %s\n", n->node->filename);
+  n->node->source.Print(co);
   n->node->lines.Print(co);
 }
 
