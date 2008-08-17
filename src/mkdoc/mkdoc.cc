@@ -14,6 +14,8 @@
 #include <ctype.h>
 #include <stdarg.h>
 
+#include <string>
+
 char *dj_strlwr(char *s)
 {
   char *p = s;
@@ -121,11 +123,13 @@ struct Tree {
   TreeNode<N> *find(char *name);
 };
 
-struct Line {
-  struct Line *next;
-  char *line;
-  Line(char *l);
-  ~Line();
+class Line {
+  const std::string line;
+public:
+  class Line *next;
+  Line(const std::string &l) : line(l), next(NULL) {}
+  Line(const char *l) : line(l), next(NULL) {}
+  void Print(FILE *) const;
 };
 
 struct PortNote {
@@ -619,15 +623,13 @@ Node::process(char *line)
 
 //-----------------------------------------------------------------------------
 
-Line::Line(char *l)
+void
+Line::Print(FILE *fp) const
 {
-  next = NULL;
-  line = strdup(l);
-}
-
-Line::~Line()
-{
-  free(line);
+  const char *l = line.c_str();
+  fputs(l, fp);
+  if (strncmp(l, "@heading ", 9) == 0)
+    fputs("@iftex\n@donoderef()\n@end iftex\n", fp);
 }
 
 PortNote::PortNote(PortInfo *pt)
@@ -795,11 +797,7 @@ nprint2(TreeNode<Node> *n)
   fprintf(co, "@c From file %s\n", n->node->filename);
   Line *l;
   for (l=n->node->lines; l; l=l->next)
-  {
-    fputs(l->line, co);
-    if (strncmp(l->line, "@heading ", 9) == 0)
-      fprintf(co, "@iftex\n@donoderef()\n@end iftex\n");
-  }
+    l->Print(co);
 }
 
 #ifndef D_OK
