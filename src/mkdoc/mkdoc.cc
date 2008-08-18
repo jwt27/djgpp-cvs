@@ -103,7 +103,7 @@ template <typename N>
 struct TreeNode {
   TreeNode *before, *after;
   TreeNode *prev, *next;
-  char *name;
+  std::string name;
   char *sname;
   N *node;
   TreeNode(const char *name, N *n);
@@ -649,8 +649,8 @@ template <typename N>
 TreeNode<N>::TreeNode(const char *Pname, N *n)
 {
   before = after = prev = next = NULL;
-  name = strdup(Pname);
-  sname = make_sname(name);
+  name = Pname;
+  sname = make_sname(Pname);
   node = n;
 }
 
@@ -659,7 +659,6 @@ TreeNode<N>::~TreeNode()
 {
   delete before;
   delete after;
-  free(name);
   free(sname);
   delete node;
 }
@@ -668,7 +667,6 @@ TreeNode<void>::~TreeNode()
 {
   delete before;
   delete after;
-  free(name);
   free(sname);
 }
 
@@ -759,16 +757,16 @@ void
 TreeNode<N>::Pnode(void) const
 {
   fprintf(co, "@c -----------------------------------------------------------------------------\n");
-  fprintf(co, "@node %s, %s, %s, %s\n", name,
-	  next ? next->name : "", prev ? prev->name : "", up());
-  fprintf(co, "@unnumberedsec %s\n", name);
+  fprintf(co, "@node %s, %s, %s, %s\n", name.c_str(),
+	  next ? next->name.c_str() : "", prev ? prev->name.c_str() : "", up());
+  fprintf(co, "@unnumberedsec %s\n", name.c_str());
 }
 
 template <typename N>
 static void
 print1(const TreeNode<N> &n)
 {
-  fprintf(co, "* %s::\n", n.name);
+  fprintf(co, "* %s::\n", n.name.c_str());
 }
 
 template <typename N>
