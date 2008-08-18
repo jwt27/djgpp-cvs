@@ -115,13 +115,14 @@ struct TreeNode {
 };
 
 template <typename N>
-struct Tree {
+class Tree {
   TreeNode<N> *nodes;
-  Tree();
-  ~Tree();
-  void add(TreeNode<N> *n);
-  void Traverse(void (*tf)(const TreeNode<N> *)) const;
-  TreeNode<N> *find(const char *name);
+public:
+  Tree() : nodes(NULL) {}
+  ~Tree() { delete nodes; }
+  void Add(TreeNode<N> *);
+  TreeNode<N> *Find(const char *);
+  void Traverse(void (*tf)(const TreeNode<N> *)) const { nodes->Traverse(tf); }
   void Print1(void) const;
 };
 
@@ -724,20 +725,8 @@ const char *TreeNode<Lines>::up(void) const
 }
 
 template <typename N>
-Tree<N>::Tree()
-{
-  nodes = 0;
-}
-
-template <typename N>
-Tree<N>::~Tree()
-{
-  delete nodes;
-}
-
-template <typename N>
 void
-Tree<N>::add(TreeNode<N> *tp)
+Tree<N>::Add(TreeNode<N> *tp)
 {
   TreeNode<N> **np = &nodes;
   while (*np)
@@ -761,15 +750,8 @@ Tree<N>::add(TreeNode<N> *tp)
 }
 
 template <typename N>
-void
-Tree<N>::Traverse(void (*tf)(const TreeNode<N> *)) const
-{
-  nodes->Traverse(tf);
-}
-
-template <typename N>
 TreeNode<N> *
-Tree<N>::find(const char *name)
+Tree<N>::Find(const char *name)
 {
   char *sname = make_sname(name);
   TreeNode<N> *tn = nodes;
@@ -788,7 +770,7 @@ Tree<N>::find(const char *name)
   }
   free(sname);
   tn = new TreeNode<N>(name, new Tree<void>);
-  add(tn);
+  Add(tn);
   return tn;
 }
 
@@ -909,8 +891,8 @@ static void scan_directory(const char *which)
 	  curnode = new Node(lines, name, filename);
 	  sprintf(buf, "@c From file %s\n", filename);
 	  lines.Add(buf);
-	  nodes.add(new TreeNode<Lines>(name, &lines));
-	  categories.find(cat)->node->add(new TreeNode<void>(name, NULL));
+	  nodes.Add(new TreeNode<Lines>(name, &lines));
+	  categories.Find(cat)->node->Add(new TreeNode<void>(name, NULL));
 	}
 	else
 	{
