@@ -94,7 +94,7 @@ static const PortInfo port_target[] = {
   { "unix",  "Unix",
     {
       { "98", "Unix98", PORT_TARGET_UNIX_98, PORT_UNKNOWN },
-      { 0 }
+      { NULL, NULL, 0, 0 }
     }
   }
 };
