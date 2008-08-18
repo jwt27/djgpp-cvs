@@ -151,7 +151,6 @@ class NodeSource {
   void Message(const char *, const char *, va_list) const;
 public:
   NodeSource(const char *n, const std::string &fn) : name(n), filename(fn) {}
-  void Print(FILE *) const;
   void Error(const char *str, ...) const;
   void Warning(const char *str, ...) const;
 };
@@ -664,12 +663,6 @@ NodeSource::Warning(const char *str, ...) const
   va_end (arg);
 }
 
-void
-NodeSource::Print(FILE *fp) const
-{
-  fprintf(fp, "@c From file %s\n", filename.c_str());
-}
-
 PortNote::PortNote(const PortInfo *pt)
 {
   next = NULL;
@@ -841,7 +834,6 @@ Tree<N>::Print1(void) const
 void
 Node::Print1(void) const
 {
-  source.Print(co);
   lines.Print(co);
 }
 
@@ -920,6 +912,8 @@ static void scan_directory(const char *which)
 	  sscanf(buf, "%*s %[^,\n], %[^\n]", name, cat);
 	  strcat(cat, " functions");
 	  curnode = new Node(name, filename);
+	  sprintf(buf, "@c From file %s\n", filename);
+	  curnode->lines.Add(buf);
 	  nodes.add(new TreeNode<Node>(name, curnode));
 	  categories.find(cat)->node->add(new TreeNode<void>(name, NULL));
 	}
