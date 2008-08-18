@@ -335,7 +335,7 @@ Node::read_portability(const char *str)
 	    break;
 	}
 
-	if (j < NUM_PORT_TARGETS)
+	if (j < MAX_PORT_QUALIFIERS)
 	  pii.pq[j].complete = type;
       } else {
 	/* A qualifier is not present, so set the type for all qualifiers. */
