@@ -190,7 +190,10 @@ Node::Node(Lines &l, const char *n, const char *fn)
   : source(n, fn), lines(l)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
-    memset(&port_info[i], 0, sizeof(port_info[i]));
+  {
+    PortInfo &pii = port_info[i];
+    memset(&pii, 0, sizeof(pii));
+  }
   port_notes = NULL;
   last_port_note = NULL;
   written_portability = 0;
@@ -218,12 +221,13 @@ Node::read_portability_note(const char *str)
   dj_strlwr (target);
 
   for (i = 0; i < NUM_PORT_TARGETS; i++) {
-    if (   (strlen (target) >= strlen (port_target[i].prefix_token))
-	&& !strncmp (target, port_target[i].prefix_token,
-		     strlen (port_target[i].prefix_token))) {
+    const char *pt = port_target[i].prefix_token;
+    if (   (strlen (target) >= strlen (pt))
+	&& !strncmp (target, pt,
+		     strlen (pt))) {
       /* If matched, check that the next character is either: null, a dash
        * (to indicate a qualifier) or null. */
-      x = target + strlen (port_target[i].prefix_token);
+      x = target + strlen (pt);
       if ((*x == '\0') || (*x == '-') || isspace((int) *x))
 	break;
     }
@@ -232,20 +236,22 @@ Node::read_portability_note(const char *str)
   if (i == NUM_PORT_TARGETS) {
     source.Error ("unrecognised portability note target `%s' ignored.\n", target);
   } else {
-    PortNote *p = new PortNote(&port_target[i]);
+    const PortInfo &pti = port_target[i];
+    PortNote *p = new PortNote(&pti);
     
     /* Try to match the portability note to a portability qualifier. */
-    x = target + strlen (p->pi->prefix_token);
+    x = target + strlen (pti.prefix_token);
     if (*x == '-')
       x++;
 
     for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
-      if (p->pi->pq[j].suffix_token == NULL) continue;
-      if (!strcmp (x, p->pi->pq[j].suffix_token)) break;
+      const char *st = pti.pq[j].suffix_token;
+      if (st == NULL) continue;
+      if (!strcmp (x, st)) break;
     }
 
     if (j < MAX_PORT_QUALIFIERS)
-      p->pq = &p->pi->pq[j];
+      p->pq = &pti.pq[j];
 
     /* Attach portability note to note chain. */
     if (port_notes)
@@ -288,25 +294,29 @@ Node::read_portability(const char *str)
     if (*x) *x++ = 0;
 
     for (i = 0; i < NUM_PORT_TARGETS; i++) {
-      if (   (strlen (target) >= strlen (port_target[i].prefix_token))
-	  && !strncmp (target, port_target[i].prefix_token,
-		       strlen (port_target[i].prefix_token))) {
+      const char *pt = port_target[i].prefix_token;
+      if (   (strlen (target) >= strlen (pt))
+	  && !strncmp (target, pt,
+		       strlen (pt))) {
 	/* If matched, check that the next character is either: null, a dash
 	 * (to indicate a qualifier) or null. */
-	p = target + strlen (port_target[i].prefix_token);
+	p = target + strlen (pt);
 	if ((*p == '\0') || (*p == '-') || isspace((int) *p))
 	  break;
       }
     }
 
     if (i < NUM_PORT_TARGETS) {
-      /* Now match the portability qualifier, if present. */
-      p = target + strlen (port_target[i].prefix_token);
+      const PortInfo &pti = port_target[i];
+      PortInfo &pii = port_info[i];
 
-      if (port_info[i].prefix_name == NULL) {
+      /* Now match the portability qualifier, if present. */
+      p = target + strlen (pti.prefix_token);
+
+      if (pii.prefix_name == NULL) {
 	/* Copy default portability information to uninitialised port
 	 * info, qualifier list. */
-	memcpy(&port_info[i], &port_target[i], sizeof(port_target[i]));
+	memcpy(&pii, &pti, sizeof(pti));
       }
 
 
@@ -316,22 +326,24 @@ Node::read_portability(const char *str)
 	p++;
 
 	for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
-	  if (port_target[i].pq[j].suffix_token == NULL)
+	  const char *st = pti.pq[j].suffix_token;
+
+	  if (st == NULL)
 	    continue;
 
-	  if (!strcmp (p, port_target[i].pq[j].suffix_token))
+	  if (!strcmp (p, st))
 	    break;
 	}
 
 	if (j < NUM_PORT_TARGETS)
-	  port_info[i].pq[j].complete = type;
+	  pii.pq[j].complete = type;
       } else {
 	/* A qualifier is not present, so set the type for all qualifiers. */
 	/* TODO: If the bare prefix appears after the prefix has appeared
 	 * with qualifiers in the line, then this will reset all qualifiers.
 	 * This is a bug. The solution is to be careful with @portability. */
 	for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
-	  port_info[i].pq[j].complete = type;
+	  pii.pq[j].complete = type;
 	}
       }
     } else {
@@ -370,9 +382,10 @@ Node::write_portability(void)
   {    
     for (i = 0; i < NUM_PORT_TARGETS; i++)
     {
-      if (strlen(port_target[i].prefix_name) > maxsize)
+      const char *pn = port_target[i].prefix_name;
+      if (strlen(pn) > maxsize)
       {
-	maxsize = strlen(port_target[i].prefix_name);
+	maxsize = strlen(pn);
 	largest_target = i;
       }
     }
@@ -393,20 +406,24 @@ Node::write_portability(void)
 
   for (i = 0; i < NUM_PORT_TARGETS; i++)
   {
+    PortInfo &pii = port_info[i];
+
     /* No information given => unknown => skip it. */
-    if (port_info[i].prefix_name == NULL)
+    if (pii.prefix_name == NULL)
       continue;
 
     /* Are all qualifiers set to the same value of one of PORT_*? */
     for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      PortQualifier &pii_pqj = pii.pq[j];
+
       /* Skip unnamed suffixes */
-      if (port_info[i].pq[j].suffix_name == NULL)
+      if (pii_pqj.suffix_name == NULL)
 	continue;
 
       if (all_port_qualifiers == -1) {
-	all_port_qualifiers = port_info[i].pq[j].complete;
+	all_port_qualifiers = pii_pqj.complete;
       } else {
-	if (all_port_qualifiers != port_info[i].pq[j].complete) {
+	if (all_port_qualifiers != pii_pqj.complete) {
 	  /* Not all port qualifiers have the same completion status. */
 	  all_port_qualifiers = -1;
 	  break;
@@ -427,12 +444,14 @@ Node::write_portability(void)
 
     /* Add positive or partial qualifiers to the list. */
     for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      PortQualifier &pii_pqj = pii.pq[j];
+
       /* Skip unnamed suffixes */
-      if (port_info[i].pq[j].suffix_name == NULL)
+      if (pii_pqj.suffix_name == NULL)
 	continue;
 
-      if (   (port_info[i].pq[j].complete != PORT_YES)
-	  && (port_info[i].pq[j].complete != PORT_PARTIAL))
+      if (   (pii_pqj.complete != PORT_YES)
+	  && (pii_pqj.complete != PORT_PARTIAL))
 	continue;
 
       /* Add separator, if this isn't the first entry. */
@@ -440,19 +459,19 @@ Node::write_portability(void)
       if (qualifier_number > 1)
 	strcat (buffer, "; ");
       
-      if (port_info[i].pq[j].complete == PORT_YES) {
-	strcat (buffer, port_info[i].pq[j].suffix_name);
-      } else if (port_info[i].pq[j].complete == PORT_PARTIAL) {
-	strcat (buffer, port_info[i].pq[j].suffix_name);
+      if (pii_pqj.complete == PORT_YES) {
+	strcat (buffer, pii_pqj.suffix_name);
+      } else if (pii_pqj.complete == PORT_PARTIAL) {
+	strcat (buffer, pii_pqj.suffix_name);
 	strcat (buffer, " (partial)");
       }
 
       /* Attach any qualifier-specific portability notes. */
       for (p = port_notes; p; p = p->next)
       {
-	if (   !strcmp (p->pi->prefix_token, port_info[i].prefix_token)
+	if (   !strcmp (p->pi->prefix_token, pii.prefix_token)
 	    && (p->pq != NULL)
-	    && !strcmp (p->pq->suffix_token, port_info[i].pq[j].suffix_token))
+	    && !strcmp (p->pq->suffix_token, pii_pqj.suffix_token))
 	{
 	  char smallbuffer[20];
 	  p->number = note_number++;
@@ -468,11 +487,13 @@ Node::write_portability(void)
       strcat (buffer, "No");
 
     for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      PortQualifier &pii_pqj = pii.pq[j];
+
       /* Skip unnamed suffixes */
-      if (port_info[i].pq[j].suffix_name == NULL)
+      if (pii_pqj.suffix_name == NULL)
 	continue;
 
-      if (port_info[i].pq[j].complete != PORT_NO)
+      if (pii_pqj.complete != PORT_NO)
 	continue;
 
       /* If all port qualifiers == PORT_NO, then we've already output. */
@@ -483,15 +504,15 @@ Node::write_portability(void)
 	  strcat (buffer, "; ");
 	
 	strcat (buffer, "not ");
-	strcat (buffer, port_info[i].pq[j].suffix_name);
+	strcat (buffer, pii_pqj.suffix_name);
       }
 
       /* Attach any qualifier-specific portability notes. */
       for (p = port_notes; p; p = p->next)
       {
-	if (   !strcmp (p->pi->prefix_token, port_info[i].prefix_token)
+	if (   !strcmp (p->pi->prefix_token, pii.prefix_token)
 	    && (p->pq != NULL)
-	    && !strcmp (p->pq->suffix_token, port_info[i].pq[j].suffix_token))
+	    && !strcmp (p->pq->suffix_token, pii_pqj.suffix_token))
 	{
 	  char smallbuffer[20];
 	  p->number = note_number++;
@@ -505,8 +526,8 @@ Node::write_portability(void)
     /* Attach any target-specific portability notes. */
     for (p = port_notes; p; p = p->next)
     {
-      if (   (port_info[i].prefix_token != NULL)
-	  && !strcmp (p->pi->prefix_token, port_info[i].prefix_token)
+      if (   (pii.prefix_token != NULL)
+	  && !strcmp (p->pi->prefix_token, pii.prefix_token)
 	  && (p->pq == NULL))
       {
 	char smallbuffer[20];
@@ -892,23 +913,25 @@ static void list_portability (void)
   printf("Built-in portability targets:\n");
 
   for (i = 0; i < NUM_PORT_TARGETS; i++) {    
-    if (port_target[i].pq[0].suffix_token  == NULL) {
+    const PortInfo &pti = port_target[i];
+    if (pti.pq[0].suffix_token  == NULL) {
       printf("%-32s = %-32s\n",
-	     port_target[i].prefix_token,
-	     port_target[i].prefix_name);
+	     pti.prefix_token,
+	     pti.prefix_name);
     } else {
       for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
-	if (port_target[i].pq[j].suffix_token == NULL) break;
+	const PortQualifier &pti_pqj = pti.pq[j];
+	if (pti_pqj.suffix_token == NULL) break;
 
-	strcpy(buffer, port_target[i].prefix_token);
+	strcpy(buffer, pti.prefix_token);
 	strcat(buffer, "-");
-	strcat(buffer, port_target[i].pq[j].suffix_token);
+	strcat(buffer, pti_pqj.suffix_token);
 
 	printf("%-32s = ", buffer);
 
-	strcpy(buffer, port_target[i].prefix_name);
+	strcpy(buffer, pti.prefix_name);
 	strcat(buffer, ": ");
-	strcat(buffer, port_target[i].pq[j].suffix_name);
+	strcat(buffer, pti_pqj.suffix_name);
 
 	printf("%-32s\n", buffer);
       }
