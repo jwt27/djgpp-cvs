@@ -161,9 +161,8 @@ struct PortNote {
   const PortInfo *pi;
   const PortQualifier *pq;
   int number;
-  char *note;
-  PortNote(const PortInfo *pt);
-  ~PortNote();
+  std::string note;
+  PortNote(const PortInfo *pt) : next(NULL), pi(pt), pq(NULL), number(0), note("") {}
 };
 
 struct Node {
@@ -176,7 +175,6 @@ struct Node {
   static int count_nodes;
   Node(Lines &, const char *name, const char *fn);
   void process(const char *line);
-  void extend_portability_note(const char *str) const;
   void read_portability_note(const char *str);
   void read_portability(const char *str);
   void write_portability(void);
@@ -197,15 +195,6 @@ Node::Node(Lines &l, const char *n, const char *fn)
   last_port_note = NULL;
   written_portability = 0;
   count_nodes++;
-}
-
-void
-Node::extend_portability_note(const char *str) const
-{
-  int newsize = strlen (last_port_note->note) + strlen (str) + 1;
-  char *newstring = (char *) realloc (last_port_note->note, newsize);
-  strcat (newstring, str);
-  last_port_note->note = newstring;
 }
 
 void
@@ -269,7 +258,8 @@ Node::read_portability_note(const char *str)
     }
     last_port_note = p;
 
-    if (*s) extend_portability_note (s);
+    if (*s)
+      last_port_note->note.append(s);
   }
   free (work_str);
 }
@@ -583,7 +573,7 @@ Node::process(const char *line)
   /* If `last_port_note' is not NULL, we're in the middle of a note */
   if (last_port_note)
   {
-    extend_portability_note(line);
+    last_port_note->note.append(line);
   }
   else
   {
@@ -653,20 +643,6 @@ NodeSource::Warning(const char *str, ...) const
   va_start (arg, str);
   Message("Warning", str, arg);
   va_end (arg);
-}
-
-PortNote::PortNote(const PortInfo *pt)
-{
-  next = NULL;
-  number = 0;
-  pi = pt;
-  pq = NULL;
-  note = strdup ("");
-}
-
-PortNote::~PortNote()
-{
-  free(note);
 }
 
 template <typename N>
