@@ -142,7 +142,7 @@ public:
   ~Lines();
   void Add(const std::string &);
   void Add(const char *);
-  void Print(FILE *) const;
+  void Print1(void) const;
 };
 
 class NodeSource {
@@ -167,29 +167,28 @@ struct PortNote {
 
 struct Node {
   NodeSource source;
-  Lines lines;
+  Lines &lines;
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes;
   PortNote *last_port_note;
   int written_portability;
   static int count_nodes;
-  Node(const char *name, const char *fn);
+  Node(Lines &, const char *name, const char *fn);
   void process(const char *line);
   void extend_portability_note(const char *str) const;
   void read_portability_note(const char *str);
   void read_portability(const char *str);
   void write_portability(void);
-  void Print1(void) const;
 };
 
 static Tree<Tree<void> > categories;
-static Tree<Node> nodes;
+static Tree<Lines> nodes;
 int Node::count_nodes(0);
 
 //-----------------------------------------------------------------------------
 
-Node::Node(const char *n, const char *fn)
-  : source(n, fn)
+Node::Node(Lines &l, const char *n, const char *fn)
+  : source(n, fn), lines(l)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
     memset(&port_info[i], 0, sizeof(port_info[i]));
@@ -627,14 +626,6 @@ Lines::Add(const char *l)
 }
 
 void
-Lines::Print(FILE *fp) const
-{
-  Line *l;
-  for (l = list; l; l = l->next)
-    l->Print(fp);
-}
-
-void
 NodeSource::Message(const char *msg, const char *str, va_list arg) const
 {
   char s[1024];
@@ -727,7 +718,7 @@ const char *TreeNode<Tree<void> >::up(void) const
   return "Functional Categories";
 }
 
-const char *TreeNode<Node>::up(void) const
+const char *TreeNode<Lines>::up(void) const
 {
   return "Alphabetical List";
 }
@@ -832,9 +823,11 @@ Tree<N>::Print1(void) const
 }
 
 void
-Node::Print1(void) const
+Lines::Print1() const
 {
-  lines.Print(co);
+  Line *l;
+  for (l = list; l; l = l->next)
+    l->Print(co);
 }
 
 template <typename N>
@@ -911,10 +904,12 @@ static void scan_directory(const char *which)
 	  cat[0] = 0;
 	  sscanf(buf, "%*s %[^,\n], %[^\n]", name, cat);
 	  strcat(cat, " functions");
-	  curnode = new Node(name, filename);
+	  Lines &lines = *new Lines();
+	  delete curnode;
+	  curnode = new Node(lines, name, filename);
 	  sprintf(buf, "@c From file %s\n", filename);
-	  curnode->lines.Add(buf);
-	  nodes.add(new TreeNode<Node>(name, curnode));
+	  lines.Add(buf);
+	  nodes.add(new TreeNode<Lines>(name, &lines));
 	  categories.find(cat)->node->add(new TreeNode<void>(name, NULL));
 	}
 	else
@@ -923,6 +918,7 @@ static void scan_directory(const char *which)
 	    curnode->process(buf);
 	}
       }
+      delete curnode;
       fclose(ci);
       free(filename);
     }
