@@ -157,7 +157,8 @@ struct Node {
   NodeSource source;
   Lines &lines;
   PortInfo port_info[NUM_PORT_TARGETS];
-  PortNote *port_notes;
+  PortNote *port_notes[NUM_PORT_TARGETS];
+  PortNote **port_note_tail[NUM_PORT_TARGETS];
   PortNote *last_port_note;
   int written_portability;
   static int count_nodes;
@@ -181,8 +182,9 @@ Node::Node(Lines &l, const char *n, const char *fn)
   {
     PortInfo &pii = port_info[i];
     memset(&pii, 0, sizeof(pii));
+    port_notes[i] = NULL;
+    port_note_tail[i] = &port_notes[i];
   }
-  port_notes = NULL;
   last_port_note = NULL;
   written_portability = 0;
   count_nodes++;
@@ -242,14 +244,8 @@ Node::read_portability_note(const char *str)
       p->pq = &pti.pq[j];
 
     /* Attach portability note to note chain. */
-    if (port_notes)
-    {
-      last_port_note->next = p;
-    }
-    else
-    {
-      port_notes = p;
-    }
+    *port_note_tail[i] = p;
+    port_note_tail[i] = &p->next;
     last_port_note = p;
 
     if (*s)
@@ -455,10 +451,9 @@ Node::write_portability(void)
       }
 
       /* Attach any qualifier-specific portability notes. */
-      for (p = port_notes; p; p = p->next)
+      for (p = port_notes[i]; p; p = p->next)
       {
-	if (   !strcmp (p->pi->prefix_token, pii.prefix_token)
-	    && (p->pq != NULL)
+	if (   (p->pq != NULL)
 	    && !strcmp (p->pq->suffix_token, pii_pqj.suffix_token))
 	{
 	  char smallbuffer[20];
@@ -496,10 +491,9 @@ Node::write_portability(void)
       }
 
       /* Attach any qualifier-specific portability notes. */
-      for (p = port_notes; p; p = p->next)
+      for (p = port_notes[i]; p; p = p->next)
       {
-	if (   !strcmp (p->pi->prefix_token, pii.prefix_token)
-	    && (p->pq != NULL)
+	if (   (p->pq != NULL)
 	    && !strcmp (p->pq->suffix_token, pii_pqj.suffix_token))
 	{
 	  char smallbuffer[20];
@@ -512,11 +506,9 @@ Node::write_portability(void)
     }
 
     /* Attach any target-specific portability notes. */
-    for (p = port_notes; p; p = p->next)
+    for (p = port_notes[i]; p; p = p->next)
     {
-      if (   (pii.prefix_token != NULL)
-	  && !strcmp (p->pi->prefix_token, pii.prefix_token)
-	  && (p->pq == NULL))
+      if (   (p->pq == NULL))
       {
 	char smallbuffer[20];
 	p->number = note_number++;
@@ -540,23 +532,25 @@ Node::write_portability(void)
     lines.Add("\n");
     lines.Add("@enumerate\n");
 
-    for (i = 1; i < note_number; i++)
+    for (j = 1; j < note_number; j++)
     {
       lines.Add("@item\n");
-      for (PortNote *p = port_notes; p; p = p->next)
-	if (p->number == i)
-	  lines.Add(p->note);
+      for (i = 0; i < NUM_PORT_TARGETS; i++)
+	for (PortNote *p = port_notes[i]; p; p = p->next)
+	  if (p->number == j)
+	    lines.Add(p->note);
     }
 
     lines.Add("@end enumerate\n");
   }
 
   /* Now free the portability notes */
-  while (port_notes) {
-    PortNote *p = port_notes;
-    port_notes = p->next;
-    delete p;
-  }
+  for (i = 0; i < NUM_PORT_TARGETS; i++)
+    while (port_notes[i]) {
+      PortNote *p = port_notes[i];
+      port_notes[i] = p->next;
+      delete p;
+    }
   last_port_note = NULL;
 
   written_portability++;
