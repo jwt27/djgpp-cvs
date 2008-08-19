@@ -146,11 +146,9 @@ public:
 
 struct PortNote {
   PortNote *next;
-  const PortInfo *pi;
-  const PortQualifier *pq;
   int number;
   std::string note;
-  PortNote(const PortInfo *pt) : next(NULL), pi(pt), pq(NULL), number(0), note("") {}
+  PortNote(void) : next(NULL), number(0), note() {}
 };
 
 struct Node {
@@ -234,7 +232,7 @@ Node::read_portability_note(const char *str)
     source.Error ("unrecognised portability note target `%s' ignored.\n", target);
   } else {
     const PortInfo &pti = port_target[i];
-    PortNote *p = new PortNote(&pti);
+    PortNote *p = new PortNote;
     
     /* Try to match the portability note to a portability qualifier. */
     x = target + strlen (pti.prefix_token);
@@ -249,7 +247,6 @@ Node::read_portability_note(const char *str)
 
     /* Attach portability note to note chain. */
     if (j < MAX_PORT_QUALIFIERS) {
-      p->pq = &pti.pq[j];
       *q_port_note_tail[i][j] = p;
       q_port_note_tail[i][j] = &p->next;
     } else {
