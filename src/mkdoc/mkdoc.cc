@@ -460,7 +460,6 @@ Node::write_portability(void)
 	  p->number = note_number++;
 	  sprintf (smallbuffer, " (see note %d)", p->number);
 	  strcat (buffer, smallbuffer);
-	  break;
 	}
       }
     }
@@ -500,7 +499,6 @@ Node::write_portability(void)
 	  p->number = note_number++;
 	  sprintf (smallbuffer, " (see note %d)", p->number);
 	  strcat (buffer, smallbuffer);
-	  break;
 	}
       }
     }
@@ -514,7 +512,6 @@ Node::write_portability(void)
 	p->number = note_number++;
 	sprintf (smallbuffer, " (see note %d)", p->number);
 	strcat (buffer, smallbuffer);
-	break;
       }
     }
 
