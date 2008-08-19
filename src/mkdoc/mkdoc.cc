@@ -502,6 +502,10 @@ Node::write_portability(void)
       }
     }
 
+    /* Add separator, if there are qualifiers. */
+    if (port_notes[i] && qualifier_number > 0)
+      strcat (buffer, ";");
+
     /* Attach any target-specific portability notes. */
     for (p = port_notes[i]; p; p = p->next)
     {
