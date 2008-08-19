@@ -450,12 +450,9 @@ Node::write_portability(void)
       if (qualifier_number > 1)
 	strcat (buffer, "; ");
       
-      if (pii_pqj.complete == PORT_YES) {
-	strcat (buffer, pii_pqj.suffix_name);
-      } else if (pii_pqj.complete == PORT_PARTIAL) {
-	strcat (buffer, pii_pqj.suffix_name);
+      strcat (buffer, pii_pqj.suffix_name);
+      if (pii_pqj.complete == PORT_PARTIAL)
 	strcat (buffer, " (partial)");
-      }
 
       /* Attach any qualifier-specific portability notes. */
       for (p = q_port_notes[i][j]; p; p = p->next)
