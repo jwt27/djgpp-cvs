@@ -204,8 +204,8 @@ Node::read_portability_note(const char *str)
   int i, j;
 
   if (written_portability) {
-    source.Warning("%s", "@port-note must come before @portability.");
-    source.Warning("%s", "Ignoring all @port-note for this node.");
+    source.Warning("@port-note must come before @portability.");
+    source.Warning("Ignoring all @port-note for this node.");
   }
 
   while (isspace(*s)) s++;
@@ -524,10 +524,10 @@ Node::write_portability(void)
 
   if (note_number > 1)
   {
-    lines.Add("@noindent\n");
-    lines.Add("Notes:\n");
-    lines.Add("\n");
-    lines.Add("@enumerate\n");
+    lines.Add("@noindent\n"
+	      "Notes:\n"
+	      "\n"
+	      "@enumerate\n");
 
     for (int n = 1; n < note_number; n++)
     {
@@ -591,7 +591,9 @@ Node::process(const char *line)
   {
     lines.Add(line);
     if (strncmp(line, "@heading ", 9) == 0)
-      lines.Add("@iftex\n@donoderef()\n@end iftex\n");
+      lines.Add("@iftex\n"
+		"@donoderef()\n"
+		"@end iftex\n");
   }
 }
 
@@ -737,10 +739,15 @@ template <typename N>
 void
 TreeNode<N>::Pnode(void) const
 {
-  fprintf(co, "@c -----------------------------------------------------------------------------\n");
-  fprintf(co, "@node %s, %s, %s, %s\n", name.c_str(),
-	  next ? next->name.c_str() : "", prev ? prev->name.c_str() : "", up());
-  fprintf(co, "@unnumberedsec %s\n", name.c_str());
+  fprintf(co,
+	  "@c -----------------------------------------------------------------------------\n"
+	  "@node %s, %s, %s, %s\n"
+	  "@unnumberedsec %s\n",
+	  name.c_str(),
+	  next ? next->name.c_str() : "",
+	  prev ? prev->name.c_str() : "",
+	  up(),
+	  name.c_str());
 }
 
 template <typename N>
@@ -868,7 +875,7 @@ static void list_portability (void)
   int i, j;
   char buffer[40];
 
-  printf("Built-in portability targets:\n");
+  puts("Built-in portability targets:\n");
 
   for (i = 0; i < NUM_PORT_TARGETS; i++) {    
     const PortInfo &pti = port_target[i];
@@ -901,13 +908,12 @@ static void list_portability (void)
 
 static void usage (void)
 {
-  fprintf(stderr,
-	  "Usage: mkdoc [<switches>] <directory> <output file>\n"
-	  "\n"
-	  "Switches:\n"
-	  "       -h, -?, --help      -  Display this help\n"
-	  "       -l, --list-targets  -  List built-in portability targets\n"
-	  "\n");
+  fputs("Usage: mkdoc [<switches>] <directory> <output file>\n"
+	"\n"
+	"Switches:\n"
+	"       -h, -?, --help      -  Display this help\n"
+	"       -l, --list-targets  -  List built-in portability targets\n"
+	"\n", stderr);
 }
 
 //-----------------------------------------------------------------------------
@@ -942,19 +948,19 @@ int main (int argc, char **argv)
   co = fopen(argv[2], "w");
 
   // Functional Categories
-  fprintf(co, "@c -----------------------------------------------------------------------------\n");
-  fprintf(co, "@node Functional Categories, Alphabetical List, Introduction, Top\n");
-  fprintf(co, "@unnumbered Functional Categories\n");
-  fprintf(co, "\n");
+  fputs("@c -----------------------------------------------------------------------------\n"
+	"@node Functional Categories, Alphabetical List, Introduction, Top\n"
+	"@unnumbered Functional Categories\n"
+	"\n", co);
   categories.Print1();
 
   categories.Traverse(print2);
 
   // Alphabetical List
-  fprintf(co, "@c -----------------------------------------------------------------------------\n");
-  fprintf(co, "@node Alphabetical List, Unimplemented, Functional Categories, Top\n");
-  fprintf(co, "@unnumbered Alphabetical List\n");
-  fprintf(co, "\n");
+  fputs("@c -----------------------------------------------------------------------------\n"
+	"@node Alphabetical List, Unimplemented, Functional Categories, Top\n"
+	"@unnumbered Alphabetical List\n"
+	"\n", co);
   nodes.Print1();
 
   nodes.Traverse(print2);
