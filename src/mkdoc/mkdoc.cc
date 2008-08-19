@@ -599,6 +599,8 @@ Node::process(const char *line)
   else
   {
     lines.Add(line);
+    if (strncmp(line, "@heading ", 9) == 0)
+      lines.Add("@iftex\n@donoderef()\n@end iftex\n");
   }
 }
 
@@ -609,8 +611,6 @@ Line::Print(FILE *fp) const
 {
   const char *l = line.c_str();
   fputs(l, fp);
-  if (strncmp(l, "@heading ", 9) == 0)
-    fputs("@iftex\n@donoderef()\n@end iftex\n", fp);
 }
 
 Lines::~Lines()
