@@ -159,6 +159,8 @@ struct Node {
   PortInfo port_info[NUM_PORT_TARGETS];
   PortNote *port_notes[NUM_PORT_TARGETS];
   PortNote **port_note_tail[NUM_PORT_TARGETS];
+  PortNote *q_port_notes[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
+  PortNote **q_port_note_tail[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
   PortNote *last_port_note;
   int written_portability;
   static int count_nodes;
@@ -184,6 +186,11 @@ Node::Node(Lines &l, const char *n, const char *fn)
     memset(&pii, 0, sizeof(pii));
     port_notes[i] = NULL;
     port_note_tail[i] = &port_notes[i];
+    for (int j = 0; j < MAX_PORT_QUALIFIERS; j++)
+    {
+      q_port_notes[i][j] = NULL;
+      q_port_note_tail[i][j] = &q_port_notes[i][j];
+    }
   }
   last_port_note = NULL;
   written_portability = 0;
@@ -240,12 +247,15 @@ Node::read_portability_note(const char *str)
       if (!strcmp (x, st)) break;
     }
 
-    if (j < MAX_PORT_QUALIFIERS)
-      p->pq = &pti.pq[j];
-
     /* Attach portability note to note chain. */
-    *port_note_tail[i] = p;
-    port_note_tail[i] = &p->next;
+    if (j < MAX_PORT_QUALIFIERS) {
+      p->pq = &pti.pq[j];
+      *q_port_note_tail[i][j] = p;
+      q_port_note_tail[i][j] = &p->next;
+    } else {
+      *port_note_tail[i] = p;
+      port_note_tail[i] = &p->next;
+    }
     last_port_note = p;
 
     if (*s)
@@ -451,16 +461,12 @@ Node::write_portability(void)
       }
 
       /* Attach any qualifier-specific portability notes. */
-      for (p = port_notes[i]; p; p = p->next)
+      for (p = q_port_notes[i][j]; p; p = p->next)
       {
-	if (   (p->pq != NULL)
-	    && !strcmp (p->pq->suffix_token, pii_pqj.suffix_token))
-	{
 	  char smallbuffer[20];
 	  p->number = note_number++;
 	  sprintf (smallbuffer, " (see note %d)", p->number);
 	  strcat (buffer, smallbuffer);
-	}
       }
     }
 
@@ -490,29 +496,22 @@ Node::write_portability(void)
       }
 
       /* Attach any qualifier-specific portability notes. */
-      for (p = port_notes[i]; p; p = p->next)
+      for (p = q_port_notes[i][j]; p; p = p->next)
       {
-	if (   (p->pq != NULL)
-	    && !strcmp (p->pq->suffix_token, pii_pqj.suffix_token))
-	{
 	  char smallbuffer[20];
 	  p->number = note_number++;
 	  sprintf (smallbuffer, " (see note %d)", p->number);
 	  strcat (buffer, smallbuffer);
-	}
       }
     }
 
     /* Attach any target-specific portability notes. */
     for (p = port_notes[i]; p; p = p->next)
     {
-      if (   (p->pq == NULL))
-      {
 	char smallbuffer[20];
 	p->number = note_number++;
 	sprintf (smallbuffer, " (see note %d)", p->number);
 	strcat (buffer, smallbuffer);
-      }
     }
 
     strcat (buffer, "\n");
@@ -529,25 +528,37 @@ Node::write_portability(void)
     lines.Add("\n");
     lines.Add("@enumerate\n");
 
-    for (j = 1; j < note_number; j++)
+    for (int n = 1; n < note_number; n++)
     {
       lines.Add("@item\n");
-      for (i = 0; i < NUM_PORT_TARGETS; i++)
+      for (i = 0; i < NUM_PORT_TARGETS; i++) {
 	for (PortNote *p = port_notes[i]; p; p = p->next)
-	  if (p->number == j)
+	  if (p->number == n)
 	    lines.Add(p->note);
+	for (j = 0; j <MAX_PORT_QUALIFIERS; j++)
+	  for (PortNote *p = q_port_notes[i][j]; p; p = p->next)
+	    if (p->number == n)
+	      lines.Add(p->note);
+      }
     }
 
     lines.Add("@end enumerate\n");
   }
 
   /* Now free the portability notes */
-  for (i = 0; i < NUM_PORT_TARGETS; i++)
+  for (i = 0; i < NUM_PORT_TARGETS; i++) {
     while (port_notes[i]) {
       PortNote *p = port_notes[i];
       port_notes[i] = p->next;
       delete p;
     }
+    for (j = 0; j <MAX_PORT_QUALIFIERS; j++)
+      while (q_port_notes[i][j]) {
+	PortNote *p = q_port_notes[i][j];
+	q_port_notes[i][j] = p->next;
+	delete p;
+    }
+  }
   last_port_note = NULL;
 
   written_portability++;
