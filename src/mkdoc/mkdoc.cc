@@ -126,23 +126,11 @@ public:
   void Print1(void) const;
 };
 
-class Line {
-  const std::string line;
-public:
-  Line *next;
-  Line(const std::string &l) : line(l), next(NULL) {}
-  Line(const char *l) : line(l), next(NULL) {}
-  void Print(FILE *) const;
-};
-
 class Lines {
-  Line *list;
-  Line **tail;
+  std::string lines;
 public:
-  Lines() : list(NULL), tail(&list) {}
-  ~Lines();
-  void Add(const std::string &);
-  void Add(const char *);
+  void Add(const std::string &l) { lines.append(l); }
+  void Add(const char *l) { lines.append(l); }
   void Print1(void) const;
 };
 
@@ -607,37 +595,6 @@ Node::process(const char *line)
 //-----------------------------------------------------------------------------
 
 void
-Line::Print(FILE *fp) const
-{
-  const char *l = line.c_str();
-  fputs(l, fp);
-}
-
-Lines::~Lines()
-{
-  while (list)
-  {
-    Line *l = list->next;
-    delete list;
-    list = l;
-  }
-}
-
-void
-Lines::Add(const std::string &l)
-{
-  *tail = new Line(l);
-  tail = &(*tail)->next;
-}
-
-void
-Lines::Add(const char *l)
-{
-  *tail = new Line(l);
-  tail = &(*tail)->next;
-}
-
-void
 NodeSource::Message(const char *msg, const char *str, va_list arg) const
 {
   char s[1024];
@@ -802,9 +759,7 @@ Tree<N>::Print1(void) const
 void
 Lines::Print1() const
 {
-  Line *l;
-  for (l = list; l; l = l->next)
-    l->Print(co);
+  fputs(lines.c_str(), co);
 }
 
 template <typename N>
