@@ -164,6 +164,7 @@ struct Node {
   static int count_nodes;
   Node(Lines &, const char *name, const char *fn);
   void process(const char *line);
+  void match_port_target(int &, int &, const char *, const char *);
   void read_portability_note(const char *str);
   void read_portability(const char *str);
   void write_portability(void);
@@ -196,10 +197,60 @@ Node::Node(Lines &l, const char *n, const char *fn)
 }
 
 void
+Node::match_port_target(int &i, int &j, const char *str, const char *note)
+{
+  const char *part(NULL), *s(NULL);
+
+  // in case we exit without running the inner loop
+  j = MAX_PORT_QUALIFIERS;
+
+  for (i = 0; i < NUM_PORT_TARGETS; i++) {
+    const PortInfo &pti(port_target[i]);
+    const char *token(pti.prefix_token);
+    part = "target";
+
+    // for the error message
+    s = str;
+
+    // try to match start of string
+    if (strlen(str) < strlen(token) || strncmp(str, token, strlen(token)))
+      continue;
+
+    // skip matched part
+    s = str + strlen(token);
+
+    // target matched exactly, no qualifier present
+    if (!*s)
+      return;
+
+    // not a match after all
+    if (*s++ != '-')
+      continue;
+
+    // target mathed exactly, try qualifier
+    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      part = "qualifier";
+      token = pti.pq[j].suffix_token;
+
+      // nothing to match
+      if (token == NULL)
+	continue;
+
+      // qualifiers must match exactly
+      if (!strcmp(s, token))
+	return;
+    }
+  }
+
+  // no match at all
+  source.Error("Unrecognised portability%s %s `%s' ignored.\n", note, part, s);
+}
+
+void
 Node::read_portability_note(const char *str)
 {
   char *work_str = strdup (str);
-  char *s = work_str, *x = NULL;
+  char *s = work_str;
   char *target;
   int i, j;
 
@@ -215,35 +266,10 @@ Node::read_portability_note(const char *str)
   while (isspace(*s)) s++;
   dj_strlwr (target);
 
-  for (i = 0; i < NUM_PORT_TARGETS; i++) {
-    const char *pt = port_target[i].prefix_token;
-    if (   (strlen (target) >= strlen (pt))
-	&& !strncmp (target, pt,
-		     strlen (pt))) {
-      /* If matched, check that the next character is either: null, a dash
-       * (to indicate a qualifier) or null. */
-      x = target + strlen (pt);
-      if ((*x == '\0') || (*x == '-') || isspace((int) *x))
-	break;
-    }
-  }  
+  match_port_target(i, j, target, " note");
 
-  if (i == NUM_PORT_TARGETS) {
-    source.Error ("unrecognised portability note target `%s' ignored.\n", target);
-  } else {
-    const PortInfo &pti = port_target[i];
+  if (i < NUM_PORT_TARGETS) {
     PortNote *p = new PortNote;
-    
-    /* Try to match the portability note to a portability qualifier. */
-    x = target + strlen (pti.prefix_token);
-    if (*x == '-')
-      x++;
-
-    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
-      const char *st = pti.pq[j].suffix_token;
-      if (st == NULL) continue;
-      if (!strcmp (x, st)) break;
-    }
 
     /* Attach portability note to note chain. */
     if (j < MAX_PORT_QUALIFIERS) {
@@ -265,7 +291,7 @@ void
 Node::read_portability(const char *str)
 {
   char *targets = dj_strlwr (strdup (str));
-  char *p = NULL, *x = NULL, *target = targets;
+  char *x = NULL, *target = targets;
   int type, i, j;
 
   while (isspace (*target)) target++;
@@ -284,25 +310,11 @@ Node::read_portability(const char *str)
     for (x = target; *x && !isspace(*x) && (*x != ','); x++);
     if (*x) *x++ = 0;
 
-    for (i = 0; i < NUM_PORT_TARGETS; i++) {
-      const char *pt = port_target[i].prefix_token;
-      if (   (strlen (target) >= strlen (pt))
-	  && !strncmp (target, pt,
-		       strlen (pt))) {
-	/* If matched, check that the next character is either: null, a dash
-	 * (to indicate a qualifier) or null. */
-	p = target + strlen (pt);
-	if ((*p == '\0') || (*p == '-') || isspace((int) *p))
-	  break;
-      }
-    }
+    match_port_target(i, j, target, "");
 
     if (i < NUM_PORT_TARGETS) {
       const PortInfo &pti = port_target[i];
       PortInfo &pii = port_info[i];
-
-      /* Now match the portability qualifier, if present. */
-      p = target + strlen (pti.prefix_token);
 
       if (pii.prefix_name == NULL) {
 	/* Copy default portability information to uninitialised port
@@ -310,35 +322,15 @@ Node::read_portability(const char *str)
 	memcpy(&pii, &pti, sizeof(pti));
       }
 
-
-      if (*p == '-') {
-	/* A qualifier is present, so set the portability type for just
-	 * this qualifier. */
-	p++;
-
-	for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
-	  const char *st = pti.pq[j].suffix_token;
-
-	  if (st == NULL)
-	    continue;
-
-	  if (!strcmp (p, st))
-	    break;
-	}
-
-	if (j < MAX_PORT_QUALIFIERS)
-	  pii.pq[j].complete = type;
-      } else {
+      if (j < MAX_PORT_QUALIFIERS)
+	pii.pq[j].complete = type;
+      else
 	/* A qualifier is not present, so set the type for all qualifiers. */
 	/* TODO: If the bare prefix appears after the prefix has appeared
 	 * with qualifiers in the line, then this will reset all qualifiers.
 	 * This is a bug. The solution is to be careful with @portability. */
-	for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+	for (j = 0; j < MAX_PORT_QUALIFIERS; j++)
 	  pii.pq[j].complete = type;
-	}
-      }
-    } else {
-      source.Error ("unrecognised portability target `%s' ignored.\n", target);
     }
 
     target = x;
