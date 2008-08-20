@@ -68,6 +68,7 @@ struct PortQualifier {
 struct PortInfo {
   const char *prefix_token; /* Token used in texinfo, e.g. 'ansi' */
   const char *prefix_name;  /* Actual textual name for token, e.g. ANSI/ISO C */
+  const int port_qualifiers;
   PortQualifier pq[MAX_PORT_QUALIFIERS];
 };
 
@@ -75,14 +76,14 @@ struct PortInfo {
 
 static const PortInfo port_target[] = {
   /* ANSI/ISO C */
-  { "ansi",  "ANSI/ISO C",
+  { "ansi",  "ANSI/ISO C", 2,
     {
       { "c89", "C89", PORT_TARGET_ANSI_C89, PORT_YES },
       { "c99", "C99", PORT_TARGET_ANSI_C99, PORT_YES }
     }
   },
   /* POSIX */
-  { "posix", "POSIX",
+  { "posix", "POSIX", 2,
     {
       { "1003.2-1992", "1003.2-1992",
 	PORT_TARGET_POSIX_1003_2_1992, PORT_YES },
@@ -91,7 +92,7 @@ static const PortInfo port_target[] = {
     }
   },
   /* SUSv2 */
-  { "unix",  "Unix",
+  { "unix",  "Unix", 1,
     {
       { "98", "Unix98", PORT_TARGET_UNIX_98, PORT_UNKNOWN },
       { NULL, NULL, 0, 0 }
@@ -185,7 +186,7 @@ Node::Node(Lines &l, const char *n, const char *fn)
     memset(&pii, 0, sizeof(pii));
     port_notes[i] = NULL;
     port_note_tail[i] = &port_notes[i];
-    for (int j = 0; j < MAX_PORT_QUALIFIERS; j++)
+    for (int j = 0; j < port_target[i].port_qualifiers; j++)
     {
       q_port_notes[i][j] = NULL;
       q_port_note_tail[i][j] = &q_port_notes[i][j];
@@ -228,13 +229,9 @@ Node::match_port_target(int &i, int &j, const char *str, const char *note)
       continue;
 
     // target mathed exactly, try qualifier
-    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+    for (j = 0; j < pti.port_qualifiers; j++) {
       part = "qualifier";
       token = pti.pq[j].suffix_token;
-
-      // nothing to match
-      if (token == NULL)
-	continue;
 
       // qualifiers must match exactly
       if (!strcmp(s, token))
@@ -272,7 +269,7 @@ Node::read_portability_note(const char *str)
     PortNote *p = new PortNote;
 
     /* Attach portability note to note chain. */
-    if (j < MAX_PORT_QUALIFIERS) {
+    if (j < port_target[i].port_qualifiers) {
       *q_port_note_tail[i][j] = p;
       q_port_note_tail[i][j] = &p->next;
     } else {
@@ -322,14 +319,14 @@ Node::read_portability(const char *str)
 	memcpy(&pii, &pti, sizeof(pti));
       }
 
-      if (j < MAX_PORT_QUALIFIERS)
+      if (j < pti.port_qualifiers)
 	pii.pq[j].complete = type;
       else
 	/* A qualifier is not present, so set the type for all qualifiers. */
 	/* TODO: If the bare prefix appears after the prefix has appeared
 	 * with qualifiers in the line, then this will reset all qualifiers.
 	 * This is a bug. The solution is to be careful with @portability. */
-	for (j = 0; j < MAX_PORT_QUALIFIERS; j++)
+	for (j = 0; j < pti.port_qualifiers; j++)
 	  pii.pq[j].complete = type;
     }
 
@@ -396,12 +393,8 @@ Node::write_portability(void)
       continue;
 
     /* Are all qualifiers set to the same value of one of PORT_*? */
-    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+    for (j = 0; j < port_target[i].port_qualifiers; j++) {
       PortQualifier &pii_pqj = pii.pq[j];
-
-      /* Skip unnamed suffixes */
-      if (pii_pqj.suffix_name == NULL)
-	continue;
 
       if (all_port_qualifiers == -1) {
 	all_port_qualifiers = pii_pqj.complete;
@@ -426,12 +419,8 @@ Node::write_portability(void)
     qualifier_number = 0;
 
     /* Add positive or partial qualifiers to the list. */
-    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+    for (j = 0; j < port_target[i].port_qualifiers; j++) {
       PortQualifier &pii_pqj = pii.pq[j];
-
-      /* Skip unnamed suffixes */
-      if (pii_pqj.suffix_name == NULL)
-	continue;
 
       if (   (pii_pqj.complete != PORT_YES)
 	  && (pii_pqj.complete != PORT_PARTIAL))
@@ -460,12 +449,8 @@ Node::write_portability(void)
     if (all_port_qualifiers == PORT_NO)
       strcat (buffer, "No");
 
-    for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+    for (j = 0; j < port_target[i].port_qualifiers; j++) {
       PortQualifier &pii_pqj = pii.pq[j];
-
-      /* Skip unnamed suffixes */
-      if (pii_pqj.suffix_name == NULL)
-	continue;
 
       if (pii_pqj.complete != PORT_NO)
 	continue;
@@ -525,7 +510,7 @@ Node::write_portability(void)
 	for (PortNote *p = port_notes[i]; p; p = p->next)
 	  if (p->number == n)
 	    lines.Add(p->note);
-	for (j = 0; j <MAX_PORT_QUALIFIERS; j++)
+	for (j = 0; j < port_target[i].port_qualifiers; j++)
 	  for (PortNote *p = q_port_notes[i][j]; p; p = p->next)
 	    if (p->number == n)
 	      lines.Add(p->note);
@@ -542,7 +527,7 @@ Node::write_portability(void)
       port_notes[i] = p->next;
       delete p;
     }
-    for (j = 0; j <MAX_PORT_QUALIFIERS; j++)
+    for (j = 0; j < port_target[i].port_qualifiers; j++)
       while (q_port_notes[i][j]) {
 	PortNote *p = q_port_notes[i][j];
 	q_port_notes[i][j] = p->next;
@@ -868,14 +853,13 @@ static void list_portability (void)
 
   for (i = 0; i < NUM_PORT_TARGETS; i++) {    
     const PortInfo &pti = port_target[i];
-    if (pti.pq[0].suffix_token  == NULL) {
+    if (pti.port_qualifiers == 0) {
       printf("%-32s = %-32s\n",
 	     pti.prefix_token,
 	     pti.prefix_name);
     } else {
-      for (j = 0; j < MAX_PORT_QUALIFIERS; j++) {
+      for (j = 0; j < pti.port_qualifiers; j++) {
 	const PortQualifier &pti_pqj = pti.pq[j];
-	if (pti_pqj.suffix_token == NULL) break;
 
 	strcpy(buffer, pti.prefix_token);
 	strcat(buffer, "-");
