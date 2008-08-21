@@ -155,7 +155,8 @@ struct PortNote {
 struct Node {
   NodeSource source;
   Lines &lines;
-  PortInfo port_info[NUM_PORT_TARGETS];
+  bool port_set[NUM_PORT_TARGETS];
+  int port_type[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
   PortNote *port_notes[NUM_PORT_TARGETS];
   PortNote **port_note_tail[NUM_PORT_TARGETS];
   PortNote *q_port_notes[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
@@ -182,12 +183,13 @@ Node::Node(Lines &l, const char *n, const char *fn)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
   {
-    PortInfo &pii = port_info[i];
-    memset(&pii, 0, sizeof(pii));
+    port_set[i] = 0;
     port_notes[i] = NULL;
     port_note_tail[i] = &port_notes[i];
-    for (int j = 0; j < port_target[i].port_qualifiers; j++)
+    const PortInfo &pti = port_target[i];
+    for (int j = 0; j < pti.port_qualifiers; j++)
     {
+      port_type[i][j] = pti.pq[j].complete;
       q_port_notes[i][j] = NULL;
       q_port_note_tail[i][j] = &q_port_notes[i][j];
     }
@@ -311,23 +313,18 @@ Node::read_portability(const char *str)
 
     if (i < NUM_PORT_TARGETS) {
       const PortInfo &pti = port_target[i];
-      PortInfo &pii = port_info[i];
 
-      if (pii.prefix_name == NULL) {
-	/* Copy default portability information to uninitialised port
-	 * info, qualifier list. */
-	memcpy(&pii, &pti, sizeof(pti));
-      }
+      port_set[i] = 1;
 
       if (j < pti.port_qualifiers)
-	pii.pq[j].complete = type;
+	port_type[i][j] = type;
       else
 	/* A qualifier is not present, so set the type for all qualifiers. */
 	/* TODO: If the bare prefix appears after the prefix has appeared
 	 * with qualifiers in the line, then this will reset all qualifiers.
 	 * This is a bug. The solution is to be careful with @portability. */
 	for (j = 0; j < pti.port_qualifiers; j++)
-	  pii.pq[j].complete = type;
+	  port_type[i][j] = type;
     }
 
     target = x;
@@ -386,20 +383,17 @@ Node::write_portability(void)
   for (i = 0; i < NUM_PORT_TARGETS; i++)
   {
     const PortInfo &pti = port_target[i];
-    PortInfo &pii = port_info[i];
 
     /* No information given => unknown => skip it. */
-    if (pii.prefix_name == NULL)
+    if (!port_set[i])
       continue;
 
     /* Are all qualifiers set to the same value of one of PORT_*? */
-    for (j = 0; j < port_target[i].port_qualifiers; j++) {
-      PortQualifier &pii_pqj = pii.pq[j];
-
+    for (j = 0; j < pti.port_qualifiers; j++) {
       if (all_port_qualifiers == -1) {
-	all_port_qualifiers = pii_pqj.complete;
+	all_port_qualifiers = port_type[i][j];
       } else {
-	if (all_port_qualifiers != pii_pqj.complete) {
+	if (all_port_qualifiers != port_type[i][j]) {
 	  /* Not all port qualifiers have the same completion status. */
 	  all_port_qualifiers = -1;
 	  break;
@@ -413,17 +407,15 @@ Node::write_portability(void)
 
     /* Add an entry to the table. */
     lines.Add("@item ");
-    lines.Add(port_target[i].prefix_name);
+    lines.Add(pti.prefix_name);
     lines.Add("\n@tab ");    
 
     qualifier_number = 0;
 
     /* Add positive or partial qualifiers to the list. */
-    for (j = 0; j < port_target[i].port_qualifiers; j++) {
-      PortQualifier &pii_pqj = pii.pq[j];
-
-      if (   (pii_pqj.complete != PORT_YES)
-	  && (pii_pqj.complete != PORT_PARTIAL))
+    for (j = 0; j < pti.port_qualifiers; j++) {
+      if (   (port_type[i][j] != PORT_YES)
+	  && (port_type[i][j] != PORT_PARTIAL))
 	continue;
 
       /* Add separator, if this isn't the first entry. */
@@ -432,7 +424,7 @@ Node::write_portability(void)
 	lines.Add("; ");
       
       lines.Add(pti.pq[j].suffix_name);
-      if (pii_pqj.complete == PORT_PARTIAL)
+      if (port_type[i][j] == PORT_PARTIAL)
 	lines.Add(" (partial)");
 
       /* Attach any qualifier-specific portability notes. */
@@ -449,10 +441,8 @@ Node::write_portability(void)
     if (all_port_qualifiers == PORT_NO)
       lines.Add("No");
 
-    for (j = 0; j < port_target[i].port_qualifiers; j++) {
-      PortQualifier &pii_pqj = pii.pq[j];
-
-      if (pii_pqj.complete != PORT_NO)
+    for (j = 0; j < pti.port_qualifiers; j++) {
+      if (port_type[i][j] != PORT_NO)
 	continue;
 
       /* If all port qualifiers == PORT_NO, then we've already output. */
