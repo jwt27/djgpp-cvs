@@ -123,7 +123,7 @@ public:
   ~Tree() { delete nodes; }
   void Add(TreeNode<N> &);
   TreeNode<N> &Find(const char *);
-  void Traverse(void (&tf)(const TreeNode<N> &)) const { nodes->Traverse(tf); }
+  void Traverse(void (&tf)(const TreeNode<N> &)) const { if(nodes) nodes->Traverse(tf); }
   void Print1(void) const;
 };
 
