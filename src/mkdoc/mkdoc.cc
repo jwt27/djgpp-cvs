@@ -346,7 +346,6 @@ Node::write_portability(void)
   static int largest_target = -1;
   static char rightpad[80] = { 0 };
 
-  char buffer[1024] = { 0 };
   int qualifier_number = 0;
   PortNote *p = NULL;
   int note_number = 1;
@@ -378,11 +377,11 @@ Node::write_portability(void)
     if (size > 0) memset(rightpad, (int) 'x', size);
   }
 
-  strcat (buffer, "@multitable {");
-  strcat (buffer, port_target[largest_target].prefix_name);
-  strcat (buffer, "} {");  
-  strcat (buffer, rightpad);
-  strcat (buffer, "}\n");
+  lines.Add("@multitable {");
+  lines.Add(port_target[largest_target].prefix_name);
+  lines.Add("} {");  
+  lines.Add(rightpad);
+  lines.Add("}\n");
 
   for (i = 0; i < NUM_PORT_TARGETS; i++)
   {
@@ -412,9 +411,9 @@ Node::write_portability(void)
       continue;
 
     /* Add an entry to the table. */
-    strcat (buffer, "@item ");
-    strcat (buffer, port_target[i].prefix_name);
-    strcat (buffer, "\n@tab ");    
+    lines.Add("@item ");
+    lines.Add(port_target[i].prefix_name);
+    lines.Add("\n@tab ");    
 
     qualifier_number = 0;
 
@@ -429,11 +428,11 @@ Node::write_portability(void)
       /* Add separator, if this isn't the first entry. */
       qualifier_number++;
       if (qualifier_number > 1)
-	strcat (buffer, "; ");
+	lines.Add("; ");
       
-      strcat (buffer, pii_pqj.suffix_name);
+      lines.Add(pii_pqj.suffix_name);
       if (pii_pqj.complete == PORT_PARTIAL)
-	strcat (buffer, " (partial)");
+	lines.Add(" (partial)");
 
       /* Attach any qualifier-specific portability notes. */
       for (p = q_port_notes[i][j]; p; p = p->next)
@@ -441,13 +440,13 @@ Node::write_portability(void)
 	  char smallbuffer[20];
 	  p->number = note_number++;
 	  sprintf (smallbuffer, " (see note %d)", p->number);
-	  strcat (buffer, smallbuffer);
+	  lines.Add(smallbuffer);
       }
     }
 
     /* Add negative qualifiers to the list. */
     if (all_port_qualifiers == PORT_NO)
-      strcat (buffer, "No");
+      lines.Add("No");
 
     for (j = 0; j < port_target[i].port_qualifiers; j++) {
       PortQualifier &pii_pqj = pii.pq[j];
@@ -460,10 +459,10 @@ Node::write_portability(void)
 	/* Add separator, if this isn't the first entry. */
 	qualifier_number++;
 	if (qualifier_number > 1)
-	  strcat (buffer, "; ");
+	  lines.Add("; ");
 	
-	strcat (buffer, "not ");
-	strcat (buffer, pii_pqj.suffix_name);
+	lines.Add("not ");
+	lines.Add(pii_pqj.suffix_name);
       }
 
       /* Attach any qualifier-specific portability notes. */
@@ -472,13 +471,13 @@ Node::write_portability(void)
 	  char smallbuffer[20];
 	  p->number = note_number++;
 	  sprintf (smallbuffer, " (see note %d)", p->number);
-	  strcat (buffer, smallbuffer);
+	  lines.Add(smallbuffer);
       }
     }
 
     /* Add separator, if there are qualifiers. */
     if (port_notes[i] && qualifier_number > 0)
-      strcat (buffer, ";");
+      lines.Add(";");
 
     /* Attach any target-specific portability notes. */
     for (p = port_notes[i]; p; p = p->next)
@@ -486,15 +485,13 @@ Node::write_portability(void)
 	char smallbuffer[20];
 	p->number = note_number++;
 	sprintf (smallbuffer, " (see note %d)", p->number);
-	strcat (buffer, smallbuffer);
+	lines.Add(smallbuffer);
     }
 
-    strcat (buffer, "\n");
+    lines.Add("\n");
   }
 
-  strcat (buffer, "@end multitable\n\n");
-
-  lines.Add(buffer);
+  lines.Add("@end multitable\n\n");
 
   if (note_number > 1)
   {
