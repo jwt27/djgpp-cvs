@@ -385,6 +385,7 @@ Node::write_portability(void)
 
   for (i = 0; i < NUM_PORT_TARGETS; i++)
   {
+    const PortInfo &pti = port_target[i];
     PortInfo &pii = port_info[i];
 
     /* No information given => unknown => skip it. */
@@ -430,7 +431,7 @@ Node::write_portability(void)
       if (qualifier_number > 1)
 	lines.Add("; ");
       
-      lines.Add(pii_pqj.suffix_name);
+      lines.Add(pti.pq[j].suffix_name);
       if (pii_pqj.complete == PORT_PARTIAL)
 	lines.Add(" (partial)");
 
@@ -462,7 +463,7 @@ Node::write_portability(void)
 	  lines.Add("; ");
 	
 	lines.Add("not ");
-	lines.Add(pii_pqj.suffix_name);
+	lines.Add(pti.pq[j].suffix_name);
       }
 
       /* Attach any qualifier-specific portability notes. */
