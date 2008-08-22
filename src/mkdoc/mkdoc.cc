@@ -137,7 +137,7 @@ public:
 
 class NodeSource {
   const std::string name;
-  const std::string filename;
+  const std::string &filename;
   void Message(const char *, const char *, va_list) const;
 public:
   NodeSource(const char *n, const std::string &fn) : name(n), filename(fn) {}
@@ -162,7 +162,7 @@ struct Node {
   PortNote *last_port_note;
   int written_portability;
   static int count_nodes;
-  Node(Lines &, const char *name, const char *fn);
+  Node(Lines &, const char *name, const std::string &fn);
   void process(const char *line);
   void match_port_target(int &, int &, const char *, const char *);
   void read_portability_note(const char *str);
@@ -175,7 +175,7 @@ int Node::count_nodes(0);
 
 //-----------------------------------------------------------------------------
 
-Node::Node(Lines &l, const char *n, const char *fn)
+Node::Node(Lines &l, const char *n, const std::string &fn)
   : source(n, fn), lines(l)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
@@ -783,7 +783,7 @@ static void scan_directory(const char *which)
 	     && !strchr(buf, '~')
 	     && !strchr(buf, '#'))
     {
-      char *filename = strdup(buf);
+      std::string filename(buf);
       FILE *ci = fopen(buf, "r");
       if (!ci)
       {
@@ -807,7 +807,7 @@ static void scan_directory(const char *which)
 	  Lines &lines = *new Lines();
 	  delete curnode;
 	  curnode = new Node(lines, name, filename);
-	  sprintf(buf, "@c From file %s\n", filename);
+	  sprintf(buf, "@c From file %s\n", filename.c_str());
 	  lines.Add(buf);
 	  nodes.Add(*new TreeNode<Lines>(name, &lines));
 	  categories.Find(cat).node->Add(*new TreeNode<void>(name, NULL));
@@ -820,7 +820,6 @@ static void scan_directory(const char *which)
       }
       delete curnode;
       fclose(ci);
-      free(filename);
     }
   }
   closedir(d);
