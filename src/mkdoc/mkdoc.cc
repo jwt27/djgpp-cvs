@@ -155,8 +155,6 @@ struct PortNote {
 struct Node {
   NodeSource source;
   Lines &lines;
-  bool port_set[NUM_PORT_TARGETS];
-  int port_type[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
   PortNote *port_notes[NUM_PORT_TARGETS];
   PortNote **port_note_tail[NUM_PORT_TARGETS];
   PortNote *q_port_notes[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
@@ -169,7 +167,6 @@ struct Node {
   void match_port_target(int &, int &, const char *, const char *);
   void read_portability_note(const char *str);
   void read_portability(const char *str);
-  void write_portability(void);
 };
 
 static Tree<Tree<void> > categories;
@@ -183,13 +180,10 @@ Node::Node(Lines &l, const char *n, const char *fn)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
   {
-    port_set[i] = 0;
     port_notes[i] = NULL;
     port_note_tail[i] = &port_notes[i];
-    const PortInfo &pti = port_target[i];
-    for (int j = 0; j < pti.port_qualifiers; j++)
+    for (int j = 0; j < port_target[i].port_qualifiers; j++)
     {
-      port_type[i][j] = pti.pq[j].complete;
       q_port_notes[i][j] = NULL;
       q_port_note_tail[i][j] = &q_port_notes[i][j];
     }
@@ -292,6 +286,15 @@ Node::read_portability(const char *str)
   char *targets = dj_strlwr (strdup (str));
   char *x = NULL, *target = targets;
   int type, i, j;
+  bool port_set[NUM_PORT_TARGETS];
+  int port_type[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
+
+  for (i = 0; i < NUM_PORT_TARGETS; i++) {
+    port_set[i] = 0;
+    const PortInfo &pti = port_target[i];
+    for (j = 0; j < pti.port_qualifiers; j++)
+      port_type[i][j] = pti.pq[j].complete;
+  }
 
   while (isspace (*target)) target++;
   while (*target) {
@@ -332,11 +335,7 @@ Node::read_portability(const char *str)
   }
 
   free (targets);
-}
 
-void
-Node::write_portability(void)
-{  
   /* Column-width calculation variables */
   size_t maxsize = 0;
   ssize_t size = 0;
@@ -350,8 +349,6 @@ Node::write_portability(void)
   /* If all qualifiers are set to a particular value, store it here
    * (one of PORT_*). Otherwise it should be set to -1. */
   int all_port_qualifiers = -1;
-
-  int i, j;
 
   /* Deduce the largest target name length, for table's left-hand column. */
   if (largest_target == -1)
@@ -534,7 +531,6 @@ Node::process(const char *line)
     if ((strncmp (line, "@portability", 12) == 0) && isspace (line[12]))
     {
       read_portability(line+13);
-      write_portability();
       return;
     }
     else if ((strncmp (line, "@port-note", 10) == 0) && isspace (line[10]))
