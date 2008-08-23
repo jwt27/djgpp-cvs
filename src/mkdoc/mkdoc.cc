@@ -284,8 +284,6 @@ Node::read_portability_note(const char *str)
 void
 Node::read_portability(const char *str)
 {
-  char *targets = dj_strlwr (strdup (str));
-  char *x = NULL, *target = targets;
   int type, i, j;
   bool port_set[NUM_PORT_TARGETS];
   int port_type[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
@@ -297,85 +295,85 @@ Node::read_portability(const char *str)
       port_type[i][j] = pti.pq[j].complete;
   }
 
-  while (isspace (*target)) target++;
-  while (*target) {
-    type = PORT_YES;
-    if (*target == '~')
-    {
-      type = PORT_PARTIAL;
-      target++;
-    } else if (*target == '!')
-    {
-      type = PORT_NO;
-      target++;
-    }
+  {
+    char *targets = dj_strlwr (strdup (str)), *target = targets;
 
-    for (x = target; *x && !isspace(*x) && (*x != ','); x++);
-    if (*x) *x++ = 0;
+    while (*target) {
+      while (isspace (*target)) target++;
+      if (!*target) break;
 
-    match_port_target(i, j, target, "");
-
-    if (i < NUM_PORT_TARGETS) {
-      const PortInfo &pti = port_target[i];
-
-      port_set[i] = 1;
-
-      if (j < pti.port_qualifiers)
-	port_type[i][j] = type;
-      else
-	/* A qualifier is not present, so set the type for all qualifiers. */
-	/* TODO: If the bare prefix appears after the prefix has appeared
-	 * with qualifiers in the line, then this will reset all qualifiers.
-	 * This is a bug. The solution is to be careful with @portability. */
-	for (j = 0; j < pti.port_qualifiers; j++)
-	  port_type[i][j] = type;
-    }
-
-    target = x;
-    while (isspace (*target)) target++;
-  }
-
-  free (targets);
-
-  int qualifier_number = 0;
-  int note_number = 1;
-
-  /* If all qualifiers are set to a particular value, store it here
-   * (one of PORT_*). Otherwise it should be set to -1. */
-  int all_port_qualifiers = -1;
-
-  static char multitable[90] = { 0 };
-
-  if (!*multitable) {
-    /* Column-width calculation variables */
-    size_t maxsize = 0;
-    const char *largest_target = NULL;
-
-    /* Deduce the largest target name length, for table's left-hand column. */
-    for (i = 0; i < NUM_PORT_TARGETS; i++)
-    {
-      const char *pn = port_target[i].prefix_name;
-      if (strlen(pn) > maxsize)
-      {
-	maxsize = strlen(pn);
-	largest_target = pn;
+      type = PORT_YES;
+      if (*target == '~') {
+	type = PORT_PARTIAL;
+	target++;
+      } else if (*target == '!') {
+	type = PORT_NO;
+	target++;
       }
+
+      char *x = NULL;
+      for (x = target; *x && !isspace(*x) && (*x != ','); x++);
+      if (*x)
+	*x++ = 0;
+
+      match_port_target(i, j, target, "");
+
+      if (i < NUM_PORT_TARGETS) {
+	const int pq = port_target[i].port_qualifiers;
+
+	port_set[i] = 1;
+
+	if (j < pq)
+	  port_type[i][j] = type;
+	else
+	  /* A qualifier is not present, so set the type for all qualifiers. */
+	  /* TODO: If the bare prefix appears after the prefix has appeared
+	   * with qualifiers in the line, then this will reset all qualifiers.
+	   * This is a bug. The solution is to be careful with @portability. */
+	  for (j = 0; j < pq; j++)
+	    port_type[i][j] = type;
+      }
+
+      target = x;
     }
 
-    /* Make the right-hand column 80 columns less the left-hand column width,
-     * less some more for safety. */
-    char rightpad[80] = { 0 };
-    ssize_t size = sizeof(rightpad) - maxsize - 10;
-    if (size > 0) memset(rightpad, (int) 'x', size);
-
-    strcat(multitable, "@multitable {");
-    strcat(multitable, largest_target);
-    strcat(multitable, "} {");  
-    strcat(multitable, rightpad);
-    strcat(multitable, "}\n");
+    free (targets);
   }
 
-  lines.Add(multitable);
+  {
+    static char multitable[90] = { 0 };
+
+    if (!*multitable) {
+      /* Column-width calculation variables */
+      size_t maxsize = 0;
+      const char *largest_target = NULL;
+
+      /* Deduce the largest target name length, for table's left-hand column. */
+      for (i = 0; i < NUM_PORT_TARGETS; i++) {
+	const char *pn = port_target[i].prefix_name;
+	if (strlen(pn) > maxsize) {
+	  maxsize = strlen(pn);
+	  largest_target = pn;
+	}
+      }
+
+      /* Make the right-hand column 80 columns less the left-hand column width,
+       * less some more for safety. */
+      char rightpad[80] = { 0 };
+      ssize_t size = sizeof(rightpad) - maxsize - 10;
+      if (size > 0) memset(rightpad, (int) 'x', size);
+
+      strcat(multitable, "@multitable {");
+      strcat(multitable, largest_target);
+      strcat(multitable, "} {");  
+      strcat(multitable, rightpad);
+      strcat(multitable, "}\n");
+    }
+
+    lines.Add(multitable);
+  }
+
+  int note_number = 1;
 
   for (i = 0; i < NUM_PORT_TARGETS; i++)
   {
@@ -384,6 +382,10 @@ Node::read_portability(const char *str)
     /* No information given => unknown => skip it. */
     if (!port_set[i])
       continue;
+
+    /* If all qualifiers are set to a particular value, store it here
+     * (one of PORT_*). Otherwise it should be set to -1. */
+    int all_port_qualifiers = -1;
 
     /* Are all qualifiers set to the same value of one of PORT_*? */
     for (j = 0; j < pti.port_qualifiers; j++) {
@@ -407,7 +409,7 @@ Node::read_portability(const char *str)
     lines.Add(pti.prefix_name);
     lines.Add("\n@tab ");    
 
-    qualifier_number = 0;
+    int qualifier_number = 0;
 
     /* Add positive or partial qualifiers to the list. */
     for (j = 0; j < pti.port_qualifiers; j++) {
