@@ -160,7 +160,8 @@ struct Node {
   PortNote *q_port_notes[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
   PortNote **q_port_note_tail[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
   PortNote *last_port_note;
-  int written_portability;
+  bool written_portability;
+  bool in_port_note;
   static int count_nodes;
   Node(Lines &, const char *name, const std::string &fn);
   void process(const char *line);
@@ -177,7 +178,7 @@ int Node::count_nodes(0);
 //-----------------------------------------------------------------------------
 
 Node::Node(Lines &l, const char *n, const std::string &fn)
-  : source(n, fn), lines(l)
+  : source(n, fn), lines(l), last_port_note(NULL), written_portability(0), in_port_note(0)
 {
   for (int i = 0; i < NUM_PORT_TARGETS; i++)
   {
@@ -189,8 +190,6 @@ Node::Node(Lines &l, const char *n, const std::string &fn)
       q_port_note_tail[i][j] = &q_port_notes[i][j];
     }
   }
-  last_port_note = NULL;
-  written_portability = 0;
   count_nodes++;
 }
 
@@ -243,15 +242,17 @@ Node::match_port_target(int &i, int &j, const char *str, const char *note)
 void
 Node::read_portability_note(const char *str)
 {
+  in_port_note = 1;
+  last_port_note = NULL;
+  if (written_portability) {
+    source.Error("@port-note after @portability ignored.");
+    return;
+  }
+
   char *work_str = strdup (str);
   char *s = work_str;
   char *target;
   int i, j;
-
-  if (written_portability) {
-    source.Warning("@port-note must come before @portability.");
-    source.Warning("Ignoring all @port-note for this node.");
-  }
 
   while (isspace(*s)) s++;
   target = s;
@@ -284,6 +285,14 @@ Node::read_portability_note(const char *str)
 void
 Node::read_portability(const char *str)
 {
+  in_port_note = 0;
+  last_port_note = NULL;
+  if (written_portability) {
+    source.Error("Repeated @portability ignored.");
+    return;
+  }
+  written_portability = 1;
+
   int type, i, j;
   bool port_set[NUM_PORT_TARGETS];
   int port_type[NUM_PORT_TARGETS][MAX_PORT_QUALIFIERS];
@@ -510,9 +519,6 @@ Node::read_portability(const char *str)
 	delete p;
     }
   }
-  last_port_note = NULL;
-
-  written_portability++;
 }
 
 void
@@ -542,10 +548,10 @@ Node::process(const char *line)
     }
   }
   
-  /* If `last_port_note' is not NULL, we're in the middle of a note */
-  if (last_port_note)
+  if (in_port_note)
   {
-    last_port_note->note.append(line);
+    if (last_port_note)
+      last_port_note->note.append(line);
   }
   else
   {
