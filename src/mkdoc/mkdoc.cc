@@ -167,6 +167,7 @@ struct Node {
   void match_port_target(int &, int &, const char *, const char *);
   void read_portability_note(const char *str);
   void read_portability(const char *str);
+  void write_port_note_ref(PortNote *, int &);
 };
 
 static Tree<Tree<void> > categories;
@@ -337,7 +338,6 @@ Node::read_portability(const char *str)
   free (targets);
 
   int qualifier_number = 0;
-  PortNote *p = NULL;
   int note_number = 1;
 
   /* If all qualifiers are set to a particular value, store it here
@@ -425,13 +425,7 @@ Node::read_portability(const char *str)
 	lines.Add(" (partial)");
 
       /* Attach any qualifier-specific portability notes. */
-      for (p = q_port_notes[i][j]; p; p = p->next)
-      {
-	  char smallbuffer[20];
-	  p->number = note_number++;
-	  sprintf (smallbuffer, " (see note %d)", p->number);
-	  lines.Add(smallbuffer);
-      }
+      write_port_note_ref(q_port_notes[i][j], note_number);
     }
 
     /* Add negative qualifiers to the list. */
@@ -454,13 +448,7 @@ Node::read_portability(const char *str)
       }
 
       /* Attach any qualifier-specific portability notes. */
-      for (p = q_port_notes[i][j]; p; p = p->next)
-      {
-	  char smallbuffer[20];
-	  p->number = note_number++;
-	  sprintf (smallbuffer, " (see note %d)", p->number);
-	  lines.Add(smallbuffer);
-      }
+      write_port_note_ref(q_port_notes[i][j], note_number);
     }
 
     /* Add separator, if there are qualifiers. */
@@ -468,13 +456,7 @@ Node::read_portability(const char *str)
       lines.Add(";");
 
     /* Attach any target-specific portability notes. */
-    for (p = port_notes[i]; p; p = p->next)
-    {
-	char smallbuffer[20];
-	p->number = note_number++;
-	sprintf (smallbuffer, " (see note %d)", p->number);
-	lines.Add(smallbuffer);
-    }
+    write_port_note_ref(port_notes[i], note_number);
 
     lines.Add("\n");
   }
@@ -529,6 +511,17 @@ Node::read_portability(const char *str)
   last_port_note = NULL;
 
   written_portability++;
+}
+
+void
+Node::write_port_note_ref(PortNote *p, int &note_number)
+{
+  for (; p; p = p->next) {
+    char smallbuffer[20];
+    p->number = note_number++;
+    sprintf (smallbuffer, " (see note %d)", p->number);
+    lines.Add(smallbuffer);
+  }
 }
 
 void
