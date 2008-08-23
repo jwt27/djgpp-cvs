@@ -483,23 +483,30 @@ Node::read_portability(const char *str)
 
   if (note_number > 1)
   {
+    PortNote *notes[note_number - 1];
+    for (i = 0; i < NUM_PORT_TARGETS; i++) {
+      const PortInfo &pti = port_target[i];
+      for (PortNote *p = port_notes[i]; p; p = p->next)
+	if (p->number)
+	  notes[p->number - 1] = p;
+	else
+	  source.Warning("Ignored port-note for %s.", pti.prefix_name);
+      for (j = 0; j < pti.port_qualifiers; j++)
+	for (PortNote *p = q_port_notes[i][j]; p; p = p->next)
+	  if (p->number)
+	    notes[p->number - 1] = p;
+	  else
+	    source.Warning("Ignored port-note for %s-%s.", pti.prefix_name, pti.pq[j].suffix_name);
+      }
+
     lines.Add("@noindent\n"
 	      "Notes:\n"
 	      "\n"
 	      "@enumerate\n");
 
-    for (int n = 1; n < note_number; n++)
-    {
+    for (int n = 0; n < note_number - 1; n++) {
       lines.Add("@item\n");
-      for (i = 0; i < NUM_PORT_TARGETS; i++) {
-	for (PortNote *p = port_notes[i]; p; p = p->next)
-	  if (p->number == n)
-	    lines.Add(p->note);
-	for (j = 0; j < port_target[i].port_qualifiers; j++)
-	  for (PortNote *p = q_port_notes[i][j]; p; p = p->next)
-	    if (p->number == n)
-	      lines.Add(p->note);
-      }
+      lines.Add(notes[n]->note);
     }
 
     lines.Add("@end enumerate\n");
