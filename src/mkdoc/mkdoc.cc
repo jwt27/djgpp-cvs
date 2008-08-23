@@ -336,12 +336,6 @@ Node::read_portability(const char *str)
 
   free (targets);
 
-  /* Column-width calculation variables */
-  size_t maxsize = 0;
-  ssize_t size = 0;
-  static int largest_target = -1;
-  static char rightpad[80] = { 0 };
-
   int qualifier_number = 0;
   PortNote *p = NULL;
   int note_number = 1;
@@ -350,32 +344,38 @@ Node::read_portability(const char *str)
    * (one of PORT_*). Otherwise it should be set to -1. */
   int all_port_qualifiers = -1;
 
-  /* Deduce the largest target name length, for table's left-hand column. */
-  if (largest_target == -1)
-  {    
+  static char multitable[90] = { 0 };
+
+  if (!*multitable) {
+    /* Column-width calculation variables */
+    size_t maxsize = 0;
+    const char *largest_target = NULL;
+
+    /* Deduce the largest target name length, for table's left-hand column. */
     for (i = 0; i < NUM_PORT_TARGETS; i++)
     {
       const char *pn = port_target[i].prefix_name;
       if (strlen(pn) > maxsize)
       {
 	maxsize = strlen(pn);
-	largest_target = i;
+	largest_target = pn;
       }
     }
-  }
 
-  /* Make the right-hand column 80 columns less the left-hand column width,
-   * less some more for safety. */
-  if (rightpad[0] == '\0') {
-    size = sizeof(rightpad) - maxsize - 10;
+    /* Make the right-hand column 80 columns less the left-hand column width,
+     * less some more for safety. */
+    char rightpad[80] = { 0 };
+    ssize_t size = sizeof(rightpad) - maxsize - 10;
     if (size > 0) memset(rightpad, (int) 'x', size);
+
+    strcat(multitable, "@multitable {");
+    strcat(multitable, largest_target);
+    strcat(multitable, "} {");  
+    strcat(multitable, rightpad);
+    strcat(multitable, "}\n");
   }
 
-  lines.Add("@multitable {");
-  lines.Add(port_target[largest_target].prefix_name);
-  lines.Add("} {");  
-  lines.Add(rightpad);
-  lines.Add("}\n");
+  lines.Add(multitable);
 
   for (i = 0; i < NUM_PORT_TARGETS; i++)
   {
