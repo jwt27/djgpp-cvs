@@ -1365,6 +1365,12 @@ int main(int argc, char **argv)
   char *outfilename, *leader;
   char *current_map_file;
 
+  if (argc < 2)
+  {
+    fprintf(stderr,"usage: djasm infile [outfile] [mapfile]\n");
+    exit(1);
+  }
+
   /* Sort the opcodes now so that we can use `bsearch' later.  */
   qsort (opcodes,
 	 sizeof (opcodes) / sizeof (opcodes[0]),
@@ -1372,11 +1378,6 @@ int main(int argc, char **argv)
 	 opcode_compare);
   zerosym = set_symbol (get_symbol ("__zero__", 1), 0);
 
-  if (argc < 2)
-  {
-    fprintf(stderr,"usage: djasm infile [outfile] [mapfile]\n");
-    exit(1);
-  }
   inname = argv[1];
   infile = fopen(argv[1], "r");
   if (infile == 0)
