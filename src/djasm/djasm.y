@@ -1656,6 +1656,21 @@ int main(int argc, char **argv)
     fputc('\n', mapfile);
     fclose(mapfile);
   }
+
+  while (symtab)
+  {
+    free(symtab->name);
+    s = symtab->next;
+    free(symtab);
+    symtab = s;
+  }
+  if (copyright)
+    free(copyright);
+  if (lineaddr)
+    free(lineaddr);
+  if (outbin)
+    free (outbin);
+
   return 0;
 }
 
