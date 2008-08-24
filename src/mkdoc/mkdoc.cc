@@ -224,7 +224,7 @@ Node::match_port_target(int &i, int &j, const char *str, const char *note)
     if (*s++ != '-')
       continue;
 
-    // target mathed exactly, try qualifier
+    // target matched exactly, try qualifier
     for (j = 0; j < pti.port_qualifiers; j++) {
       part = "qualifier";
       token = pti.pq[j].suffix_token;
