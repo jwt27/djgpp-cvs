@@ -421,6 +421,10 @@ left open by the debuggee, frees protected-mode and conventional memory
 and any segment descriptors allocated by the debuggee, and restores the
 debugger's original signal handlers.
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @c ----------------------------------------------------------------------
 @node v2loadimage, debugging
 @findex v2loadimage
