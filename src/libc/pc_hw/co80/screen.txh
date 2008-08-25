@@ -34,6 +34,10 @@ bits 4-6  -- background color;
 
 bit  7    -- blink on (1) or off (0).
 
+@subheading Portability
+
+@portability !ansi, !posix
+
 @subheading Example
 
 _farpokew(_dos_ds, ScreenPrimary, ( ((unsigned short) attr) << 8) + char ));
