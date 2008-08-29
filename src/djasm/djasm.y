@@ -155,7 +155,7 @@ struct {
   int addr32;
   int nsyms;
   Symbol *syms[10];
-} _modrm = { 0, 0, 0, 0, 0 };
+} _modrm = { 0, 0, 0, 0, 0, { NULL } };
 
 unsigned char sreg_overrides[] = {
   0x26, 0x2e, 0x36, 0x3e, 0x64, 0x65
