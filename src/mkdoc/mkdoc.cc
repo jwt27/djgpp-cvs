@@ -612,6 +612,7 @@ TreeNode<N>::~TreeNode()
   delete node;
 }
 
+template <>
 TreeNode<void>::~TreeNode()
 {
   delete before;
@@ -637,12 +638,16 @@ TreeNode<N>::Compare(const char *sn) const
   return strcmp(sname, sn);
 }
 
-const char *TreeNode<Tree<void> >::up(void) const
+template <>
+const char *
+TreeNode<Tree<void> >::up(void) const
 {
   return "Functional Categories";
 }
 
-const char *TreeNode<Lines>::up(void) const
+template <>
+const char *
+TreeNode<Lines>::up(void) const
 {
   return "Alphabetical List";
 }
