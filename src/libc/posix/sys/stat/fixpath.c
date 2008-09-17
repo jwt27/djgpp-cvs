@@ -140,7 +140,7 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
   char		*name_start;
   int		mbsize;
   char		*op_limit;
-  int  previous_errno;
+  int		previous_errno;
  
   previous_errno = errno;
   use_lfn = _use_lfn(in);
