@@ -140,8 +140,11 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
   char		*name_start;
   int		mbsize;
   char		*op_limit;
-
+  int  previous_errno;
+ 
+  previous_errno = errno;
   use_lfn = _use_lfn(in);
+  errno = previous_errno;  /*  Do not signal that LFN API is not available (ENOSYS).  */
 
   if (path_max > FILENAME_MAX)
     path_max = FILENAME_MAX;
