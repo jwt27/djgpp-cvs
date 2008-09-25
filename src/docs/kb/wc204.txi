@@ -1151,3 +1151,10 @@ because djgpp only supports C/POSIX locale.
 @findex strftime@r{, and C99 conversion specifiers}
 The conversion specifiers @code{%F}, @code{%G}, @code{%g}, @code{%P}, @code{%s}, and @code{%V} have been added.
 Also the @code{#} flag has been added.
+
+@findex realpath@r{, and no longer report ENOSYS on plain DOS}
+@findex _fixpath@r{, and no longer report ENOSYS on plain DOS}
+@findex __canonicalize_path@r{, and no longer report ENOSYS on plain DOS}
+@code{realpath} and @code{_fixpath} will no longer report to their calling function
+@code{ENOSYS} if the used operating system (usualy plain DOS) does not provide a LFN API.
+The existance of a LFN API has no influence on the canonicalization of the path.
