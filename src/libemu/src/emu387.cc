@@ -2363,12 +2363,12 @@ static void fsqrt()
     st().exp++;
   }
   int exp = (st().exp - EXP_BIAS - 1)/2 - 64;
-  while (!(((long *)(void *)&result)[1] & 0x80000000))
+  while (!(((__dj_long_a *)&result)[1] & 0x80000000))
   {
     /* GCC between 2.8 and EGCS 1.1.1 optimizes this loop
        all wrong; the asm works around it. */
     asm volatile("" : : : "memory");
-    left = (left << 2) + (((unsigned *)(void *)&val)[1] >> 30);
+    left = (left << 2) + (((__dj_long_a *)&val)[1] >> 30);
     djshld(&val);
     djshld(&val);
     if (left >= side*2 + 1)
