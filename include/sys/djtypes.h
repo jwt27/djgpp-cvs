@@ -36,4 +36,12 @@
 
 #define __DJ_wint_t     typedef int wint_t;
 
+/* Define internal type to be used for avoiding strict
+   aliasing warnings */
+#if (__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 3))
+typedef long __attribute__((__may_alias__)) __dj_long_a;
+#else
+typedef long __dj_long_a;
+#endif
+
 #endif
