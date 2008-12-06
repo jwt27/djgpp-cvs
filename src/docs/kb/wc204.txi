@@ -1158,3 +1158,10 @@ Also the @code{#} flag has been added.
 @code{realpath} and @code{_fixpath} will no longer report to their calling function
 @code{ENOSYS} if the used operating system (usualy plain DOS) does not provide a LFN API.
 The existance of a LFN API has no influence on the canonicalization of the path.
+
+@findex realpath@r{, and Windows 2000/XP root directories and drive specifier character case}
+@findex _fixpath@r{, and Windows 2000/XP root directories and drive specifier character case}
+@findex __canonicalize_path@r{, and Windows 2000/XP root directories and drive specifier character case}
+Lower case drive specifier characters will now be recognized as valid drive specifier too.
+Relative paths that start from the root directory will be correctly canonicalized
+because the backslash following the drive specifier is now removed.
