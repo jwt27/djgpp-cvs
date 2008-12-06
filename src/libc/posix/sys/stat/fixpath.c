@@ -1,3 +1,4 @@
+/* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -16,6 +17,10 @@
 #include <dos.h>		/* For Win NT version check */
 #include <sys/stat.h>
 #include <libc/dosio.h>
+
+#define IS_DRIVE_SPECIFIER(path)  ((((path)[0] == (drive_number + 'A')) || ((path)[0] == (drive_number + 'a'))) && ((path)[1] == ':'))
+#define IS_ROOT_DIR(path)         (((path)[2] == '\\') && ((path)[3] == '\0'))
+
 
 static unsigned use_lfn;
 
@@ -50,7 +55,7 @@ __get_current_directory(char *out, int drive_number)
   else
   {
     dosmemget(__tb, sizeof(tmpbuf), tmpbuf);
-    strcpy(out+1,tmpbuf);
+    strcpy(out + 1, tmpbuf);
 
     if (*(out + 1) != '\0')
     {
@@ -87,10 +92,16 @@ __get_current_directory(char *out, int drive_number)
     dosmemget(__tb + FILENAME_MAX, sizeof(tmpbuf), tmpbuf);
 
     /* Validate return form and drive matches what _fixpath expects. */
-    if (tmpbuf[0] == (drive_number + 'A') && tmpbuf[1] == ':')
+    if (IS_DRIVE_SPECIFIER(tmpbuf))
     {
-      strcpy(out, tmpbuf+2);	/* Trim drive, just directory */
-      return out + strlen(out);
+      if (IS_ROOT_DIR(tmpbuf))
+        /* Root path, don't insert "/", it'll be added later */
+        return out;
+      else
+      {
+        strcpy(out, tmpbuf + 2);  /* Trim drive, just directory */
+        return out + strlen(out);
+      }
     }
   } 
 #ifdef TEST
@@ -172,7 +183,7 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
       if (*ip <= 'Z')
 	*op++ = drive_number + 'a';
       else
-	* op++ = *ip;
+	*op++ = *ip;
       ++ip;
     }
     *op++ = *ip++;
@@ -290,7 +301,7 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
       *op = '/';
     if (!preserve_case && (*op == '/' || *op == '\0'))
     {
-      memcpy(long_name, name_start+1, op - name_start - 1);
+      memcpy(long_name, name_start + 1, op - name_start - 1);
       long_name[op - name_start - 1] = '\0';
       if (_is_DOS83(long_name))
       {
