@@ -1,3 +1,4 @@
+/* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -20,6 +21,22 @@
 #include <dpmi.h>
 #include "dirstruc.h"
 
+#define IS_ROOT_DIR(path)  (((path)[1] == ':') && ((path)[2] == '/') && ((path)[3] == '\0'))
+
+#define APPEND_STAR_DOT_STAR(dst, src)  \
+  do {                                  \
+    int _i;                             \
+                                        \
+    for (_i = 0; (src)[_i]; _i++)       \
+      (dst)[_i] = (src)[_i];            \
+    (dst)[_i++] = '/';                  \
+    (dst)[_i++] = '*';                  \
+    (dst)[_i++] = '.';                  \
+    (dst)[_i++] = '*';                  \
+    (dst)[_i++] = '\0';                 \
+  } while(1)
+
+
 void
 _lfn_find_close(int handle)
 {
@@ -40,10 +57,13 @@ __set_need_fake_dot_dotdot(DIR *dir)
   int oerrno = errno;
 
   dir->need_fake_dot_dotdot = 0;
-  if (strlen(dir->name) == 6)	/* "d:/" + "*.*" */
+  if (IS_ROOT_DIR(dir->name))
   {    
     /* see if findfirst finds "." anyway */
-    if (findfirst(dir->name, &dir->ff, FA_ARCH|FA_RDONLY|FA_DIREC)
+    char dir_name[FILENAME_MAX + 1];
+
+    APPEND_STAR_DOT_STAR(dir_name, dir->name);
+    if (findfirst(dir_name, &dir->ff, FA_ARCH|FA_RDONLY|FA_DIREC)
 	|| strcmp(dir->ff.ff_name, "."))
     {
       dir->need_fake_dot_dotdot = 2;
@@ -99,7 +119,10 @@ opendir(const char *name)
     return 0;
   }
 
-  /* Strip trailing slashes, so we can append "/ *.*" */
+  /* Strip trailing slashes.
+     The "/ *.*" is no longer part of the directory
+     name but is appended in every libc function
+     that requires it.  */
   length = strlen(dir->name);
   while (1)
   {
@@ -114,10 +137,6 @@ opendir(const char *name)
       break;
     }
   }
-  dir->name[length++] = '/';
-  dir->name[length++] = '*';
-  dir->name[length++] = '.';
-  dir->name[length++] = '*';
   dir->name[length++] = 0;
 
   /* If we're doing opendir of the root directory, we need to
