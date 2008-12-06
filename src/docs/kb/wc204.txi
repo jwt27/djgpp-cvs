@@ -1165,3 +1165,12 @@ The existance of a LFN API has no influence on the canonicalization of the path.
 Lower case drive specifier characters will now be recognized as valid drive specifier too.
 Relative paths that start from the root directory will be correctly canonicalized
 because the backslash following the drive specifier is now removed.
+
+@findex opendir@r{, fixed malformed path string for symlinks}
+@findex readdir@r{, fixed malformed path string for symlinks}
+@findex __set_need_fake_dot_dotdot@r{, fixed malformed path string for symlinks}
+The trailing search pattern @code{/*.*} has been removed from the path string
+stored in the member @code{name} of the @code{DIR} structure created by @code{opendir}
+and used by @code{readdir}, @code{rewinddir} and @code{__set_need_fake_dot_dotdot}.
+Now it only contains the canonicalized path to the directory without a terminating slash.
+Those functions that require the trailing search pattern @code{/*.*} will append it.
