@@ -1,3 +1,4 @@
+/* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -13,6 +14,19 @@
 #include <io.h>
 #include <libc/symlink.h>
 #include "dirstruc.h"
+
+#define APPEND_STAR_DOT_STAR(dst, src)  \
+  do {                                  \
+    int _i;                             \
+                                        \
+    for (_i = 0; (src)[_i]; _i++)       \
+      (dst)[_i] = (src)[_i];            \
+    (dst)[_i++] = '/';                  \
+    (dst)[_i++] = '*';                  \
+    (dst)[_i++] = '.';                  \
+    (dst)[_i++] = '*';                  \
+    (dst)[_i++] = '\0';                 \
+  } while(1)
 
 struct dirent *
 readdir(DIR *dir)
@@ -41,12 +55,14 @@ readdir(DIR *dir)
     done = findnext(&dir->ff);
   else
   {
+    char dir_name[FILENAME_MAX + 1];
     int ff_flags = FA_ARCH|FA_RDONLY|FA_DIREC|FA_SYSTEM;
     if (!(dir->flags & __OPENDIR_NO_HIDDEN))
       ff_flags |= FA_HIDDEN;
     if (dir->flags & __OPENDIR_FIND_LABEL)
       ff_flags |= FA_LABEL;
-    done = findfirst(dir->name, &dir->ff, ff_flags);
+    APPEND_STAR_DOT_STAR(dir_name, dir->name);
+    done = findfirst(dir_name, &dir->ff, ff_flags);
   }
   if (done)
   {
@@ -54,7 +70,7 @@ readdir(DIR *dir)
       errno = oerrno;
     return 0;
   }
-  dir->num_read ++;
+  dir->num_read++;
   if (!(dir->flags & __OPENDIR_PRESERVE_CASE))
   {
     char *cp;
