@@ -26,7 +26,7 @@
     (dst)[_i++] = '.';                  \
     (dst)[_i++] = '*';                  \
     (dst)[_i++] = '\0';                 \
-  } while(1)
+  } while(0)
 
 struct dirent *
 readdir(DIR *dir)
