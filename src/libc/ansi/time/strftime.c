@@ -222,7 +222,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'C':
-	if (!_conv((t->tm_year+TM_YEAR_BASE)/100, 2, pad))
+	if (!_conv((t->tm_year + TM_YEAR_BASE) / 100, 2, pad))
 	  return 0;
 	continue;
       case 'c':
@@ -332,8 +332,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'U':
-	if (!_conv((t->tm_yday + 7 - t->tm_wday) / 7,
-		   2, pad))
+	if (!_conv((t->tm_yday + 7 - t->tm_wday) / 7, 2, pad))
 	  return 0;
 	continue;
       case 'V':
@@ -367,9 +366,9 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'z':
-	if (!_add(t->__tm_gmtoff<0 ? "-" : "+", 0))
+	if (!_add(t->__tm_gmtoff < 0 ? "-" : "+", 0))
 	  return 0;
-	if (!_conv(t->__tm_gmtoff<0 ? -t->__tm_gmtoff : t->__tm_gmtoff, 4, pad))
+	if (!_conv(t->__tm_gmtoff < 0 ? -t->__tm_gmtoff : t->__tm_gmtoff, 4, pad))
 	  return 0;
 	continue;
       case 'Z':
