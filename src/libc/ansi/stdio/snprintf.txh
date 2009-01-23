@@ -5,8 +5,7 @@
 @example
 #include <stdio.h>
 
-int snprintf (char *@var{buffer}, size_t @var{n}, const char *@var{format},
-              @dots{});
+int snprintf (char *buffer, size_t n, const char *format, @dots{});
 @end example
 
 @subheading Description
