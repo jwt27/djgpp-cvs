@@ -5,7 +5,7 @@
 @example
 #include <stdio.h>
 
-int printf(const char *@var{format}, @dots{});
+int printf(const char *format, @dots{});
 @end example
 
 @subheading Description
@@ -19,7 +19,7 @@ rather than to the next unused argument.  In this case, the conversion
 specifier character @code{%} is replaced by the sequence @code{"%n$"}, where
 @code{n} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
 giving the position of the argument in the argument list.  The format string
-can contain either numbered argument conversion specifiers (that is, +@code{"%n$"}
+can contain either numbered argument conversion specifiers (that is, @code{"%n$"}
 and @code{"*m$"}), or unnumbered argument conversion specifiers (that is @code{%}
 and @code{*}), but not both.  The only exception to this is that @code{%%} can
 be mixed with @code{"%n$"} form.  When numbered argument specifications are
@@ -109,7 +109,7 @@ to specify @code{short} integers;
 to specify @code{intmax_t} or @code{uintmax_t} integers;
 
 @item l
-to specify doubles or @code{long} integers;
+to specify doubles or @code{long} integers, @code{wint_t} or @code{wchar_t};
 
 @item ll
 (two lower-case ell letters) to specify @code{long long} integers;
