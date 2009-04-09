@@ -180,6 +180,17 @@ void dlstatunbind (const char *module, void **handle, char *stubs, char *syms, l
  * table with the dynamic loader automatically during startup.
  * To use it, just use DXE_EXPORT_TABLE_AUTO instead of DXE_EXPORT_TABLE.
  */
+
+/* Newer versions of GCC would not emit unused static data
+   unless it is marked with __attribute__((__used__)), whereas
+   __attribute__((__unused__)) only suppresses warnings.  */
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))
+# define __attribute_used __attribute__((__used__))
+#elif __GNUC__ >= 2
+# define __attribute_used __attribute__((__unused__))
+#else
+# define __attribute_used
+#endif
 #define DXE_EXPORT_TABLE(name)	static dxe_symbol_table name [] = {
 #define DXE_EXPORT_TABLE_AUTO(name) \
   static __attribute__((constructor)) void name##_auto_register () \
@@ -187,7 +198,7 @@ void dlstatunbind (const char *module, void **handle, char *stubs, char *syms, l
    extern void *__alias__##name __asm("_" #name); \
    dlregsym ((void *)&__alias__##name); \
   } \
-  static __attribute__((unused)) dxe_symbol_table name [] = {
+  static __attribute_used dxe_symbol_table name [] = {
 #define DXE_EXPORT(symbol)	{ "_" #symbol, (void *)&symbol },
 #define DXE_EXPORT_END		{ 0, 0 }};
 
