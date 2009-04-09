@@ -35,8 +35,10 @@
 #include <sys/fsext.h>
 #include <io.h>
 
-#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4))
-# define __attribute_used __attribute__ ((__used__))
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))
+# define __attribute_used __attribute__((__used__))
+#elif __GNUC__ >= 2
+# define __attribute_used __attribute__((__unused__))
 #else
 # define __attribute_used
 #endif
