@@ -1,9 +1,11 @@
+/* Copyright (C) 2009 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/symlink.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
