@@ -3,7 +3,7 @@
 @subheading Syntax
 
 @example
-#include <stdio.h>
+#include <stdlib.h>
 
 char *mktemp(char *template);
 @end example
@@ -25,6 +25,10 @@ If a unique name cannot be chosen, @code{NULL} is returned.  Otherwise
 the resulting filename is returned.
 
 @subheading Portability
+
+@port-note posix To follow the Single Unix Specification, djgpp 2.04 has now
+the prototype in @code{<stdlib.h>}.  To keep backward compatibility, the
+prototype is also kept in @code{<stdio.h>} but its usage is deprecated.
 
 @portability !ansi, !posix
 

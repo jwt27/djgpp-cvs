@@ -3,7 +3,7 @@
 @subheading Syntax
 
 @example
-#include <stdio.h>
+#include <stdlib.h>
 
 int mkstemp(char *template);
 @end example
@@ -28,7 +28,11 @@ The open file descriptor.
 
 @subheading Portability
 
-@portability !ansi, !posix
+@port-note posix To follow the Single Unix Specification, djgpp 2.04 has now
+the prototype in @code{<stdlib.h>}.  To keep backward compatibility, the
+prototype is also kept in @code{<stdio.h>} but its usage is deprecated.
+
+@portability !ansi, posix
 
 @subheading Example
 
