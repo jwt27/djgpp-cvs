@@ -1176,3 +1176,10 @@ stored in the member @code{name} of the @code{DIR} structure created by @code{op
 and used by @code{readdir}, @code{rewinddir} and @code{__set_need_fake_dot_dotdot}.
 Now it only contains the canonicalized path to the directory without a terminating slash.
 Those functions that require the trailing search pattern @code{/*.*} will append it.
+
+@findex mktemp@r{, and SUS compliance}
+@findex mkstemp@r{, and SUS compliance}
+The function prototypes of @code{mktemp} and @code{mkstemp} are now also in
+@code{<sdtlib.h>}.  This is to achieve Single Unix Specification compliance.
+To keep backward compatibility, the prototypes are also kept in @code{<sdtio.h>}
+but their usage is deprecated.
