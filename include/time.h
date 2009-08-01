@@ -110,9 +110,9 @@ int		settimeofday(struct timeval *_tp, ...);
 void		tzsetwall(void);
 uclock_t	uclock(void);
 
-unsigned long long _rdtsc(void);
+static unsigned long long _rdtsc(void);
 
-extern __inline__ unsigned long long
+static __inline__ unsigned long long
 _rdtsc(void)
 {
   unsigned long long result;
