@@ -21,10 +21,19 @@ __DJ_va_list
 #define _VA_LIST
 #endif
 
+/* For GCC-4.4.X the definitions have chenged again ...                    */
+/* This is however not surprising as we are messing here with internal     */
+/* stuff of GCC.                                                           */
+#if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 4)) || (__GNUC__ > 4)
+
+#define va_start(ap, last_arg)   __builtin_va_start(ap,last_arg)
+#define va_end(ap)       __builtin_va_end(ap)
+#define va_arg(v, l)     __builtin_va_arg(v,l)
+
 /* For GCC 2.96 or later we use its builtin va_list                        */
 /* In most cases these definitions won't be used, because headers provided */
 /* by GCC hide them. But we can DTRT if GCC headers are missing.           */
-#if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
+#elif ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3)
 
 #define va_arg                  __builtin_va_arg
 #define va_end                  __builtin_va_end
