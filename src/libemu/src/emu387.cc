@@ -426,7 +426,7 @@ static void *get_modrm()
 {
   int mod = modrm>>6;
   int rm = modrm & 7;
-  int rv;
+  int rv = 0;
   switch (mod)
   {
     case 0:
