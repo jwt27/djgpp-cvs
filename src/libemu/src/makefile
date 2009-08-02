@@ -11,8 +11,10 @@ EXTRA_OBJS += emudummy.o
 
 include $(TOP)/../makefile.inc
 
+# FIXME: fix emu387.cc instead to avoid need for -fno-strict-aliasing
+
 %.o : %.cc
-	$(XNOPGGPP) -c -fno-exceptions $<
+	$(XNOPGGPP) -c -fno-exceptions -fno-strict-aliasing $<
 
 %.o : %.c
 	$(XNOPGGCC) -c $<
