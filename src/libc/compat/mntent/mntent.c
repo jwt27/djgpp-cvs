@@ -322,7 +322,13 @@ get_netredir_entry(int drive_num)
 {
   __dpmi_regs r;
   unsigned long tb = __tb;
-  unsigned char devname[2];
+
+  union
+  {
+      unsigned char ch[2];
+      unsigned short s;
+  } devname;
+
   int i = -1;
 
   r.x.ds = r.x.es = (tb >> 4);
@@ -356,12 +362,12 @@ get_netredir_entry(int drive_num)
           /* We have a valid device which is a disk drive (BL = 4).
              Pull in the local device name and if that fits our
              drive number, get its network name.  */
-          *(unsigned short *)devname = _farpeekw(dos_mem_base, tb);
+          devname.s = _farpeekw(dos_mem_base, tb);
 
           /* The local device name may or may not include the
              colon (Ralf Brown's Interrupt List).  */
-          if (devname[0] == '@' + drive_num &&
-              (devname[1] == ':' || devname[1] == '\0'))
+          if (devname.ch[0] == '@' + drive_num &&
+              (devname.ch[1] == ':' || devname.ch[1] == '\0'))
             {
               movedata(dos_mem_base, tb + 16,
                        our_mem_base, (unsigned)mnt_fsname, 128);
