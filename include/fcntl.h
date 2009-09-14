@@ -1,3 +1,4 @@
+/* Copyright (C) 2009 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -117,6 +118,7 @@ extern int __djgpp_share_flags;
 #define _O_TEXT         O_TEXT
 #define _O_BINARY       O_BINARY
 #define _O_NOINHERIT    O_NOINHERIT
+#define _O_TEMPORARY    O_TEMPORARY
 
 /*
  * Support for advanced filesystems (Windows 9x VFAT, NTFS, LFN etc.)
