@@ -1183,3 +1183,10 @@ The function prototypes of @code{mktemp} and @code{mkstemp} are now also in
 @code{<sdtlib.h>}.  This is to achieve Single Unix Specification compliance.
 To keep backward compatibility, the prototypes are also kept in @code{<sdtio.h>}
 but their usage is deprecated.
+
+@findex _O_TEMPORARY@r{, new flag accepted by @code{open}}
+@findex _O_TEMPORARY@r{, new flag for compatibility with other C compilers}
+@findex open@r{, supports temporary files}
+The @code{_O_TEMPORARY} flag is an alias for the @code{O_TEMPORARY} flag
+supported by @code{open}.  It is supported to increment compatibility
+with other C compilers.
