@@ -1185,8 +1185,7 @@ To keep backward compatibility, the prototypes are also kept in @code{<sdtio.h>}
 but their usage is deprecated.
 
 @findex _O_TEMPORARY@r{, new flag accepted by @code{open}}
-@findex _O_TEMPORARY@r{, new flag for compatibility with other C compilers}
 @findex open@r{, supports temporary files}
 The @code{_O_TEMPORARY} flag is an alias for the @code{O_TEMPORARY} flag
-supported by @code{open}.  It is supported to increment compatibility
+supported by @code{open}.  It is supported to increase compatibility
 with other C compilers.
