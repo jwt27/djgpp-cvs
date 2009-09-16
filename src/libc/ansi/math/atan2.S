@@ -1,3 +1,4 @@
+/* Copyright (C) 2009 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	0xFFC00000
@@ -5,13 +6,13 @@ NaN:
 	.globl	_atan2
 _atan2:
 	movl	8(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	aby			/* y is inf or NaN */
 
 	movl	16(%esp), %edx
-	andl	$0x7FF00000,%edx
-	cmpl	$0x7FF00000,%edx
+	andl	$0x7FF00000, %edx
+	cmpl	$0x7FF00000, %edx
 	je	abx
 
 	orl	%eax, %edx		/* OR exponents together. */
@@ -39,22 +40,22 @@ aby:
 	jnz	badarg
 
 	movl	16(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	jne	argok			/* x is finite */
 	jmp	badarg
 
 abx:
 	movl	16(%esp), %eax		/* inf or NaN */
 	testl	$0x000FFFFF, %eax
-	jnz	badarg
-	movl	4(%esp), %eax
+	jne	badarg			/* x = NaN */
+	movl	12(%esp), %eax
 	testl	%eax, %eax
 	jnz	badarg
 
 	movl	8(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	jne	argok			/* y is finite */
 
 badarg:					/* arg is NaN */
