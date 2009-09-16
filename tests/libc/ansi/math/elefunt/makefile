@@ -100,7 +100,8 @@ TARGETS = \
 	tsinh.$(LOG)  \
 	tsqrt.$(LOG)  \
 	ttan.$(LOG)   \
-	ttanh.$(LOG)
+	ttanh.$(LOG)  \
+	tatan2.$(LOG)
 
 # $(EXECUTABLES) = $(TARGETS:/s/.$(LOG)/$(EXE))
 
@@ -122,7 +123,7 @@ summary:
 clean:
 	$(RM) *.o *.obj *.bak *.exe
 	$(RM) talog tasin tatan texp tpower tsin tsinh
-	$(RM) tsqrt ttan ttanh tmacha
+	$(RM) tsqrt ttan ttanh tmacha atan2
 
 realclean : clean       # delete log files, too
 	$(RM) *.djl *.bcl *.tcl
@@ -182,6 +183,8 @@ ttan$(EXE):	mtan.$(OE) ttan.$(OE) $(OBJS)
 	$(LD) $(LDFLAGS) $(OUT) $@ $^ $(LIBS)
 ttanh$(EXE):	mtanh.$(OE) ttanh.$(OE) $(OBJS)
 	$(LD) $(LDFLAGS) $(OUT) $@ $^ $(LIBS)
+tatan2$(EXE):	atan2.$(OE)
+	$(LD) $(LDFLAGS) $(OUT) $@ $^ $(LIBS)
 endif
 
 # dependencies found by gcc -MM *.c
@@ -197,6 +200,7 @@ ttan.$(OE) : ttan.c elefunt.h
 ttanh.$(OE) : ttanh.c elefunt.h
 tmacha.$(OE) : tmacha.c elefunt.h
 atan.$(OE) : atan.c
+atan2.$(OE) : atan2.c
 exp.$(OE) : exp.c
 ipow.$(OE) : ipow.c elefunt.h
 ldexp.$(OE) : ldexp.c
