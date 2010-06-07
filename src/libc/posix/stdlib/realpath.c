@@ -1,3 +1,4 @@
+/* Copyright (C) 2010 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
@@ -12,7 +13,7 @@ realpath(const char *in, char *out)
 {
   char in1[PATH_MAX];
 
-  if (in == NULL || out == NULL)
+  if (in == NULL)
   {
     errno = EINVAL;
     return NULL;
@@ -21,6 +22,12 @@ realpath(const char *in, char *out)
   if (in[0] == '\0')
   {
     errno = ENOENT;
+    return NULL;
+  }
+
+  if (out == NULL && (out = malloc((size_t)PATH_MAX)) == NULL)
+  {
+    errno = ENOMEM;
     return NULL;
   }
 

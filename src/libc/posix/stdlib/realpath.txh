@@ -29,6 +29,11 @@ caller should ensure there is enough space in the buffer pointed to by
 (defined on @file{stdio.h}) or Posix-standard constant @code{PATH_MAX}
 (defined on @file{limits.h}) is recommended.
 
+If @var{out_path} is specified as @code{NULL}, then @code{realpath} uses
+@code{malloc} (@pxref{malloc}) to allocate a buffer of up to @code{PATH_MAX}
+bytes to hold the resolved path name, and returns a pointer to this buffer.
+The caller should deallocate this buffer using @code{free} (@pxref{free}).
+
 @subheading Return Value
 
 If successful, a pointer to the result buffer is returned. Otherwise,
@@ -37,7 +42,7 @@ was detected.
 
 @subheading Portability
 
-@portability !ansi, posix
+@portability !ansi, posix-1003.1-2008
 
 @subheading Example
 
