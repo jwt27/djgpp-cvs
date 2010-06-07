@@ -1189,3 +1189,9 @@ but their usage is deprecated.
 The @code{_O_TEMPORARY} flag is an alias for the @code{O_TEMPORARY} flag
 supported by @code{open}.  It is supported to increase compatibility
 with other C compilers.
+
+@findex realpath@r{, and POSIX.1-2008 compliance}
+If the pointer that shall point to the buffer that shall contain the resolved
+path is a @code{NULL} pointer, then @code{realpath} will call @code{malloc} to allocate
+a buffer of @code{PATH_MAX} bytes to store the resolved path name and return this
+pointer to the caller.
