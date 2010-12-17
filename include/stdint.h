@@ -123,12 +123,12 @@ __extension__ typedef unsigned long long uintmax_t;
 
 #if !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS)
 
-#define INT8_C(x)	x
-#define UINT8_C(x)	x ## U
-#define INT16_C(x)	x
-#define UINT16_C(x)	x ## U
-#define INT32_C(x)	x
-#define UINT32_C(x)	x ## U
+#define INT8_C(x)	((int8_t)x)
+#define UINT8_C(x)	((uint8_t)x ## U)
+#define INT16_C(x)	((int16_t)x)
+#define UINT16_C(x)	((uint16_t)x ## U)
+#define INT32_C(x)	x ## L
+#define UINT32_C(x)	x ## UL
 #define INT64_C(x)	x ## LL
 #define UINT64_C(x)	x ## ULL
 
