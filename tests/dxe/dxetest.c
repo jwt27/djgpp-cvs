@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <sys/dxe.h>
 
 static int (*add)(int a, int b);
