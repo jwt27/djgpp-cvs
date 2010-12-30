@@ -39,9 +39,29 @@
 /* Define internal type to be used for avoiding strict
    aliasing warnings */
 #if (__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 3))
-typedef long __attribute__((__may_alias__)) __dj_long_a;
+typedef short __attribute__((__may_alias__))                __dj_short_a;
+typedef int __attribute__((__may_alias__))                  __dj_int_a;
+typedef long __attribute__((__may_alias__))                 __dj_long_a;
+typedef long long __attribute__((__may_alias__))            __dj_long_long_a;
+typedef unsigned short __attribute__((__may_alias__))       __dj_unsigned_short_a;
+typedef unsigned int __attribute__((__may_alias__))         __dj_unsigned_int_a;
+typedef unsigned long __attribute__((__may_alias__))        __dj_unsigned_long_a;
+typedef unsigned long long __attribute__((__may_alias__))   __dj_unsigned_long_long_a;
+typedef float __attribute__((__may_alias__))                __dj_float_a;
+typedef double __attribute__((__may_alias__))               __dj_double_a;
+typedef long double __attribute__((__may_alias__))          __dj_long_double_a;
 #else
-typedef long __dj_long_a;
+typedef short                __dj_short_a;
+typedef int                  __dj_int_a;
+typedef long                 __dj_long_a;
+typedef long long            __dj_long_long_a;
+typedef unsigned short       __dj_unsigned_short_a;
+typedef unsigned int         __dj_unsigned_int_a;
+typedef unsigned long        __dj_unsigned_long_a;
+typedef unsigned long long   __dj_unsigned_long_long_a;
+typedef float                __dj_float_a;
+typedef double               __dj_double_a;
+typedef long double          __dj_long_double_a;
 #endif
 
 #endif
