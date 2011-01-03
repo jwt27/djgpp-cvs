@@ -459,10 +459,10 @@ ohex(char c, int extend, int optional, int defsize, int sign)
       delta = *(signed char *)buf;
       break;
    case 2:
-      delta = *(signed short *)buf;
+      delta = *(__dj_short_a *)buf;
       break;
     case 4:
-      delta = *(signed long *)buf;
+      delta = *(__dj_long_a *)buf;
       break;
   }
   if (extend > n)

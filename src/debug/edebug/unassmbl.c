@@ -443,10 +443,10 @@ static void ohex(char c, int extend, int optional, int defsize, int sign)
       delta = *(signed char *)buf1;
       break;
    case 2:
-      delta = *(signed short *)buf1;
+      delta = *(__dj_short_a *)buf1;
       break;
     case 4:
-      delta = *(signed long *)buf1;
+      delta = *(__dj_long_a *)buf1;
       break;
   }
   if (extend > n)
