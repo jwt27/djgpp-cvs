@@ -393,7 +393,7 @@ strdup (const char *_s)
 static int
 eval (char *expr, int *okp)
 {
-  word32 sym;
+  int32 sym;
   int err;
   char *errtxt;
 
@@ -1149,7 +1149,7 @@ step (KIND_TYPE kind)
 	  if (bep->condition)
 	    {
 	      char *errtxt;
-	      word32 val;
+	      int32 val;
 
 	      if (evaluate (bep->condition, &val, &errtxt))
 		{
@@ -1430,7 +1430,7 @@ redraw (int first)
     /* Show breakpoints */
     int b, x = 47, y = toplines + 2, width = cols - 48;
     char *name;
-    int32 delta;
+    word32 delta;
 
     for (b = breakpoint_origin;
 	 b < breakpoint_origin + bottomlines / 2 && b < breakpoint_count;
@@ -2006,7 +2006,7 @@ redraw (int first)
     while (y - (toplines + 1) <= bottomlines)
       if (i < watch_text_count)
 	{
-	  word32 val;
+	  int32 val;
 	  char *errtxt, *valtxt, *exprtxt;
 	  int l;
 
@@ -2240,7 +2240,7 @@ setup_restore (int booting)
 	    {
 	      int b, count;
 	      char addr[1000], cond[1000];
-	      word32 res;
+	      int32 res;
 	      char *errtxt;
 
 	      if (fscanf (f, "%d", &count) != 1)
@@ -2735,7 +2735,7 @@ breakpoint_pane_command (int key)
       if (b != -1 && bep->type == BP_Code)
 	{
 	  int i;
-	  long delta;
+	  unsigned long delta;
 	  char *name;
 
 	  static EDIT_ITEM bpedit[] = {
