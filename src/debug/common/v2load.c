@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -187,9 +188,9 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   __dpmi_meminfo memblock;
   unsigned new_env_selector;
   char true_name[FILENAME_MAX];
-  size_t proxy_argc;
+  size_t proxy_argc = 0;
   int proxy_mode;
-  unsigned long tbuf;
+  unsigned long tbuf = 0;
   size_t tbuf_len;
 
   _truename(program, true_name);
