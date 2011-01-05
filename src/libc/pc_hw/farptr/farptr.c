@@ -1,4 +1,5 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
-#define extern
-#define __inline__
+#define __dj_include_sys_cdefs_h_  /* Do not include sys/cdefs.h.  It provides the _EXTERN_INLINE definition.  */
+#define _EXTERN_INLINE
 #include <sys/farptr.h>
