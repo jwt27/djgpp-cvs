@@ -1,5 +1,6 @@
 /* special version for libc - uses %gs instead of %fs.  Ignore comments */
 
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (c) 1995 DJ Delorie.  Permission granted to use for any
@@ -70,6 +71,8 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
+#include <sys/cdefs.h>
+
 void _farpokeb(unsigned short, unsigned long, unsigned char);
 void _farpokew(unsigned short, unsigned long, unsigned short);
 void _farpokel(unsigned short, unsigned long, unsigned long);
@@ -85,7 +88,7 @@ unsigned char _farnspeekb(unsigned long);
 unsigned short _farnspeekw(unsigned long);
 unsigned long _farnspeekl(unsigned long);
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farpokeb(unsigned short selector,
 	 unsigned long offset,
 	 unsigned char value)
@@ -97,7 +100,7 @@ _farpokeb(unsigned short selector,
       : "rm" (selector), "qi" (value), "r" (offset));
 }
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farpokew(unsigned short selector,
 	 unsigned long offset,
 	 unsigned short value)
@@ -109,7 +112,7 @@ _farpokew(unsigned short selector,
       : "rm" (selector), "ri" (value), "r" (offset));
 }
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farpokel(unsigned short selector,
 	 unsigned long offset,
 	 unsigned long value)
@@ -121,7 +124,7 @@ _farpokel(unsigned short selector,
       : "rm" (selector), "ri" (value), "r" (offset));
 }
 
-extern __inline__ unsigned char
+_EXTERN_INLINE unsigned char
 _farpeekb(unsigned short selector,
 	 unsigned long offset)
 {
@@ -134,7 +137,7 @@ _farpeekb(unsigned short selector,
   return result;
 }
 
-extern __inline__ unsigned short
+_EXTERN_INLINE unsigned short
 _farpeekw(unsigned short selector,
 	 unsigned long offset)
 {
@@ -147,7 +150,7 @@ _farpeekw(unsigned short selector,
   return result;
 }
 
-extern __inline__ unsigned long
+_EXTERN_INLINE unsigned long
 _farpeekl(unsigned short selector,
 	 unsigned long offset)
 {
@@ -160,7 +163,7 @@ _farpeekl(unsigned short selector,
   return result;
 }
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farsetsel(unsigned short selector)
 {
   __asm__ __volatile__ ("movw %w0,%%gs"
@@ -168,7 +171,7 @@ _farsetsel(unsigned short selector)
       : "rm" (selector));
 }
 
-extern __inline__ unsigned short
+_EXTERN_INLINE unsigned short
 _fargetsel(void)
 {
   unsigned short selector;
@@ -178,7 +181,7 @@ _fargetsel(void)
   return selector;
 }
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farnspokeb(unsigned long offset,
 	 unsigned char value)
 {
@@ -188,7 +191,7 @@ _farnspokeb(unsigned long offset,
       : "qi" (value), "r" (offset));
 }
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farnspokew(unsigned long offset,
 	 unsigned short value)
 {
@@ -198,7 +201,7 @@ _farnspokew(unsigned long offset,
       : "ri" (value), "r" (offset));
 }
 
-extern __inline__ void
+_EXTERN_INLINE void
 _farnspokel(unsigned long offset,
 	 unsigned long value)
 {
@@ -208,7 +211,7 @@ _farnspokel(unsigned long offset,
       : "ri" (value), "r" (offset));
 }
 
-extern __inline__ unsigned char
+_EXTERN_INLINE unsigned char
 _farnspeekb(unsigned long offset)
 {
   unsigned char result;
@@ -219,7 +222,7 @@ _farnspeekb(unsigned long offset)
   return result;
 }
 
-extern __inline__ unsigned short
+_EXTERN_INLINE unsigned short
 _farnspeekw(unsigned long offset)
 {
   unsigned short result;
@@ -230,7 +233,7 @@ _farnspeekw(unsigned long offset)
   return result;
 }
 
-extern __inline__ unsigned long
+_EXTERN_INLINE unsigned long
 _farnspeekl(unsigned long offset)
 {
   unsigned long result;

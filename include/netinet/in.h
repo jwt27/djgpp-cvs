@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -29,15 +30,16 @@ unsigned short ntohs(unsigned short _val);
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
 
 #ifndef __dj_ENFORCE_FUNCTION_CALLS
+#include <sys/cdefs.h>
 
-extern __inline__ unsigned long
+_EXTERN_INLINE unsigned long
 htonl(unsigned long _val)
 {
   return (_val << 24) | ((_val&0xff00) << 8) | ((_val&0xff0000) >> 8) | (_val >> 24);
 }
 #define ntohl(x) htonl(x)
 
-extern __inline__ unsigned short
+_EXTERN_INLINE unsigned short
 htons(unsigned short _val)
 {
   return (_val << 8) | (_val >> 8);

@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -110,9 +111,11 @@ int		settimeofday(struct timeval *_tp, ...);
 void		tzsetwall(void);
 uclock_t	uclock(void);
 
-static unsigned long long _rdtsc(void);
+#include <sys/cdefs.h>
 
-static __inline__ unsigned long long
+unsigned long long _rdtsc(void);
+
+_EXTERN_INLINE unsigned long long
 _rdtsc(void)
 {
   unsigned long long result;
