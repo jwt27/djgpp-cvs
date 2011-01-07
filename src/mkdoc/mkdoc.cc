@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -44,6 +45,7 @@ static char *make_sname(const char *name)
 /* POSIX */
 #define PORT_TARGET_POSIX_1003_2_1992 0x20
 #define PORT_TARGET_POSIX_1003_1_2001 0x21
+#define PORT_TARGET_POSIX_1003_1_2008 0x22
 /* Single Unix Specification(s) (SUS) */
 #define PORT_TARGET_UNIX_98           0x30
 
@@ -63,7 +65,7 @@ struct PortQualifier {
   int complete;        /* One of PORT_UNKNOWN, etc. */
 };
 
-#define MAX_PORT_QUALIFIERS 2
+#define MAX_PORT_QUALIFIERS 3
 
 struct PortInfo {
   const char *prefix_token; /* Token used in texinfo, e.g. 'ansi' */
@@ -83,12 +85,14 @@ static const PortInfo port_target[] = {
     }
   },
   /* POSIX */
-  { "posix", "POSIX", 2,
+  { "posix", "POSIX", 3,
     {
       { "1003.2-1992", "1003.2-1992",
 	PORT_TARGET_POSIX_1003_2_1992, PORT_YES },
       { "1003.1-2001", "1003.1-2001",
-	PORT_TARGET_POSIX_1003_1_2001, PORT_YES }
+	PORT_TARGET_POSIX_1003_1_2001, PORT_YES },
+      { "1003.1-2008", "1003.1-2008",
+	PORT_TARGET_POSIX_1003_1_2008, PORT_YES }
     }
   },
   /* SUSv2 */
