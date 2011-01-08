@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
@@ -7,12 +8,10 @@
 
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include "oread.h"
 #include "zread.h"
 #include "unbzip2.h"
-
-#define FALSE 0
-#define TRUE  1
 
 local int read_stream (void)
 {
@@ -22,7 +21,7 @@ local int read_stream (void)
   bytes_in = bytes_read = 0;
   do
   {
-    bytes_read = oread_read(ifd, (char *)inbuf+bytes_in);
+    bytes_read = oread_read(ifd, (char *)inbuf + bytes_in);
     if (bytes_read == 0 || bytes_read == EOF)
       break;
     bytes_in += bytes_read;
@@ -40,24 +39,28 @@ local int read_stream (void)
     if ((bzip_status) == BZ_OK && nbytes == EOF &&                \
         data->avail_in == 0 && data->avail_out > 0)               \
       goto error_handler;                                         \
-  } while (FALSE)
+  } while (false)
 
 #define CHECK_IF_BZ_STREAM_END_IS_EOF(buf)                        \
   do {                                                            \
     if ((buf)[0] == 'B' && (buf)[1] == 'Z' && (buf)[2] == 'h')    \
-      EOF_reached = FALSE;                                        \
+      EOF_reached = false;                                        \
     else                                                          \
-      EOF_reached = TRUE;                                         \
-  } while (FALSE)
+      EOF_reached = true;                                         \
+  } while (false)
 
 int unbzip2 (void *f)
 {
   bz_stream* data = NULL;
   int        bzip_status;
-  int        EOF_reached = TRUE;
+  int        EOF_reached = true;
   int        small = 0;      /* Use fast decompressing algorithm. */
   int        verbosity = 0;  /* No verbose output at all. */
   int        nbytes = 0;
+  /* This is requiered because inbuf/outbuf are defined
+     as unsigned char in zread.h but bzip need them as char.  */
+  char*      bz_inbuf = (char *)inbuf;
+  char*      bz_outbuf = (char *)outbuf;
 
 
 
@@ -68,9 +71,9 @@ int unbzip2 (void *f)
 
   /* Initialise bzip stream structure. */
   data = (bz_stream *) xmalloc (sizeof (bz_stream));
-  data->next_in   = inbuf;
+  data->next_in   = bz_inbuf;
   data->avail_in  = INBUFSIZ;
-  data->next_out  = outbuf;
+  data->next_out  = bz_outbuf;
   data->avail_out = OUTBUFSIZ;
   data->bzalloc   = NULL;
   data->bzfree    = NULL;
@@ -80,7 +83,7 @@ int unbzip2 (void *f)
     goto error_handler;
 
   /* Decompress every stream (.bz2 file) contained in this file. */
-  while (TRUE)
+  while (true)
   {
     /* Decompress the actual stream (.bz2 file) contained in this file. */
     while (bzip_status == BZ_OK)
@@ -96,20 +99,20 @@ int unbzip2 (void *f)
         {
           nbytes = read_stream ();
           data->avail_in = nbytes;
-          data->next_in  = inbuf;
+          data->next_in  = bz_inbuf;
         }
 
         /* Writing decompressed block. */
         if (data->avail_out == 0)
         {
-          tarread (outbuf, (unsigned long) OUTBUFSIZ);
+          tarread (bz_outbuf, (unsigned long) OUTBUFSIZ);
           data->avail_out = OUTBUFSIZ;
-          data->next_out  = outbuf;
+          data->next_out  = bz_outbuf;
         }
         if (bzip_status == BZ_STREAM_END)
         {
           nbytes = OUTBUFSIZ - data->avail_out;
-          tarread (outbuf, (unsigned long) nbytes);
+          tarread (bz_outbuf, (unsigned long) nbytes);
           CHECK_IF_BZ_STREAM_END_IS_EOF(data->next_in);
         }
       } /* End of block loop. */
@@ -131,20 +134,20 @@ int unbzip2 (void *f)
         break;
       else
       {
-        /* Reinitialise inbuf[] with the unused but
+        /* Reinitialise bz_inbuf[] with the unused but
            still availabe compressed data of the next
            stream and allocate all resources needed
            to processes it. */
 
         size_t i;
         for (i = 0; i < data->avail_in; i++)
-          inbuf[i] = data->next_in[i];
+          bz_inbuf[i] = data->next_in[i];
 
         bzip_status = BZ2_bzDecompressInit (data, verbosity, small);
         if (bzip_status != BZ_OK)
           goto error_handler;
-        data->next_in   = inbuf;
-        data->next_out  = outbuf;
+        data->next_in   = bz_inbuf;
+        data->next_out  = bz_outbuf;
         data->avail_out = OUTBUFSIZ;
      }
     }
