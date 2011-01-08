@@ -137,6 +137,6 @@
 {62, 0, 0,__LINE__, {{0xfff80000, 0x00000000}, {0xfff80000, 0x00000000}}},	/* -NaN       =F(    -NaN) */
 {34, 0, 0,__LINE__, {{0x3ff921fb, 0x60000000}, {0x7ff00000, 0x00000000}}},	/* +1.5708E+00=F(    +Inf) */
 {34, 0, 0,__LINE__, {{0xbff921fb, 0x60000000}, {0xfff00000, 0x00000000}}},	/* -1.5708E+00=F(    -Inf) */
-0,};
+{0}};
 void
 test_atanf(int m)	{ run_vector_1(m, atanf_vec,(char *)(atanf),"atanf","ff");}

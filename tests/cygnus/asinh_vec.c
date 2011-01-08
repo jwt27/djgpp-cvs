@@ -118,6 +118,6 @@
 {62, 0, 0,__LINE__, {{0xfff00000, 0x00000000}, {0xfff00000, 0x00000000}}},	/* -Inf       =F(    -Inf) */
 {62, 0, 0,__LINE__, {{0x7ff00000, 0x00000000}, {0x7ff00000, 0x00000000}}},	/* +Inf       =F(    +Inf) */
 {62, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}}},	/* +NaN       =F(    +NaN) */
-0,};
+{0}};
 void
 test_asinh(int m)	{ run_vector_1(m, asinh_vec,(char *)(asinh),"asinh","dd");}

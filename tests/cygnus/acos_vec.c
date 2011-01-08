@@ -73,6 +73,6 @@
 {62, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}}},	/* +NaN       =F(    +NaN) */
 {62, 1, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff00000, 0x00000000}}},	/* +NaN       =F(    +Inf) */
 {62, 0, 0,__LINE__, {{0x3e500000, 0x00000000}, {0x3fefffff, 0xffffffff}}},	/* +1.4901E-08=F(      +1) */
-0,};
+{0}};
 void
 test_acos(int m)	{ run_vector_1(m, acos_vec,(char *)(acos),"acos","dd");}

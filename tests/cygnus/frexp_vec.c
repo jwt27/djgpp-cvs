@@ -205,6 +205,6 @@
 {62, 0, 0,__LINE__, {{0x3fefffff, 0xffffffff}, {0x7fefffff, 0xffffffff}, {0x40900000, 0x00000000}}},	/* +1.0000E+00=F(+1.798e+308,   +1024) */
 {62, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}, {0x00000000, 0x00000000}}},	/* +NaN       =F(    +NaN,      +0) */
 {62, 0, 0,__LINE__, {{0x7ff00000, 0x00000000}, {0x7ff00000, 0x00000000}, {0x00000000, 0x00000000}}},	/* +Inf       =F(    +Inf,      +0) */
-0,};
+{0}};
 void
 test_frexp(int m)	{ run_vector_1(m, frexp_vec,(char *)(frexp),"frexp","ddip");}

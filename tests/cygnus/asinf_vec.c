@@ -57,6 +57,6 @@
 {34, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}}},	/* +NaN       =F(    +NaN) */
 {34, 1, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff00000, 0x00000000}}},	/* +NaN       =F(    +Inf) */
 {34, 0, 0,__LINE__, {{0x3ff92091, 0x40000000}, {0x3fefffff, 0xe0000000}}},	/* +1.5705E+00=F(      +1) */
-0,};
+{0}};
 void
 test_asinf(int m)	{ run_vector_1(m, asinf_vec,(char *)(asinf),"asinf","ff");}

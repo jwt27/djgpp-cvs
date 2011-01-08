@@ -57,6 +57,6 @@
 {62, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}}},	/* +NaN       =F(    +NaN) */
 {62, 1, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff00000, 0x00000000}}},	/* +NaN       =F(    +Inf) */
 {62, 0, 0,__LINE__, {{0x3ff921fb, 0x50442d18}, {0x3fefffff, 0xffffffff}}},	/* +1.5708E+00=F(      +1) */
-0,};
+{0}};
 void
 test_asin(int m)	{ run_vector_1(m, asin_vec,(char *)(asin),"asin","dd");}

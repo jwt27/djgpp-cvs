@@ -134,6 +134,6 @@
 {34, 0, 0,__LINE__, {{0x7ff00000, 0x00000000}, {0x7ff00000, 0x00000000}}},	/* +Inf       =F(    +Inf) */
 {34, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}}},	/* +NaN       =F(    +NaN) */
 {34, 0, 0,__LINE__, {{0xfff80000, 0x00000000}, {0xfff80000, 0x00000000}}},	/* -NaN       =F(    -NaN) */
-0,};
+{0}};
 void
 test_sqrtf(int m)	{ run_vector_1(m, sqrtf_vec,(char *)(sqrtf),"sqrtf","ff");}

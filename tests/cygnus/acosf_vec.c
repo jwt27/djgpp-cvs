@@ -73,6 +73,6 @@
 {34, 0, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff80000, 0x00000000}}},	/* +NaN       =F(    +NaN) */
 {34, 1, 0,__LINE__, {{0x7ff80000, 0x00000000}, {0x7ff00000, 0x00000000}}},	/* +NaN       =F(    +Inf) */
 {34, 0, 0,__LINE__, {{0x3f36a09e, 0x60000000}, {0x3fefffff, 0xe0000000}}},	/* +3.4527E-04=F(      +1) */
-0,};
+{0}};
 void
 test_acosf(int m)	{ run_vector_1(m, acosf_vec,(char *)(acosf),"acosf","ff");}

@@ -137,6 +137,6 @@
 {62, 0, 0,__LINE__, {{0xfff80000, 0x00000000}, {0xfff80000, 0x00000000}}},	/* -NaN       =F(    -NaN) */
 {62, 0, 0,__LINE__, {{0x3ff921fb, 0x54442d18}, {0x7ff00000, 0x00000000}}},	/* +1.5708E+00=F(    +Inf) */
 {62, 0, 0,__LINE__, {{0xbff921fb, 0x54442d18}, {0xfff00000, 0x00000000}}},	/* -1.5708E+00=F(    -Inf) */
-0,};
+{0}};
 void
 test_atan(int m)	{ run_vector_1(m, atan_vec,(char *)(atan),"atan","dd");}
