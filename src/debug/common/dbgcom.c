@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2004 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -44,7 +45,9 @@
 #endif
 
 extern char __libdbg_ident_string[];
-static char *id = __libdbg_ident_string;
+#if 0
+static char *id = __libdbg_ident_string;  /* Pacify compiler.  */
+#endif
 
 #define MEM_HANDLE_COUNT	256
 #define DESCRIPTOR_COUNT	128
