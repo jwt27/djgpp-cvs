@@ -6,7 +6,7 @@ int _crt0_startup_flags =
   _CRT0_FLAG_PRESERVE_UPPER_CASE
   |_CRT0_FLAG_USE_DOS_SLASHES;
 
-void
+int
 main(int argc, char **argv)
 {
   int i;

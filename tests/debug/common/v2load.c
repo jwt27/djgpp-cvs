@@ -13,10 +13,11 @@
 #include <libc/farptrgs.h>
 #include <sys/stat.h>
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   int i;
   char cmdline[128];
+  char env_str[32];
   jmp_buf load_state;
 
   if(argc < 2) {
@@ -24,7 +25,8 @@ void main(int argc, char **argv)
     exit(1);
   }
 
-  putenv("FOO=from-v2load");
+  strcpy(env_str, "FOO=from-v2load");
+  putenv(env_str);
   
   cmdline[1] = 0;
   for(i=2; argv[i]; i++) {
