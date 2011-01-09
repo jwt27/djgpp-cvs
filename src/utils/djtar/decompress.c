@@ -1,65 +1,25 @@
-/* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 
 /*-------------------------------------------------------------*/
 /*--- Decompression machinery                               ---*/
 /*---                                          decompress.c ---*/
 /*-------------------------------------------------------------*/
 
-/*--
-  This file is a part of bzip2 and/or libbzip2, a program and
-  library for lossless, block-sorting data compression.
+/* ------------------------------------------------------------------
+   This file is part of bzip2/libbzip2, a program and library for
+   lossless, block-sorting data compression.
 
-  Copyright (C) 1996-2000 Julian R Seward.  All rights reserved.
+   bzip2/libbzip2 version 1.0.6 of 6 September 2010
+   Copyright (C) 1996-2010 Julian Seward <jseward@bzip.org>
 
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
+   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
+   README file.
 
-  1. Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
+   This program is released under the terms of the license contained
+   in the file LICENSE.
 
-  2. The origin of this software must not be misrepresented; you must 
-     not claim that you wrote the original software.  If you use this 
-     software in a product, an acknowledgment in the product 
-     documentation would be appreciated but is not required.
-
-  3. Altered source versions must be plainly marked as such, and must
-     not be misrepresented as being the original software.
-
-  4. The name of the author may not be used to endorse or promote 
-     products derived from this software without specific prior written 
-     permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
-  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-  ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-  Julian Seward, Cambridge, UK.
-  jseward@acm.org
-  bzip2/libbzip2 version 1.0 of 21 March 2000
-
-  This program is based on (at least) the work of:
-     Mike Burrows
-     David Wheeler
-     Peter Fenwick
-     Alistair Moffat
-     Radford Neal
-     Ian H. Witten
-     Robert Sedgewick
-     Jon L. Bentley
-
-  For more information on these sources, see the manual.
-
-  Minor changes for DJTAR program, Juan Manuel Guerrero   December 2000
---*/
+   Minor changes for DJTAR program, Juan Manuel Guerrero  (2011-01-08).
+   ------------------------------------------------------------------ */
 
 
 #include "bzlib_private.h"
@@ -238,18 +198,18 @@ Int32 BZ2_decompress ( DState* s )
    switch (s->state) {
 
       GET_UCHAR(BZ_X_MAGIC_1, uc);
-      if (uc != 'B') RETURN(BZ_DATA_ERROR_MAGIC);
+      if (uc != BZ_HDR_B) RETURN(BZ_DATA_ERROR_MAGIC);
 
       GET_UCHAR(BZ_X_MAGIC_2, uc);
-      if (uc != 'Z') RETURN(BZ_DATA_ERROR_MAGIC);
+      if (uc != BZ_HDR_Z) RETURN(BZ_DATA_ERROR_MAGIC);
 
       GET_UCHAR(BZ_X_MAGIC_3, uc)
-      if (uc != 'h') RETURN(BZ_DATA_ERROR_MAGIC);
+      if (uc != BZ_HDR_h) RETURN(BZ_DATA_ERROR_MAGIC);
 
       GET_BITS(BZ_X_MAGIC_4, s->blockSize100k, 8)
-      if (s->blockSize100k < '1' || 
-          s->blockSize100k > '9') RETURN(BZ_DATA_ERROR_MAGIC);
-      s->blockSize100k -= '0';
+      if (s->blockSize100k < (BZ_HDR_0 + 1) || 
+          s->blockSize100k > (BZ_HDR_0 + 9)) RETURN(BZ_DATA_ERROR_MAGIC);
+      s->blockSize100k -= BZ_HDR_0;
 
       if (s->smallDecompress) {
          s->ll16 = BZALLOC( s->blockSize100k * 100000 * sizeof(UInt16) );
@@ -424,6 +384,13 @@ Int32 BZ2_decompress ( DState* s )
             es = -1;
             N = 1;
             do {
+               /* Check that N doesn't get too big, so that es doesn't
+                  go negative.  The maximum value that can be
+                  RUNA/RUNB encoded is equal to the block size (post
+                  the initial RLE), viz, 900k, so bounding N at 2
+                  million should guard against overflow without
+                  rejecting any legitimate inputs. */
+               if (N >= 2*1024*1024) RETURN(BZ_DATA_ERROR);
                if (nextSym == BZ_RUNA) es = es + (0+1) * N; else
                if (nextSym == BZ_RUNB) es = es + (1+1) * N;
                N = N * 2;
@@ -527,16 +494,35 @@ Int32 BZ2_decompress ( DState* s )
       if (s->origPtr < 0 || s->origPtr >= nblock)
          RETURN(BZ_DATA_ERROR);
 
+      /*-- Set up cftab to facilitate generation of T^(-1) --*/
+      /* Check: unzftab entries in range. */
+      for (i = 0; i <= 255; i++) {
+         if (s->unzftab[i] < 0 || s->unzftab[i] > nblock)
+            RETURN(BZ_DATA_ERROR);
+      }
+      /* Actually generate cftab. */
+      s->cftab[0] = 0;
+      for (i = 1; i <= 256; i++) s->cftab[i] = s->unzftab[i-1];
+      for (i = 1; i <= 256; i++) s->cftab[i] += s->cftab[i-1];
+      /* Check: cftab entries in range. */
+      for (i = 0; i <= 256; i++) {
+         if (s->cftab[i] < 0 || s->cftab[i] > nblock) {
+            /* s->cftab[i] can legitimately be == nblock */
+            RETURN(BZ_DATA_ERROR);
+         }
+      }
+      /* Check: cftab entries non-descending. */
+      for (i = 1; i <= 256; i++) {
+         if (s->cftab[i-1] > s->cftab[i]) {
+            RETURN(BZ_DATA_ERROR);
+         }
+      }
+
       s->state_out_len = 0;
       s->state_out_ch  = 0;
       BZ_INITIALISE_CRC ( s->calculatedBlockCRC );
       s->state = BZ_X_OUTPUT;
       if (s->verbosity >= 2) VPrintf0 ( "rt+rld" );
-
-      /*-- Set up cftab to facilitate generation of T^(-1) --*/
-      s->cftab[0] = 0;
-      for (i = 1; i <= 256; i++) s->cftab[i] = s->unzftab[i-1];
-      for (i = 1; i <= 256; i++) s->cftab[i] += s->cftab[i-1];
 
       if (s->smallDecompress) {
 
