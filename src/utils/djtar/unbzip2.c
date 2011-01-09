@@ -21,7 +21,7 @@ local int read_stream (void)
   bytes_in = bytes_read = 0;
   do
   {
-    bytes_read = oread_read(ifd, (char *)inbuf + bytes_in);
+    bytes_read = oread_read(ifd, inbuf + bytes_in);
     if (bytes_read == 0 || bytes_read == EOF)
       break;
     bytes_in += bytes_read;
@@ -57,10 +57,6 @@ int unbzip2 (void *f)
   int        small = 0;      /* Use fast decompressing algorithm. */
   int        verbosity = 0;  /* No verbose output at all. */
   int        nbytes = 0;
-  /* This is requiered because inbuf/outbuf are defined
-     as unsigned char in zread.h but bzip need them as char.  */
-  char*      bz_inbuf = (char *)inbuf;
-  char*      bz_outbuf = (char *)outbuf;
 
 
 
@@ -71,9 +67,9 @@ int unbzip2 (void *f)
 
   /* Initialise bzip stream structure. */
   data = (bz_stream *) xmalloc (sizeof (bz_stream));
-  data->next_in   = bz_inbuf;
+  data->next_in   = inbuf;
   data->avail_in  = INBUFSIZ;
-  data->next_out  = bz_outbuf;
+  data->next_out  = outbuf;
   data->avail_out = OUTBUFSIZ;
   data->bzalloc   = NULL;
   data->bzfree    = NULL;
@@ -99,20 +95,20 @@ int unbzip2 (void *f)
         {
           nbytes = read_stream ();
           data->avail_in = nbytes;
-          data->next_in  = bz_inbuf;
+          data->next_in  = inbuf;
         }
 
         /* Writing decompressed block. */
         if (data->avail_out == 0)
         {
-          tarread (bz_outbuf, (unsigned long) OUTBUFSIZ);
+          tarread (outbuf, (unsigned long) OUTBUFSIZ);
           data->avail_out = OUTBUFSIZ;
-          data->next_out  = bz_outbuf;
+          data->next_out  = outbuf;
         }
         if (bzip_status == BZ_STREAM_END)
         {
           nbytes = OUTBUFSIZ - data->avail_out;
-          tarread (bz_outbuf, (unsigned long) nbytes);
+          tarread (outbuf, (unsigned long) nbytes);
           CHECK_IF_BZ_STREAM_END_IS_EOF(data->next_in);
         }
       } /* End of block loop. */
@@ -134,20 +130,20 @@ int unbzip2 (void *f)
         break;
       else
       {
-        /* Reinitialise bz_inbuf[] with the unused but
+        /* Reinitialise inbuf[] with the unused but
            still availabe compressed data of the next
            stream and allocate all resources needed
            to processes it. */
 
         size_t i;
         for (i = 0; i < data->avail_in; i++)
-          bz_inbuf[i] = data->next_in[i];
+          inbuf[i] = data->next_in[i];
 
         bzip_status = BZ2_bzDecompressInit (data, verbosity, small);
         if (bzip_status != BZ_OK)
           goto error_handler;
-        data->next_in   = bz_inbuf;
-        data->next_out  = bz_outbuf;
+        data->next_in   = inbuf;
+        data->next_out  = outbuf;
         data->avail_out = OUTBUFSIZ;
      }
     }
