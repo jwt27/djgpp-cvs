@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -308,7 +309,7 @@ epunzip_read(char *zipfilename)
 
 	}
 
-      if((unsigned)crc != updcrc(outbuf, 0))
+      if((unsigned)crc != updcrc((uch *)outbuf, 0))
 	{
 	  fprintf(log_out, "invalid crc on %s\n", zipfilename);
 	  break;

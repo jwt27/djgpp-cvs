@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* unpack.c -- decompress files in pack format.
@@ -9,7 +10,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unpack.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
+static char rcsid[] = "$Id: unpack.c,v 1.3 2011/01/09 14:20:05 juan.guerrero Exp $";
 #endif
 
 #include "tailor.h"
@@ -41,19 +42,19 @@ local uch literal[LITERALS];
  * represented.
  */
 
-local int lit_base[MAX_BITLEN+1];
+local int lit_base[MAX_BITLEN + 1];
 /* All literals of a given bit length are contiguous in literal[] and
  * have contiguous codes. literal[code+lit_base[len]] is the literal
  * for a code of len bits.
  */
 
-local int leaves [MAX_BITLEN+1]; /* Number of leaves for each bit length */
-local int parents[MAX_BITLEN+1]; /* Number of parents for each bit length */
+local int leaves [MAX_BITLEN + 1]; /* Number of leaves for each bit length */
+local int parents[MAX_BITLEN + 1]; /* Number of parents for each bit length */
 
 local int peek_bits; /* Number of peek bits currently used */
 
 /* local uch prefix_len[1 << MAX_PEEK]; */
-#define prefix_len outbuf
+#define prefix_len ((uch *)outbuf)
 /* For each bit pattern b of peek_bits bits, prefix_len[b] is the length
  * of the Huffman code starting with a prefix of b (upper bits), or 0
  * if all codes of prefix b have more than peek_bits bits. It is not
@@ -169,7 +170,7 @@ local void build_tree()
      * The shortest code is all ones, so we start at the end of the table.
      */
     peek_bits = MIN(max_len, MAX_PEEK);
-    prefixp = &prefix_len[1<<peek_bits];
+    prefixp = &prefix_len[1 << peek_bits];
     for (len = 1; len <= peek_bits; len++) {
 	int prefixes = leaves[len] << (peek_bits-len); /* may be 0 */
 	while (prefixes--) *--prefixp = (uch)len;
