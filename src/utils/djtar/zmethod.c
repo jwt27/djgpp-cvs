@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* zmethod -- detect compressed tar files for on-the-fly decompression.
  *
@@ -32,11 +33,11 @@
 
 		/* global buffers */
 
-uch inbuf[INBUFSIZ + INBUF_EXTRA];
-uch outbuf[OUTBUFSIZ+OUTBUF_EXTRA];
+char inbuf[INBUFSIZ + INBUF_EXTRA];
+char outbuf[OUTBUFSIZ + OUTBUF_EXTRA];
 ush d_buf[DIST_BUFSIZE];
-uch window[2L*WSIZE];
-ush tab_prefix[1L<<BITS];
+uch window[2L * WSIZE];
+ush tab_prefix[1L << BITS];
 
 
 		/* local variables */

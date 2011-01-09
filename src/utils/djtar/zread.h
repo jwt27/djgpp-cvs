@@ -63,13 +63,13 @@ extern FILE *log_out;     /* the stream to output messages */
 #define DIST_BUFSIZE 0x8000  /* buffer for distances, see trees.c */
 #endif
 
-extern uch inbuf[];
-extern uch outbuf[];         /* output buffer */
+extern char inbuf[];
+extern char outbuf[];        /* output buffer */
 extern ush d_buf[];          /* buffer for distances, see trees.c */
 extern uch window[];         /* Sliding window and suffix table (unlzw) */
 #define tab_suffix window
 #define tab_prefix prev      /* hash link (see deflate.c) */
-#define head (prev+WSIZE)    /* hash head (see deflate.c) */
+#define head (prev + WSIZE)  /* hash head (see deflate.c) */
 extern ush tab_prefix[];     /* prefix code (see unlzw.c) */
 
 extern unsigned insize;      /* valid bytes in inbuf */
@@ -131,7 +131,7 @@ extern int z_switch;
 #define get_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(0))
 #define try_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(1))
 
-#define put_ubyte(c,f) {window[outcnt++]=(uch)(c); if (outcnt==WSIZE)\
+#define put_ubyte(c,f) {window[outcnt++] = (uch)(c); if (outcnt == WSIZE)\
    flush_window(f);}
 
 /* Macros for getting two-byte and four-byte header values */
