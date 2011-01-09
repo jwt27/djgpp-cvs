@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -76,7 +77,7 @@ hash(unsigned char *cp)
 static void
 store_entry(char *from, char *to)
 {
-  unsigned long h = hash(from);
+  unsigned long h = hash((unsigned char *)from);
   CE *ce = (CE *)xmalloc(sizeof(CE));
   ce->from = xstrdup(from);
   ce->to = xstrdup(to);
@@ -88,7 +89,7 @@ static char *
 get_entry(char *from)
 {
   CE *ce;
-  for (ce = htab[hash(from)]; ce; ce=ce->next)
+  for (ce = htab[hash((unsigned char *)from)]; ce; ce=ce->next)
   {
     if (strcmp(ce->from, from) == 0)
       return ce->to;
@@ -291,7 +292,7 @@ guess_file_type(char *buf, register size_t buflen)
 {
   int crlf_seen = 0;
   /* Use unsigned char, so this will work with foreign characters.  */
-  register unsigned char *bp = buf;
+  register unsigned char *bp = (unsigned char *)buf;
 
   while (buflen--)
     {
