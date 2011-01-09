@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* unlzh.c -- decompress files in SCO compress -H (LZH) format.
  * The code in this file is directly derived from the public domain 'ar002'
@@ -7,7 +8,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unlzh.c,v 1.1 1995/11/17 01:01:20 dj Exp $";
+static char rcsid[] = "$Id: unlzh.c,v 1.2 2011/01/09 14:20:03 juan.guerrero Exp $";
 #endif
 
 #include "tailor.h"
@@ -83,7 +84,7 @@ local void make_table   (int nchar, uch bitlen[], int tablebits, ush table[]);
 #endif
 
 /* local uch c_len[NC]; */
-#define c_len outbuf
+#define c_len ((uch *)outbuf)
 #if NC > OUTBUFSIZ
     error cannot overlay c_len and outbuf
 #endif
