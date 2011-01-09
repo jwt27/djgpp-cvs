@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* unlzw.c -- decompress files in LZW format.
@@ -12,7 +13,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unlzw.c,v 1.1 1996/01/11 03:55:36 dj Exp $";
+static char rcsid[] = "$Id: unlzw.c,v 1.2 2011/01/09 14:27:59 juan.guerrero Exp $";
 #endif
 
 #include <sys/types.h>
@@ -151,12 +152,12 @@ union	bytes {
 };
 
 #if BYTEORDER == 4321 && NOALLIGN == 1
-#  define input(b,o,c,n,m){ \
+#  define input(b, o, c, n, m){ \
      (c) = (*(long *)(&(b)[(o)>>3])>>((o)&0x7))&(m); \
      (o) += (n); \
    }
 #else
-#  define input(b,o,c,n,m){ \
+#  define input(b, o, c, n, m){ \
      REG1 char_type *p = &(b)[(o)>>3]; \
      (c) = ((((long)(p[0]))|((long)(p[1])<<8)| \
      ((long)(p[2])<<16))>>((o)&0x7))&(m); \
@@ -226,12 +227,12 @@ int unlzw(void *in)
 	return ERROR;
     }
     rsize = insize;
-    maxcode = MAXCODE(n_bits = INIT_BITS)-1;
-    bitmask = (1<<n_bits)-1;
+    maxcode = MAXCODE(n_bits = INIT_BITS) - 1;
+    bitmask = (1 << n_bits) -1;
     oldcode = -1;
     finchar = 0;
     outpos = 0;
-    posbits = inptr<<3;
+    posbits = inptr << 3;
 
     free_ent = ((block_mode) ? FIRST : 256);
     
@@ -249,13 +250,13 @@ int unlzw(void *in)
 	e = insize-(o = (posbits>>3));
 	
 	for (i = 0 ; i < e ; ++i) {
-	    inbuf[i] = inbuf[i+o];
+	    inbuf[i] = inbuf[i + o];
 	}
 	insize = e;
 	posbits = 0;
 	
 	if (insize < INBUF_EXTRA) {
-	    if ((rsize = oread_read(in, (char*)inbuf+insize)) == EOF) {
+	    if ((rsize = oread_read(in, inbuf + insize)) == EOF) {
 		read_error();
 	    }
 	    insize += rsize;
@@ -266,29 +267,29 @@ int unlzw(void *in)
 	while (inbits > posbits) {
 	    if (free_ent > maxcode) {
 		posbits = ((posbits-1) +
-			   ((n_bits<<3)-(posbits-1+(n_bits<<3))%(n_bits<<3)));
+			   ((n_bits<<3) - (posbits - 1 + (n_bits<<3))%(n_bits<<3)));
 		++n_bits;
 		if (n_bits == maxbits) {
 		    maxcode = maxmaxcode;
 		} else {
-		    maxcode = MAXCODE(n_bits)-1;
+		    maxcode = MAXCODE(n_bits) - 1;
 		}
-		bitmask = (1<<n_bits)-1;
+		bitmask = (1<<n_bits) - 1;
 		goto resetbuf;
 	    }
-	    input(inbuf,posbits,code,n_bits,bitmask);
+	    input((uch *)inbuf, posbits, code, n_bits, bitmask);
 	    Tracev((stderr, "%d ", code));
 
 	    if (oldcode == -1) {
 		if (code >= 256) error("corrupt input.");
-		outbuf[outpos++] = (char_type)(finchar = (int)(oldcode=code));
+		outbuf[outpos++] = (char_type)(finchar = (int)(oldcode = code));
 		continue;
 	    }
 	    if (code == CLEAR && block_mode) {
 		clear_tab_prefixof();
 		free_ent = FIRST - 1;
 		posbits = ((posbits-1) +
-			   ((n_bits<<3)-(posbits-1+(n_bits<<3))%(n_bits<<3)));
+			   ((n_bits<<3) - (posbits - 1 + (n_bits<<3))%(n_bits<<3)));
 		maxcode = MAXCODE(n_bits = INIT_BITS)-1;
 		bitmask = (1<<n_bits)-1;
 		goto resetbuf;
@@ -311,7 +312,7 @@ int unlzw(void *in)
 			    posbits, p[-1],p[0],p[1],p[2],p[3]);
 #endif
 		    if (!test && outpos > 0) {
-			tarread((char*)outbuf, outpos);
+			tarread(outbuf, outpos);
 		    }
 		    error("corrupt input. Use zcat to recover some data.");
 		}
@@ -335,12 +336,12 @@ int unlzw(void *in)
 			if (ii > OUTBUFSIZ-outpos) ii = OUTBUFSIZ-outpos;
 
 			if (ii > 0) {
-			    memcpy(outbuf+outpos, stackp, ii);
+			    memcpy(outbuf + outpos, stackp, ii);
 			    outpos += ii;
 			}
 			if (outpos >= OUTBUFSIZ) {
 			    if (!test) {
-				if (tarread((char*)outbuf, outpos) == EOF)
+				if (tarread(outbuf, outpos) == EOF)
 				    return OK;
 			    }
 			    outpos = 0;
@@ -348,7 +349,7 @@ int unlzw(void *in)
 			stackp+= ii;
 		    } while ((ii = (de_stack-stackp)) > 0);
 		} else {
-		    memcpy(outbuf+outpos, stackp, ii);
+		    memcpy(outbuf + outpos, stackp, ii);
 		    outpos += ii;
 		}
 	    }
@@ -357,14 +358,14 @@ int unlzw(void *in)
 
 		tab_prefixof(code) = (unsigned short)oldcode;
 		tab_suffixof(code) = (char_type)finchar;
-		free_ent = code+1;
+		free_ent = code + 1;
 	    } 
 	    oldcode = incode;	/* Remember previous code.	*/
 	}
     } while (rsize != 0);
     
     if (!test && outpos > 0) {
-	tarread((char*)outbuf, outpos);
+	tarread(outbuf, outpos);
     }
     return OK;
 }
