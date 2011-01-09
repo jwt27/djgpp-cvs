@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* unzip.c -- decompress files in gzip or pkzip format.
@@ -20,7 +21,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unzip.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
+static char rcsid[] = "$Id: unzip.c,v 1.3 2011/01/09 14:20:01 juan.guerrero Exp $";
 #endif
 
 #include "tailor.h"
@@ -56,7 +57,7 @@ int ext_header = 0; /* set if extended local header */
  */
 int check_zipfile(void)
 {
-    uch *h = inbuf + inptr; /* first local header */
+    uch *h = (uch *)inbuf + inptr; /* first local header */
 
     /* Check validity of local header, and skip name and extra fields */
     inptr += LOCHDR + SH(h + LOCFIL) + SH(h + LOCEXT);
@@ -167,12 +168,12 @@ int unzip(void *in)
 	for (n = 0; n < EXTHDR; n++) {
 	    buf[n] = (uch)get_byte(); /* may cause an error if EOF */
 	}
-	orig_crc = LG(buf+4);
-	orig_len = LG(buf+12);
+	orig_crc = LG(buf + 4);
+	orig_len = LG(buf + 12);
     }
 
     /* Validate decompression */
-    if (orig_crc != updcrc(outbuf, 0)) {
+    if (orig_crc != updcrc((uch *)outbuf, 0)) {
 	error("invalid compressed data--crc error");
     }
     if (orig_len != (ulg)bytes_out) {
