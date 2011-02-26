@@ -103,7 +103,7 @@ DoNameChanges(char *fname)
   struct skip_dir_list * new_entry; 
   FILE *f = fopen(fname, "r");
   char from[PATH_MAX], to[PATH_MAX];
-  char line[PATH_MAX*2 + 10];
+  char line[PATH_MAX * 2 + 10];
   if (f == 0)
   {
     perror(fname);
@@ -114,16 +114,19 @@ DoNameChanges(char *fname)
     fgets(line, sizeof(line), f);
     if (feof(f))
       break;
-    to[0] = 0;
+    from[0] = to[0] = 0;
     sscanf(line, "%s %s", from, to);
-    if (to[0])
-      store_entry(from, to);
-    else
+    if (from[0])
     {
-      new_entry = xmalloc(sizeof(struct skip_dir_list));
-      new_entry->skip_dir = xstrdup(from);
-      new_entry->next = skip_dirs;
-      skip_dirs = new_entry;
+      if (to[0])
+        store_entry(from, to);
+      else
+      {
+        new_entry = xmalloc(sizeof(struct skip_dir_list));
+        new_entry->skip_dir = xstrdup(from);
+        new_entry->next = skip_dirs;
+        skip_dirs = new_entry;
+      }
     }
   }
   fclose(f);

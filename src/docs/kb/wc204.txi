@@ -1195,3 +1195,8 @@ If the pointer that shall point to the buffer that shall contain the resolved
 path is a @code{NULL} pointer, then @code{realpath} will call @code{malloc} to allocate
 a buffer of @code{PATH_MAX} bytes to store the resolved path name and return this
 pointer to the caller.
+
+@pindex djtar@r{, and empty lines in the file to change filenames}
+@code{djtar} now ignores empty lines in filename change files instead
+of skipping the extraction of the file named in the line before the
+empty line.
