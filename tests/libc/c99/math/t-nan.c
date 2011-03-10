@@ -15,6 +15,9 @@
 #include <float.h>
 #include <libc/ieee.h>
 
+#include "fp-union.h"
+
+
 void print_help_and_exit(char *name)
 {
   fprintf(stderr, "%s: Run like this: '%s [new fault set]'\n"
@@ -28,9 +31,10 @@ void print_help_and_exit(char *name)
 int
 main(int argc, char *argv[])
 {
-  float f;
-  double d;
-  long double ld;
+  test_float_union_t fu;
+  test_double_union_t du;
+  test_long_double_union_t ldu;
+
 
   if( 2 < argc || ( 2 == argc && !strncmp("-h", argv[1], 2) ) )
   {
@@ -56,8 +60,8 @@ main(int argc, char *argv[])
     printf("FPU control word set to: 0x%08x\n", _control87(0, 0));
   }
     
-  f = NAN;
-  if( (*(float_t *)(&f)).exponent == 0xff && (*(float_t *)(&f)).mantissa != 0 )
+  fu.f = NAN;
+  if (fu.ft.exponent == 0xff && fu.ft.mantissa != 0)
   {
     puts("float = NAN: Ok.");
   }
@@ -66,10 +70,9 @@ main(int argc, char *argv[])
     puts("float = NAN: Fail.");
   }
 
-  d = NAN;
-  if( (*(double_t *)(&d)).exponent == 0x7ff 
-   && ( (*(double_t *)(&d)).mantissah != 0
-     || (*(double_t *)(&d)).mantissal != 0 ) )
+  du.d = NAN;
+  if (du.dt.exponent == 0x7ff
+   && (du.dt.mantissah != 0 || du.dt.mantissal != 0))
   {
     puts("double = NAN: Ok.");
   }
@@ -78,10 +81,9 @@ main(int argc, char *argv[])
     puts("double = NAN: Fail.");
   }
 
-  ld = NAN;
-  if( (*(long_double_t *)(&ld)).exponent == 0x7fff 
-   && ( (*(long_double_t *)(&ld)).mantissah != 0
-     || (*(long_double_t *)(&ld)).mantissal != 0 ) )
+  ldu.ld = NAN;
+  if (ldu.ldt.exponent == 0x7fff 
+   && (ldu.ldt.mantissah != 0 || ldu.ldt.mantissal != 0))
   {
     puts("long double = NAN: Ok.");
   }

@@ -13,6 +13,9 @@
 #include <stdlib.h>
 #include <libc/ieee.h>
 
+#include "fp-union.h"
+
+
 typedef struct { 
   float_t number; 	/* Number to test. */
   int class; 		/* Which class. */
@@ -147,8 +150,10 @@ main(void)
   puts("Float tests:");
   for(i = 0; i < n_tests_float; i++)
   {
-    result = fpclassify(*(const float *)(&(tests_float[i].number)));
-    printf("\t%G -> 0x%x: ", *(const float *)(&(tests_float[i].number)), result);
+    test_float_union_t fu;
+    fu.ft = tests_float[i].number;
+    result = fpclassify(fu.f);
+    printf("\t%G -> 0x%x: ", fu.f, result);
     if( result == tests_float[i].class )
     {
       puts("Ok.");
@@ -162,8 +167,10 @@ main(void)
   puts("Double tests:");
   for(i = 0; i < n_tests_double; i++)
   {
-    result = fpclassify(*(const double *)(&(tests_double[i].number)));
-    printf("\t%G -> 0x%x: ", *(const double *)(&(tests_double[i].number)), result);
+    test_double_union_t du;
+    du.dt = tests_double[i].number;
+    result = fpclassify(du.d);
+    printf("\t%G -> 0x%x: ", du.d, result);
     if( result == tests_double[i].class )
     {
       puts("Ok.");
@@ -177,8 +184,10 @@ main(void)
   puts("Long double tests:");
   for(i = 0; i < n_tests_long_double; i++)
   {
-    result = fpclassify(*(const long double *)(&(tests_long_double[i].number)));
-    printf("\t%LG -> 0x%x: ", *(const long double *)(&(tests_long_double[i].number)), result);
+    test_long_double_union_t ldu;
+    ldu.ldt = tests_long_double[i].number;
+    result = fpclassify(ldu.ld);
+    printf("\t%LG -> 0x%x: ", ldu.ld, result);
     if( result == tests_long_double[i].class )
     {
       puts("Ok.");
