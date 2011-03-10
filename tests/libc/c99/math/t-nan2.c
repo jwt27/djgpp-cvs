@@ -11,6 +11,9 @@
 #include <math.h>
 #include <libc/ieee.h>
 
+#include "fp-union.h"
+
+
 typedef struct {
   int valid;
 
@@ -260,11 +263,8 @@ int
 main (void)
 {
   int           ok = 1;
-  double        d_res;
   double_t      dt_res;
-  float         f_res;
   float_t       ft_res;
-  long double   ld_res;
   long_double_t ldt_res;
   int           i;
   int           testcase = 0;
@@ -273,10 +273,13 @@ main (void)
 
   for (i = 0; testcases[i].valid; testcase++, i++)
     {
+      test_float_union_t fu;
+      test_double_union_t du;
+      test_long_double_union_t ldu;
       printf("Testcase %d: nan(): ", testcase);
 
-      d_res = nan(testcases[i].input);
-      dt_res = *(double_t *) &d_res;
+      du.d = nan(testcases[i].input);
+      dt_res = du.dt;
 
       if (!double_t_equal(&testcases[i].dt_expected,
 			  &dt_res,
@@ -297,8 +300,8 @@ main (void)
 
       printf("Testcase %d: nanf(): ", testcase);
 
-      f_res = nanf(testcases[i].input);
-      ft_res = *(float_t *) &f_res;
+      fu.f = nanf(testcases[i].input);
+      ft_res = fu.ft;
 
       if (!float_t_equal(&testcases[i].ft_expected,
 			 &ft_res,
@@ -319,8 +322,8 @@ main (void)
 
       printf("Testcase %d: nanl(): ", testcase);
 
-      ld_res = nanl(testcases[i].input);
-      ldt_res = *(long_double_t *) &ld_res;
+      ldu.ld = nanl(testcases[i].input);
+      ldt_res = ldu.ldt;
 
       if (!long_double_t_equal(&testcases[i].ldt_expected,
 			       &ldt_res,
