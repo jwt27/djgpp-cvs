@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 .data
 NaN:
@@ -13,8 +14,8 @@ _ldexp:
 
 	subl	$8, %esp
 	movl	16(%esp), %eax		/* Get high word of x */
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	abarg			/* x = INF or NaN */
 
 argok:
@@ -27,8 +28,8 @@ argok:
 	movl	4(%esp), %eax
 	testl	$0x7FF00000, %eax	/* Underflow test */
 	jz	VerySmall
-	andl	$0x7FF00000,%eax	/* Infinity test */
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax	/* Infinity test */
+	cmpl	$0x7FF00000, %eax
 	je	RangeError
 
 CleanUp:

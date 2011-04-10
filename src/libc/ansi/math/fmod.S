@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 .data
 NaN:
@@ -8,13 +9,13 @@ NaN:
 .globl	_fmod
 _fmod:
 	movl	8(%esp), %edx
-	andl	$0x7FF00000,%edx
-	cmpl	$0x7FF00000,%edx
+	andl	$0x7FF00000, %edx
+	cmpl	$0x7FF00000, %edx
 	je	badarg			/* x is inf or NaN */
 
 	movl	16(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	aby			/* y is inf or NaN */
 
 argok:
@@ -45,8 +46,8 @@ aby:
 	jnz	badarg
 
 	movl	8(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	jne	argok			/* y is finite */
 
 badarg:					/* arg is NaN */

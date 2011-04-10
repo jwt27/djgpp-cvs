@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	0xFFC00000
@@ -15,16 +16,16 @@ _log1p:					/* ln(1.+x) */
 	movl	8(%esp), %eax
 	movl	%eax, %edx
 
-	cmpl	$0xBFF00000,%eax	/* x <= -1 ? */
+	cmpl	$0xBFF00000, %eax	/* x <= -1 ? */
 	jae	nonpos
 
-	andl	$0x7FF00000,%eax	
-	cmpl	$0x7FF00000,%eax	
+	andl	$0x7FF00000, %eax	
+	cmpl	$0x7FF00000, %eax	
 	je	abarg			/* x == +inf or +NaN */
 
 	movl	%edx, %eax
-	andl	$0x7FFFFFFF,%eax
-	cmpl	$0x3FD2BEC3,%eax	/* 1 - sqrt(0.5) */
+	andl	$0x7FFFFFFF, %eax
+	cmpl	$0x3FD2BEC3, %eax	/* 1 - sqrt(0.5) */
 	fldln2				/* ln(2) */
 	jbe	1f
 	fld1
@@ -37,7 +38,7 @@ _log1p:					/* ln(1.+x) */
 	ret
 
 nonpos:
-	cmpl	$0xBFF00000,%eax	
+	cmpl	$0xBFF00000, %eax	
 	ja	badarg			/* x == -1 ? */
 	movl	4(%esp), %eax
 	testl %eax, %eax

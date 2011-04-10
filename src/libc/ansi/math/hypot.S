@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	0xFFC00000
@@ -9,14 +10,14 @@ DBL_MAX:
 _hypot:
 	movl	8(%esp), %eax
 	xorb	%cl, %cl
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FE00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FE00000, %eax
 	jae	abx			/* x = huge, INF or NaN */
 
 testy:
 	movl	16(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FE00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FE00000, %eax
 	jae	aby			/* y = huge, INF or NaN */
 
 argok:
@@ -41,8 +42,8 @@ abx:					/* x = huge, INF, or NaN */
 aby:
 	orb	$1, %cl
 	movl	16(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FE00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FE00000, %eax
 	jbe	hugey			/* y = huge but not INF */
 	movl	16(%esp), %eax
 	testl	$0x000FFFFF, %eax

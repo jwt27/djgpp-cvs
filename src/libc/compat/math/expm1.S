@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 pinf:
 	.long	0x7F800000
@@ -20,7 +21,7 @@ argok:					/* N.B. */
 	fld	%st			/* xs	    xs			   */
 	frndint				/* nint(xs) xs			   */
 	fxch	%st(1)			/* xs	    nint		   */
-	fsub	%st(1),%st		/* fract    nint		   */
+	fsub	%st(1), %st		/* fract    nint		   */
 	f2xm1				/* exps-1   nint		   */
 	fxch	%st(1)			/* nint	    exps-1		   */
 	fld1				/* 1	    nint    exps-1	   */

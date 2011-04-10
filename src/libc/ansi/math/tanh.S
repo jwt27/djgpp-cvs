@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	0xFFC00000
@@ -36,8 +37,8 @@ _tanh:
 	movl	8(%esp), %eax
 	movl	%eax, %edx		/* Save for later use. */
 
-	andl	$0x7FF00000,%eax
-	cmpl	$0x40400000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x40400000, %eax
 	jae	bigarg
 
 argok:
@@ -49,7 +50,7 @@ argok:
 	fld	%st			/* xs	    xs			   */
 	frndint				/* nint(xs) xs			   */
 	fxch	%st(1)			/* xs	    nint		   */
-	fsub	%st(1),%st		/* fract    nint		   */
+	fsub	%st(1), %st		/* fract    nint		   */
 	f2xm1				/* exps-1   nint		   */
 	fxch	%st(1)			/* nint	    exps-1		   */
 	fld1				/* 1	    nint    exps-1	   */
@@ -57,7 +58,7 @@ argok:
 	fld1				/* 1	    scale   nint    exps-1 */
 	/* Should be fsubp %st, %st(1) (gas bug) */
 	.byte	0xDE, 0xE9
-//	fsubrp	%st,%st(1)		/* scale-1  nint    exps-1	   */
+//	fsubrp	%st, %st(1)		/* scale-1  nint    exps-1	   */
 	fxch	%st(2)			/* exps-1   nint    scale-1	   */
 	fscale				/* expm	    nint    scale-1	   */
 	fstp	%st(1)			/* exp	    scale-1		   */

@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 	.data
@@ -15,7 +16,7 @@ frac:					/* Calculate st(0) - nint(st(0)) */
 	fld	%st(0)			/* x		x	*/
 	frndint				/* nint(x)	x	*/
 	fxch	%st(1)			/* x		nint(x) */
-	fsub	%st(1),%st
+	fsub	%st(1), %st
 	ret				/* fract(x)	nint(x) */
 
 Lpow2:					/* Find 2^(fract(st(0))) * 2^st(1) */
@@ -36,8 +37,8 @@ _pow:
 	je	xverysmall
 
 	movl	28(%esp), %eax		/* Now test y. */
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	aby			/* y is inf or NaN */
 
 argok:
@@ -114,8 +115,8 @@ ns:
 	jmp	infresult
 
 abx:
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	badx			/* x = inf or NaN */
 
 	testl	%eax, %eax		/* x is -finite -- must test for -0 */
@@ -127,8 +128,8 @@ abx:
 
 xltz:
 	movl	28(%esp), %eax		/* Test y. */
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	aby			/* y is inf or NaN */
 
 	fldl	24(%esp)		/* x < 0 */
@@ -152,7 +153,7 @@ yisint:
 	fxch	%st(1)
 	fyl2x
 	call	Lpow2
-	andl	$1,(%esp)
+	andl	$1, (%esp)
 	jz	yeven
 	fchs
 yeven:

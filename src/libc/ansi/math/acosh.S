@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	0xFFC00000
@@ -36,13 +37,13 @@ argok:
 	fxch	%st(1)			/* x	 x-1 ln2     */
 	fld1				/* 1	 x   x-1 ln2 */
 	faddp				/* x+1	 x-1 ln2     */
-	fmul	%st(1),%st		/* x*x-1 x-1 ln2     */
+	fmul	%st(1), %st		/* x*x-1 x-1 ln2     */
 	fsqrt				/* sqrt	 x-1 ln2     */
 	faddp				/* arg	 ln2	     */
 	fsts	(%esp)
 	movl	(%esp), %eax
-	andl	$0x7FFFFFFF,%eax
-	cmpl	$0x3E95F61A,%eax	/* 1 - sqrt(0.5) */
+	andl	$0x7FFFFFFF, %eax
+	cmpl	$0x3E95F61A, %eax	/* 1 - sqrt(0.5) */
 	jbe	1f
 	fld1
 	faddp
@@ -64,7 +65,7 @@ abarg:
 	jz	argok
 
 badarg:
-	movl	$1,_errno
+	movl	$1, _errno
 	flds	NaN
 	addl	$4, %esp
 	ret

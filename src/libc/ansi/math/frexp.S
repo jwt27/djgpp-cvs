@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	0xFFC00000
@@ -30,8 +31,8 @@ _frexp:
 	ret
 
 inftest:
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	badarg			/* +/- inf or NaN */
 
 argok:

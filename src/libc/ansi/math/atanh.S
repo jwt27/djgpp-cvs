@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 LC0:
 	.float	0f0.5
@@ -47,8 +48,8 @@ argok:
 	/* Should be fdivp %st, %st(1) (gas bug) */
 	.byte	0xDE, 0xF9		/* quo ln2     */
 	fadd	%st, %st		/* arg	       */
-	andl	$0x7FFFFFFF,%eax
-	cmpl	$0x3FC5F619,%eax
+	andl	$0x7FFFFFFF, %eax
+	cmpl	$0x3FC5F619, %eax
 	jbe	1f
 	fld1
 	faddp

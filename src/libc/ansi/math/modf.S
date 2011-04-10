@@ -1,5 +1,6 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
-.data
+	.data
 NaN:
 	.long	0xFFC00000
 
@@ -7,8 +8,8 @@ NaN:
 	.globl	_modf			/* fract = fmod(x, &integer) */
 _modf:
 	movl	8(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	abarg			/* x is inf or NaN */
 
 	fldl	4(%esp)			/* x                 */
@@ -24,7 +25,7 @@ loop:
 	fxch 	%st(1)			/* x        fract(x) */
 	fsub	%st(1), %st		/* int(x)   fract(x) */
 
-	movl	12(%esp),%eax		/* Point to second arg */
+	movl	12(%esp), %eax		/* Point to second arg */
 	fstpl	(%eax)			/* Store int(x) */
 	ret				/* fract(x) */
 
@@ -38,14 +39,14 @@ abarg:					/* arg is inf or NaN */
 	jnz	badarg
 
 infarg:
-	movl	12(%esp),%eax		/* Point to second arg */
+	movl	12(%esp), %eax		/* Point to second arg */
 	fldl	4(%esp)			/* Load x */
 	fstpl	(%eax)			/* Store int(x) */
 	flds	NaN
 	ret
 
 badarg:
-	movl	12(%esp),%eax		/* Point to second arg */
+	movl	12(%esp), %eax		/* Point to second arg */
 	flds	NaN
 	fstl	(%eax)			/* Store int(x) */
 	ret

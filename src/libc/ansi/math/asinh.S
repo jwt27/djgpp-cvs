@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
 	.long	  0xFFC00000
@@ -26,8 +27,8 @@ _asinh:
 
 	movl	8(%esp), %eax
 	movl	%eax, %ecx
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	abarg
 
 
@@ -35,9 +36,9 @@ _asinh:
 	fldl	4(%esp)			/* x	 ln2		  */
 	fabs				/* |x|	 ln2		  */
 	fld	%st			/* x	 x    ln2	  */
-	fmul	%st,%st			/* x*x	      x	  ln2	  */
+	fmul	%st, %st		/* x*x	      x	  ln2	  */
 	fld1				/* 1	 x*x  x	  ln2	  */
-	fadd	%st(1),%st		/* 1+x*x x*x  x	  ln2	  */
+	fadd	%st(1), %st		/* 1+x*x x*x  x	  ln2	  */
 	fsqrt				/* sqrt	 x*x  x	  ln2	  */
 	fld1				/* 1	 sqrt x*x x   ln2 */
 	faddp				/* den	 x*x  x	  ln2	  */
@@ -45,8 +46,8 @@ _asinh:
 	.byte	0xDE, 0xF9		/* quo	 x    ln2	  */
 	faddp				/* arg	 ln2		  */
 
-	andl	$0x7FFFFFFF,%eax
-	cmpl	$0x3FD6A09E,%eax
+	andl	$0x7FFFFFFF, %eax
+	cmpl	$0x3FD6A09E, %eax
 	jbe	1f
 	fld1
 	faddp

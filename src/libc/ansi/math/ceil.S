@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 .data
 NaN:
@@ -9,16 +10,16 @@ _ceil:
 	subl	$4, %esp
 
 	movl	12(%esp), %eax
-	andl	$0x7FF00000,%eax
-	cmpl	$0x7FF00000,%eax
+	andl	$0x7FF00000, %eax
+	cmpl	$0x7FF00000, %eax
 	je	abarg
 
 argok:
 	fnstcw	(%esp)
 	fwait
 	movw	(%esp),%ax
-	andw	$0xf3ff,%ax
-	orw	$0x0800,%ax
+	andw	$0xf3ff, %ax
+	orw	$0x0800, %ax
 	movw	%ax, 2(%esp)
 	fldcw	2(%esp)
 
