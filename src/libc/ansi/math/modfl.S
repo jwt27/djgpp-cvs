@@ -1,6 +1,7 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 	.text
-	.globl ___modfl
+	.globl	___modfl
 ___modfl:
 	pushl %ebp
 	movl %esp,%ebp
