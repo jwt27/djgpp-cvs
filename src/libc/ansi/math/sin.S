@@ -1,6 +1,6 @@
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
-	.long	  0xFFC00000
+	.long	0xFFC00000
 
 	.globl	_sin
 _sin:
@@ -22,4 +22,4 @@ bigarg:
 	ret
 finite:
 	fldz				/* All precision lost; set sin = 0. */
-	ret	
+	ret

@@ -41,7 +41,7 @@ nonpos:
 	cmpl	$0xBFF00000, %eax	
 	ja	badarg			/* x == -1 ? */
 	movl	4(%esp), %eax
-	testl %eax, %eax
+	testl	%eax, %eax
 	jz	negone
 
 badarg:

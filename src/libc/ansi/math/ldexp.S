@@ -1,11 +1,11 @@
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
-.data
+	.data
 NaN:
 	.long	0xFFC00000
 
 	.text
-	.globl _ldexp
+	.globl	_ldexp
 _ldexp:
 
 	/* double ldexp(double x, int expon);
@@ -61,4 +61,3 @@ VerySmall:				/* exp = max negative */
 	testl	%eax, %eax
 	jnz	RangeError
 	jmp	CleanUp
-

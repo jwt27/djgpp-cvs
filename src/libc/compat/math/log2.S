@@ -48,4 +48,3 @@ negarg:
 	movl	$1, _errno
 	flds	NaN
 	ret
-	

@@ -1,7 +1,7 @@
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 	.text
-	.globl _powi
+	.globl	_powi
 _powi:
 	/* double powi(double x, int iy) = x^iy */
 
@@ -20,7 +20,7 @@ Endif1:					/* } */
 	fxch	%st(1)
 
 	jmp	Test
-	.balign 16,,7
+	.balign	16,,7
 Loop:
 	testb	$1, %al			/*	  if (iy & 1) result *= x2p; */
 	je	Endif2

@@ -69,4 +69,3 @@ badarg:
 	flds	NaN
 	addl	$4, %esp
 	ret
-

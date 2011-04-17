@@ -23,4 +23,4 @@ bigarg:
 	ret
 finite:
 	fld1				/* cos = 1. */
-	ret	
+	ret

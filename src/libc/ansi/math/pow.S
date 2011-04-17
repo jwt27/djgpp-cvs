@@ -27,7 +27,7 @@ Lpow2:					/* Find 2^(fract(st(0))) * 2^st(1) */
 	fstp	%st(1)
 	ret
 
-	.globl _pow
+	.globl	_pow
 _pow:
 	subl	$12, %esp
 	movl	20(%esp), %eax

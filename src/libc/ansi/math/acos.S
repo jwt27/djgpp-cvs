@@ -3,7 +3,7 @@
 NaN:
 	.long	0xFFC00000
 
-	.globl _acos
+	.globl	_acos
 _acos:
 /*	The commonly-used formula
 
