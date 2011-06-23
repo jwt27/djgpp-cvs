@@ -1332,7 +1332,7 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
       jnz   .Ldoes_not_has_write_right						\n\
       movb  $1,%1								\n\
 .Ldoes_not_has_write_right: "
-     : "=g" (read_allowed), "=g" (write_allowed)
+     : "=qm" (read_allowed), "=qm" (write_allowed)
      : "g" (sel)
      );
   if (for_write)
