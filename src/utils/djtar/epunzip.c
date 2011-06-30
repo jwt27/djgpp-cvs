@@ -54,30 +54,30 @@ epunzip_read(char *zipfilename)
    * for a one-segment ZIP, but fail on other headers. */
   while(1)
     {
-      int buffer = 0;
+      char buffer[4];
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
 
-      if(*(__dj_short_a *)&buffer != *(const short *)(const void *)"PK")
+      if(*(__dj_short_a *)buffer != ('K' << 8) + 'P')
 	break;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
 
-      if(*(__dj_short_a *)&buffer == *(const short *)(const void *)"\x3\x4")
+      if(*(__dj_short_a *)buffer == ('\004' << 8) + '\003')
 	{
 	  /* local header */
 	  at_local_header = 1;
 	  break;
 	}
-      else if(*(__dj_short_a *)&buffer == *(const short *)(const void *)"\x30\x30")
+      else if(*(__dj_short_a *)buffer == ('0' << 8) + '0')
 	{
 	  /* spanning marker, but only one segment
 	   * => need to find local header. */
 	  continue;
 	}
-      else if(*(__dj_short_a *)&buffer == *(const short *)(const void *)"\x7\x8")
+      else if(*(__dj_short_a *)buffer == ('\010' << 8) + '\007')
 	{
 	  /* spanning marker, multiple segments. */
 	  fprintf(log_out, "%s: spanning is not supported\n", zipfilename);
@@ -89,7 +89,7 @@ epunzip_read(char *zipfilename)
 	  /* unknown header */
 	  fprintf(log_out,
 		  "%s: don't understand header type 0x%02x%02x\n",
-		  zipfilename, ((char *)&buffer)[0], ((char *)&buffer)[1]);
+		  zipfilename, buffer[0], buffer[1]);
 	  dont_understand = 1;
 	  break;
 	}
@@ -100,25 +100,26 @@ epunzip_read(char *zipfilename)
 
   if (at_local_header) while(1)
     {
-      int buffer, ext_header, timedate, crc, size, length, name_length,
+      int ext_header, timedate, crc, size, length, name_length,
 	extra_length, should_be_written, count, real_file = 0;
+      char buffer[4];
       char filename[2048];
 
       if (!at_local_header)
 	{
-	  ((char *)&buffer)[0] = (char)get_byte();
-	  ((char *)&buffer)[1] = (char)get_byte();
+	  buffer[0] = (char)get_byte();
+	  buffer[1] = (char)get_byte();
 
-	  if(*(__dj_short_a *)&buffer != *(const short *)(const void *)"PK")
+	  if(*(__dj_short_a *)buffer != ('K' << 8) + 'P')
 	    {
 	      fprintf(log_out, "%s: invalid zip file structure\n", zipfilename);
 	      break;
 	    }
 
-	  ((char *)&buffer)[0] = (char)get_byte();
-	  ((char *)&buffer)[1] = (char)get_byte();
+	  buffer[0] = (char)get_byte();
+	  buffer[1] = (char)get_byte();
 
-	  if(*(__dj_short_a *)&buffer != *(const short *)(const void *)"\x3\x4")
+	  if(*(__dj_short_a *)buffer != ('\004' << 8) + '\003')
 	    {
 	      /* not a local header - all done */
 	      break;
@@ -133,57 +134,57 @@ epunzip_read(char *zipfilename)
       get_byte();
       get_byte();
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
 
-      if(*(__dj_short_a *)&buffer & CRYFLG)
+      if(*(__dj_short_a *)buffer & CRYFLG)
 	{
 	  fprintf(log_out, "%s has encrypted file(s) - use unzip\n", zipfilename);
 	  break;
 	}
-      ext_header = *(__dj_short_a *)&buffer & EXTFLG ? 1 : 0;
+      ext_header = *(__dj_short_a *)buffer & EXTFLG ? 1 : 0;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
 
-      method = *(__dj_short_a *)&buffer;
+      method = *(__dj_short_a *)buffer;
       if(method != 8 && method != 0)
 	{
 	  fprintf(log_out, "%s has file(s) compressed with unsupported method - use unzip\n", zipfilename);
 	  break;
 	}
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
-      ((char *)&buffer)[2] = (char)get_byte();
-      ((char *)&buffer)[3] = (char)get_byte();
-      timedate = buffer;
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
+      buffer[2] = (char)get_byte();
+      buffer[3] = (char)get_byte();
+      timedate = *(__dj_int_a *)buffer;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
-      ((char *)&buffer)[2] = (char)get_byte();
-      ((char *)&buffer)[3] = (char)get_byte();
-      crc = buffer;
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
+      buffer[2] = (char)get_byte();
+      buffer[3] = (char)get_byte();
+      crc = *(__dj_int_a *)buffer;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
-      ((char *)&buffer)[2] = (char)get_byte();
-      ((char *)&buffer)[3] = (char)get_byte();
-      size = buffer;
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
+      buffer[2] = (char)get_byte();
+      buffer[3] = (char)get_byte();
+      size = *(__dj_int_a *)buffer;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
-      ((char *)&buffer)[2] = (char)get_byte();
-      ((char *)&buffer)[3] = (char)get_byte();
-      length = buffer;
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
+      buffer[2] = (char)get_byte();
+      buffer[3] = (char)get_byte();
+      length = *(__dj_int_a *)buffer;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
-      name_length = *(__dj_short_a *)&buffer;
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
+      name_length = *(__dj_short_a *)buffer;
 
-      ((char *)&buffer)[0] = (char)get_byte();
-      ((char *)&buffer)[1] = (char)get_byte();
-      extra_length = *(__dj_short_a *)&buffer;
+      buffer[0] = (char)get_byte();
+      buffer[1] = (char)get_byte();
+      extra_length = *(__dj_short_a *)buffer;
 
       for(count = 0; count < name_length; count++)
 	{
@@ -277,34 +278,34 @@ epunzip_read(char *zipfilename)
 
 	  if(ext_header)
 	    {
-	      ((char *)&buffer)[0] = (char)get_byte();
-	      ((char *)&buffer)[1] = (char)get_byte();
-	      ((char *)&buffer)[2] = (char)get_byte();
-	      ((char *)&buffer)[3] = (char)get_byte();
-	      if(buffer != *(int *)"PK\x7\x8")
+	      buffer[0] = (char)get_byte();
+	      buffer[1] = (char)get_byte();
+	      buffer[2] = (char)get_byte();
+	      buffer[3] = (char)get_byte();
+	      if(*(__dj_int_a *)buffer != ('\010' << 24) + ('\007' << 16) + ('K' << 8) + 'P')
 		{
 		  fprintf(log_out, "%s: invalid zip file structure\n",
 			  zipfilename);
 		  break;
 		}
 
-	      ((char *)&buffer)[0] = (char)get_byte();
-	      ((char *)&buffer)[1] = (char)get_byte();
-	      ((char *)&buffer)[2] = (char)get_byte();
-	      ((char *)&buffer)[3] = (char)get_byte();
-	      crc = buffer;
+	      buffer[0] = (char)get_byte();
+	      buffer[1] = (char)get_byte();
+	      buffer[2] = (char)get_byte();
+	      buffer[3] = (char)get_byte();
+	      crc = *(__dj_int_a *)buffer;
 
-	      ((char *)&buffer)[0] = (char)get_byte();
-	      ((char *)&buffer)[1] = (char)get_byte();
-	      ((char *)&buffer)[2] = (char)get_byte();
-	      ((char *)&buffer)[3] = (char)get_byte();
-	      size = buffer;
+	      buffer[0] = (char)get_byte();
+	      buffer[1] = (char)get_byte();
+	      buffer[2] = (char)get_byte();
+	      buffer[3] = (char)get_byte();
+	      size = *(__dj_int_a *)buffer;
 
-	      ((char *)&buffer)[0] = (char)get_byte();
-	      ((char *)&buffer)[1] = (char)get_byte();
-	      ((char *)&buffer)[2] = (char)get_byte();
-	      ((char *)&buffer)[3] = (char)get_byte();
-	      length = buffer;
+	      buffer[0] = (char)get_byte();
+	      buffer[1] = (char)get_byte();
+	      buffer[2] = (char)get_byte();
+	      buffer[3] = (char)get_byte();
+	      length = *(__dj_int_a *)buffer;
 	    }
 
 	}
