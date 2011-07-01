@@ -67,6 +67,7 @@ clean : misc.exe makemake.exe
 	-$(MAKE) -C ../zoneinfo/src clean
 	$(MAKE) -f makempty clean
 	./misc.exe rm gpp.opt
+	./misc.exe rm gcc.opt gcc-l.opt
 	./misc.exe rm makemake.exe copyrite.exe misc.exe
 
 config:
