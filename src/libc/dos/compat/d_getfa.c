@@ -35,6 +35,6 @@ unsigned int _dos_getfileattr(const char *filename, unsigned int *p_attr)
     errno = __doserr_to_errno(r.x.ax);
     return r.x.ax;
   }
-  *p_attr = r.x.ax;
+  *p_attr = r.x.cx;
   return 0;
 }
