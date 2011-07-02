@@ -147,11 +147,17 @@ make_proxy_buffer(const char *prog, const char *cmdline, size_t argc,
 {
   const char *ptr, *beg, *end;
   unsigned long argv_ptr;
+#if 0
+  /*  Commented out to avoid unused-but-set-variable warning. */
   unsigned long tbuf_end;
+#endif
   size_t i;
   size_t arg_len;
 
+#if 0
+  /*  Commented out to avoid unused-but-set-variable warning. */
   tbuf_end = tbuf + tb_len;
+#endif
   argv_ptr = tbuf + (argc + 1) * sizeof(short);
   ptr = cmdline;
 

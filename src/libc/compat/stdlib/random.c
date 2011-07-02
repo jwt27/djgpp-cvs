@@ -178,7 +178,7 @@ static  long		*end_ptr		= (long*) &randtbl[ DEG_3 + 1 ];
 int
 srandom(int x)
 {
-  int i, j;
+  int i;
 
   if (rand_type == TYPE_0)
   {
@@ -186,7 +186,6 @@ srandom(int x)
   }
   else
   {
-    j = 1;
     state[ 0 ] = x;
     for (i = 1; i < rand_deg; i++)
     {
