@@ -205,12 +205,21 @@ change(char *fname, const char *problem, int isadir)
   fprintf(log_out, "  %s %s\n  new name : ", problem, fname);
   fflush(log_out);
   new[0] = '\0';
-  if (!gets(new))
+  pos = fgets(new, sizeof(new), stdin);
+  if (!pos)
     Fatal("EOF while reading stdin");
+  for (; *pos; ++pos)
+  {
+    if (*pos == '\n')
+    {
+      *pos = '\0';
+      break;
+    }
+  }
 
-  if ((strcmp(new, "") == 0) && (isadir == 2))
+  if ((new[0] == '\0') && (isadir == 2))
     return 0;
-  if (isadir) isadir=1;
+  if (isadir) isadir = 1;
   ch = (CHANGE *)xmalloc(sizeof(CHANGE));
   ch->next = change_root;
   change_root = ch;

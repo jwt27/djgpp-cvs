@@ -87,9 +87,20 @@ void store_info(char *filename)
 char *pose_question(char *question, char *default_answer)
 {
   static char response[200];
+  char *ptr;
   printf("%s ? [%s] ", question, default_answer);
   fflush(stdout);
-  gets(response);
+  ptr = fgets(response, sizeof(response), stdin);
+  if (!ptr)
+    return 0;
+  for (; *ptr; ++ptr)
+  {
+    if (*ptr == '\n')
+    {
+      *ptr = '\0';
+      break;
+    }
+  }
   if (response[0] == '\0')
     return 0;
   return response;
