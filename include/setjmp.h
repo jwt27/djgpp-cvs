@@ -22,7 +22,7 @@ typedef struct __jmp_buf {
   unsigned char __fpu_state[108]; /* for future use */
 } jmp_buf[1];
 
-void	longjmp(jmp_buf env, int val);
+void	longjmp(jmp_buf env, int val) __attribute__((__noreturn__));
 int	setjmp(jmp_buf env);
 #define setjmp setjmp   /* required by C++ standard */
 
