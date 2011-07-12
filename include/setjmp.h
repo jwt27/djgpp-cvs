@@ -36,7 +36,7 @@ int	setjmp(jmp_buf env);
 typedef jmp_buf sigjmp_buf;
 
 int	sigsetjmp(sigjmp_buf env, int savemask);
-int	siglongjmp(sigjmp_buf env, int val);
+int	siglongjmp(sigjmp_buf env, int val) __attribute__((__noreturn__));
 
 #ifndef _POSIX_SOURCE
 
