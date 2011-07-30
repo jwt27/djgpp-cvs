@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -21,6 +22,7 @@
 #include <libc/file.h>
 #include <libc/local.h>
 #include <libc/ieee.h>
+#include <sys/cdefs.h>
 
 static char decimal_point;
 static char thousands_sep;
@@ -117,7 +119,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char *t;			/* buffer pointer */
   long double _ldouble;		/* double and long double precision arguments
 				   %L.[aAeEfFgG] */
-  unsigned long long _ulonglong=0; /* integer arguments %[diouxX] */
+  unsigned long long _ulonglong = 0; /* integer arguments %[diouxX] */
   int base;			/* base for [diouxX] conversion */
   int dprec;			/* decimal precision in [diouxX] */
   int fieldsz;			/* field size expanded by sign, etc */
@@ -1323,7 +1325,7 @@ __traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_li
   const char *fmt = fmt0;
   int arg_index = 0, prec_index = 0, list_index;
   int ch, flags, n = index_of_arg_to_be_fetched + 1;
-  unsigned long long _ulonglong;  /* discard value retrieved by ARG() */
+  unsigned long long _ulonglong _ATTRIBUTE(__unused__);  /* discard value retrieved by ARG() */
 
 
   for (list_index = 1; list_index < n;)

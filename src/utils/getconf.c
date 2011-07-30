@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 
 #include <unistd.h>
@@ -6,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/cdefs.h>
 
 #define constant_var 0
 #define confstr_var  1
@@ -154,7 +156,7 @@ int main(int argc, char *argv[])
 
     case confstr_var:
     {
-      size_t buf_len, ret;
+      size_t buf_len, ret _ATTRIBUTE(__unused__);
       char *buf;
 
       buf_len = confstr(var->value, 0, 0);

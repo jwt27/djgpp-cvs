@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -20,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/fsext.h>
 #include <sys/xdevices.h>
+#include <sys/cdefs.h>
 
 static const char DEV_ZERO_PATH[] = "/dev/zero";
 static const char DEV_FULL_PATH[] = "/dev/full";
@@ -177,26 +179,26 @@ match_dev_path (const char *filename, const char *dev_path)
 static int
 dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 {
-  int          emul         = 0; /* Emulated call? 1 => yes, 0 = no. */
-  int          fd           = 0;
-  DEV_DATA    *data         = NULL;
-  char        *filename     = NULL;
-  char        *new_filename = NULL;
-  int          open_mode    = 0;
-  int          perm         = 0;
-  mode_t       mode         = 0;
-  void        *buf          = NULL;
-  size_t       buflen       = 0;
-  off_t        offset       = 0;
-  offset_t     lloffset     = 0;
-  uid_t        owner        = 0;
-  gid_t        group        = 0;
-  int          whence       = 0;
-  struct stat *sbuf         = NULL;
-  int          cmd          = 0;
-  int          iparam       = 0;
+  int          emul                            = 0; /* Emulated call? 1 => yes, 0 = no. */
+  int          fd                              = 0;
+  DEV_DATA    *data                            = NULL;
+  char        *filename                        = NULL;
+  char        *new_filename                    = NULL;
+  int          open_mode                       = 0;
+  int          perm     _ATTRIBUTE(__unused__) = 0;
+  mode_t       mode     _ATTRIBUTE(__unused__) = 0;
+  void        *buf                             = NULL;
+  size_t       buflen                          = 0;
+  off_t        offset   _ATTRIBUTE(__unused__) = 0;
+  offset_t     lloffset _ATTRIBUTE(__unused__) = 0;
+  uid_t        owner    _ATTRIBUTE(__unused__) = 0;
+  gid_t        group    _ATTRIBUTE(__unused__) = 0;
+  int          whence   _ATTRIBUTE(__unused__) = 0;
+  struct stat *sbuf                            = NULL;
+  int          cmd                             = 0;
+  int          iparam                          = 0;
 #ifdef DJGPP_SUPPORTS_FIONBIO_NOW
-  int         *piparam      = NULL;
+  int         *piparam                         = NULL;
 #endif /* DJGPP_SUPPORTS_FIONBIO_NOW */
 
   switch(n) {
