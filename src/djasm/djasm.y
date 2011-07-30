@@ -171,7 +171,7 @@ int yylex1(void);
 void emit(void *v, int len);
 void emitb(int b);
 void emitw(int w);
-void emitd(long d);
+void emitd(LONG32 d);
 void emits(Symbol *s, int offset, int rel);
 void modrm(int mod, int reg, int rm);
 void reg(int reg);
@@ -1901,7 +1901,7 @@ Symbol *set_symbol(Symbol *s, int value)
     switch (p->rel)
     {
     case REL_abs32:
-      o = (signed long)(cp[0] | (cp[1] << 8) | (cp[2] << 16) | (cp[3] << 24));
+      o = (LONG32)(cp[0] | (cp[1] << 8) | (cp[2] << 16) | (cp[3] << 24));
       break;
     case REL_abs:
     case REL_16:
@@ -2045,7 +2045,7 @@ void emitw(int w)
   emitb(w>>8);
 }
 
-void emitd(long d)
+void emitd(LONG32 d)
 {
   emitw(d);
   emitw(d>>16);

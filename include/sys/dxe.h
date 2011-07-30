@@ -9,11 +9,24 @@
 #ifndef __dj_include_dxe_h_
 #define __dj_include_dxe_h_
 
+/* the following are needed when cross compiling hostbin exes */
+#ifndef _DJ_DEFINED_NATIVE_TYPES
+#define _DJ_DEFINED_NATIVE_TYPES
+#ifdef  _LP64			/* Note: win64 is LLP64 */
+# define LONG32  int
+# define ULONG32 unsigned int
+#else
+# define LONG32  long
+# define ULONG32 unsigned long
+#endif
+#endif /* _DEFINED_NATIVE_TYPES */
+
+
 typedef struct {
-  long magic;
-  long symbol_offset;
-  long element_size;
-  long nrelocs;
+  LONG32 magic;
+  LONG32 symbol_offset;
+  LONG32 element_size;
+  LONG32 nrelocs;
 } dxe_header;
 
 #define DXE_MAGIC 0x31455844
@@ -80,38 +93,38 @@ void *_dxe_load (char *filename);
 typedef struct {
         /* DXE1 header */
 
-        long magic;
-        long symbol_offset;
-        long element_size;
-        long nrelocs;
+        LONG32 magic;
+        LONG32 symbol_offset;
+        LONG32 element_size;
+        LONG32 nrelocs;
 
         /* extended header */
 
-        long hdr_size;		/* Header size in bytes */
+        LONG32 hdr_size;	/* Header size in bytes */
 
         char major;
         char minor;
         short flags;		/* Capabilities */
 
-        long reloc_table;	/* File offset to relocation table */
+        LONG32 reloc_table;	/* File offset to relocation table */
 
-        long n_exp_syms;	/* Number of exported symbols */
-        long exp_table;		/* File offset to exported symbols table */
-        long exp_size;
+        LONG32 n_exp_syms;	/* Number of exported symbols */
+        LONG32 exp_table;	/* File offset to exported symbols table */
+        LONG32 exp_size;
 
-        long n_deps;		/* Number of dependencies */
-        long dep_table;		/* File offset to dependency table */
-        long dep_size;
+        LONG32 n_deps;		/* Number of dependencies */
+        LONG32 dep_table;	/* File offset to dependency table */
+        LONG32 dep_size;
 
-        long n_unres_syms;	/* Number of unresolved symbols */
-        long unres_table;	/* File offset to unresolved table */
-        long unres_size;
+        LONG32 n_unres_syms;	/* Number of unresolved symbols */
+        LONG32 unres_table;	/* File offset to unresolved table */
+        LONG32 unres_size;
 
-        long sec_size;		/* Size of combined code+data+bss section */
-        long sec_f_size;	/* Physical section size (the rest is zeroed) */
+        LONG32 sec_size;	/* Size of combined code+data+bss section */
+        LONG32 sec_f_size;	/* Physical section size (the rest is zeroed) */
 
-        long _init;
-        long _fini;
+        LONG32 _init;
+        LONG32 _fini;
 } __attribute__((packed)) dxe3_header;
 
 typedef struct

@@ -221,8 +221,13 @@ typedef void (*stinst_type)();
 stinst_type *pc;
 stinst_type sstack[STACK];
 stinst_type *ssp = &sstack[0];
-int istack[STACK];
-int *isp = &istack[0];
+#ifdef _WIN64
+typedef long long	intp;
+#else
+typedef long		intp;
+#endif
+intp istack[STACK];
+intp *isp = &istack[0];
 
 typedef int *word_type;
 
@@ -272,7 +277,7 @@ WORD(push_number)
 {
     isp++;
     pc++;
-    *isp = (int)(*pc);
+    *isp = (intp)(*pc);
     pc++;
     
 }
@@ -1345,7 +1350,7 @@ else
  
 static void DEFUN_VOID(bang)
 {
-*(int *)((isp[0])) = isp[-1];
+*(intp *)((isp[0])) = isp[-1];
 isp-=2;
 pc++;
 
@@ -1353,7 +1358,7 @@ pc++;
 
 WORD(atsign)
 {
-    isp[0] = *(int *)(isp[0]);
+    isp[0] = *(intp *)(isp[0]);
     pc++;
 }
 

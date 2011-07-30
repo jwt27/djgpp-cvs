@@ -22,14 +22,15 @@
 
 #ifndef DXE_LD			/* Cross compile ld name/location */
 #define DXE_LD "ld"
-#include <sys/dxe.h>
-#include <coff.h>
 #else
 /* Linux violates POSIX.1 and defines this, but it shouldn't.  We fix it. */
 #undef _POSIX_SOURCE
+#endif
+
+/* Always include local copies of sys/dxe.h and coff.h because of
+ * NATIVE_TYPES stuff. */
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
-#endif
 
 #define VERSION "1.0"
 
@@ -37,7 +38,7 @@
 #define TEMP_O_FILE	TEMP_BASE".o"
 #define TEMP_S_FILE	TEMP_BASE".s"
 
-#define VALID_RELOC(r) ((r.r_type != RELOC_REL32) && (r.r_symndx != -1UL))
+#define VALID_RELOC(r) ((r.r_type != RELOC_REL32) && (r.r_symndx != (ULONG32)-1))
 
 typedef enum {
         FALSE = 0,
@@ -394,7 +395,7 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
 
  if (!opt.legacy) {
     unsigned i;
-    size_t stsz;
+    ULONG32 stsz;
     SYMENT *sym;
     char *strings;
     long frame_begin = -1, frame_end = -1;
@@ -512,7 +513,7 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
  unsigned int startbss;
  char *data;
  SYMENT *sym;
- size_t stsz;
+ ULONG32 stsz;
  char *strings;
  RELOC *relocs;
  unsigned i, j, errcount;
@@ -612,7 +613,7 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
 
      if (sym[i].e_scnum == 0) {
         short *count;
-        long *rel_relocs, *abs_relocs;
+        LONG32 *rel_relocs, *abs_relocs;
         int n_abs_relocs = 0, n_rel_relocs = 0;
 
         /* unresolved symbol */
@@ -648,7 +649,7 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
            exit(-4);
         }
 
-        newsize = unres_size + 2 * sizeof(short) + namelen + (n_rel_relocs + n_abs_relocs) * sizeof(long);
+        newsize = unres_size + 2 * sizeof(short) + namelen + (n_rel_relocs + n_abs_relocs) * sizeof(LONG32);
         if (newsize > unres_maxsize) {
            int addlen=newsize - unres_maxsize + 317;
            if (!((addlen+unres_maxsize) & 1)) {
@@ -667,15 +668,15 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
         count[0] = n_rel_relocs;
         count[1] = n_abs_relocs;
 
-        rel_relocs = (long *)(unres_table + unres_size + 2 * sizeof(short) + namelen);
-        abs_relocs = (long *)(unres_table + newsize);
+        rel_relocs = (LONG32 *)(unres_table + unres_size + 2 * sizeof(short) + namelen);
+        abs_relocs = (LONG32 *)(unres_table + newsize);
 
         unres_size = newsize;
 
         for (j = 0; j < sc.s_nreloc; j++) {
             if (relocs[j].r_symndx == i) {
                /* mark the relocation as processed */
-               relocs[j].r_symndx = -1UL;
+               relocs[j].r_symndx = (ULONG32)-1;
 
                if (relocs[j].r_type == RELOC_REL32) {
                   *rel_relocs++ = relocs[j].r_vaddr;
@@ -742,13 +743,13 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
            errcount++;
         }
 
-        newsize = expsym_size + sizeof(long) + namelen;
+        newsize = expsym_size + sizeof(LONG32) + namelen;
         if (newsize > expsym_maxsize) {
            expsym_table = (char *)realloc(expsym_table, expsym_maxsize += 1024);
         }
 
-        *(long *)(expsym_table + expsym_size) = sym[i].e_value;
-        memcpy(expsym_table + expsym_size + sizeof(long), name, namelen);
+        *(LONG32 *)(expsym_table + expsym_size) = sym[i].e_value;
+        memcpy(expsym_table + expsym_size + sizeof(LONG32), name, namelen);
         expsym_size = newsize;
         if (opt.verbose) {
            printf("export: `%s'\n", name);
@@ -784,7 +785,7 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
        exit(-4);
     }
     dh.element_size = dh.sec_size;
-    dh.symbol_offset = *(long *)expsym_table;
+    dh.symbol_offset = *(LONG32 *)expsym_table;
     memset(data + startbss, 0, dh.sec_size - startbss);
     fwrite(&dh, 1, sizeof(dxe_header), outf);
     /* Write the actual code+data+bss section */
@@ -843,7 +844,7 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
  /* Output the relocations */
  for (i = 0; i < sc.s_nreloc; i++) {
      if (VALID_RELOC(relocs[i])) {
-        fwrite(&relocs[i].r_vaddr, 1, sizeof(long), outf);
+        fwrite(&relocs[i].r_vaddr, 1, sizeof(relocs[0].r_vaddr), outf);
      }
  }
 
@@ -996,7 +997,7 @@ static int make_implib (void)
  /* Emit the names of all imported functions */
  fprintf(implib, "Lsyms:\n");
  for (i = 0, scan = symtab; i < dh.n_exp_syms; i++) {
-     scan += sizeof(long);
+     scan += sizeof(LONG32);
      fprintf(implib, "\t.ascii\t\"%s\\0\"\n", scan);
      scan = strchr(scan, 0) + 1;
  }
@@ -1004,7 +1005,7 @@ static int make_implib (void)
 
  /* And now emit the stubs */
  for (i = 0, scan = symtab; i < dh.n_exp_syms; i++) {
-     scan += sizeof(long);
+     scan += sizeof(LONG32);
      fprintf(implib, "\t.align\t2,0xcc\n");
      if (i == 0) {
         fprintf(implib, "Lstubs:\n");
@@ -1066,7 +1067,7 @@ static int show_symbols (const char *fname)
  fclose(f);
 
  for (i = 0; i < dh.n_exp_syms; i++) {
-     scan += sizeof(long);
+     scan += sizeof(LONG32);
      if (opt.showexp) {
         puts(scan);
      }
@@ -1080,7 +1081,7 @@ static int show_symbols (const char *fname)
      if (opt.showunres) {
         puts(scan);
      }
-     scan = strchr(scan, 0) + 1 + (n1 + n2) * sizeof(long);
+     scan = strchr(scan, 0) + 1 + (n1 + n2) * sizeof(LONG32);
  }
 
  for (i = 0; i < dh.n_deps; i++) {

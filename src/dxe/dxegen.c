@@ -254,7 +254,7 @@ int main(int argc, char **argv)
   fwrite(data, 1, sc.s_size, output_f);
   for (i=0; i<sc.s_nreloc; i++)
     if(*(char *)(&relocs[i].r_type) != 0x14)	/* Don't do these, they are relative */
-      fwrite(&(relocs[i].r_vaddr), 1, sizeof(long), output_f);
+      fwrite(&(relocs[i].r_vaddr), 1, sizeof(relocs[0].r_vaddr), output_f);
 
   fclose(output_f);
   return 0;
