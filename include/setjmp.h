@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -36,7 +37,7 @@ int	setjmp(jmp_buf env);
 typedef jmp_buf sigjmp_buf;
 
 int	sigsetjmp(sigjmp_buf env, int savemask);
-int	siglongjmp(sigjmp_buf env, int val) __attribute__((__noreturn__));
+void	siglongjmp(sigjmp_buf env, int val) __attribute__((__noreturn__));
 
 #ifndef _POSIX_SOURCE
 

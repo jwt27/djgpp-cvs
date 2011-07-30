@@ -5,12 +5,16 @@
 @example
 #include <setjmp.h>
 
-int	siglongjmp(sigjmp_buf env, int val);
+void	siglongjmp(sigjmp_buf env, int val);
 @end example
 
 @subheading Description
 
 @xref{longjmp}.
+
+@subheading Return Value
+
+This function does not return.
 
 @subheading Portability
 
