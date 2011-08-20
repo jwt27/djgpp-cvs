@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -9,18 +10,13 @@
 
 #include "fdlibm.h"
 
-struct complex {
-	float x;
-	float y;
-};
-
 #ifdef __STDC__
-float cabsf(struct complex);
-float cabsf(struct complex z)
+float cabsf(_Complex float);
+float cabsf(_Complex float z)
 #else
 float cabsf(z)
-	struct complex z;
+	_Complex float z;
 #endif
 {
-	return hypotf(z.x, z.y);
+	return hypotf(__real__ z, __imag__ z);
 }
