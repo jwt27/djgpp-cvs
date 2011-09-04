@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* This is file FILELEN.C */
@@ -41,8 +42,18 @@ filelength(int fhandle)
     regs.x.dx = 0;
     regs.x.flags |= 1;
     __dpmi_int(0x21, &regs);
-    
-    if ((regs.x.flags & 1) == 0)
+
+    /*  It is always necessary to test if LFN function
+        has been implemented because the assumption has
+        been proven false that a driver will set the CF
+        if the LFN function has not been implemented.
+        E.g.: all DOSLFN drivers do not implement
+        0x71A6 and DOSLFN 0.40e does not set CF
+        making MSDOS 6.22 fail.  If FreeDOS 1.0 is
+        used, the same LFN driver sets the CF.
+        If the ax register contains 0x7100 then the
+        corresponding LFN function is not implemented.  */
+    if ((regs.x.flags & 1) == 0 && regs.x.ax != 0x7100)
     {
       /* Offset 0x24 contains the low 32-bits of the file size.
          Offset 0x20 contains the high 32-bits.  */
