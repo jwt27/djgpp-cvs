@@ -871,7 +871,7 @@ endmntent(FILE *filep)
   if (filep != (FILE *)1)
     {
       errno = EBADF;    /* fake errno for invalid handle */
-      return NULL;
+      return 0;
     }
   drive_number = 0;
   skip_drive_b = 0;
