@@ -34,8 +34,6 @@
 
 #define ADDRESS_FUNCTION(arg) &(arg)
 
-#define	NULL	0
-
 /* Define STACK_DIRECTION if you know the direction of stack
    growth for your system; otherwise it will be automatically
    deduced at run-time.
