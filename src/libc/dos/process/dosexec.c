@@ -210,7 +210,8 @@ direct_exec_tail_1 (const char *program, const char *args,
   /* Make sure any magic names, like /dev/c/foo, are converted to the
      usual DOS form, and, under LFN, to the short 8+3 alias.  */
   _put_path2(program, tbuf_beg == __tb ? tbuf_ptr - tbuf_beg : 0);
-  if(lfn) {
+  if (lfn)
+  {
     unsigned pgm_name_loc = tbuf_beg == __tb ? tbuf_ptr : __tb;
     r.x.ax = 0x7160;			/* Truename */
     r.x.cx = 1;				/* Get short name */

@@ -52,14 +52,14 @@ __chdir (const char *mydirname)
 
   if (drv_no == -1 || _farpeekb(_dos_ds, __tb + 2) != 0)
   {
-    if(_USE_LFN)
+    if (_USE_LFN)
       r.x.ax = 0x713b;
     else
       r.h.ah = 0x3b;
     r.x.dx = __tb_offset;
     r.x.ds = __tb_segment;
     __dpmi_int(0x21, &r);
-    if(r.x.flags & 1)
+    if (r.x.flags & 1)
     {
       errno = __doserr_to_errno(r.x.ax);
       return -1;

@@ -31,7 +31,8 @@ _open(const char* filename, int oflag)
   if (__FSEXT_call_open_handlers_wrapper(__FSEXT_open, &rv, filename, oflag))
     return rv;
 
-  if(use_lfn && _os_trueversion == 0x532) {
+  if (use_lfn && _os_trueversion == 0x532)
+  {
     /* Windows 2000 or XP; or NT with LFN TSR.  Windows 2000 behaves
        badly when using IOCTL and write-truncate calls on LFN handles.
        We convert the long name to a short name and open existing files
@@ -44,26 +45,31 @@ _open(const char* filename, int oflag)
     r.x.es = __tb_segment;
     r.x.di = __tb_offset + _put_path(filename);	/* Short name destination */
     __dpmi_int(0x21, &r);
-    if(!(r.x.flags & 1)) {		/* Get short name success */
+    if (!(r.x.flags & 1))		/* Get short name success */
+    {
       r.x.ax = 0x6c00;
       r.x.bx = (oflag & 0xff);
       r.x.dx = 1;			/* Open existing file */
       r.x.si = r.x.di;
       goto do_open;
-    } else {
+    }
+    else
+    {
       /* Short name get failed, file doesn't exist or is device (same error) */
       r.x.ax = 0x7143;			/* Get attributes */
       r.h.bl = 0;
       r.x.dx = __tb_offset;		/* Original long name */
       __dpmi_int(0x21, &r);		/* This is same as lfn _chmod */
-      if(!(r.x.flags & 1)) {		/* Name exists, probably device */
+      if (!(r.x.flags & 1))		/* Name exists, probably device */
+      {
         r.x.ax = 0x6c00;
         r.x.bx = (oflag & 0xff);
         r.x.dx = 1;                     /* Open existing file */
         r.x.si = __tb_offset;		/* Treat original name as short */
         r.x.cx = 0;
         __dpmi_int(0x21, &r);
-        if(!(r.x.flags & 1)) {		/* Success! */
+        if (!(r.x.flags & 1))		/* Success! */
+        {
           goto do_hset;
         }
 	/* Fail on short name open after _chmod said OK.
@@ -73,19 +79,24 @@ _open(const char* filename, int oflag)
       }
     }
   }
-  if(use_lfn) {
+  if (use_lfn)
+  {
     r.x.ax = 0x716c;
     r.x.bx = (oflag & 0xff);
     /* The FAT32 bit should _not_ be set on Windows 2000, because
        that bit fails function 716Ch on W2K.  The test below is
        based on the assumption that W2K returns DOS version 5.  */
-    if (7 <= _osmajor && _osmajor < 10) {
+    if (7 <= _osmajor && _osmajor < 10)
+    {
       r.x.bx |= 0x1000; /* 0x1000 is FAT32 extended size. */
     }
     r.x.dx = 1;			/* Open existing file */
     r.x.si = __tb_offset;
-  } else {
-    if (7 <= _osmajor && _osmajor < 10) {
+  }
+  else
+  {
+    if (7 <= _osmajor && _osmajor < 10)
+    {
       r.x.ax = 0x6c00;
       r.x.bx = (oflag & 0xff) | 0x1000; /* 0x1000 is FAT32 extended size. */
       /* FAT32 extended size flag doesn't help on WINDOZE 4.1 (98). It
@@ -93,7 +104,9 @@ _open(const char* filename, int oflag)
 	 if LFN is enabled. */
       r.x.dx = 1;                        /* Open existing file */
       r.x.si = __tb_offset;
-    } else {
+    }
+    else
+    {
       r.h.ah = 0x3d;
       r.h.al = oflag;
       r.x.dx = __tb_offset;

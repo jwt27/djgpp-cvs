@@ -20,7 +20,8 @@ get_current_mode (const int fd)
   __dpmi_regs r;
   int         mode = 0; /* Fail by default */
 
-  if (_USE_LFN) {
+  if (_USE_LFN)
+  {
     r.x.ax = 0x71a6; /* File info by handle */
     r.x.bx = fd;
     r.x.ds = __tb >> 4;
@@ -28,7 +29,8 @@ get_current_mode (const int fd)
 
     __dpmi_int(0x21, &r);
 
-    if ((r.x.flags & 1) == 0) {
+    if ((r.x.flags & 1) == 0)
+    {
       int attr = _farpeekl(_dos_ds, __tb);
 
       mode = S_IRUSR; /* Files are always readable. */

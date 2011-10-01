@@ -47,7 +47,7 @@ __getcwd(char *buf, size_t size)
     size = __tb_size;
 
   /* get the path into the transfer buffer at least */
-  if(use_lfn)
+  if (use_lfn)
     r.x.ax = 0x7147;
   else
     r.h.ah = 0x47;
@@ -68,8 +68,8 @@ __getcwd(char *buf, size_t size)
   _farsetsel(_dos_ds);
   needed_length = 0;
   buf_off = 3;
-  if(_os_trueversion == 0x532 && use_lfn && _farnspeekb(__tb) == 0) {
-
+  if (_os_trueversion == 0x532 && use_lfn && _farnspeekb(__tb) == 0)
+  {
     /* Root path under WinNT/2K/XP with lfn (may be silent failure).
        If the short name equivalent of the current path is greater than
        64 characters, Windows 2000 and XP do not return the correct long
@@ -141,7 +141,8 @@ __getcwd(char *buf, size_t size)
 
 int main(int argc, char** argv)
 {
-  if(argc > 1) {
+  if(argc > 1)
+  {
     if(chdir(argv[1]) == -1)
       perror("Change dir failed");
     else

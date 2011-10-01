@@ -105,17 +105,19 @@ _truename_internal(const char *file, char *buf, const int try_lfn)
   _put_path(name_start);
 
   /* Call DOS INT 21H undocumented function 60h. */
-  if(use_lfn) {
+  if (use_lfn)
+  {
     regs.x.ax = 0x7160;
     /* Get Long Path Name (if there is one) and we want it. */
     regs.x.cx = try_lfn ? 2 : 0;
-  } else
+  }
+  else
     regs.x.ax = 0x6000;
 
   /* According to Ralph Brown's Interrupt List, can't make the input
      and output buffers be the same, because it doesn't work for early
      versions of DR-DOS.  */
- lfn_retry:
+lfn_retry:
   regs.x.ds = regs.x.es = __tb_segment;
   regs.x.si = __tb_offset;
   regs.x.di = __tb_offset + MAX_TRUE_NAME;

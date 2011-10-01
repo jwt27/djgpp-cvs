@@ -821,47 +821,47 @@ fstat_assist(int fhandle, struct stat *stat_buf)
 
           if (trusted_fsize == 510)
           {
-             int old_errno = errno;
-             char buf[2];
-             int bytes_read = __internal_readlink(NULL, fhandle, buf, 1);
-             if (bytes_read != -1)
-             {
-                stat_buf->st_mode = S_IFLNK;
-                is_link = 1;
-             }
-             else
-                errno = old_errno;
+            int old_errno = errno;
+            char buf[2];
+            int bytes_read = __internal_readlink(NULL, fhandle, buf, 1);
+            if (bytes_read != -1)
+            {
+              stat_buf->st_mode = S_IFLNK;
+              is_link = 1;
+            }
+            else
+              errno = old_errno;
           }
           if (!is_link)
           {
-              /* Return the minimum access bits every file has under DOS. */
-              stat_buf->st_mode |= (S_IFREG | READ_ACCESS);
-              if (_djstat_flags & _STAT_ACCESS)
-                _djstat_fail_bits |= _STFAIL_WRITEBIT;
-    
-	      /* If we are runing on Windows 9X, NT 4.0 with LFN or 2000 or XP
-		 with LFN is enabled, try harder. Note that we deliberately do
-		 NOT use this call when LFN is disabled, even if we are on
-		 Windows, because then we open the file with function 3Ch, and
-		 such handles aren't supported by 71A6h call we use here.  */
-	      if  (_USE_LFN)
-                {
-                  __dpmi_regs r;
-    
-                  r.x.ax = 0x71a6;	/* file info by handle */
-                  r.x.bx = fhandle;
-                  r.x.ds = __tb >> 4;
-                  r.x.dx = 0;
-    	          __dpmi_int(0x21, &r);
-    	          if ((r.x.flags & 1) == 0
-		      && (_farpeekl(_dos_ds, __tb) & 0x07) == 0)
-		    stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
-    	        }
-    
-              /* Executables are detected if they have magic numbers.  */
-              if ( (_djstat_flags & _STAT_EXEC_MAGIC) == 0 &&
+            /* Return the minimum access bits every file has under DOS. */
+            stat_buf->st_mode |= (S_IFREG | READ_ACCESS);
+            if (_djstat_flags & _STAT_ACCESS)
+              _djstat_fail_bits |= _STFAIL_WRITEBIT;
+
+            /* If we are runing on Windows 9X, NT 4.0 with LFN or 2000 or XP
+               with LFN is enabled, try harder. Note that we deliberately do
+               NOT use this call when LFN is disabled, even if we are on
+               Windows, because then we open the file with function 3Ch, and
+               such handles aren't supported by 71A6h call we use here.  */
+            if (_USE_LFN)
+            {
+              __dpmi_regs r;
+
+              r.x.ax = 0x71a6;	/* file info by handle */
+              r.x.bx = fhandle;
+              r.x.ds = __tb >> 4;
+              r.x.dx = 0;
+              __dpmi_int(0x21, &r);
+              if ((r.x.flags & 1) == 0
+                  && (_farpeekl(_dos_ds, __tb) & 0x07) == 0)
+                stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
+            }
+
+            /* Executables are detected if they have magic numbers.  */
+            if ( (_djstat_flags & _STAT_EXEC_MAGIC) == 0 &&
                 _is_executable((const char *)0, fhandle, (const char *)0))
-                stat_buf->st_mode |= EXEC_ACCESS;
+              stat_buf->st_mode |= EXEC_ACCESS;
           }
           /* Lower 6 bits of IOCTL return value give the device number. */
           stat_buf->st_dev = dev_info & 0x3f;
@@ -878,16 +878,16 @@ fstat_assist(int fhandle, struct stat *stat_buf)
           stat_buf->st_atime = stat_buf->st_ctime = stat_buf->st_mtime =
             _file_time_stamp(dos_ftime);
 
-	  /* Additional time info for LFN platforms.  */
-	  set_fstat_times (fhandle, stat_buf);
+          /* Additional time info for LFN platforms.  */
+          set_fstat_times (fhandle, stat_buf);
         }
       return 0;
     }
 
-  /* Don't have even values from conventional DOS calls.
-   * Give up completely on this funny handle.  ERRNO is already
-   * set by filelength() and/or getftime().
-   */
+    /* Don't have even values from conventional DOS calls.
+     * Give up completely on this funny handle.  ERRNO is already
+     * set by filelength() and/or getftime().
+     */
   else
     return -1;
 }
@@ -904,37 +904,37 @@ fstat(int handle, struct stat *statbuf)
   int rv;
 
   if (!statbuf)
-    {
-      errno = EFAULT;
-      return -1;
-    }
+  {
+    errno = EFAULT;
+    return -1;
+  }
 
   /* see if this is file system extension file */
   func = __FSEXT_get_function(handle);
   if (func && __FSEXT_func_wrapper(func, __FSEXT_fstat, &rv, handle, statbuf))
-    {
-       return rv;
-    }
+  {
+     return rv;
+  }
 
   /* See if this is a file descriptor for a directory. If so, just
    * use a normal stat call. */
   if (__get_fd_flags(handle) & FILE_DESC_DIRECTORY)
-    {
-      const char *filename = __get_fd_name(handle);
+  {
+    const char *filename = __get_fd_name(handle);
 
-      if (filename)
-	return stat(filename, statbuf);
-    }
+    if (filename)
+      return stat(filename, statbuf);
+  }
 
   if (fstat_assist(handle, statbuf) == -1)
-    {
-      return -1;      /* already have ERRNO set by fstat_assist() */
-    }
+  {
+    return -1;      /* already have ERRNO set by fstat_assist() */
+  }
   else
-    {
-      errno = e;
-      return 0;
-    }
+  {
+    errno = e;
+    return 0;
+  }
 }
 
 #ifdef  TEST

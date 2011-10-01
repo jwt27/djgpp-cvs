@@ -44,8 +44,8 @@ remove(const char *fn)
      set errno properly. */
   if (attr == -1)
   {
-      errno = ENOENT;
-      return(-1);
+    errno = ENOENT;
+    return(-1);
   }
 
   directory_p = attr & 0x10;
@@ -59,7 +59,8 @@ remove(const char *fn)
     r.h.ah = 0x3a;		/* DOS Remove Directory function */
   else
     r.h.ah = 0x41;		/* DOS Remove File function */
-  if(use_lfn) {
+  if (use_lfn)
+  {
     r.h.al = r.h.ah;
     r.h.ah = 0x71;
     r.x.si = 0;			/* No Wildcards */
@@ -68,7 +69,7 @@ remove(const char *fn)
   r.x.dx = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
-  if(r.x.flags & 1)
+  if (r.x.flags & 1)
   {
     /* We failed.  Leave the things as we've found them.  */
     int e = __doserr_to_errno(r.x.ax);
@@ -76,7 +77,7 @@ remove(const char *fn)
     /* We know the file exists, so ENOENT at this point means a bug.
        Since write-protected floppies are the most probable cause,
        return EACCES instead.  */
-    if(e == ENOENT)
+    if (e == ENOENT)
       e = EACCES;
  
     _chmod(real_name, 1, attr & 0xffe7);

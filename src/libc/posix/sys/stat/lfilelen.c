@@ -72,10 +72,10 @@ lfilelength(int fhandle)
   regs.x.cx = regs.x.dx = 0; /* move 0 bytes (i.e., stay put) */
   __dpmi_int(0x21, &regs);
   if (regs.x.flags & 1)
-    {
-      errno = __doserr_to_errno(regs.x.ax);
-      return -1L;
-    }
+  {
+    errno = __doserr_to_errno(regs.x.ax);
+    return -1L;
+  }
   fpos_high = regs.x.dx;   /* save current position */
   fpos_low  = regs.x.ax;
 
@@ -83,10 +83,10 @@ lfilelength(int fhandle)
   regs.x.ax = 0x4202;      /* set pointer 0 bytes from the end of file */
   __dpmi_int(0x21, &regs);
   if (regs.x.flags & 1)
-    {
-      errno = __doserr_to_errno(regs.x.ax);
-      return -1LL;
-    }
+  {
+    errno = __doserr_to_errno(regs.x.ax);
+    return -1LL;
+  }
 
   /* The absolute byte offset returned in DX:AX is the file size. */
   retval = ( (long long)regs.x.dx << 16 ) + regs.x.ax;
@@ -97,10 +97,10 @@ lfilelength(int fhandle)
   regs.x.dx = fpos_low;
   __dpmi_int(0x21, &regs);
   if (regs.x.flags & 1)
-    {
-      errno = __doserr_to_errno(regs.x.ax);
-      return -1L;
-    }
+  {
+    errno = __doserr_to_errno(regs.x.ax);
+    return -1L;
+  }
 
   return retval;
 }

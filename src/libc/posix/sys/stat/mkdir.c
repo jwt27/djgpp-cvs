@@ -29,7 +29,7 @@ mkdir(const char *mydirname, mode_t mode)
   
   _put_path(dir_name);
  
-  if(use_lfn)
+  if (use_lfn)
     r.x.ax = 0x7139;
 #if 0
   /* It seems that no version of DOS, including DOS 8, which is part
@@ -59,11 +59,11 @@ mkdir(const char *mydirname, mode_t mode)
     if (errno == EACCES)
     {
       /* see if the directory existed, in which case
-	 we should return EEXIST - DJ */
+         we should return EEXIST - DJ */
       if (access(mydirname, D_OK) == 0)
-	errno = EEXIST;
+        errno = EEXIST;
       else
-	errno = save_errno;
+        errno = save_errno;
     }
     return -1;
   }

@@ -32,7 +32,8 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
   pathlen = strlen(pathname) + 1;
 
   _put_path(pathname);
-  if(use_lfn) {
+  if (use_lfn)
+  {
 
     /* si = 1 indicates DOS style dates, 0 means Win32 type dates.
        DOS style dates are broken in some Win95 betas, build for either.
@@ -52,7 +53,8 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
     r.x.es = r.x.ds;
     r.x.si = USEDOSDATE;
     __dpmi_int(0x21, &r);
-    if(!(r.x.flags & 1)) {
+    if (!(r.x.flags & 1))
+    {
       struct ffblklfn ffblk32;
       unsigned long t1;
       /* Recover results */
@@ -69,7 +71,8 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
       strcpy(ffblk->lfn_magic, "LFN32");
 
       /* If no wildcards, close the handle */
-      if(!strchr(pathname,'*') && !strchr(pathname,'?')) {
+      if (!strchr(pathname, '*') && !strchr(pathname, '?'))
+      {
         r.x.bx = r.x.ax;
         r.x.ax = 0x71a1;
         __dpmi_int(0x21, &r);
@@ -87,7 +90,9 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
 
       return 0;
     }
-  } else {
+  }
+  else
+  {
 
     #define _sizeof_dos_ffblk 44
     /* There will be a _sizeof_dos_ffblk character return value from findfirst 
@@ -104,7 +109,8 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
     r.x.ds = __tb_segment;
     r.x.cx = attrib;
     __dpmi_int(0x21, &r);
-    if(!(r.x.flags & 1)) {
+    if (!(r.x.flags & 1))
+    {
       /* Recover results */
       dosmemget(__tb+pathlen, _sizeof_dos_ffblk, ffblk);
       return 0;

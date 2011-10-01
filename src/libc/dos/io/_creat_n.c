@@ -36,7 +36,7 @@ _creatnew(const char* filename, int attrib, int flags)
     0x2002 | (flags & 0xfff0);	/* r/w, no Int 24h, use caller-defined flags */
   r.x.dx = 0x0010;		/* Create, fail if exists */
   r.x.si = __tb_offset;
-  if(use_lfn)
+  if (use_lfn)
   {
     if (7 <= _osmajor && _osmajor < 10)
     {
@@ -67,20 +67,22 @@ _creatnew(const char* filename, int attrib, int flags)
   r.x.cx = attrib & 0xffff;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
-  if(r.x.flags & 1)
+  if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
-  if(use_lfn && _os_trueversion == 0x532) {
+  if (use_lfn && _os_trueversion == 0x532)
+  {
     /* Windows 2000 or XP; or NT with LFN TSR.  Windows 2000 behaves
        badly when using IOCTL and write-truncate calls on LFN handles.
        We close the long name file and re-open it with _open.c (short)
        to work around the bugs. */
     rv = _open(filename, flags | 2);	/* 2 is a read/write flag */
-    if(rv != -1) {	/* Re-open failure, continue with LFN handle */
-      dup2(rv, r.x.ax);	/* Close ax, put handle in first position (bugs) */
-      _close(rv);
+    if (rv != -1)
+    {
+      dup2(rv, r.x.ax);	/* Re-open failure, continue with LFN handle */
+      _close(rv);	/* Close ax, put handle in first position (bugs) */
     }
   }
   __file_handle_set(r.x.ax, O_BINARY);

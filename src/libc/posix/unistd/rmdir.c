@@ -21,7 +21,7 @@ rmdir(const char *mydirname)
   if (!__solve_dir_symlinks(mydirname, real_dir))
     return -1;
 
-  if(_USE_LFN)
+  if (_USE_LFN)
     r.x.ax = 0x713a;
   else
     r.h.ah = 0x3a;

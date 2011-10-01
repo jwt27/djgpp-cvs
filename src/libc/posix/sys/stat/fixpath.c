@@ -34,7 +34,7 @@ __get_current_directory(char *out, int drive_number)
 
   memset(&r, 0, sizeof(r));
   r.x.flags = 1;		/* Set carry for safety */
-  if(use_lfn)
+  if (use_lfn)
     r.x.ax = 0x7147;
   else
     r.h.ah = 0x47;
@@ -347,20 +347,23 @@ int main (int argc, char *argv[])
   char fixed[FILENAME_MAX];
   __dpmi_regs r;
 
-  if (argc > 2) {
+  if (argc > 2)
+  {
     _put_path(argv[1]);
-    if(_USE_LFN)
+    if (_USE_LFN)
       r.x.ax = 0x713b;
     else
       r.h.ah = 0x3b;
     r.x.dx = __tb_offset;
     r.x.ds = __tb_segment;
     __dpmi_int(0x21, &r);
-    if(r.x.flags & 1) {
+    if (r.x.flags & 1)
+    {
       errno = __doserr_to_errno(r.x.ax);
       sprintf(fixed, "Change dir to %s failed (lfn=%d)", argv[1], _USE_LFN);
       perror(fixed);
-    } else
+    }
+    else
       printf("Set dir: %s\n", argv[1]);
     argc--;
     argv++;
@@ -374,19 +377,22 @@ int main (int argc, char *argv[])
   r.x.si = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
-  if (r.x.flags & 1) {
+  if (r.x.flags & 1)
+  {
     errno = __doserr_to_errno(r.x.ax);
     perror("getcwd failed");
-  } else {
+  }
+  else
+  {
     dosmemget(__tb, sizeof(fixed), fixed);
     printf("Get dir[%d]: \\%s\n", strlen(fixed), fixed);
   }
 
   if (argc > 1)
-    {
-      _fixpath (argv[1], fixed);
-      printf ("Fixpath: %s\n", fixed);
-    }
+  {
+    _fixpath (argv[1], fixed);
+    printf ("Fixpath: %s\n", fixed);
+  }
   return 0;
 }
 

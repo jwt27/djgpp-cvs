@@ -21,7 +21,7 @@ findnext(struct ffblk *ffblk)
     return -1;
   }
 
-  if(_USE_LFN)
+  if (_USE_LFN)
   {
     /* si = 1 indicates DOS style dates, 0 means Win32 type dates.
        DOS style dates are broken in some Win95 betas, build for either.
@@ -35,7 +35,7 @@ findnext(struct ffblk *ffblk)
 
     r.x.ax = 0x714f;
     r.x.bx = ffblk->lfn_handle;
-    if(!r.x.bx)
+    if (!r.x.bx)
     {
       errno = ENMFILE;
       return 1;
@@ -73,7 +73,7 @@ findnext(struct ffblk *ffblk)
       ffblk->lfn_handle = 0;
       r.x.ax = 0x71a1;
       __dpmi_int(0x21, &r);
-      if(r.x.flags & 1)
+      if (r.x.flags & 1)
       {
         errno = __doserr_to_errno(r.x.ax);
         return -1;
@@ -97,7 +97,7 @@ findnext(struct ffblk *ffblk)
 
     r.h.ah = 0x4f;
     __dpmi_int(0x21, &r);
-    if(r.x.flags & 1)
+    if (r.x.flags & 1)
     {
       errno = __doserr_to_errno(r.x.ax);
       return -1;

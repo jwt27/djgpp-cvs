@@ -20,8 +20,8 @@
 int _rename(const char *old, const char *new)
 {
   __dpmi_regs r;
-  int olen    = strlen(old) + 1;
   int i;
+  int olen    = strlen(old) + 1;
   int use_lfn = _USE_LFN;
   char tempfile[FILENAME_MAX], tempfile1[FILENAME_MAX];
   const char *orig = old;
@@ -69,7 +69,7 @@ int _rename(const char *old, const char *new)
 
     char *pbase = 0, *p;
     static char try_char[] = "abcdefghijklmnopqrstuvwxyz012345789";
-    int idx = sizeof(try_char)-1;
+    int idx = sizeof(try_char) - 1;
 
     /* Generate a temporary name.  Can't use `tmpnam', since $TMPDIR
        might point to another drive, which will fail the DOS call.  */
@@ -111,9 +111,9 @@ int _rename(const char *old, const char *new)
     r.x.di = __tb_offset + olen;
   }
 
-  for (i=0; i<2; i++)
+  for (i = 0; i < 2; i++)
   {
-    if(use_lfn)
+    if (use_lfn)
       r.x.ax = 0x7156;
 #if 0
     /* It seems that no version of DOS, including DOS 8, which is part
@@ -135,7 +135,7 @@ int _rename(const char *old, const char *new)
     _put_path2(new, olen);
     _put_path(old);
     __dpmi_int(0x21, &r);
-    if(r.x.flags & 1)
+    if (r.x.flags & 1)
     {
       if (i == 0
 	  && !identical_but_for_case /* don't nuke OLD! */

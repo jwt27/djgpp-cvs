@@ -13,7 +13,8 @@ _chmod(const char *filename, int func, ...)
 {
   __dpmi_regs r;
 
-  if(_USE_LFN) {
+  if (_USE_LFN)
+  {
     r.x.ax = 0x7143;
     r.h.bl = func;			/* Get or Put */
   } else
