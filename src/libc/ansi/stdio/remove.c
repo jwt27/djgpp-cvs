@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -61,6 +62,7 @@ remove(const char *fn)
     r.h.ah = 0x41;		/* DOS Remove File function */
   if (use_lfn)
   {
+    r.x.flags = 1;		/* Always set CF before calling a 0x71NN function. */
     r.h.al = r.h.ah;
     r.h.ah = 0x71;
     r.x.si = 0;			/* No Wildcards */
@@ -69,8 +71,12 @@ remove(const char *fn)
   r.x.dx = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
-  if (r.x.flags & 1)
+  if ((r.x.flags & 1) || (r.x.ax == 0x7100))
   {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on SFN API 0x3A or 0x41.  */
+
     /* We failed.  Leave the things as we've found them.  */
     int e = __doserr_to_errno(r.x.ax);
 
