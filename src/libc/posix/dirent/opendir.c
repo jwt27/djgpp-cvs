@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -42,11 +43,15 @@ _lfn_find_close(int handle)
 {
   __dpmi_regs r;
 
+  r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
   r.x.bx = handle;
   r.x.ax = 0x71a1;
   __dpmi_int(0x21, &r);
-  if (r.x.flags & 1)
+  if ((r.x.flags & 1) || (r.x.ax == 0x7100))
   {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fail.  */
     errno = __doserr_to_errno(r.x.ax);
   }
 }
