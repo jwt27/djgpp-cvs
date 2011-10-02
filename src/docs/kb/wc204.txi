@@ -1200,3 +1200,37 @@ pointer to the caller.
 @code{djtar} now ignores empty lines in filename change files instead
 of skipping the extraction of the file named in the line before the
 empty line.
+
+@findex flushdc@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex dosexec@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex fixpath@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex opendir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex getcwd@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex mkdir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex rmdir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex chdir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex filelen@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex lfilelen@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex fstat@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex fchmod@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex _open@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex _chmod@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex _creat_n@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex _creat@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex remove@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex findfirs@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex findnext@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex truename@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex lfnshort@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex _use_lfn@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex _rename@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+
+Functions @code{flushdc}, @code{dosexec}, @code{fixpath}, @code{opendir}, @code{getcwd},
+@code{mkdir}, @code{rmdir}, @code{chdir}, @code{filelen}, @code{lfilelen}, @code{fstat},
+@code{fchmod}, @code{_open}, @code{_chmod}, @code{_creat_n}, @code{_creat}, @code{remove},
+@code{findfirs}, @code{findnext}, @code{truename}, @code{lfnshort}, @code{_use_lfn} and
+@code{_rename} now check that the used LFN driver supplies the required @code{0x71} function
+from the @code{Windows 95} long filename functions API by inspecting the content of the @code{AX}
+register after return from the API function call.  Depending on the function type, the function
+will ignore, fail or fall back on the corresponding SFN API function if the LFN API function
+is not provided by the LFN driver used.
