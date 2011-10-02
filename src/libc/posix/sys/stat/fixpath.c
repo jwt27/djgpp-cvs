@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -38,12 +39,22 @@ __get_current_directory(char *out, int drive_number)
     r.x.ax = 0x7147;
   else
     r.h.ah = 0x47;
+do_get_current_directory:
   r.h.dl = drive_number + 1;
   r.x.si = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
 
-  if (r.x.flags & 1)
+  if (r.x.ax == 0x7100)
+  {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on SFN API 0x47.  */
+    use_lfn = 0;
+    r.h.ah = 0x47;
+    goto do_get_current_directory;
+  }
+  else if (r.x.flags & 1)
   {
 #ifdef TEST
     errno = __doserr_to_errno(r.x.ax);
@@ -350,6 +361,7 @@ int main (int argc, char *argv[])
   if (argc > 2)
   {
     _put_path(argv[1]);
+    r.x.flags = 1;		/* Set carry for safety */
     if (_USE_LFN)
       r.x.ax = 0x713b;
     else
@@ -357,7 +369,15 @@ int main (int argc, char *argv[])
     r.x.dx = __tb_offset;
     r.x.ds = __tb_segment;
     __dpmi_int(0x21, &r);
-    if (r.x.flags & 1)
+    if (r.x.ax == 0x7100)
+    {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40. */
+      errno = __doserr_to_errno(r.x.ax);
+      sprintf(fixed, "Change dir to %s failed (lfn=%d).  LFN driver does not support 0x713B", argv[1], _USE_LFN);
+      perror(fixed);
+    }
+    else if (r.x.flags & 1)
     {
       errno = __doserr_to_errno(r.x.ax);
       sprintf(fixed, "Change dir to %s failed (lfn=%d)", argv[1], _USE_LFN);
@@ -369,6 +389,7 @@ int main (int argc, char *argv[])
     argv++;
   }
 
+  r.x.flags = 1;		/* Set carry for safety */
   if(_USE_LFN)
     r.x.ax = 0x7147;
   else
@@ -377,7 +398,15 @@ int main (int argc, char *argv[])
   r.x.si = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
-  if (r.x.flags & 1)
+  if (r.x.ax == 0x7100)
+  {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40. */
+    errno = __doserr_to_errno(r.x.ax);
+    printf("getcwd failed.  LFN driver does not support 0x7147");
+    perror("getcwd failed");
+  }
+  else if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
     perror("getcwd failed");
