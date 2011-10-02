@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -45,6 +46,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
       extern long _Win32_to_DOS(long long WinTime);
     #endif
 
+    r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x714e;
     r.x.cx = attrib;
     r.x.dx = __tb_offset;
@@ -53,8 +55,12 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
     r.x.es = r.x.ds;
     r.x.si = USEDOSDATE;
     __dpmi_int(0x21, &r);
-    if (!(r.x.flags & 1))
+    if (!(r.x.flags & 1) && (r.x.ax != 0x7100))
     {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+          If not supported fall back on SFN API 0x4E.  */
+
       struct ffblklfn ffblk32;
       unsigned long t1;
       /* Recover results */
@@ -73,6 +79,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
       /* If no wildcards, close the handle */
       if (!strchr(pathname, '*') && !strchr(pathname, '?'))
       {
+        r.x.flags |= 1;  /* Always set CF before calling a 0x71NN function. */
         r.x.bx = r.x.ax;
         r.x.ax = 0x71a1;
         __dpmi_int(0x21, &r);
