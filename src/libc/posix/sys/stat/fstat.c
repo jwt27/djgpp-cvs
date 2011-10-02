@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -848,14 +849,19 @@ fstat_assist(int fhandle, struct stat *stat_buf)
             {
               __dpmi_regs r;
 
+              r.x.flags = 1;	/* Always set CF before calling a 0x71NN function. */
               r.x.ax = 0x71a6;	/* file info by handle */
               r.x.bx = fhandle;
               r.x.ds = __tb >> 4;
               r.x.dx = 0;
               __dpmi_int(0x21, &r);
-              if ((r.x.flags & 1) == 0
-                  && (_farpeekl(_dos_ds, __tb) & 0x07) == 0)
+              if (!(r.x.flags & 1) && (r.x.ax != 0x7100) &&
+                  !(_farpeekl(_dos_ds, __tb) & 0x07))
+              {
+                /*  Never assume that the complete LFN API is implemented,
+                    so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.  */
                 stat_buf->st_mode |= WRITE_ACCESS; /* no R, S or H bits set */
+              }
             }
 
             /* Executables are detected if they have magic numbers.  */
