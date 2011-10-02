@@ -36,11 +36,11 @@ filelength(int fhandle)
      reads. */
   if (_USE_LFN && (fhandle != 0 || _os_trueversion != 0x532))
   {
+    regs.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     regs.x.ax = 0x71A6;
     regs.x.bx = fhandle;
     regs.x.ds = __tb >> 4;
     regs.x.dx = 0;
-    regs.x.flags |= 1;
     __dpmi_int(0x21, &regs);
 
     /*  It is always necessary to test if LFN function
@@ -52,8 +52,10 @@ filelength(int fhandle)
         making MSDOS 6.22 fail.  If FreeDOS 1.0 is
         used, the same LFN driver sets the CF.
         If the ax register contains 0x7100 then the
-        corresponding LFN function is not implemented.  */
-    if ((regs.x.flags & 1) == 0 && regs.x.ax != 0x7100)
+        corresponding LFN function is not implemented.
+        If the 0x71A6 function is not supported fall back
+        on 0x42NN.  */
+    if (!(regs.x.flags & 1) && (regs.x.ax != 0x7100))
     {
       /* Offset 0x24 contains the low 32-bits of the file size.
          Offset 0x20 contains the high 32-bits.  */
