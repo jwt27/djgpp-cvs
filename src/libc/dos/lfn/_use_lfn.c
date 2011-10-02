@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -72,6 +73,7 @@ _get_volume_info (const char *path, int *maxfile, int *maxpath, char *fsystype)
     _farpokeb(_dos_ds, tbuf_la++, '\0');
   }
 
+  r.x.flags = 1;	/* Always set CF before calling a 0x71NN function. */
   r.x.ax = 0x71a0;	/* Get Volume Information function */
   r.x.ds = tbuf_seg;	/* DS:DX points to root directory name */
   r.x.dx = 0;
@@ -80,7 +82,7 @@ _get_volume_info (const char *path, int *maxfile, int *maxpath, char *fsystype)
   r.x.cx = 32;		/* max size of filesystem name (Interrupt List) */
   __dpmi_int(0x21, &r);
 
-  if ((r.x.flags & 1) == 0 && r.x.ax != 0x7100)
+  if (!(r.x.flags & 1) && (r.x.ax != 0x7100))
   {
     char *p = fsystype, c;
 
