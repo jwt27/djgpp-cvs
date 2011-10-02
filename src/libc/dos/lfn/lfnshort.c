@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -21,6 +22,7 @@ _lfn_gen_short_fname(const char *long_fname, char *short_fname)
   __dpmi_regs r;
   unsigned long tbuf = __tb;
 
+  r.x.flags = 1;	/* Always set CF before calling a 0x71NN function. */
   r.x.ax = 0x7100;
   if (_USE_LFN)
     {
@@ -34,7 +36,7 @@ _lfn_gen_short_fname(const char *long_fname, char *short_fname)
       __dpmi_int (0x21, &r);
     }
 
-  if ((r.x.flags & 1) == 0 && r.x.ax != 0x7100)
+  if (!(r.x.flags & 1) && (r.x.ax != 0x7100))
     {
       char buf[13], *s = buf, *d = short_fname;
 
