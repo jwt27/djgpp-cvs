@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -48,17 +49,30 @@ __getcwd(char *buf, size_t size)
 
   /* get the path into the transfer buffer at least */
   if (use_lfn)
+  {
+    r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x7147;
+  }
   else
     r.h.ah = 0x47;
+do_getcwd:
   r.h.dl = 0;
   r.x.si = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
 
-  /* current drive may be invalid (it happens) */
-  if (r.x.flags & 1)
+  if (r.x.ax == 0x7100)
   {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on SFN API 0x47.  */
+    use_lfn = 0;
+    r.h.ah = 0x47;
+    goto do_getcwd;
+  }
+  else if (r.x.flags & 1)
+  {
+    /* current drive may be invalid (it happens) */
     errno = __doserr_to_errno(r.x.ax);
     return 0;
   }
