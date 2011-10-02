@@ -859,7 +859,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
             }
 
             /* Executables are detected if they have magic numbers.  */
-            if ( (_djstat_flags & _STAT_EXEC_MAGIC) == 0 &&
+            if (!(_djstat_flags & _STAT_EXEC_MAGIC) &&
                 _is_executable((const char *)0, fhandle, (const char *)0))
               stat_buf->st_mode |= EXEC_ACCESS;
           }
@@ -879,7 +879,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
             _file_time_stamp(dos_ftime);
 
           /* Additional time info for LFN platforms.  */
-          set_fstat_times (fhandle, stat_buf);
+          set_fstat_times(fhandle, stat_buf);
         }
       return 0;
     }

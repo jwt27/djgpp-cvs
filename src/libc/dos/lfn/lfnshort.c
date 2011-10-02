@@ -10,13 +10,13 @@
 #include <sys/movedata.h>
 
 static int
-msdos_toupper_fname (int c)
+msdos_toupper_fname(int c)
 {
   return (c >= 'a' && c <= 'z') ? toupper (c) : c;
 }
 
 char *
-_lfn_gen_short_fname (const char *long_fname, char *short_fname)
+_lfn_gen_short_fname(const char *long_fname, char *short_fname)
 {
   __dpmi_regs r;
   unsigned long tbuf = __tb;
