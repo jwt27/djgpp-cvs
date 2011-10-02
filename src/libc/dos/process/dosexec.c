@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -213,13 +214,17 @@ direct_exec_tail_1 (const char *program, const char *args,
   if (lfn)
   {
     unsigned pgm_name_loc = tbuf_beg == __tb ? tbuf_ptr : __tb;
+    r.x.flags = 1;			/* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x7160;			/* Truename */
     r.x.cx = 1;				/* Get short name */
     r.x.ds = r.x.es = pgm_name_loc / 16;
     r.x.si = r.x.di = pgm_name_loc & 15;
     __dpmi_int(0x21, &r);
-    if (r.x.flags & 1)
+    if ((r.x.flags & 1) || (r.x.ax == 0x7100))
     {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+          If not supported fail.  */
       errno = __doserr_to_errno(r.x.ax);
       return -1;
     }
