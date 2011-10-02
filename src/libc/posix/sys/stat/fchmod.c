@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <string.h>
@@ -22,6 +23,7 @@ get_current_mode (const int fd)
 
   if (_USE_LFN)
   {
+    r.x.flags = 1;   /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x71a6; /* File info by handle */
     r.x.bx = fd;
     r.x.ds = __tb >> 4;
@@ -29,8 +31,11 @@ get_current_mode (const int fd)
 
     __dpmi_int(0x21, &r);
 
-    if ((r.x.flags & 1) == 0)
+    if (!(r.x.flags & 1) && (r.x.ax != 0x7100))
     {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+          If not supported fail.  */
       int attr = _farpeekl(_dos_ds, __tb);
 
       mode = S_IRUSR; /* Files are always readable. */

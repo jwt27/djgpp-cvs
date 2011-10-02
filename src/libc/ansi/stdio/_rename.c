@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -90,12 +91,16 @@ int _rename(const char *old, const char *new)
       *pbase = try_char[--idx];
     } while (_chmod(tempfile, 0) != -1);
 
+    r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x7156;
     _put_path2(tempfile, olen);
     _put_path(old);
     __dpmi_int(0x21, &r);
-    if (r.x.flags & 1)
+    if ((r.x.flags & 1) || (r.x.ax == 0x7100))
     {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+          If not supported fail.  */
       errno = __doserr_to_errno(r.x.ax);
       return -1;
     }
@@ -114,7 +119,10 @@ int _rename(const char *old, const char *new)
   for (i = 0; i < 2; i++)
   {
     if (use_lfn)
+    {
+      r.x.flags |= 1;  /* Always set CF before calling a 0x71NN function. */
       r.x.ax = 0x7156;
+    }
 #if 0
     /* It seems that no version of DOS, including DOS 8, which is part
        of Windows/ME, implements this function.  Without LFN, this fails
@@ -135,8 +143,12 @@ int _rename(const char *old, const char *new)
     _put_path2(new, olen);
     _put_path(old);
     __dpmi_int(0x21, &r);
-    if (r.x.flags & 1)
+    if ((r.x.flags & 1) || (r.x.ax == 0x7100))
     {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+          If not supported fail.  */
+
       if (i == 0
 	  && !identical_but_for_case /* don't nuke OLD! */
 	  && (r.x.ax == 5 || (r.x.ax == 2 && __file_exists(old))
