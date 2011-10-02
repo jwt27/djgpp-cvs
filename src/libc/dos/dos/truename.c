@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -107,6 +108,7 @@ _truename_internal(const char *file, char *buf, const int try_lfn)
   /* Call DOS INT 21H undocumented function 60h. */
   if (use_lfn)
   {
+    regs.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     regs.x.ax = 0x7160;
     /* Get Long Path Name (if there is one) and we want it. */
     regs.x.cx = try_lfn ? 2 : 0;
@@ -122,6 +124,16 @@ lfn_retry:
   regs.x.si = __tb_offset;
   regs.x.di = __tb_offset + MAX_TRUE_NAME;
   __dpmi_int(0x21, &regs);
+
+  if (regs.x.ax == 0x7100)
+  {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on 0x6000.  */
+    use_lfn = 0;
+    regs.x.ax = 0x6000;
+    goto lfn_retry;
+  }
 
   /* Now get the result from lower memory. */
   movedata(dos_mem_selector, __tb + MAX_TRUE_NAME,
