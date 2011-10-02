@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -30,7 +31,10 @@ mkdir(const char *mydirname, mode_t mode)
   _put_path(dir_name);
  
   if (use_lfn)
+  {
+    r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x7139;
+  }
 #if 0
   /* It seems that no version of DOS, including DOS 8, which is part
      of Windows/ME, implements this function.  Without LFN, this fails
@@ -48,11 +52,20 @@ mkdir(const char *mydirname, mode_t mode)
 #endif
   else
     r.h.ah = 0x39;
+do_mkdir:
   r.x.ds = __tb_segment;
   r.x.dx = __tb_offset;
   __dpmi_int(0x21, &r);
  
-  if (r.x.flags & 1)
+  if (r.x.ax == 0x7100)
+  {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on SFN API 0x39.  */
+    r.h.ah = 0x39;
+    goto do_mkdir;
+  }
+  else if (r.x.flags & 1)
   {
     int save_errno;
     save_errno = errno = __doserr_to_errno(r.x.ax);
