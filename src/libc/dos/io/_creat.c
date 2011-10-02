@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -33,6 +34,7 @@ _creat(const char* filename, int attrib)
 
   if (use_lfn)
   {
+    r.x.flags = 1;		/* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x716c;
     r.x.bx = 0x0002;		/* Open r/w. */
     /* The FAT32 bit should _not_ be set on Windows 2000, because
@@ -63,11 +65,23 @@ _creat(const char* filename, int attrib)
       r.x.dx = __tb_offset;
     }
   }
+do_create:
   r.x.cx = attrib;
   r.x.ds = __tb_segment;
   _put_path(filename);
   __dpmi_int(0x21, &r);
-  if (r.x.flags & 1)
+
+  if (r.x.ax == 0x7100)
+  {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on SFN API 0x3C.  */
+    use_lfn = 0;
+    r.h.ah = 0x3c;
+    r.x.dx = __tb_offset;
+    goto do_create;
+  }
+  else if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
     return -1;

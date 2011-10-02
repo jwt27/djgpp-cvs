@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -42,6 +43,7 @@ _creatnew(const char* filename, int attrib, int flags)
     {
       r.x.bx |= 0x1000; 	/* FAT32 extended size. */
     }
+    r.x.flags = 1; 		/* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x716c;
   }
   else
@@ -64,10 +66,24 @@ _creatnew(const char* filename, int attrib, int flags)
       r.x.si = 0;
     }
   }
+do_create:
   r.x.cx = attrib & 0xffff;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);
-  if (r.x.flags & 1)
+
+  if (r.x.ax == 0x7100)
+  {
+    /*  Never assume that the complete LFN API is implemented,
+        so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+        If not supported fall back on SFN API 0x5B.  */
+    use_lfn = 0;
+    r.h.ah = 0x5b;
+    r.x.bx = 0;		/* lose support for fancy flags in DOS 3.x */
+    r.x.dx = __tb_offset;
+    r.x.si = 0;
+    goto do_create;
+  }
+  else if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
     return -1;
