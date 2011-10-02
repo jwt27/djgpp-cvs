@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -33,6 +34,7 @@ findnext(struct ffblk *ffblk)
       extern long _Win32_to_DOS(long long WinTime);
     #endif
 
+    r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x714f;
     r.x.bx = ffblk->lfn_handle;
     if (!r.x.bx)
@@ -45,8 +47,12 @@ findnext(struct ffblk *ffblk)
     r.x.si = USEDOSDATE;
 
     __dpmi_int(0x21, &r);
-    if (!(r.x.flags & 1))
+    if (!(r.x.flags & 1) && (r.x.ax != 0x7100))
     {
+      /*  Never assume that the complete LFN API is implemented,
+          so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
+          If not supported fall back on SFN API 0x4F.  */
+
       unsigned long t1; 
       struct ffblklfn ffblk32;
       /* Recover results */
@@ -71,6 +77,7 @@ findnext(struct ffblk *ffblk)
     if (errno == ENMFILE)         /* call FindClose */
     {
       ffblk->lfn_handle = 0;
+      r.x.flags |= 1;  /* Always set CF before calling a 0x71NN function. */
       r.x.ax = 0x71a1;
       __dpmi_int(0x21, &r);
       if (r.x.flags & 1)
