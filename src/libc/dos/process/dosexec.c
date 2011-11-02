@@ -117,7 +117,7 @@ static int check_talloc(size_t amt)
     tbuf_len = (tbuf_len + 15) & 0xffff0; /* round to nearest paragraph */
 
     if ((new_tb =
-	 __dpmi_allocate_dos_memory(tbuf_len/16, &max_avail)) == (unsigned)-1)
+	 __dpmi_allocate_dos_memory(tbuf_len / 16, &max_avail)) == (unsigned)-1)
     {
       if (max_avail*16 < (int) min_len
 	  || (new_tb =
@@ -126,7 +126,7 @@ static int check_talloc(size_t amt)
 	retval = 0;
 	goto done;
       }
-      tbuf_len = max_avail*16;
+      tbuf_len = max_avail * 16;
     }
     else
       tbuf_selector = max_avail;
@@ -180,7 +180,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   unsigned long proxy_off = 0;
   int initial_tbuf_selector = tbuf_selector; 
 #endif
-  size_t proxy_len = proxy ? strlen(proxy)+1 : 0;
+  size_t proxy_len = proxy ? strlen(proxy) + 1 : 0;
   int seen_proxy = 0, seen_cmdline = 0;
   char arg_header[3];
   char short_name[FILENAME_MAX];
@@ -205,7 +205,7 @@ direct_exec_tail_1 (const char *program, const char *args,
     lfn = _USE_LFN;
 
   /* The pathname of the executable to run.  */
-  proglen = strlen(program)+1;
+  proglen = strlen(program) + 1;
   if (!check_talloc(proglen))
     return -1;
   /* Make sure any magic names, like /dev/c/foo, are converted to the
@@ -231,12 +231,12 @@ direct_exec_tail_1 (const char *program, const char *args,
   }
   dosmemget(tbuf_beg == __tb ? tbuf_ptr : __tb, FILENAME_MAX, short_name);
   progname = short_name;
-  proglen = strlen(short_name)+1;
+  proglen = strlen(short_name) + 1;
 
   if (!check_talloc(proglen + strlen(args) + 3 + sizeof(Execp) + 48))
     return -1;
   program_la = talloc(proglen);
-  arg_la     = talloc(strlen(args)+3);
+  arg_la     = talloc(strlen(args) + 3);
   parm_la    = talloc(sizeof(Execp));
 
   dosmemput(progname, proglen, program_la);
@@ -259,8 +259,8 @@ direct_exec_tail_1 (const char *program, const char *args,
   arg_header[1] = '\r';
 
   dosmemput(arg_header, 1, arg_la); /* command tail length byte */
-  dosmemput(args, arg_len, arg_la+1); /* command tail itself */
-  dosmemput(arg_header+1, 1, arg_la+1+arg_len); /* terminating CR */
+  dosmemput(args, arg_len, arg_la + 1); /* command tail itself */
+  dosmemput(arg_header+1, 1, arg_la + 1 + arg_len); /* terminating CR */
 
 #ifdef __ENABLE_TB_REALLOC
   if (strncmp(args, __PROXY, __PROXY_LEN) == 0 && args[__PROXY_LEN] == ' ')
@@ -321,13 +321,13 @@ direct_exec_tail_1 (const char *program, const char *args,
      one (for nested programs) if we are called from `system',
      or skip it, if we are called from `spawnXX'.
      Similar treatment is given the CMDLINE variable.  */
-  for (i=0; envp[i]; i++)
+  for (i = 0; envp[i]; i++)
   {
 #ifdef __ENABLE_TB_REALLOC
     int have_proxy = 0;
 #endif
     const char *ep = envp[i];
-    size_t env_len = strlen(ep)+1;
+    size_t env_len = strlen(ep) + 1;
 
     if (strncmp(ep, __PROXY, __PROXY_LEN) == 0 && ep[__PROXY_LEN] == '=')
     {
@@ -406,12 +406,12 @@ direct_exec_tail_1 (const char *program, const char *args,
     char temp[65], *s, t2[5];
     sprintf (t2, "%04lX", tbuf_beg>>4);
     dosmemget (tbuf_beg+proxy_off, 64, temp);
-    temp[64]=0;
+    temp[64] = 0;
     s = strchr(temp,'\r');
-    if (s) *s=0;
-    dosmemput (t2, 4, tbuf_beg+proxy_off+13);
-    if (strlen(temp)>23) 
-        dosmemput (t2, 4, tbuf_beg+proxy_off+23);
+    if (s) *s = 0;
+    dosmemput (t2, 4, tbuf_beg + proxy_off + 13);
+    if (strlen(temp) > 23) 
+        dosmemput (t2, 4, tbuf_beg + proxy_off + 23);
   }
 #endif
 
@@ -459,7 +459,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   if (r.h.ah && r.h.ah != 3) /* 3 means it exited as TSR (is it ``normal''?) */
     {
       errno = EINTR;	/* what else can we put in `errno'? */
-      return ( ((r.h.ah == 1 ? SIGINT : SIGABRT) << 8) | r.h.al );
+      return (((r.h.ah == 1 ? SIGINT : SIGABRT) << 8) | r.h.al);
     }
   return r.h.al;	/* AL holds the child exit code */
 }
@@ -488,8 +488,8 @@ static int direct_exec_tail (const char *program, const char *args,
     /* since not needed.  Does not work with CWSDPMI versions before  */
     /* r5 as corresponding DPMI call is supported beginning with v5.  */
 
-    ret = __dpmi_get_capabilities(&flags,dpmi_vendor);
-    if (ret == 0 && strcmp(dpmi_vendor+2,"CWSDPMI") == 0)
+    ret = __dpmi_get_capabilities(&flags, dpmi_vendor);
+    if (ret == 0 && strcmp(dpmi_vendor + 2, "CWSDPMI") == 0)
       workaround_descriptor_leaks = 0;
     else {
 
@@ -511,15 +511,15 @@ static int direct_exec_tail (const char *program, const char *args,
       __dpmi_free_ldt_descriptor(sel1);
       flags = __dpmi_get_descriptor_access_rights(sel1);	/* freed */
 
-      if (larbyte != (flags & 0xf0)) {	/* present+ring+sys changed */
-        workaround_descriptor_leaks = 1;
-
-      } else {				/* Win NT/2K/XP lie about lar */
+      if (larbyte != (flags & 0xf0))
+        workaround_descriptor_leaks = 1;	/* present+ring+sys changed */
+      else
+      {				/* Win NT/2K/XP lie about lar */
         larbyte = desc_buf1[5] & 0xf0;
         ret = __dpmi_get_descriptor(sel1, &desc_buf2);
-        if (ret == -1 || (larbyte != (desc_buf2[5] & 0xf0))) {
+        if (ret == -1 || (larbyte != (desc_buf2[5] & 0xf0)))
           workaround_descriptor_leaks = 2;
-        } else
+        else
           workaround_descriptor_leaks = 0;	/* Don't do anything */
       }
     }
@@ -548,11 +548,11 @@ static int direct_exec_tail (const char *program, const char *args,
     sel2 = sel1 + 8 * how_deep - 8;		/* end of scan range inclusive */
 
     if (workaround_descriptor_leaks == 1) {
-      for (i=sel1+8; i<=sel2; i+=8)
+      for (i = sel1 + 8; i <= sel2; i += 8)
         *map++ = (__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte;
 
     } else if (workaround_descriptor_leaks == 2) {
-      for (i=sel1+8; i<=sel2; i+=8)
+      for (i = sel1 + 8; i <= sel2; i += 8)
         if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte)
           *map++ = 1;				/* Never touched, free it */
         else if (__dpmi_get_descriptor(i, &desc_buf) == -1)
@@ -587,7 +587,7 @@ static int direct_exec_tail (const char *program, const char *args,
     __dpmi_free_ldt_descriptor (endsel);
 
     if (workaround_descriptor_leaks) {		/* Algorithms 1 & 2 */
-      for (i=sel2; i>=sel1; i-=8)
+      for (i = sel2; i >= sel1; i -= 8)
         if (*--map)
           if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) == larbyte)
             __dpmi_free_ldt_descriptor(i);
@@ -596,7 +596,7 @@ static int direct_exec_tail (const char *program, const char *args,
     if (endsel > sel2) {
       how_deep = (endsel - sel1) / 4;		/* Twice what's needed */
 #if 0
-      for (i=endsel-8; i>=sel2; i-=8)		/* Unsafe free, no map */
+      for (i = endsel - 8; i >= sel2; i -= 8)		/* Unsafe free, no map */
         __dpmi_free_ldt_descriptor(i);
 #endif
     }
@@ -647,7 +647,7 @@ static struct __shell_data unix_shells[] = {
 };
 
 unsigned int
-_shell_cmdline_limit (const char *program)
+_shell_cmdline_limit(const char *program)
 {
   const char *p = program, *ptail = program;
   struct __shell_data *program_list;
@@ -691,7 +691,7 @@ _shell_cmdline_limit (const char *program)
 }
 
 static int
-list_member (const char *program, struct __shell_data program_list[])
+list_member(const char *program, struct __shell_data program_list[])
 {
   const char *p = program, *ptail = program;
   int i;
@@ -711,15 +711,15 @@ list_member (const char *program, struct __shell_data program_list[])
 }
 
 int
-_is_unixy_shell (const char *shellpath)
+_is_unixy_shell(const char *shellpath)
 {
-  return list_member (shellpath, unix_shells);
+  return list_member(shellpath, unix_shells);
 }
 
 int
-_is_dos_shell (const char *shellpath)
+_is_dos_shell(const char *shellpath)
 {
-  return list_member (shellpath, shell_brokets);
+  return list_member(shellpath, shell_brokets);
 }
 
 static int direct_pe_exec(const char *, char **, char **);
@@ -847,7 +847,7 @@ static int direct_pe_exec(const char *program, char **argv, char **envp)
      extreme case where each character is a quote that needs to be
      escaped, plus 2 for two outer quotes, plus 1 for the delimiting
      blank.  */
-  for (i=1; argv[i]; i++)
+  for (i = 1; argv[i]; i++)
     arglen += 2*strlen(argv[i]) + 1 + 2;
 
   /* Assumption: PROGRAM does not include quotes (DOS/Windows do not
@@ -941,12 +941,12 @@ static int go32_exec(const char *program, char **argv, char **envp)
   const _v2_prog_type * type;
   char *save_argv0;
   int i;
-  char *go32, *sip=0;
+  char *go32, *sip = 0;
   char rpath[FILENAME_MAX];
   char real_program[FILENAME_MAX];
-  int argc=0;
+  int argc = 0;
 
-  int si_la=0, si_off=0, rm_off, argv_off;
+  int si_la = 0, si_off = 0, rm_off, argv_off;
   char cmdline[CMDLEN_LIMIT+2], *cmdp = cmdline;
   char *pcmd = cmdline, *pproxy = 0, *proxy_cmdline = 0;
   int lfn = 2;	/* means don't know yet */
@@ -954,7 +954,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   if (!__solve_symlinks(program, real_program))
      return -1;
 
-  type = _check_v2_prog (real_program, -1);
+  type = _check_v2_prog(real_program, -1);
 
   /* Because this function is called only, when program
      exists, I can skip the check for type->valid */
@@ -983,7 +983,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
 	return direct_pe_exec(real_program, argv, envp);
     }
     else
-      return __dosexec_command_exec (real_program, argv, envp);
+      return __dosexec_command_exec(real_program, argv, envp);
   }
 
   if (found_si)
@@ -1024,7 +1024,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   /* Since that's where we really found it */
   argv[0] = unconst(program, char *); 
   /* Construct the DOS command tail */
-  for (argc=0; argv[argc]; argc++);
+  for (argc = 0; argv[argc]; argc++);
 
   if (__dosexec_in_system && v2_0)
   {
@@ -1078,7 +1078,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
   rm_argv = (short *)alloca((argc+1) * sizeof(short));
 #endif
 
-  for (i=0; i<argc; i++)
+  for (i = 0; i < argc; i++)
   {
     char *pargv = argv[i];
     int sl = strlen(pargv) + 1;
@@ -1098,7 +1098,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
     }
   }
 
-  _farpokew (_dos_ds, tbuf_beg + argv_off, 0);
+  _farpokew(_dos_ds, tbuf_beg + argv_off, 0);
   argv_off += sizeof(short);
 
   argv[0] = save_argv0;
@@ -1129,7 +1129,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
 int
 __dosexec_command_exec(const char *program, char **argv, char **envp)
 {
-  const char *comspec=0;
+  const char *comspec = 0;
   char *cmdline;
   int cmdlen;
   int i;
@@ -1143,8 +1143,8 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
 
   /* Add spare space for possible quote characters.  */
   cmdlen = strlen(real_program) + 4 + 2;
-  for (i=0; argv[i]; i++)
-    cmdlen += 2*strlen(argv[i]) + 1;
+  for (i = 0; argv[i]; i++)
+    cmdlen += 2 * strlen(argv[i]) + 1;
   cmdline = (char *)alloca(cmdlen);
 
   strcpy(cmdline, "/c ");
@@ -1157,19 +1157,19 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   {
     /* COMMAND.COM cannot grok program names with forward slashes.  */
     if (program[i] == '/')
-      cmdline[i+3+was_quoted] = '\\';
+      cmdline[i + 3 + was_quoted] = '\\';
     else
-      cmdline[i+3+was_quoted] = real_program[i];
+      cmdline[i + 3 + was_quoted] = real_program[i];
   }
   for (; real_program[i]; i++)
-    cmdline[i+3+was_quoted] = real_program[i];
+    cmdline[i + 3 + was_quoted] = real_program[i];
   if (was_quoted)
   {
-    cmdline[i+3+was_quoted] = '"';
+    cmdline[i + 3 + was_quoted] = '"';
     i++;
   }
-  cmdline[i+3+was_quoted] = 0;
-  for (i=1; argv[i]; i++)
+  cmdline[i + 3 + was_quoted] = 0;
+  for (i = 1; argv[i]; i++)
   {
     strcat(cmdline, " ");
     /* If called by `spawnXX' or `execXX' functions, must quote
@@ -1213,13 +1213,13 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
     else
       strcat(cmdline, argv[i]);
   }
-  for (i=0; envp[i]; i++)
+  for (i = 0; envp[i]; i++)
     if (strncmp(envp[i], "COMSPEC=", 8) == 0)
-      comspec = envp[i]+8;
+      comspec = envp[i] + 8;
   if (!comspec)
-    for (i=0; _environ[i]; i++)
+    for (i = 0; _environ[i]; i++)
       if (strncmp(_environ[i], "COMSPEC=", 8) == 0)
-        comspec = _environ[i]+8;
+        comspec = _environ[i] + 8;
   if (!comspec)
     comspec = "c:\\command.com";
 
@@ -1278,8 +1278,8 @@ static int script_exec(const char *program, char **argv, char **envp)
 {
   char line[130], interp[FILENAME_MAX], iargs[130];
   FILE *f;
-  char **newargs;
-  int i, hasargs=0;
+  char **new_args;
+  int i, has_args = 0;
   unsigned int ln;
   char *base, *p;
   int has_extension = 0, has_drive = 0;
@@ -1300,7 +1300,7 @@ static int script_exec(const char *program, char **argv, char **envp)
     return go32_exec(program, argv, envp);
 
   /* Paranoia: is this at all a text file?  */
-  for (ln=0; ln < sizeof(line)-1 && line[ln] != '\0'; ln++)
+  for (ln = 0; ln < sizeof(line) - 1 && line[ln] != '\0'; ln++)
     if (line[ln] < 7 && line[ln] >= 0)
       return direct_exec(program, argv, envp);
 
@@ -1312,24 +1312,24 @@ static int script_exec(const char *program, char **argv, char **envp)
   if (interp[0] == 0)
     return __dosexec_command_exec(program, argv, envp); /* it couldn't be .exe or .com if here */
   if (iargs[0])
-    hasargs=1;
+    has_args = 1;
 
-  for (i=0; argv[i]; i++);
-  newargs = (char **)alloca((i+2+hasargs)*sizeof(char *));
-  for (i=0; argv[i]; i++)
-    newargs[i+1+hasargs] = unconst(argv[i], char *);
-  newargs[i+1+hasargs] = 0;
+  for (i = 0; argv[i]; i++);
+  new_args = (char **)alloca((i + 2 + has_args) * sizeof(char *));
+  for (i = 0; argv[i]; i++)
+    new_args[i + 1 + has_args] = unconst(argv[i], char *);
+  new_args[i + 1 + has_args] = 0;
   /* Some interpreters might have their own ideas about $PATH.
      Therefore, pass them the full pathname of the script.  */
-  newargs[0] = newargs[1+hasargs] = unconst(program, char *);
-  if (hasargs)
-    newargs[1] = iargs;
+  new_args[0] = new_args[1 + has_args] = unconst(program, char *);
+  if (has_args)
+    new_args[1] = iargs;
 
   /* If INTERP is a Unix-style pathname, like "/bin/sh", we will try
      it with the usual extensions and, if that fails, will further
      search for the basename of the shell along the PATH; this
      allows to run Unix shell scripts without editing their first line.  */
-  for (base=p=interp; *p; p++)
+  for (base = p = interp; *p; p++)
   {
     if (*p == '.')
       has_extension = 1;
@@ -1366,7 +1366,7 @@ static int script_exec(const char *program, char **argv, char **envp)
     ++p;
   }
 
-  i = (*spawnfunc)(P_WAIT, pinterp, newargs, envp);
+  i = (*spawnfunc)(P_WAIT, pinterp, new_args, envp);
   return i;
 }
 
@@ -1406,7 +1406,7 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
 {
   char *pp, *rp, *pe;
   const char *ptr;
-  int i, hasdot=0, haspath=0;
+  int i, has_dot = 0, has_path = 0;
   int tried_dot = 0;
   int e = errno, blen = strlen(program);
 
@@ -1421,17 +1421,17 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
   for (ptr=program; *ptr; ptr++)
   {
     if (*ptr == '.')
-      hasdot = 1;
+      has_dot = 1;
     if (*ptr == '/' || *ptr == '\\' || *ptr == ':')
     {
-      haspath = 1;
-      hasdot = 0;
+      has_path = 1;
+      has_dot = 0;
     }
   }
 
   /* Under LFN, we must try the extensions even if PROGRAM already has one.  */
-  if (!hasdot || _use_lfn(program))
-    for (i=0; interpreters[i].extension; i++)
+  if (!has_dot || _use_lfn(program))
+    for (i = 0; interpreters[i].extension; i++)
     {
       if (interpreters[i].flags & INTERP_FLAG_SKIP_SEARCH)
         continue;
@@ -1453,12 +1453,12 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
     return buf;
   }
 
-  if (haspath || !envp)
+  if (has_path || !envp)
     return 0;
   *rp = 0;
 
   pp = 0;
-  for (i=0; envp[i]; i++)
+  for (i = 0; envp[i]; i++)
     if (strncmp(envp[i], "PATH=", 5) == 0)
       pp = envp[i] + 5;
   if (pp == 0)
@@ -1485,8 +1485,8 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
       *rp++ = *ptr;
     *rp = 0;
     
-    if (!hasdot || _use_lfn(buf))
-      for (i=0; interpreters[i].extension; i++)
+    if (!has_dot || _use_lfn(buf))
+      for (i = 0; interpreters[i].extension; i++)
       {
         strcpy(rp, interpreters[i].extension);
         if (access(buf, 0) == 0 && access(buf, D_OK))
@@ -1592,7 +1592,7 @@ int __djgpp_spawn(int mode, const char *path, char *const argv[],
 
   /* Copy the path to rpath and also mark where the extension is.  */
   fflush(stdout); /* just in case */
-  for (rp_end=rpath; *path; *rp_end++ = *path++)
+  for (rp_end = rpath; *path; *rp_end++ = *path++)
   {
     if (*path == '.')
       rp_ext = rp_end;
