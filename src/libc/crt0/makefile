@@ -1,3 +1,4 @@
+# Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
@@ -12,6 +13,7 @@ SRC += crt1.c
 SRC += mcount.c
 SRC += memhandl.c
 SRC += rfinfo.c
+SRC += dfinfo.c
 
 EXTRA_OBJS += $(LIB)/crt0.o
 EXTRA_OBJS += $(LIB)/gcrt0.o
