@@ -241,13 +241,13 @@ static void process_args (int argc, char *argv[], const char *new_argv[])
     if (p) {
        strcpy(libdir, p);
        strcat(libdir, "/lib");
-    }else {
+    } else {
        fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
        exit(1);
     }
  }
 
- new_argv[0] = DXE_LD ;
+ new_argv[0] = DXE_LD;
  new_argv[1] = "-X";
  new_argv[2] = "-S";
  new_argv[3] = "-r";
@@ -456,17 +456,18 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
     if ((init > 0) || (fini > 0)) {
        fclose(f);
 
-       for (i = 0; argv[i] != NULL; i++) ;
+       for (i = 0; argv[i] != NULL; i++)
+         ;
 
        if (init > 0) {
           f = fopen(TEMP_BASE"i.o", "wb");
-          fwrite(inits[init-1].data, inits[init-1].size, 1, f);
+          fwrite(inits[init - 1].data, inits[init - 1].size, 1, f);
           fclose(f);
           argv[i++] = TEMP_BASE"i.o";
        }
        if (fini > 0) {
           f = fopen(TEMP_BASE"f.o", "wb");
-          fwrite(finis[fini-1].data, finis[fini-1].size, 1, f);
+          fwrite(finis[fini - 1].data, finis[fini - 1].size, 1, f);
           fclose(f);
           argv[i++] = TEMP_BASE"f.o";
        }
