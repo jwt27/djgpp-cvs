@@ -10,7 +10,7 @@ Ability to report the exact CPU type in @code{uname}.
 @findex _creatnew@r{, and FAT32}
 @findex _open@r{, and FAT32}
 The functions @code{_creat}, @code{_creatnew} and @code{_open} now set
-extended size flag in DOS calls to be able to create files with size up
+extended size flag in @acronym{DOS} calls to be able to create files with size up
 to @math{2^32-1}, supported on FAT32 volumes.
 
 @findex llseek@r{, and FAT32}
@@ -62,8 +62,8 @@ the extension @file{.exe} isn't given in the command line.
 for negative arguments.
 
 @findex remove@r{, and write-protected floppies}
-The function @code{remove} works around a DOS bug, whereby DOS returns a
-``File not found'' error for write-protected floppy disks.
+The function @code{remove} works around a @acronym{DOS} bug, whereby @acronym{DOS}
+returns a ``File not found'' error for write-protected floppy disks.
 
 @findex rand@r{, increased period}
 The series produced by @code{rand} have a longer period.
@@ -135,7 +135,7 @@ space with @code{etext}.
 @pindex dtou@r{, new command-line options}
 The @code{dtou} program accepts new command-line options for verbose
 operation, backup file creation, and control of file timestamp
-preservation.  Its source can now be compiled on a Unix or GNU/Linux
+preservation.  Its source can now be compiled on a @acronym{Unix} or @acronym{GNU/Linux} 
 system.
 
 @cindex header files and GCC
@@ -145,8 +145,8 @@ header files compatible with GCC provided ones.
 
 @cindex @code{bzip2} archives
 @pindex djtar@r{, support for unpacking @code{bzip2} archives}
-The @code{djtar} program can now unpack @file{.tar.bz2} archives
-compressed with the @code{bzip2} program.
+The @file{djtar} program can now unpack @file{.tar.bz2} archives
+compressed with the @file{bzip2} program.
 
 @findex system@r{, invokes Windows programs with long command lines}
 @findex spawn*@r{ functions, invoke Windows programs with long command lines}
@@ -155,17 +155,17 @@ compressed with the @code{bzip2} program.
 @pindex 4DOS@r{, support for long command lines}
 @pindex NDOS@r{, support for long command lines}
 The functions @code{system} and @code{spawn*} can invoke Windows
-programs and advanced shells, such as @code{4DOS} and @code{NDOS}, with
+programs and advanced shells, such as @file{4DOS} and @file{NDOS}, with
 command lines longer than 126 characters.  For Windows programs, the
-command line can be up to 1015 characters long; @code{4DOS} and
-@code{NDOS} can be passed up to 247 characters.  This is done by
+command line can be up to 1015 characters long; @file{4DOS} and
+@file{NDOS} can be passed up to 247 characters.  This is done by
 defining the @env{CMDLINE} environment variable whose value is the
 command line.  The DJGPP startup code also supports @env{CMDLINE}
 method of passing long command lines, so DJGPP programs can now be
 invoked with long command lines from the @file{COMMAND.COM}'s prompt,
 and also from other Windows programs which support @code{CMDLINE}.
 The functions @code{system} and @code{spawn*} have also been enhanced
-to free DPMI selectors leaked by many DPMI hosts.  This fixes the
+to free @acronym{DPMI} selectors leaked by many @acronym{DPMI} hosts.  This fixes the
 problem with large makefiles failing before completion under Windows.
 @findex spawn*@r{, no longer leak selectors on Windows and DOSEmu}
 @findex system@r{, no longer leaks selectors on Windows and DOSEmu}
@@ -181,7 +181,7 @@ the letter case of a file name, like in this snippet:
 @end example
 
 @noindent
-(This only works when the LFN support is available, of course.)
+(This only works when the @acronym{LFN} support is available, of course.)
 
 @cindex search for executables, some extensions omitted
 @cindex @file{.sh}, @file{.ksh}, @file{.pl}, @file{.sed} extensions
@@ -201,7 +201,7 @@ This change affects all library functions which search for executables
 along the @code{PATH}: @code{system}, @code{popen}, @code{pclose}, and
 the functions from the @code{spawn*} family.
 
-The DOS standard extensions @file{.com}, @file{.exe}, @file{.bat}, and
+The @acronym{DOS} standard extensions @file{.com}, @file{.exe}, @file{.bat}, and
 @file{.btm} are still included in the search @emph{before} looking for
 the file name itself, for compatibility with stock DOS/Windows shells.
 
@@ -222,7 +222,7 @@ The low-level function @code{_put_path} was changed to avoid referencing
 an @file{env} directory in the current working directory when library
 functions are passed the @file{/dev/env} file name.  This avoids
 creating spurious @file{env} directories in any directory where the
-standard GNU @code{mkinstalldirs} script is run.
+standard @acronym{GNU} @code{mkinstalldirs} script is run.
 
 @findex rename@r{, and Windows 2000}
 @findex _rename@r{, and Windows 2000}
@@ -268,7 +268,7 @@ read locking in DOS/Windows 9X environments.
 
 @item
 @findex fcntl@r{ commands @code{F_GETFD} and @code{F_SETFD}}
-These functions now interrogate and use the value of the DOS flag
+These functions now interrogate and use the value of the @acronym{DOS} flag
 @code{_DEV_NO_INHERIT} to implement the @code{FD_CLOEXEC} flag;
 
 @item
@@ -303,7 +303,7 @@ New function @code{dostrerr} has been coded to provide string
 values for the error codes returned from function @code{dosexterr}.
 Documentation and a test program have been provided.  This function is
 an analogue of the @code{strerror} function for errno values, and is
-intended to be used when coding functions or programs that call DOS and
+intended to be used when coding functions or programs that call @acronym{DOS} and
 want to print messages when errors occur.
 
 @findex _dos_lk64
@@ -311,7 +311,7 @@ want to print messages when errors occur.
 @findex lock64
 @findex unlock64
 New functions @code{_dos_lk64} and @code{_dos_unlk64} have been added to
-provide a FAT32-compatible interface to the DOS locking code.
+provide a FAT32-compatible interface to the @acronym{DOS} locking code.
 Compatible functions @code{lock64} and @code{unlock64} are direct
 interfaces to these two new @code{_dos_*} functions.
 
@@ -363,16 +363,16 @@ is disabled.  This solves the problem with failures to link programs if
 the @env{LFN} variable is set to @samp{n} because @code{stubify.exe}
 failed to rename the produced executable and reported @code{EINVAL}.
 
-@findex write@r{, security fix and increased POSIX compliance}
+@findex write@r{, security fix and increased @acronym{POSIX} compliance}
 @findex _write@r{, security fix}
 When @code{write} and @code{_write} detect that a file pointer is past EOF,
-that space will now be filled with zeroes to increase POSIX compliance
+that space will now be filled with zeroes to increase @acronym{POSIX} compliance
 and plug a security hole on disks containing sensitive information.
 
-@pindex djtar@r{, DOS batch file conversion}
-If a tar archive contains DOS batch files that have been stored with
-UNIX-style LF-only EOLs, @code{djtar} will now convert them
-automatically to DOS-style EOLs.  This is because @file{COMMAND.COM}
+@pindex djtar@r{, @acronym{DOS} batch file conversion}
+If a tar archive contains @acronym{DOS} batch files that have been stored with
+UNIX-style LF-only EOLs, @file{djtar} will now convert them
+automatically to @acronym{DOS}-style EOLs.  This is because @file{COMMAND.COM}
 refuses to run batch files that contain UNIX-style EOLs.
 
 @findex pipe@r{, now implemented in the library}
@@ -433,7 +433,7 @@ Due to the improved append mode implementation, the functions @code{fopen},
 use the @code{_IOAPPEND} flag.  And since the flag is no longer used, the
 @code{_IOAPPEND} flag has been deleted from @file{libc/file.h}.
 
-@findex getopt@r{, enhanced for POSIX compliance}
+@findex getopt@r{, enhanced for @acronym{POSIX} compliance}
 When the first character in the valid options string is a colon @samp{:},
 @code{getopt} will now return a colon when a missing option argument is
 detected and will not print error messages even when @code{opterr} is
@@ -443,7 +443,7 @@ non-zero.
 @cindex @code{struct dirent}, @code{d_type} member
 The function @code{readdir} now includes the file's type in the
 @code{d_type} member of @code{struct dirent} it returns.  This member is
-used by some GNU packages, such as Fileutils, to make directory
+used by some @acronym{GNU} packages, such as Fileutils, to make directory
 traversal more efficient.  @strong{WARNING: This makes some object files
 built with DJGPP v2.03 incompatible with programs compiled with the
 v2.04 library!}
@@ -465,21 +465,21 @@ facilities do allow to detect a wide variety of heap corruption
 problems, and to report important heap usage statistics.  The new
 functions are @code{mallinfo}, @code{malloc_debug},
 @code{malloc_verify}, and @code{mallocmap}; these names are compatible
-with many Unix and GNU/Linux systems.  In addition, special hooks, such
+with many @acronym{Unix} and @acronym{GNU/Linux} systems.  In addition, special hooks, such
 as @code{__libc_malloc_hook} and @code{__libc_free_hook}, are provided
 for building custom @code{malloc} debugging packages.
 
 @cindex startup code, and crashes on Windows
 Nested DJGPP programs which are run by other DJGPP programs on Windows
-should no longer crash (and take the DOS box with them) due to the fact
+should no longer crash (and take the @acronym{DOS} box with them) due to the fact
 that Windows leaks selectors.  These crashes were caused by a failure to
 allocate a selector for conventional memory, and subsequent use of the
 invalid selector by the startup code itself.  This problem was typical
 for Make, Bash, and any other program which can launch lots of child
-programs without ever exiting to DOS.  To avoid this, the startup code
-was fixed to print an error message and exit to DOS with an exit status
-that indicates a failure, when a selector for DOS memory could not be
-allocated by the DPMI host.
+programs without ever exiting to @acronym{DOS}.  To avoid this, the startup code
+was fixed to print an error message and exit to @acronym{DOS} with an exit status
+that indicates a failure, when a selector for @acronym{DOS} memory could not be
+allocated by the @acronym{DPMI} host.
 
 @findex confstr@r{, added}
 @code{confstr} has been added to the library to support returning
@@ -542,14 +542,14 @@ A name conflict between @code{gettext} declared in @file{conio.h} and
 @findex malloc@r{, and huge allocation requests}
 @code{malloc} now declines ridiculously large allocation requests which
 exceed 2GB - 64KB.  This is because anything larger is not supported by
-@code{sbrk} and by most DPMI hosts.  Previously, @code{malloc} would
+@code{sbrk} and by most @acronym{DPMI} hosts.  Previously, @code{malloc} would
 sometimes allocate a very small buffer due to wrap-around of large
 unsigned numbers, and the calling program would then crash when it tried
 to use that buffer.
 
 @findex v2loadimage@r{, long command line support}
 @code{v2loadimage} now supports long command lines, instead of being
-restricted by the DOS 126-character limit.
+restricted by the @acronym{DOS} 126-character limit.
 
 @findex __djgpp_spawn@r{, added to the library}
 A new function, @code{__djgpp_spawn}, has been added to allow control over
@@ -561,7 +561,7 @@ an internal buffer from being overrun when the pattern to be expanded has more
 than 2000 characters.
 
 @cindex nested DJGPP program on Windows 2000
-There's now a work-around for the bug in NTVDM, the DOS emulator, which
+There's now a work-around for the bug in NTVDM, the @acronym{DOS} emulator, which
 ships with Windows 2000: nested DJGPP programs no longer cause NTVDM to
 crash.  This allows to use GCC, Make, RHIDE, Bash, and other programs
 which routinely invoke child programs.
@@ -584,22 +584,22 @@ versions of Windows do not allow to change time stamps of directories).
 @cindex address wrap crashes on Windows NT, 2000, XP
 A fix has been applied to the memory allocation routines in @code{sbrk}
 to prevent use of memory which would require address wrap when the host
-DPMI provider does not allow 4Gb address limits.  This feature may also
+@acronym{DPMI} provider does not allow 4Gb address limits.  This feature may also
 be enabled in other environments which do not require it to get better
 memory protection.  @code{_CRT0_DISABLE_SBRK_ADDRESS_WRAP} flag was added
 to @code{_crt0_startup_flags} in file @file{crt0.h}
 
 @vindex __djgpp_memory_handle_size@r{, added to library}
 @cindex @file{crt0.h}, declaration of memory size array
-@cindex array of DPMI memory block sizes
+@cindex array of @acronym{DPMI} memory block sizes
 A list of memory block sizes @code{__djgpp_memory_handle_size} was added for
 use in core dumps of the address space.
 
 @findex sbrk@r{, changed allocation size algorithm}
-@cindex DPMI memory block allocation sizes dynamic
+@cindex @acronym{DPMI} memory block allocation sizes dynamic
 Change the round up size for memory block allocations in @code{sbrk} to increase with
 the number of handles allocated.  This helps keep the number of handles
-to the 256 allocated and reduce problems exhausting DPMI handle resources.
+to the 256 allocated and reduce problems exhausting @acronym{DPMI} handle resources.
 
 @findex dup@r{, duplicates @code{FSEXT} hooks}
 @findex dup2@r{, duplicates @code{FSEXT} hooks}
@@ -611,11 +611,11 @@ is also hooked by the extension.
 @findex fstat@r{, and Windows 2000/XP}
 @findex link@r{, and Windows 2000/XP}
 @pindex cp@r{, and Windows 2000/XP}
-The function @code{fstat} now work arounds incompatibilities in DOS
+The function @code{fstat} now work arounds incompatibilities in @acronym{DOS}
 IOCTL interface on Windows 2000 and Windows XP, and as a result returns
 correct read/write permissions in @code{st_mode} and correct device code
 in @code{st_dev} members of @code{struct stat}.  This was known to fail
-functions like @code{link} and programs like GNU @code{cp} which tested
+functions like @code{link} and programs like @acronym{GNU} @code{cp} which tested
 files for being on the same filesystem by calling @code{fstat}.
 
 @findex open@r{, and Windows 2000/XP}
@@ -630,7 +630,7 @@ name calls under Windows NT, 2K and XP if long file names are enabled.
 @pindex fsdb@r{, and Windows 2000/XP hardware breakpoints}
 @pindex edebug32@r{, and Windows 2000/XP hardware breakpoints}
 @findex _set_break_DPMI@r{, and Windows 2000/XP breakpoints}
-The set break DPMI call under Windows 2000 and XP do not return the
+The set break @acronym{DPMI} call under Windows 2000 and XP do not return the
 break point handle, which prevented debuggers using break points from
 working properly.  The handle is now guessed for this platforms which
 allows the debuggers to work with hardware break points.
@@ -663,8 +663,8 @@ get the result of @code{_get_dos_version(1)}.
 
 @pindex djtar@r{, new option -e}
 @pindex djtar@r{, multiple -o and -e options}
-New option @samp{-e} has been added to @code{djtar} to skip specified files
-and directories when extracting.  Also @code{djtar} can accept multiple
+New option @samp{-e} has been added to @file{djtar} to skip specified files
+and directories when extracting.  Also @file{djtar} can accept multiple
 @samp{-o} and @samp{-e} options in a single command line.  Finally, the file
 name change file format allows skipping files and directories.
 
@@ -717,7 +717,7 @@ the @env{DJGPP} environment variable is not set.
 @findex statvfs
 The functions @code{fstatvfs} and @code{statvfs} have been added.
 @code{statvfs} does much the same as @code{statfs}, but it is
-POSIX-compliant.
+@acronym{POSIX} -compliant.
 
 @cindex @file{/dev/zero}
 @findex __install_dev_zero@r{, install support for @file{/dev/zero}}
@@ -826,7 +826,7 @@ of macros were added.
 The low-level function @code{_put_path} was changed to retain the @file{/dev}
 prefix if a @file{/dev} directory exists on the disk.  This allows DJGPP
 images to work with directories by this name.  You should avoid using
-the @file{/dev} prefix on DOS device names if possible since the behavior
+the @file{/dev} prefix on @acronym{DOS} device names if possible since the behavior
 will change if the directory exists (and file operations which use the
 name will be slower).  You should avoid using a @file{/dev} directory
 to avoid conflicts.
@@ -940,7 +940,7 @@ The macro @code{NAN} was added.
 @findex rewind@r{, and directories}
 @cindex Opening directories with @code{open}
 The function @code{fchdir} was added.  This required modifications
-to the POSIX functions @code{open}, @code{read}, @code{write},
+to the @acronym{POSIX} functions @code{open}, @code{read}, @code{write},
 @code{lseek}, @code{ftruncate}, @code{fstat}, @code{select},
 @code{fsync} and @code{fdopen} and the ANSI functions @code{fopen},
 @code{freopen}, @code{fclose}, @code{ftell}, @code{fseek}
@@ -980,7 +980,7 @@ of the transfer buffer.  This complements the macro @code{__tb},
 which gives the linear address of the transfer buffer.
 
 @pindex djtar@r{, and single-span spanned archives}
-@code{djtar} now copes with single-span spanned archives.
+@file{djtar} now copes with single-span spanned archives.
 
 @findex strtod@r{, @code{Inf} and @code{NaN} in input}
 @findex strtof@r{, @code{Inf} and @code{NaN} in input}
@@ -1065,7 +1065,7 @@ The C99 file @file{stdbool.h} was added.
 @findex localtime_r@r{ added}
 @findex strtok_r@r{ added}
 @findex strerror_r@r{ added}
-The POSIX functions @code{asctime_r}, @code{ctime_r}, @code{gmtime_r},
+The @acronym{POSIX} functions @code{asctime_r}, @code{ctime_r}, @code{gmtime_r},
 @code{hcreate}, @code{hdestroy}, @code{hsearch}, @code{lfind},
 @code{lsearch}, @code{localtime_r}, @code{strtok_r} and
 @code{strerror_r} were added.  
@@ -1078,10 +1078,10 @@ The function @code{setlocale} now supports the following categories in
 environment variables: @env{LC_CTYPE}, @env{LC_COLLATE},
 @env{LC_NUMERIC}, @env{LC_MONETARY}, @env{LC_TIME}, as well as
 @env{LC_ALL} and also @env{LANG}, which provide defaults for all
-categories not explicitly given.  POSIX @env{LC_MESSAGES} are not
+categories not explicitly given.  @acronym{POSIX} @env{LC_MESSAGES} are not
 supported.  
 Due to limitations of the @file{country.sys} driver only
-the current user locale @code{""} or its name in the POSIX form
+the current user locale @code{""} or its name in the @acronym{POSIX} form
 @code{"@var{LL}_@var{TT}@var{ECU}.@var{CP}"}.
 @xref{setlocale, locale code format, , libc, Libc}, for an explanation
 of the syntax.
@@ -1107,7 +1107,7 @@ were added.
 @findex asprintf@r{, added to the library}
 @findex vasnprintf@r{, added to the library}
 @findex vasprintf@r{, added to the library}
-New BSD/GNU compatibility functions @code{asnprintf}, @code{asprintf},
+New @acronym{BSD/GNU} compatibility functions @code{asnprintf}, @code{asprintf},
 @code{vasnprintf} and @code{vasprintf} were added.
 
 @findex atof@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
@@ -1128,7 +1128,7 @@ and the @code{printf} family of functions.
 
 @findex _doprnt@r{, and return string for special numbers like @code{pseudo-nan}}
 @findex printf@r{, and return string for special numbers like @code{pseudo-nan}}
-To increase compatibility with GNU glibc's @code{printf}, @code{printf} will
+To increase compatibility with @acronym{GNU} glibc's @code{printf}, @code{printf} will
 return for the following special numbers @code{Quiet NaN},  @code{Signalling NaN},
 @code{Pseudo-Denormal}, @code{Pseudo-NaN}, @code{Pseudo-Infinity},
 @code{Pseudo-Zero} and denormalized numbers @code{nan} or @code{NAN} instead
@@ -1154,11 +1154,11 @@ because djgpp only supports C/POSIX locale.
 The conversion specifiers @code{%F}, @code{%G}, @code{%g}, @code{%P}, @code{%s}, and @code{%V} have been added.
 Also the @code{#} flag has been added.
 
-@findex realpath@r{, and no longer report ENOSYS on plain DOS}
-@findex _fixpath@r{, and no longer report ENOSYS on plain DOS}
-@findex __canonicalize_path@r{, and no longer report ENOSYS on plain DOS}
+@findex realpath@r{, and no longer report ENOSYS on plain @acronym{DOS}}
+@findex _fixpath@r{, and no longer report ENOSYS on plain @acronym{DOS}}
+@findex __canonicalize_path@r{, and no longer report ENOSYS on plain @acronym{DOS}}
 @code{realpath} and @code{_fixpath} will no longer report to their calling function
-@code{ENOSYS} if the used operating system (usualy plain DOS) does not provide a LFN API.
+@code{ENOSYS} if the used operating system (usualy plain @acronym{DOS}) does not provide a LFN API.
 The existance of a LFN API has no influence on the canonicalization of the path.
 
 @findex realpath@r{, and Windows 2000/XP root directories and drive specifier character case}
@@ -1180,7 +1180,7 @@ Those functions that require the trailing search pattern @code{/*.*} will append
 @findex mktemp@r{, and SUS compliance}
 @findex mkstemp@r{, and SUS compliance}
 The function prototypes of @code{mktemp} and @code{mkstemp} are now also in
-@code{<sdtlib.h>}.  This is to achieve Single Unix Specification compliance.
+@code{<sdtlib.h>}.  This is to achieve Single @acronym{Unix} Specification compliance.
 To keep backward compatibility, the prototypes are also kept in @code{<sdtio.h>}
 but their usage is deprecated.
 
@@ -1197,46 +1197,46 @@ a buffer of @code{PATH_MAX} bytes to store the resolved path name and return thi
 pointer to the caller.
 
 @pindex djtar@r{, and empty lines in the file to change filenames}
-@code{djtar} now ignores empty lines in filename change files instead
+@file{djtar} now ignores empty lines in filename change files instead
 of skipping the extraction of the file named in the line before the
 empty line.
 
-@findex flushdc@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex dosexec@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex fixpath@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex opendir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex getcwd@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex mkdir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex rmdir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex chdir@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex filelen@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex lfilelen@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex fstat@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex fchmod@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex _open@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex _chmod@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex _creat_n@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex _creat@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex remove@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex findfirs@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex findnext@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex truename@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex lfnshort@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex _use_lfn@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
-@findex _rename@r{, LFN support on plain DOS with DOSLFN and other LFN drivers}
+@findex flushdc@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex dosexec@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex fixpath@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex opendir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex getcwd@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex mkdir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex rmdir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex chdir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex filelen@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex lfilelen@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex fstat@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex fchmod@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _open@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _chmod@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _creat_n@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _creat@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex remove@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex findfirs@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex findnext@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex truename@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex lfnshort@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _use_lfn@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _rename@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
 
 Functions @code{flushdc}, @code{dosexec}, @code{fixpath}, @code{opendir}, @code{getcwd},
 @code{mkdir}, @code{rmdir}, @code{chdir}, @code{filelen}, @code{lfilelen}, @code{fstat},
 @code{fchmod}, @code{_open}, @code{_chmod}, @code{_creat_n}, @code{_creat}, @code{remove},
 @code{findfirs}, @code{findnext}, @code{truename}, @code{lfnshort}, @code{_use_lfn} and
-@code{_rename} now check that the used LFN driver supplies the required @code{0x71} function
-from the @code{Windows 95} long filename functions API by inspecting the content of the @code{AX}
-register after return from the API function call.  Depending on the function type, the function
-will ignore, fail or fall back on the corresponding SFN API function if the LFN API function
-is not provided by the LFN driver used.
+@code{_rename} now check that the used @acronym{LFN} driver supplies the required @code{0x71}
+function from the @acronym{Windows 95} long filename functions API by inspecting the content
+of the @code{AX} register after return from the API function call.  Depending on the function
+type, the function will ignore, fail or fall back on the corresponding SFN API function if the
+LFN API function is not provided by the @acronym{LFN} driver used.
 
-@pindex dxe3gen@r{, resolving __[de]register_frame_info symbols in DXE moduls}
-When @code{dxe3gen} detects that one of the object files that shall be linked
+@pindex dxe3gen@r{, resolving @code{__[de]register_frame_info} symbols in @acronym{DXE} moduls}
+When @file{dxe3gen} detects that one of the object files that shall be linked
 into a @acronym{DXE} modul contains a @code{.eh_frame} section it automatically
 links the modul with @code{libc.a} to resolve both @code{__register_frame_info}
 and @code{__deregister_frame_info} symbols.
