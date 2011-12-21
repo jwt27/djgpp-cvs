@@ -1234,3 +1234,9 @@ from the @code{Windows 95} long filename functions API by inspecting the content
 register after return from the API function call.  Depending on the function type, the function
 will ignore, fail or fall back on the corresponding SFN API function if the LFN API function
 is not provided by the LFN driver used.
+
+@pindex dxe3gen@r{, resolving __[de]register_frame_info symbols in DXE moduls}
+When @code{dxe3gen} detects that one of the object files that shall be linked
+into a @acronym{DXE} modul contains a @code{.eh_frame} section it automatically
+links the modul with @code{libc.a} to resolve both @code{__register_frame_info}
+and @code{__deregister_frame_info} symbols.
