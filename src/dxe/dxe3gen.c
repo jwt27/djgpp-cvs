@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 Borca Daniel <dborca@yahoo.com>
  * Copyright (C) 2000 Andrew Zabolotny <bit@eltech.ru>
@@ -32,13 +33,16 @@
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
 
-#define VERSION "1.0.1"
+#define VERSION "1.0.2"
 
 #define TEMP_BASE	"dxe_tmp"	/* 7 chars, 1 char suffix */
 #define TEMP_O_FILE	TEMP_BASE".o"
 #define TEMP_S_FILE	TEMP_BASE".s"
 
 #define VALID_RELOC(r) ((r.r_type != RELOC_REL32) && (r.r_symndx != (ULONG32)-1))
+
+#define NUMBER_OF_LINKER_ARGS             10
+#define NUMBER_OF_ADDITIONAL_LOADED_LIBS  1
 
 typedef enum {
         FALSE = 0,
@@ -122,6 +126,27 @@ static struct {
   0,
   NULL
 };
+
+
+
+/* Desc: replaces backslash with slash in a path
+ *
+ * In  : path string
+ * Out : path string
+ *
+ * Note: -
+ */
+static void canonicalize_path(char *path)
+{
+  if (path)
+  {
+    char *scan = path;
+
+    for (; *scan; scan++)
+      if (*scan == '\\')
+        *scan = '/';
+  }
+}
 
 
 
@@ -231,7 +256,7 @@ static void process_args (int argc, char *argv[], const char *new_argv[])
  static char libdir[FILENAME_MAX];
  char *p;
  int i;
- int new_argc = 10;
+ int new_argc = NUMBER_OF_LINKER_ARGS;
 
  p = getenv("DXE_LD_LIBRARY_PATH");
  if (p)
@@ -241,6 +266,7 @@ static void process_args (int argc, char *argv[], const char *new_argv[])
     if (p) {
        strcpy(libdir, p);
        strcat(libdir, "/lib");
+       canonicalize_path(libdir);
     } else {
        fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
        exit(1);
@@ -337,7 +363,7 @@ static void process_args (int argc, char *argv[], const char *new_argv[])
            if (dot) {
               if (!strcasecmp(dot, ".o") || !strcasecmp(dot, ".a")) {
                  opt.objcount++;
-              } else if (!strcasecmp(dot, ".dxe")) {
+              } else if (!strcasecmp(dot, ".dxe") || !strcasecmp(dot, ".so")) {
                  opt.dxefile = argv[i];
               }
            }
@@ -471,6 +497,14 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
           fclose(f);
           argv[i++] = TEMP_BASE"f.o";
        }
+
+       /*
+        *  If the object file contains a frame or a ctor and a frame
+        *  link TEMP_BASE"i.o" and/or TEMP_BASE"f.o" against libc.a
+        *  to resolve the __[de]register_frame_info symbols.
+        */
+       if ((init > 1) || (fini > 1))
+         argv[i++] = "/dev/env/DJDIR/lib/libc.a";
        argv[i] = NULL;
 
        rv = myspawn(argv);
@@ -1122,14 +1156,14 @@ int main (int argc, char **argv)
 
  progname = argv[0];
  /* Prepare the command line for ld */
- new_argv = (const char **)malloc((argc - 1 + 11 + 2) * sizeof(char *));
+ new_argv = (const char **)malloc((argc - 1 + NUMBER_OF_LINKER_ARGS + NUMBER_OF_ADDITIONAL_LOADED_LIBS + 2 + 1) * sizeof(char *));
  process_args(argc, argv, new_argv);
 
  if (opt.showdep || opt.showexp || opt.showunres) {
     for (i = 1; i < argc; i++) {
         if (argv[i][0] != '-') {
            char *dot = strchr(argv[i], '.');
-           if (dot && !strcasecmp(dot, ".dxe")) {
+           if (dot && (!strcasecmp(dot, ".dxe") || !strcasecmp(dot, ".so"))) {
               if ((rv = show_symbols(argv[i])) != 0) {
                  return rv;
               }
