@@ -32,7 +32,7 @@
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
 
-#define VERSION "1.0"
+#define VERSION "1.0.1"
 
 #define TEMP_BASE	"dxe_tmp"	/* 7 chars, 1 char suffix */
 #define TEMP_O_FILE	TEMP_BASE".o"
@@ -611,12 +611,20 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
            );
 #endif
 
-     if (sym[i].e_scnum == 0) {
+     /* do not process private symbols */
+     if (sym[i].e_sclass == C_STAT) {
+        /* usually, private symbols are discarded anyway.
+         * This is because we end up with neither relative,
+         * nor absolute relocs pointing to them.  However,
+         * C++ causes some trouble, apparently related to
+         * weak symbols.  They will have only one absolute
+         * reloc to themselves.
+         */
+     } else if (sym[i].e_scnum == 0) {
         short *count;
         LONG32 *rel_relocs, *abs_relocs;
         int n_abs_relocs = 0, n_rel_relocs = 0;
 
-        /* unresolved symbol */
         /* count the amount of relocations pointing to this symbol */
         for (j = 0; j < sc.s_nreloc; j++) {
             if (relocs[j].r_symndx == i) {
@@ -633,6 +641,7 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
            continue;
         }
 
+        /* unresolved symbol */
         dh.n_unres_syms++;
 
         if (!opt.unresolved) {
