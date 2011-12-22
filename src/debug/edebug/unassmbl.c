@@ -431,7 +431,7 @@ static void ohex(char c, int extend, int optional, int defsize, int sign)
   for (i=0; i<n; i++)
     buf1[i] = getbyte();
   for (; i<extend; i++)
-    buf1[i] = (buf[i-1] & 0x80) ? 0xff : 0;
+    buf1[i] = (buf1[i-1] & 0x80) ? 0xff : 0;
   if (s)
   {
     uprintf("0x%02x%02x:", buf1[n-1], buf1[n-2]);
