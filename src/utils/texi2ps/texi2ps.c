@@ -23,6 +23,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <sys/cdefs.h>
 
 #include "fileio.h"
 #include "screenio.h"
@@ -1299,7 +1300,7 @@ do_file(char *file_name)
     else if (ch == '@')
     {
       char *cmd_name;
-      int cmd, argt, a;
+      int cmd, argt, a _ATTRIBUTE(__unused__);
       word_emit();
       eat_skips = 0;
       bufp = 0;

@@ -406,7 +406,7 @@ ohex(char c, int extend, int optional, int defsize, int sign)
   static char *formats[4] = { "%#x", "%d", "%+d", "%+d" };
   char *fmt;
   int n=0, s=0, i;
-  int32 delta;
+  word32 delta;
   unsigned char buf[6];
   char *name;
   fmt = formats[sign];
@@ -456,13 +456,13 @@ ohex(char c, int extend, int optional, int defsize, int sign)
   switch (n)
   {
     case 1:
-      delta = *(signed char *)buf;
+      delta = *(unsigned char *)buf;
       break;
    case 2:
-      delta = *(__dj_short_a *)buf;
+      delta = *(__dj_unsigned_short_a *)buf;
       break;
     case 4:
-      delta = *(__dj_long_a *)buf;
+      delta = *(__dj_unsigned_long_a *)buf;
       break;
   }
   if (extend > n)

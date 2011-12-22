@@ -256,7 +256,7 @@ static void ls()
   y -= ps_fontsize;
 }
 
-static void w(unsigned char *s)
+static void w(const char *s)
 {
   WordCache *wc;
   Word *we;
@@ -264,7 +264,7 @@ static void w(unsigned char *s)
   int i;
   bol_size = 0;
   for (i=0; s[i]; i++)
-    width += font_metrics[s[i]];
+    width += font_metrics[(unsigned char)s[i]];
   width *= ps_fontsize;
 
   if (width + x > RIGHT)
@@ -367,7 +367,7 @@ void word_emit(void)
     return;
   para_open = 1;
   word_buf[wp] = 0;
-  w((unsigned char *)(word_buf));
+  w(word_buf);
   pending_whitespace = 1;
   wp = 0;
   at_bol = 0;
