@@ -15,6 +15,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/cdefs.h>
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -1359,6 +1360,7 @@ int main(int argc, char **argv)
   Symbol *s;
   Patch *p;
   unsigned char exe[EXE_HEADER_SIZE+4];
+  char *pexe = (char *)exe;
   int symcount = 0;
   int min_uninit;
   time_t now;
@@ -1456,14 +1458,14 @@ int main(int argc, char **argv)
 
   time(&now);
 
-  sprintf(exe+INFO_TEXT_START, "\r\n%s generated from %s by djasm, on %.24s\r\n", argv[2], argv[1], ctime(&now));
+  sprintf(pexe + INFO_TEXT_START, "\r\n%s generated from %s by djasm, on %.24s\r\n", argv[2], argv[1], ctime(&now));
   if (copyright)
-    strncat(exe+INFO_TEXT_START, copyright, (512-3-INFO_TEXT_START)-strlen(exe+INFO_TEXT_START)); /* -3 for the following line: */
-  strcat(exe+INFO_TEXT_START, "\r\n\032");
+    strncat(pexe + INFO_TEXT_START, copyright, (512-3-INFO_TEXT_START) - strlen(pexe + INFO_TEXT_START)); /* -3 for the following line: */
+  strcat(pexe + INFO_TEXT_START, "\r\n\032");
 
   if (argv[2] == 0)
   {
-    char *dot=0, *sl=0, *cp;
+    char *cp,  *dot = NULL, *sl _ATTRIBUTE(__unused__) = NULL;
     outfilename = (char *)alloca(strlen(argv[1])+5);
     strcpy(outfilename, argv[1]);
     for (cp=outfilename; *cp; cp++)
@@ -2766,9 +2768,9 @@ void do_linkcoff (char *filename)
   int cnt;
   size_t i;
   void *base;
-  int textbase, database, bssbase/*, delta*/;
+  int textbase, database _ATTRIBUTE(__unused__), bssbase _ATTRIBUTE(__unused__) /*, delta*/;
   char smallname[9];
-  unsigned char *cp;
+  unsigned char *cp _ATTRIBUTE(__unused__);
 
   f = open (filename, O_RDONLY | O_BINARY);
   if (f < 0)
