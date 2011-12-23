@@ -6,22 +6,22 @@ Here is a list of changes from DJGPP V2.03 to V2.04.
 @findex uname@r{, CPU type detection}
 Ability to report the exact CPU type in @code{uname}.
 
-@findex _creat@r{, and FAT32}
-@findex _creatnew@r{, and FAT32}
-@findex _open@r{, and FAT32}
+@findex _creat@r{, and @acronym{FAT32}}
+@findex _creatnew@r{, and @acronym{FAT32}}
+@findex _open@r{, and @acronym{FAT32}}
 The functions @code{_creat}, @code{_creatnew} and @code{_open} now set
 extended size flag in @acronym{DOS} calls to be able to create files with size up
-to @math{2^32-1}, supported on FAT32 volumes.
+to @math{2^32-1}, supported on @acronym{FAT32} volumes.
 
-@findex llseek@r{, and FAT32}
+@findex llseek@r{, and @acronym{FAT32}}
 The function @code{llseek} added with type @code{offset_t} to support
 file seeks up to @math{2^32-2}.
 
-@findex statfs@r{, and FAT32}
+@findex statfs@r{, and @acronym{FAT32}}
 The function @code{statfs} have been made to report correct values >
-@math{2^31} on FAT32 partitions.
+@math{2^31} on @acronym{FAT32} partitions.
 
-@findex _invent_inode@r{, and FAT32}
+@findex _invent_inode@r{, and @acronym{FAT32}}
 The function @code{_invent_inode} has been changed to start numbering
 invented inodes from @code{USHRT_MAX+1} to @math{2^28+1}.
 
@@ -145,8 +145,8 @@ header files compatible with GCC provided ones.
 
 @cindex @code{bzip2} archives
 @pindex djtar@r{, support for unpacking @code{bzip2} archives}
-The @file{djtar} program can now unpack @file{.tar.bz2} archives
-compressed with the @file{bzip2} program.
+The djtar program can now unpack @file{.tar.bz2} archives
+compressed with the bzip2 program.
 
 @findex system@r{, invokes Windows programs with long command lines}
 @findex spawn*@r{ functions, invoke Windows programs with long command lines}
@@ -155,10 +155,10 @@ compressed with the @file{bzip2} program.
 @pindex 4DOS@r{, support for long command lines}
 @pindex NDOS@r{, support for long command lines}
 The functions @code{system} and @code{spawn*} can invoke Windows
-programs and advanced shells, such as @file{4DOS} and @file{NDOS}, with
+programs and advanced shells, such as 4DOS and NDOS, with
 command lines longer than 126 characters.  For Windows programs, the
-command line can be up to 1015 characters long; @file{4DOS} and
-@file{NDOS} can be passed up to 247 characters.  This is done by
+command line can be up to 1015 characters long; 4DOS and
+NDOS can be passed up to 247 characters.  This is done by
 defining the @env{CMDLINE} environment variable whose value is the
 command line.  The DJGPP startup code also supports @env{CMDLINE}
 method of passing long command lines, so DJGPP programs can now be
@@ -233,7 +233,7 @@ file under the new name already exists.  This solves the problems with
 linking DJGPP programs and with running the @code{stubify} utility on
 that OS.
 
-@findex lfilelength@r{, and FAT32}
+@findex lfilelength@r{, and @acronym{FAT32}}
 The function @code{lfilelength} added with return type @code{long long}
 to support file sizes of up to @math{2^63-1}.
 
@@ -293,7 +293,7 @@ test programs have been provided for most new or changed functions.
 @findex llockf
 @code{flock} has been implemented using the new @code{fcntl} locking
 functions to implement file-level locking and unlocking.  @code{lockf}
-(31-bit support) and @code{llockf} (FAT32 support, 32-bit only) have
+(31-bit support) and @code{llockf} (@acronym{FAT32} support, 32-bit only) have
 been added as compatible interfaces to the new @code{fcntl} locking
 functions.
 
@@ -311,7 +311,7 @@ want to print messages when errors occur.
 @findex lock64
 @findex unlock64
 New functions @code{_dos_lk64} and @code{_dos_unlk64} have been added to
-provide a FAT32-compatible interface to the @acronym{DOS} locking code.
+provide a @acronym{FAT32}-compatible interface to the @acronym{DOS} locking code.
 Compatible functions @code{lock64} and @code{unlock64} are direct
 interfaces to these two new @code{_dos_*} functions.
 
@@ -320,8 +320,8 @@ Support for enumeration type added to @code{djasm}.
 This feature taken from a version of @code{djasm} maintained by
 @email{bill@@taniwha.org, Bill Currie}.
 
-@cindex C99 compliance, new header files
-Header files, which are part of the new ANSI/ISO C99 Standard, are now
+@cindex @acronym{C99} compliance, new header files
+Header files, which are part of the new @acronym{ANSI/ISO} @acronym{C99} Standard, are now
 available.  These include @file{stdint.h}.
 
 @cindex namespace @code{std} support
@@ -371,7 +371,7 @@ and plug a security hole on disks containing sensitive information.
 
 @pindex djtar@r{, @acronym{DOS} batch file conversion}
 If a tar archive contains @acronym{DOS} batch files that have been stored with
-UNIX-style LF-only EOLs, @file{djtar} will now convert them
+UNIX-style LF-only EOLs, djtar will now convert them
 automatically to @acronym{DOS}-style EOLs.  This is because @file{COMMAND.COM}
 refuses to run batch files that contain UNIX-style EOLs.
 
@@ -663,8 +663,8 @@ get the result of @code{_get_dos_version(1)}.
 
 @pindex djtar@r{, new option -e}
 @pindex djtar@r{, multiple -o and -e options}
-New option @samp{-e} has been added to @file{djtar} to skip specified files
-and directories when extracting.  Also @file{djtar} can accept multiple
+New option @samp{-e} has been added to djtar to skip specified files
+and directories when extracting.  Also djtar can accept multiple
 @samp{-o} and @samp{-e} options in a single command line.  Finally, the file
 name change file format allows skipping files and directories.
 
@@ -733,7 +733,7 @@ The @code{mkdoc} program is used to build the C library documentation.
 @code{mkdoc} now produces portability information in a clearer manner,
 to avoid ambiguity.  @code{mkdoc} also now allows multiple versions of
 standards to be specified in the portability information,
-e.g.@: ANSI C89 and C99.
+e.g.@: @acronym{ANSI} @acronym{C89} and @acronym{C99}.
 
 @cindex debuggers, and exceptions 18 and 19
 The debug support routines in @file{libdbg.a} now support exceptions
@@ -775,13 +775,13 @@ as @code{_fixpath}, but is @sc{posix} compliant and resolves symlinks.
 @findex isblank
 The function @code{isblank} was added.
 
-@cindex C99 compliance, @code{struct lconv}
-@cindex C99 compliance, @file{locale.h}
+@cindex @acronym{C99} compliance, @code{struct lconv}
+@cindex @acronym{C99} compliance, @file{locale.h}
 @tindex struct lconv
 The @code{int_n_cs_precedes}, @code{int_n_sep_by_space},
 @code{int_n_sign_posn}, @code{int_p_cs_precedes},
 @code{int_p_sep_by_space} and @code{int_p_sign_posn} members were added
-to @code{struct lconv}, to comply with the C99 standard.
+to @code{struct lconv}, to comply with the @acronym{C99} standard.
 
 @findex _Exit
 The function @code{_Exit} was added.
@@ -792,16 +792,16 @@ The function @code{atoll} was added.
 @findex strtold
 The function @code{strtold} was added.
 
-@findex scanf@r{, and the X type conversion and C99}
+@findex scanf@r{, and the X type conversion and @acronym{C99}}
 The behaviour of the @code{%X} type conversion for the @code{scanf}-family
 of functions has changed.  Previously @code{%X} denoted
 a @code{long} version of the @code{%x} type conversion.  Now @code{%X}
-is equivalent to the @code{%x} type conversion, as required by C99.
+is equivalent to the @code{%x} type conversion, as required by @acronym{C99}.
 
-@findex _doprnt@r{, and C99 conversion qualifiers}
-@findex printf@r{, and C99 conversion qualifiers}
-@findex _doscan@r{, and C99 conversion qualifiers}
-@findex scanf@r{, and C99 conversion qualifiers}
+@findex _doprnt@r{, and @acronym{C99} conversion qualifiers}
+@findex printf@r{, and @acronym{C99} conversion qualifiers}
+@findex _doscan@r{, and @acronym{C99} conversion qualifiers}
+@findex scanf@r{, and @acronym{C99} conversion qualifiers}
 The @code{hh}, @code{j}, @code{t} and @code{z} conversion qualifiers
 are now supported by @code{_doprnt}, @code{_doscan},
 the @code{printf} family of functions and the @code{scanf} family
@@ -845,7 +845,7 @@ The functions @code{strlcat} and @code{strlcpy} were added.
 @pindex djasm@r{, wbinvd instruction}
 The mnemonic @code{wbinvd} has been added to @code{djasm}.
 
-@cindex C99 compliance, mathematics
+@cindex @acronym{C99} compliance, mathematics
 @vindex HUGE_VALF
 @vindex HUGE_VALL
 The constants @code{HUGE_VALF} and @code{HUGE_VALL} were added.
@@ -854,9 +854,9 @@ The constants @code{HUGE_VALF} and @code{HUGE_VALL} were added.
 @code{ssize_t} was changed from an @code{int} to a @code{signed long int}.
 @code{ssize_t} is now really a signed version of @code{size_t}.
 
-@vindex errno@r{, and C99 compliance}
-@findex perror@r{, and C99 compliance}
-@findex strerror@r{, and C99 compliance}
+@vindex errno@r{, and @acronym{C99} compliance}
+@findex perror@r{, and @acronym{C99} compliance}
+@findex strerror@r{, and @acronym{C99} compliance}
 The error code @code{EILSEQ} was added --- @code{errno} may be assigned it.
 @code{perror} and @code{strerror} were updated to display/return
 an error message for @code{EILSEQ}.
@@ -942,7 +942,7 @@ The macro @code{NAN} was added.
 The function @code{fchdir} was added.  This required modifications
 to the @acronym{POSIX} functions @code{open}, @code{read}, @code{write},
 @code{lseek}, @code{ftruncate}, @code{fstat}, @code{select},
-@code{fsync} and @code{fdopen} and the ANSI functions @code{fopen},
+@code{fsync} and @code{fdopen} and the @acronym{ANSI} functions @code{fopen},
 @code{freopen}, @code{fclose}, @code{ftell}, @code{fseek}
 and @code{rewind}, to make them aware of file descriptors for directories.
 
@@ -980,7 +980,7 @@ of the transfer buffer.  This complements the macro @code{__tb},
 which gives the linear address of the transfer buffer.
 
 @pindex djtar@r{, and single-span spanned archives}
-@file{djtar} now copes with single-span spanned archives.
+djtar now copes with single-span spanned archives.
 
 @findex strtod@r{, @code{Inf} and @code{NaN} in input}
 @findex strtof@r{, @code{Inf} and @code{NaN} in input}
@@ -1005,14 +1005,14 @@ into itself, when the current directory was a short filename.
 @findex __fpclassifyf@r{ added}
 @findex __fpclassifyd@r{ added}
 @findex __fpclassifyld@r{ added}
-The C99 macro @code{fpclassify} and the supporting functions
+The @acronym{C99} macro @code{fpclassify} and the supporting functions
 @code{__fpclassifyf}, @code{__fpclassifyd} and @code{__fpclassifyld}
 were added.
 
 @findex nan@r{ added}
 @findex nanf@r{ added}
 @findex nanl@r{ added}
-The C99 functions @code{nan}, @code{nanf} and @code{nanl} were added.
+The @acronym{C99} functions @code{nan}, @code{nanf} and @code{nanl} were added.
 
 @findex _doprnt@r{, and the decimal point}
 @findex printf@r{, and the decimal point}
@@ -1048,11 +1048,11 @@ instead of @code{EOF}.
 
 @findex assert@r{, and function name}
 Now @code{assert} prints also the name of the function where an assertion
-fails, if that function is compiled with C99 features enabled.
+fails, if that function is compiled with @acronym{C99} features enabled.
 
 @cindex @file{stdbool.h} added
-@cindex C99 compliance, @file{stdbool.h}
-The C99 file @file{stdbool.h} was added.
+@cindex @acronym{C99} compliance, @file{stdbool.h}
+The @acronym{C99} file @file{stdbool.h} was added.
 
 @findex asctime_r@r{ added}
 @findex ctime_r@r{ added}
@@ -1099,7 +1099,7 @@ formats for @code{"%x"} and @code{"%X"} conversions.
 @findex __signbitf@r{ added to the library}
 @findex __signbitd@r{ added to the library}
 @findex __signbitld@r{ added to the library}
-The C99 macro @code{signbit} and the supporting functions
+The @acronym{C99} macro @code{signbit} and the supporting functions
 @code{__signbitf}, @code{__signbitd} and @code{__signbitld}
 were added.
 
@@ -1121,8 +1121,8 @@ The functions @code{strtod}, @code{strtof}, @code{strtold} and
 @code{[+|-]0xH.HHHp[+|-]DDD} and any variations of case in the
 input string.
 
-@findex _doprnt@r{, and C99 conversion flags}
-@findex printf@r{, and C99 conversion flags}
+@findex _doprnt@r{, and @acronym{C99} conversion flags}
+@findex printf@r{, and @acronym{C99} conversion flags}
 The @code{'} conversion flag is now supported by @code{_doprnt}
 and the @code{printf} family of functions.
 
@@ -1134,8 +1134,8 @@ return for the following special numbers @code{Quiet NaN},  @code{Signalling NaN
 @code{Pseudo-Zero} and denormalized numbers @code{nan} or @code{NAN} instead
 of @code{Unnormal}.
 
-@findex _doprnt@r{, and C99 conversion specifiers}
-@findex printf@r{, and C99 conversion specifiers}
+@findex _doprnt@r{, and @acronym{C99} conversion specifiers}
+@findex printf@r{, and @acronym{C99} conversion specifiers}
 The @code{a}, @code{A} and @code{F} conversion specifiers
 are now supported by @code{_doprnt} and the @code{printf}
 family of functions.
@@ -1146,11 +1146,11 @@ The @code{%n$} and @code{*m$} numeric conversion specifiers
 are now supported by @code{_doprnt} and the @code{printf}
 family of functions.
 
-@findex strftime@r{, and C99 conversion modifiers}
+@findex strftime@r{, and @acronym{C99} conversion modifiers}
 The modifiers @code{%E} and @code{%O} of the conversion specifiers are ignored
 because djgpp only supports C/POSIX locale.
 
-@findex strftime@r{, and C99 conversion specifiers}
+@findex strftime@r{, and @acronym{C99} conversion specifiers}
 The conversion specifiers @code{%F}, @code{%G}, @code{%g}, @code{%P}, @code{%s}, and @code{%V} have been added.
 Also the @code{#} flag has been added.
 
@@ -1197,7 +1197,7 @@ a buffer of @code{PATH_MAX} bytes to store the resolved path name and return thi
 pointer to the caller.
 
 @pindex djtar@r{, and empty lines in the file to change filenames}
-@file{djtar} now ignores empty lines in filename change files instead
+djtar now ignores empty lines in filename change files instead
 of skipping the extraction of the file named in the line before the
 empty line.
 
