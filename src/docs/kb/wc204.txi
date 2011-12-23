@@ -1148,7 +1148,7 @@ family of functions.
 
 @findex strftime@r{, and @acronym{C99} conversion modifiers}
 The modifiers @code{%E} and @code{%O} of the conversion specifiers are ignored
-because djgpp only supports C/POSIX locale.
+because djgpp only supports @acronym{C/POSIX} locale.
 
 @findex strftime@r{, and @acronym{C99} conversion specifiers}
 The conversion specifiers @code{%F}, @code{%G}, @code{%g}, @code{%P}, @code{%s}, and @code{%V} have been added.
@@ -1230,13 +1230,13 @@ Functions @code{flushdc}, @code{dosexec}, @code{fixpath}, @code{opendir}, @code{
 @code{fchmod}, @code{_open}, @code{_chmod}, @code{_creat_n}, @code{_creat}, @code{remove},
 @code{findfirs}, @code{findnext}, @code{truename}, @code{lfnshort}, @code{_use_lfn} and
 @code{_rename} now check that the used @acronym{LFN} driver supplies the required @code{0x71}
-function from the @acronym{Windows 95} long filename functions API by inspecting the content
-of the @code{AX} register after return from the API function call.  Depending on the function
-type, the function will ignore, fail or fall back on the corresponding SFN API function if the
+function from the Windows 95 long filename functions API by inspecting the content of the
+@code{AX} register after return from the API function call.  Depending on the function type,
+the function will ignore, fail or fall back on the corresponding SFN API function if the
 LFN API function is not provided by the @acronym{LFN} driver used.
 
 @pindex dxe3gen@r{, resolving @code{__[de]register_frame_info} symbols in @acronym{DXE} moduls}
-When @file{dxe3gen} detects that one of the object files that shall be linked
-into a @acronym{DXE} modul contains a @code{.eh_frame} section it automatically
-links the modul with @code{libc.a} to resolve both @code{__register_frame_info}
-and @code{__deregister_frame_info} symbols.
+When dxe3gen detects that one of the object files that shall be linked into a
+@acronym{DXE} modul contains a @code{.eh_frame} section it automatically links
+the modul with @code{libc.a} to resolve both @code{__register_frame_info} and
+@code{__deregister_frame_info} symbols.
