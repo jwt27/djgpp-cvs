@@ -191,7 +191,7 @@ static int do_where(word32 vaddr)
   if (name)
     printf(", line %d in file %s", i, name);
   else if (delta)
-    printf("%+lu", delta);
+    printf("%+ld", (int32)delta);
   putchar('\n');
   return (int32)delta;
 }
