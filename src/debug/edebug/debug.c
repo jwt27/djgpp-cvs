@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -183,16 +184,16 @@ jmp_buf debugger_jmpbuf;
 static int do_where(word32 vaddr)
 {
   int i;
-  int32 delta;
+  word32 delta;
   char *name;
   printf("0x%08lx %s", vaddr, syms_val2name(vaddr, &delta));
   name = syms_val2line(vaddr, &i, 0);
   if (name)
     printf(", line %d in file %s", i, name);
   else if (delta)
-    printf("%+ld", delta);
+    printf("%+lu", delta);
   putchar('\n');
-  return delta;
+  return (int32)delta;
 }
 
 static int print_reason(void)
@@ -293,7 +294,7 @@ void debugger(void)
   char buf2[140], *name, lasttoken[140];
   int i, n, s, len, rem_cmd, cmd;
   word32 vaddr, v, rem_v, olddr7;
-  int32 delta;
+  word32 delta;
 
   syms_printwhy = 1;
   dr0 = dr1 = dr2 = 0;
