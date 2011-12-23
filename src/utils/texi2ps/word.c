@@ -1,3 +1,4 @@
+/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* texi2ps -- convert texinfo format files into Postscript files.
 
