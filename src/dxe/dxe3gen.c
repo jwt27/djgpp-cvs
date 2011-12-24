@@ -504,7 +504,7 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
         *  to resolve the __[de]register_frame_info symbols.
         */
        if ((init > 1) || (fini > 1))
-         argv[i++] = "/dev/env/DJDIR/lib/libc.a";
+         argv[i++] = "-lc";
        argv[i] = NULL;
 
        rv = myspawn(argv);
