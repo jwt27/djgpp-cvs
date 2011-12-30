@@ -16,7 +16,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <sys/cdefs.h>
+#include "../../include/sys/cdefs.h"
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
