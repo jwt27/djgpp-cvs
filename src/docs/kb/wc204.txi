@@ -1240,3 +1240,9 @@ When dxe3gen detects that one of the object files that shall be linked into a
 @acronym{DXE} modul contains a @code{.eh_frame} section it automatically links
 the modul with @code{libc.a} to resolve both @code{__register_frame_info} and
 @code{__deregister_frame_info} symbols.
+
+@findex STYP_NRELOC_OVFL@r{, new flag bit added to @code{s_flags} of @acronym{COFF} section header}
+The @code{s_flags} of the @acronym{COFF} section header now honors the new @code{STYP_NRELOC_OVFL} bit
+that signals that the section contains extended relocations and that the @code{s_nreloc} counter has
+overflown.  The bit set in case of overflow by @code{STYP_NRELOC_OVFL} is @code{0x01000000}.
+

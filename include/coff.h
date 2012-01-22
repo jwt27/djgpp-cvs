@@ -136,9 +136,10 @@ struct external_scnhdr {
 /*
  * s_flags "type"
  */
-#define STYP_TEXT	 (0x0020)	/* section contains text only */
-#define STYP_DATA	 (0x0040)	/* section contains data only */
-#define STYP_BSS	 (0x0080)	/* section contains bss only */
+#define STYP_TEXT         (0x0020)      /* section contains text only */
+#define STYP_DATA         (0x0040)      /* section contains data only */
+#define STYP_BSS          (0x0080)      /* section contains bss only */
+#define STYP_NRELOC_OVFL  (0x01000000)  /* section contains extended relocations */
 
 /********************** LINE NUMBERS **********************/
 
