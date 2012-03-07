@@ -143,10 +143,10 @@ open(const char* filename, int oflag, ...)
           * path component from `real_name', add last path component from
           * `filename', and try to resolve that mess. 
           */
-         char   temp[FILENAME_MAX + 1];
-         char   resolved[2];
-         char * last_separator;
-         int    old_errno = errno;
+         char  temp[FILENAME_MAX + 1];
+         char  resolved[2];
+         char *last_separator;
+         int   old_errno = errno;
          strcpy(temp, real_name);
          last_separator = basename(temp);
          *last_separator = '\0';
@@ -219,15 +219,15 @@ open(const char* filename, int oflag, ...)
   /* DOS doesn't want to see these bits */
   oflag &= ~(O_TEXT | O_BINARY);
 
-  dmode = (*((&oflag)+1) & S_IWUSR) ? 0 : 1;
+  dmode = (*((&oflag) + 1) & S_IWUSR) ? 0 : 1;
 
   /* Merge the share flags if they are specified */
   dont_have_share = ((oflag &
                      (SH_DENYNO | SH_DENYRW | SH_DENYRD | SH_DENYWR)) == 0);
   if (dont_have_share && __djgpp_share_flags)
     {
-     dont_have_share=0;
-     oflag|=__djgpp_share_flags;
+     dont_have_share = 0;
+     oflag |= __djgpp_share_flags;
     }
 
   if (should_create)
