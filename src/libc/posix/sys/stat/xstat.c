@@ -105,10 +105,10 @@ _getftime(int fhandle, unsigned int *dos_ftime)
   __dpmi_int(0x21, &regs);
 
   if (regs.x.flags & 1)
-    {
-      errno = __doserr_to_errno(regs.x.ax);
-      return -1;
-    }
+  {
+    errno = __doserr_to_errno(regs.x.ax);
+    return -1;
+  }
 
   *dos_ftime = ((unsigned int)regs.x.dx << 16) + (unsigned int)regs.x.cx;
 
@@ -139,13 +139,13 @@ _get_cached_blksize (const char *path)
 
   /* Force initialization in restarted programs (emacs).  */
   if (cache_blksize_count != __bss_count)
-    {
-      cache_blksize_count = __bss_count;
-      memset(cache_blksize, 0, sizeof(cache_blksize));
+  {
+    cache_blksize_count = __bss_count;
+    memset(cache_blksize, 0, sizeof(cache_blksize));
 
-      /* Default floppy drives to 512B block size, to improve performance. */
-      cache_blksize[0] = cache_blksize[1] = 512;
-    }
+    /* Default floppy drives to 512B block size, to improve performance. */
+    cache_blksize[0] = cache_blksize[1] = 512;
+  }
 
   /* Get the drive number. The fixed filename will begin with a lowercase
    * letter or a symbol. The symbols for drives > 'z:' occur straight
@@ -157,35 +157,35 @@ _get_cached_blksize (const char *path)
     d = path[0] - 'A';
 
   if ((d < 0) || (d >= overmax_d))
-    {
-      errno = ENODEV;
-      return -1;
-    }
+  {
+    errno = ENODEV;
+    return -1;
+  }
 
   if (!cache_blksize[d])
+  {
+    if (_is_remote_drive(d + 1))
     {
-      if (_is_remote_drive(d + 1))
-	{
-	  /* Default remote drives to 4K block size, to improve performance.
-	   *
-	   * Also the size returned by statfs() may not be correct. Testing
-	   * against files shared by Samba 2.0.10 on Linux kernel 2.2.19
-	   * returned a 32K block size, even though the ext2 filesystem
-	   * holding the share share had a 4K block size. */
-	  cache_blksize[d] = 4096;
-	}
-      else
-	{
-	  /* No entry => retrieve cluster size */
-	  if (statfs(path, &sbuf) != 0)
-	    {
-	      /* Failed, pass error through */
-	      return -1;
-	    }
-
-	  cache_blksize[d] = sbuf.f_bsize;
-	}
+      /* Default remote drives to 4K block size, to improve performance.
+       *
+       * Also the size returned by statfs() may not be correct. Testing
+       * against files shared by Samba 2.0.10 on Linux kernel 2.2.19
+       * returned a 32K block size, even though the ext2 filesystem
+       * holding the share share had a 4K block size. */
+      cache_blksize[d] = 4096;
     }
+    else
+    {
+      /* No entry => retrieve cluster size */
+      if (statfs(path, &sbuf) != 0)
+      {
+        /* Failed, pass error through */
+        return -1;
+      }
+
+      cache_blksize[d] = sbuf.f_bsize;
+    }
+  }
 
   return cache_blksize[d];
 }
@@ -248,11 +248,11 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
 
   /* Force initialization in restarted programs (emacs).  */
   if (xstat_count != __bss_count)
-    {
-      xstat_count = __bss_count;
-      inode_count = INVENTED_INODE_START;
-      memset (name_list, 0, sizeof name_list);
-    }
+  {
+    xstat_count = __bss_count;
+    inode_count = INVENTED_INODE_START;
+    memset (name_list, 0, sizeof name_list);
+  }
 
   if (!name)
     return 0;
@@ -279,12 +279,12 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
    * twice with the same file.  Sigh...
    */
   if (!*name)
-    {
-      ino_t retval = inode_count;
+  {
+    ino_t retval = inode_count;
 
-      inode_count++;
-      return retval;
-    }
+    inode_count++;
+    return retval;
+  }
 
   /* We could probably use a better hash than this */
   p = name;
@@ -297,44 +297,44 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
   name_ptr = name_list[hash];
   prev_ptr = name_ptr;
   while (name_ptr)
-    {
-      if (strcmp(name, name_ptr->name) == 0 &&
-          name_ptr->mtime == time_stamp &&
-          name_ptr->size  == fsize)
-        break;
-      prev_ptr = name_ptr;
-      name_ptr = name_ptr->next;
-    }
+  {
+    if (strcmp(name, name_ptr->name) == 0 &&
+        name_ptr->mtime == time_stamp &&
+        name_ptr->size  == fsize)
+      break;
+    prev_ptr = name_ptr;
+    name_ptr = name_ptr->next;
+  }
 
   if (name_ptr)
     /* Same string, time stamp, and size, so same inode */
     return name_ptr->inode;
   else
-    {
-      ino_t retval;
-      
-      /* New string with same hash code */
-      name_ptr = (struct name_list *)malloc(sizeof *name_ptr);
-      if (name_ptr == 0)
-        return 0;
-      name_ptr->next = (struct name_list *)0;
-      name_ptr->name = (char *)malloc(strlen(name)+1);
-      if (name_ptr->name == 0)
-      {
-	free(name_ptr);
-	return 0;
-      }
-      strcpy(name_ptr->name, name);
-      name_ptr->mtime = time_stamp;
-      name_ptr->size = fsize;
-      name_ptr->inode = inode_count;
-      if (prev_ptr)
-        prev_ptr->next = name_ptr;
-      else
-        name_list[hash] = name_ptr;
-      retval = inode_count;
-      inode_count++; /* Increment for next call. */
+  {
+    ino_t retval;
 
-      return retval;
+    /* New string with same hash code */
+    name_ptr = (struct name_list *)malloc(sizeof *name_ptr);
+    if (name_ptr == 0)
+      return 0;
+    name_ptr->next = (struct name_list *)0;
+    name_ptr->name = (char *)malloc(strlen(name) + 1);
+    if (name_ptr->name == 0)
+    {
+      free(name_ptr);
+      return 0;
     }
+    strcpy(name_ptr->name, name);
+    name_ptr->mtime = time_stamp;
+    name_ptr->size = fsize;
+    name_ptr->inode = inode_count;
+    if (prev_ptr)
+      prev_ptr->next = name_ptr;
+    else
+      name_list[hash] = name_ptr;
+    retval = inode_count;
+    inode_count++; /* Increment for next call. */
+
+    return retval;
+  }
 }
