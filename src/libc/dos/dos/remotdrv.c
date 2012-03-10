@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
  * This is file REMOTDRV.C
@@ -18,7 +19,8 @@ int _is_remote_drive(int);
  
 /* Return 1 if the named DRIVE is remote (i.e., networked) drive,
    0 if not.  Return -1 if the call failed.
-   Call with drive NUMBER, not letter, i.e. 1 = 'A', 2 = 'B', etc.  */
+   Call with drive NUMBER, not letter, i.e. 0 = 'A', 1 = 'B', etc.
+   The drive number passed as argument to the function MUST be zero based!!  */
  
 int
 _is_remote_drive(int drv_no)
@@ -57,4 +59,3 @@ _is_remote_drive(int drv_no)
     return 1;
   return 0;
 }
-

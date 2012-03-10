@@ -164,7 +164,7 @@ _get_cached_blksize (const char *path)
 
   if (!cache_blksize[d])
   {
-    if (_is_remote_drive(d + 1))
+    if (_is_remote_drive(d))  /* A = 0, B = 1, C = 2,  etc. */
     {
       /* Default remote drives to 4K block size, to improve performance.
        *
