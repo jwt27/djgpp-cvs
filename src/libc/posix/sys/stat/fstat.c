@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -679,16 +680,16 @@ fstat_assist(int fhandle, struct stat *stat_buf)
               if ( (_djstat_flags & _STAT_INODE) == 0 &&
                    (stat_buf->st_ino == 0 || is_remote))
                 {
-                  static char     name_pat[]   = " :sft-   \\            ";
-                  char name_buf[sizeof(name_pat)];
-                  unsigned char  *src_p        = sft_buf + name_ofs + 7;
-                  char           *dst_p        = name_buf + 17;
-                  int             j            = 8;
-                  char           *name_end;
-                  int             first_digit  = sft_idx / 100;
-                  int             second_digit = (sft_idx - first_digit * 100) / 10;
-                  int             third_digit  = sft_idx - first_digit * 100
-                                                         - second_digit * 10;
+                  static char    name_pat[]   = " :sft-   \\            ";
+                  char           name_buf[sizeof(name_pat)];
+                  unsigned char *src_p        = sft_buf + name_ofs + 7;
+                  char          *dst_p        = name_buf + 17;
+                  int            j            = 8;
+                  char          *name_end;
+                  int            first_digit  = sft_idx / 100;
+                  int            second_digit = (sft_idx - first_digit * 100) / 10;
+                  int            third_digit  = sft_idx - first_digit * 100
+                                                        - second_digit * 10;
 
                   /* Initialize the name buffer with zeroes, then
                    * put in the drive letter and ``sft-XXX'', where
