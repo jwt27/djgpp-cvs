@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -111,9 +112,9 @@ use_AH0x36( int drive_number, long *blocks, long *free, long *bsize )
     errno = ENODEV;
     return -1;
   }
-  *bsize = regs.x.cx * regs.x.ax;
-  *free = regs.x.bx;
-  *blocks = regs.x.dx;
+  *bsize = regs.x.cx * regs.x.ax;  /* bytes per cluster. */
+  *free = regs.x.bx;               /* number of free clusters. */
+  *blocks = regs.x.dx;             /* total clusters on drive. */
 
   return 0;
 }
