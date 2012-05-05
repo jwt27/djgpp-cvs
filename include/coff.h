@@ -63,7 +63,7 @@ struct external_filehdr {
 
 #define I386MAGIC	0x14c
 #define I386AIXMAGIC	0x175
-#define I386BADMAG(x)	(((x).f_magic != I386MAGIC) && (x).f_magic != I386AIXMAGIC)
+#define I386BADMAG(x)	(((x).f_magic != I386MAGIC) && ((x).f_magic != I386AIXMAGIC))
 
 
 #define FILHDR	struct external_filehdr
@@ -195,8 +195,8 @@ union external_auxent {
     ULONG32 x_tagndx __attribute__((packed));		/* str, un, or enum tag indx */
     union {
       struct {
-        unsigned short  x_lnno;				/* declaration line number */
-        unsigned short  x_size;				/* str/union/array size */
+        unsigned short x_lnno;				/* declaration line number */
+        unsigned short x_size;				/* str/union/array size */
       } x_lnsz;
       ULONG32 x_fsize __attribute__((packed));		/* size of function */
     } x_misc;
@@ -286,7 +286,7 @@ union external_auxent {
 #define ISPTR(x)	(((x) & N_TMASK) == (DT_PTR << N_BTSHFT))
 #define ISFCN(x)	(((x) & N_TMASK) == (DT_FCN << N_BTSHFT))
 #define ISARY(x)	(((x) & N_TMASK) == (DT_ARY << N_BTSHFT))
-#define ISTAG(x)	((x) == C_STRTAG || (x) == C_UNTAG || (x) == C_ENTAG)
+#define ISTAG(x)	(((x) == C_STRTAG) || ((x) == C_UNTAG) || ((x) == C_ENTAG))
 #define DECREF(x)	((((x) >> N_TSHIFT) & ~N_BTMASK) | ((x) & N_BTMASK))
 
 /********************** STORAGE CLASSES **********************/
