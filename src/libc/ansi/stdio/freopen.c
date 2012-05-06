@@ -16,18 +16,19 @@
 FILE *
 freopen(const char *file, const char *mode, FILE *f)
 {
-  int fd, fdo, rw, oflags=0;
+  int fd, fdo, rw, oflags = 0;
   char tbchar;
 
-  if (file == 0 || mode == 0 || f == 0)
-    return 0;
+  if (file == NULL || mode == NULL || f == NULL)
+    return NULL;
 
   rw = (mode[1] == '+') || (mode[1] && (mode[2] == '+'));
 
   fdo = fileno(f);
   fclose(f);
 
-  switch (*mode) {
+  switch (*mode)
+  {
   case 'a':
     oflags = O_CREAT | (rw ? O_RDWR : O_WRONLY) | O_APPEND;
     break;
@@ -49,16 +50,17 @@ freopen(const char *file, const char *mode, FILE *f)
   else if (tbchar == 'b')
     oflags |= O_BINARY;
   else
-    oflags |= (_fmode & (O_TEXT|O_BINARY));
+    oflags |= (_fmode & (O_TEXT | O_BINARY));
 
   fd = open(file, oflags, 0666);
   if (fd < 0)
     return NULL;
 
-  if(fd != fdo && fdo >= 0) {   /* Might rarely happen, but if it does for */
-    dup2(fd, fdo);	/* stdin/stdout/stderr handles, we must fix it or */
-    _close(fd);		/* child processes won't popen properly. */
-    fd = fdo;
+  if (fd != fdo && fdo >= 0)
+  {
+    dup2(fd, fdo);  /* Might rarely happen, but if it does for */
+    _close(fd);     /* stdin/stdout/stderr handles, we must fix it or */
+    fd = fdo;       /* child processes won't popen properly.  */
   }
 
   f->_cnt = 0;
@@ -72,9 +74,7 @@ freopen(const char *file, const char *mode, FILE *f)
     f->_flag = _IOWRT;
 
   if (*mode == 'a')
-  {
     llseek(fd, 0LL, SEEK_END);
-  }
 
   f->_base = f->_ptr = NULL;
 
