@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -50,46 +51,46 @@ extern FILE *log_out;     /* the stream to output messages */
  */
 
 #ifndef	INBUFSIZ
-#define INBUFSIZ  0x8000     /* input buffer size */
+# define INBUFSIZ  0x8000     /* input buffer size */
 #endif
-#define INBUF_EXTRA  64      /* required by unlzw() */
+#define INBUF_EXTRA  64       /* required by unlzw() */
 
 #ifndef	OUTBUFSIZ
-#define OUTBUFSIZ  16384     /* output buffer size */
+# define OUTBUFSIZ  16384     /* output buffer size */
 #endif
-#define OUTBUF_EXTRA 2048    /* required by unlzw() */
+#define OUTBUF_EXTRA 2048     /* required by unlzw() */
 
 #ifndef DIST_BUFSIZE
-#define DIST_BUFSIZE 0x8000  /* buffer for distances, see trees.c */
+# define DIST_BUFSIZE 0x8000  /* buffer for distances, see trees.c */
 #endif
 
 extern char inbuf[];
-extern char outbuf[];        /* output buffer */
-extern ush d_buf[];          /* buffer for distances, see trees.c */
-extern uch window[];         /* Sliding window and suffix table (unlzw) */
+extern char outbuf[];         /* output buffer */
+extern ush d_buf[];           /* buffer for distances, see trees.c */
+extern uch window[];          /* Sliding window and suffix table (unlzw) */
 #define tab_suffix window
-#define tab_prefix prev      /* hash link (see deflate.c) */
-#define head (prev + WSIZE)  /* hash head (see deflate.c) */
-extern ush tab_prefix[];     /* prefix code (see unlzw.c) */
+#define tab_prefix prev       /* hash link (see deflate.c) */
+#define head (prev + WSIZE)   /* hash head (see deflate.c) */
+extern ush tab_prefix[];      /* prefix code (see unlzw.c) */
 
-extern unsigned insize;      /* valid bytes in inbuf */
-extern unsigned inptr;       /* index of next byte to be processed in inbuf */
-extern unsigned outcnt;      /* bytes in output buffer */
-extern long bytes_out;       /* number of bytes after decompression */
-extern long header_bytes;    /* number of bytes in gzip header */
+extern unsigned insize;       /* valid bytes in inbuf */
+extern unsigned inptr;        /* index of next byte to be processed in inbuf */
+extern unsigned outcnt;       /* bytes in output buffer */
+extern long bytes_out;        /* number of bytes after decompression */
+extern long header_bytes;     /* number of bytes in gzip header */
 extern int part_nb;
 
-extern void *ifd;           /* input file/diskette descriptor */
-extern char *ifname;        /* input file name or "-" */
-extern char *progname;      /* program name */
-extern int  pkzip;          /* set for a pkzip file */
+extern void *ifd;             /* input file/diskette descriptor */
+extern char *ifname;          /* input file name or "-" */
+extern char *progname;        /* program name */
+extern int  pkzip;            /* set for a pkzip file */
 
-#define	PACK_MAGIC     "\037\036" /* Magic header for packed files */
-#define	GZIP_MAGIC     "\037\213" /* Magic header for gzip files, 1F 8B */
-#define	OLD_GZIP_MAGIC "\037\236" /* Magic header for gzip 0.5 = freeze 1.x */
-#define	LZH_MAGIC      "\037\240" /* Magic header for SCO LZH Compress files*/
+#define	PACK_MAGIC     "\037\036"         /* Magic header for packed files */
+#define	GZIP_MAGIC     "\037\213"         /* Magic header for gzip files, 1F 8B */
+#define	OLD_GZIP_MAGIC "\037\236"         /* Magic header for gzip 0.5 = freeze 1.x */
+#define	LZH_MAGIC      "\037\240"         /* Magic header for SCO LZH Compress files*/
 #define	PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
-#define	BZIP2_MAGIC    "\102\132\150" /* Magic header for bzip2 files, BZh */
+#define	BZIP2_MAGIC    "\102\132\150"     /* Magic header for bzip2 files, BZh */
 
 /* gzip flag byte */
 #define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */
@@ -106,8 +107,8 @@ extern int  pkzip;          /* set for a pkzip file */
 #define ASCII   1
 
 #ifndef WSIZE
-#  define WSIZE 0x8000     /* window size--must be a power of two, and */
-#endif                     /*  at least 32K for zip's deflate method */
+# define WSIZE 0x8000         /* window size--must be a power of two, and */
+#endif                        /* at least 32K for zip's deflate method */
 
 #define MIN_MATCH  3
 #define MAX_MATCH  258
@@ -123,9 +124,9 @@ extern int  pkzip;          /* set for a pkzip file */
  * distances are limited to MAX_DIST instead of WSIZE.
  */
 
-extern int v_switch;        /* be verbose (-v) */
+extern int v_switch;          /* be verbose (-v) */
 extern int test;
-extern int exit_code;      /* program exit code */
+extern int exit_code;         /* program exit code */
 extern int z_switch;
 
 #define get_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(0))
@@ -140,19 +141,19 @@ extern int z_switch;
 
 /* Diagnostic functions */
 #ifdef DEBUG
-#  define Assert(cond,msg) {if(!(cond)) error(msg);}
-#  define Trace(x) fprintf x
-#  define Tracev(x) {if (v_switch) fprintf x ;}
-#  define Tracevv(x) {if (v_switch) fprintf x ;}
-#  define Tracec(c,x) {if (v_switch && (c)) fprintf x ;}
-#  define Tracecv(c,x) {if (v_switch && (c)) fprintf x ;}
+# define Assert(cond,msg) {if(!(cond)) error(msg);}
+# define Trace(x) fprintf x
+# define Tracev(x) {if (v_switch) fprintf x ;}
+# define Tracevv(x) {if (v_switch) fprintf x ;}
+# define Tracec(c,x) {if (v_switch && (c)) fprintf x ;}
+# define Tracecv(c,x) {if (v_switch && (c)) fprintf x ;}
 #else
-#  define Assert(cond,msg)
-#  define Trace(x)
-#  define Tracev(x)
-#  define Tracevv(x)
-#  define Tracec(c,x)
-#  define Tracecv(c,x)
+# define Assert(cond,msg)
+# define Trace(x)
+# define Tracev(x)
+# define Tracevv(x)
+# define Tracec(c,x)
+# define Tracecv(c,x)
 #endif
 
 #define WARN(msg) {if (v_switch) fprintf msg ; \
@@ -163,12 +164,12 @@ int (*decompressor)(void *);
 typedef enum { DOS_BINARY, DOS_TEXT, UNIX_TEXT } File_type;
 
 	/* in djtar.c */
-extern int change        (char *, const char *, int);
-extern int isadir        (char *);
-extern void do_directories(char *);
+extern int change               (char *, const char *, int);
+extern int isadir               (char *);
+extern void do_directories      (char *);
 extern File_type guess_file_type(char *, register size_t);
-extern char* get_new_name(char *, int *);
-extern void make_directory(char *);
+extern char* get_new_name       (char *, int *);
+extern void make_directory      (char *);
 extern void rename_if_dos_device(char *);
 
 	/* in untar.c */

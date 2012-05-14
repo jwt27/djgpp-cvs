@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* util.c -- utility functions for gzip support
@@ -10,7 +11,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: util.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
+static char rcsid[] = "$Id: util.c,v 1.3 2012/05/14 21:40:45 juan.guerrero Exp $";
 #endif
 
 #include <ctype.h>
@@ -37,17 +38,18 @@ extern ulg crc_32_tab[];   /* crc table, defined below */
  */
 int copy(void *in)
 {
-    int eof_seen = 0;
+  int eof_seen = 0;
 
-    ifd = in;
+  ifd = in;
 
-    while (insize != 0 && (int)insize != EOF) {
-	eof_seen = tarread((char*)inbuf, insize);
-	if (eof_seen)
-	    break;
-	eof_seen = fill_inbuf(1) == EOF;
-    }
-    return OK;
+  while (insize != 0 && (int)insize != EOF)
+  {
+   eof_seen = tarread((char*)inbuf, insize);
+   if (eof_seen)
+     break;
+   eof_seen = fill_inbuf(1) == EOF;
+  }
+  return OK;
 }
 
 /* ===========================================================================
@@ -57,20 +59,21 @@ int copy(void *in)
  */
 ulg updcrc(uch *s, unsigned n)
 {
-    register ulg c;         /* temporary variable */
+  register ulg c;         /* temporary variable */
 
-    static ulg crc = (ulg)0xffffffffUL; /* shift register contents */
+  static ulg crc = (ulg)0xffffffffUL; /* shift register contents */
 
-    if (s == NULL) {
-	c = 0xffffffffUL;
-    } else {
-	c = crc;
-        if (n) do {
-            c = crc_32_tab[((int)c ^ (*s++)) & 0xff] ^ (c >> 8);
-        } while (--n);
-    }
-    crc = c;
-    return c ^ 0xffffffffUL;       /* (instead of ~c for 64-bit machines) */
+  if (s == NULL)
+    c = 0xffffffffUL;
+  else
+  {
+    c = crc;
+    if (n) do {
+      c = crc_32_tab[((int)c ^ (*s++)) & 0xff] ^ (c >> 8);
+    } while (--n);
+  }
+  crc = c;
+  return c ^ 0xffffffffUL;       /* (instead of ~c for 64-bit machines) */
 }
 
 /* ===========================================================================
@@ -78,9 +81,9 @@ ulg updcrc(uch *s, unsigned n)
  */
 void clear_bufs(void)
 {
-    outcnt = 0;
-    insize = inptr = 0;
-    bytes_out = 0;
+  outcnt = 0;
+  insize = inptr = 0;
+  bytes_out = 0;
 }
 
 /* ===========================================================================
@@ -88,22 +91,23 @@ void clear_bufs(void)
  */
 int fill_inbuf(int eof_ok)
 {
-    int len;
+  int len;
 
-    /* Read as much as possible */
-    insize = 0;
-    do {
-	len = oread_read(ifd, (char*)inbuf+insize);
-        if (len == 0 || len == EOF) break;
-	insize += len;
-    } while (insize < INBUFSIZ);
+  /* Read as much as possible */
+  insize = 0;
+  do {
+    len = oread_read(ifd, (char*)inbuf + insize);
+    if (len == 0 || len == EOF) break;
+    insize += len;
+  } while (insize < INBUFSIZ);
 
-    if (insize == 0) {
-	if (eof_ok) return EOF;
-	read_error();
-    }
-    inptr = 1;
-    return inbuf[0];
+  if (insize == 0)
+  {
+    if (eof_ok) return EOF;
+    read_error();
+  }
+  inptr = 1;
+  return inbuf[0];
 }
 
 /* ===========================================================================
@@ -113,15 +117,14 @@ int fill_inbuf(int eof_ok)
  */
 void flush_window(int (*func)(char *, long))
 {
-    if (outcnt == 0) return;
-    updcrc(window, outcnt);
+  if (outcnt == 0) return;
+  updcrc(window, outcnt);
 
-    if (!test) {
-	func((char *)window, outcnt);
-    }
-    else
-	bytes_out += (ulg)outcnt;
-    outcnt = 0;
+  if (!test)
+    func((char *)window, outcnt);
+  else
+    bytes_out += (ulg)outcnt;
+  outcnt = 0;
 }
 
 /* ========================================================================
@@ -129,24 +132,23 @@ void flush_window(int (*func)(char *, long))
  */
 void error(const char *m)
 {
-    fprintf(stderr, "\n%s: %s: %s\n", progname, ifname, m);
-    exit(exit_code);
+  fprintf(stderr, "\n%s: %s: %s\n", progname, ifname, m);
+  exit(exit_code);
 }
 
 void warn(char *a, char *b)
 {
-    WARN((log_out, "%s: %s: warning: %s%s\n", progname, ifname, a, b));
+  WARN((log_out, "%s: %s: warning: %s%s\n", progname, ifname, a, b));
 }
 
 void read_error(void)
 {
-    fprintf(stderr, "\n%s: ", progname);
-    if (errno != 0) {
-	perror(ifname);
-    } else {
-	fprintf(stderr, "%s: unexpected end of file\n", ifname);
-    }
-    exit(exit_code);
+  fprintf(stderr, "\n%s: ", progname);
+  if (errno != 0)
+    perror(ifname);
+  else
+    fprintf(stderr, "%s: unexpected end of file\n", ifname);
+  exit(exit_code);
 }
 
 /* ========================================================================
@@ -154,10 +156,10 @@ void read_error(void)
  */
 void * xmalloc (unsigned size)
 {
-    void * cp = (void *)malloc (size);
+  void * cp = (void *)malloc (size);
 
-    if (cp == NULL) error("out of memory");
-    return cp;
+  if (cp == NULL) error("out of memory");
+  return cp;
 }
 
 /* ========================================================================

@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -29,9 +30,9 @@ Fatal(const char *msg)
 static char *
 xstrdup(const char * source)
 {
-  char * ptr = strdup(source);
+  char *ptr = strdup(source);
   if (!ptr)
-     Fatal("Out of memory");
+    Fatal("Out of memory");
   return ptr;
 }
 
@@ -48,15 +49,15 @@ typedef struct CE {
 struct skip_dir_list
 {
    char *skip_dir;
-   struct skip_dir_list * next;
-} * skip_dirs;
+   struct skip_dir_list *next;
+} *skip_dirs;
 
 /* Extract only files and directories starting with prefixes in this list. */
 struct only_dir_list
 {
    char *only_dir;
-   struct only_dir_list * next;
-} * only_dirs;
+   struct only_dir_list *next;
+} *only_dirs;
 
 #define HASHSIZE 2048
 #define HASHMASK 2047
@@ -89,7 +90,7 @@ static char *
 get_entry(char *from)
 {
   CE *ce;
-  for (ce = htab[hash((unsigned char *)from)]; ce; ce=ce->next)
+  for (ce = htab[hash((unsigned char *)from)]; ce; ce = ce->next)
   {
     if (strcmp(ce->from, from) == 0)
       return ce->to;
@@ -156,7 +157,7 @@ typedef struct CHANGE {
   int isdir; /* 0=file, 1=dir, 2=skip */
 } CHANGE;
 
-CHANGE *change_root = 0;
+CHANGE *change_root = NULL;
 
 static int
 any_changes_done(void)
@@ -168,7 +169,7 @@ static void
 dump_changes(void)
 {
   CHANGE *c;
-  for (c=change_root; c; c=c->next)
+  for (c = change_root; c; c = c->next)
     fprintf(change_file, "%s -> %s\n", c->old, c->new);
 }
 
@@ -179,7 +180,7 @@ change(char *fname, const char *problem, int isadir)
   char new[PATH_MAX];
   char *pos;
 
-  for (ch=change_root; ch; ch = ch->next)
+  for (ch = change_root; ch; ch = ch->next)
   {
     size_t old_len = strlen(ch->old);
 
@@ -195,7 +196,7 @@ change(char *fname, const char *problem, int isadir)
         return 0;
       }
 /*      fprintf(log_out, "  [ changing %s to ", fname); */
-      sprintf(new, "%s%s", ch->new, fname+old_len);
+      sprintf(new, "%s%s", ch->new, fname + old_len);
       strcpy(fname, new);
 /*      fprintf(log_out, "%s ]\n", fname); */
       return 1;
@@ -231,7 +232,7 @@ change(char *fname, const char *problem, int isadir)
       ch->new = skipped_str;
     else
     {
-      ch->new = (char *)xmalloc(strlen(new) + (pos-fname) + 2);
+      ch->new = (char *)xmalloc(strlen(new) + (pos - fname) + 2);
       *pos = 0;
       sprintf(ch->new, "%s/%s", fname, new);
     }
@@ -278,7 +279,7 @@ do_directories(char *n)
   int r;
   sprintf(tmp, "%s", n);
   n = tmp;
-  for (sl=n; *sl; sl++)
+  for (sl = n; *sl; sl++)
   {
     if (sl > tmp && (*sl == '/' || *sl == '\\') && sl[-1] != ':')
     {
@@ -307,20 +308,20 @@ guess_file_type(char *buf, register size_t buflen)
   register unsigned char *bp = (unsigned char *)buf;
 
   while (buflen--)
-    {
-      /* Binary files have characters with ASCII code less then 32 decimal,
-         unless they are one of: BS (for man pages), TAB, LF, FF, CR, ^Z. */
-      if (*bp  < ' '  && !(*bp > 7 && *bp <= '\n') &&
-          *bp != '\f' &&   *bp != '\r' && *bp != '\32')
-        return DOS_BINARY;
+  {
+    /* Binary files have characters with ASCII code less then 32 decimal,
+       unless they are one of: BS (for man pages), TAB, LF, FF, CR, ^Z. */
+    if (*bp  < ' '  && !(*bp > 7 && *bp <= '\n') &&
+        *bp != '\f' &&   *bp != '\r' && *bp != '\32')
+      return DOS_BINARY;
 
-      /* CR before LF means DOS text file (unless we later see
-         binary characters).  */
-      else if (*bp == '\r' && buflen && bp[1] == '\n')
-        crlf_seen++;
+    /* CR before LF means DOS text file (unless we later see
+       binary characters).  */
+    else if (*bp == '\r' && buflen && bp[1] == '\n')
+      crlf_seen++;
 
-      bp++;
-    }
+    bp++;
+  }
 
   return crlf_seen ? DOS_TEXT : UNIX_TEXT;
 }
@@ -332,8 +333,8 @@ char *
 get_new_name(char *name_to_change, int *should_be_written)
 {
   char *changed_name;
-  struct skip_dir_list * skip_dir_entry;
-  struct only_dir_list * only_dir_entry;
+  struct skip_dir_list *skip_dir_entry;
+  struct only_dir_list *only_dir_entry;
 
   /* ONLY_DIR says to extract only files which are siblings
      of that directory.  */
@@ -341,34 +342,34 @@ get_new_name(char *name_to_change, int *should_be_written)
 
   if (*should_be_written)
   {
-     skip_dir_entry = skip_dirs;
-     while (skip_dir_entry)
-     {
-        if (!strncmp(skip_dir_entry->skip_dir, name_to_change, 
-                     strlen(skip_dir_entry->skip_dir)))
-        {
-           char * following_char = name_to_change + strlen(name_to_change);
-           if ((*following_char == '\0') || (*following_char == '/') ||
-               (*following_char == '\\'))
-              break;
-        } 
-        skip_dir_entry = skip_dir_entry->next;
-     }
-     if (skip_dir_entry)
+    skip_dir_entry = skip_dirs;
+    while (skip_dir_entry)
+    {
+      if (!strncmp(skip_dir_entry->skip_dir, name_to_change, 
+                   strlen(skip_dir_entry->skip_dir)))
+      {
+        char *following_char = name_to_change + strlen(name_to_change);
+        if ((*following_char == '\0') || (*following_char == '/') ||
+            (*following_char == '\\'))
+          break;
+      }
+      skip_dir_entry = skip_dir_entry->next;
+    }
+    if (skip_dir_entry)
+      *should_be_written = 0;
+    else if (only_dirs)
+    {
+      only_dir_entry = only_dirs;
+      while (only_dir_entry)
+      {
+        if (!strncmp(only_dir_entry->only_dir, name_to_change,
+                     strlen(only_dir_entry->only_dir)))
+          break;
+        only_dir_entry = only_dir_entry->next;
+      }
+      if (!only_dir_entry)
         *should_be_written = 0;
-     else if (only_dirs)
-     {
-        only_dir_entry = only_dirs;
-        while (only_dir_entry)
-        {
-           if (!strncmp(only_dir_entry->only_dir, name_to_change,
-                        strlen(only_dir_entry->only_dir)))
-              break;
-           only_dir_entry = only_dir_entry->next;
-        }
-        if (!only_dir_entry)
-           *should_be_written = 0;
-     }
+    }
   }
 
   changed_name = get_entry(name_to_change);
@@ -385,13 +386,13 @@ get_new_name(char *name_to_change, int *should_be_written)
 
     strcpy(new, changed_name);
     info = strstr(new, info_);
-    if (info && isdigit(info[sizeof(info_)-1]))
+    if (info && isdigit(info[sizeof(info_) - 1]))
     {
-      strcpy(info+2, info+sizeof(info_)-1);
+      strcpy(info + 2, info + sizeof(info_) - 1);
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
     }
     tgz = strstr(new, _tar_gz);
-    if (tgz && tgz[sizeof(_tar_gz)-1] == '\0')
+    if (tgz && tgz[sizeof(_tar_gz) - 1] == '\0')
     {
       strcpy(tgz, _tgz);
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
@@ -407,7 +408,7 @@ get_new_name(char *name_to_change, int *should_be_written)
       i++;
     }
     bz2 = strstr(new, _bzip2);
-    if (bz2 && bz2[sizeof(_bzip2)-1] == '\0')
+    if (bz2 && bz2[sizeof(_bzip2) - 1] == '\0')
     {
       strcpy(bz2, _bz2);
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
@@ -467,7 +468,6 @@ get_new_name(char *name_to_change, int *should_be_written)
 		else
 		  next_slash = p + namelen;
 	      }
-
 	      else if (next_bslash && next_bslash < next_slash)
 		next_slash = next_bslash;
 
@@ -567,8 +567,8 @@ main(int argc, char **argv)
   int i = 1;
   char *tp;
   char *xp;
-  struct skip_dir_list * skip_entry;
-  struct only_dir_list * only_entry;
+  struct skip_dir_list *skip_entry;
+  struct only_dir_list *only_entry;
 
   progname = strlwr(xstrdup(argv[0]));
 
@@ -582,9 +582,9 @@ main(int argc, char **argv)
   tp = strstr(progname, djtart);
   xp = strstr(progname, djtarx);
   /* Check both with and without .exe, just in case.  */
-  if (tp && (tp[sizeof(djtart)-1] == '\0' || tp[sizeof(djtart)-5] == '\0'))
+  if (tp && (tp[sizeof(djtart) - 1] == '\0' || tp[sizeof(djtart) - 5] == '\0'))
     list_only = 1;
-  else if (xp && (xp[sizeof(djtarx)-1] == '\0' || xp[sizeof(djtarx)-5] == '\0'))
+  else if (xp && (xp[sizeof(djtarx) - 1] == '\0' || xp[sizeof(djtarx) - 5] == '\0'))
     list_only = 0;
 
   while ((argc > i) && (argv[i][0] == '-') && argv[i][1])

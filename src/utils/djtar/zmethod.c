@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* zmethod -- detect compressed tar files for on-the-fly decompression.
@@ -42,18 +43,18 @@ ush tab_prefix[1L << BITS];
 
 		/* local variables */
 
-int test = 0;         /* test .gz file integrity */
-char *progname;       /* program name */
-int maxbits = BITS;   /* max bits per code for LZW */
-int method = DEFLATED;/* compression method */
-int level = 6;        /* compression level */
-int exit_code = OK;   /* program exit code */
-char *ifname;         /* input file name */
-void *ifd;                 /* input file descriptor */
-unsigned insize;           /* valid bytes in inbuf */
-unsigned inptr;            /* index of next byte to be processed in inbuf */
-unsigned outcnt;           /* bytes in output buffer */
-int (*decompressor)(void *) = unzip; /* function to call */
+int test = 0;                         /* test .gz file integrity */
+char *progname;                       /* program name */
+int maxbits = BITS;                   /* max bits per code for LZW */
+int method = DEFLATED;                /* compression method */
+int level = 6;                        /* compression level */
+int exit_code = OK;                   /* program exit code */
+char *ifname;                         /* input file name */
+void *ifd;                            /* input file descriptor */
+unsigned insize;                      /* valid bytes in inbuf */
+unsigned inptr;                       /* index of next byte to be processed in inbuf */
+unsigned outcnt;                      /* bytes in output buffer */
+int (*decompressor)(void *) = unzip;  /* function to call */
 long header_bytes, bytes_out;
 
 /* ========================================================================
@@ -73,146 +74,156 @@ int last_member;
 int
 get_method(void *in)
 {
-    uch flags;     /* compression flags */
-    char magic[2]; /* magic header */
-    ulg stamp;     /* time stamp */
+  uch flags;     /* compression flags */
+  char magic[2]; /* magic header */
+  ulg stamp;     /* time stamp */
 
-    ifd = in;
-    magic[0] = (char)get_byte();
-    magic[1] = (char)get_byte();
+  ifd = in;
+  magic[0] = (char)get_byte();
+  magic[1] = (char)get_byte();
 
-    method = -1;                 /* unknown yet */
-    part_nb++;                   /* number of parts in gzip file */
-    header_bytes = 0;
-    last_member = RECORD_IO;
-    /* assume multiple members in gzip file except for record oriented I/O */
+  method = -1;                 /* unknown yet */
+  part_nb++;                   /* number of parts in gzip file */
+  header_bytes = 0;
+  last_member = RECORD_IO;
+  /* assume multiple members in gzip file except for record oriented I/O */
 
-    if (memcmp(magic, GZIP_MAGIC, 2) == 0
-        || memcmp(magic, OLD_GZIP_MAGIC, 2) == 0) {
-
-	method = (int)get_byte();
-	if (method != DEFLATED) {
-	    fprintf(log_out,
-	   "%s: %s: unknown method %d -- get newer version of zread\n",
-		    progname, ifname, method);
-	    exit_code = ERROR;
-	    return -1;
-	}
-	decompressor = unzip;
-	flags  = (uch)get_byte();
-
-	if ((flags & ENCRYPTED) != 0) {
-	    fprintf(log_out,
-		    "%s: %s is encrypted -- get newer version of zread\n",
-		    progname, ifname);
-	    exit_code = ERROR;
-	    return -1;
-	}
-	if ((flags & CONTINUATION) != 0) {
-	    fprintf(log_out,
-	   "%s: %s is a a multi-part gzip file -- get newer version of zread\n",
-		    progname, ifname);
-	    exit_code = ERROR;
-	}
-	if ((flags & RESERVED) != 0) {
-	    fprintf(log_out,
-		    "%s: %s has flags 0x%x -- get newer version of zread\n",
-		    progname, ifname, flags);
-	    exit_code = ERROR;
-	}
-	stamp  = (ulg)get_byte();
-	stamp |= ((ulg)get_byte()) << 8;
-	stamp |= ((ulg)get_byte()) << 16;
-	stamp |= ((ulg)get_byte()) << 24;
-
-	(void)get_byte();  /* Ignore extra flags for the moment */
-	(void)get_byte();  /* Ignore OS type for the moment */
-
-	if ((flags & CONTINUATION) != 0) {
-	    unsigned part = (unsigned)get_byte();
-	    part |= ((unsigned)get_byte())<<8;
-	    if (v_switch) {
-		fprintf(log_out,"%s: %s: part number %u\n",
-			progname, ifname, part);
-	    }
-	}
-	if ((flags & EXTRA_FIELD) != 0) {
-	    unsigned len = (unsigned)get_byte();
-	    len |= ((unsigned)get_byte())<<8;
-	    if (v_switch) {
-		fprintf(log_out,"%s: %s: extra field of %u bytes ignored\n",
-			progname, ifname, len);
-	    }
-	    while (len--) (void)get_byte();
-	}
-
-	/* Get original file name if it was truncated */
-	if ((flags & ORIG_NAME) != 0) {
-	    char orig_name[MAX_PATH_LEN], *p = orig_name;
-	    for (;;) {
-		*p = (char)get_byte();
-		if (*p++ == '\0') break;
-		if (p >= orig_name + sizeof(orig_name)) {
-		    error("corrupted input -- file name too large");
-		}
-	    }
-	} /* ORIG_NAME */
-
-	/* Discard file comment if any */
-	if ((flags & COMMENT) != 0) {
-	    while (get_char() != 0) /* null */ ;
-	}
-	if (part_nb == 1) {
-	    header_bytes = inptr + 2*sizeof(long); /* include crc and size */
-	}
-
-    } else if (memcmp(magic, PKZIP_MAGIC, 2) == 0 && inptr == 2
-	    && memcmp((char*)inbuf, PKZIP_MAGIC, 4) == 0) {
-	/* To simplify the code, we support a zip file when alone only.
-         * We are thus guaranteed that the entire local header fits in inbuf.
-         */
-        inptr = 0;
-	decompressor = unzip;
-	if (check_zipfile() != OK) return -1;
-	/* check_zipfile may get ofname from the local header */
-	last_member = 1;
-
-    } else if (memcmp(magic, PACK_MAGIC, 2) == 0) {
-	decompressor = unpack;
-	method = PACKED;
-
-    } else if (memcmp(magic, LZW_MAGIC, 2) == 0) {
-	decompressor = unlzw;
-	method = COMPRESSED;
-	last_member = 1;
-
-    } else if (memcmp(magic, LZH_MAGIC, 2) == 0) {
-	decompressor = unlzh;
-	method = LZHED;
-	last_member = 1;
-
-     } else if (memcmp(magic, BZIP2_MAGIC, 2) == 0 && inptr == 2
- 	    && memcmp((char*)inbuf, BZIP2_MAGIC, 3) == 0) {
- 	decompressor = unbzip2;
- 	method = BZIP2ED;
- 	last_member = 1;
-
-    } else if (part_nb == 1) { /* pass input unchanged by default */
-	method = STORED;
-	decompressor = copy;
-        inptr = 0;
-	last_member = 1;
+  if (memcmp(magic, GZIP_MAGIC, 2) == 0
+      || memcmp(magic, OLD_GZIP_MAGIC, 2) == 0)
+  {
+    method = (int)get_byte();
+    if (method != DEFLATED)
+    {
+      fprintf(log_out,
+              "%s: %s: unknown method %d -- get newer version of zread\n",
+              progname, ifname, method);
+      exit_code = ERROR;
+      return -1;
     }
-    if (method >= 0) return method;
+    decompressor = unzip;
+    flags  = (uch)get_byte();
 
-    if (part_nb == 1 && z_switch) {
-	fprintf(log_out, "\n%s: %s: not in gzip format\n", progname, ifname);
-	exit_code = ERROR;
-	return -1;
-    } else {
-	WARN((log_out, "\n%s: %s: decompression OK, trailing garbage ignored\n",
-	      progname, ifname));
-	return -2;
+    if ((flags & ENCRYPTED) != 0)
+    {
+      fprintf(log_out,
+              "%s: %s is encrypted -- get newer version of zread\n",
+              progname, ifname);
+      exit_code = ERROR;
+      return -1;
     }
+    if ((flags & CONTINUATION) != 0)
+    {
+      fprintf(log_out,
+              "%s: %s is a a multi-part gzip file -- get newer version of zread\n",
+              progname, ifname);
+      exit_code = ERROR;
+    }
+    if ((flags & RESERVED) != 0)
+    {
+      fprintf(log_out,
+              "%s: %s has flags 0x%x -- get newer version of zread\n",
+              progname, ifname, flags);
+      exit_code = ERROR;
+    }
+    stamp  = (ulg)get_byte();
+    stamp |= ((ulg)get_byte()) << 8;
+    stamp |= ((ulg)get_byte()) << 16;
+    stamp |= ((ulg)get_byte()) << 24;
+
+    (void)get_byte();  /* Ignore extra flags for the moment */
+    (void)get_byte();  /* Ignore OS type for the moment */
+
+    if ((flags & CONTINUATION) != 0)
+    {
+      unsigned part = (unsigned)get_byte();
+      part |= ((unsigned)get_byte()) << 8;
+      if (v_switch)
+        fprintf(log_out,"%s: %s: part number %u\n", progname, ifname, part);
+    }
+    if ((flags & EXTRA_FIELD) != 0)
+    {
+      unsigned len = (unsigned)get_byte();
+      len |= ((unsigned)get_byte()) << 8;
+      if (v_switch)
+        fprintf(log_out,"%s: %s: extra field of %u bytes ignored\n", progname, ifname, len);
+      while (len--) (void)get_byte();
+    }
+
+    /* Get original file name if it was truncated */
+    if ((flags & ORIG_NAME) != 0)
+    {
+      char orig_name[MAX_PATH_LEN], *p = orig_name;
+      for (;;)
+      {
+        *p = (char)get_byte();
+        if (*p++ == '\0') break;
+        if (p >= orig_name + sizeof(orig_name))
+          error("corrupted input -- file name too large");
+      }
+    } /* ORIG_NAME */
+
+    /* Discard file comment if any */
+    if ((flags & COMMENT) != 0)
+      while (get_char() != 0) /* null */ ;
+    if (part_nb == 1)
+      header_bytes = inptr + 2*sizeof(long); /* include crc and size */
+  }
+  else if (memcmp(magic, PKZIP_MAGIC, 2) == 0 && inptr == 2
+           && memcmp((char*)inbuf, PKZIP_MAGIC, 4) == 0)
+  {
+    /* To simplify the code, we support a zip file when alone only.
+     * We are thus guaranteed that the entire local header fits in inbuf.
+     */
+    inptr = 0;
+    decompressor = unzip;
+    if (check_zipfile() != OK) return -1;
+    /* check_zipfile may get ofname from the local header */
+    last_member = 1;
+  }
+  else if (memcmp(magic, PACK_MAGIC, 2) == 0)
+  {
+    decompressor = unpack;
+    method = PACKED;
+  }
+  else if (memcmp(magic, LZW_MAGIC, 2) == 0)
+  {
+    decompressor = unlzw;
+    method = COMPRESSED;
+    last_member = 1;
+  }
+  else if (memcmp(magic, LZH_MAGIC, 2) == 0)
+  {
+    decompressor = unlzh;
+    method = LZHED;
+    last_member = 1;
+   }
+   else if (memcmp(magic, BZIP2_MAGIC, 2) == 0 && inptr == 2
+            && memcmp((char*)inbuf, BZIP2_MAGIC, 3) == 0)
+   {
+     decompressor = unbzip2;
+     method = BZIP2ED;
+     last_member = 1;
+  }
+  else if (part_nb == 1)
+  {
+    /* pass input unchanged by default */
+    method = STORED;
+    decompressor = copy;
+    inptr = 0;
+    last_member = 1;
+  }
+  if (method >= 0) return method;
+
+  if (part_nb == 1 && z_switch)
+  {
+    fprintf(log_out, "\n%s: %s: not in gzip format\n", progname, ifname);
+    exit_code = ERROR;
+    return -1;
+  }
+  else
+  {
+    WARN((log_out, "\n%s: %s: decompression OK, trailing garbage ignored\n",
+         progname, ifname));
+    return -2;
+  }
 }
-

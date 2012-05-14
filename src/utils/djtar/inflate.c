@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* inflate.c -- Not copyrighted 1992 by Mark Adler
@@ -102,7 +103,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: inflate.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
+static char rcsid[] = "$Id: inflate.c,v 1.3 2012/05/14 21:40:30 juan.guerrero Exp $";
 #endif
 
 #include <sys/types.h>
@@ -110,7 +111,7 @@ static char rcsid[] = "$Id: inflate.c,v 1.2 1998/01/01 16:26:54 dj Exp $";
 #include "tailor.h"
 
 #if defined(STDC_HEADERS) || !defined(NO_STDLIB_H)
-#  include <stdlib.h>
+# include <stdlib.h>
 #endif
 
 #include "zread.h"
@@ -159,22 +160,27 @@ int inflate (int (*)(char *, long));
 
 /* Tables for deflate from PKZIP's appnote.txt. */
 static unsigned border[] = {    /* Order of the bit length code lengths */
-        16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
+        16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
+};
 static ush cplens[] = {         /* Copy lengths for literal codes 257..285 */
         3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
-        35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0};
+        35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0
+};
         /* note: see note #13 above about the 258 in this list. */
 static ush cplext[] = {         /* Extra bits for literal codes 257..285 */
         0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
-        3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 99, 99}; /* 99==invalid */
+        3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 99, 99 /* 99==invalid */
+};
 static ush cpdist[] = {         /* Copy offsets for distance codes 0..29 */
         1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
         257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
-        8193, 12289, 16385, 24577};
+        8193, 12289, 16385, 24577
+};
 static ush cpdext[] = {         /* Extra bits for distance codes */
         0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
         7, 7, 8, 8, 9, 9, 10, 10, 11, 11,
-        12, 12, 13, 13};
+        12, 12, 13, 13
+};
 
 
 
@@ -226,8 +232,8 @@ ush mask_bits[] = {
 #else
 #  define NEXTBYTE()  (uch)get_byte()
 #endif
-#define NEEDBITS(n) {while(k<(n)){b|=((ulg)NEXTBYTE())<<k;k+=8;}}
-#define DUMPBITS(n) {b>>=(n);k-=(n);}
+#define NEEDBITS(n) {while(k < (n)){b |= ((ulg)NEXTBYTE()) << k; k += 8;}}
+#define DUMPBITS(n) {b >>= (n); k -= (n);}
 
 
 /*
@@ -290,7 +296,7 @@ int *m;                 /* maximum lookup bits, returns actual */
    oversubscribed set of lengths), and three if not enough memory. */
 {
   unsigned a;                   /* counter for codes of length k */
-  unsigned c[BMAX+1];           /* bit length count table */
+  unsigned c[BMAX + 1];         /* bit length count table */
   unsigned f;                   /* i repeats in table every f entries */
   int g;                        /* maximum code length */
   int h;                        /* table level */
@@ -304,7 +310,7 @@ int *m;                 /* maximum lookup bits, returns actual */
   struct huft *u[BMAX];         /* table stack */
   unsigned v[N_MAX];            /* values in order of bit length */
   register int w;               /* bits before this table == (l * h) */
-  unsigned x[BMAX+1];           /* bit offsets, then code stack */
+  unsigned x[BMAX + 1];         /* bit offsets, then code stack */
   unsigned *xp;                 /* pointer into x */
   int y;                        /* number of dummy codes added */
   unsigned z;                   /* number of entries in current table */
@@ -314,8 +320,8 @@ int *m;                 /* maximum lookup bits, returns actual */
   memzero(c, sizeof(c));
   p = b;  i = n;
   do {
-    Tracecv(*p, (stderr, (n-i >= ' ' && n-i <= '~' ? "%c %d\n" : "0x%x %d\n"), 
-	    n-i, *p));
+    Tracecv(*p, (stderr, (n - i >= ' ' && n - i <= '~' ? "%c %d\n" : "0x%x %d\n"), 
+	    n - i, *p));
     c[*p]++;                    /* assume all entries <= BMAX */
     p++;                      /* Can't combine with above line (Solaris bug) */
   } while (--i);
@@ -427,7 +433,7 @@ int *m;                 /* maximum lookup bits, returns actual */
           r.e = (uch)(16 + j);  /* bits in this table */
           r.v.t = q;            /* pointer to this table */
           j = i >> (w - l);     /* (get around Turbo C bug) */
-          u[h-1][j] = r;        /* connect to last table */
+          u[h - 1][j] = r;      /* connect to last table */
         }
       }
 
@@ -437,9 +443,9 @@ int *m;                 /* maximum lookup bits, returns actual */
         r.e = 99;               /* out of values--invalid code */
       else if (*p < s)
       {
-        r.e = (uch)(*p < 256 ? 16 : 15);    /* 256 is end-of-block code */
-        r.v.n = (ush)(*p);             /* simple code is just the value */
-	p++;                           /* one compiler does not like *p++ */
+        r.e = (uch)(*p < 256 ? 16 : 15);   /* 256 is end-of-block code */
+        r.v.n = (ush)(*p);                 /* simple code is just the value */
+	p++;                               /* one compiler does not like *p++ */
       }
       else
       {
@@ -532,7 +538,7 @@ int bl, bd;             /* number of bits decoded by tl[] and td[] */
     if (e == 16)                /* then it's a literal */
     {
       slide[w++] = (uch)t->v.n;
-      Tracevv((stderr, "%c", slide[w-1]));
+      Tracevv((stderr, "%c", slide[w - 1]));
       if (w == WSIZE)
       {
         flush_output(w);
@@ -564,7 +570,7 @@ int bl, bd;             /* number of bits decoded by tl[] and td[] */
       NEEDBITS(e)
       d = w - t->v.n - ((unsigned)b & mask_bits[e]);
       DUMPBITS(e)
-      Tracevv((stderr,"\\[%d,%d]", w-d, n));
+      Tracevv((stderr,"\\[%d,%d]", w - d, n));
 
       /* do the copy */
       do {
@@ -580,7 +586,7 @@ int bl, bd;             /* number of bits decoded by tl[] and td[] */
 #endif /* !NOMEMCPY */
           do {
             slide[w++] = slide[d++];
-	    Tracevv((stderr, "%c", slide[w-1]));
+	    Tracevv((stderr, "%c", slide[w - 1]));
           } while (--e);
         if (w == WSIZE)
         {
@@ -593,8 +599,8 @@ int bl, bd;             /* number of bits decoded by tl[] and td[] */
 
 
   /* restore the globals from the locals */
-  wp = w;                       /* restore global window pointer */
-  bb = b;                       /* restore global bit buffer */
+  wp = w;  /* restore global window pointer */
+  bb = b;  /* restore global bit buffer */
   bk = k;
 
   /* done */
@@ -613,9 +619,9 @@ int inflate_stored()
 
 
   /* make local copies of globals */
-  b = bb;                       /* initialize bit buffer */
+  b = bb;               /* initialize bit buffer */
   k = bk;
-  w = wp;                       /* initialize window position */
+  w = wp;               /* initialize window position */
 
 
   /* go to byte boundary */
@@ -710,25 +716,25 @@ int inflate_fixed()
 int inflate_dynamic()
 /* decompress an inflated type 2 (dynamic Huffman codes) block. */
 {
-  int i;                /* temporary variables */
+  int i;                  /* temporary variables */
   unsigned j;
-  unsigned l;           /* last length */
-  unsigned m;           /* mask for bit lengths table */
-  unsigned n;           /* number of lengths to get */
-  struct huft *tl;      /* literal/length code table */
-  struct huft *td;      /* distance code table */
-  int bl;               /* lookup bits for tl */
-  int bd;               /* lookup bits for td */
-  unsigned nb;          /* number of bit length codes */
-  unsigned nl;          /* number of literal/length codes */
-  unsigned nd;          /* number of distance codes */
+  unsigned l;             /* last length */
+  unsigned m;             /* mask for bit lengths table */
+  unsigned n;             /* number of lengths to get */
+  struct huft *tl;        /* literal/length code table */
+  struct huft *td;        /* distance code table */
+  int bl;                 /* lookup bits for tl */
+  int bd;                 /* lookup bits for td */
+  unsigned nb;            /* number of bit length codes */
+  unsigned nl;            /* number of literal/length codes */
+  unsigned nd;            /* number of distance codes */
 #ifdef PKZIP_BUG_WORKAROUND
-  unsigned ll[288+32];  /* literal/length and distance code lengths */
+  unsigned ll[288 + 32];  /* literal/length and distance code lengths */
 #else
-  unsigned ll[286+30];  /* literal/length and distance code lengths */
+  unsigned ll[286 + 30];  /* literal/length and distance code lengths */
 #endif
-  register ulg b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  register ulg b;         /* bit buffer */
+  register unsigned k;    /* number of bits in bit buffer */
 
 
   /* make local bit buffer */
@@ -835,7 +841,8 @@ int inflate_dynamic()
   bl = lbits;
   if ((i = huft_build(ll, nl, 257, cplens, cplext, &tl, &bl)) != 0)
   {
-    if (i == 1) {
+    if (i == 1)
+    {
       fprintf(log_out, " incomplete literal tree\n");
       huft_free(tl);
     }
@@ -844,7 +851,8 @@ int inflate_dynamic()
   bd = dbits;
   if ((i = huft_build(ll + nl, nd, 0, cpdist, cpdext, &td, &bd)) != 0)
   {
-    if (i == 1) {
+    if (i == 1)
+    {
       fprintf(log_out, " incomplete distance tree\n");
 #ifdef PKZIP_BUG_WORKAROUND
       i = 0;
@@ -871,8 +879,7 @@ int inflate_dynamic()
 
 
 
-int inflate_block(e)
-int *e;                 /* last block flag */
+int inflate_block(int *e)   /* e: last block flag */
 /* decompress an inflated block */
 {
   unsigned t;           /* block type */
@@ -945,7 +952,8 @@ int inflate(int (*fp)(char *, long))
   /* Undo too much lookahead. The next read will be byte aligned so we
    * can discard unused bits in the last meaningful byte.
    */
-  while (bk >= 8) {
+  while (bk >= 8)
+  {
     bk -= 8;
     inptr--;
   }

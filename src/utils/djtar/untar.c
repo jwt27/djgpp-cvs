@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -181,7 +182,7 @@ tarread(char *buf, long buf_size)
       }
       if (should_be_written == 0)
       {
-        skipping = (size+511) & ~511;
+        skipping = (size + 511) & ~511;
 	if (!skipping)	/* an empty file or a directory */
 	{
 	  looking_for_header = 1;
@@ -190,7 +191,7 @@ tarread(char *buf, long buf_size)
 	}
         continue;
       }
-      else if ((changed_name[nlen=strlen(changed_name)-1] == '/'
+      else if ((changed_name[nlen = strlen(changed_name) - 1] == '/'
 		|| header.flags[0] == '5') /* '5' flags a directory */
 	       && !to_stdout)
       {

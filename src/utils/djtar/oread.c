@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <malloc.h>
 #include <stdio.h>
@@ -61,13 +62,13 @@ void *oread_open(char *fn)
     }
 
     biosdisk(8, or->fd, 0, 0, 0, 0, buf);
-    or->cm = (((buf[0] & 0x00c0) << 2) | (buf[1] & 0xff))+1;
+    or->cm = (((buf[0] & 0x00C0) << 2) | (buf[1] & 0xff)) + 1;
     or->hm = buf[3] + 1;
-    or->sm = buf[0] & 0x3f;
+    or->sm = buf[0] & 0x3F;
     or->file_ptr = 0L;
-    or->cache = (void *)xmalloc(512*CACHE_SECTORS);
-    or->cache_fptr = -512*CACHE_SECTORS;
-    or->cache_fptre = -512*CACHE_SECTORS;
+    or->cache = (void *)xmalloc(512 * CACHE_SECTORS);
+    or->cache_fptr = -512 * CACHE_SECTORS;
+    or->cache_fptre = -512 * CACHE_SECTORS;
     or->volume_in_drive = 0;
     return or;
   }
@@ -75,13 +76,13 @@ void *oread_open(char *fn)
   {
     int fd;
     if (*fn == '-' && fn[1] == '\0')
-      {
-        fd = fileno(stdin);
-        setmode(fd, O_BINARY);
-        fd = dup(fd);
-        close(fileno(stdin));
-        open("CON", O_RDONLY | O_TEXT); /* should reopen fileno(stdin) */
-      }
+    {
+      fd = fileno(stdin);
+      setmode(fd, O_BINARY);
+      fd = dup(fd);
+      close(fileno(stdin));
+      open("CON", O_RDONLY | O_TEXT); /* should reopen fileno(stdin) */
+    }
     else
       fd = _open(fn, O_RDONLY);
     if (fd < 0)
@@ -134,7 +135,7 @@ int oread_read(void *rv, void *buffer)
       biosdisk(D_READ, r->fd, h, c, s+1, sc, r->cache);
     memcpy(buffer, r->cache, 512);
     r->cache_fptr = r->file_ptr;
-    r->cache_fptre = r->cache_fptr + 512*sc;
+    r->cache_fptre = r->cache_fptr + 512 * sc;
     r->file_ptr += 512;
     return 512;
   }

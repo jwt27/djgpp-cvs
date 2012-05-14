@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* tailor.h -- target dependent definitions
  * Copyright (C) 1992-1993 Jean-loup Gailly.
@@ -13,10 +14,10 @@
  * The target dependent functions should be defined in tailor.c.
  */
 
-/* $Id: tailor.h,v 1.1 1995/11/17 01:01:20 dj Exp $ */
+/* $Id: tailor.h,v 1.2 2012/05/14 21:40:33 juan.guerrero Exp $ */
 
 #if defined(__MSDOS__) && !defined(MSDOS)
-#  define MSDOS
+# define MSDOS
 #endif
 
 #define MAX_PATH_LEN  128
@@ -24,17 +25,17 @@
 	/* Common defaults */
 
 #ifndef RECORD_IO
-#  define RECORD_IO 0
+# define RECORD_IO 0
 #endif
 
 #ifndef OPEN
-#  define OPEN(name, flags, mode) open(name, flags, mode)
+# define OPEN(name, flags, mode) open(name, flags, mode)
 #endif
 
 #ifndef get_char
-#  define get_char() get_byte()
+# define get_char() get_byte()
 #endif
 
 #ifndef put_char
-#  define put_char(c) put_byte(c)
+# define put_char(c) put_byte(c)
 #endif
