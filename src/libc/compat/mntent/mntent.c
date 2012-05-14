@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
@@ -405,24 +406,35 @@ cdrom_drive_ready(int drive_num)
 
      Gosh, why is it always so tricky with Microsoft software??  */
 
-  unsigned char request_header[0x14];
+  union
+  {
+    struct 
+    {
+      unsigned int size   :16;
+      unsigned int command:16;
+      unsigned int offset :16;
+      unsigned int segment:16;
+      unsigned int bytes  :16;
+    } buffer_parts;
+    unsigned char buffer[0x14];
+  } request_header;
   int status;
   unsigned dev_status;
 
   /* Construct the request header for the CD-ROM device driver.  */
-  memset(request_header, 0, sizeof request_header);
-  request_header[0] = sizeof request_header;
-  request_header[2] = 3;	/* IOCTL READ command */
-  *(unsigned short *)&request_header[0xe]  = __tb_offset;
-  *(unsigned short *)&request_header[0x10] = __tb_segment;
-  request_header[0x12] = 5;	/* number of bytes to transfer */
+  memset(request_header.buffer, 0, sizeof request_header.buffer);
+  request_header.buffer[0] = sizeof request_header.buffer;
+  request_header.buffer[2] = 3;     /* IOCTL READ command */
+  request_header.buffer_parts.offset  = __tb_offset;
+  request_header.buffer_parts.segment = __tb_segment;
+  request_header.buffer[0x12] = 5;  /* number of bytes to transfer */
 
   /* Put control block into the transfer buffer.  */
   _farpokeb(_dos_ds, __tb, 6);	/* read device status */
   _farpokel(_dos_ds, __tb + 1, 0);	/* zero out the result field */
 
   /* Put request header into the transfer buffer and call the driver.  */
-  dosmemput(request_header, sizeof (request_header), __tb + 5);
+  dosmemput(request_header.buffer, sizeof (request_header.buffer), __tb + 5);
   r.x.ax = 0x1510;
   r.x.cx = drive_num - 1;
   r.x.es = __tb_segment;
