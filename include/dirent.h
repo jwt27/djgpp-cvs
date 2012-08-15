@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -26,19 +27,19 @@ typedef struct __dj_DIR DIR;
 /* Note: each one of these is exactly one more than the high nibble of
    the corresponding S_IF* constant defined on sys/stat.h.  If you
    break that, DTTOIF will stop working!  */
-#define DT_REG	    0x1
-#define DT_BLK	    0x2
-#define DT_CHR	    0x3
-#define DT_DIR	    0x4
-#define DT_FIFO	    0x5
+#define DT_REG      0x1
+#define DT_BLK      0x2
+#define DT_CHR      0x3
+#define DT_DIR      0x4
+#define DT_FIFO     0x5
 #define DT_LABEL    0x6
-#define DT_LNK	    0x7
+#define DT_LNK      0x7
 #if 0
 /* S_IFSOCK is not defined and to be consistent DT_SOCK is also not defined.
    This shall avoid that code that checks for DT_SOCK assumes that S_IFSOCK
    is available and that djgpp provides working socks.
 */
-#define DT_SOCK	    0x8
+#define DT_SOCK     0x8
 #endif
 #define DT_UNKNOWN  0xf
 
