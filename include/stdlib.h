@@ -85,7 +85,7 @@ size_t	wcstombs(char *_s, const wchar_t *_wcs, size_t _n);
 int	wctomb(char *_s, wchar_t _wchar);
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 typedef struct {
   long long int quot;

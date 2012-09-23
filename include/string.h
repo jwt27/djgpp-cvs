@@ -53,7 +53,7 @@ char *	strtok(char *  _s1, const char *  _s2);
 size_t	strxfrm(char *  _s1, const char *  _s2, size_t _n);
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 

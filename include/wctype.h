@@ -33,7 +33,7 @@ typedef unsigned short wctype_t;
 typedef const unsigned char *wctrans_t;
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 

@@ -32,7 +32,7 @@ extern unsigned char __dj_ctype_tolower[];
 #define isxdigit(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISXDIGIT)
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #define isblank(c) (__dj_ctype_flags[(int)(c)+1] & __dj_ISBLANK)
 

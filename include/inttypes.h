@@ -12,7 +12,7 @@ extern "C" {
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 /* ANSI/ISO C99 says these should not be visible in C++ unless
    explicitly requested.  */

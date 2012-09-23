@@ -122,7 +122,7 @@ int	vprintf(const char *_format, va_list _ap);
 int	vsprintf(char *_s, const char *_format, va_list _ap);
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 int	snprintf(char *str, size_t n, const char *fmt, ...);
 int	vfscanf(FILE *_stream, const char *_format, va_list _ap);

@@ -25,7 +25,7 @@ int	tolower(int c);
 int	toupper(int c);
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 int	isblank(int c);
 
@@ -36,7 +36,7 @@ int	isblank(int c);
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 

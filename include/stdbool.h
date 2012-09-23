@@ -2,7 +2,7 @@
 #define __dj_stdbool__h_
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #define bool _Bool
 #define true 1

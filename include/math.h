@@ -86,7 +86,7 @@ extern float fmodf(float, float);
 #endif
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
-  || !defined(__STRICT_ANSI__)
+  || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 extern float       __dj_huge_valf;
 extern long double __dj_huge_vall;
