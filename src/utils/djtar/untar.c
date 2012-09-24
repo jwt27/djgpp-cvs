@@ -78,9 +78,9 @@ tarread(char *buf, long buf_size)
       if (skipping <= buf_size)
       {
         bytes_out += skipping;
-        buf      += skipping;
-        buf_size -= skipping;
-        skipping  = 0;
+        buf       += skipping;
+        buf_size  -= skipping;
+        skipping   = 0;
         looking_for_header = 1;
         if (buf_size < (long)(sizeof header))
           return 0;
@@ -155,11 +155,11 @@ tarread(char *buf, long buf_size)
         fprintf(log_out, "%08lx %6lo ", posn, perm);
       else
         fprintf(log_out, "%c%c%c%c ",
-               S_ISDIR(perm)  ? 'd' : header.flags[0] == '2' ? 'l' : '-',
-               perm & S_IRUSR ? 'r' : '-',
-               perm & S_IWUSR ? 'w' : '-',
-               perm & S_IXUSR ? 'x' : '-');
-      fprintf(log_out, "%.20s %9ld %s", ctime(&ftime)+4, size, changed_name);
+                S_ISDIR(perm)  ? 'd' : header.flags[0] == '2' ? 'l' : '-',
+                perm & S_IRUSR ? 'r' : '-',
+                perm & S_IWUSR ? 'w' : '-',
+                perm & S_IXUSR ? 'x' : '-');
+      fprintf(log_out, "%.20s %9ld %s", ctime(&ftime) + 4, size, changed_name);
 #if 0
       fprintf(log_out, "(out: %ld)", bytes_out);
 #endif
@@ -169,9 +169,9 @@ tarread(char *buf, long buf_size)
         fprintf(log_out, " link to %s", header.filler);
       fprintf(log_out, "%s\n",
               !should_be_written && !list_only ? "\t[ skipped ]" : "");
-      posn += 512 + ((size+511) & ~511);
+      posn += 512 + ((size + 511) & ~511);
 #if 0
-      fprintf(log_out, "%6lo %02x %12ld %s\n",perm,header.flags[0],size,changed_name);
+      fprintf(log_out, "%6lo %02x %12ld %s\n", perm, header.flags[0], size, changed_name);
 #endif
 
       if (header.flags[0] == '1' || header.flags[0] == '2')
@@ -183,26 +183,26 @@ tarread(char *buf, long buf_size)
       if (should_be_written == 0)
       {
         skipping = (size + 511) & ~511;
-	if (!skipping)	/* an empty file or a directory */
-	{
-	  looking_for_header = 1;
+        if (!skipping)	/* an empty file or a directory */
+        {
+          looking_for_header = 1;
           if (buf_size < (long)(sizeof header))
-	    return 0;
-	}
+            return 0;
+        }
         continue;
       }
       else if ((changed_name[nlen = strlen(changed_name) - 1] == '/'
-		|| header.flags[0] == '5') /* '5' flags a directory */
-	       && !to_stdout)
+                || header.flags[0] == '5') /* '5' flags a directory */
+               && !to_stdout)
       {
         if (changed_name != new)
         {
-          memcpy(new, changed_name, nlen+2);
+          memcpy(new, changed_name, nlen + 2);
           changed_name = new;
         }
-	if (changed_name[nlen] == '/')
-	  changed_name[nlen] = 0;
-	make_directory(changed_name);
+        if (changed_name[nlen] == '/')
+          changed_name[nlen] = 0;
+        make_directory(changed_name);
         looking_for_header = 1;
         continue;
       }
@@ -213,7 +213,7 @@ open_file:
         {
           if (changed_name != new)
           {
-            memcpy(new, changed_name, nlen+2);
+            memcpy(new, changed_name, nlen + 2);
             changed_name = new;
           }
           do_directories(changed_name);
@@ -221,15 +221,15 @@ open_file:
           r = open(changed_name,
                    O_WRONLY | O_BINARY | O_CREAT | O_EXCL, S_IWRITE | S_IREAD);
           if (r < 0)
-	  {
+          {
             if (change(changed_name, "Cannot exclusively open file", 0))
               goto open_file;
             else
             {
-              skipping = (size+511) & ~511;
+              skipping = (size + 511) & ~511;
               continue;
             }
-	  }
+          }
         }
         else
         {
@@ -312,9 +312,9 @@ open_file:
         write_errno = errno;
         break;
       }
-      size     -= dsize;
-      buf_size -= dsize;
-      buf      += dsize;
+      size      -= dsize;
+      buf_size  -= dsize;
+      buf       += dsize;
       bytes_out += dsize;
     }
 
@@ -327,7 +327,7 @@ open_file:
       ftimes.ft_min = tm->tm_min;
       ftimes.ft_hour = tm->tm_hour;
       ftimes.ft_day = tm->tm_mday;
-      ftimes.ft_month = tm->tm_mon+1;
+      ftimes.ft_month = tm->tm_mon + 1;
       ftimes.ft_year = tm->tm_year - 80;
       setftime(r, &ftimes);
       close(r);
