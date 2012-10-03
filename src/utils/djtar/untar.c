@@ -232,7 +232,6 @@ tarread(char *buf, long buf_size)
       if (header.name[0] == 0)
       {
         bytes_out += buf_size;  /* assume everything left should be counted */
-        print_skipped_pax_headers_info();
         return EOF;
       }
       buf += sizeof header;
@@ -550,6 +549,8 @@ tar_gz_read(char *fname)
             "\n%s: corrupted file; I might have written garbage\n", fname);
     fflush(log_out);
   }
+  else if (s_switch)
+    print_skipped_pax_headers_info();
   oread_close(f);
   method = -1;
 }
