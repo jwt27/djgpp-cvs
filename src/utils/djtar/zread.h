@@ -128,6 +128,7 @@ extern int v_switch;          /* be verbose (-v) */
 extern int test;
 extern int exit_code;         /* program exit code */
 extern int z_switch;
+extern int s_switch;          /* do not skip pax headers (-!s) */
 
 #define get_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(0))
 #define try_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf(1))

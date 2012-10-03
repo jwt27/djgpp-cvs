@@ -143,8 +143,9 @@ package is built.
 @pindex djtar
 
 Usage: @code{djtar} [@code{-n} @file{changeFile}] [@code{-e} @file{dir}]
-[@code{-o} @file{dir}] [@code{-t}|@code{-x}] [@code{-i}] [@code{-v}] 
-[@code{-p}] [@code{-.}|@code{-!.}] [@code{-d}|@code{-u}|@code{-b}] 
+[@code{-o} @file{dir}] [@code{-t}|@code{-x}] [@code{-i}] [@code{-v}]
+[@code{-p}] [@code{-.}|@code{-!.}] [@code{-d}|@code{-u}|@code{-b}]
+[@code{-!s}]
 @file{tarfile}
 
 @command{djtar} is a program that is designed to ease the problems related
@@ -222,6 +223,15 @@ existing file), it will prompt you for a new name.  You may type in
 either a complete path, a replacement file name (no directory part), or
 just hit return (the file is skipped).
 
+If a @code{tar} archive contains @code{pax} extended headers as defined
+by @acronym{POSIX} 1003.1-2001 @command{djtar} will skip them and ignore
+any information contained in the data blocks that may follow the @code{pax}
+headers.  If you specify the @samp{-v} switch, the names of the headers,
+the number of data blocks following each header and the position of the
+header in the @code{tar} archive will be shown.  If you specify the @samp{-!s}
+switch, the @code{pax} headers will be extracted as regular files instead of
+being skipped.  This is to allow to inspect their contents.  
+
 If @command{djtar} is called as @command{djtart}, it behaves as if it were
 called with the @samp{-t} switch; when called as @command{djtarx}, it
 behaves like @command{djtar -x}.  Thus you can create 2 links to
@@ -253,8 +263,10 @@ test archive integrity.  This is the default behavior of
 
 This option modifies the output format slightly to aid in debugging tar
 file problems.  It also causes @command{djtar} to emit more verbose warning
-messages and print the compression method for compressed archives.
-
+messages and print the compression method for compressed archives.  If the
+@code{tar} archive contains @code{pax} extended headers their name and the
+number of data blocks that follows each header will be printed.
+ 
 @item -.
 
 Enable the automatic conversion of dots to underscores and dashes.  This
@@ -357,6 +369,18 @@ filename} option.
 When this option is used, diagnostic messages will be directed to the
 standard error stream (as opposed to standard output in normal operation),
 so that they won't get mixed with the files' data.
+
+@item -!s
+
+Unpack @code{pax} headers as regular files instead of skipping them.
+By default, @command{djtar} will @emph{always} skip @code{pax} headers and
+discard the information they provide.  You can use @samp{-s} to impose that
+the contents of the @code{pax} headers are written as a regular file.  You will
+get one file for each header.  The file name is specified by the @command{tar}
+program that has been used to create the @code{tar} archive.  You can change
+these file name using the @samp{-n} option.  The information provided by the
+@code{pax} header is @emph{always} discarded no matter if the headers are
+skipped or extracted. 
 
 @end table
 

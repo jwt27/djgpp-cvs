@@ -137,11 +137,12 @@ DoNameChanges(char *fname)
 
 FILE *change_file;
 
-int v_switch = 0;
 int dot_switch = 1;
+int v_switch = 0;
+int s_switch = 1;
+int z_switch = 0;
 int text_unix = 0;
 int text_dos = 0;
-int z_switch = 0;
 int to_stdout = 0;
 int to_tty = 0;
 int ignore_csum = 0;
@@ -574,7 +575,7 @@ main(int argc, char **argv)
 
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: %s [-n changeFile] [-p] [-i] [-t|x] [-e dir] [-o dir] [-v] [-u|d|b] [-[!].] tarfile...\n", progname);
+    fprintf(stderr, "Usage: %s [-n changeFile] [-p] [-i] [-t|x] [-e dir] [-o dir] [-v] [-u|d|b] [-[!].] [-!s] tarfile...\n", progname);
     exit(1);
   }
 
@@ -615,6 +616,8 @@ main(int argc, char **argv)
       case '!':
 	if (argv[i][2] == '.')
 	  dot_switch = 0;
+	else if (argv[i][2] == 's')
+	  s_switch = 0;
 	break;
       case 'e':
         skip_entry = xmalloc(sizeof(struct skip_dir_list));

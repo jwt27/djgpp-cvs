@@ -1246,3 +1246,7 @@ The @code{s_flags} of the @acronym{COFF} section header now honors the new @code
 that signals that the section contains extended relocations and that the @code{s_nreloc} counter has
 overflown.  The bit set in case of overflow by @code{STYP_NRELOC_OVFL} is @code{0x01000000}.
 
+@pindex djtar@r{, support for @code{tar} archives with @code{pax} headers}
+The djtar program can now unpack @code{tar} archives that contain @code{pax} headers
+conforming to @acronym{POSIX} 1003.1-2001.  The @code{pax} headers are always skipped
+and their contents are discarded.
