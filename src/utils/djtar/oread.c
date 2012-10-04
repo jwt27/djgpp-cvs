@@ -12,8 +12,8 @@
 #include "oread.h"
 #include "zread.h"
 
-#define D_READ	2
-#define	D_WRITE	3
+#define D_READ  2
+#define D_WRITE 3
 
 #define CACHE_SECTORS 18
 

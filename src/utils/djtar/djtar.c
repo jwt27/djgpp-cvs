@@ -186,10 +186,10 @@ change(char *fname, const char *problem, int isadir)
     size_t old_len = strlen(ch->old);
 
     if ((strncmp(fname, ch->old, old_len) == 0) && ch->isdir
-	/* Don't use change rules which failed to work before.  */
-	&& access(ch->new, D_OK) == 0
-	/* Don't be tricked if fname has ch->old as its substring.  */
-	&& (fname[old_len] == '\0' || fname[old_len] == '/'))
+        /* Don't use change rules which failed to work before.  */
+        && access(ch->new, D_OK) == 0
+        /* Don't be tricked if fname has ch->old as its substring.  */
+        && (fname[old_len] == '\0' || fname[old_len] == '/'))
     {
       if (ch->isdir == 2)
       {
@@ -287,11 +287,11 @@ do_directories(char *n)
       char save = *sl;
       *sl = 0;
       do {
-	if (isadir(n))
-	  break;
-	r = mkdir (n, 0777);
-	if (r)
-	  r = change(n, "Unable to create directory", 1);
+        if (isadir(n))
+          break;
+        r = mkdir (n, 0777);
+        if (r)
+          r = change(n, "Unable to create directory", 1);
       } while (r);
       *sl = save;
     }
@@ -421,9 +421,9 @@ get_new_name(char *name_to_change, int *should_be_written)
 
       while (s)
       {
-	*s++ = 'x';
-	*s++ = 'x';
-	s = strstr(s, xx);
+        *s++ = 'x';
+        *s++ = 'x';
+        s = strstr(s, xx);
       }
       fprintf(log_out, "[ changing %s to %s ]\n", changed_name, new);
     }
@@ -434,61 +434,61 @@ get_new_name(char *name_to_change, int *should_be_written)
       char *p = changed_name, *name_start = changed_name;
       int state = 0;
       /* 0 = start of item
-	 1 = before dot (not counting initial dot), but not first char
-	 2 = after first dot */
+         1 = before dot (not counting initial dot), but not first char
+         2 = after first dot */
 
       /* ".gdbinit" -> "_gdbinit"
-	 "emacs-19.28.90/ChangeLog" -> "emacs-19.28-90/ChangeLog"
-	 "./dir/file" -> "./dir/file"
-	 "sh.lex.c" -> "sh_lex.c"
+         "emacs-19.28.90/ChangeLog" -> "emacs-19.28-90/ChangeLog"
+         "./dir/file" -> "./dir/file"
+         "sh.lex.c" -> "sh_lex.c"
       */
       while (*p)
       {
-	switch (*p++)
-	{
-	  case '/':
-	  case '\\':
-	    state = 0;
-	    name_start = p;
-	    break;
-	  case '.':
-	    /* Don't waste our limited 8-char real estate in the
-	       name part too early, unless the name is really short. */
-	    if (state == 1 && p - name_start < 5)
-	    {
-	      size_t namelen    = strlen(p);
-	      char *next_slash  = memchr(p, '/', namelen);
-	      char *next_bslash = memchr(p, '\\', namelen);
-	      char *next_dot    = memchr(p, '.', namelen);
+        switch (*p++)
+        {
+          case '/':
+          case '\\':
+            state = 0;
+            name_start = p;
+            break;
+          case '.':
+            /* Don't waste our limited 8-char real estate in the
+               name part too early, unless the name is really short. */
+            if (state == 1 && p - name_start < 5)
+            {
+              size_t namelen    = strlen(p);
+              char *next_slash  = memchr(p, '/', namelen);
+              char *next_bslash = memchr(p, '\\', namelen);
+              char *next_dot    = memchr(p, '.', namelen);
 
-	      /* Find where this name ends.  */
-	      if (next_slash == (char *)0)
-	      {
-		if (next_bslash)
-		  next_slash = next_bslash;
-		else
-		  next_slash = p + namelen;
-	      }
-	      else if (next_bslash && next_bslash < next_slash)
-		next_slash = next_bslash;
+              /* Find where this name ends.  */
+              if (next_slash == (char *)0)
+              {
+                if (next_bslash)
+                  next_slash = next_bslash;
+                else
+                  next_slash = p + namelen;
+              }
+              else if (next_bslash && next_bslash < next_slash)
+                next_slash = next_bslash;
 
-	      /* If name has more dots, convert this one to `_'. */
-	      if (next_dot && next_dot < next_slash)
-	      {
-		p[-1] = '_';
-		break;      /* don't bump `state' */
-	      }
-	    }
+              /* If name has more dots, convert this one to `_'. */
+              if (next_dot && next_dot < next_slash)
+              {
+                p[-1] = '_';
+                break;      /* don't bump `state' */
+              }
+            }
 
-	    /* Leave "./", "../", "/." etc. alone.  */
-	    if (state != 0 ||
-		(*p && *p != '/' && *p != '\\' && *p != '.'))
-	      p[-1] = "_.-"[state];
-	    if (state < 2) state++;
-	    break;
-	  default:
-	    if (state == 0) state = 1;
-	}
+            /* Leave "./", "../", "/." etc. alone.  */
+            if (state != 0 ||
+                (*p && *p != '/' && *p != '\\' && *p != '.'))
+              p[-1] = "_.-"[state];
+            if (state < 2) state++;
+            break;
+          default:
+            if (state == 0) state = 1;
+        }
       }
     }
   }
@@ -536,10 +536,10 @@ make_directory(char *dirname)
 {
   int status;
 
-  do_directories(dirname);	/* make sure parent exists */
+  do_directories(dirname);        /* make sure parent exists */
   do {
     if (strcmp(dirname, ".") == 0)
-      status = 0;		/* current dir always exists */
+      status = 0;                /* current dir always exists */
     else if (strcmp(dirname, "..") == 0)
       status = !isadir(dirname); /* root might have no parent */
     else
@@ -599,32 +599,32 @@ main(int argc, char **argv)
         v_switch = 1;
         break;
       case 'u':
-	text_unix = 1;
-	text_dos = 0;
-	break;
+        text_unix = 1;
+        text_dos = 0;
+        break;
       case 'd':
-	text_dos = 1;
-	text_unix = 0;
-	break;
+        text_dos = 1;
+        text_unix = 0;
+        break;
       case 'b':
-	text_dos = 0;
-	text_unix = 0;
-	break;
+        text_dos = 0;
+        text_unix = 0;
+        break;
       case '.':
-	dot_switch = 1;
-	break;
+        dot_switch = 1;
+        break;
       case '!':
-	if (argv[i][2] == '.')
-	  dot_switch = 0;
-	else if (argv[i][2] == 's')
-	  s_switch = 0;
-	break;
+        if (argv[i][2] == '.')
+          dot_switch = 0;
+        else if (argv[i][2] == 's')
+          s_switch = 0;
+        break;
       case 'e':
         skip_entry = xmalloc(sizeof(struct skip_dir_list));
         skip_entry->skip_dir = xstrdup(argv[++i]);
         skip_entry->next = skip_dirs;
         skip_dirs = skip_entry;
-	break;
+        break;
       case 'o':
         only_entry = xmalloc(sizeof(struct only_dir_list));
         only_entry->only_dir = xstrdup(argv[++i]);

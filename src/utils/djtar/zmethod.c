@@ -32,7 +32,7 @@
 #include "zread.h"
 #include "lzw.h"
 
-		/* global buffers */
+                /* global buffers */
 
 char inbuf[INBUFSIZ + INBUF_EXTRA];
 char outbuf[OUTBUFSIZ + OUTBUF_EXTRA];
@@ -41,7 +41,7 @@ uch window[2L * WSIZE];
 ush tab_prefix[1L << BITS];
 
 
-		/* local variables */
+                /* local variables */
 
 int test = 0;                         /* test .gz file integrity */
 char *progname;                       /* program name */

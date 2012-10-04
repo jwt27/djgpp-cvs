@@ -50,12 +50,12 @@ extern FILE *log_out;     /* the stream to output messages */
  * is done in window except for unlzw.
  */
 
-#ifndef	INBUFSIZ
+#ifndef INBUFSIZ
 # define INBUFSIZ  0x8000     /* input buffer size */
 #endif
 #define INBUF_EXTRA  64       /* required by unlzw() */
 
-#ifndef	OUTBUFSIZ
+#ifndef OUTBUFSIZ
 # define OUTBUFSIZ  16384     /* output buffer size */
 #endif
 #define OUTBUF_EXTRA 2048     /* required by unlzw() */
@@ -85,12 +85,12 @@ extern char *ifname;          /* input file name or "-" */
 extern char *progname;        /* program name */
 extern int  pkzip;            /* set for a pkzip file */
 
-#define	PACK_MAGIC     "\037\036"         /* Magic header for packed files */
-#define	GZIP_MAGIC     "\037\213"         /* Magic header for gzip files, 1F 8B */
-#define	OLD_GZIP_MAGIC "\037\236"         /* Magic header for gzip 0.5 = freeze 1.x */
-#define	LZH_MAGIC      "\037\240"         /* Magic header for SCO LZH Compress files*/
-#define	PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
-#define	BZIP2_MAGIC    "\102\132\150"     /* Magic header for bzip2 files, BZh */
+#define PACK_MAGIC     "\037\036"         /* Magic header for packed files */
+#define GZIP_MAGIC     "\037\213"         /* Magic header for gzip files, 1F 8B */
+#define OLD_GZIP_MAGIC "\037\236"         /* Magic header for gzip 0.5 = freeze 1.x */
+#define LZH_MAGIC      "\037\240"         /* Magic header for SCO LZH Compress files*/
+#define PKZIP_MAGIC    "\120\113\003\004" /* Magic header for pkzip files */
+#define BZIP2_MAGIC    "\102\132\150"     /* Magic header for bzip2 files, BZh */
 
 /* gzip flag byte */
 #define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */
@@ -158,13 +158,13 @@ extern int s_switch;          /* do not skip pax headers (-!s) */
 #endif
 
 #define WARN(msg) {if (v_switch) fprintf msg ; \
-		   if (exit_code == OK) exit_code = WARNING;}
+                   if (exit_code == OK) exit_code = WARNING;}
 
 int (*decompressor)(void *);
 
 typedef enum { DOS_BINARY, DOS_TEXT, UNIX_TEXT } File_type;
 
-	/* in djtar.c */
+        /* in djtar.c */
 extern int change               (char *, const char *, int);
 extern int isadir               (char *);
 extern void do_directories      (char *);
@@ -173,27 +173,27 @@ extern char* get_new_name       (char *, int *);
 extern void make_directory      (char *);
 extern void rename_if_dos_device(char *);
 
-	/* in untar.c */
+        /* in untar.c */
 extern int tarread       (char *, long);
 extern void tar_gz_read  (char *);
 
-	/* in zmethod.c */
+        /* in zmethod.c */
 extern int get_method    (void *);
 
-	/* in unzip.c */
+        /* in unzip.c */
 extern int unzip         (void *);
 extern int check_zipfile (void);
 
-	/* in unpack.c */
+        /* in unpack.c */
 extern int unpack        (void *);
 
-	/* in unlzh.c */
+        /* in unlzh.c */
 extern int unlzh         (void *);
 
-	/* in unbzip2.c */
+        /* in unbzip2.c */
 extern int unbzip2       (void *);
 
-	/* in util.c: */
+        /* in util.c: */
 extern int  copy         (void *);
 extern ulg  updcrc       (uch *s, unsigned n);
 extern void clear_bufs   (void);
@@ -205,10 +205,10 @@ extern void warn         (char *a, char *b);
 extern void read_error   (void);
 extern void *xmalloc     (unsigned int size);
 
-	/* in inflate.c */
+        /* in inflate.c */
 extern int inflate       (int (*)(char *, long));
 
-	/* in epunzip.c */
+        /* in epunzip.c */
 extern void epunzip_read(char *);
 
 #endif  /* __zread_h_ */

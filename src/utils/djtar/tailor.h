@@ -14,7 +14,7 @@
  * The target dependent functions should be defined in tailor.c.
  */
 
-/* $Id: tailor.h,v 1.2 2012/05/14 21:40:33 juan.guerrero Exp $ */
+/* $Id: tailor.h,v 1.3 2012/10/04 18:39:44 juan.guerrero Exp $ */
 
 #if defined(__MSDOS__) && !defined(MSDOS)
 # define MSDOS
@@ -22,7 +22,7 @@
 
 #define MAX_PATH_LEN  128
 
-	/* Common defaults */
+        /* Common defaults */
 
 #ifndef RECORD_IO
 # define RECORD_IO 0

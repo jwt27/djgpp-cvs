@@ -14,7 +14,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unlzw.c,v 1.3 2012/05/14 21:40:37 juan.guerrero Exp $";
+static char rcsid[] = "$Id: unlzw.c,v 1.4 2012/10/04 18:39:48 juan.guerrero Exp $";
 #endif
 
 #include <sys/types.h>
@@ -121,11 +121,11 @@ typedef unsigned long   cmp_code_int;
 # define REG16  register
 #endif
 
-#ifndef	BYTEORDER
+#ifndef BYTEORDER
 # define BYTEORDER  0000
 #endif
 
-#ifndef	NOALLIGN
+#ifndef NOALLIGN
 # define NOALLIGN  0
 #endif
 

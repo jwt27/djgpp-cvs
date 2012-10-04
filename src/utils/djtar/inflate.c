@@ -103,7 +103,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: inflate.c,v 1.3 2012/05/14 21:40:30 juan.guerrero Exp $";
+static char rcsid[] = "$Id: inflate.c,v 1.4 2012/10/04 18:39:40 juan.guerrero Exp $";
 #endif
 
 #include <sys/types.h>
@@ -320,8 +320,7 @@ int *m;                 /* maximum lookup bits, returns actual */
   memzero(c, sizeof(c));
   p = b;  i = n;
   do {
-    Tracecv(*p, (stderr, (n - i >= ' ' && n - i <= '~' ? "%c %d\n" : "0x%x %d\n"), 
-	    n - i, *p));
+    Tracecv(*p, (stderr, (n - i >= ' ' && n - i <= '~' ? "%c %d\n" : "0x%x %d\n"), n - i, *p));
     c[*p]++;                    /* assume all entries <= BMAX */
     p++;                      /* Can't combine with above line (Solaris bug) */
   } while (--i);
@@ -445,7 +444,7 @@ int *m;                 /* maximum lookup bits, returns actual */
       {
         r.e = (uch)(*p < 256 ? 16 : 15);   /* 256 is end-of-block code */
         r.v.n = (ush)(*p);                 /* simple code is just the value */
-	p++;                               /* one compiler does not like *p++ */
+        p++;                               /* one compiler does not like *p++ */
       }
       else
       {
@@ -586,7 +585,7 @@ int bl, bd;             /* number of bits decoded by tl[] and td[] */
 #endif /* !NOMEMCPY */
           do {
             slide[w++] = slide[d++];
-	    Tracevv((stderr, "%c", slide[w - 1]));
+            Tracevv((stderr, "%c", slide[w - 1]));
           } while (--e);
         if (w == WSIZE)
         {

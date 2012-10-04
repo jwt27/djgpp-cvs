@@ -9,7 +9,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unlzh.c,v 1.3 2012/05/14 21:40:36 juan.guerrero Exp $";
+static char rcsid[] = "$Id: unlzh.c,v 1.4 2012/10/04 18:39:46 juan.guerrero Exp $";
 #endif
 
 #include "tailor.h"
@@ -62,7 +62,7 @@ local void make_table   (int nchar, uch bitlen[], int tablebits, ush table[]);
 /* huf.c */
 
 #define NC (UCHAR_MAX + MAXMATCH + 2 - THRESHOLD)
-	/* alphabet = {0, 1, 2, ..., NC - 1} */
+        /* alphabet = {0, 1, 2, ..., NC - 1} */
 #define CBIT 9  /* $\lfloor \log_2 NC \rfloor + 1$ */
 #define CODE_BIT  16  /* codeword length */
 
@@ -136,7 +136,7 @@ local void init_getbits(void)
 }
 
 /***********************************************************
-	maketbl.c -- make table for decoding
+        maketbl.c -- make table for decoding
 ***********************************************************/
 
 local void make_table(int nchar, uch bitlen[], int tablebits, ush table[])
@@ -232,8 +232,8 @@ local void read_pt_len(int nn, int nbit, int i_special)
       c = bitbuf >> (BITBUFSIZ - 3);
       if (c == 7)
       {
-  	mask = (unsigned) 1 << (BITBUFSIZ - 1 - 3);
-  	while (mask & bitbuf)
+        mask = (unsigned) 1 << (BITBUFSIZ - 1 - 3);
+        while (mask & bitbuf)
           mask >>= 1;  c++;
       }
       fillbuf((c < 7) ? 3 : c - 3);
@@ -401,7 +401,7 @@ local unsigned decode(count, buffer)
       i = (r - decode_p() - 1) & (DICSIZ - 1);
       while (--j >= 0)
       {
-    	buffer[r] = buffer[i];
+        buffer[r] = buffer[i];
         i = (i + 1) & (DICSIZ - 1);
         if (++r == count) return r;
       }

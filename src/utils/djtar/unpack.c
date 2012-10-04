@@ -11,7 +11,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unpack.c,v 1.4 2012/05/14 21:40:39 juan.guerrero Exp $";
+static char rcsid[] = "$Id: unpack.c,v 1.5 2012/10/04 18:39:50 juan.guerrero Exp $";
 #endif
 
 #include "tailor.h"
@@ -233,7 +233,7 @@ int unpack(void *in)
     /* At this point, peek is the next complete code, of len bits */
     if (peek == eob && len == max_len) break; /* end of file? */
     put_ubyte(literal[peek+lit_base[len]], tarread);
-    Tracev((stderr,"%02d %04x %c\n", len, peek,	literal[peek+lit_base[len]]));
+    Tracev((stderr,"%02d %04x %c\n", len, peek, literal[peek+lit_base[len]]));
     skip_bits(len);
   } /* for (;;) */
 
