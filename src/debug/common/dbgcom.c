@@ -10,7 +10,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* exception handling support by Pierre Muller */
 
-#if    (GAS_MAJOR == 2) \
+#if (GAS_MAJOR == 2) \
     && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
 #define LJMP(there) "ljmp    " #there
 #define LCALL(there) "lcall  " #there
@@ -78,7 +78,7 @@ unsigned short dos_descriptors[DOS_DESCRIPTOR_COUNT];
 /* these all need to be static because
   ss can be different from ds in dbgsig !! */
 static int excep_stack[1000];
-static int errcode,cs,eflags,eip,ss,esp,ret_cs,ret_eip;
+static int errcode, cs, eflags, eip, ss, esp, ret_cs, ret_eip;
 static int *cur_pos;
 static int child_exception_level;
 
@@ -87,14 +87,14 @@ TSS a_tss;
 
 static jmp_buf jumper;
 
-static int my_ds,my_cs,app_cs,app_exit_cs,app_ds;
+static int my_ds, my_cs, app_cs, app_exit_cs, app_ds;
 static unsigned int app_ds_size[DS_SIZE_COUNT] __attribute_used;
 static int app_ds_index __attribute_used = 0;
 static jmp_buf load_state;
 
 static int nset, breakhandle[4];
 
-static __dpmi_paddr our_handler[DPMI_EXCEPTION_COUNT],app_handler[DPMI_EXCEPTION_COUNT];
+static __dpmi_paddr our_handler[DPMI_EXCEPTION_COUNT], app_handler[DPMI_EXCEPTION_COUNT];
 
 #ifdef DEBUG_EXCEPTIONS
 typedef
@@ -143,37 +143,37 @@ void save_npx (void)
        : "%eax");
   npx.top = (npx.status & NPX_TOP_MASK) >> NPX_TOP_SHIFT;
   npx.in_mmx_mode = (npx.top == 0);
-  for (i=0;i<8;i++)
-    {
+  for (i = 0; i < 8; i++)
+  {
     /* tag is a array of 8 2 bits that contain info about FPU registers
        st(0) is register(top) and st(1) is register (top+1) ... */
-     npx.st_valid[i] = ((npx.tag >> (((npx.top+i) & 7) << 1)) & 3) != 3;
-     if (npx.st_valid[i])
-       {
-        npx.st[i]= * (long double *) &(npx.reg[i]);
-        /* On my Pentium II the two last bytes are set to 0xff
-           on MMX instructions, but on the Intel docs
-           it was only specified that the exponent part
-           has all bits set !
-           Moreover this are only set if the specific mmx register is used */
+    npx.st_valid[i] = ((npx.tag >> (((npx.top+i) & 7) << 1)) & 3) != 3;
+    if (npx.st_valid[i])
+    {
+      npx.st[i]= * (long double *) &(npx.reg[i]);
+      /* On my Pentium II the two last bytes are set to 0xFF
+         on MMX instructions, but on the Intel docs
+         it was only specified that the exponent part
+         has all bits set !
+         Moreover this are only set if the specific mmx register is used */
 
-        if (npx.reg[i].exponent!=0x7fff)
-          if ((npx.tag >> ((((npx.top+i) & 7) << 1)) & 3) == 2)
-            npx.in_mmx_mode=0;
-       }
-     else
-       {
-        npx.st[i]=0;
-        npx.in_mmx_mode=0;
-       }
+      if (npx.reg[i].exponent != 0x7FFF)
+        if ((npx.tag >> ((((npx.top + i) & 7) << 1)) & 3) == 2)
+          npx.in_mmx_mode = 0;
     }
- if (npx.in_mmx_mode)
-  for (i=0;i<8;i++)
-   {
-    npx.mmx[i]= * (long double *) &(npx.reg[i]);
-   }
- /* Restore debugger's FPU state.  */
- asm volatile ("frstor %0" : :"m" (debugger_npx));
+    else
+    {
+      npx.st[i] = 0;
+      npx.in_mmx_mode = 0;
+    }
+  }
+
+  if (npx.in_mmx_mode)
+    for (i = 0; i < 8; i++)
+      npx.mmx[i]= * (long double *) &(npx.reg[i]);
+
+  /* Restore debugger's FPU state.  */
+  asm volatile ("frstor %0" : :"m" (debugger_npx));
 #endif
 }
 /* ------------------------------------------------------------------------- */
@@ -196,27 +196,21 @@ void load_npx (void)
      will be forced to handle the extra burden of copying the same
      value into each one of the three views of the same registers.  */
   if (npx.in_mmx_mode)
-   {
-     int i;
+  {
+    int i;
     /* change reg to mmx */
-    for (i=0;i<8;i++)
-     if (npx.mmx[i]!= * (long double *) &(npx.reg[i]))
-      {
-       memcpy(&(npx.reg[i]),&(npx.mmx[i]),10);
-      }
-   }
+    for (i = 0; i < 8; i++)
+      if (npx.mmx[i]!= * (long double *) &(npx.reg[i]))
+       memcpy(&(npx.reg[i]), &(npx.mmx[i]), 10);
+  }
   else
-   {
-     int i;
+  {
+    int i;
     /* change reg to st */
-    for (i=0;i<8;i++)
-      {
+    for (i = 0; i < 8; i++)
        if ((npx.st_valid[i]) && (npx.st[i]!= * (long double *) &(npx.reg[i])))
-         {
-          memcpy(&(npx.reg[i]),&(npx.st[i]),10);
-         }
-      }
-   }
+         memcpy(&(npx.reg[i]), &(npx.st[i]), 10);
+  }
 #endif
   asm volatile ("frstor %0" : "=m" (npx));
 }
@@ -232,9 +226,9 @@ static int _DPMIcancelBreak(int handle)
   }
   rv = __dpmi_clear_debug_watchpoint(handle);
   if(rv == -1)
-    printf("DPMI release watchpoint failed for handle 0x%x\n",handle);
+    printf("DPMI release watchpoint failed for handle 0x%x\n", handle);
 
-  /* printf("CancelBreak han=0x%x returns state=0x%x\n",handle,state); */
+  /* printf("CancelBreak han=0x%x returns state=0x%x\n", handle, state); */
   return (state & 1);
 }
 
@@ -254,24 +248,29 @@ void _set_break_DPMI(void)
   nset = 0;
   edi.app_base = vbase;
 
-  for(i=0;i<4;i++)
-    if( (edi.dr[7] >> (i*2))&3 ) {		/* enabled? */
-      brtype = (extract >> (i*4)) & 3;	/* extract the type */
-      if(brtype == 3) brtype = 2;	/* convert for DPMI brain damage */
-      bpinfo.size = ((extract >> (i*4+2)) & 3) + 1;	/* size */
-      bpinfo.address = edi.dr[i]+vbase;
+  for (i = 0; i < 4; i++)
+    if ((edi.dr[7] >> (i * 2)) & 3)
+    {							/* enabled? */
+      brtype = (extract >> (i * 4)) & 3;		/* extract the type */
+      if(brtype == 3) brtype = 2;			/* convert for DPMI brain damage */
+      bpinfo.size = ((extract >> (i * 4 + 2)) & 3) + 1;	/* size */
+      bpinfo.address = edi.dr[i] + vbase;
       rv = __dpmi_set_debug_watchpoint(&bpinfo, brtype);
-      if(rv != -1) {
+      if (rv != -1)
+      {
         breakhandle[i] = bpinfo.handle;
-        /* printf("SetBreak typ=%d siz=%d at 0x%x returns han=%d\n",brtype,(int)bpinfo.size,(unsigned)bpinfo.address,breakhandle[i]); */
-        if(breakhandle[i] == (bpinfo.address >> 16) )	/* Win 2K bug */
+        /* printf("SetBreak typ=%d siz=%d at 0x%x returns han=%d\n", brtype, (int)bpinfo.size, (unsigned)bpinfo.address, breakhandle[i]); */
+        if (breakhandle[i] == (bpinfo.address >> 16))	/* Win 2K bug */
           breakhandle[i] = nset;
         nset++;
-      } else {
-        printf("Error allocating DPMI breakpoint type %d of size %d at address 0x%08lx\n",brtype,(int)bpinfo.size,edi.dr[i]);
+      }
+      else
+      {
+        printf("Error allocating DPMI breakpoint type %d of size %d at address 0x%08lx\n", brtype, (int)bpinfo.size, edi.dr[i]);
         breakhandle[i] = -1;
       }
-    } else
+    }
+    else
       breakhandle[i] = -1;
   return;
 }
@@ -280,26 +279,28 @@ void _set_break_DPMI(void)
 void _clear_break_DPMI(void);
 void _clear_break_DPMI(void)
 {
-  int i,bt;
+  int i, bt;
 
-  if(!nset) {
+  if (!nset)
+  {
     edi.dr[6] = 0;
     return;
   }
 
   bt = 0;
-  for(i=3;i>=0;i--) {
-    bt = bt << 1;                             /* Shift for next bit */
-    if(breakhandle[i] != -1)
+  for (i = 3; i > -1; i--)
+  {
+    bt = bt << 1;                              /* Shift for next bit */
+    if (breakhandle[i] != -1)
       bt |= _DPMIcancelBreak(breakhandle[i]);  /* Set low bit if active */
   }
 
   edi.dr[6] = bt;
 }
 
-static __dpmi_paddr old_i31,old_i21,user_i31,user_i21;
+static __dpmi_paddr old_i31, old_i21, user_i31, user_i21;
 static int user_int_set = 0;
-static __dpmi_paddr my_i9,user_i9,my_i8,user_i8;
+static __dpmi_paddr my_i9, user_i9, my_i8, user_i8;
 static void (*oldNOFP)(int);
 static void dbgsig(int);
 
@@ -307,7 +308,7 @@ static void hook_dpmi(void)
 {
   int i;
   __dpmi_paddr new_int;
-  extern void i21_hook(void),i31_hook(void),__dbgcom_kbd_hdlr(void);
+  extern void i21_hook(void), i31_hook(void), __dbgcom_kbd_hdlr(void);
 
   __dpmi_get_protected_mode_interrupt_vector(0x21, &old_i21);
   __dpmi_get_protected_mode_interrupt_vector(0x31, &old_i31);
@@ -315,17 +316,15 @@ static void hook_dpmi(void)
   __dpmi_get_protected_mode_interrupt_vector(0x09, &my_i9);
   __dpmi_get_protected_mode_interrupt_vector(0x08, &my_i8);
 
-  for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
-    {
-      __dpmi_get_processor_exception_handler_vector(i,&our_handler[i]);
-    }
+  for (i = 0; i < DPMI_EXCEPTION_COUNT; i++)
+    __dpmi_get_processor_exception_handler_vector(i,&our_handler[i]);
 
-  asm volatile ("mov %%cs,%0" : "=g" (new_int.selector) );
+  asm volatile("mov %%cs, %0" : "=g" (new_int.selector));
   new_int.offset32 = (unsigned long)i21_hook;
   __dpmi_set_protected_mode_interrupt_vector(0x21, &new_int);
   new_int.offset32 = (unsigned long)i31_hook;
   __dpmi_set_protected_mode_interrupt_vector(0x31, &new_int);
-  /* avoid to set the ds limit to 0xfff twice */
+  /* avoid to set the ds limit to 0x0FFF twice */
   new_int.offset32 = (unsigned long)__dbgcom_kbd_hdlr;
   __dpmi_set_protected_mode_interrupt_vector(0x09, &new_int);
 
@@ -333,17 +332,17 @@ static void hook_dpmi(void)
      vectors for the keyboard and the timer are valid. */
   if (user_int_set)
   {
-    if ((user_i9.offset32!=new_int.offset32) || (user_i9.selector!=new_int.selector))
+    if ((user_i9.offset32 != new_int.offset32) || (user_i9.selector != new_int.selector))
       __dpmi_set_protected_mode_interrupt_vector(0x09, &user_i9);
     __dpmi_set_protected_mode_interrupt_vector(0x08, &user_i8);
     __dpmi_set_protected_mode_interrupt_vector(0x21, &user_i21);
     __dpmi_set_protected_mode_interrupt_vector(0x31, &user_i31);
   }
   /*    DONT DO THIS (PM)
-    for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
+    for (i = 0; i < DPMI_EXCEPTION_COUNT; i++)
     {
-        if (app_handler[i].offset32 && app_handler[i].selector)
-        __dpmi_set_processor_exception_handler_vector(i,&app_handler[i]);
+      if (app_handler[i].offset32 && app_handler[i].selector)
+        __dpmi_set_processor_exception_handler_vector(i, &app_handler[i]);
     } */
   load_npx();
   oldNOFP = signal(SIGNOFP, dbgsig); /* if we run under FP emulation */
@@ -656,7 +655,7 @@ CL7:									\n\
   0x0501   : __dpmi_allocate_memory
   0x0501   : __dpmi_free_memory
   0x0503   : __dpmi_resize_memory
-  
+
 */ 
 asm(									"\n\
 	.text								\n\
@@ -1010,9 +1009,9 @@ asm (".text								\n\
         .global ___dbgcom_kbd_hdlr					\n\
 ___dbgcom_kbd_hdlr:							\n\
         " LJMP(%cs:___djgpp_old_kbd) "");
-        
-    
-    
+
+
+
 static void unhook_dpmi(void)
 {
   int i;
@@ -1038,66 +1037,66 @@ static void unhook_dpmi(void)
   /* Now restore our interrupt vectors */
   __dpmi_set_protected_mode_interrupt_vector(0x09, &my_i9);
   __dpmi_set_protected_mode_interrupt_vector(0x08, &my_i8);
-  for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
-    {
-      if (i!=2)
-        __dpmi_set_processor_exception_handler_vector(i,&our_handler[i]);
-    }
+  for (i = 0; i < DPMI_EXCEPTION_COUNT; i++)
+  {
+    if (i != 2)
+      __dpmi_set_processor_exception_handler_vector(i, &our_handler[i]);
+  }
 
-  asm volatile ("sti");   /* This improve stability under Win9X after SIGINT */
-			  /* Why? (AP) */
+  asm volatile("sti");   /* This improve stability under Win9X after SIGINT */
+                         /* Why? (AP) */
 }
 
 #define RETURN_TO_HERE 0
 #define RETURN_TO_DEBUGGEE 1
 
 static void call_app_exception(int signum, char return_to_debuggee)
-    {
-    extern void dbgcom_exception_return_to_here(void);
-    extern void dbgcom_exception_return_to_debuggee(void);
+{
+  extern void dbgcom_exception_return_to_here(void);
+  extern void dbgcom_exception_return_to_debuggee(void);
 #ifdef DEBUG_EXCEPTIONS
-    redir_excp_count++;
+  redir_excp_count++;
 #endif
-    eip = load_state->__eip;
-    cs  = load_state->__cs;
-    esp = load_state->__esp;
-    ss  = load_state->__ss;
-    eflags = load_state->__eflags;
-    /* reset the debug trace bit */
-    /* we don't want to step inside the exception_table code */
-    load_state->__eflags &= 0xfffffeffU;
-    errcode = load_state->__sigmask;
-    load_state->__eip=app_handler[signum].offset32;
-    load_state->__cs=app_handler[signum].selector;
-    /* use our own exception stack */
-    child_exception_level++;
-    cur_pos -= 8;
-    if (cur_pos < &excep_stack[0])
-      {
-       /* We have a problem here, but this should never happen.  */
-       fprintf (stderr,
-		"Level of nesting in debugger exceptions too high: %d\n",
-		child_exception_level);
-       exit(-1);
-      }
-    load_state->__ss = my_ds;
-    load_state->__esp= (int) cur_pos;
-    /* where to return */
-    ret_cs = my_cs;
-    if (return_to_debuggee)
-      ret_eip = (int) &dbgcom_exception_return_to_debuggee;
-    else
-      ret_eip = (int) &dbgcom_exception_return_to_here;
-    cur_pos[0] = ret_eip;
-    cur_pos[1] = ret_cs;
-    cur_pos[2] = errcode;
-    cur_pos[3] = eip;
-    cur_pos[4] = cs;
-    cur_pos[5] = eflags;
-    cur_pos[6] = esp;
-    cur_pos[7] = ss;
-    longjmp(load_state, load_state->__eax);
-    }
+  eip = load_state->__eip;
+  cs  = load_state->__cs;
+  esp = load_state->__esp;
+  ss  = load_state->__ss;
+  eflags = load_state->__eflags;
+  /* reset the debug trace bit */
+  /* we don't want to step inside the exception_table code */
+  load_state->__eflags &= 0xFFFFFEFFU;
+  errcode = load_state->__sigmask;
+  load_state->__eip=app_handler[signum].offset32;
+  load_state->__cs=app_handler[signum].selector;
+  /* use our own exception stack */
+  child_exception_level++;
+  cur_pos -= 8;
+  if (cur_pos < &excep_stack[0])
+  {
+   /* We have a problem here, but this should never happen.  */
+   fprintf (stderr,
+            "Level of nesting in debugger exceptions too high: %d\n",
+            child_exception_level);
+   exit(-1);
+  }
+  load_state->__ss = my_ds;
+  load_state->__esp= (int) cur_pos;
+  /* where to return */
+  ret_cs = my_cs;
+  if (return_to_debuggee)
+    ret_eip = (int) &dbgcom_exception_return_to_debuggee;
+  else
+    ret_eip = (int) &dbgcom_exception_return_to_here;
+  cur_pos[0] = ret_eip;
+  cur_pos[1] = ret_cs;
+  cur_pos[2] = errcode;
+  cur_pos[3] = eip;
+  cur_pos[4] = cs;
+  cur_pos[5] = eflags;
+  cur_pos[6] = esp;
+  cur_pos[7] = ss;
+  longjmp(load_state, load_state->__eax);
+}
 
 static void dbgsig(int sig)
 {
@@ -1110,49 +1109,44 @@ static void dbgsig(int sig)
         : "=g" (ds_size) );
 
   /* correct ds limit here */
-  if ((ds_size==0xfff) && (signum==0xc || signum==0xd))
+  if ((ds_size==0x0FFF) && (signum==0x0C || signum==0x0D))
+  {
+    /* If forced_address is known then
+       signum contains the fake exception value (PM) */
+    if (forced_address_known)
+      movedata(app_cs, forced_address, my_ds, (int) &signum, 4);
+    else
+      signum = 0x1B;  /* else we default to SIGINT */
+
+    if (app_ds_index > 1)
+      __dpmi_set_segment_limit(app_ds, app_ds_size[app_ds_index - 2]);  /* set the limit correctly */
+    /* let app restore the ds selector */
+    if (!setjmp(here))
     {
-      /* If forced_address is known then
-	 signum contains the fake exception value (PM) */
-      if (forced_address_known)
-        {
-         movedata(app_cs,forced_address,my_ds,(int) &signum,4);
-        }
-      else
-	signum=0x1B;	/* else we default to SIGINT */
-	
-      if (app_ds_index>1)
-        {
-          /* set the limit correctly */
-          __dpmi_set_segment_limit(app_ds,app_ds_size[app_ds_index-2]);
-        }
-     /* let app restore the ds selector */
-     if (!setjmp(here))
-      {
-       *load_state = *__djgpp_exception_state;     /* exception was in other process */
-       load_state->__eip = here->__eip;
-       load_state->__esp = here->__esp;
-       load_state->__cs = here->__cs;
-       load_state->__ss = here->__ss;
-       /* do use ds exception */
-       load_state->__signum = 0xc;
-       /* longjmp returns eax value */
-       load_state->__eax = 1;
-       call_app_exception(__djgpp_exception_state->__signum, RETURN_TO_HERE);
-      }
-     __djgpp_exception_state->__signum=signum;
+      *load_state = *__djgpp_exception_state;     /* exception was in other process */
+      load_state->__eip = here->__eip;
+      load_state->__esp = here->__esp;
+      load_state->__cs = here->__cs;
+      load_state->__ss = here->__ss;
+      /* do use ds exception */
+      load_state->__signum = 0x0C;
+      /* longjmp returns eax value */
+      load_state->__eax = 1;
+      call_app_exception(__djgpp_exception_state->__signum, RETURN_TO_HERE);
     }
-  
+    __djgpp_exception_state->__signum=signum;
+  }
+
 #ifdef DEBUG_EXCEPTIONS
-    excp_info[excp_index].excp_eip=__djgpp_exception_state->__eip;
-    excp_info[excp_index].excp_cs=__djgpp_exception_state->__cs;
-    excp_info[excp_index].excp_nb=signum;
-    excp_index++;
-    excp_count++;
-    if (excp_index==20)
-      excp_index=0;
+  excp_info[excp_index].excp_eip = __djgpp_exception_state->__eip;
+  excp_info[excp_index].excp_cs = __djgpp_exception_state->__cs;
+  excp_info[excp_index].excp_nb = signum;
+  excp_index++;
+  excp_count++;
+  if (excp_index == 20)
+    excp_index = 0;
 #endif
-  if(__djgpp_exception_state->__cs == app_cs)
+  if (__djgpp_exception_state->__cs == app_cs)
      /* || sig == SIGTRAP) */
   {
     *load_state = *__djgpp_exception_state;	/* exception was in other process */
@@ -1161,27 +1155,29 @@ static void dbgsig(int sig)
   else
   {
     extern int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write);
-    
-  if ((signum<DPMI_EXCEPTION_COUNT) &&
-     (app_handler[signum].offset32) &&
-     (app_handler[signum].selector) &&
-      !invalid_sel_addr(app_handler[signum].selector,
+
+    if ((signum<DPMI_EXCEPTION_COUNT) &&
+        (app_handler[signum].offset32) &&
+        (app_handler[signum].selector) &&
+        !invalid_sel_addr(app_handler[signum].selector,
         app_handler[signum].offset32,1,0) &&
-     ((app_handler[signum].offset32 !=
-      our_handler[signum].offset32) ||
-     (app_handler[signum].selector !=
-      our_handler[signum].selector)))
+        ((app_handler[signum].offset32 !=
+        our_handler[signum].offset32) ||
+        (app_handler[signum].selector !=
+        our_handler[signum].selector)))
     {
-     *load_state = *__djgpp_exception_state;
-     /* This exception was in other process, so the debuggee should
-        handle it.  */
-     call_app_exception(signum, RETURN_TO_DEBUGGEE);
+      *load_state = *__djgpp_exception_state;
+      /* This exception was in other process, so the debuggee should
+         handle it.  */
+      call_app_exception(signum, RETURN_TO_DEBUGGEE);
     }
-   /*  else
-     {
+#if 0
+    else
+    {
       *load_state = *__djgpp_exception_state;
       longjmp(jumper, 1);
-     }  */
+    }
+#endif
   }
 }
 
@@ -1205,49 +1201,49 @@ void run_child(void)
   load_state->__ebp = a_tss.tss_ebp;
   load_state->__esi = a_tss.tss_esi;
   load_state->__edi = a_tss.tss_edi;
-  if(!setjmp(jumper)){
+  if (!setjmp(jumper))
+  {
     extern int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write);
     /* jump to tss */
     _set_break_DPMI();
     hook_dpmi();
-    if (a_tss.tss_trap == 0xffff)
+    if (a_tss.tss_trap == 0xFFFF)
+    {
+      /* We were asked by the debugger to deliver exception to
+         the child when it is resumed.  */
+      if (a_tss.tss_irqn >= DPMI_EXCEPTION_COUNT && forced_address_known)
       {
-	/* We were asked by the debugger to deliver exception to
-	   the child when it is resumed.  */
-	if (a_tss.tss_irqn >= DPMI_EXCEPTION_COUNT && forced_address_known)
-	  {
-	    unsigned app_ds_size = __dpmi_get_segment_limit (app_ds);
-	    if (app_ds_size > 0xfff)
-	      {
-		/* This is a fake exception (SIGINT, SIGALRM, etc.).
-		   We need to poke the `forced' variable in the child
-		   with the fake exception number.  */
-		_farpokel (app_ds, forced_address, a_tss.tss_irqn);
+        unsigned app_ds_size = __dpmi_get_segment_limit (app_ds);
+        if (app_ds_size > 0x0FFF)
+        {
+          /* This is a fake exception (SIGINT, SIGALRM, etc.).
+             We need to poke the `forced' variable in the child
+             with the fake exception number.  */
+          _farpokel (app_ds, forced_address, a_tss.tss_irqn);
 
-		/* We also need to save the child's DS limit in the
-		   child's ds_limit variable, because the child's fake
-		   exception handling code will try to restore the DS
-		   limit from the value of ds_limit.  ds_limit is
-		   defined in exceptn.S at offset -4 relative to the
-		   forced variable (PM).  */
-		_farpokel (app_ds, forced_address - 4, app_ds_size);
-	      }
-	    a_tss.tss_irqn = 0x0d; /* simulate a GPF in the child */
-	  }
-	if ((a_tss.tss_irqn < DPMI_EXCEPTION_COUNT)
-	    && (app_handler[a_tss.tss_irqn].offset32)
-	    && (app_handler[a_tss.tss_irqn].selector)
-	    && !invalid_sel_addr(app_handler[a_tss.tss_irqn].selector,
-				 app_handler[a_tss.tss_irqn].offset32,1,0))
-	  {
-	    call_app_exception(a_tss.tss_irqn, RETURN_TO_DEBUGGEE);
-	  }
-	else
-	  {
-	    a_tss.tss_irqn = 0;
-	    longjmp(load_state, load_state->__eax);
-	  }
+          /* We also need to save the child's DS limit in the
+             child's ds_limit variable, because the child's fake
+             exception handling code will try to restore the DS
+             limit from the value of ds_limit.  ds_limit is
+             defined in exceptn.S at offset -4 relative to the
+             forced variable (PM).  */
+          _farpokel (app_ds, forced_address - 4, app_ds_size);
+        }
+        a_tss.tss_irqn = 0x0d; /* simulate a GPF in the child */
       }
+      if ((a_tss.tss_irqn < DPMI_EXCEPTION_COUNT)
+          && (app_handler[a_tss.tss_irqn].offset32)
+          && (app_handler[a_tss.tss_irqn].selector)
+          && !invalid_sel_addr(app_handler[a_tss.tss_irqn].selector, app_handler[a_tss.tss_irqn].offset32, 1, 0))
+      {
+        call_app_exception(a_tss.tss_irqn, RETURN_TO_DEBUGGEE);
+      }
+      else
+      {
+        a_tss.tss_irqn = 0;
+        longjmp(load_state, load_state->__eax);
+      }
+    }
     else
       longjmp(load_state, load_state->__eax);
     /* we never return here, execption routine will longjump */
@@ -1284,14 +1280,17 @@ static int invalid_addr(unsigned a, unsigned len)
 
   unsigned limit;
   limit = __dpmi_get_segment_limit(app_ds);
-  if(4096 <= a             /* First page is used for NULL pointer detection. */
-  && a <= limit            /* To guard against limit < len. */
-  && a - 1 <= limit - len  /* To guard against limit <= a + len - 1. */
-     )
+  if (4096 <= a                 /* First page is used for NULL pointer detection. */
+      && a <= limit             /* To guard against limit < len. */
+      && a - 1 <= limit - len)  /* To guard against limit <= a + len - 1. */
     return 0;
-/*  printf("Invalid access to child, address %#x length %#x  limit: %#x\n", a, len, limit);
+
+#if 0
+  printf("Invalid access to child, address %#x length %#x  limit: %#x\n", a, len, limit);
   if (can_longjmp)
-    longjmp(debugger_jmpbuf, 1); */
+    longjmp(debugger_jmpbuf, 1);
+#endif
+
   return 1;
 }
 
@@ -1335,30 +1334,34 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
      : "=qm" (read_allowed), "=qm" (write_allowed)
      : "g" (sel)
      );
+
   if (for_write)
-    {
-     if (!write_allowed)
-       return 1;
-    }
+  {
+    if (!write_allowed)
+      return 1;
+  }
   else
     if (!read_allowed)
       return 1;
-      
+
   limit = __dpmi_get_segment_limit(sel);
   /* some selectors don't have zero page protection
      like the protected interrupt stack */
-  if(/*a >= 4096 && */ (a+len-1) <= limit)
+  if (/*a >= 4096 && */ (a + len - 1) <= limit)
     return 0;
-/*  printf("Invalid access to child, address %#x length %#x  limit: %#x\n", a, len, limit);
+#if 0
+  printf("Invalid access to child, address %#x length %#x  limit: %#x\n", a, len, limit);
   if (can_longjmp)
-    longjmp(debugger_jmpbuf, 1); */
+    longjmp(debugger_jmpbuf, 1);
+#endif
+
   return 1;
 }
 
 int read_sel_addr(unsigned child_addr, void *buf, unsigned len, unsigned sel)
 {
   /* first clear memory */
-  memset(buf,0,len);
+  memset(buf, 0, len);
   if (invalid_sel_addr(sel, child_addr, len, 0))
     return 1;
   movedata(sel, child_addr, my_ds, (int)buf, len);
@@ -1388,15 +1391,15 @@ void edi_init(jmp_buf start_state)
 {
   int i;
   my_ds = 0;
-  asm volatile ("mov %%ds,%0" : "=g" (my_ds) );
+  asm volatile ("mov %%ds,%0" : "=g" (my_ds));
   my_cs = 0;
-  asm volatile ("mov %%cs,%0" : "=g" (my_cs) );
+  asm volatile ("mov %%cs,%0" : "=g" (my_cs));
 
-  for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
-    {
-      app_handler[i].offset32 = 0;
-      app_handler[i].selector = 0;
-    }
+  for (i = 0; i < DPMI_EXCEPTION_COUNT; i++)
+  {
+    app_handler[i].offset32 = 0;
+    app_handler[i].selector = 0;
+  }
   *load_state = *start_state;
   a_tss.tss_cs = load_state->__cs;
   a_tss.tss_ss = load_state->__ss;
@@ -1417,7 +1420,7 @@ void edi_init(jmp_buf start_state)
   asm volatile ("fnsave %0" : :"m" (debugger_npx));
   /* Fill the debuggee's FPU state with the default values, taken from
      the equivalent of FNINIT performed by FNSAVE above.  */
-  memset(&npx,0,sizeof(npx));
+  memset(&npx, 0, sizeof(npx));
   save_npx();
   /* Save all the changed signal handlers */
   oldTRAP = signal(SIGTRAP, dbgsig);
@@ -1426,24 +1429,24 @@ void edi_init(jmp_buf start_state)
   oldINT = signal(SIGINT, dbgsig);
   oldQUIT = signal(SIGQUIT, dbgsig);
   oldILL = signal(SIGILL, dbgsig);
-  movedata(a_tss.tss_fs,0,my_ds,(unsigned)&si,sizeof(si));
-  memset(mem_handles,0,sizeof(mem_handles));
+  movedata(a_tss.tss_fs, 0, my_ds, (unsigned)&si, sizeof(si));
+  memset(mem_handles, 0, sizeof(mem_handles));
   mem_handles[0] = si.memory_handle;
-  memset(descriptors,0,sizeof(descriptors));
+  memset(descriptors, 0, sizeof(descriptors));
   descriptors[0] = si.cs_selector;
   descriptors[1] = si.ds_selector;
   descriptors[2] = app_ds;
   descriptors[3] = app_cs; 
   app_exit_cs=si.cs_selector;
-  memset(dos_descriptors,0,sizeof(dos_descriptors));
-  dos_descriptors[0] = _farpeekw(si.psp_selector,0x2c);
+  memset(dos_descriptors, 0, sizeof(dos_descriptors));
+  dos_descriptors[0] = _farpeekw(si.psp_selector, 0x2C);
   dos_descriptors[1] = si.psp_selector;
   if (cmd_selector)
     dos_descriptors[2] = cmd_selector;
   /* set initial value of cur_pos */
-  cur_pos = &excep_stack[1000-40];
+  cur_pos = &excep_stack[1000 - 40];
   /* pattern fill exception stack for debugging */
-  memset(&excep_stack,0xAB,sizeof(excep_stack));
+  memset(&excep_stack, 0xAB, sizeof(excep_stack));
   child_exception_level = 0;
 }
 
@@ -1456,50 +1459,48 @@ void cleanup_client(void)
   /* restore __djgpp_app_DS for Ctrl-C !! */
   __djgpp_app_DS = __djgpp_our_DS;
 #ifdef DEBUG_EXCEPTIONS
-    fprintf(stderr,"excp_count = %d\n",excp_count);
-    fprintf(stderr,"redir_excp_count = %d\n",redir_excp_count);
-    fprintf(stderr,"excp_index = %d\n",excp_index);
-    fprintf(stderr,"app_cs %04x\tapp_ds %04x\n",app_cs,app_ds);
-    fprintf(stderr,"my_cs %04x\tmy_ds %04x\n",my_cs,my_ds);
-    for (i=0;i<excp_count;i++)
-      {
-       fprintf(stderr," excep %04x:%08x\tsignal %08x\n",
-         excp_info[i].excp_cs,
-         excp_info[i].excp_eip,
-         excp_info[i].excp_nb);
-         excp_info[i].excp_eip=0;
-         excp_info[i].excp_cs=0;
-         excp_info[i].excp_nb=0;
-      }
-    for (i=0;i<DS_SIZE_COUNT;i++)
-      {
-       if (app_ds_size[i])
-         {
-          fprintf(stderr," ds size %08x\n",app_ds_size[i]);
-          app_ds_size[i] = 0;
-         }
-      }
-    excp_count=0;
-    redir_excp_count=0;
-    excp_index=0;
-  for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
-    {
-      fprintf(stderr," app %d handler = %04x:%08lx\n",
-              i,app_handler[i].selector,app_handler[i].offset32);
-    }
-  for (i=0;i<DESCRIPTOR_COUNT;i++)
+  fprintf(stderr,"excp_count = %d\n", excp_count);
+  fprintf(stderr,"redir_excp_count = %d\n", redir_excp_count);
+  fprintf(stderr,"excp_index = %d\n", excp_index);
+  fprintf(stderr,"app_cs %04x\tapp_ds %04x\n", app_cs, app_ds);
+  fprintf(stderr,"my_cs %04x\tmy_ds %04x\n", my_cs, my_ds);
+  for (i = 0; i < excp_count; i++)
   {
-    if (descriptors[i])
+    fprintf(stderr, " excep %04x:%08x\tsignal %08x\n",
+                    excp_info[i].excp_cs,
+                    excp_info[i].excp_eip,
+                    excp_info[i].excp_nb);
+    excp_info[i].excp_eip = 0;
+    excp_info[i].excp_cs = 0;
+    excp_info[i].excp_nb = 0;
+  }
+  for (i = 0; i < DS_SIZE_COUNT; i++)
+  {
+    if (app_ds_size[i])
     {
-      fprintf(stderr,"used descriptor: %08x\n",descriptors[i]);
+      fprintf(stderr, " ds size %08x\n", app_ds_size[i]);
+      app_ds_size[i] = 0;
     }
   }
+  excp_count = 0;
+  redir_excp_count = 0;
+  excp_index = 0;
+  for (i = 0; i < DPMI_EXCEPTION_COUNT; i++)
+  {
+    fprintf(stderr, " app %d handler = %04x:%08lx\n",
+                    i, app_handler[i].selector, app_handler[i].offset32);
+  }
+  for (i = 0; i < DESCRIPTOR_COUNT; i++)
+  {
+    if (descriptors[i])
+      fprintf(stderr,"used descriptor: %08x\n", descriptors[i]);
+  }
 #endif
-  for (i=0;i<DPMI_EXCEPTION_COUNT;i++)
-    {
-      app_handler[i].offset32 = 0;
-      app_handler[i].selector = 0;
-    }
+  for (i = 0; i < DPMI_EXCEPTION_COUNT; i++)
+  {
+    app_handler[i].offset32 = 0;
+    app_handler[i].selector = 0;
+  }
   /* Invalidate the info about the `forced' variable.  */
   forced_address_known = 0;
   forced_address = 0;
@@ -1507,35 +1508,35 @@ void cleanup_client(void)
   /* Set the flag, that the user interrupt vectors are no longer valid */
   user_int_set = 0;
 
-  memset(&npx,0,sizeof(npx));
+  memset(&npx, 0, sizeof(npx));
   /* Close all handles, which may be left open */
   close_handles();
-  for (i=0;i<DOS_DESCRIPTOR_COUNT;i++)
+  for (i = 0; i < DOS_DESCRIPTOR_COUNT; i++)
   {
     if (dos_descriptors[i])
     {
 #ifdef DEBUG_DBGCOM
-      fprintf(stderr,"free dos memory: %08x\n",dos_descriptors[i]);
+      fprintf(stderr,"free dos memory: %08x\n", dos_descriptors[i]);
 #endif
       __dpmi_free_dos_memory(dos_descriptors[i]);
     }
   }
-  for (i=0;i<MEM_HANDLE_COUNT;i++)
+  for (i = 0; i < MEM_HANDLE_COUNT; i++)
   {
     if (mem_handles[i])
     {
 #ifdef DEBUG_DBGCOM
-      fprintf(stderr,"free mem : %08lx\n",mem_handles[i]);
+      fprintf(stderr,"free mem : %08lx\n", mem_handles[i]);
 #endif
       __dpmi_free_memory(mem_handles[i]);
     }
   }
-  for (i=0;i<DESCRIPTOR_COUNT;i++)
+  for (i = 0; i < DESCRIPTOR_COUNT; i++)
   {
     if (descriptors[i])
     {
 #ifdef DEBUG_DBGCOM
-      fprintf(stderr,"free descriptor: %08x\n",descriptors[i]);
+      fprintf(stderr,"free descriptor: %08x\n", descriptors[i]);
 #endif
       __dpmi_free_ldt_descriptor(descriptors[i]);
     }
@@ -1587,7 +1588,7 @@ static void close_handles(void)
   /* Get our PSP address.  */
   r.x.ax = 0x6200;
   __dpmi_int (0x21, &r);
-  psp_la = ( (int)r.x.bx ) << 4;
+  psp_la = ((int)r.x.bx) << 4;
 
   /* Get the offset of the JFT table by (seg << 4) + offset */
   jft_ofs = (_farpeekw(_dos_ds, psp_la + 0x36) << 4) +
@@ -1599,20 +1600,19 @@ static void close_handles(void)
   /* Disable the fsext function */
   in_dbg_fsext++;
 
-  for (handle=0;handle<jft_count;handle++)
+  for (handle = 0; handle < jft_count; handle++)
   {
-    if (_farpeekb(_dos_ds,jft_ofs++) != 0xff /* it is an opened handle */
-        && handles[handle] == 0xff /* but not recorded by the fsext function */
-       )
+    if (_farpeekb(_dos_ds, jft_ofs++) != 0xFF  /* it is an opened handle */
+        && handles[handle] == 0xFF)            /* but not recorded by the fsext function */
     { /* it was opened by the debuggee */
 #ifdef CLOSE_UNREGISTERED_FILES
 #ifdef DEBUG_DBGCOM_FILES
-      fprintf(stderr,"closing %d\n",handle);
+      fprintf(stderr, "closing %d\n", handle);
 #endif
       _close(handle);
 #else  /* not CLOSE_UNREGISTERED_FILES */
 #ifdef DEBUG_DBGCOM_FILES
-      fprintf(stderr,"unknown open file %d\n",handle);
+      fprintf(stderr, "unknown open file %d\n", handle);
 #endif
 #endif /* CLOSE_UNREGISTERED_FILES */
     }
@@ -1623,10 +1623,9 @@ static void close_handles(void)
 }
 
 
-static int dbg_fsext(__FSEXT_Fnumber _function_number,
-                      int *_rv, va_list _args)
+static int dbg_fsext(__FSEXT_Fnumber _function_number, int *_rv, va_list _args)
 {
-  int attrib,oflag,retval = 0,handle;
+  int attrib, oflag, retval = 0, handle;
   const char *filename;
   /* We are called from this function */
   if (in_dbg_fsext) return 0;
@@ -1635,47 +1634,47 @@ static int dbg_fsext(__FSEXT_Fnumber _function_number,
     default:
       return 0;
     case __FSEXT_creat:
-      filename = va_arg(_args,const char *);
-      attrib = va_arg(_args,int);
+      filename = va_arg(_args, const char *);
+      attrib = va_arg(_args, int);
       in_dbg_fsext++;
-      retval = _creat(filename,attrib);
+      retval = _creat(filename, attrib);
 #ifdef DEBUG_DBGCOM_FILES
-      fprintf(stderr,"_creat(%s) => %d\n",filename,retval);
+      fprintf(stderr, "_creat(%s) => %d\n", filename,retval);
 #endif
       in_dbg_fsext--;
       if (retval != -1)
       {
         handles[retval] = retval;
-        __FSEXT_set_function(retval,dbg_fsext);
+        __FSEXT_set_function(retval, dbg_fsext);
       }
       break;
     case __FSEXT_open:
-      filename = va_arg(_args,const char *);
-      oflag = va_arg(_args,int);
+      filename = va_arg(_args, const char *);
+      oflag = va_arg(_args, int);
       in_dbg_fsext++;
-      retval = _open(filename,oflag);
+      retval = _open(filename, oflag);
 #ifdef DEBUG_DBGCOM_FILES
-      fprintf(stderr,"_open(%s) => %d\n",filename,retval);
+      fprintf(stderr, "_open(%s) => %d\n", filename, retval);
 #endif
       in_dbg_fsext--;
       if (retval != -1)
       {
         handles[retval] = retval;
-        __FSEXT_set_function(retval,dbg_fsext);
+        __FSEXT_set_function(retval, dbg_fsext);
       }
       break;
     case __FSEXT_close:
-      handle = va_arg(_args,int);
+      handle = va_arg(_args, int);
       in_dbg_fsext++;
 #ifdef DEBUG_DBGCOM_FILES
-      fprintf(stderr,"_close(%d)\n",handle);
+      fprintf(stderr, "_close(%d)\n", handle);
 #endif
       retval = _close(handle);
       in_dbg_fsext--;
       if (retval == 0)
       {
-        handles[handle] = 0xff;
-        __FSEXT_set_function(handle,NULL);
+        handles[handle] = 0xFF;
+        __FSEXT_set_function(handle, NULL);
       }
       break;
   }
@@ -1708,11 +1707,11 @@ _init_dbg_fsext(void)
   /* Add the handler for opening/creating files */
   __FSEXT_add_open_handler(dbg_fsext);
 
-  /* Initialize all the handles to 0xff */
-  memset(handles,0xff,sizeof(handles));
+  /* Initialize all the handles to 0xFF */
+  memset(handles, 0xFF, sizeof(handles));
 
   /* Get a copy of all already opened handles */
-  movedata(_dos_ds,jft_ofs,_my_ds(),(int)handles,jft_count);
+  movedata(_dos_ds, jft_ofs, _my_ds(), (int)handles, jft_count);
 
   /* enable the fsext function */
   in_dbg_fsext = 0;
