@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2004 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -121,6 +122,10 @@ NPX debugger_npx;
 void save_npx (void)
 {
 #ifdef SAVE_FP
+  union {
+    long double d_value;
+    NPXREG r_value;
+  } npx_reg_union;  /*  Fix -Wstrict-aliasing.  */
   int i;
   if ((__dpmi_get_coprocessor_status() & FPU_PRESENT) == 0)
     return;
@@ -147,10 +152,11 @@ void save_npx (void)
   {
     /* tag is a array of 8 2 bits that contain info about FPU registers
        st(0) is register(top) and st(1) is register (top+1) ... */
-    npx.st_valid[i] = ((npx.tag >> (((npx.top+i) & 7) << 1)) & 3) != 3;
+    npx.st_valid[i] = ((npx.tag >> (((npx.top + i) & 7) << 1)) & 3) != 3;
     if (npx.st_valid[i])
     {
-      npx.st[i]= * (long double *) &(npx.reg[i]);
+      npx_reg_union.r_value = npx.reg[i];
+      npx.st[i] = npx_reg_union.d_value;
       /* On my Pentium II the two last bytes are set to 0xFF
          on MMX instructions, but on the Intel docs
          it was only specified that the exponent part
@@ -170,7 +176,10 @@ void save_npx (void)
 
   if (npx.in_mmx_mode)
     for (i = 0; i < 8; i++)
-      npx.mmx[i]= * (long double *) &(npx.reg[i]);
+    {
+      npx_reg_union.r_value = npx.reg[i];
+      npx.mmx[i] = npx_reg_union.d_value;
+    }
 
   /* Restore debugger's FPU state.  */
   asm volatile ("frstor %0" : :"m" (debugger_npx));
