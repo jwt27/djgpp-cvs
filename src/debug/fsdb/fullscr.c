@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -856,7 +857,7 @@ static int
 code_skip (int origin, int count)
 {
   int len, *next, i, j, k, instcount, done, leave;
-  char *state, *inst, *source;
+  char *state, *source /* , *inst */;
 
   if (count >= 0)
     {
@@ -888,7 +889,9 @@ code_skip (int origin, int count)
 	      j = origin - done;
 	      if (valid_instaddr (j))
 		{
+#if 0
 		  inst = unassemble_proper (j, &len);
+#endif
 		  source = unassemble_source (j);
 		  next[done] = j + len;
 		  if (source)
@@ -906,9 +909,9 @@ code_skip (int origin, int count)
 			  leave = (strncmp (inst, "jmp", 3) == 0
 				   || strncmp (inst, "ret", 3) == 0
 				   || strncmp (inst, "iret", 4) == 0);
-#endif
 			  if (!leave)
 			    inst = unassemble_proper (j, &len);
+#endif
 			}
 		    }
 		}
@@ -1603,7 +1606,6 @@ redraw (int first)
 	/* We assume that `long double' is the same type as npx.reg[i].
 	   It would be sensible to check that the sizes match, but they
 	   don't!  For alignment reasons, `sizeof (long double)' is 12.	 */
-	long double d;
 	int tag;
 	int tos = (npx.status >> 11) & 7;
 	int exp = (int)npx.reg[i].exponent - 16382;
@@ -1617,8 +1619,13 @@ redraw (int first)
 	  case 0:
 	    if (abs (exp) < 1000)
 	      {
-		d = *((long double*)(npx.reg + i));
-		sprintf(dstr,"%+.19Lg", d);
+		/*  Fix -Wstrict-aliasing.  */
+		union {
+		  long double d_value;
+		  NPXREG r_value;
+		} npx_reg_union;
+		npx_reg_union.r_value = npx.reg[i];
+		sprintf(dstr,"%+.19Lg", npx_reg_union.d_value);
 	      }
 	    else
 	      sprintf (dstr, "Valid, %s, and %s",
@@ -3045,8 +3052,14 @@ npx_pane_command (int key)
 		      message (CL_Error, "Expression not understood");
 		    else
 		      {
+			/*  Fix -Wstrict-aliasing.  */
+			union {
+			  long double d_value;
+			  NPXREG r_value;
+			} npx_reg_union;
+			npx_reg_union.d_value = d;
+			npx.reg[reg] = npx_reg_union.r_value;
 			tag = (d == 0.0);
-			*((long double *)(npx.reg + reg)) = d;
 			npx.reg[reg].sign = (*p == '-'); /* for -Zero */
 		      }
 		  }
