@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -25,12 +26,14 @@ static char *colours[] = {
 /* At position (X,Y) place TXT in the debugger screen.  */
 
 inline void
-put (int x, int y, unsigned char *txt)
+put (int x, int y, char *txt)
 {
   unsigned char *p
     = (unsigned char *)(debug_screen_save + 3) + 2 * (cols * y + x);
-  while (*txt)
-    *p++ = *txt++,
+  unsigned char *ptxt = (unsigned char *)txt;
+
+  while (*ptxt)
+    *p++ = *ptxt++,
     *p++ = screen_attr;
 }
 /* ------------------------------------------------------------------------- */
@@ -38,12 +41,14 @@ put (int x, int y, unsigned char *txt)
    screen.  */
 
 inline void
-putl (int x, int y, int l, unsigned char *txt)
+putl (int x, int y, int l, char *txt)
 {
   unsigned char *p
     = (unsigned char *)(debug_screen_save + 3) + 2 * (cols * y + x);
-  while (*txt && l > 0)
-    *p++ = *txt++,
+  unsigned char *ptxt = (unsigned char *)txt;
+
+  while (*ptxt && l > 0)
+    *p++ = *ptxt++,
     *p++ = screen_attr,
     l--;
   while (l-- > 0)
@@ -60,6 +65,7 @@ draw (int x, int y, unsigned char ch, int delta, int count)
   short unsigned *p
     = (short unsigned *)(debug_screen_save + 3) + (cols * y + x);
   short unsigned attrch = ((unsigned)screen_attr << 8) + ch;
+
   while (count--)
     *p = attrch,
     p += delta;
@@ -72,6 +78,7 @@ highlight (int x, int y, int len)
 {
   unsigned short *p
     = (unsigned short *)(debug_screen_save + 4) + (cols * y + x);
+
   while (len--)
     *(unsigned char *)p = screen_attr,
     p++;

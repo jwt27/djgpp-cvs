@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 /* ------------------------------------------------------------------------- */
 typedef enum { CL_Info, CL_Msg, CL_Error } CL_TYPE;
@@ -33,8 +34,8 @@ int cols, rows;
 int toplines, bottomlines;
 char *read_buffer;
 /* ------------------------------------------------------------------------- */
-void put (int x, int y, unsigned char *txt);
-void putl (int x, int y, int l, unsigned char *txt);
+void put (int x, int y, char *txt);
+void putl (int x, int y, int l, char *txt);
 void draw (int x, int y, unsigned char ch, int delta, int count);
 void highlight (int x, int y, int len);
 void frame (int x1, int y1, int x2, int y2);
