@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -93,13 +94,13 @@ static __inline__ char tochar(int n)
 #define	GROUPING	0x0400		/* non monetary thousands grouping */
 #define	UPPERCASE	0x0800		/* INF/NAN for [AEFG] */
 
-static int cvtl(long double number, int prec, int flags, char *signp,
-	        unsigned char fmtch, char *startp, char *endp);
+static int doprnt_cvtl(long double number, int prec, int flags, char *signp,
+                       unsigned char fmtch, char *startp, char *endp);
 static char *doprnt_roundl(long double fract, int *expv, char *start,
 			   char *end, char ch, char *signp);
-static char *exponentl(char *p, int expv, unsigned char fmtch, int flags);
+static char *doprnt_exponentl(char *p, int expv, unsigned char fmtch, int flags);
 #ifdef __GO32__
-static int isspeciall(long double d, char *bufp, int flags);
+static int doprnt_isspeciall(long double d, char *bufp, int flags);
 #endif
 static __inline__ char * __grouping_format(char *string_start, char *string_end, char *buffer_end, int flags);
 static __inline__ va_list __traverse_argument_list(int index_of_arg_to_be_fetched, const char *format_string, va_list arg_list);
@@ -403,8 +404,8 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
        * if the first char isn't NUL, it did.
        */
       *buf = '\0';
-      size = cvtl(_ldouble, prec, flags, &softsign, *fmt, buf,
-		  buf + sizeof(buf));
+      size = doprnt_cvtl(_ldouble, prec, flags, &softsign, *fmt, buf,
+                         buf + sizeof(buf));
       /*
        * If the format specifier requested an explicit sign,
        * we print a negative sign even if no significant digits
@@ -642,8 +643,8 @@ static long double PREC = 1.0L/P;
 /* #define FAST_LDOUBLE_CONVERSION */
 
 static int
-cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
-     char *startp, char *endp)
+doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
+            char *startp, char *endp)
 {
   char *p, *t;
   long double fract = 0;
@@ -652,7 +653,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
   int doingzero = false;     /* We're displaying 0.0 */
   long double integer, tmp;
 
-  if ((expcnt = isspeciall(number, startp, flags)))
+  if ((expcnt = doprnt_isspeciall(number, startp, flags)))
     return(expcnt);
 
   if (fmtch == 'a' || fmtch == 'A')
@@ -1030,7 +1031,7 @@ cvtl(long double number, int prec, int flags, char *signp, unsigned char fmtch,
 	--t;
       ++t;
     }
-    t = exponentl(t, expcnt, fmtch, flags);
+    t = doprnt_exponentl(t, expcnt, fmtch, flags);
     break;
   case 'g':
   case 'G':
@@ -1177,7 +1178,7 @@ doprnt_roundl(long double fract, int *expv, char *start, char *end, char ch,
 }
 
 static char *
-exponentl(char *p, int expv, unsigned char fmtch, int flags)
+doprnt_exponentl(char *p, int expv, unsigned char fmtch, int flags)
 {
   char *t;
   char expbuf[MAXEXPLD];
@@ -1208,7 +1209,7 @@ exponentl(char *p, int expv, unsigned char fmtch, int flags)
 }
 
 static int
-isspeciall(long double d, char *bufp, int flags)
+doprnt_isspeciall(long double d, char *bufp, int flags)
 {
   /*
    *  For intel's 80 bit floating point number identify
