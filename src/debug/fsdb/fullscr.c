@@ -857,7 +857,7 @@ static int
 code_skip (int origin, int count)
 {
   int len, *next, i, j, k, instcount, done, leave;
-  char *state, *source /* , *inst */;
+  char *state, *source;
 
   if (count >= 0)
     {
@@ -889,9 +889,7 @@ code_skip (int origin, int count)
 	      j = origin - done;
 	      if (valid_instaddr (j))
 		{
-#if 0
-		  inst = unassemble_proper (j, &len);
-#endif
+		  unassemble_proper (j, &len);
 		  source = unassemble_source (j);
 		  next[done] = j + len;
 		  if (source)
@@ -909,9 +907,9 @@ code_skip (int origin, int count)
 			  leave = (strncmp (inst, "jmp", 3) == 0
 				   || strncmp (inst, "ret", 3) == 0
 				   || strncmp (inst, "iret", 4) == 0);
-			  if (!leave)
-			    inst = unassemble_proper (j, &len);
 #endif
+			  if (!leave)
+			    unassemble_proper (j, &len);
 			}
 		    }
 		}
