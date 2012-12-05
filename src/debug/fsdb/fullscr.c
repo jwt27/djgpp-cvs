@@ -927,7 +927,8 @@ code_skip (int origin, int count)
 	    if (state[j++] == 2)
 	      k--;
 	}
-      while (k > 0 && done + 2 * count <= instcount);
+      while (k > 0 && done + 2 * count <= instcount)
+	;
       if (k == 0)
 	return origin - j + 1;
       else
@@ -1025,7 +1026,7 @@ static void
 step (KIND_TYPE kind)
 {
   int i, b = -1, no, len, int03hit;
-  char *inst = 0;
+  char *inst = NULL;
   int tracing = (kind == R_Step1);
   word32 final = -1;
 
@@ -2204,7 +2205,7 @@ setup_save (int dummy)
 static void
 setup_restore (int booting)
 {
-  FILE *f = 0;
+  FILE *f = NULL;
   char *err = "Corrupted setup file";
 
   f = fopen (setupfilename, "rt");
