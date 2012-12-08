@@ -32,14 +32,14 @@ while (<DIST>) {
     print "find... ";
     &dtou("$p/files");
     system "find `cat /tmp/d.$$` -type f -print > manifest/$file.mft"
-	|| die("find");
+        || die("find");
 
     if ( -f "$p/skips" ) {
-	print "skips... ";
-	&dtou("$p/skips");
-	system "sed -f /tmp/d.$$ manifest/$file.mft > manifest/$file.tmp"
-	    || die("sed");
-	rename("manifest/$file.tmp", "manifest/$file.mft");
+        print "skips... ";
+        &dtou("$p/skips");
+        system "sed -f /tmp/d.$$ manifest/$file.mft > manifest/$file.tmp"
+            || die("sed");
+        rename("manifest/$file.tmp", "manifest/$file.mft");
     }
 
     open(M, ">> manifest/$file.mft");
@@ -48,20 +48,20 @@ while (<DIST>) {
     close(M);
 
     if ( -f "$p/nobins" ) {
-	print "nobins... ";
-	system "distrib/nobins `cat $p/nobins` < manifest/$file.mft > manifest/$file.tmp"
-	    || die("nobins");
-	rename("manifest/$file.tmp", "manifest/$file.mft");
+        print "nobins... ";
+        system "distrib/nobins `cat $p/nobins` < manifest/$file.mft > manifest/$file.tmp"
+            || die("nobins");
+        rename("manifest/$file.tmp", "manifest/$file.mft");
     }
 
     print "sort... ";
     system "sort manifest/$file.mft > manifest/$file.tmp"
-	|| die("sort");
+        || die("sort");
     rename("manifest/$file.tmp", "manifest/$file.mft");
 
     print "zip... ";
     system "zip -qq -9 -@ /tmp/$file.zip < manifest/$file.mft"
-	|| die("zip");
+        || die("zip");
     system "cp /tmp/$file.zip zips/$file.zip";
     unlink "/tmp/$file.zip";
 
@@ -78,8 +78,8 @@ sub dtou {
     open(S, $s);
     open(D, ">/tmp/d.$$");
     while (<S>) {
-	s/\r//g;
-	print D;
+        s/\r//g;
+        print D;
     }
     close(S);
     close(D);
