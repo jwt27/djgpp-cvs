@@ -7,6 +7,17 @@ $| = 1;
 
 $one = shift;
 
+$tmpdir = $ENV{'TMPDIR'};
+if ( !defined($tmpdir) ) {
+    if ( $^O eq 'dos' ) {
+        $tmpdir = "c:/"
+    } else {
+        $tmpdir = "/tmp"
+    }
+}
+
+$cc = gcc;
+
 open(DIST, "mkdist.bat");
 chdir "..";
 
@@ -25,30 +36,37 @@ while (<DIST>) {
     print "$file... ";
     $p = "distrib/p/$file";
 
+    system "cp $p/$file.dsm manifest/$file.dsm";
+
     open(M, "> manifest/$file.ver");
     print M "$file $desc\r\n";
     close(M);
 
     print "find... ";
     &dtou("$p/files");
-    system "find `cat /tmp/d.$$` -type f -print > manifest/$file.mft"
+    system "find `cat $tmpdir/d.$$` -type f -print > manifest/$file.mft"
         || die("find");
 
     if ( -f "$p/skips" ) {
         print "skips... ";
         &dtou("$p/skips");
-        system "sed -f /tmp/d.$$ manifest/$file.mft > manifest/$file.tmp"
+        system "sed -f $tmpdir/d.$$ manifest/$file.mft > manifest/$file.tmp"
             || die("sed");
         rename("manifest/$file.tmp", "manifest/$file.mft");
     }
 
     open(M, ">> manifest/$file.mft");
+    print M "manifest/$file.dsm\n";
     print M "manifest/$file.mft\n";
     print M "manifest/$file.ver\n";
     close(M);
 
     if ( -f "$p/nobins" ) {
         print "nobins... ";
+        if ( !-f "distrib/nobins" ) {
+            system "$cc -s -O2 distrib/nobins.c -o distrib/nobins"
+                || die("$cc");
+        }
         system "distrib/nobins `cat $p/nobins` < manifest/$file.mft > manifest/$file.tmp"
             || die("nobins");
         rename("manifest/$file.tmp", "manifest/$file.mft");
@@ -60,10 +78,10 @@ while (<DIST>) {
     rename("manifest/$file.tmp", "manifest/$file.mft");
 
     print "zip... ";
-    system "zip -qq -9 -@ /tmp/$file.zip < manifest/$file.mft"
+    system "zip -qq -9 -@ $tmpdir/$file.zip < manifest/$file.mft"
         || die("zip");
-    system "cp /tmp/$file.zip zips/$file.zip";
-    unlink "/tmp/$file.zip";
+    system "cp $tmpdir/$file.zip zips/$file.zip";
+    unlink "$tmpdir/$file.zip";
 
     print "done.\n";
     last unless -f "zips/$file.zip";
@@ -76,7 +94,7 @@ while (<DIST>) {
 sub dtou {
     local($s) = @_;
     open(S, $s);
-    open(D, ">/tmp/d.$$");
+    open(D, ">$tmpdir/d.$$");
     while (<S>) {
         s/\r//g;
         print D;
@@ -84,5 +102,5 @@ sub dtou {
     close(S);
     close(D);
 }
-unlink "/tmp/d.$$";
+unlink "$tmpdir/d.$$";
 
