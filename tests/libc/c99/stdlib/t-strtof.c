@@ -151,9 +151,11 @@ main (int argc, char *argv[])
 
   puts("float_t tests:");
   for (i = 0; i < n_tests2; i++) {
-    sprintf(buf, "%g", *(const float *) &tests2[i]);
+    _float_union_t float_union;  /* Fix dereferencing type-punned pointer will break strict-aliasing rules error.  */
+    float_union.ft = tests2[i];
+    sprintf(buf, "%g", float_union.f);
     f_res = strtof(buf, NULL);
-    result(i + 1, *(const float *) &tests2[i], f_res);
+    result(i + 1, float_union.f, f_res);
   }
 
   puts("HUGE_VALF tests:");
@@ -188,14 +190,16 @@ main (int argc, char *argv[])
   for (i = 0; i < n_tests4; i++) {
     char *endptr;
     float_t float_bits;
+    _float_union_t float_union;
 
     f_res = strtof(tests4[i].str, &endptr);
       
     printf("strtof(\"%s\", &endptr) -> %f, %td - ", tests4[i].str,
-	   f_res, endptr-tests4[i].str);
+	   f_res, endptr - tests4[i].str);
 
     /* Need to do the Inf detection ourselves. */
-    float_bits = *(float_t *)(&f_res);
+    float_union.f = f_res;  /* Fix dereferencing type-punned pointer will break strict-aliasing rules error.  */
+    float_bits = float_union.ft;
     if (float_bits.exponent != 0xff) {
       puts("exponent != 0xff - FAIL");
       ok = 0;
@@ -206,9 +210,9 @@ main (int argc, char *argv[])
 		(!float_bits.sign && f_res < 0) ) {
       puts("Wrong sign - FAIL");
       ok = 0;
-    } else if ( endptr-tests4[i].str != tests4[i].diff) {
+    } else if ( endptr - tests4[i].str != tests4[i].diff) {
       printf("endptr-(start_of_string) == %td != %td - FAIL\n",
-	     endptr-tests4[i].str, tests4[i].diff);
+	     endptr - tests4[i].str, tests4[i].diff);
       ok = 0;
     } else {
       puts("OK");
@@ -219,6 +223,7 @@ main (int argc, char *argv[])
   for (i = 0; i < n_tests5; i++) {
     char *endptr;
     float_t float_bits;
+    _float_union_t float_union;
 
     f_res = strtof(tests5[i].str, &endptr);
 
@@ -226,7 +231,8 @@ main (int argc, char *argv[])
 	   f_res, endptr-tests5[i].str);
 
     /* Need to to the NaN detection ourselves. */
-    float_bits = *(float_t *)(&f_res);
+    float_union.f = f_res;
+    float_bits = float_union.ft;
     if (float_bits.exponent != 0xff ) {
       puts("exponent != 0xff - FAIL");
       ok = 0;
@@ -237,9 +243,9 @@ main (int argc, char *argv[])
       printf("sign == %d != %d - FAIL\n", float_bits.sign,
 	     tests5[i].sign);
       ok = 0;
-    } else if ( endptr-tests5[i].str != tests5[i].diff) {
+    } else if ( endptr - tests5[i].str != tests5[i].diff) {
       printf("endptr-(start_of_string) == %td != %td - FAIL\n",
-	     endptr-tests5[i].str, tests5[i].diff);
+	     endptr - tests5[i].str, tests5[i].diff);
       ok = 0;
     } else if (tests5[i].mantissa && 
 	       tests5[i].mantissa != float_bits.mantissa) { 
