@@ -231,5 +231,8 @@ extern short LOGSQ2[];
 extern short THPIO4[];
 extern short TWOOPI[];
 */
+#if 0
+/* Pacify compiler: -Wunused-variable
 static char x[] =
 "Cephes Math Library Copyright 1987 by Stephen L. Moshier";
+#endif
