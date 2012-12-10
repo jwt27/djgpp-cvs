@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -44,7 +45,7 @@ static char _sctab[256] = {
 };
 
 static int nchars = 0;
-static char decimal = '.';
+static char decimal_point = '.';
 
 int 
 _doscan(FILE *iop, const char *fmt, va_list argp)
@@ -60,7 +61,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   int *ptr, fileended, size;
   int suppressed;
 
-  decimal = localeconv()->decimal_point[0];
+  decimal_point = localeconv()->decimal_point[0];
   nchars = 0;
   nmatch = 0;
   fileended = 0;
@@ -243,12 +244,12 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
   lcval = 0;
   ndigit = 0;
   scale = INT;
-  if (type == 'e' || type == 'f' || type == 'g')
+  if (type == 'a' || type == 'e' || type == 'f' || type == 'g')
     scale = FLOAT;
   base = 10;
   if (type == 'o')
     base = 8;
-  else if (type == 'x' || type == 'p')
+  else if (type == 'x' || type == 'p' || type == 'a')
     base = 16;
   np = numbuf;
 
@@ -279,7 +280,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
     cpos++;
     if (c == '0' && cpos == 1 && type == 'i')
       base = 8;
-    if ((c == 'x' || c == 'X') && (type == 'i' || type == 'x')
+    if ((c == 'x' || c == 'X') && (type == 'a' || type == 'i' || type == 'x')
         && cpos == 2 && lcval == 0)
     {
       base = 16;
@@ -306,16 +307,16 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
       c = c1;
       continue;
     }
-    else if (c == decimal)
+    else if (c == decimal_point)
     {
-      if (base != 10 || scale == INT)
+      if (scale == INT || base == 8)
         break;
       ndigit++;
       continue;
     }
     else if ((c == 'e' || c == 'E') && expseen == 0)
     {
-      if (base != 10 || scale == INT || ndigit == 0)
+      if (scale == INT || base == 8 || ndigit == 0)
         break;
       expseen++;
       *np++ = c;
