@@ -1250,3 +1250,9 @@ overflown.  The bit set in case of overflow by @code{STYP_NRELOC_OVFL} is @code{
 The djtar program can now unpack @code{tar} archives that contain @code{pax} headers
 conforming to @acronym{POSIX} 1003.1-2001.  The @code{pax} headers are always skipped
 and their contents are discarded.
+
+@findex _doscan@r{, and C99 conversion specifiers}
+@findex scanf@r{, and C99 conversion specifiers}
+The @code{a}, @code{A} and @code{F} conversion specifiers
+are now supported by @code{_doscan} and the @code{scanf}
+family of functions.
