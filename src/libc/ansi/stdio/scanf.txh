@@ -115,6 +115,12 @@ Convert the input to a @code{ptrdiff_t} using 10 as the base.
 
 Convert the input to a @code{size_t} using 10 as the base.
 
+
+@item a
+@itemx A
+
+Convert the input of the form [+|-]0xH.HHHHp|P[+|-]DDD to a floating point number (a @code{float}).
+
 @item e
 @itemx E
 @itemx f
@@ -124,6 +130,11 @@ Convert the input to a @code{size_t} using 10 as the base.
 
 Convert the input to a floating point number (a @code{float}).
 
+@item la
+@itemx lA
+
+Convert the input of the form [+|-]0xH.HHHHp|P[+|-]DDD to a floating point number (a @code{double}).
+
 @item le
 @itemx lE
 @itemx lf
@@ -131,7 +142,14 @@ Convert the input to a floating point number (a @code{float}).
 @itemx lg
 @itemx lG
 
-Convert the input to a @code{double}.
+Convert the input to a floating point number (a @code{double}).
+
+@item La
+@itemx LA
+@item lla
+@itemx llA
+
+Convert the input of the form [+|-]0xH.HHHHp|P[+|-]DDD to a floating point number (a @code{double}).
 
 @item Le
 @itemx LE
@@ -146,7 +164,7 @@ Convert the input to a @code{double}.
 @itemx llg
 @itemx llG
 
-Convert the input to a @code{long double}.
+Convert the input to a floating point number (a @code{long double}.
 
 @item i
 
@@ -391,7 +409,8 @@ is a very popular extension to ANSI (which merely says a dash
 ``may have a special meaning'' in that context).
 
 @port-note ansi-c99 The @code{hh}, @code{j}, @code{t}
-and @code{z} conversion specifiers first appeared
+and @code{z} length modifiers and the @code{a}, @code{A}
+and @code{F} conversion specifiers first appeared
 in the ANSI C99 standard.
 
 @portability ansi, posix
