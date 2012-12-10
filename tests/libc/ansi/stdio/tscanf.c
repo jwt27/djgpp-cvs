@@ -119,8 +119,9 @@ int convert_and_print (const char *fmt, const char *buf)
 
         return converted;
       }
+    case 'a': case 'A':
     case 'e': case 'E':
-    case 'f':
+    case 'f': case 'F':
     case 'g': case 'G':
       if (cnv_qual == 'L')
       {
@@ -135,7 +136,12 @@ int convert_and_print (const char *fmt, const char *buf)
           converted = 0;
         }
         else
-          printf ("Result: long double %.21Lg\n", ldnum[0]);
+        {
+          if (cnv_spec == 'a' || cnv_spec == 'A')
+            printf ("Result: long double hex %.15La  long double dec %.21Lg\n", ldnum[0], ldnum[0]);
+          else
+            printf ("Result: long double %.21Lg\n", ldnum[0]);
+        }
 
         return converted;
       }
@@ -152,7 +158,12 @@ int convert_and_print (const char *fmt, const char *buf)
           converted = 0;
         }
         else
-          printf ("Result: double %.17g\n", dnum[0]);
+        {
+          if (cnv_spec == 'a' || cnv_spec == 'A')
+            printf ("Result: double hex %.13a  double dec %.17g\n", dnum[0], dnum[0]);
+          else
+            printf ("Result: long double %.17g\n", dnum[0]);
+        }
 
         return converted;
       }
@@ -169,7 +180,12 @@ int convert_and_print (const char *fmt, const char *buf)
           converted = 0;
         }
         else
-          printf ("Result: float %.7g\n", fnum[0]);
+        {
+          if (cnv_spec == 'a' || cnv_spec == 'A')
+            printf ("Result: float hex %.6a  float dec %.7g\n", fnum[0], fnum[0]);
+          else
+            printf ("Result: float %.7g\n", fnum[0]);
+        }
 
         return converted;
       }
