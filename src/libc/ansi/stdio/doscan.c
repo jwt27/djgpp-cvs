@@ -170,15 +170,15 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
         if (!ptr)
           break;
         if (size == LONG)
-          *(long*)ptr = nchars;
+          *(long *)ptr = nchars;
         else if (size == CHAR)
-          *(char*)ptr = nchars;
+          *(char *)ptr = nchars;
         else if (size == SHORT)
-          *(short*)ptr = nchars;
+          *(short *)ptr = nchars;
         else if (size == LONGDOUBLE)
-          *(long long*)ptr = nchars;
+          *(long long *)ptr = nchars;
         else
-          *(int*)ptr = nchars;
+          *(int *)ptr = nchars;
         break;
       }
 
@@ -202,7 +202,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     case '\r':
     case '\f':
     case '\v':
-      while (((nchars++, ch1 = scan_getc(iop))!=EOF) && (_sctab[ch1 & 0xff] & SPC))
+      while (((nchars++, ch1 = scan_getc(iop)) != EOF) && (_sctab[ch1 & 0xff] & SPC))
         ;
 
       if (ch1 != EOF)
@@ -267,7 +267,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
     nchars++;
     len--;
   }
-  else if (c=='+')
+  else if (c == '+')
   {
     len--;
     c = scan_getc(iop);
@@ -400,7 +400,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
     len = 1;
   ignstp = 0;
 
-  if (type=='s')
+  if (type == 's')
     ignstp = SPC;
 
   while ((nchars++, ch = scan_getc(iop)) != EOF && _sctab[ch & 0xff] & ignstp)
@@ -412,7 +412,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
   else if (type == '[')
     ignstp = STP;
 
-  while (ch != EOF && (_sctab[ch & 0xff]&ignstp) == 0)
+  while (ch != EOF && (_sctab[ch & 0xff] & ignstp) == 0)
   {
     matched = 1;
     if (ptr)
