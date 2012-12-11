@@ -15,7 +15,8 @@ int main(void)
   const char *format[] = {
    "%5$s, %2$d de %1$s, %3$*6$.*7$d:%4$*6$.*7$d\n",
    "%5$s, %2$d. %1$s, %3$*6$.*7$d:%4$*6$.*7$d\n",
-   "%5$s, %1$s %2$d, %3$*6$.*7$d:%4$*6$.*7$d\n"
+   "%5$s, %1$s %2$d, %3$*6$.*7$d:%4$*6$.*7$d\n",
+   NULL
   };
   const char *weekday[] = {"Sabado", "Samstag", "Saturday"};
   const char *month[] = {"febrero", "Februar", "february"};
@@ -50,7 +51,7 @@ int main(void)
   width = 2;
   precision = 2;
   printf("Printing Language-Independent Date and Time.\n\n");
-  for (i = 0; i < 3; i++)
+  for (i = 0; format[i]; i++)
   {
     char *fmt;
     int len = strlen(format[i]);

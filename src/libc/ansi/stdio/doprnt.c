@@ -68,14 +68,14 @@ static char *grouping;
 
 static __inline__ int todigit(char c)
 {
-  if (c <= '0') return 0;
-  if (c >= '9') return 9;
-  return c-'0';
+  if (c < '0') return 0;
+  if (c > '9') return 9;
+  return c - '0';
 }
 static __inline__ char tochar(int n)
 {
-  if (n >= 9) return '9';
-  if (n <= 0) return '0';
+  if (n > 9) return '9';
+  if (n < 0) return '0';
   return n + '0';
 }
 
@@ -167,11 +167,12 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
     }
     if (!ch)
       return cnt;
+
     base = 0;
     flags = 0; dprec = 0; fpprec = 0; width = 0;
     prec = -1;
     sign = '\0';
-  rflag:
+rflag:
     switch (*++fmt)
     {
     case '\'':
@@ -505,10 +506,10 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       if ((flags & ALT) && _ulonglong != 0)
 	flags |= HEXPREFIX;
 
-    nosign:
+nosign:
       /* unsigned conversions */
       sign = '\0';
-    number:
+number:
       /*
        * ``... diouXx conversions ... if a precision is
        * specified, the 0 flag will be ignored.''
@@ -538,7 +539,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 
       size = buf + BUF - t;
 
-    pforw:
+pforw:
       if ((flags & FINITENUMBER) && (flags & GROUPING) && (base == 10) && thousands_sep && (*grouping != CHAR_MAX))
       {
         register char *p;
@@ -578,6 +579,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       if ((flags & (LADJUST | ZEROPAD)) == 0 && width)
 	for (n = realsz; n < width; n++)
 	  PUTC(' ');
+
       /* prefix */
       if (sign)
 	PUTC(sign);
@@ -586,10 +588,12 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
 	PUTC('0');
 	PUTC((*fmt == 'A') ? 'X' : (*fmt == 'a') ? 'x' : (char)*fmt);
       }
+
       /* right-adjusting zero padding */
       if ((flags & (LADJUST | ZEROPAD)) == ZEROPAD)
 	for (n = realsz; n < width; n++)
 	  PUTC('0');
+
       /* leading zeroes from decimal precision */
       for (n = fieldsz; n < dprec; n++)
 	PUTC('0');
@@ -597,13 +601,16 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
       /* the string or number proper */
       for (n = size; n > 0; n--)
         PUTC(*t++);
+
       /* trailing f.p. zeroes */
       while (--fpprec >= 0)
 	PUTC('0');
+
       /* left-adjusting padding (always blank) */
       if (flags & LADJUST)
 	for (n = realsz; n < width; n++)
 	  PUTC(' ');
+
       /* finally, adjust cnt */
       cnt += width > realsz ? width : realsz;
       break;
@@ -934,11 +941,12 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
 	startp = doprnt_roundl(fract, (int *)NULL, startp,
 			       t - 1, (char)0, signp);
     }
-    for (; prec--; *t++ = '0');
+    for (; prec--; *t++ = '0')
+      ;
     break;
   case 'e':
   case 'E':
-  eformat:
+eformat:
     if (expcnt)
     {
       *t++ = *++p;
@@ -964,9 +972,9 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
     /* until first fractional digit, decrement exponent */
     else if (fract)
     {
-      int lp=NP, pt=MAXP;
+      int lp = NP, pt = MAXP;
 #ifndef FAST_LDOUBLE_CONVERSION
-      long double ofract = fract, dd=1.0L;
+      long double ofract = fract, dd = 1.0L;
 #endif
       expcnt = -1;
       if (fract < PREC)
@@ -1017,8 +1025,7 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
 	  *t++ = tochar((int)tmp);
 	} while (--prec && fract);
       if (fract)
-	startp = doprnt_roundl(fract, &expcnt, startp,
-			       t - 1, (char)0, signp);
+	startp = doprnt_roundl(fract, &expcnt, startp, t - 1, (char)0, signp);
     }
     /* if requires more precision */
     for (; prec--; *t++ = '0');
@@ -1026,7 +1033,8 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
     /* unless alternate flag, trim any g/G format trailing 0's */
     if (gformat && !(flags & ALT))
     {
-      while (t > startp && *--t == '0');
+      while (t > startp && *--t == '0')
+        ;
       if (*t == decimal_point)
 	--t;
       ++t;
@@ -1071,7 +1079,8 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
      * note, decrement precision
      */
     if (expcnt)
-      for (; ++p < endp; *t++ = *p, --prec);
+      for (; ++p < endp; *t++ = *p, --prec)
+        ;
     else
       *t++ = '0';
     /*
@@ -1100,14 +1109,16 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
       }
     }
     if (fract)
-      startp = doprnt_roundl(fract, (int *)NULL, startp, t - 1,
-			     (char)0, signp);
+      startp = doprnt_roundl(fract, (int *)NULL, startp, t - 1, (char)0, signp);
+
     /* alternate format, adds 0's for precision, else trim 0's */
     if (flags & ALT)
-      for (; prec--; *t++ = '0');
+      for (; prec--; *t++ = '0')
+        ;
     else if (dotrim)
     {
-      while (t > startp && *--t == '0');
+      while (t > startp && *--t == '0')
+        ;
       if (*t != decimal_point)
 	++t;
     }
@@ -1139,7 +1150,8 @@ doprnt_roundl(long double fract, int *expv, char *start, char *end, char ch,
   }
   else
     tmp = todigit(ch);
- start:
+
+start:
   if (tmp > 4)
     for (;; --end)
     {
@@ -1191,6 +1203,7 @@ doprnt_exponentl(char *p, int expv, unsigned char fmtch, int flags)
   }
   else
     *p++ = '+';
+
   t = expbuf + MAXEXPLD;
   if (expv > 9)
   {
@@ -1198,7 +1211,8 @@ doprnt_exponentl(char *p, int expv, unsigned char fmtch, int flags)
       *--t = tochar(expv % 10);
     } while ((expv /= 10) > 9);
     *--t = tochar(expv);
-    for (; t < expbuf + MAXEXPLD; *p++ = *t++);
+    for (; t < expbuf + MAXEXPLD; *p++ = *t++)
+      ;
   }
   else
   {
@@ -1342,7 +1356,7 @@ __traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_li
     }
 
     flags = 0;
-  rflag:
+rflag:
     switch (*++fmt)
     {
     /* Flags */
