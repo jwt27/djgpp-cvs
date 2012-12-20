@@ -8,20 +8,6 @@ $| = 1;
 $one = shift;
 
 $tmpdir = $ENV{'TMPDIR'};
-if ( !defined($tmpdir) ) {
-    if ( $^O eq 'dos' ) {
-        $tmpdir = $ENV{'TMP'};
-        if ( !defined($tmpdir) ) {
-            $tmpdir = $ENV{'TEMP'};
-            if ( !defined($tmpdir) ) {
-                mkdir("./tmp");
-                $tmpdir = "./tmp";
-            }
-        }
-    } else {
-        $tmpdir = "/tmp"
-    }
-}
 
 $cc = gcc;
 
