@@ -10,27 +10,33 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <errno.h>
 #include <libc/file.h>
 #include <libc/local.h>
 
-#define SPC         01
-#define STP         02
+#define SPC            01
+#define STP            02
 
-#define CHAR        0
-#define SHORT       1
-#define REGULAR     2
-#define LONG        4
-#define LONGDOUBLE  8
+#define CHAR           0
+#define SHORT          1
+#define REGULAR        2
+#define LONG           4
+#define LONGDOUBLE     8
 
-#define INT         0
-#define FLOAT       1
+#define INT            0
+#define FLOAT          1
+
+#define DEFAULT_WIDTH  30000
+#define BUFFER_SIZE    128
 
 static int _innum(int *ptr, int type, int len, int size, FILE *iop,
                   int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
-                  int *eofptr);
+                  int *eofptr, const bool allocate_char_buffer);
 static int _instr(char *ptr, int type, int len, FILE *iop,
                   int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
-                  int *eofptr);
+                  int *eofptr, const bool allocate_char_buffer);
 static const char *_getccl(const unsigned char *s);
 
 static char _sctab[256] = {
@@ -60,12 +66,15 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   int nmatch, len, ch1;
   int *ptr, fileended, size;
   int suppressed;
+  bool allocate_char_buffer;
+  int previous_errno = errno;
 
   decimal_point = localeconv()->decimal_point[0];
   nchars = 0;
   nmatch = 0;
   fileended = 0;
   suppressed = 0;
+  errno = 0;
 
   for (;;)
   {
@@ -76,7 +85,9 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
     case '%':
       if ((ch = *fmt++) == '%')
         goto def;
-      ptr = 0;
+
+      allocate_char_buffer = false;
+      ptr = NULL;
       if (ch != '*')
         ptr = va_arg(argp, int *);
       else
@@ -89,7 +100,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
         ch = *fmt++;
       }
       if (len == 0)
-        len = 30000;
+        len = DEFAULT_WIDTH;
 
       if (ch == 'l')
       {
@@ -135,6 +146,14 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
         /* C99 */
         size = REGULAR;
         ch = *fmt++;
+      }
+      else if (ch == 'm')
+      {
+        /* POSIX.1 and GNU glibc extension */
+        allocate_char_buffer = true;
+        ch = *fmt++;
+        if (ch == '[')
+          fmt = _getccl((const unsigned char *)fmt);
       }
       else if (ch == '[')
         fmt = _getccl((const unsigned char *)fmt);
@@ -182,7 +201,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
         break;
       }
 
-      if (_innum(ptr, ch, len, size, iop, scan_getc, scan_ungetc, &fileended))
+      if (_innum(ptr, ch, len, size, iop, scan_getc, scan_ungetc, &fileended, allocate_char_buffer))
       {
         if (ptr)
           nmatch++;
@@ -191,8 +210,10 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       }
       else
       {
-        if (fileended && !nmatch && !suppressed)
+        if ((fileended && !nmatch && !suppressed) || (allocate_char_buffer && errno == ENOMEM))
           return EOF;
+
+        errno = previous_errno;
         return nmatch;
       }
       break;
@@ -229,7 +250,8 @@ def:
 
 static int
 _innum(int *ptr, int type, int len, int size, FILE *iop,
-       int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), int *eofptr)
+       int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
+       int *eofptr, const bool allocate_char_buffer)
 {
   register char *np;
   char numbuf[64];
@@ -240,7 +262,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
 
   if (type == 'c' || type == 's' || type == '[')
     return (_instr(ptr ? (char *)ptr : (char *)NULL, type, len,
-                   iop, scan_getc, scan_ungetc, eofptr));
+                   iop, scan_getc, scan_ungetc, eofptr, allocate_char_buffer));
   lcval = 0;
   ndigit = 0;
   scale = INT;
@@ -388,21 +410,44 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
 
 static int
 _instr(char *ptr, int type, int len, FILE *iop,
-       int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), int *eofptr)
+       int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
+       int *eofptr, const bool allocate_char_buffer)
 {
   register int ch;
+  char *arg_ptr = NULL, *orig_ptr = NULL;
+  size_t string_length;
   int ignstp;
   int matched = 0;
+  size_t buffer_size = BUFFER_SIZE;
 
   *eofptr = 0;
-  if (type == 'c' && len == 30000)
+  if (type == 'c' && len == DEFAULT_WIDTH)
     len = 1;
-  ignstp = 0;
 
+  if (allocate_char_buffer)
+  {
+    if (!len)
+    {
+      errno = ENOMEM;
+      return 0;
+    }
+    else
+    {
+      arg_ptr = ptr;
+      orig_ptr = ptr = malloc(buffer_size);
+      if (!ptr)
+      {
+        errno = ENOMEM;
+        return 0;
+      }
+    }
+  }
+
+  ignstp = 0;
   if (type == 's')
     ignstp = SPC;
 
-  while ((nchars++, ch = scan_getc(iop)) != EOF && _sctab[ch & 0xff] & ignstp)
+  while ((string_length = nchars++, ch = scan_getc(iop)) != EOF && _sctab[ch & 0xff] & ignstp)
     ;
 
   ignstp = SPC;
@@ -416,8 +461,29 @@ _instr(char *ptr, int type, int len, FILE *iop,
     matched = 1;
     if (ptr)
       *ptr++ = ch;
-    if (--len <= 0)
+
+    if (allocate_char_buffer && type != 'c')
+    {
+      if (--buffer_size < 1)
+      {
+        const ptrdiff_t offset = ptr - orig_ptr;
+        char *new_ptr = realloc(orig_ptr, buffer_size += 2);
+        if (!new_ptr)
+        {
+          free(orig_ptr);
+          errno = ENOMEM;
+          return 0;
+        }
+        orig_ptr = new_ptr;
+        ptr = orig_ptr + offset;
+
+        if (--len < 1)
+          len = DEFAULT_WIDTH;
+      }
+    }
+    else if (--len < 1)
       break;
+
     ch = scan_getc(iop);
     nchars++;
   }
@@ -439,8 +505,24 @@ _instr(char *ptr, int type, int len, FILE *iop,
 
   if (matched)
   {
+    string_length = nchars - string_length;
     if (ptr && type != 'c')
+    {
       *ptr++ = '\0';
+      string_length++;
+    }
+    if (allocate_char_buffer)
+    {
+      *(char **)arg_ptr = realloc(orig_ptr, string_length);
+      ptr = arg_ptr;
+      if (!*ptr)
+      {
+        free(orig_ptr);
+        errno = ENOMEM;
+        return 0;
+      }
+    }
+
     return 1;
   }
 
