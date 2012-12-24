@@ -30,6 +30,14 @@ This allows to describe an input field that is to be skipped.
 @item A width specifier, which specifies the maximum number of input
 characters to use in the conversion. 
 
+@item A @samp{m} character.  This is used with string conversions, and
+relieves the caller of the need to allocate a corresponding buffer to hold
+the input: instead, @code{scanf} allocates a buffer of sufficient size, and
+assigns the address of this buffer to the corresponding  pointer argument,
+which should be a pointer to a @var{char *} variable (this variable does
+not need to  be initialized before the call).  The caller should subsequently
+free this buffer when it is no longer required.  This is a @acronym{GNU} extension.
+
 @item An optional conversion qualifier, which may be:
 
 @table @code
@@ -396,7 +404,8 @@ assigned, @code{EOF} is returned.  Note that literal characters
 (including whitespace) in the format string which matched input
 characters count as ``converted items'', so input failure @emph{after}
 such characters were read and matched will @strong{not} cause @code{EOF}
-to be returned.
+to be returned.  If the @code{m} modifier character has been used and
+the memory allocation failed, then @var{errno} will be set to @code{ENOMEM}.
 
 @subheading Portability
 
@@ -413,18 +422,42 @@ and @code{z} length modifiers and the @code{a}, @code{A}
 and @code{F} conversion specifiers first appeared
 in the ANSI C99 standard.
 
+@port-note posix The @code{m} modifier character is a @acronym{GNU}
+extension and is specified in the upcoming revision of the @acronym{POSIX.1}
+standard.
+
 @portability ansi, posix
 
 @subheading Example
 
 @example
-int x, y;
+int n, x, y;
 char buf[100];
+char *buf_ptr, *char_ptr;
+
 scanf("%d %d %s", &x, &y, buf);
 
 /* read to end-of-line */
 scanf("%d %[^\n]\n", &x, buf);
 /* read letters only */
 scanf("%[a-zA-Z]", buf);
+
+/* read 5 charcters and allocate the corresponding buffer */
+scanf("%5mc", &char_ptr);
+/* read letters only and allocate the corresponding buffer */
+scanf("%ms", &buf_ptr);
+
+/* read letters only and allocate the corresponding buffer */
+n = scanf("%a[a-z]", &buf_ptr);
+if (n == 1)
+@{
+  printf("read: %s\n", &buf_ptr);
+  free(buf_ptr);
+@}
+else if (errno != 0)
+  perror("scanf");
+else
+  fprintf(stderr, "No matching characters\n"):
+
 @end example
 

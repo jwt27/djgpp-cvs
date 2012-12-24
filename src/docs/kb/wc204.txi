@@ -1256,3 +1256,10 @@ and their contents are discarded.
 The @code{a}, @code{A} and @code{F} conversion specifiers
 are now supported by @code{_doscan} and the @code{scanf}
 family of functions.
+
+@findex _doscan@r{, and m modifier character}
+@findex scanf@r{, and m modifier character}
+The @code{m} modifier character is now supported by @code{_doscan}
+and the @code{scanf} family of functions.  This is a @acronym{GNU}
+glibc extension and it is specified in the upcoming revision
+of the @acronym{POSIX.1} standard.
