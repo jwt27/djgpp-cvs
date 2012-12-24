@@ -14,18 +14,18 @@ Sends formatted output from the arguments (@dots{}) to @code{stdout}.
 
 The format string contains regular characters to print, as well as
 conversion specifiers, which begin with a percent symbol.  Conversions can
-be applied to the nth argument after the format string in the argument list,
+be applied to the @var{n}th argument after the format string in the argument list,
 rather than to the next unused argument.  In this case, the conversion
-specifier character @code{%} is replaced by the sequence @code{"%n$"}, where
-@code{n} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
+specifier character @code{%} is replaced by the sequence @code{%@var{n}$}, where
+@var{n} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
 giving the position of the argument in the argument list.  The format string
-can contain either numbered argument conversion specifiers (that is, @code{"%n$"}
-and @code{"*m$"}), or unnumbered argument conversion specifiers (that is @code{%}
+can contain either numbered argument conversion specifiers (that is, @code{%@var{n}$}
+and @code{*@var{m}$}), or unnumbered argument conversion specifiers (that is @code{%}
 and @code{*}), but not both.  The only exception to this is that @code{%%} can
-be mixed with @code{"%n$"} form.  When numbered argument specifications are
-used, specifying the Nth argument requires that all the leading arguments,
-from the first to the (N-1)th, are specified in the format string.  In format
-strings containing the @code{"%n$"} form of conversion specification, numbered
+be mixed with @code{%@var{n}$} form.  When numbered argument specifications are
+used, specifying the @var{n}th argument requires that all the leading arguments,
+from the first to the (@var{n}-1)th, are specified in the format string.  In format
+strings containing the @code{%@var{n}$} form of conversion specification, numbered
 arguments in the argument list can be referenced from the format string as many
 times as required.
 
@@ -74,9 +74,9 @@ A field width specifier, which specifies the minimum width of the field.
 This may also be an asterisk (@code{*}), which means that the actual
 width will be obtained from the next argument.  If the argument is
 negative, it supplies a @code{-} flag and a positive width. 
-In format strings containing the @code{"%n$"} form of a conversion
-specifier, a field width can be indicated by the sequence @code{"*m$"},
-where m is a decimal integer in the range [@code{1}, @code{number of the last argument}],
+In format strings containing the @code{%@var{n}$} form of a conversion
+specifier, a field width can be indicated by the sequence @code{*@var{m}$},
+where @var{m} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
 giving the position in the argument list (after the format argument) of
 an integer argument containing the field width.
 
@@ -88,9 +88,9 @@ The precision specifies the minimum number of digits to print for an
 integer, the number of fraction digits for a floating point number (max
 for @code{g} or @code{G}, actual for others), or the maximum number of
 characters for a string. 
-In format strings containing the @code{"%n$"} form of a conversion
-specifier, a precision can be indicated by the sequence @code{"*m$"},
-where m is a decimal integer in the range [@code{1}, @code{number of the last argument}],
+In format strings containing the @code{%@var{n}$} form of a conversion
+specifier, a precision can be indicated by the sequence @code{*@var{m}$},
+where @var{m} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
 giving the position in the argument list (after the format argument) of
 an integer argument containing the precision.
 
@@ -135,8 +135,8 @@ The conversion type specifier:
 @itemx A
 
 A floating point number (float or double) printed in the style
-@code{"[-]0xh.hhhhp[+|-]d"}, where @code{h} represents a hexadecimal
-digit, @code{d} represents a decimal digit and @code{p} stands for the
+@samp{"[-]0xh.hhhhp[+|-]d"}, where @samp{h} represents a hexadecimal
+digit, @samp{d} represents a decimal digit and @samp{p} stands for the
 base 2.  For long double, use @code{"La"} or @code{"LA"}.  The case of
 the exponent, the case of the letters @code{"abcdef"} and the case of
 @code{"x"} matches the specifier case.  The representation always has
