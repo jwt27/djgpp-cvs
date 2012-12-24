@@ -25,11 +25,11 @@
 #define INT         0
 #define FLOAT       1
 
-static int _innum(int *ptr, int type, int len, int size, FILE *iop, 
-                  int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), 
+static int _innum(int *ptr, int type, int len, int size, FILE *iop,
+                  int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
                   int *eofptr);
-static int _instr(char *ptr, int type, int len, FILE *iop, 
-                  int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), 
+static int _instr(char *ptr, int type, int len, FILE *iop,
+                  int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
                   int *eofptr);
 static const char *_getccl(const unsigned char *s);
 
@@ -47,7 +47,7 @@ static char _sctab[256] = {
 static int nchars = 0;
 static char decimal_point = '.';
 
-int 
+int
 _doscan(FILE *iop, const char *fmt, va_list argp)
 {
   return(_doscan_low(iop, fgetc, ungetc, fmt, argp));
@@ -71,7 +71,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   {
     switch (ch = *fmt++)
     {
-    case '\0': 
+    case '\0':
       return nmatch;
     case '%':
       if ((ch = *fmt++) == '%')
@@ -91,7 +91,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       if (len == 0)
         len = 30000;
 
-      if (ch == 'l') 
+      if (ch == 'l')
       {
         size = LONG;
         ch = *fmt++;
@@ -198,7 +198,7 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       break;
     case ' ':
     case '\n':
-    case '\t': 
+    case '\t':
     case '\r':
     case '\f':
     case '\v':
@@ -217,7 +217,7 @@ def:
       if (ch1 != EOF) nchars++;
       if (ch1 != ch)
       {
-        if (ch1==EOF)
+        if (ch1 == EOF)
           return (nmatch || suppressed ? nmatch : EOF);
         scan_ungetc(ch1, iop);
         nchars--;
@@ -255,8 +255,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
 
   expseen = 0;
   negflg = 0;
-  while (((nchars++, c = scan_getc(iop)) != EOF)
-         && (_sctab[c & 0xff] & SPC))
+  while (((nchars++, c = scan_getc(iop)) != EOF) && (_sctab[c & 0xff] & SPC))
     ;
   if (c == EOF) nchars--;
   if (c == '-')
@@ -275,7 +274,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
   }
 
   cpos = 0;
-  for ( ; --len >= 0; *np++ = c, c = scan_getc(iop), nchars++)
+  for (; --len >= 0; *np++ = c, c = scan_getc(iop), nchars++)
   {
     cpos++;
     if (c == '0' && cpos == 1 && type == 'i')
@@ -341,7 +340,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
     *eofptr = 1;
 
   nchars--;
-  if (np == numbuf || (negflg && np == numbuf + 1) ) /* gene dykes*/
+  if (np == numbuf || (negflg && np == numbuf + 1))  /* gene dykes*/
     return 0;
 
   if (ptr == NULL)
