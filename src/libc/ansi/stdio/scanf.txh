@@ -18,8 +18,23 @@ exactly as well as a conversion specifiers, which begin with a percent
 symbol.  Any whitespace in the format string matches zero or more of any
 whitespace characters in the input.  Thus, a single space may match a
 newline and two tabs in the input.  All conversions except @samp{c} and
-@samp{[} also skip leading whitespace automatically.  Each conversion
-specifier contains the following fields:
+@samp{[} also skip leading whitespace automatically.
+Conversions can be applied to the @var{n}th argument after the format in
+the argument list, rather than to the next unused argument.  In this case,
+the conversion specifier character @code{%} is replaced by the sequence
+@code{%@var{n}$}, where @var{n} is a decimal integer in the range [@code{1}, @code{number of the last argument}].
+This feature provides for the definition of format strings that select
+arguments in an order appropriate to specific languages.  In format strings
+containing the @code{%@var{n}$} form of conversion specifications, it is unspecified
+whether numbered arguments in the argument list can be referenced from
+the format string more than once.  The format can contain either form of
+a conversion specification --- that is, @code{%} or @code{%@var{n}$} ---
+but the two forms cannot be mixed within a single format string.  The only
+exception to this is that @code{%%} or @code{%*} can be mixed with the
+@code{%@var{n}$} form.  When numbered argument specifications are used,
+specifying the @var{n}th argument requires that all the leading arguments,
+from the first to the (@var{n}-1)th, are pointers.
+Each conversion specifier contains the following fields:
 
 @itemize @bullet
 
@@ -434,6 +449,8 @@ standard.
 int n, x, y;
 char buf[100];
 char *buf_ptr, *char_ptr;
+char month[9], *source = "december 22, 2012";
+int year, day;
 
 scanf("%d %d %s", &x, &y, buf);
 
@@ -442,12 +459,12 @@ scanf("%d %[^\n]\n", &x, buf);
 /* read letters only */
 scanf("%[a-zA-Z]", buf);
 
-/* read 5 charcters and allocate the corresponding buffer */
+/* read 5 charcters and allocate a buffer that is large enough */
 scanf("%5mc", &char_ptr);
-/* read letters only and allocate the corresponding buffer */
+/* read letters only and allocate a buffer that is large enough */
 scanf("%ms", &buf_ptr);
 
-/* read letters only and allocate the corresponding buffer */
+/* read letters only and allocate a buffer that is large enough */
 n = scanf("%a[a-z]", &buf_ptr);
 if (n == 1)
 @{
@@ -458,6 +475,9 @@ else if (errno != 0)
   perror("scanf");
 else
   fprintf(stderr, "No matching characters\n"):
+
+/* scan string in sequence: year, month, day */
+sscanf(source, "%2$9s %3$d %*[,] %1$d", &year, month, &day);
 
 @end example
 
