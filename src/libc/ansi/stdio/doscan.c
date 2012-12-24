@@ -63,11 +63,13 @@ int
 _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), const char *fmt, va_list argp)
 {
   register int ch;
-  int nmatch, len, ch1;
+  int nmatch, n, len, ch1;
   int *ptr, fileended, size;
   int suppressed;
   bool allocate_char_buffer;
   int previous_errno = errno;
+  const va_list arg_list = argp;
+  bool retrieve_arg_ptr;
 
   decimal_point = localeconv()->decimal_point[0];
   nchars = 0;
@@ -86,21 +88,33 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
       if ((ch = *fmt++) == '%')
         goto def;
 
+      retrieve_arg_ptr = true;
       allocate_char_buffer = false;
       ptr = NULL;
-      if (ch != '*')
+repeat:
+      if (ch != '*' && retrieve_arg_ptr)
         ptr = va_arg(argp, int *);
       else
         ch = *fmt++;
-      len = 0;
+      n = len = 0;
       size = REGULAR;
       while (isdigit(ch & 0xff))
       {
-        len = len * 10 + ch - '0';
+        n = n * 10 + ch - '0';
         ch = *fmt++;
       }
-      if (len == 0)
-        len = DEFAULT_WIDTH;
+      if (ch == '$')
+      {
+        /* C99 */
+        /* for %n$ numeric conversion specifier */
+        int i;
+        for (argp = arg_list, i = 0; i < n; i++)
+          ptr = va_arg(argp, int *);
+        retrieve_arg_ptr = false;
+        goto repeat;
+      }
+      else
+        len = (n == 0) ? DEFAULT_WIDTH : n;
 
       if (ch == 'l')
       {
