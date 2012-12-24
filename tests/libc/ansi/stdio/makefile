@@ -25,6 +25,7 @@ SRC += tmpnam.c
 SRC += tremove.c
 SRC += tscanf.c
 SRC += tscanf2.c
+SRC += tscanf3.c
 SRC += tsnprtf.c
 SRC += tsnprtf2.c
 
