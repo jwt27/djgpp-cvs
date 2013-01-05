@@ -3,6 +3,7 @@
 #include <errno.h>
 
 
+# if 0
 static int
 _DEFUN_VOID(randi)
 {
@@ -42,7 +43,6 @@ static double _DEFUN_VOID(randy)
   return ldexp(r, randi() & 0x1f);
 }
 
-# if 0
 void
 _DEFUN_VOID(test_frexp)
 {
