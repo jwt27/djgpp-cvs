@@ -465,7 +465,7 @@ scanf("%5mc", &char_ptr);
 scanf("%ms", &buf_ptr);
 
 /* read letters only and allocate a buffer that is large enough */
-n = scanf("%a[a-z]", &buf_ptr);
+n = scanf("%m[a-z]", &buf_ptr);
 if (n == 1)
 @{
   printf("read: %s\n", &buf_ptr);
