@@ -283,9 +283,13 @@ _DEFUN(finish2,(f, vector,  r_result , i_result, p, args, name),
        char *args _AND
        char *name)
 {
+#if 0
   int mag;
 
   mag = ffcheck2(r_result, i_result, p, name,  merror, errno);
+#else
+  ffcheck2(r_result, i_result, p, name,  merror, errno);
+#endif
 
   if (vector)
   {
