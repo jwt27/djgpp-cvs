@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 Borca Daniel <dborca@yahoo.com>
    Copyright (C) 2000 Andrew Zabolotny <bit@eltech.ru>
@@ -8,6 +9,8 @@
 
 #ifndef __dj_include_dxe_h_
 #define __dj_include_dxe_h_
+
+#include <stdint.h>  /* for intptr_t */
 
 /* the following are needed when cross compiling hostbin exes */
 #ifndef _DJ_DEFINED_NATIVE_TYPES
@@ -212,7 +215,7 @@ void dlstatunbind (const char *module, void **handle, char *stubs, char *syms, l
    dlregsym ((void *)&__alias__##name); \
   } \
   static __attribute_used dxe_symbol_table name [] = {
-#define DXE_EXPORT(symbol)	{ "_" #symbol, (void *)&symbol },
+#define DXE_EXPORT(symbol)	{ "_" #symbol, (void *)(intptr_t)&symbol },
 #define DXE_EXPORT_END		{ 0, 0 }};
 
 /*
