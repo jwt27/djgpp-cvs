@@ -38,7 +38,7 @@ char *StringList::operator[](int i)
   return data[i];
 }
 
-void StringList::add(char *s)
+void StringList::add(const char *s)
 {
   if (has(s))
     return;
@@ -53,7 +53,7 @@ void StringList::add(char *s)
   maxc++;
 }
 
-void StringList::del(char *s)
+void StringList::del(const char *s)
 {
   int i;
   for (i=0; i<maxc; i++)
@@ -64,7 +64,7 @@ void StringList::del(char *s)
     }
 }
 
-int StringList::has(char *s)
+int StringList::has(const char *s)
 {
   int i;
   for (i=0; i<maxc; i++)

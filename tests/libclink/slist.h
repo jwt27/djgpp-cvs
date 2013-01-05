@@ -4,9 +4,9 @@ class StringList {
   ~StringList();
   int count;
   char *operator[](int);
-  void add(char *);
-  void del(char *);
-  int  has(char *);
+  void add(const char *);
+  void del(const char *);
+  int  has(const char *);
   void flush(void);
   void sort(void);
  private:

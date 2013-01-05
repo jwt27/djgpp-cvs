@@ -6,7 +6,7 @@
 
 Object *Object::first = 0;
 
-Object::Object(char *Pname)
+Object::Object(const char *Pname)
 {
   name = new char[strlen(Pname)+1];
   strcpy(name, Pname);

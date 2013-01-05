@@ -12,7 +12,7 @@
 
 //-----------------------------------------------------------------------------
 
-char *predefs[] = { "main", "edata", "end", "etext", "_environ",
+const char *predefs[] = { "main", "edata", "end", "etext", "_environ",
 		    "__udivdi3", "__umoddi3", "__divdi3",
 		    "__moddi3", "__cmpdi2", 0 };
 
@@ -20,7 +20,7 @@ char *predefs[] = { "main", "edata", "end", "etext", "_environ",
    not a function, and we can't stub it.  ctime() sets tzname, and
    ctime is ANSI and tzname is POSIX.  Sigh. */
 
-char *ansi_c89_fns[] = { "abort", "abs", "acos", "asctime", "asin",
+const char *ansi_c89_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "atan", "atan2", "atexit", "atof", "atoi", "atol", "bsearch",
 "calloc", "ceil", "clearerr", "clock", "cos", "cosh", "ctime",
 "difftime", "div", "errno", "exit", "exp", "fabs", "fclose", "feof",
@@ -44,7 +44,7 @@ char *ansi_c89_fns[] = { "abort", "abs", "acos", "asctime", "asin",
 "vfprintf", "vprintf", "vsprintf", "wcstombs", "wctomb", 0
 };
 
-char *ansi_c99_fns[] = { "_Exit", "acosf", "acosh", "acoshf",
+const char *ansi_c99_fns[] = { "_Exit", "acosf", "acosh", "acoshf",
 "acoshl", "acosl", "asinf", "asinh", "asinhf", "asinhl", "asinl",
 "atan2f", "atan2l", "atanf", "atanh", "atanhf", "atanhl", "atanl",
 "atoll", "btowc", "cabs", "cabsf", "cabsl", "cacos", "cacosf",
@@ -100,7 +100,7 @@ char *ansi_c99_fns[] = { "_Exit", "acosf", "acosh", "acoshf",
 "wmemmove", "wmemset", "wprintf", "wscanf", 0
 };
 
-char *posix_fns[] = { "_exit", "_longjmp", "_setjmp",
+const char *posix_fns[] = { "_exit", "_longjmp", "_setjmp",
 "_tolower", "_toupper", "a64l", "accept", "access", "alarm",
 "asctime_r", "basename", "bcmp", "bcopy", "bind", "bzero",
 "catclose", "catgets", "catopen",
@@ -388,7 +388,7 @@ void propogate_obj(Object *o, int Plf=0)
 
 //-----------------------------------------------------------------------------
 
-void do_missing(char *which, char **fns, StringList &all_defs)
+void do_missing(const char *which, const char **fns, StringList &all_defs)
 {
   int n = 1;
   int w = 0;

@@ -11,7 +11,7 @@ class ObjList {
 
 class Object {
  public:
-  Object(char *name);
+  Object(const char *name);
   ~Object();
   StringList defs, refs;
   int df, rf, lf, busy;
