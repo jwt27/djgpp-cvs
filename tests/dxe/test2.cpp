@@ -37,7 +37,12 @@ extern "C" int test_func ()
        e.handle();
   }
 #endif
-  printf ("hello world! (&extern_func = %p)\n", (void *)(&extern_func));
+  union {
+    void (*from)(void);
+    void *to;
+  } func_ptr_cast;
+  func_ptr_cast.from = extern_func;
+  printf ("hello world! (&extern_func = %p)\n", func_ptr_cast.to);
   return 0;
 }
 

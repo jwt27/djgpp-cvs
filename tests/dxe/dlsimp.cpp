@@ -24,7 +24,12 @@ int main ()
     exit (-1);
   }
 
-  int (*my_strlen) (const char *) = (int (*) (const char *))dlsym (h, "_my_strlen");
+  union {
+    void *from;
+    int (*to)(const char *);
+  } func_ptr_cast;
+  func_ptr_cast.from = dlsym (h, "_my_strlen");
+  int (*my_strlen)(const char *) = func_ptr_cast.to;
   printf ("my_strlen (\"abcde\") = %d\n", my_strlen ("abcde"));
 
   dlclose (h);

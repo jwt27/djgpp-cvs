@@ -43,7 +43,13 @@ static int lastresort ()
 void *dxe_res (const char *symname)
 {
   printf ("%s: undefined symbol in dynamic module\n", symname);
-  return (void *)lastresort;
+
+  union {
+    int (*from)(void);
+    void *to;
+  } func_ptr_cast;
+  func_ptr_cast.from = lastresort;
+  return func_ptr_cast.to;
 }
 
 int main ()
@@ -77,7 +83,12 @@ int main ()
     *x_counter += 50;
 
   // Allright, now call the main function from second module
-  void (*test_reexp) () = (void (*)())dlsym (h2, "_test_reexp");
+  union {
+    void *from;
+    void (*to)(void);
+  } func_ptr_cast;
+  func_ptr_cast.from = dlsym (h2, "_test_reexp");
+  void (*test_reexp)() = func_ptr_cast.to;
   if (test_reexp)
     test_reexp ();
 
