@@ -1,3 +1,4 @@
+/* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 Borca Daniel <dborca@yahoo.com>
@@ -42,7 +43,7 @@
 #define VALID_RELOC(r) ((r.r_type != RELOC_REL32) && (r.r_symndx != (ULONG32)-1))
 
 #define NUMBER_OF_LINKER_ARGS             10
-#define NUMBER_OF_ADDITIONAL_LOADED_LIBS  1
+#define NUMBER_OF_ADDITIONAL_LOADED_LIBS  0
 
 typedef enum {
         FALSE = 0,
@@ -382,7 +383,7 @@ static int myspawn(const char **argv)
     strcat(cmd, " ");
     strcat(cmd, argv[0]);
     argv++;
-  };
+  }
   return system(cmd);
 }
 
@@ -497,14 +498,6 @@ static FILE *run_ld (const char *argv[], FILHDR *fh)
           fclose(f);
           argv[i++] = TEMP_BASE"f.o";
        }
-
-       /*
-        *  If the object file contains a frame or a ctor and a frame
-        *  link TEMP_BASE"i.o" and/or TEMP_BASE"f.o" against libc.a
-        *  to resolve the __[de]register_frame_info symbols.
-        */
-       if ((init > 1) || (fini > 1))
-         argv[i++] = "-lc";
        argv[i] = NULL;
 
        rv = myspawn(argv);
