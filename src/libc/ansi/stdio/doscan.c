@@ -16,20 +16,20 @@
 #include <libc/file.h>
 #include <libc/local.h>
 
-#define SPC            01
-#define STP            02
+#define SPC               01
+#define STP               02
 
-#define CHAR           0
-#define SHORT          1
-#define REGULAR        2
-#define LONG           4
-#define LONGDOUBLE     8
+#define CHAR              0
+#define SHORT             1
+#define REGULAR           2
+#define LONG              4
+#define LONGDOUBLE        8
 
-#define INT            0
-#define FLOAT          1
+#define INT               0
+#define FLOAT             1
 
-#define DEFAULT_WIDTH  30000
-#define BUFFER_SIZE    128
+#define DEFAULT_WIDTH     30000
+#define BUFFER_INCREMENT  128
 
 static int _innum(int *ptr, int type, int len, int size, FILE *iop,
                   int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
@@ -432,7 +432,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
   size_t string_length;
   int ignstp;
   int matched = 0;
-  size_t buffer_size = BUFFER_SIZE;
+  size_t buffer_size = BUFFER_INCREMENT;
 
   *eofptr = 0;
   if (type == 'c' && len == DEFAULT_WIDTH)
@@ -481,7 +481,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
       if (--buffer_size < 1)
       {
         const ptrdiff_t offset = ptr - orig_ptr;
-        char *new_ptr = realloc(orig_ptr, buffer_size += 2);
+        char *new_ptr = realloc(orig_ptr, (size_t)(offset + BUFFER_INCREMENT));
         if (!new_ptr)
         {
           free(orig_ptr);
@@ -490,6 +490,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
         }
         orig_ptr = new_ptr;
         ptr = orig_ptr + offset;
+        buffer_size = BUFFER_INCREMENT;
 
         if (--len < 1)
           len = DEFAULT_WIDTH;
