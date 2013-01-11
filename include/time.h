@@ -111,7 +111,7 @@ int		settimeofday(struct timeval *_tp, ...);
 void		tzsetwall(void);
 uclock_t	uclock(void);
 
-#if ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (__GNUC_ > 4))
+#if ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (__GNUC__ > 4))
 
 /* GCC-4.8 has own built-in _rdtsc for ix86. Therefore use it insted of DJGPP one. */
 #include <x86intrin.h>
