@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -36,9 +37,9 @@
 
 #define VERSION "1.0.2"
 
-#define TEMP_BASE	"dxe_tmp"	/* 7 chars, 1 char suffix */
-#define TEMP_O_FILE	TEMP_BASE".o"
-#define TEMP_S_FILE	TEMP_BASE".s"
+#define TEMP_BASE      "dxe_tmp"       /* 7 chars, 1 char suffix */
+#define TEMP_O_FILE    TEMP_BASE".o"
+#define TEMP_S_FILE    TEMP_BASE".s"
 
 #define VALID_RELOC(r) ((r.r_type != RELOC_REL32) && (r.r_symndx != (ULONG32)-1))
 
@@ -688,8 +689,8 @@ static int write_dxe (FILE *inf, FILE *outf, FILHDR *fh)
 
         newsize = unres_size + 2 * sizeof(short) + namelen + (n_rel_relocs + n_abs_relocs) * sizeof(LONG32);
         if (newsize > unres_maxsize) {
-           int addlen=newsize - unres_maxsize + 317;
-           if (!((addlen+unres_maxsize) & 1)) {
+           int addlen = newsize - unres_maxsize + 317;
+           if (!((addlen + unres_maxsize) & 1)) {
               addlen++;
            }
            unres_table = (char *)realloc(unres_table, unres_maxsize += addlen);
@@ -946,7 +947,7 @@ static int make_implib (void)
  char basename_fix[FILENAME_MAX]; /* changed size - chan kar heng 20030112 */
  char basename_org[FILENAME_MAX];
  dxe3_header dh;
- char cmdbuf[FILENAME_MAX+100];
+ char cmdbuf[FILENAME_MAX + 100];
  FILE *implib, *f = open_dxe_file(opt.dxefile, &dh);
 
  fseek(f, dh.exp_table, SEEK_SET);
