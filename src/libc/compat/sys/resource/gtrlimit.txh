@@ -17,8 +17,8 @@ structure is defined on @file{sys/resource.h} as follows:
 
 @example
 struct rlimit @{
-  long rlim_cur;  /* current (soft) limit */
-  long rlim_max;  /* maximum value for rlim_cur */
+  rlim_t rlim_cur;  /* current (soft) limit */
+  rlim_t rlim_max;  /* maximum value for rlim_cur */
 @};
 @end example
 
