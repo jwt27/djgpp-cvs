@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -55,10 +56,14 @@ struct rusage {
 
 #define RLIM_NLIMITS	9	/* number of resource limits */
 #define RLIM_INFINITY	((long) ((1UL << 31) - 1UL))
+#define RLIM_SAVED_CUR	(RLIM_INFINITY)
+#define RLIM_SAVED_MAX	(RLIM_INFINITY)
+
+typedef long rlim_t;
 
 struct rlimit {
-  long rlim_cur;		/* current (soft) limit */
-  long rlim_max;		/* maximum value for rlim_cur */
+  rlim_t rlim_cur;		/* current (soft) limit */
+  rlim_t rlim_max;		/* maximum value for rlim_cur */
 };
 
 int getrusage(int _who, struct rusage *_rusage);
