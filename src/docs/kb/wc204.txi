@@ -1268,3 +1268,9 @@ of the @acronym{POSIX.1} standard.
 @findex scanf@r{, and @acronym{C99} numeric conversion specifiers}
 The @code{%@var{n}$} numeric conversion specifiers are now supported
 by @code{_doscan} and the @code{scanf} family of functions.
+
+@tindex rlim_t
+@tindex struct rlimit@r{, and }rlim_t
+The type @code{rlim_t} has been added.
+@code{rlim_t} is now used for the @code{rlim_cur} and @code{rlim_max}
+members of @code{struct rlimit}.
