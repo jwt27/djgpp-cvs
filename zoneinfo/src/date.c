@@ -1,12 +1,3 @@
-#ifndef lint
-#ifndef NOID
-static char	elsieid[] = "@(#)date.c	7.34";
-/*
-** Modified from the UCB version with the SCCS ID appearing below.
-*/
-#endif /* !defined NOID */
-#endif /* !defined lint */
-
 /*
  * Copyright (c) 1985, 1987, 1988 The Regents of the University of California.
  * All rights reserved.
@@ -39,11 +30,16 @@ static char sccsid[] = "@(#)date.c	4.23 (Berkeley) 9/20/88";
 #include "sys/time.h"	/* for struct timeval, struct timezone */
 #endif /* HAVE_ADJTIME || HAVE_SETTIMEOFDAY */
 #include "locale.h"
-#ifdef OLD_TIME
 #include "utmp.h"	/* for OLD_TIME (or its absence) */
-#endif
 #if HAVE_UTMPX_H
 #include "utmpx.h"
+#endif
+
+#ifndef OTIME_MSG
+#define OTIME_MSG "old time"
+#endif
+#ifndef NTIME_MSG
+#define NTIME_MSG "new time"
 #endif
 
 /*
@@ -70,28 +66,24 @@ extern char *		tzname[2];
 
 static int		retval = EXIT_SUCCESS;
 
-static void		checkfinal P((const char *, int, time_t, time_t));
-static int		comptm P((const struct tm *, const struct tm *));
-static time_t		convert P((const char *, int, time_t));
-static void		display P((const char *));
-static void		dogmt P((void));
-static void		errensure P((void));
-static void		iffy P((time_t, time_t, const char *, const char *));
-int			main P((int, char**));
-static const char *	nondigit P((const char *));
-#ifndef __MSDOS__
-static void		oops P((const char *));
-#endif
-static void		reset P((time_t, int));
-static void		timeout P((FILE *, const char *, const struct tm *));
-static void		usage P((void));
-static void		wildinput P((const char *, const char *,
-				const char *));
+static void		checkfinal(const char *, int, time_t, time_t);
+static time_t		convert(const char *, int, time_t);
+static void		display(const char *);
+static void		dogmt(void);
+static void		errensure(void);
+static void		iffy(time_t, time_t, const char *, const char *);
+int			main(int, char**);
+static const char *	nondigit(const char *);
+static void		oops(const char *);
+static void		reset(time_t, int);
+static int		sametm(const struct tm *, const struct tm *);
+static void		timeout(FILE *, const char *, const struct tm *);
+static void		usage(void);
+static void		wildinput(const char *, const char *,
+				const char *);
 
 int
-main(argc, argv)
-const int	argc;
-char *		argv[];
+main(const int argc, char *argv[])
 {
 	register const char *	format;
 	register const char *	value;
@@ -113,14 +105,15 @@ char *		argv[];
 	INITIALIZE(dsttime);
 	INITIALIZE(adjust);
 	INITIALIZE(t);
-#if HAVE_GETTEXT - 0
-	(void) setlocale(LC_MESSAGES, "");
+#ifdef LC_ALL
+	(void) setlocale(LC_ALL, "");
+#endif /* defined(LC_ALL) */
+#if HAVE_GETTEXT
 #ifdef TZ_DOMAINDIR
 	(void) bindtextdomain(TZ_DOMAIN, TZ_DOMAINDIR);
 #endif /* defined(TEXTDOMAINDIR) */
 	(void) textdomain(TZ_DOMAIN);
-#endif /* HAVE_GETTEXT - 0 */
-	(void) setlocale(LC_TIME, "");
+#endif /* HAVE_GETTEXT */
 	(void) time(&now);
 	format = value = NULL;
 	while ((ch = getopt(argc, argv, "ucnd:t:a:")) != EOF && ch != -1) {
@@ -134,7 +127,7 @@ char *		argv[];
 		case 'n':		/* don't set network */
 			nflag = 1;
 			break;
-		case 'd':		/* daylight savings time */
+		case 'd':		/* daylight saving time */
 			if (dflag) {
 				(void) fprintf(stderr,
 					_("date: error: multiple -d's used"));
@@ -250,30 +243,30 @@ _("date: error: multiple values in command line\n"));
 		struct timeval	tv;
 
 		tv.tv_sec = (int) adjust;
-		tv.tv_usec = (int) ((adjust - tv.tv_sec) * 1000000);
-		if (adjtime(&tv, (struct timeval *) NULL) != 0)
+		tv.tv_usec = (int) ((adjust - tv.tv_sec) * 1000000L);
+		if (adjtime(&tv, NULL) != 0)
 			oops("adjtime");
 #endif /* HAVE_ADJTIME */
 #if !HAVE_ADJTIME
-		reset((time_t) (now + adjust), nflag);
+		reset(now + adjust, nflag);
 #endif /* !HAVE_ADJTIME */
 		/*
 		** Sun silently ignores everything else; we follow suit.
 		*/
-		(void) exit(retval);
+		exit(retval);
 	}
 	if (dflag || tflag) {
 #if HAVE_SETTIMEOFDAY == 2
 		struct timezone	tz;
 
 		if (!dflag || !tflag)
-			if (gettimeofday((struct timeval *) NULL, &tz) != 0)
+			if (gettimeofday(NULL, &tz) != 0)
 				oops("gettimeofday");
 		if (dflag)
 			tz.tz_dsttime = dsttime;
 		if (tflag)
 			tz.tz_minuteswest = minuteswest;
-		if (settimeofday((struct timeval *) NULL, &tz) != 0)
+		if (settimeofday(NULL, &tz) != 0)
 			oops("settimeofday");
 #endif /* HAVE_SETTIMEOFDAY == 2 */
 #if HAVE_SETTIMEOFDAY != 2
@@ -295,7 +288,7 @@ _("date: warning: kernel doesn't keep -d/-t information, option ignored\n"));
 
 		tm = *localtime(&t);
 		timeout(stdout, "%c\n", &tm);
-		(void) exit(retval);
+		exit(retval);
 	}
 #endif /* defined EBUG */
 
@@ -307,7 +300,7 @@ _("date: warning: kernel doesn't keep -d/-t information, option ignored\n"));
 }
 
 static void
-dogmt()
+dogmt(void)
 {
 	static char **	fakeenv;
 
@@ -319,11 +312,11 @@ dogmt()
 
 		for (n = 0;  environ[n] != NULL;  ++n)
 			continue;
-		fakeenv = (char **) malloc((size_t) (n + 2) * sizeof *fakeenv);
+		fakeenv = malloc((n + 2) * sizeof *fakeenv);
 		if (fakeenv == NULL) {
 			(void) perror(_("Memory exhausted"));
 			errensure();
-			(void) exit(retval);
+			exit(retval);
 		}
 		to = 0;
 		fakeenv[to++] = tzegmt0;
@@ -348,9 +341,7 @@ dogmt()
 
 /*ARGSUSED*/
 static void
-reset(newt, nflag)
-const time_t	newt;
-const int	nflag;
+reset(const time_t newt, const int nflag)
 {
 	register int		fid;
 	time_t			oldt;
@@ -435,14 +426,12 @@ const int	nflag;
 #endif /* !defined BSD4_4 */
 #endif /* !defined TIME_NAME */
 
-#ifdef TSP_SETDATE
 #include "syslog.h"
 #include "sys/socket.h"
 #include "netinet/in.h"
 #include "netdb.h"
 #define TSPTYPES
 #include "protocols/timed.h"
-#endif /* TSP_SETDATE */
 
 extern int		logwtmp();
 
@@ -450,13 +439,15 @@ extern int		logwtmp();
 #define settimeofday(t, tz) (settimeofday)(t)
 #endif /* HAVE_SETTIMEOFDAY == 1 */
 
+#ifdef TSP_SETDATE
+static int netsettime(struct timeval);
+#endif
+
 #ifndef TSP_SETDATE
 /*ARGSUSED*/
 #endif /* !defined TSP_SETDATE */
 static void
-reset(newt, nflag)
-const time_t	newt;
-const int	nflag;
+reset(const time_t newt, const int nflag)
 {
 	register const char *	username;
 	static struct timeval	tv;	/* static so tv_usec is 0 */
@@ -468,7 +459,6 @@ const int	nflag;
 	if (username == NULL || *username == '\0') /* single-user or no tty */
 		username = "root";
 	tv.tv_sec = newt;
-#ifndef __MSDOS__
 #ifdef TSP_SETDATE
 	if (nflag || !netsettime(tv))
 #endif /* defined TSP_SETDATE */
@@ -477,22 +467,19 @@ const int	nflag;
 		** "old" entry is always written, for compatibility.
 		*/
 		logwtmp("|", TIME_NAME, "");
-		if (settimeofday(&tv, (struct timezone *) NULL) == 0) {
+		if (settimeofday(&tv, NULL) == 0) {
 			logwtmp("{", TIME_NAME, "");	/* } */
 			syslog(LOG_AUTH | LOG_NOTICE, _("date set by %s"),
 				username);
 		} else	oops("settimeofday");
 	}
-#endif /* !__MSDOS__ */
 }
 
 #endif /* !defined OLD_TIME */
 
 static void
-wildinput(item, value, reason)
-const char * const	item;
-const char * const	value;
-const char * const	reason;
+wildinput(const char *const item, const char *const value,
+	  const char *const reason)
 {
 	(void) fprintf(stderr,
 		_("date: error: bad command line %s \"%s\", %s\n"),
@@ -501,15 +488,14 @@ const char * const	reason;
 }
 
 static void
-errensure P((void))
+errensure(void)
 {
 	if (retval == EXIT_SUCCESS)
 		retval = EXIT_FAILURE;
 }
 
 static const char *
-nondigit(cp)
-register const char *	cp;
+nondigit(register const char *cp)
 {
 	while (is_digit(*cp))
 		++cp;
@@ -517,18 +503,16 @@ register const char *	cp;
 }
 
 static void
-usage P((void))
+usage(void)
 {
 	(void) fprintf(stderr, _("date: usage is date [-u] [-c] [-n] [-d dst] \
 [-t min-west] [-a sss.fff] [[yyyy]mmddhhmm[yyyy][.ss]] [+format]\n"));
 	errensure();
-	(void) exit(retval);
+	exit(retval);
 }
 
-#ifndef __MSDOS__
 static void
-oops(string)
-const char * const	string;
+oops(const char *const string)
 {
 	int		e = errno;
 
@@ -536,13 +520,11 @@ const char * const	string;
 	errno = e;
 	(void) perror(string);
 	errensure();
-	display((char *) NULL);
+	display(NULL);
 }
-#endif /* !__MSDOS__ */
 
 static void
-display(format)
-const char * const	format;
+display(const char *const format)
 {
 	struct tm	tm;
 	time_t		now;
@@ -558,7 +540,7 @@ const char * const	format;
 			_("date: error: couldn't write results\n"));
 		errensure();
 	}
-	(void) exit(retval);
+	exit(retval);
 }
 
 extern size_t	strftime();
@@ -566,10 +548,7 @@ extern size_t	strftime();
 #define INCR	1024
 
 static void
-timeout(fp, format, tmp)
-FILE * const		fp;
-const char * const	format;
-const struct tm * const	tmp;
+timeout(FILE *const fp, const char *const format, const struct tm *const tmp)
 {
 	char *	cp;
 	size_t	result;
@@ -578,38 +557,35 @@ const struct tm * const	tmp;
 	if (*format == '\0')
 		return;
 	size = INCR;
-	cp = malloc((size_t) size);
+	cp = malloc(size);
 	for ( ; ; ) {
 		if (cp == NULL) {
 			(void) fprintf(stderr,
 				_("date: error: can't get memory\n"));
 			errensure();
-			(void) exit(retval);
+			exit(retval);
 		}
+		cp[0] = '\1';
 		result = strftime(cp, size, format, tmp);
-		if (result != 0)
+		if (result != 0 || cp[0] == '\0')
 			break;
 		size += INCR;
-		cp = realloc(cp, (size_t) size);
+		cp = realloc(cp, size);
 	}
 	(void) fwrite(cp, 1, result, fp);
 	free(cp);
 }
 
 static int
-comptm(atmp, btmp)
-register const struct tm * const atmp;
-register const struct tm * const btmp;
+sametm(register const struct tm *const atmp,
+       register const struct tm *const btmp)
 {
-	register int	result;
-
-	if ((result = (atmp->tm_year - btmp->tm_year)) == 0 &&
-		(result = (atmp->tm_mon - btmp->tm_mon)) == 0 &&
-		(result = (atmp->tm_mday - btmp->tm_mday)) == 0 &&
-		(result = (atmp->tm_hour - btmp->tm_hour)) == 0 &&
-		(result = (atmp->tm_min - btmp->tm_min)) == 0)
-			result = atmp->tm_sec - btmp->tm_sec;
-	return result;
+	return atmp->tm_year == btmp->tm_year &&
+		atmp->tm_mon == btmp->tm_mon &&
+		atmp->tm_mday == btmp->tm_mday &&
+		atmp->tm_hour == btmp->tm_hour &&
+		atmp->tm_min == btmp->tm_min &&
+		atmp->tm_sec == btmp->tm_sec;
 }
 
 /*
@@ -620,10 +596,7 @@ register const struct tm * const btmp;
 #define ATOI2(ar)	(ar[0] - '0') * 10 + (ar[1] - '0'); ar += 2;
 
 static time_t
-convert(value, dousg, t)
-register const char * const	value;
-const int			dousg;
-const time_t			t;
+convert(register const char * const value, const int dousg, const time_t t)
 {
 	register const char *	cp;
 	register const char *	dotp;
@@ -632,8 +605,15 @@ const time_t			t;
 	time_t		outt;
 
 	tm = *localtime(&t);
-	cent = (tm.tm_year + TM_YEAR_BASE) / 100;
-	year_in_cent = (tm.tm_year + TM_YEAR_BASE) - cent * 100;
+#define DIVISOR	100
+	year_in_cent = tm.tm_year % DIVISOR + TM_YEAR_BASE % DIVISOR;
+	cent = tm.tm_year / DIVISOR + TM_YEAR_BASE / DIVISOR +
+		year_in_cent / DIVISOR;
+	year_in_cent %= DIVISOR;
+	if (year_in_cent < 0) {
+		year_in_cent += DIVISOR;
+		--cent;
+	}
 	month = tm.tm_mon + 1;
 	day = tm.tm_mday;
 	hour = tm.tm_hour;
@@ -656,9 +636,10 @@ const time_t			t;
 	}
 
 	cp = value;
-	switch ((int)(dotp - cp)) {
+	switch (dotp - cp) {
 		default:
-			wildinput(_("time"), value, _("main part is wrong length"));
+			wildinput(_("time"), value,
+				_("main part is wrong length"));
 		case 12:
 			if (!dousg) {
 				cent = ATOI2(cp);
@@ -706,7 +687,7 @@ const time_t			t;
 	tm.tm_isdst = -1;
 	outtm = tm;
 	outt = mktime(&outtm);
-	return (comptm(&tm, &outtm) == 0) ? outt : (time_t)-1;
+	return sametm(&tm, &outtm) ? outt : -1;
 }
 
 /*
@@ -719,11 +700,10 @@ const time_t			t;
 */
 
 static void
-checkfinal(value, didusg, t, oldnow)
-const char * const	value;
-const int		didusg;
-const time_t		t;
-const time_t		oldnow;
+checkfinal(const char * const	value,
+	   const int		didusg,
+	   const time_t		t,
+	   const time_t		oldnow)
 {
 	time_t		othert;
 	struct tm	tm;
@@ -745,7 +725,7 @@ const time_t		oldnow;
 	othertm.tm_isdst = !tm.tm_isdst;
 	othert = mktime(&othertm);
 	if (othert != -1 && othertm.tm_isdst != tm.tm_isdst &&
-		comptm(&tm, &othertm) == 0)
+		sametm(&tm, &othertm))
 			iffy(t, othert, value,
 			    _("both standard and summer time versions exist"));
 /*
@@ -775,18 +755,15 @@ const time_t		oldnow;
 				othert = t + 60 * offset;
 			else	othert = t - 60 * offset;
 			othertm = *localtime(&othert);
-			if (comptm(&tm, &othertm) == 0)
+			if (sametm(&tm, &othertm))
 				iffy(t, othert, value,
 					_("multiple matching times exist"));
 		}
 }
 
 static void
-iffy(thist, thatt, value, reason)
-const time_t		thist;
-const time_t		thatt;
-const char * const	value;
-const char * const	reason;
+iffy(const time_t thist, const time_t thatt,
+	const char * const value, const char * const reason)
 {
 	struct tm	tm;
 
@@ -812,7 +789,7 @@ const char * const	reason;
 	(void) fprintf(stderr, _(" (%s).\n"),
 		tm.tm_isdst ? _("summer time") : _("standard time"));
 	errensure();
-	(void) exit(retval);
+	exit(retval);
 }
 
 #ifdef TSP_SETDATE
@@ -827,8 +804,8 @@ const char * const	reason;
  * notifies the master that a correction is needed.
  * Returns 1 on success, 0 on failure.
  */
-netsettime(ntv)
-	struct timeval ntv;
+static int
+netsettime(struct timeval ntv)
 {
 	int s, length, port, timed_ack, found, err;
 	long waittime;
@@ -840,14 +817,14 @@ netsettime(ntv)
 	struct sockaddr_in sin, dest, from;
 
 	sp = getservbyname("timed", "udp");
-	if (sp == 0) {
+	if (! sp) {
 		fputs(_("udp/timed: unknown service\n"), stderr);
 		retval = 2;
 		return (0);
 	}
 	dest.sin_port = sp->s_port;
 	dest.sin_family = AF_INET;
-	dest.sin_addr.s_addr = htonl((u_long)INADDR_ANY);
+	dest.sin_addr.s_addr = htonl(INADDR_ANY);
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	if (s < 0) {
 		if (errno != EPROTONOSUPPORT)
@@ -857,7 +834,7 @@ netsettime(ntv)
 	bzero((char *)&sin, sizeof (sin));
 	sin.sin_family = AF_INET;
 	for (port = IPPORT_RESERVED - 1; port > IPPORT_RESERVED / 2; port--) {
-		sin.sin_port = htons((u_short)port);
+		sin.sin_port = htons(port);
 		if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) >= 0)
 			break;
 		if (errno != EADDRINUSE) {
@@ -877,9 +854,9 @@ netsettime(ntv)
 		goto bad;
 	}
 	(void) strncpy(msg.tsp_name, hostname, sizeof (hostname));
-	msg.tsp_seq = htons((u_short)0);
-	msg.tsp_time.tv_sec = htonl((u_long)ntv.tv_sec);
-	msg.tsp_time.tv_usec = htonl((u_long)ntv.tv_usec);
+	msg.tsp_seq = htons(0);
+	msg.tsp_time.tv_sec = htonl(ntv.tv_sec);
+	msg.tsp_time.tv_usec = htonl(ntv.tv_usec);
 	length = sizeof (struct sockaddr_in);
 	if (connect(s, &dest, length) < 0) {
 		perror("date: connect");
@@ -897,8 +874,8 @@ loop:
 	tout.tv_usec = 0;
 	FD_ZERO(&ready);
 	FD_SET(s, &ready);
-	found = select(FD_SETSIZE, &ready, (fd_set *)0, (fd_set *)0, &tout);
-	length = sizeof(err);
+	found = select(FD_SETSIZE, &ready, NULL, NULL, &tout);
+	length = sizeof err;
 	if (getsockopt(s, SOL_SOCKET, SO_ERROR, (char *)&err, &length) == 0
 	    && err) {
 		errno = err;

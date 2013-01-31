@@ -1,5 +1,3 @@
-# @(#)usno1995	7.4
-#
 # From Arthur David Olson (1995-12-21):
 #
 # Here's time zone information from the United States Naval Observatory
@@ -323,5 +321,4 @@ Zaire Kivu: +2 hours
 Zaire Shaba: +2 hours
 Zambia: +2 hours
 Zimbabwe: +2 hours
-All timezone information is non-authoritative. Send corrections to:
-res@tuttle.usno.navy.mil
+All timezone information is non-authoritative...

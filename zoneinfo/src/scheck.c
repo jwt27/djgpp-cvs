@@ -1,30 +1,26 @@
-#ifndef lint
-#ifndef NOID
-static char	elsieid[] = "@(#)scheck.c	8.15";
-#endif /* !defined lint */
-#endif /* !defined NOID */
+/*
+** This file is in the public domain, so clarified as of
+** 2006-07-17 by Arthur David Olson.
+*/
 
 /*LINTLIBRARY*/
 
 #include "private.h"
 
-char *
-scheck(string, format)
-const char * const	string;
-const char * const	format;
+const char *
+scheck(const char *const string, const char *const format)
 {
 	register char *		fbuf;
 	register const char *	fp;
 	register char *		tp;
 	register int		c;
-	register char *		result;
+	register const char *	result;
 	char			dummy;
-	static char		nada;
 
-	result = &nada;
+	result = "";
 	if (string == NULL || format == NULL)
 		return result;
-	fbuf = imalloc((int) (2 * strlen(format) + 4));
+	fbuf = malloc(2 * strlen(format) + 4);
 	if (fbuf == NULL)
 		return result;
 	fp = format;
@@ -53,7 +49,7 @@ const char * const	format;
 	*tp++ = 'c';
 	*tp = '\0';
 	if (sscanf(string, fbuf, &dummy) != 1)
-		result = (char *) format;
-	ifree(fbuf);
+		result = format;
+	free(fbuf);
 	return result;
 }

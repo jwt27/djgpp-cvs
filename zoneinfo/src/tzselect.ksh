@@ -1,34 +1,31 @@
-#! /bin/ksh
+#!/bin/bash
+
+PKGVERSION='(tzcode) '
+TZVERSION=see_Makefile
+
 # Ask the user about the time zone, and output the resulting TZ value to stdout.
 # Interact with the user via stderr and stdin.
 
-# Contributed by Paul Eggert <eggert@twinsun.com>.
+# Contributed by Paul Eggert.
 
 # Porting notes:
 #
-# This script requires several features of the Korn shell.
-# If your host lacks the Korn shell,
-# you can use either of the following free programs instead:
+# This script requires a Posix-like shell with the extension of a
+# 'select' statement.  The 'select' statement was introduced in the
+# Korn shell and is available in Bash and other shell implementations.
+# If your host lacks both Bash and the Korn shell, you can get their
+# source from one of these locations:
 #
-#	<a href=ftp://ftp.gnu.org/pub/gnu/>
-#	Bourne-Again shell (bash)
-#	</a>
-#
-#	<a href=ftp://ftp.cs.mun.ca/pub/pdksh/pdksh.tar.gz>
-#	Public domain ksh
-#	</a>
+#	Bash <http://www.gnu.org/software/bash/bash.html>
+#	Korn Shell <http://www.kornshell.com/>
+#	Public Domain Korn Shell <http://www.cs.mun.ca/~michael/pdksh/>
 #
 # This script also uses several features of modern awk programs.
-# If your host lacks awk, or has an old awk that does not conform to Posix.2,
+# If your host lacks awk, or has an old awk that does not conform to Posix,
 # you can use either of the following free programs instead:
 #
-#	<a href=ftp://ftp.gnu.org/pub/gnu/>
-#	GNU awk (gawk)
-#	</a>
-#
-#	<a href=ftp://ftp.whidbey.net/pub/brennan/>
-#	mawk
-#	</a>
+#	Gawk (GNU awk) <http://www.gnu.org/software/gawk/>
+#	mawk <http://invisible-island.net/mawk/>
 
 
 # Specify default values for environment variables if they are unset.
@@ -41,6 +38,21 @@
 	echo >&2 "$0: Sorry, your \`$AWK' program is not Posix compatible."
 	exit 1
 }
+
+if [ "$1" = "--help" ]; then
+    cat <<EOF
+Usage: tzselect
+Select a time zone interactively.
+
+Report bugs to tz@iana.org.
+EOF
+    exit
+elif [ "$1" = "--version" ]; then
+    cat <<EOF
+tzselect $PKGVERSION$TZVERSION
+EOF
+    exit
+fi
 
 # Make sure the tables are readable.
 TZ_COUNTRY_TABLE=$TZDIR/iso3166.tab
@@ -289,5 +301,17 @@ Universal Time is now:	$UTdate."
 do :
 done
 
-# Output the answer.
+case $SHELL in
+*csh) file=.login line="setenv TZ '$TZ'";;
+*) file=.profile line="TZ='$TZ'; export TZ"
+esac
+
+echo >&2 "
+You can make this change permanent for yourself by appending the line
+	$line
+to the file '$file' in your home directory; then log out and log in again.
+
+Here is that TZ value again, this time on standard output so that you
+can use the $0 command in shell scripts:"
+
 echo "$TZ"
