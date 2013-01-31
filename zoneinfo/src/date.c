@@ -30,7 +30,9 @@ static char sccsid[] = "@(#)date.c	4.23 (Berkeley) 9/20/88";
 #include "sys/time.h"	/* for struct timeval, struct timezone */
 #endif /* HAVE_ADJTIME || HAVE_SETTIMEOFDAY */
 #include "locale.h"
+#ifdef OLD_TIME
 #include "utmp.h"	/* for OLD_TIME (or its absence) */
+#endif
 #if HAVE_UTMPX_H
 #include "utmpx.h"
 #endif
@@ -74,7 +76,9 @@ static void		errensure(void);
 static void		iffy(time_t, time_t, const char *, const char *);
 int			main(int, char**);
 static const char *	nondigit(const char *);
+#ifndef __MSDOS__
 static void		oops(const char *);
+#endif
 static void		reset(time_t, int);
 static int		sametm(const struct tm *, const struct tm *);
 static void		timeout(FILE *, const char *, const struct tm *);
@@ -94,15 +98,19 @@ main(const int argc, char *argv[])
 	register int		dflag = 0;
 	register int		nflag = 0;
 	register int		tflag = 0;
+#if HAVE_SETTIMEOFDAY == 2
 	register int		minuteswest;
 	register int		dsttime;
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 	register double		adjust;
 	time_t			now;
 	time_t			t;
 
 	INITIALIZE(dousg);
+#if HAVE_SETTIMEOFDAY == 2
 	INITIALIZE(minuteswest);
 	INITIALIZE(dsttime);
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 	INITIALIZE(adjust);
 	INITIALIZE(t);
 #ifdef LC_ALL
@@ -135,7 +143,9 @@ main(const int argc, char *argv[])
 			}
 			dflag = 1;
 			cp = optarg;
+#if HAVE_SETTIMEOFDAY == 2
 			dsttime = atoi(cp);
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 			if (*cp == '\0' || *nondigit(cp) != '\0')
 				wildinput(_("-t value"), optarg,
 					_("must be a non-negative number"));
@@ -148,7 +158,9 @@ main(const int argc, char *argv[])
 			}
 			tflag = 1;
 			cp = optarg;
+#if HAVE_SETTIMEOFDAY == 2
 			minuteswest = atoi(cp);
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 			if (*cp == '+' || *cp == '-')
 				++cp;
 			if (*cp == '\0' || *nondigit(cp) != '\0')
@@ -248,7 +260,7 @@ _("date: error: multiple values in command line\n"));
 			oops("adjtime");
 #endif /* HAVE_ADJTIME */
 #if !HAVE_ADJTIME
-		reset(now + adjust, nflag);
+		reset(now + (time_t)adjust, nflag);
 #endif /* !HAVE_ADJTIME */
 		/*
 		** Sun silently ignores everything else; we follow suit.
@@ -426,12 +438,14 @@ reset(const time_t newt, const int nflag)
 #endif /* !defined BSD4_4 */
 #endif /* !defined TIME_NAME */
 
+#ifdef TSP_SETDATE
 #include "syslog.h"
 #include "sys/socket.h"
 #include "netinet/in.h"
 #include "netdb.h"
 #define TSPTYPES
 #include "protocols/timed.h"
+#endif /* TSP_SETDATE */
 
 extern int		logwtmp();
 
@@ -450,7 +464,9 @@ static void
 reset(const time_t newt, const int nflag)
 {
 	register const char *	username;
+#ifndef __MSDOS__
 	static struct timeval	tv;	/* static so tv_usec is 0 */
+#endif /* !__MSDOS__ */
 
 #ifdef EBUG
 	return;
@@ -458,6 +474,7 @@ reset(const time_t newt, const int nflag)
 	username = getlogin();
 	if (username == NULL || *username == '\0') /* single-user or no tty */
 		username = "root";
+#ifndef __MSDOS__
 	tv.tv_sec = newt;
 #ifdef TSP_SETDATE
 	if (nflag || !netsettime(tv))
@@ -473,11 +490,12 @@ reset(const time_t newt, const int nflag)
 				username);
 		} else	oops("settimeofday");
 	}
+#endif /* !__MSDOS__ */
 }
 
 #endif /* !defined OLD_TIME */
 
-static void
+static ATTRIBUTE_NORETURN void
 wildinput(const char *const item, const char *const value,
 	  const char *const reason)
 {
@@ -494,7 +512,7 @@ errensure(void)
 		retval = EXIT_FAILURE;
 }
 
-static const char *
+static ATTRIBUTE_PURE const char *
 nondigit(register const char *cp)
 {
 	while (is_digit(*cp))
@@ -502,7 +520,7 @@ nondigit(register const char *cp)
 	return cp;
 }
 
-static void
+static ATTRIBUTE_NORETURN void
 usage(void)
 {
 	(void) fprintf(stderr, _("date: usage is date [-u] [-c] [-n] [-d dst] \
@@ -511,6 +529,7 @@ usage(void)
 	exit(retval);
 }
 
+#ifndef __MSDOS__
 static void
 oops(const char *const string)
 {
@@ -522,8 +541,9 @@ oops(const char *const string)
 	errensure();
 	display(NULL);
 }
+#endif /* !__MSDOS__ */
 
-static void
+static ATTRIBUTE_NORETURN void
 display(const char *const format)
 {
 	struct tm	tm;
@@ -636,7 +656,7 @@ convert(register const char * const value, const int dousg, const time_t t)
 	}
 
 	cp = value;
-	switch (dotp - cp) {
+	switch ((int)(dotp - cp)) {
 		default:
 			wildinput(_("time"), value,
 				_("main part is wrong length"));
@@ -687,7 +707,7 @@ convert(register const char * const value, const int dousg, const time_t t)
 	tm.tm_isdst = -1;
 	outtm = tm;
 	outt = mktime(&outtm);
-	return sametm(&tm, &outtm) ? outt : -1;
+	return sametm(&tm, &outtm) ? outt : (time_t)-1;
 }
 
 /*
@@ -761,7 +781,7 @@ checkfinal(const char * const	value,
 		}
 }
 
-static void
+static ATTRIBUTE_NORETURN void
 iffy(const time_t thist, const time_t thatt,
 	const char * const value, const char * const reason)
 {
