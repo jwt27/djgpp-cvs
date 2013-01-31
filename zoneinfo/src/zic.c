@@ -19,10 +19,27 @@ typedef int_fast64_t	zic_t;
 #if HAVE_SYS_STAT_H
 #include "sys/stat.h"
 #endif
+#if HAVE_SYS_WAIT_H
+#include "sys/wait.h"
+#ifndef WEXITSTATUS
+#define WEXITSTATUS(x)  (((x) >> 8) & 0xff)
+#endif
+#endif
 #ifdef S_IRUSR
 #define MKDIR_UMASK (S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
 #else
 #define MKDIR_UMASK 0755
+#endif
+
+/*
+** Portable testing for absolute file names.
+*/
+
+#ifndef IS_SLASH
+#define IS_SLASH(c)     ((c) == '/')
+#endif
+#ifndef IS_ABSOLUTE
+#define IS_ABSOLUTE(n)  (IS_SLASH((n)[0]))
 #endif
 
 /*
@@ -419,7 +436,7 @@ warning(const char *const string)
 	--errors;
 }
 
-static void
+static ATTRIBUTE_NORETURN void
 usage(FILE *stream, int status)
 {
 	(void) fprintf(stream, _("%s: usage is %s \
@@ -582,20 +599,34 @@ dolink(const char *const fromfield, const char *const tofield)
 	register char *	fromname;
 	register char *	toname;
 
-	if (fromfield[0] == '/')
+	if (IS_ABSOLUTE(fromfield))
 		fromname = ecpyalloc(fromfield);
 	else {
 		fromname = ecpyalloc(directory);
 		fromname = ecatalloc(fromname, "/");
 		fromname = ecatalloc(fromname, fromfield);
 	}
-	if (tofield[0] == '/')
+	if (IS_ABSOLUTE(tofield))
 		toname = ecpyalloc(tofield);
 	else {
 		toname = ecpyalloc(directory);
 		toname = ecatalloc(toname, "/");
 		toname = ecatalloc(toname, tofield);
 	}
+	/* Some zone names use `+' as part of their names, but DOS
+	   doesn't allow `+' in file names.  Replace with a `%'.  */
+	if (getenv ("COMSPEC") || getenv ("CROSS_BUILD"))
+	{
+		char *p;
+
+		for (p = fromname; *p; p++)
+			if (*p == '+')
+				*p = '%';
+		for (p = toname; *p; p++)
+			if (*p == '+')
+				*p = '%';
+	}
+
 	/*
 	** We get to be careful here since
 	** there's a fair chance of root running us.
@@ -651,13 +682,20 @@ static const zic_t max_time = -1 - ((zic_t) -1 << (TIME_T_BITS_IN_FILE - 1));
 static int
 itsdir(const char *const name)
 {
-	register char *	myname;
 	register int	accres;
+
+#ifdef D_OK
+	/* MS-DOS/MS-Windows normalize "foo/." to "foo" before testing,
+	   so we think foo is a directory.  Use D_OK instead.  */
+	accres = access(name, D_OK);
+#else
+	register char *	myname;
 
 	myname = ecpyalloc(name);
 	myname = ecatalloc(myname, "/.");
 	accres = access(myname, F_OK);
 	free(myname);
+#endif
 	return accres == 0;
 }
 
@@ -1471,7 +1509,22 @@ writezone(const char *const name, const char *const string)
 	}
 	fullname = erealloc(fullname,
 			    strlen(directory) + 1 + strlen(name) + 1);
-	(void) sprintf(fullname, "%s/%s", directory, name);
+
+	/* Some zone names use `+' as part of their names, but DOS
+	   doesn't allow `+' in file names.  Replace with a `%'.  */
+	if (getenv ("COMSPEC") || getenv ("CROSS_BUILD"))
+	{
+		char new_name[FILENAME_MAX + 1], *p;
+
+		strcpy(new_name, name);
+		for (p = new_name; *p; p++)
+			if (*p == '+')
+				*p = '%';
+		(void) sprintf(fullname, "%s/%s", directory, new_name);
+	}
+	else
+		(void) sprintf(fullname, "%s/%s", directory, name);
+
 	/*
 	** Remove old file, if any, to snap links.
 	*/
@@ -2575,38 +2628,36 @@ mkdirs(char *argname)
 	if (argname == NULL || *argname == '\0')
 		return 0;
 	cp = name = ecpyalloc(argname);
-	while ((cp = strchr(cp + 1, '/')) != 0) {
-		*cp = '\0';
-#ifndef unix
-		/*
-		** DOS drive specifier?
-		*/
-		if (isalpha((unsigned char) name[0]) &&
-			name[1] == ':' && name[2] == '\0') {
-				*cp = '/';
-				continue;
-		}
-#endif /* !defined unix */
-		if (!itsdir(name)) {
-			/*
-			** It doesn't seem to exist, so we try to create it.
-			** Creation may fail because of the directory being
-			** created by some other multiprocessor, so we get
-			** to do extra checking.
-			*/
-			if (mkdir(name, MKDIR_UMASK) != 0) {
-				const char *e = strerror(errno);
-
-				if (errno != EEXIST || !itsdir(name)) {
-					(void) fprintf(stderr,
-_("%s: Can't create directory %s: %s\n"),
-						progname, name, e);
-					free(name);
-					return -1;
-				}
-			}
-		}
-		*cp = '/';
+	/*
+	** Get past a DOS-style drive specifier, if any.
+	*/
+	if (HAS_DEVICE(name))
+		cp += 2;
+	while (*cp++) {
+		if (IS_SLASH(*cp)) {
+			*cp = '\0';
+			if (!itsdir(name)) {
+				/*
+				** It doesn't seem to exist, so we try to
+				** create it.  Creation may fail because
+				** of the directory being created by some
+				** other multiprocessor, so we get to do
+				** extra checking.
+				*/
+				if (mkdir(name, MKDIR_UMASK) != 0) {
+					const char *e = strerror(errno);
+  
+					if (errno != EEXIST || !itsdir(name)) {
+						(void) fprintf(stderr,
+  _("%s: Can't create directory %s: %s\n"),
+						       progname, name, e);
+						free(name);
+						return -1;
+					}
+  				}
+  			}
+			*cp = '/';
+  		}
 	}
 	free(name);
 	return 0;

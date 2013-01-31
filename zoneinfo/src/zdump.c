@@ -121,9 +121,11 @@
 #endif /* !defined INITIALIZE */
 
 #if 2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)
-# define ATTRIBUTE_PURE __attribute__ ((__pure__))
+# define ATTRIBUTE_PURE      __attribute__ ((__pure__))
+# define ATTRIBUTE_NORETURN  __attribute__ ((__noreturn__))
 #else
-# define ATTRIBUTE_PURE /* empty */
+# define ATTRIBUTE_PURE      /* empty */
+# define ATTRIBUTE_NORETURN  /* empty */
 #endif
 
 /*
@@ -266,7 +268,7 @@ abbrok(const char *const abbrp, const char *const zone)
 	warned = TRUE;
 }
 
-static void
+static ATTRIBUTE_NORETURN void
 usage(FILE * const stream, const int status)
 {
 	(void) fprintf(stream,
@@ -565,7 +567,7 @@ show(char *zone, time_t t, int v)
 		if (v) {
 			(void) printf(" isdst=%d", tmp->tm_isdst);
 #ifdef TM_GMTOFF
-			(void) printf(" gmtoff=%ld", tmp->TM_GMTOFF);
+			(void) printf(" gmtoff=%ld", (long)tmp->TM_GMTOFF);
 #endif /* defined TM_GMTOFF */
 		}
 	}

@@ -145,9 +145,11 @@ typedef long		int_fast64_t;
 #endif /* !defined INT32_MIN */
 
 #if 2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)
-# define ATTRIBUTE_PURE __attribute__ ((__pure__))
+# define ATTRIBUTE_PURE      __attribute__ ((__pure__))
+# define ATTRIBUTE_NORETURN  __attribute__ ((__noreturn__))
 #else
-# define ATTRIBUTE_PURE /* empty */
+# define ATTRIBUTE_PURE      /* empty */
+# define ATTRIBUTE_NORETURN  /* empty */
 #endif
 
 /*
@@ -171,6 +173,26 @@ extern char *	asctime_r(struct tm const *, char *);
 char *		icatalloc(char * old, const char * new);
 char *		icpyalloc(const char * string);
 const char *	scheck(const char * string, const char * format);
+
+/*
+** Declarations for functions which shut up GCC $(GCC_DEBUG_FLAGS).
+*/
+#ifndef STD_INSPIRED
+static
+#endif /* !defined STD_INSPIRED */
+void tzsetwall(void);
+struct tm *localtime_r(const time_t * const __timep, struct tm * __tmp);
+struct tm *gmtime_r(const time_t * const __tp, struct tm * __tm);
+char *ctime_r(const time_t * const __tp, char * __buf);
+char *asctime_r(const struct tm *, char *);
+#ifdef STD_INSPIRED
+struct tm *offtime(const time_t * const __tp, const long __off);
+time_t timelocal(struct tm * const __tmp);
+time_t timegm(struct tm * const __tmp);
+time_t timeoff(struct tm * const __tmp, const long __off);
+time_t time2posix(time_t);
+time_t posix2time(time_t);
+#endif /* defined STD_INSPIRED */
 
 /*
 ** Finally, some convenience items.
@@ -236,6 +258,16 @@ const char *	scheck(const char * string, const char * format);
 #define INITIALIZE(x)
 #endif /* !defined GNUC_or_lint */
 #endif /* !defined INITIALIZE */
+
+#ifdef __MSDOS__
+#define IS_SLASH(c)     ((c) == '/' || (c) == '\\')
+#define HAS_DEVICE(n)   ((n)[0] && (n)[1] == ':')
+#define IS_ABSOLUTE(n)  (IS_SLASH((n)[0]) || HAS_DEVICE(n))
+#undef  TZDIR
+#define TZDIR           (getenv("TZDIR") ? getenv("TZDIR") : "/dev/env/DJDIR/zoneinfo")
+#else /* !__MSDOS__ */
+#define HAS_DEVICE(n) 0
+#endif /* !__MSDOS__ */
 
 /*
 ** For the benefit of GNU folk...
