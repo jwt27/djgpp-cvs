@@ -21,8 +21,8 @@ newsgroup: comp.os.msdos.djgpp
 newsgroup-email-gateway: djgpp@delorie.com
 
 author: The Timezone Caballeros
-author-email: tz@elsie.nci.nih.gov
-author-ftp-site: ftp://elsie.nci.nih.gov/pub/
+author-email: tz@iana.org
+author-ftp-site: 'ftp://ftp.iana.org/tz/
 
 simtelnet-path: v2/
 zip: djtzn204.zip
