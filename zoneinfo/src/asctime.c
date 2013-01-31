@@ -1,3 +1,7 @@
+#ifndef __DJGPP__
+/*  Use DJGPP's own implementation of asctime and asctime_r.  */
+
+
 /*
 ** This file is in the public domain, so clarified as of
 ** 1996-06-05 by Arthur David Olson.
@@ -130,3 +134,4 @@ asctime(register const struct tm *timeptr)
 {
 	return asctime_r(timeptr, buf_asctime);
 }
+#endif  /* !__DJGPP__ */
