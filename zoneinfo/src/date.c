@@ -56,14 +56,14 @@ static char sccsid[] = "@(#)date.c	4.23 (Berkeley) 9/20/88";
 #define SECSPERMIN	60
 #endif /* !defined SECSPERMIN */
 
-extern double		atof();
+extern double		atof(const char *s);
 extern char **		environ;
-extern char *		getlogin();
-extern time_t		mktime();
+extern char *		getlogin(void);
+extern time_t		mktime(struct tm *tptr);
 extern char *		optarg;
 extern int		optind;
-extern char *		strchr();
-extern time_t		time();
+extern char *		strchr(const char *s, int c);
+extern time_t		time(time_t *t);
 extern char *		tzname[2];
 
 static int		retval = EXIT_SUCCESS;
@@ -447,7 +447,7 @@ reset(const time_t newt, const int nflag)
 #include "protocols/timed.h"
 #endif /* TSP_SETDATE */
 
-extern int		logwtmp();
+extern int		logwtmp(char *line, char *name, char *host);
 
 #if HAVE_SETTIMEOFDAY == 1
 #define settimeofday(t, tz) (settimeofday)(t)
@@ -563,7 +563,7 @@ display(const char *const format)
 	exit(retval);
 }
 
-extern size_t	strftime();
+extern size_t	strftime(char *s, size_t maxsize, const char *format, const struct tm *t);
 
 #define INCR	1024
 

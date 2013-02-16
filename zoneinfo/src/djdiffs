@@ -1,3 +1,9 @@
+2013-02-15  Juan Manuel Guerrero <juan.guerrero@gmx.de>
+
+	* djgpp/zoneinfo/src/date.c:  Fix warning: function declaration isn't
+	a prototype [-Wstrict-prototypes].
+
+
 2012-11-24  Juan Manuel Guerrero <juan.guerrero@gmx.de>
 
 	* djgpp/distrib/p/djtzn204/djtzn204.dsm:  Update author-email and
@@ -1328,3 +1334,56 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
  	return 0;
  }
  
+diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
+--- djgpp.orig/zoneinfo/src/date.c	2013-01-31 22:37:10 +0000
++++ djgpp/zoneinfo/src/date.c	2013-02-16 02:55:10 +0000
+@@ -54,18 +54,18 @@ static char sccsid[] = "@(#)date.c	4.23
+ 
+ #ifndef SECSPERMIN
+ #define SECSPERMIN	60
+ #endif /* !defined SECSPERMIN */
+ 
+-extern double		atof();
++extern double		atof(const char *s);
+ extern char **		environ;
+-extern char *		getlogin();
+-extern time_t		mktime();
++extern char *		getlogin(void);
++extern time_t		mktime(struct tm *tptr);
+ extern char *		optarg;
+ extern int		optind;
+-extern char *		strchr();
+-extern time_t		time();
++extern char *		strchr(const char *s, int c);
++extern time_t		time(time_t *t);
+ extern char *		tzname[2];
+ 
+ static int		retval = EXIT_SUCCESS;
+ 
+ static void		checkfinal(const char *, int, time_t, time_t);
+@@ -445,11 +445,11 @@ reset(const time_t newt, const int nflag
+ #include "netdb.h"
+ #define TSPTYPES
+ #include "protocols/timed.h"
+ #endif /* TSP_SETDATE */
+ 
+-extern int		logwtmp();
++extern int		logwtmp(char *line, char *name, char *host);
+ 
+ #if HAVE_SETTIMEOFDAY == 1
+ #define settimeofday(t, tz) (settimeofday)(t)
+ #endif /* HAVE_SETTIMEOFDAY == 1 */
+ 
+@@ -561,11 +561,11 @@ display(const char *const format)
+ 		errensure();
+ 	}
+ 	exit(retval);
+ }
+ 
+-extern size_t	strftime();
++extern size_t	strftime(char *s, size_t maxsize, const char *format, const struct tm *t);
+ 
+ #define INCR	1024
+ 
+ static void
+ timeout(FILE *const fp, const char *const format, const struct tm *const tmp)
