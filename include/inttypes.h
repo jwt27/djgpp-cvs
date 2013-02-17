@@ -1,7 +1,6 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
-#include <stdint.h>
 
 #ifndef __dj_inttypes__h_
 #define __dj_inttypes__h_
