@@ -122,15 +122,15 @@ extern float       __dj_nan;
 #define isnan(x)      (fpclassify(x)==FP_NAN)
 #define isnormal(x)   (fpclassify(x)==FP_NORMAL)
 
-int		__fpclassifyf(float) __attribute__((const));
-int		__fpclassifyd(double) __attribute__((const));
-int		__fpclassifyld(long double) __attribute__((const));
-double		nan(const char *);
-float		nanf(const char *);
-long double	nanl(const char *);
-int		__signbitf(float x) __attribute__((const));
-int		__signbitd(double x) __attribute__((const));
-int		__signbitld(long double x) __attribute__((const));
+int           __fpclassifyf(float) __attribute__((const));
+int           __fpclassifyd(double) __attribute__((const));
+int           __fpclassifyld(long double) __attribute__((const));
+double        nan(const char *);
+float         nanf(const char *);
+long double   nanl(const char *);
+int           __signbitf(float x) __attribute__((const));
+int           __signbitd(double x) __attribute__((const));
+int           __signbitld(long double x) __attribute__((const));
 
 #define MATH_ERRNO     1
 #define MATH_ERREXCEPT 2
@@ -138,15 +138,15 @@ int		__signbitld(long double x) __attribute__((const));
 int __get_math_errhandling(void);
 #define math_errhandling (__get_math_errhandling())
 
-double	acosh(double);
-double	asinh(double);
-double	atanh(double);
-double	cbrt(double);
-double	exp2(double _x);
-double	expm1(double);
-double	hypot(double, double);
-double	log1p(double);
-double	log2(double _x);
+double        acosh(double _x);
+double        asinh(double _x);
+double        atanh(double _x);
+double        cbrt(double _x);
+double        exp2(double _x);
+double        expm1(double _x);
+double        hypot(double _x, double _y);
+double        log1p(double _x);
+double        log2(double _x);
 
 /* These are in libm.a (Cygnus).  You must link -lm to get these */
 /* See libm/math.h for comments */
