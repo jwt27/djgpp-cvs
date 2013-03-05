@@ -1,3 +1,4 @@
+# Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 TOP=..
 
@@ -163,6 +164,9 @@ SRC += sf_tanh.c
 SRC += sf_infinity.c
 SRC += sf_isinf.c
 SRC += sf_nan.c
+SRC += trunc
+SRC += truncf
+SRC += truncl
 
 chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	s_atan.def w_atan2.def w_atanh.def w_j0.def \
@@ -173,7 +177,7 @@ chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	w_pow.def w_remainder.def s_sin.def w_sinh.def \
 	s_cbrt.def w_sqrt.def s_tan.def s_tanh.def \
 	s_infinity.def s_isnan.def s_scalbn.def s_nextafter.def \
-	s_nan.def s_ilogb.def s_expm1.def
+	s_nan.def s_ilogb.def s_expm1.def trunc.def
 
 CFLAGS = -D_USE_LIBM_MATH_H
 EXTRA_FILES = $(TOP)/../../info/libm.info
