@@ -15,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.4 2003/03/22 12:09:08 ams Exp $
+ * $Id: math.h,v 1.5 2013/03/05 19:06:47 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -153,6 +153,16 @@ extern double ceil __P((double));
 extern double fabs __P((double));
 extern double floor __P((double));
 extern double fmod __P((double, double));
+
+#if !defined(__STRICT_ANSI__) || defined(__cplusplus) || \
+    defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+
+/* ISO C99 types and macros. */
+extern float truncf __P((float));
+extern double trunc __P((double));
+extern long double truncl __P((long double));
+#endif /* !defined (__STRICT_ANSI__) || defined(__cplusplus)
+          || defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L */
 
 #if !defined(__STRICT_ANSI__) && !defined(_POSIX_SOURCE)
 extern double erf __P((double));
