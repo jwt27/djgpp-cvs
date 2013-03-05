@@ -94,8 +94,11 @@ $(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g -Wall
 
 all: check
 
-check: mtest.exe
+check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe
 	./mtest.exe > mtest.results
+	./t-trunc.exe
+	./t-truncf.exe
+	./t-truncl.exe
 
 # Pattern rules to generate test vectors.  (The funky vec.c=%.c replacement
 # is meant to create a pattern rule where actually a normal rule will
@@ -125,11 +128,20 @@ tgen/g%vec.exe: tgen/g%vec.cpp tgen/genmathv.h
 mtest.exe: $(OFILES)  $(VEC_OFILES)
 	$(CC) -o $@ $(LDFLAGS) $(OFILES) $(VEC_OFILES) $(LIBS)
 
+t-trunc.exe: t-trunc.o
+	$(CC) -o $@ $(LDFLAGS) t-trunc.o $(LIBS)
+
+t-truncf.exe: t-truncf.o
+	$(CC) -o $@ $(LDFLAGS) t-truncf.o $(LIBS)
+
+t-truncl.exe: t-truncl.o
+	$(CC) -o $@ $(LDFLAGS) t-truncl.o $(LIBS)
+
 $(OFILES) $(VEC_OFILES) : test.h
 
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
-	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results
+	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results t-trunc*.o
 
 .SECONDARY: $(GEN_PROGS) $(GEN_VEC_FILES)
 .PHONY: all check clean mostlyclean
