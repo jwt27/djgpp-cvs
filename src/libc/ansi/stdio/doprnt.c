@@ -380,7 +380,7 @@ rflag:
        * no significant digits will be shown
        */
       softsign = 0;
-      if (_ldouble < 0)
+      if (_ldouble < 0 || (IS_NAN(ieee_value) && ieee_value.ldt.sign))
       {
 	softsign = '-';
 	_ldouble = -_ldouble;
