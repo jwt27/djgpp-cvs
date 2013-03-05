@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -161,6 +162,8 @@ extern double copysign(double, double);
 extern int ilogb(double);
 extern double rint(double);
 extern double scalbn(double, int);
+extern double trunc(double);
+extern long double truncl(long double);
 extern float erff(float);
 extern float erfcf(float);
 extern float hypotf(float, float);
@@ -179,6 +182,7 @@ extern float rintf(float);
 extern float scalbnf(float, int);
 extern float expm1f(float);
 extern float log1pf(float);
+extern float truncf(float);
 
 /* End libm.a. */
 
