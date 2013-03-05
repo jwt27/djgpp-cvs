@@ -19,28 +19,28 @@ extern double __dj_huge_val;
 
 #define HUGE_VAL  __dj_huge_val
 
-double	acos(double _x);
-double	asin(double _x);
-double	atan(double _x);
-double	atan2(double _y, double _x);
-double	ceil(double _x);
-double	cos(double _x);
-double	cosh(double _x);
-double	exp(double _x);
-double	fabs(double _x);
-double	floor(double _x);
-double	fmod(double _x, double _y);
-double	frexp(double _x, int *_pexp);
-double	ldexp(double _x, int _exp);
-double	log(double _y);
-double	log10(double _x);
-double	modf(double _x, double *_pint);
-double	pow(double _x, double _y);
-double	sin(double _x);
-double	sinh(double _x);
-double	sqrt(double _x);
-double	tan(double _x);
-double	tanh(double _x);
+double acos(double _x);
+double asin(double _x);
+double atan(double _x);
+double atan2(double _y, double _x);
+double ceil(double _x);
+double cos(double _x);
+double cosh(double _x);
+double exp(double _x);
+double fabs(double _x);
+double floor(double _x);
+double fmod(double _x, double _y);
+double frexp(double _x, int *_pexp);
+double ldexp(double _x, int _exp);
+double log(double _y);
+double log10(double _x);
+double modf(double _x, double *_pint);
+double pow(double _x, double _y);
+double sin(double _x);
+double sinh(double _x);
+double sqrt(double _x);
+double tan(double _x);
+double tanh(double _x);
 
 /* The C++ standard has overloaded versions of cos, etc. for floats
  * and long doubles. libstdc++ calls the C99-standardised float
@@ -99,38 +99,38 @@ extern long double __dj_huge_vall;
 extern float       __dj_nan;
 #define NAN        __dj_nan
 
-#define FP_INFINITE	0x00000001
-#define FP_NAN		0x00000002
-#define FP_NORMAL	0x00000004
-#define FP_SUBNORMAL	0x00000008
-#define FP_ZERO		0x00000010
+#define FP_INFINITE     0x00000001
+#define FP_NAN          0x00000002
+#define FP_NORMAL       0x00000004
+#define FP_SUBNORMAL    0x00000008
+#define FP_ZERO         0x00000010
 /* Extended with Unnormals (for long doubles). */
-#define FP_UNNORMAL	0x00010000
+#define FP_UNNORMAL     0x00010000
 
-#define fpclassify(x) ((sizeof(x)==sizeof(float))? __fpclassifyf(x) : \
-		       (sizeof(x)==sizeof(double))? __fpclassifyd(x) : \
-		       __fpclassifyld(x))
+#define fpclassify(x)  ((sizeof(x)==sizeof(float))? __fpclassifyf(x) : \
+                        (sizeof(x)==sizeof(double))? __fpclassifyd(x) : \
+                        __fpclassifyld(x))
 
-#define signbit(x)    (__extension__ ({__typeof__(x) __x = (x); \
-                                       (sizeof(__x) == sizeof(float)) ? __signbitf(__x) :  \
-                                       (sizeof(__x) == sizeof(double)) ? __signbitd(__x) : \
-                                       __signbitld(__x); \
-                                      }))
+#define signbit(x)     (__extension__ ({__typeof__(x) __x = (x); \
+                                        (sizeof(__x) == sizeof(float)) ? __signbitf(__x) :  \
+                                        (sizeof(__x) == sizeof(double)) ? __signbitd(__x) : \
+                                        __signbitld(__x); \
+                                       }))
 
-#define isfinite(x)   ((fpclassify(x) & (FP_NORMAL|FP_SUBNORMAL|FP_ZERO)) != 0)
-#define isinf(x)      (fpclassify(x)==FP_INFINITE)
-#define isnan(x)      (fpclassify(x)==FP_NAN)
-#define isnormal(x)   (fpclassify(x)==FP_NORMAL)
+#define isfinite(x)    ((fpclassify(x) & (FP_NORMAL | FP_SUBNORMAL | FP_ZERO)) != 0)
+#define isinf(x)       (fpclassify(x) == FP_INFINITE)
+#define isnan(x)       (fpclassify(x) == FP_NAN)
+#define isnormal(x)    (fpclassify(x) == FP_NORMAL)
 
-int           __fpclassifyf(float) __attribute__((const));
-int           __fpclassifyd(double) __attribute__((const));
-int           __fpclassifyld(long double) __attribute__((const));
-double        nan(const char *);
-float         nanf(const char *);
-long double   nanl(const char *);
-int           __signbitf(float x) __attribute__((const));
-int           __signbitd(double x) __attribute__((const));
-int           __signbitld(long double x) __attribute__((const));
+int         __fpclassifyf(float) __attribute__((const));
+int         __fpclassifyd(double) __attribute__((const));
+int         __fpclassifyld(long double) __attribute__((const));
+double      nan(const char *);
+float       nanf(const char *);
+long double nanl(const char *);
+int         __signbitf(float x) __attribute__((const));
+int         __signbitd(double x) __attribute__((const));
+int         __signbitld(long double x) __attribute__((const));
 
 #define MATH_ERRNO     1
 #define MATH_ERREXCEPT 2
@@ -138,15 +138,15 @@ int           __signbitld(long double x) __attribute__((const));
 int __get_math_errhandling(void);
 #define math_errhandling (__get_math_errhandling())
 
-double        acosh(double _x);
-double        asinh(double _x);
-double        atanh(double _x);
-double        cbrt(double _x);
-double        exp2(double _x);
-double        expm1(double _x);
-double        hypot(double _x, double _y);
-double        log1p(double _x);
-double        log2(double _x);
+double acosh(double _x);
+double asinh(double _x);
+double atanh(double _x);
+double cbrt(double _x);
+double exp2(double _x);
+double expm1(double _x);
+double hypot(double _x, double _y);
+double log1p(double _x);
+double log2(double _x);
 
 /* These are in libm.a (Cygnus).  You must link -lm to get these */
 /* See libm/math.h for comments */
@@ -188,27 +188,27 @@ extern float log1pf(float);
 
 #ifndef _POSIX_SOURCE
 
-#define M_E		2.7182818284590452354
-#define M_LOG2E		1.4426950408889634074
-#define M_LOG10E	0.43429448190325182765
-#define M_LN2		0.69314718055994530942
-#define M_LN10		2.30258509299404568402
-#define M_PI		3.14159265358979323846
-#define M_PI_2		1.57079632679489661923
-#define M_PI_4		0.78539816339744830962
-#define M_1_PI		0.31830988618379067154
-#define M_2_PI		0.63661977236758134308
-#define M_2_SQRTPI	1.12837916709551257390
-#define M_SQRT2		1.41421356237309504880
-#define M_SQRT1_2	0.70710678118654752440
-#define PI		M_PI
-#define PI2		M_PI_2
+#define M_E             2.7182818284590452354
+#define M_LOG2E         1.4426950408889634074
+#define M_LOG10E        0.43429448190325182765
+#define M_LN2           0.69314718055994530942
+#define M_LN10          2.30258509299404568402
+#define M_PI            3.14159265358979323846
+#define M_PI_2          1.57079632679489661923
+#define M_PI_4          0.78539816339744830962
+#define M_1_PI          0.31830988618379067154
+#define M_2_PI          0.63661977236758134308
+#define M_2_SQRTPI      1.12837916709551257390
+#define M_SQRT2         1.41421356237309504880
+#define M_SQRT1_2       0.70710678118654752440
+#define PI              M_PI
+#define PI2             M_PI_2
 
-double	exp10(double _x);
-double	pow10(double _x);
-double	pow2(double _x);
-double	powi(double, int);
-void	sincos(double *, double *, double);
+double exp10(double _x);
+double pow10(double _x);
+double pow2(double _x);
+double powi(double _base, int _exp);
+void   sincos(double *_cos, double *_sin, double _x);
 
 /* These are in libm.a (Cygnus).  You must link -lm to get these */
 /* See libm/math.h for comments */
