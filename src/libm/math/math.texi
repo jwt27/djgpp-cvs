@@ -68,6 +68,7 @@ available when you include @file{math.h} instead of @file{libm/math.h}.
 * sqrt::	Positive square root
 * tan::		Tangent
 * tanh::	Hyperbolic tangent
+* trunc::	Round to integer, towards zero
 @end menu
 
 @page
@@ -222,3 +223,6 @@ The library is set to X/Open mode by default.
 
 @page
 @include s_tanh.def
+
+@page
+@include trunc.def
