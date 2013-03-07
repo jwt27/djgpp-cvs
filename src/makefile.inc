@@ -49,6 +49,10 @@ ifeq ($(GAS_MINORMINOR),)
 GAS_MINORMINOR := 0
 endif
 
+# Find GCC own include directory and add it to CFLAGS
+GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
+CFLAGS += -I$(GCC_INC_DIR)
+
 # Pass defines as compiler/assembler switches
 CFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
 CFLAGS += -DGAS_MINOR=$(GAS_MINOR)
