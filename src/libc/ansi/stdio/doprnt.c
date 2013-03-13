@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
@@ -390,7 +391,7 @@ rflag:
       {
 	ieee_value.ld = _ldouble;
 
-	if (ieee_value.ldt.sign && !IS_NAN(ieee_value) && !IS_PSEUDO_NUMBER(ieee_value))
+	if (ieee_value.ldt.sign)
 	{
 	  neg_ldouble = true;
 	  if (IS_ZERO(ieee_value))
