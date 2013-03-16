@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 #include <math.h>
 #include <stdio.h>
@@ -7,7 +8,7 @@
 long double
 nanl(const char *tagp)
 {
-  float ret = NAN;
+  long double ret = NAN;
   char buf[256];
   int s;
 
