@@ -108,20 +108,47 @@ extern float       __dj_nan;
 /* Extended with Unnormals (for long doubles). */
 #define FP_UNNORMAL     0x00010000
 
-#define fpclassify(x)  ((sizeof(x)==sizeof(float))? __fpclassifyf(x) : \
-                        (sizeof(x)==sizeof(double))? __fpclassifyd(x) : \
-                        __fpclassifyld(x))
+#define fpclassify(x)         (__extension__ ({__typeof__(x) __xfp = (x); \
+                                               (sizeof(__xfp) == sizeof(float)) ? __fpclassifyf(__xfp) :  \
+                                               (sizeof(__xfp) == sizeof(double)) ? __fpclassifyd(__xfp) : \
+                                               __fpclassifyld(__xfp); \
+                                              }))
 
-#define signbit(x)     (__extension__ ({__typeof__(x) __x = (x); \
-                                        (sizeof(__x) == sizeof(float)) ? __signbitf(__x) :  \
-                                        (sizeof(__x) == sizeof(double)) ? __signbitd(__x) : \
-                                        __signbitld(__x); \
-                                       }))
+#define signbit(x)            (__extension__ ({__typeof__(x) __xsb = (x); \
+                                               (sizeof(__xsb) == sizeof(float)) ? __signbitf(__xsb) :  \
+                                               (sizeof(__xsb) == sizeof(double)) ? __signbitd(__xsb) : \
+                                               __signbitld(__xsb); \
+                                              }))
 
-#define isfinite(x)    ((fpclassify(x) & (FP_NORMAL | FP_SUBNORMAL | FP_ZERO)) != 0)
-#define isinf(x)       (fpclassify(x) == FP_INFINITE)
-#define isnan(x)       (fpclassify(x) == FP_NAN)
-#define isnormal(x)    (fpclassify(x) == FP_NORMAL)
+#define isfinite(x)           ((fpclassify(x) & (FP_NORMAL | FP_SUBNORMAL | FP_ZERO)) != 0)
+#define isinf(x)              (fpclassify(x) == FP_INFINITE)
+#define isnan(x)              (fpclassify(x) == FP_NAN)
+#define isnormal(x)           (fpclassify(x) == FP_NORMAL)
+
+#define isgreater(x, y)       (__extension__ ({__typeof__(x) __x_ig = (x); \
+                                               __typeof__(y) __y_ig = (y); \
+                                               !isunordered(__x_ig, __y_ig) && (__x_ig > __y_ig); \
+                                              }))
+#define isgreaterequal(x, y)  (__extension__ ({__typeof__(x) __x_ige = (x); \
+                                               __typeof__(y) __y_ige = (y); \
+                                               !isunordered(__x_ige, __y_ige) && (__x_ige >= __y_ige); \
+                                              }))
+#define isless(x, y)          (__extension__ ({__typeof__(x) __x_il = (x); \
+                                               __typeof__(y) __y_il = (y); \
+                                               !isunordered(__x_il, __y_il) && (__x_il < __y_il); \
+                                              }))
+#define islessequal(x, y)     (__extension__ ({__typeof__(x) __x_ile = (x); \
+                                               __typeof__(y) __y_ile = (y); \
+                                               !isunordered(__x_ile, __y_ile) && (__x_ile <= __y_ile); \
+                                              }))
+#define islessgreater(x, y)   (__extension__ ({__typeof__(x) __x_ilg = (x); \
+                                               __typeof__(y) __y_ilg = (y); \
+                                               !isunordered(__x_ilg, __y_ilg) && (__x_ilg < __y_ilg || __x_ilg > __y_ilg); \
+                                              }))
+#define isunordered(x, y)     (__extension__ ({__typeof__(x) __x_iu = (x); \
+                                               __typeof__(y) __y_iu = (y); \
+                                               (fpclassify(__x_iu) == FP_NAN) || (fpclassify(__y_iu) == FP_NAN); \
+                                              }))
 
 int         __fpclassifyf(float) __attribute__((const));
 int         __fpclassifyd(double) __attribute__((const));
