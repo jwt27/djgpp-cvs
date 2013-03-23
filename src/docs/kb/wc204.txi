@@ -1274,3 +1274,18 @@ by @code{_doscan} and the @code{scanf} family of functions.
 The type @code{rlim_t} has been added.
 @code{rlim_t} is now used for the @code{rlim_cur} and @code{rlim_max}
 members of @code{struct rlimit}.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex isfinite@r{ added}
+@findex isinf@r{ added}
+@findex isnan@r{ added}
+@findex isnormal@r{ added}
+@findex isgreater@r{ added}
+@findex isgreaterequal@r{ added}
+@findex isless@r{ added}
+@findex islessequal@r{ added}
+@findex islessgreater@r{ added}
+@findex isunordered@r{ added}
+The @acronym{C99} macros @code{isfinite}, @code{isinf}, @code{isnan}, @code{isnormal}, @code{isgreater},
+@code{isgreaterequal}, @code{isless}, @code{islessequal}, @code{islessgreater} and @code{isunordered}
+were added to comply with the @acronym{C99} standard.
