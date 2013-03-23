@@ -1,0 +1,422 @@
+@node isfinite, math
+@findex isfinite
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isfinite(x);
+@end example
+
+@subheading Description
+
+The macro @code{isfinite} will determine whether its argument @var{x} has a finite
+value (zero, subnormal, or normal, and not infinite or NaN).  The operands can be
+of any real floating-point type.
+
+@subheading Return Value
+
+non-zero for a finite value;
+zero else.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+long double ld = 3.14159265358979;
+
+if (isfinite(ld))
+  printf("value is finite.\n");
+else if (isinf(ld))
+  printf("value is infinite.\n");
+else if (isnan(ld))
+  printf("value is NaN.\n");
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isgreater, math
+@findex isgreater
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isgreater(x, y);
+@end example
+
+@subheading Description
+
+The macro @code{isgreater} will determine whether its first argument @var{x} is
+greater than its second argument @var{y} without failing if one of the operands is
+@code{NaN}.  The operands can be of any real floating-point type and the macro is
+guaranteed to evaluate their operands only once.
+
+@subheading Return Value
+
+zero if one of @var{x} or @var{y} is @code{NaN};
+else the result of (@var{x}) > (@var{y}).
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = 1;
+double d = INFINITY;
+
+if (isnan(f) || isnan(d))
+  printf("f or d is NaN.\n");
+else
+@{
+  if (isgreater(f, d))
+    printf("f is greater than d.\n");
+  else
+    printf("f is not greater than d.\n");
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isgreaterequal, math
+@findex isgreaterequal
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isgreaterequal(x, y);
+@end example
+
+@subheading Description
+
+The macro @code{isgreaterequal} will determine whether its first argument @var{x} is
+greater than or equal to its second argument @var{y} without failing if one of the operands
+is @code{NaN}.  The operands can be of any real floating-point type and the macro is
+guaranteed to evaluate their operands only once.
+
+@subheading Return Value
+
+zero if one of @var{x} or @var{y} is @code{NaN};
+else the result of (@var{x}) >= (@var{y}).
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = 1;
+double d = INFINITY;
+
+if (isnan(f) || isnan(d))
+  printf("f or d is NaN.\n");
+else
+@{
+  if (isgreaterequal(f, d))
+    printf("f is greater than or equal to d.\n");
+  else
+    printf("f is not greater than d.\n");
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isinf, math
+@findex isinf
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isinf(x);
+@end example
+
+@subheading Description
+
+The macro @code{isinf} will determine whether its argument @var{x} value is a positive
+or negative infinity.  The operands can be of any real floating-point type.
+
+@subheading Return Value
+
+non-zero for a infinite value (positive or negative);
+zero else.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+double d = INFINITY;
+
+if (isinf(d))
+  printf("value is infinite.\n");
+else if (isnan(d))
+  printf("value is NaN.\n");
+else
+  printf("value is finite.\n");
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isless, math
+@findex isless
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isless(x, y);
+@end example
+
+@subheading Description
+
+The macro @code{isless} will determine whether its first argument @var{x} is less than
+its second argument @var{y} without failing if one of the operands is @code{NaN}.  The
+operands can be of any real floating-point type and the macro is guaranteed to evaluate
+their operands only once.
+
+@subheading Return Value
+
+zero if one of @var{x} or @var{y} is @code{NaN};
+else the result of (@var{x}) < (@var{y}).
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = 1;
+double d = INFINITY;
+
+if (isnan(f) || isnan(d))
+  printf("f or d is NaN.\n");
+else
+@{
+  if (isless(f, d))
+    printf("f is less than d.\n");
+  else
+    printf("f is not less than d.\n");
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node islessequal, math
+@findex islessequal
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int islessequal(x, y);
+@end example
+
+@subheading Description
+
+The macro @code{islessequal} will determine whether its first argument @var{x} is less
+than or equal to its second argument @var{y} without failing if one of the operands is
+@code{NaN}.  The operands can be of any real floating-point type and the macro is
+guaranteed to evaluate their operands only once.
+
+@subheading Return Value
+
+zero if one of @var{x} or @var{y} is @code{NaN};
+else the result of (@var{x}) <= (@var{y}).
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = 1;
+double d = INFINITY;
+
+if (isnan(f) || isnan(d))
+  printf("f or d is NaN.\n");
+else
+@{
+  if (islessequal(f, d))
+    printf("f is less than or equal to d.\n");
+  else
+    printf("f is not less than d.\n");
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node islessgreater, math
+@findex islessgreater
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int islessgreater(x, y);
+@end example
+
+@subheading Description
+
+The macro @code{islessgreater} will determine whether its first argument @var{x} is less
+than or greater than its second argument @var{y} without failing if one of the operands
+is @code{NaN}.  The operands can be of any real floating-point type and the macro is
+guaranteed to evaluate their operands only once.
+
+@subheading Return Value
+
+zero if one of @var{x} or @var{y} is @code{NaN};
+else the result of (@var{x}) < (@var{y}) || (@var{x}) > (@var{y}).
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+double d = 1;
+long double ld = 1;
+
+if (isnan(ld) || isnan(d))
+  printf("ld or d is NaN.\n");
+else
+@{
+  if (islessgreater(lf, d))
+    printf("ld is less than d or ld is greater than d.\n");
+  else
+    printf("ld is equal to d.\n");
+@}
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isnan, math
+@findex isnan
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isnan(x);
+@end example
+
+@subheading Description
+
+The macro @code{isnan} will determine whether its argument @var{x} is a NaN.  The operands
+can be of any real floating-point type.
+
+@subheading Return Value
+
+non-zero for NaN;
+zero else.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float f = NAN;
+
+if (isnan(f))
+  printf("value is NaN.\n");
+else if (isinf(f))
+  printf("value is infinite.\n");
+else
+  printf("value is finite.\n");
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isnormal, math
+@findex isnormal
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isnormal(x);
+@end example
+
+@subheading Description
+
+The macro @code{isnormal} will determine whether its argument @var{x} is normal
+(neither zero, subnormal, infinite nor NaN).  The operands can be of any real
+floating-point type.
+
+@subheading Return Value
+
+non-zero for a normal value;
+zero else.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+long double ld = 3.14159265358979;
+
+if (isfinite(ld))
+@{
+  if (isnormal(ld))
+    printf("value is normal.\n");
+  else
+    printf("value is either zero or subnormal.\n");
+@}
+else
+  printf("value is either infinity or NaN.\n");
+
+@end example
+
+@c ----------------------------------------------------------------------
+@node isunordered, math
+@findex isunordered
+@subheading Syntax
+
+@example
+#include <math.h>
+
+int isunordered(x);
+@end example
+
+@subheading Description
+
+The macro @code{isunordered} will determine whether its arguments @var{x} or @var{y} are unordered.
+The operands can be of any real floating-point type.
+
+@subheading Return Value
+
+non-zero if one of @var{x} or @var{y} is @code{NaN};
+zero else.
+
+@subheading Portability
+
+@portability !ansi-c89, ansi-c99
+
+@subheading Example
+
+@example
+float pi = 3.14159;
+long double x = NAN;
+
+if (isunordered(pi, x))
+  printf("one of the values is NaN.\n");
+
+@end example
+
+@c ----------------------------------------------------------------------
