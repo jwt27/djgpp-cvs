@@ -3,8 +3,8 @@
 @subheading Syntax
 
 @example
-#include <fcntl.h>
-#include <sys/stat.h> /* for mode definitions */
+#include <fcntl.h>    /* provides mode definitions */
+#include <sys/stat.h> /* provides permission definitions */
 
 int open(const char *file, int mode /*, int permissions */);
 @end example
