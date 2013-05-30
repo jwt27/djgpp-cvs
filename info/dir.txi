@@ -28,19 +28,19 @@ From djdevNNN.zip
 * libm.a: (libm).
 	The Math Library Reference
 
-* Utilities: (utils).           Miscellaneous utilities that come with DJGPP.
-* bin2h: (utils)bin2h.          Convert binary data files to C include files.
-* djtar: (utils)djtar.          Extract or list files from (possibly compressed)
-                                tar archives, with DOS filename conversion.
-* dtou: (utils)dtou.            Convert text files from dos to unix.
-* utod: (utils)utod.            Convert text files from unix to dos.
-* djecho: (utils)djecho.        Echo long command lines to files.
-* gxx: (utils)gxx.              Build and link C++ programs
-* redir: (utils)redir.          Manage I/O Redirection.
-* djsplit: (utils)djsplit.      Split large files into multiple files.
-* djmerge: (utils)djmerge.      Merge multiple files into one file.
-* texi2ps: (utils)texi2ps.      Convert texinfo files to Postscript.
-* update: (utils)update.        Conditionally copy one file to another.
+* Utilities: (utils).          Miscellaneous utilities that come with DJGPP.
+* bin2h: (utils)bin2h.         Convert binary data files to C include files.
+* djtar: (utils)djtar.         Extract or list files from (possibly compressed)
+                               tar archives, with DOS filename conversion.
+* dtou: (utils)dtou.           Convert text files from dos to unix.
+* utod: (utils)utod.           Convert text files from unix to dos.
+* djecho: (utils)djecho.       Echo long command lines to files.
+* gxx: (utils)gxx.             Build and link C++ programs
+* redir: (utils)redir.         Manage I/O Redirection.
+* djsplit: (utils)djsplit.     Split large files into multiple files.
+* djmerge: (utils)djmerge.     Merge multiple files into one file.
+* texi2ps: (utils)texi2ps.     Convert texinfo files to Postscript.
+* update: (utils)update.       Conditionally copy one file to another.
 
 * djasm: (djasm).
 	The DJGPP 16-bit assembler
@@ -181,11 +181,11 @@ Miscellaneous GNU utilities
 
 
 * Diffutils: (diffutils).       The GNU difference utilities.
-* cmp: (diffutils)Invoking cmp.        Find first difference.
-* diff: (diffutils)Invoking diff.      Compare two files.
-* diff3: (diffutils)Invoking diff3.    Compare three files.
-* patch: (diffutils)Invoking patch.    Update source files given output of diff.
-* sdiff: (diffutils)Invoking sdiff.    Compare files side by side and merge them.
+* cmp: (diffutils)Invoking cmp.      Find first difference.
+* diff: (diffutils)Invoking diff.    Compare two files.
+* diff3: (diffutils)Invoking diff3.  Compare three files.
+* patch: (diffutils)Invoking patch.  Update source files given output of diff.
+* sdiff: (diffutils)Invoking sdiff.  Compare files side by side and merge them.
 
 
 * Ed: (ed).                     GNU Ed, a simple but powerful text editor.
@@ -221,10 +221,10 @@ Disk usage
 
 
 * Findutils: (find).            Find files on your hard drive
-* find: (find)Invoking find.            Search for files.
-* locate: (find)Invoking locate.        Search database.
-* updatedb: (find)Invoking updatedb.    Update database.
-* xargs: (find)Invoking xargs.          Combine arguments for command.
+* find: (find)Invoking find.                    Search for files.
+* locate: (find)Invoking locate.                Search database.
+* updatedb: (find)Invoking updatedb.            Update database.
+* xargs: (find)Invoking xargs.                  Combine arguments for command.
 
 
 * Flex: (flex).                 A fast scanner generator.
@@ -271,11 +271,11 @@ GNU Gettext Utilities
 
 
 * Id-utils: (id-utils).         The GNU Identifier database utilities.
-* mkid: (id-utils)mkid invocation.      Creating an ID database.
-* lid: (id-utils)lid invocation.        Matching words and patterns.
-* fid: (id-utils)fid invocation.        Listing a file's tokens.
-* fnid: (id-utils)fnid invocation.      Looking up file names.
-* xtokid: (id-utils)xtokid invocation.  Testing mkid scanners.
+* mkid: (id-utils)mkid invocation.              Creating an ID database.
+* lid: (id-utils)lid invocation.                Matching words and patterns.
+* fid: (id-utils)fid invocation.                Listing a file's tokens.
+* fnid: (id-utils)fnid invocation.              Looking up file names.
+* xtokid: (id-utils)xtokid invocation.          Testing mkid scanners.
 
 
 * Indent: (indent).             C/C++ code formatter.
@@ -348,38 +348,38 @@ Delaying
 
 * Text utilities: (textutils).  The GNU text utilities.
 Output of entire files
-* cat: (textutils)cat invocation.              Concatenate and write files.
-* tac: (textutils)tac invocation.              Reverse line order in files.
-* nl: (textutils)nl invocation.                Number lines and write files.
-* od: (textutils)od invocation.                Dump files in octal, etc.
+* cat: (textutils)cat invocation.               Concatenate and write files.
+* tac: (textutils)tac invocation.               Reverse line order in files.
+* nl: (textutils)nl invocation.                 Number lines and write files.
+* od: (textutils)od invocation.                 Dump files in octal, etc.
 Formatting file contents
-* fmt: (textutils)fmt invocation.              Reformat paragraph text.
-* pr: (textutils)pr invocation.                Paginate or columnate files.
-* fold: (textutils)fold invocation.            Wrap long input lines.
+* fmt: (textutils)fmt invocation.               Reformat paragraph text.
+* pr: (textutils)pr invocation.                 Paginate or columnate files.
+* fold: (textutils)fold invocation.             Wrap long input lines.
 Output of parts of files
-* head: (textutils)head invocation.            Output the first part of files.
-* tail: (textutils)tail invocation.            Output the last part of files.
-* split: (textutils)split invocation.          Split into fixed-size pieces.
-* csplit: (textutils)csplit invocation.        Split by context.
+* head: (textutils)head invocation.             Output the first part of files.
+* tail: (textutils)tail invocation.             Output the last part of files.
+* split: (textutils)split invocation.           Split into fixed-size pieces.
+* csplit: (textutils)csplit invocation.         Split by context.
 Summarizing files
-* wc: (textutils)wc invocation.                Byte, word, and line counts.
-* sum: (textutils)sum invocation.              Print traditional checksum.
-* cksum: (textutils)cksum invocation.          Print @sc{posix} CRC checksum.
-* md5sum: (textutils)md5sum invocation.        Print or check message-digests.
+* wc: (textutils)wc invocation.                 Byte, word, and line counts.
+* sum: (textutils)sum invocation.               Print traditional checksum.
+* cksum: (textutils)cksum invocation.           Print @sc{posix} CRC checksum.
+* md5sum: (textutils)md5sum invocation.         Print or check message-digests.
 Operating on sorted files
-* sort: (textutils)sort invocation.            Sort text files.
-* tsort: (textutils)tsort invocation.          Topologically sort text files.
-* uniq: (textutils)uniq invocation.            Uniqify files.
-* comm: (textutils)comm invocation.            Compare sorted files by line.
-* ptx: (textutils)ptx invocation.              Produce permuted indexes.
+* sort: (textutils)sort invocation.             Sort text files.
+* tsort: (textutils)tsort invocation.           Topologically sort text files.
+* uniq: (textutils)uniq invocation.             Uniqify files.
+* comm: (textutils)comm invocation.             Compare sorted files by line.
+* ptx: (textutils)ptx invocation.               Produce permuted indexes.
 Operating on fields within a line
-* cut: (textutils)cut invocation.              Print selected parts of lines.
-* paste: (textutils)paste invocation.          Merge lines of files.
-* join: (textutils)join invocation.            Join lines on a common field.
+* cut: (textutils)cut invocation.               Print selected parts of lines.
+* paste: (textutils)paste invocation.           Merge lines of files.
+* join: (textutils)join invocation.             Join lines on a common field.
 Operating on characters
-* tr: (textutils)tr invocation.                Translate characters.
-* expand: (textutils)expand invocation.        Convert tabs to spaces.
-* unexpand: (textutils)unexpand invocation.    Convert spaces to tabs.
+* tr: (textutils)tr invocation.                 Translate characters.
+* expand: (textutils)expand invocation.         Convert tabs to spaces.
+* unexpand: (textutils)unexpand invocation.     Convert spaces to tabs.
 
 * Which: (which).               Show the full path of commands.
 
