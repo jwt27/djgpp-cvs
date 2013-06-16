@@ -23,6 +23,148 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+#if defined (__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8))
+# define __gnuc_extension__  __extension__
+#else
+# define __gnuc_extension__
+#endif
+
+#define DEBUG_SUPPORT_PRINT_SYMBOL_TABLE           0  /*  Prints coff symbols table entries.  Always commited as 0.  */
+#define DEBUG_SUPPORT_PRINT_RELOCATION_DIRECTIVES  0  /*  Prints coff relocation directives.  Always commited as 0.  */
+
+#if defined(DEBUG_SUPPORT_PRINT_SYMBOL_TABLE) && DEBUG_SUPPORT_PRINT_SYMBOL_TABLE == 1
+# define DEBUG_PRINT_SYMBOL_TABLE_PROLOG()                                                   \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       printf("           e_value       e_scnum    e_sclass            symbol name\n"        \
+              "-----------------------------------------------------------------------\n");  \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_SYMBOL_TABLE_ENTRY(i, symbol_table_entry, symbol_name)                  \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       printf("[%3d]    0x%08lx    0x%08x    %7s    %02d    %s\n",                           \
+              (i),                                                                           \
+              (symbol_table_entry)[(i)].e_value,                                             \
+              (symbol_table_entry)[(i)].e_scnum,                                             \
+              (symbol_table_entry)[(i)].e_sclass == C_NULL    ? "C_NULL" :                   \
+              (symbol_table_entry)[(i)].e_sclass == C_AUTO    ? "C_AUTO" :                   \
+              (symbol_table_entry)[(i)].e_sclass == C_EXT     ? "C_EXT" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_STAT    ? "C_STAT" :                   \
+              (symbol_table_entry)[(i)].e_sclass == C_REG     ? "C_REG" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_EXTDEF  ? "C_EXTDEF" :                 \
+              (symbol_table_entry)[(i)].e_sclass == C_LABEL   ? "C_LABEL" :                  \
+              (symbol_table_entry)[(i)].e_sclass == C_ULABEL  ? "C_ULABEL" :                 \
+              (symbol_table_entry)[(i)].e_sclass == C_MOS     ? "C_MOS" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_ARG     ? "C_ARG" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_STRTAG  ? "C_STRTAG" :                 \
+              (symbol_table_entry)[(i)].e_sclass == C_MOU     ? "C_MOU" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_UNTAG   ? "C_UNTAG" :                  \
+              (symbol_table_entry)[(i)].e_sclass == C_TPDEF   ? "C_TPDEF" :                  \
+              (symbol_table_entry)[(i)].e_sclass == C_USTATIC ? "C_USTATIC" :                \
+              (symbol_table_entry)[(i)].e_sclass == C_ENTAG   ? "C_ENTAG" :                  \
+              (symbol_table_entry)[(i)].e_sclass == C_MOE     ? "C_MOE" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_REGPARM ? "C_REGPARM" :                \
+              (symbol_table_entry)[(i)].e_sclass == C_FIELD   ? "C_FIELD" :                  \
+              (symbol_table_entry)[(i)].e_sclass == C_AUTOARG ? "C_AUTOARG" :                \
+              (symbol_table_entry)[(i)].e_sclass == C_LASTENT ? "C_LASTENT" :                \
+              (symbol_table_entry)[(i)].e_sclass == C_BLOCK   ? "C_BLOCK " :                 \
+              (symbol_table_entry)[(i)].e_sclass == C_FCN     ? "C_FCN" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_EOS     ? "C_EOS" :                    \
+              (symbol_table_entry)[(i)].e_sclass == C_FILE    ? "C_FILE" :                   \
+              (symbol_table_entry)[(i)].e_sclass == C_LINE    ? "C_LINE" :                   \
+              (symbol_table_entry)[(i)].e_sclass == C_ALIAS   ? "C_ALIAS" :                  \
+              (symbol_table_entry)[(i)].e_sclass == C_HIDDEN  ? "C_HIDDEN" :                 \
+              (symbol_table_entry)[(i)].e_sclass == C_EFCN    ? "C_EFCN" : "Unknown",        \
+              (symbol_table_entry)[(i)].e_numaux,                                            \
+              (symbol_name));                                                                \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_SYMBOL_TABLE_EPILOG()                                                   \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       printf("\n");                                                                         \
+    })                                                                                       \
+  )
+#else   /*  !DEBUG_SUPPORT_PRINT_SYMBOL_TABLE  */
+# define DEBUG_PRINT_SYMBOL_TABLE_PROLOG()                                                   \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       (void)0;                                                                              \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_SYMBOL_TABLE_ENTRY(i, symbol_table_entry, symbol_name)                  \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       (void)0;                                                                              \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_SYMBOL_TABLE_EPILOG()                                                   \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       (void)0;                                                                              \
+    })                                                                                       \
+  )
+#endif  /*  !DEBUG_SUPPORT_PRINT_SYMBOL_TABLE  */
+
+
+#if defined(DEBUG_SUPPORT_PRINT_RELOCATION_DIRECTIVES) && DEBUG_SUPPORT_PRINT_RELOCATION_DIRECTIVES == 1
+# define DEBUG_PRINT_RELOCATION_DIRECTIVE_PROLOG()                                           \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       printf("           r_vaddr   r_symndx    r_type\n"                                    \
+              "------------------------------------------\n");                               \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_RELOCATION_DIRECTIVE(i, relocation_directive)                           \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       printf("[%3d]    0x%08lX    %03ld    %6s\n",                                          \
+              (i),                                                                           \
+              (relocation_directive)[(i)].r_vaddr,                                           \
+              (relocation_directive)[(i)].r_symndx,                                          \
+              (relocation_directive)[(i)].r_type == RELOC_REL32 ? "RELOC_REL32" :            \
+              (relocation_directive)[(i)].r_type == RELOC_ADDR32 ? "RELOC_ADDR32" :          \
+              "Unknown");                                                                    \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_RELOCATION_DIRECTIVE_EPILOG()                                           \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       printf("\n");                                                                         \
+    })                                                                                       \
+  )
+#else   /*  !DEBUG_SUPPORT_PRINT_RELOCATION_DIRECTIVES  */
+# define DEBUG_PRINT_RELOCATION_DIRECTIVE_PROLOG()                                           \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       (void)0;                                                                              \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_RELOCATION_DIRECTIVE(i, relocation_directive)                           \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       (void)0;                                                                              \
+    })                                                                                       \
+  )
+
+# define DEBUG_PRINT_RELOCATION_DIRECTIVE_EPILOG()                                           \
+  (__gnuc_extension__                                                                        \
+    ({                                                                                       \
+       (void)0;                                                                              \
+    })                                                                                       \
+  )
+#endif  /*  !DEBUG_SUPPORT_PRINT_RELOCATION_DIRECTIVES  */
+
+
 #ifndef DXE_LD
 /* Cross compile ld name/location */
 #define DXE_LD  "ld"
@@ -648,6 +790,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
 
   errcount = 0;
 
+  DEBUG_PRINT_SYMBOL_TABLE_PROLOG();
   for (i = 0; i < fh->f_nsyms; i += 1 + sym[i].e_numaux)
   {
     char tmp[E_SYMNMLEN + 1], *name;
@@ -675,15 +818,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
     if (namelen < 2)
       continue;
 
-#if 0
-    printf("[%3d] 0x%08lx 0x%08x 0x%04x %d %s\n",
-           i,
-           sym[i].e_value,
-           sym[i].e_scnum,
-           sym[i].e_sclass,
-           sym[i].e_numaux,
-           name);
-#endif
+    DEBUG_PRINT_SYMBOL_TABLE_ENTRY(i, sym, name);
 
     /* do not process private symbols */
     if (sym[i].e_sclass == C_STAT)
@@ -852,6 +987,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
         printf("export: `%s'\n", name);
     }
   }
+  DEBUG_PRINT_SYMBOL_TABLE_EPILOG();
 
   if (errcount)
   {
@@ -861,18 +997,14 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   }
 
   /* Compute the amount of valid relocations */
+  DEBUG_PRINT_RELOCATION_DIRECTIVE_PROLOG();
   for (i = 0; i < sc.s_nreloc; i++)
   {
-#if 0
-    printf("[%3d] %08lX %03ld %04X\n",
-           i,
-           relocs[i].r_vaddr,
-           relocs[i].r_symndx,
-           relocs[i].r_type);
-#endif
+    DEBUG_PRINT_RELOCATION_DIRECTIVE(i, relocs);
     if (!VALID_RELOC(relocs[i]))
       dh.nrelocs--;
   }
+  DEBUG_PRINT_RELOCATION_DIRECTIVE_EPILOG();
 
   if (opt.legacy)
   {
