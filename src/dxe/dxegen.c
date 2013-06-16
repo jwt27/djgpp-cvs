@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 Charles Sandmann (sandmann@clio.rice.edu)
    This software may be freely distributed with above copyright, no warranty.
    Based on code by DJ Delorie, it's really his, enhanced, bugs fixed. */
@@ -14,7 +15,7 @@
    isn't little-endian like the i386 */
 
 static void
-dosswap(void *vdata, const char *pattern)
+dos_swap(void *vdata, const char *pattern)
 {
   static int endian = 1;
   unsigned char *data, c;
@@ -85,7 +86,7 @@ int main(int argc, char **argv)
   }
 
   fread(&fh, 1, FILHSZ, input_f);
-  dosswap(&fh, "sslllss");
+  dos_swap(&fh, "sslllss");
   if (fh.f_nscns != 1 || argc > 4)
   {
     char command[1024], *libdir;
@@ -105,23 +106,23 @@ int main(int argc, char **argv)
       libdir = getenv("DJDIR");
       if (!libdir)
       {
-	fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
-	exit(1);
+        fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
+        exit(1);
       }
       strcat(command, libdir);
       strcat(command, "/lib");
     }
     strcat(command, " ");
-    for(i=3;argv[i];i++)
+    for (i = 3; argv[i]; i++)
     {
       strcat(command, argv[i]);
       strcat(command, " ");
     }
-    strcat(command," -T dxe.ld ");
+    strcat(command, " -T dxe.ld ");
       
-    printf("%s\n",command);
+    printf("%s\n", command);
     i = system(command);
-    if(i)
+    if (i)
       return i;
 
     input_f = fopen("dxe__tmp.o", "rb");
@@ -129,12 +130,14 @@ int main(int argc, char **argv)
     {
       perror(argv[3]);
       return 1;
-    } else
+    }
+    else
       atexit(exit_cleanup);
 
     fread(&fh, 1, FILHSZ, input_f);
-    dosswap(&fh, "sslllss");
-    if (fh.f_nscns != 1) {
+    dos_swap(&fh, "sslllss");
+    if (fh.f_nscns != 1)
+    {
       printf("Error: input file has more than one section; use -M for map\n");
       return 1;
     }
@@ -142,7 +145,7 @@ int main(int argc, char **argv)
 
   fseek(input_f, fh.f_opthdr, 1);
   fread(&sc, 1, SCNHSZ, input_f);
-  dosswap(&sc, "8llllllssl");
+  dos_swap(&sc, "8llllllssl");
 
   dh.magic = DXE_MAGIC;
   dh.symbol_offset = -1;
@@ -153,40 +156,39 @@ int main(int argc, char **argv)
   fseek(input_f, sc.s_scnptr, 0);
   fread(data, 1, sc.s_size, input_f);
 
-  sym = malloc(sizeof(SYMENT)*fh.f_nsyms);
+  sym = malloc(sizeof(SYMENT) * fh.f_nsyms);
   fseek(input_f, fh.f_symptr, 0);
   fread(sym, fh.f_nsyms, SYMESZ, input_f);
   fread(&strsz, 1, 4, input_f);
-  dosswap(&strsz, "l");
+  dos_swap(&strsz, "l");
   strings = malloc(strsz);
-  fread(strings+4, 1, strsz-4, input_f);
+  fread(strings + 4, 1, strsz - 4, input_f);
   strings[0] = 0;
-  for (i=0; i<fh.f_nsyms; i++)
+  for (i = 0; i < fh.f_nsyms; i++)
   {
     char tmp[9], *name;
     if (sym[i].e.e.e_zeroes)
     {
-      dosswap(sym+i, "8lscc");
+      dos_swap(sym + i, "8lscc");
       memcpy(tmp, sym[i].e.e_name, 8);
       tmp[8] = 0;
       name = tmp;
     }
     else
     {
-      dosswap(sym+i, "lllscc");
+      dos_swap(sym + i, "lllscc");
       name = strings + sym[i].e.e.e_offset;
     }
 #if 0
     if(sym[i].e_sclass == 2)
     printf("[%3ld] 0x%08lx 0x%04x 0x%04x 0x%02x %d %s\n",
-	   i,
-	   sym[i].e_value,
-	   sym[i].e_scnum & 0xffff,
-	   sym[i].e_type,
-	   sym[i].e_sclass,
-	   sym[i].e_numaux,
-	   name
-	   );
+           i,
+           sym[i].e_value,
+           sym[i].e_scnum & 0xffff,
+           sym[i].e_type,
+           sym[i].e_sclass,
+           sym[i].e_numaux,
+           name);
 #endif
     if (sym[i].e_scnum == 0)
     {
@@ -197,13 +199,15 @@ int main(int argc, char **argv)
     {
       if (dh.symbol_offset != -1)
       {
-	printf("Error: multiple symbols that start with %s (%s)!\n", argv[2], name);
-	errors++;
+        printf("Error: multiple symbols that start with %s (%s)!\n", argv[2], name);
+        errors++;
       }
       dh.symbol_offset = sym[i].e_value;
-    } else if (strcmp(name, ".bss") == 0 && !bss_start) {
+    }
+    else if (strcmp(name, ".bss") == 0 && !bss_start)
+    {
       bss_start = sym[i].e_value;
-/*      printf("bss_start 0x%x\n",bss_start); */
+/*      printf("bss_start 0x%x\n", bss_start); */
       memset(data+bss_start, 0, sc.s_size - bss_start);
     }
     i += sym[i].e_numaux;
@@ -215,23 +219,22 @@ int main(int argc, char **argv)
     errors++;
   }
 
-  relocs = malloc(sizeof(RELOC)*sc.s_nreloc);
+  relocs = malloc(sizeof(RELOC) * sc.s_nreloc);
   fseek(input_f, sc.s_relptr, 0);
   fread(relocs, sc.s_nreloc, RELSZ, input_f);
 #if 0
   /* Don't swap - it's in i386 order already */
-  for (i=0; i<sc.s_nreloc; i++)
-    dosswap(relocs+i, "lls");
+  for (i = 0; i < sc.s_nreloc; i++)
+    dos_swap(relocs+i, "lls");
 #endif
 #if 0
   /* Thus, this won't work except on PCs */
-  for (i=0; i<sc.s_nreloc; i++)
+  for (i = 0; i < sc.s_nreloc; i++)
     printf("0x%08lx %3ld 0x%04x - 0x%08lx\n",
-	   relocs[i].r_vaddr,
-	   relocs[i].r_symndx,
-	   relocs[i].r_type,
-	   *(long *)(data + relocs[i].r_vaddr)
-	   );
+           relocs[i].r_vaddr,
+           relocs[i].r_symndx,
+           relocs[i].r_type,
+           *(long *)(data + relocs[i].r_vaddr));
 #endif
 
   fclose(input_f);
@@ -245,15 +248,15 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  for (i=0; i<sc.s_nreloc; i++)
-    if(*(char *)(&relocs[i].r_type) == 0x14)	/* Don't do these, they are relative */
+  for (i = 0; i < sc.s_nreloc; i++)
+    if (*(char *)(&relocs[i].r_type) == 0x14)  /* Don't do these, they are relative */
       dh.nrelocs--;
 
-  dosswap(&dh, "llll");
+  dos_swap(&dh, "llll");
   fwrite(&dh, 1, sizeof(dh), output_f);
   fwrite(data, 1, sc.s_size, output_f);
-  for (i=0; i<sc.s_nreloc; i++)
-    if(*(char *)(&relocs[i].r_type) != 0x14)	/* Don't do these, they are relative */
+  for (i = 0; i < sc.s_nreloc; i++)
+    if (*(char *)(&relocs[i].r_type) != 0x14)  /* Don't do these, they are relative */
       fwrite(&(relocs[i].r_vaddr), 1, sizeof(relocs[0].r_vaddr), output_f);
 
   fclose(output_f);
