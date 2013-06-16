@@ -447,7 +447,7 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
     atexit(exit_cleanup);
 
 
-  fread(fh, 1, FILHSZ, f);
+  fread(fh, FILHSZ, 1, f);
   if (fh->f_nscns != 1)
   {
     fclose(f);
@@ -470,10 +470,10 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
     /* Read all symbols */
     sym = (SYMENT *)malloc(fh->f_nsyms * sizeof(SYMENT));
     fseek(f, fh->f_symptr, SEEK_SET);
-    fread(sym, fh->f_nsyms, SYMESZ, f);
+    fread(sym, SYMESZ, fh->f_nsyms, f);
 
     /* Read symbol name table */
-    fread(&stsz, 1, sizeof(stsz), f);
+    fread(&stsz, sizeof(stsz), 1, f);
     strings = (char *)malloc(stsz);
     fread(strings + 4, 1, stsz - 4, f);
     strings[0] = 0;
@@ -560,10 +560,13 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
       }
 
       f = fopen(TEMP_O_FILE, "rb");
-      fread(fh, 1, FILHSZ, f);
+      fread(fh, FILHSZ, 1, f);
     }
     else
       fseek(f, FILHSZ, SEEK_SET);
+
+    free(strings);
+    free(sym);
   }
 
   return f;
@@ -600,7 +603,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   /* Get the section header */
   SCNHDR sc;
   fseek(inf, fh->f_opthdr, SEEK_CUR);
-  fread(&sc, 1, SCNHSZ, inf);
+  fread(&sc, SCNHSZ, 1, inf);
 
   dh.magic = DXE_MAGIC;
   dh.element_size = -1;
@@ -621,16 +624,16 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
 
   /* Read section data */
   data = (char *)malloc(sc.s_size);
-  fseek(inf, sc.s_scnptr, 0);
-  fread(data, 1, sc.s_size, inf);
+  fseek(inf, sc.s_scnptr, SEEK_SET);
+  fread(data, sc.s_size, 1, inf);
 
   /* Read all symbols */
   sym = (SYMENT *)malloc(fh->f_nsyms * sizeof(SYMENT));
   fseek(inf, fh->f_symptr, SEEK_SET);
-  fread(sym, fh->f_nsyms, SYMESZ, inf);
+  fread(sym, SYMESZ, fh->f_nsyms, inf);
 
   /* Read symbol name table */
-  fread(&stsz, 1, sizeof(stsz), inf);
+  fread(&stsz, sizeof(stsz), 1, inf);
   strings = (char *)malloc(stsz);
   fread(strings + 4, 1, stsz - 4, inf);
   strings[0] = 0;
@@ -638,7 +641,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   /* Read the relocation table */
   relocs = (RELOC *)malloc(sc.s_nreloc * sizeof(RELOC));
   fseek(inf, sc.s_relptr, SEEK_SET);
-  fread(relocs, sc.s_nreloc, RELSZ, inf);
+  fread(relocs, RELSZ, sc.s_nreloc, inf);
 
   /* Close input file */
   fclose(inf);
@@ -977,7 +980,7 @@ static FILE *open_dxe_file(const char *fname, dxe3_header *dh)
     exit(-2);
   }
 
-  fread(dh, 1, sizeof(dxe3_header), f);
+  fread(dh, sizeof(dxe3_header), 1, f);
   if ((dh->magic != DXE_MAGIC) || (dh->element_size != -1))
   {
     fclose(f);
@@ -1012,7 +1015,7 @@ static int make_implib(void)
 
   fseek(f, dh.exp_table, SEEK_SET);
   symtab = (char *)malloc(dh.exp_size);
-  fread(symtab, 1, dh.exp_size, f);
+  fread(symtab, dh.exp_size, 1, f);
   fclose(f);
 
   /* Compute the base name of the library */
@@ -1159,11 +1162,11 @@ static int show_symbols(const char *fname)
 
   scan = symtab = (char *)malloc(dh.exp_size + dh.unres_size + dh.dep_size);
   fseek(f, dh.exp_table, SEEK_SET);
-  fread(symtab, 1, dh.exp_size, f);
+  fread(symtab, dh.exp_size, 1, f);
   fseek(f, dh.unres_table, SEEK_SET);
-  fread(symtab + dh.exp_size, 1, dh.unres_size, f);
+  fread(symtab + dh.exp_size, dh.unres_size, 1, f);
   fseek(f, dh.dep_table, SEEK_SET);
-  fread(symtab + dh.exp_size + dh.unres_size, 1, dh.dep_size, f);
+  fread(symtab + dh.exp_size + dh.unres_size, dh.dep_size, 1, f);
   fclose(f);
 
   for (i = 0; i < dh.n_exp_syms; i++)
