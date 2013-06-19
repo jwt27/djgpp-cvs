@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -30,19 +31,15 @@
 double
 strtod(const char *s, char **sret)
 {
-  long double r;		/* result */
-  int e;			/* exponent */
-  long double d;		/* scale */
-  int sign;			/* +- 1.0 */
-  int esign;
+  long double r = 0;            /* result */
+  int e = 0;                    /* exponent */
+  long double d;                /* scale */
+  int sign = 1;                 /* +- 1.0 */
+  int esign = 1;
   int i;
-  int flags=0;
-  char decimal = localeconv()->decimal_point[0];
+  int flags = 0;
+  char decimal_point = localeconv()->decimal_point[0];
 
-  r = 0.0;
-  sign = 1;
-  e = 0;
-  esign = 1;
 
   while (isspace((unsigned char) *s))
     s++;
@@ -57,76 +54,61 @@ strtod(const char *s, char **sret)
   }
 
   /* Handle INF and INFINITY. */
-  if ( ! strnicmp( "INF", s, 3 ) )
+  if (!strnicmp("INF", s, 3))
   {
-    if( sret )
+    if (sret)
     {
-      if ( ! strnicmp( "INITY", &s[3], 5 ) )
-      {
-	*sret = unconst((&s[8]), char *);
-      }
+      if (!strnicmp("INITY", &s[3], 5))
+        *sret = unconst((&s[8]), char *);
       else
-      {
-	*sret = unconst((&s[3]), char *);
-      }
+        *sret = unconst((&s[3]), char *);
     }
 
-    if( 0 <= sign )
-    {
-      return INFINITY;
-    }
-    else
-    {
-      return -INFINITY;
-    }
+    return (0 > sign) ? -INFINITY : INFINITY;
   }
 
   /* Handle NAN and NAN(<whatever>). */
-  if ( ! strnicmp( "NAN", s, 3 ) )
+  if (!strnicmp("NAN", s, 3))
   {
     _double_union_t t;
 
     t.d = NAN;
 
-    if ( sign < 0 )
-    {
+    if (sign < 0)
       t.dt.sign = 1;
-    }
 
-    if( s[3] == '(' )
+    if (s[3] == '(')
     {
       unsigned long long mantissa_bits = 0;
       char *endptr = unconst((&s[4]), char *);
 
       mantissa_bits = strtoull(&s[4], &endptr, 16);
-      if ( *endptr == ')' )
+      if (*endptr == ')')
       {
-	mantissa_bits = mantissa_bits & 0xfffffffffffffULL;
-	if( mantissa_bits )
-	{
-	  t.dt.mantissal = mantissa_bits & 0xffffffff;
-	  t.dt.mantissah = (mantissa_bits >> 32) & 0xfffff;
-	}
-	if( sret )
-	{
-          *sret = endptr+1;
-	}
-	return (t.d);
+        mantissa_bits = mantissa_bits & 0xfffffffffffffULL;
+        if (mantissa_bits)
+        {
+          t.dt.mantissal = mantissa_bits & 0xffffffff;
+          t.dt.mantissah = (mantissa_bits >> 32) & 0xfffff;
+        }
+        if (sret)
+          *sret = endptr + 1;
+
+        return t.d;
       }
 
-      /* The subject sequence didn't match NAN(<hex-number>), so match
-	 only NAN. */
+      /* The subject sequence didn't match NAN(<hex-number>),
+         so match only NAN. */
     }
 
-    if( sret )
-    {
+    if (sret)
       *sret = unconst((&s[3]), char *);
-    }
-    return (t.d);
+
+    return t.d;
   }
 
   /* Handle 0xH.HHH[p|P][+|-]DDD. */
-  if ( ! strnicmp( "0x", s, 2 ) && (s[2] == '.' || IS_HEX_DIGIT(s[2])) )
+  if (!strnicmp("0x", s, 2) && (s[2] == '.' || IS_HEX_DIGIT(s[2])))
   {
     int digits, integer_digits;
     long int bin_exponent;
@@ -148,7 +130,7 @@ strtod(const char *s, char **sret)
       mantissa <<= HEX_DIGIT_SIZE;
       mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
                   ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
-      if (mantissa)  /*  Discarts leading zeros.  */
+      if (mantissa)        /*  Discarts leading zeros.  */
         integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */
       s++;
     }
@@ -168,7 +150,7 @@ strtod(const char *s, char **sret)
       bin_exponent += digits * HEX_DIGIT_SIZE;
     }
 
-    if (*s == decimal)
+    if (*s == decimal_point)
     {
       int fraction_zeros = 0;
 
@@ -179,7 +161,7 @@ strtod(const char *s, char **sret)
         flags = 1;
         digits++;  /*  Counts hex digits.  */
         mantissa <<= HEX_DIGIT_SIZE;
-        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
                     ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
         if (mantissa == 0)
           fraction_zeros++;  /*  Counts hex zeros.  16**(-fraction_zeros + 1).  */
@@ -290,7 +272,7 @@ strtod(const char *s, char **sret)
     s++;
   }
 
-  if (*s == decimal)
+  if (*s == decimal_point)
   {
     d = 0.1L;
     s++;
@@ -334,29 +316,35 @@ strtod(const char *s, char **sret)
     r = HUGE_VAL;
   }
   else if (esign < 0)
-    for (i = 1; i <= e; i++)
+  {
+    const int exp = e + 1;
+    for (i = 1; i < exp; i++)
     {
       r *= 0.1L;
       /* Detect underflow below 2^-1075, which is half
          the smallest representable double. */
       if (r < 2.47032822920623272088e-324L)
       {
-	errno = ERANGE;
-	r = 0.0;
-	break;
+        errno = ERANGE;
+        r = 0.0;
+        break;
       }
     }
+  }
   else
-    for (i = 1; i <= e; i++)
+  {
+    const int exp = e + 1;
+    for (i = 1; i < exp; i++)
     {
       r *= 10.0;
-      if (r > DBL_MAX)	/* detect overflow */
+      if (r > DBL_MAX)  /* detect overflow */
       {
-	errno = ERANGE;
-	r = HUGE_VAL;
-	break;
+        errno = ERANGE;
+        r = HUGE_VAL;
+        break;
       }
     }
+  }
 
   if (sret)
     *sret = unconst(s, char *);

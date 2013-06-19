@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -33,18 +34,14 @@ static long double powten[] =
 long double
 strtold(const char *s, char **sret)
 {
-  long double r;		/* result */
-  int e, ne;			/* exponent */
-  int sign;			/* +- 1.0 */
-  int esign;
-  int flags=0;
+  long double r = 0.0L;         /* result */
+  int e = 0, ne = 0;            /* exponent */
+  int sign = 1;                 /* +- 1.0 */
+  int esign = 1;
+  int flags = 0;
   int l2powm1;
-  char decimal = localeconv()->decimal_point[0];
+  char decimal_point = localeconv()->decimal_point[0];
 
-  r = 0.0L;
-  sign = 1;
-  e = ne = 0;
-  esign = 1;
 
   while(*s && isspace((unsigned char)*s))
     s++;
@@ -58,79 +55,62 @@ strtold(const char *s, char **sret)
   }
 
   /* Handle INF and INFINITY. */
-  if ( ! strnicmp( "INF", s, 3 ) )
+  if (!strnicmp("INF", s, 3))
   {
-    if( sret )
+    if (sret)
     {
-      if ( ! strnicmp( "INITY", &s[3], 5 ) )
-      {
-	*sret = unconst((&s[8]), char *);
-      }
+      if (!strnicmp("INITY", &s[3], 5))
+        *sret = unconst((&s[8]), char *);
       else
-      {
-	*sret = unconst((&s[3]), char *);
-      }
+        *sret = unconst((&s[3]), char *);
     }
 
-    if( 0 <= sign )
-    {
-      return INFINITY;
-    }
-    else
-    {
-      return -INFINITY;
-    }
+    return (0 > sign) ? -INFINITY : INFINITY;
   }
 
   /* Handle NAN and NAN(<whatever>). */
-  if ( ! strnicmp( "NAN", s, 3 ) )
+  if (!strnicmp("NAN", s, 3))
   {
     _longdouble_union_t t;
 
     t.ld = NAN;
 
 
-    if ( sign < 0 )
-    {
+    if (sign < 0)
       t.ldt.sign = 1;
-    }
     
-    if( s[3] == '(' )
+    if (s[3] == '(')
     {
       unsigned long long mantissa_bits = 0;
       char *endptr = unconst((&s[4]), char *);
       
       mantissa_bits = strtoull(&s[4], &endptr, 0);
-      if ( *endptr == ')' )
+      if (*endptr == ')')
       {
-	mantissa_bits = mantissa_bits & 0x7fffffffffffffffULL; /* Ignore
-							       integer
-							       bit. */
-	if( mantissa_bits )
-	{
-	  t.ldt.mantissal = mantissa_bits & 0xffffffff;
-	  t.ldt.mantissah = ((mantissa_bits >> 32) & 0xffffffff ) | 0x80000000;
-	}
-	if( sret )
-	{
-          *sret = endptr+1;
-	}
-        return (t.ld);
+        mantissa_bits = mantissa_bits & 0x7fffffffffffffffULL;  /* Ignore integer bit. */
+        if (mantissa_bits)
+        {
+          t.ldt.mantissal = mantissa_bits & 0xffffffff;
+          t.ldt.mantissah = ((mantissa_bits >> 32) & 0xffffffff ) | 0x80000000;
+        }
+        if (sret)
+          *sret = endptr + 1;
+
+        return t.ld;
       }
-      
-      /* The subject sequence didn't match NAN(<number>), so match
-	 only NAN. */
+
+      /* The subject sequence didn't match NAN(<number>),
+         so match only NAN. */
     }
 
-    if( sret )
-    {
+    if (sret)
       *sret = unconst((&s[3]), char *);
-    }
-    return (t.ld);
+
+    return t.ld;
   }
 
   /* Handle 0xH.HHH[p|P][+|-]DDD. */
-  if ( ! strnicmp( "0x", s, 2 ) && (s[2] == '.' || IS_HEX_DIGIT(s[2])) )
+  if (!strnicmp("0x", s, 2) && (s[2] == '.' || IS_HEX_DIGIT(s[2])))
   {
     const char *next_char = NULL;
     int digits, integer_digits;
@@ -152,9 +132,9 @@ strtold(const char *s, char **sret)
     {
       flags = 1;
       mantissa <<= HEX_DIGIT_SIZE;
-      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
                   ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
-      if (mantissa)  /*  Discarts leading zeros.  */
+      if (mantissa)        /*  Discarts leading zeros.  */
         integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */
       s++;
     }
@@ -175,7 +155,7 @@ strtold(const char *s, char **sret)
       bin_exponent += digits * HEX_DIGIT_SIZE;
     }
 
-    if (*s == decimal)
+    if (*s == decimal_point)
     {
       int fraction_zeros = 0;
 
@@ -227,7 +207,7 @@ strtold(const char *s, char **sret)
         mantissa <<= 1;  /*  Shift a binary 1 into the integer part of the mantissa.  */
       if (IS_HEX_DIGIT(*next_char))
       {
-        unsigned long long bits = IS_DEC_DIGIT(*next_char) ? *next_char - '0' : 
+        unsigned long long bits = IS_DEC_DIGIT(*next_char) ? *next_char - '0' :
                                   ((*next_char >= 'A') && (*next_char <= 'F')) ? *next_char - 'A' + 10 : *next_char - 'a' + 10;
 
         switch (digits)
@@ -317,7 +297,7 @@ strtold(const char *s, char **sret)
     s++;
   }
 
-  if (*s == decimal)
+  if (*s == decimal_point)
   {
     s++;
     while (IS_DEC_DIGIT(*s))
@@ -380,7 +360,7 @@ strtold(const char *s, char **sret)
     while (e)
     {
       if (e & 1)
-	d *= powten[l2powm1];
+        d *= powten[l2powm1];
       e >>= 1;
       l2powm1++;
     }

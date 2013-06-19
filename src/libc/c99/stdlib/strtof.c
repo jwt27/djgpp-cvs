@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -32,20 +33,16 @@
 float
 strtof(const char *s, char **sret)
 {
-  long double r;		/* result */
-  int e;			/* exponent */
-  long double d;		/* scale */
-  int sign;			/* +- 1.0 */
-  int esign;
+  long double r = 0;            /* result */
+  int e = 0;                    /* exponent */
+  long double d;                /* scale */
+  int sign = 1;                 /* +- 1.0 */
+  int esign = 1;
   int i;
-  int flags=0;
-  int overflow=0;
-  char decimal = localeconv()->decimal_point[0];
+  int flags = 0;
+  int overflow = 0;
+  char decimal_point = localeconv()->decimal_point[0];
 
-  r = 0.0;
-  sign = 1;
-  e = 0;
-  esign = 1;
 
   while (isspace((unsigned char) *s))
     s++;
@@ -59,75 +56,58 @@ strtof(const char *s, char **sret)
   }
 
   /* Handle INF and INFINITY. */
-  if ( ! strnicmp( "INF", s, 3 ) )
+  if (!strnicmp("INF", s, 3))
   {
-    if( sret )
+    if (sret)
     {
-      if ( ! strnicmp( "INITY", &s[3], 5 ) )
-      {
-	*sret = unconst((&s[8]), char *);
-      }
+      if (!strnicmp( "INITY", &s[3], 5))
+        *sret = unconst((&s[8]), char *);
       else
-      {
-	*sret = unconst((&s[3]), char *);
-      }
+        *sret = unconst((&s[3]), char *);
     }
 
-    if( 0 <= sign )
-    {
-      return INFINITY;
-    }
-    else
-    {
-      return -INFINITY;
-    }
+    return (0 > sign) ? -INFINITY : INFINITY;
   }
 
   /* Handle NAN and NAN(<hex-number>). */
-  if( ! strnicmp( "NAN", s, 3 ) )
+  if (!strnicmp("NAN", s, 3))
   {
     _float_union_t t;
 
     t.f = NAN;
 
-    if( sign < 0 )
-    {
+    if (sign < 0)
       t.ft.sign = 1;
-    }
 
-    if( s[3] == '(' )
+    if (s[3] == '(')
     {
       unsigned long mantissa_bits = 0;
       char *endptr = unconst((&s[4]), char *);
 
       mantissa_bits = strtoul(&s[4], &endptr, 0);
-      if( *endptr == ')' )
+      if (*endptr == ')')
       {
-	mantissa_bits = mantissa_bits & 0x7fffff;
-	if( mantissa_bits )
-	{
-	  t.ft.mantissa = mantissa_bits;
-	}
-	if( sret )
-	{
-	  *sret = endptr+1;
-	}
-	return (t.f);
+        mantissa_bits = mantissa_bits & 0x7fffff;
+        if (mantissa_bits)
+          t.ft.mantissa = mantissa_bits;
+        if (sret)
+          *sret = endptr + 1;
+
+        return t.f;
       }
 
-      /* The subject sequence didn't match NAN(<number>), so match
-	 only NAN. */
+      /* The subject sequence didn't match NAN(<number>),
+         so match only NAN. */
     }
 
-    if( sret )
-    {
+    if (sret)
       *sret = unconst((&s[3]), char *);
-    }
-    return (t.f);
+
+    return t.f;
   }
 
   /* Handle 0xH.HHH[p|P][+|-]DDD. */
-  if ( ! strnicmp( "0x", s, 2 ) && (s[2] == '.' || IS_HEX_DIGIT(s[2])) )
+  if (!strnicmp("0x", s, 2) && (s[2] == '.' || IS_HEX_DIGIT(s[2])))
   {
     int digits, integer_digits;
     int bin_exponent;
@@ -148,9 +128,9 @@ strtof(const char *s, char **sret)
     {
       flags = 1;
       mantissa <<= HEX_DIGIT_SIZE;
-      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
                   ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
-      if (mantissa)  /*  Discarts leading zeros.  */
+      if (mantissa)        /*  Discarts leading zeros.  */
         integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */
       s++;
     }
@@ -170,7 +150,7 @@ strtof(const char *s, char **sret)
       bin_exponent += digits * HEX_DIGIT_SIZE;
     }
 
-    if (*s == decimal)
+    if (*s == decimal_point)
     {
       int fraction_zeros = 0;
 
@@ -181,7 +161,7 @@ strtof(const char *s, char **sret)
         flags = 1;
         digits++;  /*  Counts hex digits.  */
         mantissa <<= HEX_DIGIT_SIZE;
-        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
                     ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
         if (mantissa == 0)
           fraction_zeros++;  /*  Counts hex zeros.  16**(-fraction_zeros + 1).  */
@@ -291,7 +271,7 @@ strtof(const char *s, char **sret)
     s++;
   }
 
-  if (*s == decimal)
+  if (*s == decimal_point)
   {
     d = 0.1L;
     s++;
@@ -336,30 +316,36 @@ strtof(const char *s, char **sret)
     overflow = 1;
   }
   else if (esign < 0)
-    for (i = 1; i <= e; i++)
+  {
+    const int exp = e + 1;
+    for (i = 1; i < exp; i++)
     {
       r *= 0.1L;
       /* Detect underflow below 2^-150, which is half
          the smallest representable float. */
       if (r < 7.00649232162408535461e-46L)
       {
-	errno = ERANGE;
-	r = 0.0;
-	break;
+        errno = ERANGE;
+        r = 0.0;
+        break;
       }
     }
+  }
   else
-    for (i = 1; i <= e; i++)
+  {
+    const int exp = e + 1;
+    for (i = 1; i < exp; i++)
     {
       r *= 10.0;
-      if (r > FLT_MAX)	/* detect overflow */
+      if (r > FLT_MAX)  /* detect overflow */
       {
-	errno = ERANGE;
-	r = 0;
-	overflow = 1;
-	break;
+        errno = ERANGE;
+        r = 0;
+        overflow = 1;
+        break;
       }
     }
+  }
 
   if (sret)
     *sret = unconst(s, char *);
