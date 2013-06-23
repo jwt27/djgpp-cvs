@@ -14,22 +14,29 @@
 #include <libc/unconst.h>
 #include <libc/ieee.h>
 
-#define HEX_DIGIT_SIZE    (4)
-#define LONG_DOUBLE_BIAS  (0x3FFFU)
-#define MAX_BIN_EXPONENT  (16383)   /*  Max. and min. binary exponent (inclusive) as  */
-#define MIN_BIN_EXPONENT  (-16382)  /*  defined in Intel manual (253665.pdf, Table 4.2).  */
-#define IS_DEC_DIGIT(x)   (((x) >= '0') && ((x) <= '9'))
-#define IS_HEX_DIGIT(x)   ((((x) >= 'A') && ((x) <= 'F')) || \
-                           (((x) >= 'a') && ((x) <= 'f')) || \
-                           IS_DEC_DIGIT(x))
-#define IS_EXPONENT(x)    (((x[0]) == 'P' || (x[0]) == 'p') && \
-                           (x[1] == '+' || x[1] == '-' || IS_DEC_DIGIT(x[1])))
+#define HEX_DIGIT_SIZE      (4)
+#define LONG_DOUBLE_BIAS    (0x3FFFU)
+#define MAX_BIN_EXPONENT    (16383)   /*  Max. and min. binary exponent (inclusive) as  */
+#define MIN_BIN_EXPONENT    (-16382)  /*  defined in Intel manual (253665.pdf, Table 4.2).  */
+#define IS_DEC_DIGIT(x)     (((x) >= '0') && ((x) <= '9'))
+#define IS_HEX_DIGIT(x)     ((((x) >= 'A') && ((x) <= 'F')) || \
+                             (((x) >= 'a') && ((x) <= 'f')) || \
+                             IS_DEC_DIGIT(x))
+#define IS_DEC_EXPONENT(x)  (((x[0]) == 'E' || (x[0]) == 'e') && \
+                             ((x[1] == '+' &&  IS_DEC_DIGIT(x[2])) || \
+                              (x[1] == '-' &&  IS_DEC_DIGIT(x[2])) || \
+                             IS_DEC_DIGIT(x[1])))
+#define IS_HEX_EXPONENT(x)  (((x[0]) == 'P' || (x[0]) == 'p') && \
+                             ((x[1] == '+' &&  IS_DEC_DIGIT(x[2])) || \
+                              (x[1] == '-' &&  IS_DEC_DIGIT(x[2])) || \
+                             IS_DEC_DIGIT(x[1])))
 
 static long double powten[] =
 {
   1e1L, 1e2L, 1e4L, 1e8L, 1e16L, 1e32L, 1e64L, 1e128L, 1e256L,
   1e512L, 1e1024L, 1e2048L, 1e4096L
 };
+
 
 long double
 strtold(const char *s, char **sret)
@@ -65,7 +72,7 @@ strtold(const char *s, char **sret)
         *sret = unconst((&s[3]), char *);
     }
 
-    return (0 > sign) ? -INFINITY : INFINITY;
+    return (sign < 0) ? -INFINITY : INFINITY;
   }
 
   /* Handle NAN and NAN(<whatever>). */
@@ -244,9 +251,10 @@ strtold(const char *s, char **sret)
     /*
      *  Exponent.
      */
-    if (IS_EXPONENT(s))
+    if (IS_HEX_EXPONENT(s))
     {
       long long int exponent = 0.0L;
+
       s++;
       if (*s == '+')
         s++;
@@ -325,7 +333,7 @@ strtold(const char *s, char **sret)
     return 0.0L;
   }
 
-  if ((*s == 'e') || (*s == 'E'))
+  if (IS_DEC_EXPONENT(s))
   {
     s++;
     if (*s == '+')
@@ -377,7 +385,9 @@ strtold(const char *s, char **sret)
     else
       r /= d;
   }
+
   if (sret)
     *sret = unconst(s, char *);
+
   return r * sign;
 }
