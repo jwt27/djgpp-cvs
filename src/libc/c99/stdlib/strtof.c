@@ -50,9 +50,16 @@ strtof(const char *s, char **sret)
   char decimal_point = localeconv()->decimal_point[0];
 
 
+  if (sret)
+    *sret = unconst(s, char *);
+
   while (isspace((unsigned char) *s))
     s++;
 
+  if (!*s)
+    return 0.0;
+
+  /* Handle leading sign. */
   if (*s == '+')
     s++;
   else if (*s == '-')
