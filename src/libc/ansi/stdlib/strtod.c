@@ -181,10 +181,14 @@ strtod(const char *s, char **sret)
       }
     }
 
-    if (!flags)
+    if (flags == 0)
     {
       if (sret)
+      {
+        if (!r)
+          s--;  /*  A dot without leading numbers.  */
         *sret = unconst(s, char *);
+      }
       errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
       return 0.0L;
     }
@@ -276,7 +280,7 @@ strtod(const char *s, char **sret)
   {
     d = 0.1L;
     s++;
-    while ((*s >= '0') && (*s <= '9'))
+    while (IS_DEC_DIGIT(*s))
     {
       flags |= 2;
       r += d * (*s - '0');
@@ -287,7 +291,12 @@ strtod(const char *s, char **sret)
   if (flags == 0)
   {
     if (sret)
+    {
+      if (!r)
+        s--;  /*  A dot without leading numbers.  */
       *sret = unconst(s, char *);
+    }
+    errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
     return 0.0;
   }
 

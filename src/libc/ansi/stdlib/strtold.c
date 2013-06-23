@@ -43,7 +43,7 @@ strtold(const char *s, char **sret)
   char decimal_point = localeconv()->decimal_point[0];
 
 
-  while(*s && isspace((unsigned char)*s))
+  while(isspace((unsigned char)*s))
     s++;
 
   if (*s == '+')
@@ -187,10 +187,14 @@ strtold(const char *s, char **sret)
       }
     }
 
-    if (!flags)
+    if (flags == 0)
     {
       if (sret)
+      {
+        if (!r)
+          s--;  /*  A dot without leading numbers.  */
         *sret = unconst(s, char *);
+      }
       errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
       return 0.0L;
     }
@@ -312,7 +316,11 @@ strtold(const char *s, char **sret)
   if (flags == 0)
   {
     if (sret)
+    {
+      if (!r)
+        s--;  /*  A dot without leading numbers.  */
       *sret = unconst(s, char *);
+    }
     errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
     return 0.0L;
   }
