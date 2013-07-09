@@ -47,7 +47,7 @@ strtof(const char *s, char **sret)
   int i;
   int flags = 0;
   int overflow = 0;
-  char decimal_point = localeconv()->decimal_point[0];
+  char radix_point = localeconv()->decimal_point[0];
 
 
   if (sret)
@@ -135,13 +135,13 @@ strtof(const char *s, char **sret)
      */
     bin_exponent = 0;
     integer_digits = 0;
-    mantissa = 0x00U;
-    s += 2;
+    mantissa = 0x00UL;
+    s += 2;  /*  Skip the hex prefix.  */
     while (integer_digits < 8 && IS_HEX_DIGIT(*s))
     {
       flags = 1;
       mantissa <<= HEX_DIGIT_SIZE;
-      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
+      mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' :
                   ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
       if (mantissa)        /*  Discarts leading zeros.  */
         integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */
@@ -151,9 +151,9 @@ strtof(const char *s, char **sret)
     {
       /*
        *  Compute the binary exponent for a normalized mantissa by
-       *  shifting the decimal point inside the most significant hex digit.
+       *  shifting the radix point inside the most significant hex digit.
        */
-      unsigned long bit = 0x01ULL;
+      unsigned long bit = 0x01UL;
 
       for (digits = 0; IS_HEX_DIGIT(*s); s++)
         digits++;  /*  Counts hex digits.  */
@@ -163,7 +163,7 @@ strtof(const char *s, char **sret)
       bin_exponent += digits * HEX_DIGIT_SIZE;
     }
 
-    if (*s == decimal_point)
+    if (*s == radix_point)
     {
       int fraction_zeros = 0;
 
@@ -174,7 +174,7 @@ strtof(const char *s, char **sret)
         flags = 1;
         digits++;  /*  Counts hex digits.  */
         mantissa <<= HEX_DIGIT_SIZE;
-        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
+        mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' :
                     ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
         if (mantissa == 0)
           fraction_zeros++;  /*  Counts hex zeros.  16**(-fraction_zeros + 1).  */
@@ -184,9 +184,9 @@ strtof(const char *s, char **sret)
       {
         /*
          *  Compute the binary exponent for a normalized mantissa by
-         *  shifting the decimal point inside the most significant hex digit.
+         *  shifting the radix point inside the most significant hex digit.
          */
-        unsigned long long bit = 0x01ULL;
+        unsigned long bit = 0x01UL;
 
         bin_exponent = -fraction_zeros * HEX_DIGIT_SIZE;  /*  2**bin_exponent.  */
         for (bit <<= (digits * HEX_DIGIT_SIZE + bin_exponent); !(mantissa & bit); bin_exponent--)
@@ -202,7 +202,7 @@ strtof(const char *s, char **sret)
           s--;  /*  A dot without leading numbers.  */
         *sret = unconst(s, char *);
       }
-      errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
+      errno = EINVAL;  /*  No valid mantissa, no conversion could be performed.  */
       return 0.0;
     }
 
@@ -211,7 +211,7 @@ strtof(const char *s, char **sret)
       /*
        *  Normalize mantissa.
        */
-      while (!(mantissa & 0x80000000ULL))
+      while (!(mantissa & 0x80000000UL))
         mantissa <<= 1;  /*  Shift a binary 1 into the integer part of the mantissa.  */
       mantissa >>= (31 - 23);
       /*  At this point the mantissa is normalized and the exponent has been adjusted accordingly.  */
@@ -271,8 +271,8 @@ strtof(const char *s, char **sret)
         return 0.0;
       }
       ieee754.ft.sign     = (sign == 1) ? 0 : 1;
-      ieee754.ft.exponent = 0x07FFU & (bin_exponent + FLOAT_BIAS);
-      ieee754.ft.mantissa = 0x007FFFFFU & mantissa;
+      ieee754.ft.exponent = 0x07FFUL & (bin_exponent + FLOAT_BIAS);
+      ieee754.ft.mantissa = 0x007FFFFFUL & mantissa;
     }
     else
       ieee754.f = sign * 0.0;
@@ -289,7 +289,7 @@ strtof(const char *s, char **sret)
     s++;
   }
 
-  if (*s == decimal_point)
+  if (*s == radix_point)
   {
     d = 0.1L;
     s++;
@@ -309,7 +309,7 @@ strtof(const char *s, char **sret)
         s--;  /*  A dot without leading numbers.  */
       *sret = unconst(s, char *);
     }
-    errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
+    errno = EINVAL;  /*  No valid mantissa, no conversion could be performed.  */
     return 0.0;
   }
 

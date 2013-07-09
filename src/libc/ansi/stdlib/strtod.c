@@ -44,7 +44,7 @@ strtod(const char *s, char **sret)
   int esign = 1;
   int i;
   int flags = 0;
-  char decimal_point = localeconv()->decimal_point[0];
+  char radix_point = localeconv()->decimal_point[0];
 
 
   if (sret)
@@ -135,12 +135,12 @@ strtod(const char *s, char **sret)
     bin_exponent = 0;
     integer_digits = 0;
     mantissa = 0x00ULL;
-    s += 2;
+    s += 2;  /*  Skip the hex prefix.  */
     while (integer_digits < 16 && IS_HEX_DIGIT(*s))
     {
       flags = 1;
       mantissa <<= HEX_DIGIT_SIZE;
-      mantissa += IS_DEC_DIGIT(*s) ? *s - '0' : 
+      mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' : 
                   ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
       if (mantissa)        /*  Discarts leading zeros.  */
         integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */
@@ -150,7 +150,7 @@ strtod(const char *s, char **sret)
     {
       /*
        *  Compute the binary exponent for a normalized mantissa by
-       *  shifting the decimal point inside the most significant hex digit.
+       *  shifting the radix point inside the most significant hex digit.
        */
       unsigned long long bit = 0x01ULL;
 
@@ -162,7 +162,7 @@ strtod(const char *s, char **sret)
       bin_exponent += digits * HEX_DIGIT_SIZE;
     }
 
-    if (*s == decimal_point)
+    if (*s == radix_point)
     {
       int fraction_zeros = 0;
 
@@ -173,7 +173,7 @@ strtod(const char *s, char **sret)
         flags = 1;
         digits++;  /*  Counts hex digits.  */
         mantissa <<= HEX_DIGIT_SIZE;
-        mantissa += IS_DEC_DIGIT(*s) ? *s - '0' :
+        mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' :
                     ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
         if (mantissa == 0)
           fraction_zeros++;  /*  Counts hex zeros.  16**(-fraction_zeros + 1).  */
@@ -183,7 +183,7 @@ strtod(const char *s, char **sret)
       {
         /*
          *  Compute the binary exponent for a normalized mantissa by
-         *  shifting the decimal point inside the most significant hex digit.
+         *  shifting the radix point inside the most significant hex digit.
          */
         unsigned long long bit = 0x01ULL;
 
@@ -201,7 +201,7 @@ strtod(const char *s, char **sret)
           s--;  /*  A dot without leading numbers.  */
         *sret = unconst(s, char *);
       }
-      errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
+      errno = EINVAL;  /*  No valid mantissa, no conversion could be performed.  */
       return 0.0L;
     }
 
@@ -289,7 +289,7 @@ strtod(const char *s, char **sret)
     s++;
   }
 
-  if (*s == decimal_point)
+  if (*s == radix_point)
   {
     d = 0.1L;
     s++;
@@ -309,7 +309,7 @@ strtod(const char *s, char **sret)
         s--;  /*  A dot without leading numbers.  */
       *sret = unconst(s, char *);
     }
-    errno = EINVAL;  /*  No valid mantissa, no convertion could be performed.  */
+    errno = EINVAL;  /*  No valid mantissa, no conversion could be performed.  */
     return 0.0;
   }
 
