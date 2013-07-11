@@ -14,10 +14,13 @@
 #include <libc/unconst.h>
 #include <libc/ieee.h>
 
+
+#define MANTISSA_SIZE       (64)     /*  Number binary digits in the integer and fractional part of the mantissa.  */
 #define HEX_DIGIT_SIZE      (4)
 #define LONG_DOUBLE_BIAS    (0x3FFFU)
 #define MAX_BIN_EXPONENT    (16383)   /*  Max. and min. binary exponent (inclusive) as  */
 #define MIN_BIN_EXPONENT    (-16382)  /*  defined in Intel manual (253665.pdf, Table 4.2).  */
+#define IS_ZERO_DIGIT(x)    ((x) == '0')
 #define IS_DEC_DIGIT(x)     (((x) >= '0') && ((x) <= '9'))
 #define IS_HEX_DIGIT(x)     ((((x) >= 'A') && ((x) <= 'F')) || \
                              (((x) >= 'a') && ((x) <= 'f')) || \
@@ -127,9 +130,9 @@ strtold(const char *s, char **sret)
   if (!strnicmp("0x", s, 2) && (s[2] == '.' || IS_HEX_DIGIT(s[2])))
   {
     const char *next_char = NULL;
-    int digits, integer_digits;
-    long long int bin_exponent;
-    unsigned long long int mantissa;
+    const int max_digits = MANTISSA_SIZE / HEX_DIGIT_SIZE;  /* The exact number of digits that fits in mantissa.  */
+    int bin_exponent, digits, integer_digits;
+    unsigned long long int mantissa, msb_mask;
     _longdouble_union_t ieee754;
 
 
@@ -142,7 +145,7 @@ strtold(const char *s, char **sret)
     integer_digits = 0;
     mantissa = 0x00ULL;
     s += 2;  /*  Skip the hex prefix.  */
-    while (integer_digits < 16 && IS_HEX_DIGIT(*s))
+    while (integer_digits < max_digits && IS_HEX_DIGIT(*s))
     {
       flags = 1;
       mantissa <<= HEX_DIGIT_SIZE;
@@ -158,24 +161,27 @@ strtold(const char *s, char **sret)
        *  Compute the binary exponent for a normalized mantissa by
        *  shifting the radix point inside the most significant hex digit.
        */
-      unsigned long long bit = 0x01ULL;
 
       next_char = s;
       for (digits = 0; IS_HEX_DIGIT(*s); s++)
         digits++;  /*  Counts hex digits.  */
+
+      msb_mask = 0x01ULL;
       bin_exponent = integer_digits * HEX_DIGIT_SIZE - 1;  /*  2**bin_exponent.  */
-      for (bit <<= bin_exponent; !(mantissa & bit); bin_exponent--)
-        bit >>= 1;
+      for (msb_mask <<= bin_exponent; !(mantissa & msb_mask); msb_mask >>= 1)
+        bin_exponent--;
       bin_exponent += digits * HEX_DIGIT_SIZE;
+      integer_digits += digits;
     }
 
+    digits = integer_digits;
     if (*s == radix_point)
     {
-      int fraction_zeros = 0;
+      int extra_shifts, fraction_zeros = 0;
 
       s++;
       digits = integer_digits;
-      while ((digits - fraction_zeros) < 16 && IS_HEX_DIGIT(*s))
+      while ((digits - fraction_zeros) < max_digits && IS_HEX_DIGIT(*s))
       {
         flags = 1;
         digits++;  /*  Counts hex digits.  */
@@ -193,12 +199,14 @@ strtold(const char *s, char **sret)
          *  Compute the binary exponent for a normalized mantissa by
          *  shifting the radix point inside the most significant hex digit.
          */
-        unsigned long long bit = 0x01ULL;
 
+        msb_mask = 0x01ULL;
         bin_exponent = -fraction_zeros * HEX_DIGIT_SIZE;  /*  2**bin_exponent.  */
-        for (bit <<= (digits * HEX_DIGIT_SIZE + bin_exponent); !(mantissa & bit); bin_exponent--)
-          bit >>= 1;
+        for (msb_mask <<= (digits * HEX_DIGIT_SIZE + bin_exponent); !(mantissa & msb_mask); msb_mask >>= 1)
+          bin_exponent--;
       }
+      else if ((extra_shifts = digits - integer_digits) > 0)
+        msb_mask <<= extra_shifts * HEX_DIGIT_SIZE;
     }
 
     if (flags == 0)
@@ -213,34 +221,33 @@ strtold(const char *s, char **sret)
       return 0.0L;
     }
 
+    if (digits >= max_digits)
+    {
+      /*
+       *  Round half towards plus infinity (round half up).
+       */
+      const int lsd = IS_DEC_DIGIT(*next_char) ? *next_char - '0' :  /*  Least significant hex digit.  Will be rounded out.  */
+                      ((*next_char >= 'A') && (*next_char <= 'F')) ? *next_char - 'A' + 10 : *next_char - 'a' + 10;
+      if (lsd > 0x07)
+      {
+        mantissa += 0x0000000000000001ULL;  /* Smallest float greater than x.  */
+        if (!(mantissa & msb_mask))
+        {
+          /*  Overflow.  */
+          mantissa >>= 1;
+          mantissa |= 0x8000000000000000ULL;
+          bin_exponent++;
+        }
+      }
+    }
+
     if (mantissa)
     {
       /*
        *  Normalize mantissa.
-       *  If there is still a valid hex character in the string
-       *  its bits will be inserted in the LSB of the mantissa,
-       *  else zeros will be inserted.
        */
       for (digits = 0; !(mantissa & 0x8000000000000000ULL); digits++)
         mantissa <<= 1;  /*  Shift a binary 1 into the integer part of the mantissa.  */
-      if (IS_HEX_DIGIT(*next_char))
-      {
-        unsigned long long bits = IS_DEC_DIGIT(*next_char) ? *next_char - '0' :
-                                  ((*next_char >= 'A') && (*next_char <= 'F')) ? *next_char - 'A' + 10 : *next_char - 'a' + 10;
-
-        switch (digits)
-        {
-        case 1:
-          mantissa |= (0x01ULL & bits >> 3);
-          break;
-        case 2:
-          mantissa |= (0x03ULL & bits >> 2);
-          break;
-        case 3:
-          mantissa |= (0x07ULL & bits >> 1);
-          break;
-        }
-      }
       /*  At this point the mantissa is normalized and the exponent has been adjusted accordingly.  */
     }
 
