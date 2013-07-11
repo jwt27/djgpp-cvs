@@ -143,7 +143,7 @@ strtold(const char *s, char **sret)
      */
     bin_exponent = 0;
     integer_digits = 0;
-    mantissa = 0x00ULL;
+    msb_mask = mantissa = 0x00ULL;
     s += 2;  /*  Skip the hex prefix.  */
     while (integer_digits < max_digits && IS_HEX_DIGIT(*s))
     {
