@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
@@ -21,7 +22,7 @@ void rewind(FILE *f)
   f->_fillsize = 512;	/* See comment in filbuf.c */
   f->_cnt = 0;
   f->_ptr = f->_base;
-  f->_flag &= ~(_IOERR|_IOEOF);
+  f->_flag &= ~(_IOERR | _IOEOF);
   if (f->_flag & _IORW)
-    f->_flag &= ~(_IOREAD|_IOWRT);
+    f->_flag &= ~(_IOREAD | _IOWRT);
 }

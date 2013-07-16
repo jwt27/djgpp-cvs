@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <libc/file.h>
@@ -6,5 +7,5 @@
 void
 clearerr(FILE *f)
 {
-  f->_flag &= ~(_IOERR|_IOEOF);
+  f->_flag &= ~(_IOERR | _IOEOF);
 }

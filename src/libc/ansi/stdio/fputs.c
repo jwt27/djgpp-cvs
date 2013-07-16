@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1994 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -33,5 +34,5 @@ fputs(const char *s, FILE *f)
     f->_cnt = 0;
   }
 
-  return(r);
+  return r;
 }
