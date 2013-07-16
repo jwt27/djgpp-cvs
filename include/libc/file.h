@@ -38,70 +38,70 @@ extern "C" {
 #define _IOTERM   020000  /* file's handle hooked by termios */
 #define _IONTERM  040000  /* file's handle not hooked by termios */
 
-int	_flsbuf(int, FILE*);
-int	_filbuf(FILE *);
-void	_fwalk(void (*)(FILE *));
+int  _flsbuf(int, FILE*);
+int  _filbuf(FILE *);
+void _fwalk(void (*)(FILE *));
 
 static __inline__ int __getc_raw(FILE *const p)
 {
-   if(p->_cnt>0)
-   {
-      p->_cnt--;
-      return((unsigned char)*(p->_ptr++));
-   }
-   return(_filbuf(p));
+  if (p->_cnt > 0)
+  {
+    p->_cnt--;
+    return (unsigned char)*(p->_ptr++);
+  }
+  return _filbuf(p);
 }
 
-static __inline__ int __putc_raw(int const x,FILE *const p)
+static __inline__ int __putc_raw(int const x, FILE *const p)
 {
-   if(p->_cnt>0)
-   {
-      p->_cnt--;
-      return((unsigned char)(*(p->_ptr++)=(unsigned char)x));
-   }
-   return(_flsbuf((unsigned char)x,p));
+  if (p->_cnt > 0)
+  {
+    p->_cnt--;
+    return (unsigned char)(*(p->_ptr++) = (unsigned char)x);
+  }
+  return _flsbuf((unsigned char)x, p);
 }
 
 static __inline__ int __is_text_file(FILE *const p)
 {
-   return(!((p)->_flag & (_IOSTRG | _IOTERM))
-	  && (__file_handle_modes[(p)->_file]&O_TEXT));
+  return !(p->_flag & (_IOSTRG | _IOTERM))
+         && (__file_handle_modes[p->_file] & O_TEXT);
 }
 
 static __inline__ int __getc(FILE *const p)
 {
   int __c;
   if (__libc_read_termios_hook
-      && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
+      && !(p->_flag & (_IOTERM | _IONTERM)))
   {
     extern int __isatty(int);
     /* first time we see this handle--see if termios hooked it */
-    if (!((p)->_flag & _IOSTRG) && __isatty((p)->_file))
-      (p)->_flag |= _IOTERM;
+    if (!(p->_flag & _IOSTRG) && __isatty(p->_file))
+      p->_flag |= _IOTERM;
     else
-      (p)->_flag |= _IONTERM;
+      p->_flag |= _IONTERM;
   }
   __c = __getc_raw(p);
-  if (__c=='\r' && __is_text_file(p))
+  if (__c == '\r' && __is_text_file(p))
     return __getc_raw(p);
   return __c;
 }
 
-static __inline__ int __putc(const int x,FILE *const p)
+static __inline__ int __putc(const int x, FILE *const p)
 {
   if (__libc_write_termios_hook
-      && ((p)->_flag & (_IOTERM | _IONTERM)) == 0)
+      && !(p->_flag & (_IOTERM | _IONTERM)))
   {
     extern int __isatty(int);
     /* first time we see this handle--see if termios hooked it */
-    if (!((p)->_flag & _IOSTRG) && __isatty((p)->_file))
-      (p)->_flag |= _IOTERM;
+    if (!(p->_flag & _IOSTRG) && __isatty(p->_file))
+      p->_flag |= _IOTERM;
     else
-      (p)->_flag |= _IONTERM;
+      p->_flag |= _IONTERM;
   }
-  if(x=='\n' && __is_text_file(p))
-    __putc_raw('\r',p);
-  return __putc_raw(x,p);
+  if (x == '\n' && __is_text_file(p))
+    __putc_raw('\r', p);
+  return __putc_raw(x, p);
 }
 
 static __inline__ void __stropenw(FILE *p, char *str, int len)
@@ -133,11 +133,11 @@ static __inline__ void __stropenr(FILE *p, const char *str)
 }
 
 #undef  fileno
-#define fileno(f)	(f->_file)
+#define fileno(f)       (f->_file)
 #undef  feof
-#define feof(f)		(((f)->_flag&_IOEOF)!=0)
+#define feof(f)         (((f)->_flag & _IOEOF) != 0)
 #undef  ferror
-#define ferror(f)	(((f)->_flag&_IOERR)!=0)
+#define ferror(f)       (((f)->_flag & _IOERR) != 0)
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
