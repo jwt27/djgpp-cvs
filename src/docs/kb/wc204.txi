@@ -1236,10 +1236,15 @@ the function will ignore, fail or fall back on the corresponding SFN API functio
 LFN API function is not provided by the @acronym{LFN} driver used.
 
 @pindex dxe3gen@r{, resolving @code{__[de]register_frame_info} symbols in @acronym{DXE} moduls}
-When dxe3gen detects that one of the object files that shall be linked into a
-@acronym{DXE} modul contains a @code{.eh_frame} section it automatically links
-the modul with @code{libc.a} to resolve both @code{__register_frame_info} and
-@code{__deregister_frame_info} symbols.
+The dxe3gen program inspects the @code{Augmentation String} of the @code{CIE} record
+contained in the @code{.eh_frame} section to decide if both @code{__register_frame_info}
+and @code{__deregister_frame_info} symbols that exist in the object file shall be
+auto-resolved or not.  They will be resolved by the dxe3gen program if the used
+programing language does not support exception handling like @acronym{C}.  They will not
+be resolved if the used programing language supports exception handling like
+@acronym{C++} and the exception handling has been enabled with an option like
+@option{-fexceptions}.  In this case the application has to be linked with
+@file{libgcc.a} to resolve both symbols.
 
 @findex STYP_NRELOC_OVFL@r{, new flag bit added to @code{s_flags} of @acronym{COFF} section header}
 The @code{s_flags} of the @acronym{COFF} section header now honors the new @code{STYP_NRELOC_OVFL} bit
