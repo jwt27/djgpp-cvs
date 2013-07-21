@@ -178,7 +178,7 @@
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
 
-#define VERSION  "1.0.2"
+#define VERSION  "1.0.3"
 
 #define TEMP_BASE    "dxe_tmp"       /* 7 chars, 1 char suffix */
 #define TEMP_O_FILE  TEMP_BASE".o"
@@ -191,6 +191,10 @@
 
 #define NUMBER_OF_LINKER_ARGS             10
 #define NUMBER_OF_ADDITIONAL_LOADED_LIBS  0
+
+#define IS_VALID_CIE(id)        ((id) == 0)
+#define IS_zR_AUGMENTATION(s)   (s[0] == 'z' && s[1] == 'R' && s[2] == '\0')
+
 
 typedef enum
 {
@@ -208,6 +212,10 @@ static
 #include "fini2.h"
 static
 #include "fini3.h"
+static
+#include "fini4.h"
+static
+#include "fini5.h"
 
 static
 #include "init1.h"
@@ -215,20 +223,29 @@ static
 #include "init2.h"
 static
 #include "init3.h"
+static
+#include "init4.h"
+static
+#include "init5.h"
 
 static struct
 {
   void *data;
   int size;
-} inits[3] = {
+} inits[5] = {
   {init1, sizeof(init1)},
   {init2, sizeof(init2)},
-  {init3, sizeof(init3)}
-}, finis[3] = {
+  {init3, sizeof(init3)},
+  {init4, sizeof(init4)},
+  {init5, sizeof(init5)}
+}, finis[5] = {
   {fini1, sizeof(fini1)},
   {fini2, sizeof(fini2)},
-  {fini3, sizeof(fini3)}
+  {fini3, sizeof(fini3)},
+  {fini4, sizeof(fini4)},
+  {fini5, sizeof(fini5)}
 };
+
 
 /* Command-line options */
 static struct
@@ -561,6 +578,148 @@ static int my_spawn(const char **argv)
 
 
 
+/* Desc: check if the augmentation string is different from 'zR'
+ * in on of the object files that will be linked into the DXE file.
+ * If the augmentation string in the CIE is different to zR, it is
+ * assumed that the programing language offers exception handling
+ * and the [de]register info symbols must be resolved by linking
+ * the application with a language/compiler specific library like
+ * libgcc that will provide working version of the __[de]register_frame_info
+ * functions.  Else the symbols will be autoresolved using the
+ * dummy functions compiled into this program.
+ *
+ * In  : linker command line to provide list of object files to scan
+ * Out : TRUE if different from 'zR' augmentation else FALSE
+ *
+ * Note: -
+ */
+static BOOL have_EH_support(const char *argv[])
+{
+  BOOL found_zR_augmentation = FALSE;
+  int i;
+
+  for (i = 0; argv[i]; i++)
+  {
+    const char *dot = strrchr(argv[i], '.');
+
+    if (dot && !strcasecmp(dot, ".o") && strcasecmp(dot - sizeof TEMP_BASE + 1, TEMP_O_FILE))
+    {
+      FILE *f = fopen(argv[i], "rb");
+
+      if (f == NULL)
+      {
+        fprintf(stderr, "%s: cannot open object file `%s' for reading\n", progname, argv[i]);
+        exit(-2);
+      }
+      else
+      {
+        FILHDR fh;
+        SYMENT *sym;
+        char *strings;
+        ULONG32 stsz;
+        unsigned int n;
+
+        /* Read file header */
+        fread(&fh, FILHSZ, 1, f);
+
+        /* Read all symbols */
+        sym = (SYMENT *)malloc(fh.f_nsyms * sizeof(SYMENT));
+        fseek(f, fh.f_symptr, SEEK_SET);
+        fread(sym, SYMESZ, fh.f_nsyms, f);
+
+        /* Read symbol name table */
+        fread(&stsz, sizeof(stsz), 1, f);
+        strings = (char *)malloc(stsz);
+        fread(strings + 4, 1, stsz - 4, f);
+        strings[0] = 0;
+
+        /* Find .eh_frame section */
+        for (found_zR_augmentation = TRUE, n = 0; n < fh.f_nsyms; n += 1 + sym[n].e_numaux)
+        {
+          char tmp[E_SYMNMLEN + 1], *name;
+
+          if (sym[n].e.e.e_zeroes)
+          {
+            memcpy(tmp, sym[n].e.e_name, E_SYMNMLEN);
+            tmp[E_SYMNMLEN] = 0;
+            name = tmp;
+          }
+          else
+            name = strings + sym[n].e.e.e_offset;
+
+          if (!strcmp(name, ".eh_frame"))
+          {
+            SCNHDR eh_frame_scnhdr;
+
+            /* Skip file header, optional header and all other section
+               headers existing before the .eh_frame section header */
+            fseek(f, FILHSZ + fh.f_opthdr + (sym[n].e_scnum - 1) * (size_t)SCNHSZ, SEEK_SET);
+
+            /* Read the .eh_frame section header and
+               extract the CIE (Common Information Entry) */
+            if (fread(&eh_frame_scnhdr, (size_t)SCNHSZ, 1, f) == 1
+                && !fseek(f, eh_frame_scnhdr.s_scnptr, SEEK_SET))
+            {
+              /*
+               * To read the first few fields of the CIE record
+               * the struct dwarf_cie as defined in unwind-dw2-fde.h
+               * of gcc 4.6.1 is used.  If this structure changes
+               * then this code will need to be adjusted accordingly.
+               * For a reference about the possible values of the
+               * augmentation string look at LSB-Core-generic.pdf.
+               */
+
+
+              typedef          int  sword __attribute__ ((mode (SI)));
+              typedef unsigned int  uword __attribute__ ((mode (SI)));
+#if 0
+              /*  Pacify the compiler.  */
+              typedef unsigned int  uaddr __attribute__ ((mode (pointer)));
+              typedef          int  saddr __attribute__ ((mode (pointer)));
+#endif
+              typedef unsigned char ubyte;
+
+              struct dwarf_cie
+              {
+                uword length;
+                sword CIE_id;
+                ubyte version;
+                unsigned char augmentation[];
+              } __attribute__ ((packed, aligned (__alignof__ (void *))));
+
+
+              /* If it is a CIE, read the augmentation string */
+              struct dwarf_cie cie;
+              fread(&cie, sizeof(cie), 1, f);
+              if (IS_VALID_CIE(cie.CIE_id) && !IS_zR_AUGMENTATION(cie.augmentation))
+              {
+                /*
+                 * At least one of the object files linked into
+                 * the DXE module requires exception handling.
+                 * The application must be linked with libgcc.a
+                 * to provide the required frame unwinding functionality.
+                 * Stop checking other object files.
+                 */
+                found_zR_augmentation = FALSE;
+                break;
+              }
+            }
+          }
+        }
+
+        free(strings);
+        free(sym);
+      }
+
+      fclose(f);
+    }
+  }
+
+  return !found_zR_augmentation;
+}
+
+
+
 /* Desc: run linker to obtain relocatable output
  *
  * In  : linker command line, ptr to store output header
@@ -606,6 +765,7 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
     char *strings;
     long int frame_begin = -1, frame_end = -1;
     long int first_ctor = -1, last_ctor = -1, first_dtor = -1, last_dtor = -1;
+    BOOL resolve_register_deregister_info_symbols = FALSE;
 
     int init, fini;
 
@@ -637,6 +797,8 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
         frame_begin = sym[i].e_value;
       else if (!strcmp(name, "___EH_FRAME_END__"))
         frame_end = sym[i].e_value;
+      else if (!strcmp(name, ".eh_frame"))
+        resolve_register_deregister_info_symbols = !have_EH_support(argv);
       else if (!strcmp(name, "djgpp_first_ctor"))
         first_ctor = sym[i].e_value;
       else if (!strcmp(name, "djgpp_last_ctor"))
@@ -648,15 +810,16 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
     }
 
 
-    /* 3 = ctor + frame
+    /*
+     * 3 = ctor + frame
      * 2 = frame
      * 1 = ctor
      * 0 = <none>
      */
     if (frame_begin != frame_end)
     {
-      init = (first_ctor != last_ctor) ? 3 : 2;
-      fini = (first_dtor != last_dtor) ? 3 : 2;
+      init = resolve_register_deregister_info_symbols ? (first_ctor != last_ctor) ? 5 : 4 : (first_ctor != last_ctor) ? 3 : 2;
+      fini = resolve_register_deregister_info_symbols ? (first_ctor != last_ctor) ? 5 : 4 : (first_ctor != last_ctor) ? 3 : 2;
     }
     else
     {

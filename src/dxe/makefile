@@ -1,3 +1,4 @@
+# Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
@@ -31,7 +32,7 @@ $(BIN)/dxe3res.exe : $(C) dxe3res.o $(L)
 	$(LINK)
 	$(EXE)
 
-$(HOSTBIN)/dxegen.exe : dxe3gen.c init1.h init2.h init3.h fini1.h fini2.h fini3.h
+$(HOSTBIN)/dxegen.exe : dxe3gen.c init1.h init2.h init3.h init4.h init5.h fini1.h fini2.h fini3.h fini4.h fini5.h
 	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" dxe3gen.c -o $@
 
 clean ::
