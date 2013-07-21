@@ -37,7 +37,11 @@ _filbuf(FILE *f)
     f->_flag |= _IOREAD;
 
   if (!(f->_flag & _IOREAD))
+  {
+    f->_flag |= _IOERR;
     return EOF;
+  }
+
   if (f->_flag & (_IOSTRG | _IOEOF))
     return EOF;
   f->_flag &= ~_IOUNGETC;

@@ -31,7 +31,10 @@ _flsbuf(int c, FILE *f)
   }
 
   if (!(f->_flag & _IOWRT))
+  {
+    f->_flag |= _IOERR;
     return EOF;
+  }
 
   /* No-op for full string buffers */
   if (f->_flag & _IOSTRG)

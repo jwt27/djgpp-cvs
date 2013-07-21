@@ -1289,3 +1289,12 @@ members of @code{struct rlimit}.
 The @acronym{C99} macros @code{isfinite}, @code{isinf}, @code{isnan}, @code{isnormal}, @code{isgreater},
 @code{isgreaterequal}, @code{isless}, @code{islessequal}, @code{islessgreater} and @code{isunordered}
 were added to comply with the @acronym{C99} standard.
+
+@findex fread@r{, and stream error condition}
+@findex fwrite@r{, and stream error condition}
+@findex fgets@r{, and stream error condition}
+@findex fputs@r{, and stream error condition}
+Openning a file stream in the wrong mode referring to the following
+input/output operation (e.g.: openning stream in read only mode and
+then writing to it), will trigger a stream error condition that will
+set an error indicator.  This error indicator can be tested using @code{ferror}.
