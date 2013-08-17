@@ -1,22 +1,7 @@
-2013-02-15  Juan Manuel Guerrero <juan.guerrero@gmx.de>
-
-	* djgpp/zoneinfo/src/date.c:  Fix warning: function declaration isn't
-	a prototype [-Wstrict-prototypes].
+DJGPP specific changes against tz[code|data]2013d.tar.gz
 
 
-2012-11-24  Juan Manuel Guerrero <juan.guerrero@gmx.de>
-
-	* djgpp/distrib/p/djtzn204/djtzn204.dsm:  Update author-email and
-	author-ftp-site.
-
-	* djgpp/distrib/p/djtzs204/djtzs204.dsm:  Update author-email and
-	author-ftp-site.
-
-	* djgpp/distrib/p/djtzn204/files:  Man pages will be stored in
-	/share/man/manN.
-
-	* djgpp/zoneinfo/src/asctime.c [!__DJGPP__]:  Use DJGPP's libc
-	implementations of asctime and asctime_r.
+2013-08-17  Juan Manuel Guerrero <juan.guerrero@gmx.de>
 
 	* djgpp/zoneinfo/src/date.c [OLD_TIME]:  Only if OLD_TIME defined
 	include utmp.h.
@@ -28,116 +13,84 @@
 	(reset) [__MSDOS__]:  MSDOS does not support TSP_SETDATE.
 	Fix -Wunused-but-set-variable.
 	(convert):  Cast variable to time_t.
-	(display):  Use ATTRIBUTE_NORETURN macro.
-	(iffy):  Use ATTRIBUTE_NORETURN macro.
-	(usage):  Use ATTRIBUTE_NORETURN macro.
 	(nondigit):  Use ATTRIBUTE_PURE macro.
 	(main):  Fix -Wunused-but-set-variable.
 
-	* djgpp/zoneinfo/src/localtime.c:  Define IS_SLASH and IS_ABSOLUTE
-	for portable testing of absolute file names.
-	(tzload):  Use IS_ABSOLUTE for portable testing of absolute file
-	names.
-	[WRONG]:  Cast variable to time_t.
-	[!__DJGPP__]:  Use DJGPP's own libc implementations of localtime,
-	localtime_r, gmtime, gmtime_r, ctime, ctime_r and mktime.
 
-	* djgpp/zoneinfo/src/private.h [STD_INSPIRED]:  Provide function
-	declarations.
-	[__MSDOS__]:  Define IS_SLASH(c), HAS_DEVICE, IS_ABSOLUTE and
-	TZDIR macros.
-	[__GNUC__, __GNUC_MINOR__]:  Define ATTRIBUTE_NORETURN macro.
+2013-08-16  Juan Manuel Guerrero <juan.guerrero@gmx.de>
 
-	* djgpp/zoneinfo/src/zdump.c [__GNUC__, __GNUC_MINOR__]:  Define
-	ATTRIBUTE_NORETURN macro.
-	(show) [TM_GMTOFF]:  Cast variable to long.
-	(usage):  Use ATTRIBUTE_NORETURN macro.
-
-	* djgpp/zoneinfo/src/zic.c [HAVE_SYS_WAIT_H]:  Include sys/wait.h
-	and define WEXITSTATUS if not defined.
+	* djgpp/zoneinfo/src/zic.c [__DJGPP__]:  Define ZIC_VERSION to 0.
 	[IS_SLASH, IS_ABSOLUTE]:  If not defined define them.
 	(dolink):  Use IS_ABSOLUTE for portable testing of absolute file
 	names.  Replace '+' by '%' in file names or directory names.
 	(itsdir) [D_OK]:  On MSDOS/WINDOWS use access() to check if it is
 	a directory.
 	(writezone):  Replace '+' by '%' in file names or directory names.
-	(mkdirs):  Use HAS_DEVICE and IS_SLASH to handle directory creationg
+	Make only the first pass and do not print the newline-enclosed,
+	POSIX-TZ-environment-variable-style string to create a version 0 file.
+	(mkdirs):  Use HAS_DEVICE and IS_SLASH to handle directory craetiong
 	in a portable way.
 
+
+2013-08-14  Juan Manuel Guerrero <juan.guerrero@gmx.de>
+
 	* djgpp/zoneinfo/src/makefile:  Support building with gcc 3.4.4 and
-	from gcc 4.0.0 up to gcc 4.7.2.
-	Install man pages into /share/man/manN.
+	from gcc 4.0.0 up to gcc 4.8.3.
+	Install formated man pages into /share/man/catN.
+
+	* djgpp/zoneinfo/src/private.h [__MSDOS__]:  Define IS_SLASH(c),
+	HAS_DEVICE, IS_ABSOLUTE and TZDIR macros.
+
+	* djgpp/zoneinfo/src/localtime.c:  Define IS_SLASH and IS_ABSOLUTE
+	for portable testing of absolute file names.
+	[STD_INSPIRED]:  Provide function declarations.
+	[!__DJGPP__]:  Use DJGPP's own libc implementations of localtime,
+	localtime_r, gmtime, gmtime_r, ctime, ctime_r and mktime.
+	(tzload):  Use IS_ABSOLUTE for portable testing of absolute file
+	names.
+
+	* djgpp/zoneinfo/src/strftime.c [!__DJGPP__]:  Use DJGPP's libc
+	implementations of strftime and strftime_r.
+
+	* djgpp/zoneinfo/src/asctime.c [!__DJGPP__]:  Use DJGPP's libc
+	implementations of asctime and asctime_r.
+
+	* djgpp/distrib/p/djtzn204/files:  Man pages will be stored in
+	/share/man/catN.
 
 
 
 
 
-
-diff -aprNU5 djgpp.orig/distrib/p/djtzn204/djtzn204.dsm djgpp/distrib/p/djtzn204/djtzn204.dsm
---- djgpp.orig/distrib/p/djtzn204/djtzn204.dsm	2003-11-23 21:26:10 +0000
-+++ djgpp/distrib/p/djtzn204/djtzn204.dsm	2012-12-08 05:39:06 +0000
-@@ -19,12 +19,12 @@ license: Various: public domain, BSD
- web-site: http://www.delorie.com/djgpp/
- newsgroup: comp.os.msdos.djgpp
- newsgroup-email-gateway: djgpp@delorie.com
- 
- author: The Timezone Caballeros
--author-email: tz@elsie.nci.nih.gov
--author-ftp-site: ftp://elsie.nci.nih.gov/pub/
-+author-email: tz@iana.org
-+author-ftp-site: 'ftp://ftp.iana.org/tz/
- 
- simtelnet-path: v2/
- zip: djtzn204.zip
- 
- replaces: djtzn < 2.04 beta 1
 diff -aprNU5 djgpp.orig/distrib/p/djtzn204/files djgpp/distrib/p/djtzn204/files
---- djgpp.orig/distrib/p/djtzn204/files	2003-02-04 19:08:18 +0000
-+++ djgpp/distrib/p/djtzn204/files	2012-12-08 05:39:06 +0000
+--- djgpp.orig/distrib/p/djtzn204/files	2013-01-31 22:35:24 +0000
++++ djgpp/distrib/p/djtzn204/files	2013-08-17 14:34:22 +0000
 @@ -1,14 +1,14 @@
  etc/date.exe
  etc/tzselect
  etc/zdump.exe
  etc/zic.exe
--info/date.1
--info/newctime.3
--info/newtzset.3
--info/time2posix.3
--info/tzfile.5
--info/tzselect.8
--info/zdump.8
--info/zic.8
-+share/man/man1/date.1
-+share/man/man3/newctime.3
-+share/man/man3/newtzset.3
-+share/man/man3/time2posix.3
-+share/man/man5/tzfile.5
-+share/man/man8/tzselect.8
-+share/man/man8/zdump.8
-+share/man/man8/zic.8
+-share/man/man1/date.1
+-share/man/man3/newctime.3
+-share/man/man3/newtzset.3
+-share/man/man3/time2posix.3
+-share/man/man5/tzfile.5
+-share/man/man8/tzselect.8
+-share/man/man8/zdump.8
+-share/man/man8/zic.8
++share/man/cat1/date.1
++share/man/cat3/newctime.3
++share/man/cat3/newtzset.3
++share/man/cat3/time2posix.3
++share/man/cat5/tzfile.5
++share/man/cat8/tzselect.8
++share/man/cat8/zdump.8
++share/man/cat8/zic.8
  lib/libtz.a
  zoneinfo
-diff -aprNU5 djgpp.orig/distrib/p/djtzs204/djtzs204.dsm djgpp/distrib/p/djtzs204/djtzs204.dsm
---- djgpp.orig/distrib/p/djtzs204/djtzs204.dsm	2003-11-23 21:26:10 +0000
-+++ djgpp/distrib/p/djtzs204/djtzs204.dsm	2012-12-08 05:39:06 +0000
-@@ -19,12 +19,12 @@ license: Various: public domain, BSD
- web-site: http://www.delorie.com/djgpp/
- newsgroup: comp.os.msdos.djgpp
- newsgroup-email-gateway: djgpp@delorie.com
- 
- author: The Timezone Caballeros
--author-email: tz@elsie.nci.nih.gov
--author-ftp-site: ftp://elsie.nci.nih.gov/pub/
-+author-email: tz@iana.org
-+author-ftp-site: 'ftp://ftp.iana.org/tz/
- 
- simtelnet-path: v2/
- zip: djtzs204.zip
- 
- replaces: djtzs < 2.04 beta 1
 diff -aprNU5 djgpp.orig/zoneinfo/src/asctime.c djgpp/zoneinfo/src/asctime.c
---- djgpp.orig/zoneinfo/src/asctime.c	2012-12-08 05:33:24 +0000
-+++ djgpp/zoneinfo/src/asctime.c	2012-12-08 05:39:06 +0000
+--- djgpp.orig/zoneinfo/src/asctime.c	2012-10-26 23:37:42 +0000
++++ djgpp/zoneinfo/src/asctime.c	2013-08-17 14:34:22 +0000
 @@ -1,5 +1,9 @@
 +#ifndef __DJGPP__
 +/*  Use DJGPP's own implementation of asctime and asctime_r.  */
@@ -156,8 +109,8 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/asctime.c djgpp/zoneinfo/src/asctime.c
  }
 +#endif  /* !__DJGPP__ */
 diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
---- djgpp.orig/zoneinfo/src/date.c	2012-12-08 05:33:24 +0000
-+++ djgpp/zoneinfo/src/date.c	2012-12-08 05:39:06 +0000
+--- djgpp.orig/zoneinfo/src/date.c	2013-05-28 03:26:18 +0000
++++ djgpp/zoneinfo/src/date.c	2013-08-17 14:34:22 +0000
 @@ -28,11 +28,13 @@ static char sccsid[] = "@(#)date.c	4.23
  #include "private.h"
  #if HAVE_ADJTIME || HAVE_SETTIMEOFDAY
@@ -172,6 +125,30 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  #endif
  
  #ifndef OTIME_MSG
+@@ -52,18 +54,18 @@ static char sccsid[] = "@(#)date.c	4.23
+ 
+ #ifndef SECSPERMIN
+ #define SECSPERMIN	60
+ #endif /* !defined SECSPERMIN */
+ 
+-extern double		atof();
++extern double		atof(const char *s);
+ extern char **		environ;
+-extern char *		getlogin();
+-extern time_t		mktime();
++extern char *		getlogin(void);
++extern time_t		mktime(struct tm *tptr);
+ extern char *		optarg;
+ extern int		optind;
+-extern char *		strchr();
+-extern time_t		time();
++extern char *		strchr(const char *s, int c);
++extern time_t		time(time_t *t);
+ extern char *		tzname[2];
+ 
+ static int		retval = EXIT_SUCCESS;
+ 
+ static void		checkfinal(const char *, int, time_t, time_t);
 @@ -72,11 +74,13 @@ static void		display(const char *);
  static void		dogmt(void);
  static void		errensure(void);
@@ -180,7 +157,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  static const char *	nondigit(const char *);
 +#ifndef __MSDOS__
  static void		oops(const char *);
-+#endif
++#endif  /* __MSDOS__ */
  static void		reset(time_t, int);
  static int		sametm(const struct tm *, const struct tm *);
  static void		timeout(FILE *, const char *, const struct tm *);
@@ -238,20 +215,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  			if (*cp == '\0' || *nondigit(cp) != '\0')
  				wildinput(_("-d value"), optarg,
  					_("must be a number"));
-@@ -246,11 +258,11 @@ _("date: error: multiple values in comma
- 		tv.tv_usec = (int) ((adjust - tv.tv_sec) * 1000000L);
- 		if (adjtime(&tv, NULL) != 0)
- 			oops("adjtime");
- #endif /* HAVE_ADJTIME */
- #if !HAVE_ADJTIME
--		reset(now + adjust, nflag);
-+		reset(now + (time_t)adjust, nflag);
- #endif /* !HAVE_ADJTIME */
- 		/*
- 		** Sun silently ignores everything else; we follow suit.
- 		*/
- 		exit(retval);
-@@ -424,16 +436,18 @@ reset(const time_t newt, const int nflag
+@@ -424,18 +436,20 @@ reset(const time_t newt, const int nflag
  #ifndef BSD4_4
  #define TIME_NAME	""
  #endif /* !defined BSD4_4 */
@@ -264,12 +228,15 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  #include "netdb.h"
  #define TSPTYPES
  #include "protocols/timed.h"
-+#endif /* TSP_SETDATE */
++#endif
  
- extern int		logwtmp();
+-extern int		logwtmp();
++extern int		logwtmp(char *line, char *name, char *host);
  
  #if HAVE_SETTIMEOFDAY == 1
  #define settimeofday(t, tz) (settimeofday)(t)
+ #endif /* HAVE_SETTIMEOFDAY == 1 */
+ 
 @@ -448,18 +462,21 @@ static int netsettime(struct timeval);
  #endif /* !defined TSP_SETDATE */
  static void
@@ -278,7 +245,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  	register const char *	username;
 +#ifndef __MSDOS__
  	static struct timeval	tv;	/* static so tv_usec is 0 */
-+#endif /* !__MSDOS__ */
++#endif  /* __MSDOS__ */
  
  #ifdef EBUG
  	return;
@@ -292,44 +259,19 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  	if (nflag || !netsettime(tv))
  #endif /* defined TSP_SETDATE */
  	{
-@@ -471,15 +488,16 @@ reset(const time_t newt, const int nflag
+@@ -471,10 +488,11 @@ reset(const time_t newt, const int nflag
  			logwtmp("{", TIME_NAME, "");	/* } */
  			syslog(LOG_AUTH | LOG_NOTICE, _("date set by %s"),
  				username);
  		} else	oops("settimeofday");
  	}
-+#endif /* !__MSDOS__ */
++#endif  /* __MSDOS__ */
  }
  
  #endif /* !defined OLD_TIME */
  
--static void
-+static ATTRIBUTE_NORETURN void
- wildinput(const char *const item, const char *const value,
- 	  const char *const reason)
- {
- 	(void) fprintf(stderr,
- 		_("date: error: bad command line %s \"%s\", %s\n"),
-@@ -492,27 +510,28 @@ errensure(void)
- {
- 	if (retval == EXIT_SUCCESS)
- 		retval = EXIT_FAILURE;
- }
- 
--static const char *
-+static ATTRIBUTE_PURE const char *
- nondigit(register const char *cp)
- {
- 	while (is_digit(*cp))
- 		++cp;
- 	return cp;
- }
- 
--static void
-+static ATTRIBUTE_NORETURN void
- usage(void)
- {
- 	(void) fprintf(stderr, _("date: usage is date [-u] [-c] [-n] [-d dst] \
+ static void
+@@ -509,10 +527,11 @@ usage(void)
  [-t min-west] [-a sss.fff] [[yyyy]mmddhhmm[yyyy][.ss]] [+format]\n"));
  	errensure();
  	exit(retval);
@@ -341,63 +283,34 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  {
  	int		e = errno;
  
-@@ -520,12 +539,13 @@ oops(const char *const string)
+@@ -520,10 +539,11 @@ oops(const char *const string)
  	errno = e;
  	(void) perror(string);
  	errensure();
  	display(NULL);
  }
-+#endif /* !__MSDOS__ */
++#endif /* __MSDOS__ */
  
--static void
-+static ATTRIBUTE_NORETURN void
+ static void
  display(const char *const format)
  {
  	struct tm	tm;
- 	time_t		now;
- 
-@@ -634,11 +654,11 @@ convert(register const char * const valu
- 				_("seconds part is not two digits"));
- 		secs = ATOI2(cp);
+@@ -541,11 +561,11 @@ display(const char *const format)
+ 		errensure();
  	}
- 
- 	cp = value;
--	switch (dotp - cp) {
-+	switch ((int)(dotp - cp)) {
- 		default:
- 			wildinput(_("time"), value,
- 				_("main part is wrong length"));
- 		case 12:
- 			if (!dousg) {
-@@ -685,11 +705,11 @@ convert(register const char * const valu
- 	tm.tm_min = mins;
- 	tm.tm_sec = secs;
- 	tm.tm_isdst = -1;
- 	outtm = tm;
- 	outt = mktime(&outtm);
--	return sametm(&tm, &outtm) ? outt : -1;
-+	return sametm(&tm, &outtm) ? outt : (time_t)-1;
+ 	exit(retval);
  }
  
- /*
- ** Code from here on out is either based on code provided by UCB
- ** or is only called just before the program exits.
-@@ -759,11 +779,11 @@ checkfinal(const char * const	value,
- 				iffy(t, othert, value,
- 					_("multiple matching times exist"));
- 		}
- }
+-extern size_t	strftime();
++extern size_t	strftime(char *s, size_t maxsize, const char *format, const struct tm *t);
  
--static void
-+static ATTRIBUTE_NORETURN void
- iffy(const time_t thist, const time_t thatt,
- 	const char * const value, const char * const reason)
- {
- 	struct tm	tm;
+ #define INCR	1024
  
+ static void
+ timeout(FILE *const fp, const char *const format, const struct tm *const tmp)
 diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
---- djgpp.orig/zoneinfo/src/localtime.c	2012-12-08 05:33:24 +0000
-+++ djgpp/zoneinfo/src/localtime.c	2012-12-08 05:39:06 +0000
+--- djgpp.orig/zoneinfo/src/localtime.c	2013-08-10 21:33:40 +0000
++++ djgpp/zoneinfo/src/localtime.c	2013-08-17 14:34:22 +0000
 @@ -27,10 +27,21 @@
  #ifndef TZ_ABBR_ERR_CHAR
  #define TZ_ABBR_ERR_CHAR	'_'
@@ -420,7 +333,27 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  
  #ifdef O_BINARY
  #define OPEN_MODE	(O_RDONLY | O_BINARY)
-@@ -197,14 +208,17 @@ static struct state	gmtmem;
+@@ -155,10 +166,19 @@ static struct tm *	timesub(const time_t
+ static int		tmcomp(const struct tm * atmp, const struct tm * btmp);
+ static time_t		transtime(time_t janfirst, int year, const struct rule * rulep, int_fast32_t offset) ATTRIBUTE_PURE;
+ static int		typesequiv(const struct state * sp, int a, int b);
+ static int		tzload(const char * name, struct state * sp, int doextend);
+ static int		tzparse(const char * name, struct state * sp, int lastditch);
++#ifdef STD_INSPIRED
++static int_fast64_t	leapcorr(time_t *timep);
++time_t			time2posix(time_t t);
++time_t			posix2time(time_t t);
++struct tm *		offtime(const time_t *const timep, const int_fast32_t offset);
++time_t			timelocal(struct tm *const tmp);
++time_t			timegm(struct tm *const tmp);
++time_t			timeoff(struct tm *const tmp, const int_fast32_t offset);
++#endif /* defined STD_INSPIRED */
+ 
+ #ifdef ALL_STATE
+ static struct state *	lclptr;
+ static struct state *	gmtptr;
+ #endif /* defined ALL_STATE */
+@@ -176,14 +196,17 @@ static struct state	gmtmem;
  
  static char		lcl_TZname[TZ_STRLEN_MAX + 1];
  static int		lcl_is_set;
@@ -438,7 +371,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  ** Section 4.12.3 of X3.159-1989 requires that
  **	Except for the strftime function, these functions [asctime,
  **	ctime, gmtime, localtime] return values in one of two static
-@@ -358,11 +372,11 @@ tzload(register const char *name, regist
+@@ -341,11 +364,11 @@ tzload(register const char *name, regist
  		*/
  		char		fullname[FILENAME_MAX + 1];
  
@@ -451,7 +384,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  				goto oops;
  			if ((strlen(p) + strlen(name) + 1) >= sizeof fullname)
  				goto oops;
-@@ -1300,10 +1314,12 @@ localsub(const time_t *const timep, cons
+@@ -1320,10 +1343,12 @@ localsub(const time_t *const timep, cons
  	tmp->TM_ZONE = &sp->chars[ttisp->tt_abbrind];
  #endif /* defined TM_ZONE */
  	return result;
@@ -464,7 +397,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  {
  	tzset();
  	return localsub(timep, 0L, &tm);
-@@ -1316,10 +1332,11 @@ localtime(const time_t *const timep)
+@@ -1336,10 +1361,11 @@ localtime(const time_t *const timep)
  struct tm *
  localtime_r(const time_t *const timep, struct tm *tmp)
  {
@@ -476,7 +409,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  ** gmtsub is to gmtime as localsub is to localtime.
  */
  
-@@ -1357,10 +1374,12 @@ gmtsub(const time_t *const timep, const
+@@ -1377,10 +1403,12 @@ gmtsub(const time_t *const timep, const
  	}
  #endif /* defined TM_ZONE */
  	return result;
@@ -489,7 +422,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  {
  	return gmtsub(timep, 0L, &tm);
  }
-@@ -1372,10 +1391,11 @@ gmtime(const time_t *const timep)
+@@ -1392,10 +1420,11 @@ gmtime(const time_t *const timep)
  struct tm *
  gmtime_r(const time_t *const timep, struct tm *tmp)
  {
@@ -500,8 +433,8 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  #ifdef STD_INSPIRED
  
  struct tm *
- offtime(const time_t *const timep, const long offset)
-@@ -1527,10 +1547,12 @@ timesub(const time_t *const timep, const
+ offtime(const time_t *const timep, const int_fast32_t offset)
+@@ -1548,10 +1577,12 @@ timesub(const time_t *const timep, const
  	tmp->TM_GMTOFF = offset;
  #endif /* defined TM_GMTOFF */
  	return tmp;
@@ -514,7 +447,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  {
  /*
  ** Section 4.12.3.2 of X3.159-1989 requires that
-@@ -1546,10 +1568,11 @@ ctime_r(const time_t *const timep, char
+@@ -1567,10 +1598,11 @@ ctime_r(const time_t *const timep, char
  {
  	struct tm	mytm;
  
@@ -526,20 +459,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  ** Adapted from code provided by Robert Elz, who writes:
  **	The "best" way to do mktime I think is based on an idea of Bob
  **	Kridle's (so its said...) from a long time ago.
-@@ -1557,11 +1580,11 @@ ctime_r(const time_t *const timep, char
- **	just 32 bits, its a max of 32 iterations (even at 64 bits it
- **	would still be very reasonable).
- */
- 
- #ifndef WRONG
--#define WRONG	(-1)
-+#define WRONG  ((time_t)-1)
- #endif /* !defined WRONG */
- 
- /*
- ** Normalize logic courtesy Paul Eggert.
- */
-@@ -1907,16 +1930,19 @@ time1(struct tm *const tmp,
+@@ -1929,16 +1961,19 @@ time1(struct tm *const tmp,
  		}
  	}
  	return WRONG;
@@ -560,9 +480,9 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/localtime.c djgpp/zoneinfo/src/localtime.c
  time_t
  timelocal(struct tm *const tmp)
 diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
---- djgpp.orig/zoneinfo/src/makefile	2012-12-08 05:33:24 +0000
-+++ djgpp/zoneinfo/src/makefile	2012-12-08 05:39:06 +0000
-@@ -40,35 +40,49 @@ POSIXRULES=	America/New_York
+--- djgpp.orig/zoneinfo/src/makefile	2013-07-05 13:38:00 +0000
++++ djgpp/zoneinfo/src/makefile	2013-08-17 15:13:10 +0000
+@@ -43,38 +43,56 @@ POSIXRULES=	America/New_York
  # Also see TZDEFRULESTRING below, which takes effect only
  # if the time zone files cannot be accessed.
  
@@ -577,6 +497,9 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  
 -TZDIR=		$(TOPDIR)/etc/zoneinfo
 +TZDIR=		$(TOPDIR)/zoneinfo
+ 
+ # Types to try, as an alternative to time_t.  int64_t should be first.
+ TIME_T_ALTERNATIVES= int64_t int32_t uint32_t uint64_t
  
  # The "tzselect", "zic", and "zdump" commands get installed in. . .
  
@@ -604,8 +527,12 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 +include $(TOPDIR)/src/makefile.def
 +export CROSS_BUILD
 +
-+GCC_MAJOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC__'))
-+GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC_MINOR__'))
++# If cross compiling the native and cross-compiler versions may not match.
++# Allow different flag settings accrording the compiler version.
++GCC_MAJOR := $(word 3, $(shell ../../src/misc.exe | $(GCC) -E -dD -x c - | egrep 'define\ *__GNUC__'))
++GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(GCC) -E -dD -x c - | egrep 'define\ *__GNUC_MINOR__'))
++CROSS_GCC_MAJOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC__'))
++CROSS_GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC_MINOR__'))
 +
 +# A replacement for (possibly missing) Unix programs:
 +
@@ -616,7 +543,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  #	REDO=		posix_only
  # below.  If you always want right time values interpreted as "seconds since
  # the epoch" (counting leap seconds)", use
-@@ -81,11 +95,11 @@ TZLIB=		$(LIBDIR)/libtz.a
+@@ -87,11 +105,11 @@ TZLIB=		$(LIBDIR)/libtz.a
  #	REDO=		right_posix
  # below.
  # POSIX mandates that leap seconds not be counted; for compatibility with it,
@@ -629,14 +556,14 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  
  YEARISTYPE=	./yearistype
  
-@@ -119,11 +133,71 @@ LDLIBS=
- #	if you do not want run time warnings about formats that may cause
- #	year 2000 grief
+@@ -129,22 +147,115 @@ LDLIBS=
+ #	DST transitions if the time zone files cannot be accessed
  #  -DZIC_MAX_ABBR_LEN_WO_WARN=3
  #	(or some other number) to set the maximum time zone abbreviation length
  #	that zic will accept without a warning (the default is 6)
+ #  $(GCC_DEBUG_FLAGS) if you are using GCC and want lots of checking
 -GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-common -fstrict-aliasing \
-+#GCC_DEBUG_FLAGS = -Dlint -g3 -O0 -fno-common -fstrict-aliasing \
++#GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-common -fstrict-aliasing \
 +#	-Wall -Wextra \
 +#	-Wbad-function-cast -Wcast-align -Wcast-qual \
 +#	-Wformat=2 -Winit-self \
@@ -649,8 +576,60 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 +#	-Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines \
 +#	-Wwrite-strings
 +
-+ifeq ($(CROSS_BUILD),0)
-+GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g -fno-common -fstrict-aliasing \
++# Cross compiler debug flags.
++CROSS_GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g2 -fno-common -fstrict-aliasing \
+ 	-Wall -Wextra \
+ 	-Wbad-function-cast -Wcast-align -Wcast-qual \
+ 	-Wformat=2 -Winit-self \
+ 	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
+-	-Wnested-externs \
+-	-Wno-format-nonliteral -Wno-sign-compare -Wno-sign-conversion \
+-	-Wno-type-limits \
+-	-Wno-unused-parameter -Woverlength-strings -Wpointer-arith \
+-	-Wshadow -Wstrict-prototypes -Wsuggest-attribute=const \
+-	-Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines \
++	-Wnested-externs -Wno-format-nonliteral -Wno-sign-compare \
++	-Wno-unused-parameter  -Wpointer-arith -Wshadow -Wstrict-prototypes \
+ 	-Wwrite-strings
++
++ifeq ($(CROSS_GCC_MAJOR),3)
++ifeq ($(CROSS_GCC_MINOR),4)
++CROSS_GCC_DEBUG_FLAGS = $(CROSS_GCC_DEBUG_FLAGS_FOR_ALL) -Wconversion -Wtraditional
++endif
++endif
++
++ifeq ($(CROSS_GCC_MAJOR),4)
++ ifeq ($(CROSS_GCC_MINOR),0)
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = 
++ else
++  ifeq ($(CROSS_GCC_MINOR),1)
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = 
++  else
++   ifeq ($(CROSS_GCC_MINOR),2)
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings
++   else
++    ifeq ($(CROSS_GCC_MINOR),3)
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
++    else
++     ifeq ($(CROSS_GCC_MINOR),4)
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
++     else
++      ifeq ($(CROSS_GCC_MINOR),5)
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
++      else
++# gcc 4.6 and later works.
++CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines
++      endif
++     endif
++    endif
++   endif
++  endif
++CROSS_GCC_DEBUG_FLAGS = $(CROSS_GCC_DEBUG_FLAGS_FOR_ALL) $(CROSS_GCC_DEBUG_FLAGS_SPECIAL)
++ endif
++endif
++
++# Native compiler debug flags.
++GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g2 -fno-common -fstrict-aliasing \
 +	-Wall -Wextra \
 +	-Wbad-function-cast -Wcast-align -Wcast-qual \
 +	-Wformat=2 -Winit-self \
@@ -695,35 +674,30 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 + endif
 +endif
 +
-+else
-+GCC_DEBUG_FLAGS = -Dlint -g -fno-common -fstrict-aliasing \
- 	-Wall -Wextra \
- 	-Wbad-function-cast -Wcast-align -Wcast-qual \
- 	-Wformat=2 -Winit-self \
- 	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
- 	-Wnested-externs \
-@@ -131,10 +205,12 @@ GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-co
- 	-Wno-type-limits \
- 	-Wno-unused-parameter -Woverlength-strings -Wpointer-arith \
- 	-Wshadow -Wstrict-prototypes -Wsuggest-attribute=const \
- 	-Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines \
- 	-Wwrite-strings
-+endif
-+
  #
  # If you want to use System V compatibility code, add
  #	-DUSG_COMPAT
  # to the end of the "CFLAGS=" line.  This arrange for "timezone" and "daylight"
  # variables to be kept up-to-date by the time conversion functions.  Neither
-@@ -223,22 +299,30 @@ GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-co
+@@ -229,22 +340,41 @@ GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-co
  # to the end of the "CFLAGS=" line.  This causes "strftime" to always return
  # 53 as a week number (rather than 52 or 53) for those days in January that
  # before the first Monday in January when a "%V" format is used and January 1
  # falls on a Friday, Saturday, or Sunday.
  
 -CFLAGS=
++# If cross compiling the native and cross-compiler versions may not match.
++# Allow different flag settings accrording the compiler version.
++# Flags for cross compiler
 +CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
-+		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 \
++		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 -DHAVE_STDINT_H=1\
++		-DSTD_INSPIRED \
++		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/share/locale\" \
++		$(CROSS_GCC_DEBUG_FLAGS) -O2
++
++# Flags for native compiler
++GCCFLAGS=	-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
++		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 -DHAVE_STDINT_H=1 \
 +		-DSTD_INSPIRED \
 +		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/share/locale\" \
 +		$(GCC_DEBUG_FLAGS) -O2
@@ -736,7 +710,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  # to tzcode2012h and earlier.
  
  LDFLAGS=	$(LFLAGS)
--
+ 
 -zic=		./zic
 +EXEEXT=		.exe
 +zic=		./host-zic
@@ -750,7 +724,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  # 'select' statement, as an extension.  These days, Bash is the most popular.
  KSHELL=		/bin/bash
  
-@@ -272,24 +356,24 @@ TARFLAGS=	`if tar $(GNUTARFLAGS) --versi
+@@ -290,24 +420,24 @@ TARFLAGS=	`if tar $(GNUTARFLAGS) --versi
  # Flags to give 'gzip' when making a distribution.
  GZIPFLAGS=	-9n
  
@@ -780,18 +754,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  			tzfile.5 tzselect.8 zic.8 zdump.8
  COMMON=		Makefile
  DOCS=		README Theory $(MANS) date.1
-@@ -300,68 +384,88 @@ NDATA=		systemv factory
- SDATA=		solar87 solar88 solar89
- TDATA=		$(YDATA) $(NDATA) $(SDATA)
- TABDATA=	iso3166.tab zone.tab
- DATA=		$(YDATA) $(NDATA) $(SDATA) $(TABDATA) leapseconds yearistype.sh
- WEB_PAGES=	tz-art.htm tz-link.htm
--MISC=		usno1988 usno1989 usno1989a usno1995 usno1997 usno1998 \
-+MISC=		usno1988 usno1989 usno1989.orig usno1995 usno1997 usno1998 \
- 			$(WEB_PAGES) checktab.awk workman.sh \
- 			zoneinfo2tdf.pl
- ENCHILADA=	$(COMMON) $(DOCS) $(SOURCES) $(DATA) $(MISC)
- 
+@@ -328,59 +458,87 @@ ENCHILADA=	$(COMMON) $(DOCS) $(SOURCES)
  # And for the benefit of csh users on systems that assume the user
  # shell should be used to handle commands in Makefiles. . .
  
@@ -806,9 +769,10 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 +		$(UTIL) cp date$(EXEEXT) $(BINDIR)/date$(EXEEXT)
 +		-$(UTIL) mkdir $(SHAREDIR)
 +		-$(UTIL) mkdir $(MANDIR)
-+		-$(UTIL) mkdir $(MANDIR)/man1
-+		-$(UTIL) rm $(MANDIR)/man1/date.1
-+		$(UTIL) cp date.1 $(MANDIR)/man1/date.1
++		-$(UTIL) mkdir $(MANDIR)/cat1
++		-$(UTIL) rm $(MANDIR)/cat1/date.1
++		groff -mman -Tascii date.1 > date.man
++		$(UTIL) cp date.man $(MANDIR)/cat1/date.1
  
  install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
  		$(ZIC) -y $(YEARISTYPE) \
@@ -820,6 +784,14 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 -		-mkdir $(TOPDIR) $(MANDIR) \
 -			$(MANDIR)/man3 $(MANDIR)/man5 $(MANDIR)/man8
 -		-rm -f $(MANDIR)/man3/newctime.3 \
+-			$(MANDIR)/man3/newtzset.3 \
+-			$(MANDIR)/man5/tzfile.5 \
+-			$(MANDIR)/man8/tzselect.8 \
+-			$(MANDIR)/man8/zdump.8 \
+-			$(MANDIR)/man8/zic.8
+-		cp newctime.3 newtzset.3 $(MANDIR)/man3/.
+-		cp tzfile.5 $(MANDIR)/man5/.
+-		cp tzselect.8 zdump.8 zic.8 $(MANDIR)/man8/.
 +		-$(UTIL) rm -f $(TZDIR)/iso3166.tab $(TZDIR)/zone.tab
 +		$(UTIL) cp iso3166.tab $(TZDIR)/iso3166.tab
 +		$(UTIL) cp zone.tab $(TZDIR)/zone.tab
@@ -830,25 +802,29 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 +		$(UTIL) cp tzselect $(ETCDIR)/tzselect
 +		-$(UTIL) mkdir $(SHAREDIR)
 +		-$(UTIL) mkdir $(MANDIR)
-+		-$(UTIL) mkdir $(MANDIR)/man3
-+		-$(UTIL) mkdir $(MANDIR)/man5
-+		-$(UTIL) mkdir $(MANDIR)/man8
-+		-$(UTIL) rm -f $(MANDIR)/man3/newctime.3 \
- 			$(MANDIR)/man3/newtzset.3 \
- 			$(MANDIR)/man5/tzfile.5 \
- 			$(MANDIR)/man8/tzselect.8 \
- 			$(MANDIR)/man8/zdump.8 \
- 			$(MANDIR)/man8/zic.8
--		cp newctime.3 newtzset.3 $(MANDIR)/man3/.
--		cp tzfile.5 $(MANDIR)/man5/.
--		cp tzselect.8 zdump.8 zic.8 $(MANDIR)/man8/.
-+		$(UTIL) cp newctime.3 $(MANDIR)/man3/newctime.3
-+		$(UTIL) cp newtzset.3 $(MANDIR)/man3/newtzset.3
-+		$(UTIL) cp time2posix.3 $(MANDIR)/man3/time2posix.3
-+		$(UTIL) cp tzfile.5 $(MANDIR)/man5/tzfile.5
-+		$(UTIL) cp tzselect.8 $(MANDIR)/man8/tzselect.8
-+		$(UTIL) cp zdump.8 $(MANDIR)/man8/zdump.8
-+		$(UTIL) cp zic.8 $(MANDIR)/man8/zic.8
++		-$(UTIL) mkdir $(MANDIR)/cat3
++		-$(UTIL) mkdir $(MANDIR)/cat5
++		-$(UTIL) mkdir $(MANDIR)/cat8
++		-$(UTIL) rm -f $(MANDIR)/cat3/newctime.3 \
++			$(MANDIR)/cat3/newtzset.3 \
++			$(MANDIR)/cat5/tzfile.5 \
++			$(MANDIR)/cat8/tzselect.8 \
++			$(MANDIR)/cat8/zdump.8 \
++			$(MANDIR)/cat8/zic.8
++		groff -mman -Tascii newctime.3 > newctime.man
++		groff -mman -Tascii newtzset.3 > newtzset.man
++		groff -mman -Tascii time2posix.3 > time2posix.man
++		groff -mman -Tascii tzfile.5 > tzfile.man
++		groff -mman -Tascii tzselect.8 > tzselect.man
++		groff -mman -Tascii zdump.8 > zdump.man
++		groff -mman -Tascii zic.8 > zic.man
++		$(UTIL) cp newctime.man $(MANDIR)/cat3/newctime.3
++		$(UTIL) cp newtzset.man $(MANDIR)/cat3/newtzset.3
++		$(UTIL) cp time2posix.man $(MANDIR)/cat3/time2posix.3
++		$(UTIL) cp tzfile.man $(MANDIR)/cat5/tzfile.5
++		$(UTIL) cp tzselect.man $(MANDIR)/cat8/tzselect.8
++		$(UTIL) cp zdump.man $(MANDIR)/cat8/zdump.8
++		$(UTIL) cp zic.man $(MANDIR)/cat8/zic.8
  
 -INSTALL:	ALL install date.1
 -		-mkdir $(TOPDIR) $(BINDIR)
@@ -856,13 +832,14 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 -		-mkdir $(TOPDIR) $(MANDIR) $(MANDIR)/man1
 -		-rm -f $(MANDIR)/man1/date.1
 -		cp date.1 $(MANDIR)/man1/.
-+all:		host-zic zic$(EXEEXT) zdump$(EXEEXT) $(LIBOBJS)
++all:		tzselect host-zic zic$(EXEEXT) zdump$(EXEEXT) $(LIBOBJS)
 +
-+ALL:		all date$(EXEEXT) tzselect
++ALL:		all date$(EXEEXT)
  
  version.h:
  		(echo 'static char const PKGVERSION[]="($(PACKAGE)) ";' && \
- 		 echo 'static char const TZVERSION[]="$(VERSION)";') >$@
+ 		 echo 'static char const TZVERSION[]="$(VERSION)";' && \
+ 		 echo 'static char const REPORT_BUGS_TO[]="$(BUGEMAIL)";') >$@
  
 -zdump:		$(TZDOBJS)
 +zdump$(EXEEXT):	$(TZDOBJS)
@@ -872,7 +849,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 -zic:		$(TZCOBJS) yearistype
 +host-zic:	$(TZCSRCS) yearistype version.h
 +		$(GCC) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\" \
-+		$(CFLAGS) $(LDFLAGS) $(TZCSRCS) $(LDLIBS) -o $@
++		$(GCCFLAGS) $(LDFLAGS) $(TZCSRCS) $(LDLIBS) -o $@
 +		$(STRIP) $@
 +
 +zic$(EXEEXT):	$(TZCOBJS) yearistype
@@ -895,7 +872,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  # In earlier versions of this makefile, the other two directories were
  # subdirectories of $(TZDIR).  However, this led to configuration errors.
  # For example, with posix_right under the earlier scheme,
-@@ -369,11 +473,11 @@ right_only:	zic leapseconds $(TDATA)
+@@ -388,11 +546,11 @@ right_only:	zic leapseconds $(TDATA)
  # but gmtime without leap seconds, which led to problems with applications
  # like sendmail that subtract gmtime from localtime.
  # Therefore, the other two directories are now siblings of $(TZDIR).
@@ -908,7 +885,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
  
  posix_right:	posix_only other_two
-@@ -381,48 +485,52 @@ posix_right:	posix_only other_two
+@@ -400,25 +558,30 @@ posix_right:	posix_only other_two
  right_posix:	right_only other_two
  
  zones:		$(REDO)
@@ -940,26 +917,26 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 -			-e 's|#!/bin/bash|#!$(KSHELL)|g' \
  			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
  			-e 's|\(PKGVERSION\)=.*|\1='\''($(PACKAGE)) '\''|' \
+ 			-e 's|\(REPORT_BUGS_TO\)=.*|\1=$(BUGEMAIL)|' \
 -			-e 's|TZDIR=[^}]*|TZDIR=$(TZDIR)|' \
 +			-e 's|TZDIR=[^}]*|TZDIR=/dev/env/DJDIR/zoneinfo|' \
  			-e 's|\(TZVERSION\)=.*|\1=$(VERSION)|' \
  			<$? >$@
--		chmod +x $@
+ 		chmod +x $@
  
- check:		check_tables check_web
- 
- check_tables:	checktab.awk $(PRIMARY_YDATA)
- 		$(AWK) -f checktab.awk $(PRIMARY_YDATA)
+ check:		check_character_set check_tables check_web
+@@ -431,22 +594,22 @@ check_tables:	checktab.awk $(PRIMARY_YDA
  
  check_web:	$(WEB_PAGES)
  		$(VALIDATE_ENV) $(VALIDATE) $(VALIDATE_FLAGS) $(WEB_PAGES)
  
- clean:
+ clean_misc:
 -		rm -f core *.o *.out \
 -		  date tzselect version.h zdump zic yearistype
--		rm -f -r tzpublic
 +		$(UTIL) rm core *.o *.out tzselect zdump$(EXEEXT) zic$(EXEEXT) \
-+			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe
++			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man
+ clean:		clean_misc
+-		rm -f -r tzpublic
 +		$(UTIL) rm -f -r tzpublic
  
  maintainer-clean: clean
@@ -971,63 +948,27 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
 -		@echo $(ENCHILADA)
 +		@$(UTIL) echo $(ENCHILADA)
  
- public:		check check_public set-timestamps tarballs signatures
+ public:		check check_public check_time_t_alternatives \
+ 		set-timestamps tarballs signatures
  
  # Set the time stamps to those of the git repository, if available,
- # and if the files have not changed since then.
+@@ -468,11 +631,11 @@ set-timestamps:
+ # The zics below ensure that each data file can stand on its own.
+ # We also do an all-files run to catch links to links.
+ 
+ check_public:	$(ENCHILADA)
+ 		make maintainer-clean
+-		make "CFLAGS=$(GCC_DEBUG_FLAGS)"
++		make "CFLAGS=$(CROSS_GCC_DEBUG_FLAGS)"
+ 		mkdir tzpublic
+ 		for i in $(TDATA) ; do \
+ 		  $(zic) -v -d tzpublic $$i 2>&1 || exit; \
+ 		done
+ 		$(zic) -v -d tzpublic $(TDATA)
 diff -aprNU5 djgpp.orig/zoneinfo/src/private.h djgpp/zoneinfo/src/private.h
---- djgpp.orig/zoneinfo/src/private.h	2012-12-08 05:33:24 +0000
-+++ djgpp/zoneinfo/src/private.h	2012-12-08 05:39:06 +0000
-@@ -143,13 +143,15 @@ typedef long		int_fast64_t;
- #ifndef INT32_MIN
- #define INT32_MIN (-1 - INT32_MAX)
- #endif /* !defined INT32_MIN */
- 
- #if 2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)
--# define ATTRIBUTE_PURE __attribute__ ((__pure__))
-+# define ATTRIBUTE_PURE      __attribute__ ((__pure__))
-+# define ATTRIBUTE_NORETURN  __attribute__ ((__noreturn__))
- #else
--# define ATTRIBUTE_PURE /* empty */
-+# define ATTRIBUTE_PURE      /* empty */
-+# define ATTRIBUTE_NORETURN  /* empty */
- #endif
- 
- /*
- ** Workarounds for compilers/systems.
- */
-@@ -171,10 +173,30 @@ extern char *	asctime_r(struct tm const
- char *		icatalloc(char * old, const char * new);
- char *		icpyalloc(const char * string);
- const char *	scheck(const char * string, const char * format);
- 
- /*
-+** Declarations for functions which shut up GCC $(GCC_DEBUG_FLAGS).
-+*/
-+#ifndef STD_INSPIRED
-+static
-+#endif /* !defined STD_INSPIRED */
-+void tzsetwall(void);
-+struct tm *localtime_r(const time_t * const __timep, struct tm * __tmp);
-+struct tm *gmtime_r(const time_t * const __tp, struct tm * __tm);
-+char *ctime_r(const time_t * const __tp, char * __buf);
-+char *asctime_r(const struct tm *, char *);
-+#ifdef STD_INSPIRED
-+struct tm *offtime(const time_t * const __tp, const long __off);
-+time_t timelocal(struct tm * const __tmp);
-+time_t timegm(struct tm * const __tmp);
-+time_t timeoff(struct tm * const __tmp, const long __off);
-+time_t time2posix(time_t);
-+time_t posix2time(time_t);
-+#endif /* defined STD_INSPIRED */
-+
-+/*
- ** Finally, some convenience items.
- */
- 
- #ifndef TRUE
- #define TRUE	1
-@@ -235,10 +257,20 @@ const char *	scheck(const char * string,
+--- djgpp.orig/zoneinfo/src/private.h	2013-05-28 03:26:18 +0000
++++ djgpp/zoneinfo/src/private.h	2013-08-17 14:34:22 +0000
+@@ -347,10 +347,20 @@ const char *	scheck(const char * string,
  #ifndef GNUC_or_lint
  #define INITIALIZE(x)
  #endif /* !defined GNUC_or_lint */
@@ -1049,9 +990,14 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/private.h djgpp/zoneinfo/src/private.h
  ** The default is to use gettext if available, and use MSGID otherwise.
  */
 diff -aprNU5 djgpp.orig/zoneinfo/src/strftime.c djgpp/zoneinfo/src/strftime.c
---- djgpp.orig/zoneinfo/src/strftime.c	2012-12-08 05:33:26 +0000
-+++ djgpp/zoneinfo/src/strftime.c	2012-12-08 05:39:06 +0000
-@@ -1,5 +1,9 @@
+--- djgpp.orig/zoneinfo/src/strftime.c	2013-05-28 03:26:18 +0000
++++ djgpp/zoneinfo/src/strftime.c	2013-08-17 14:34:22 +0000
+@@ -3,10 +3,14 @@
+ ** appearing below.
+ **
+ ** This is ANSIish only when "multibyte character == plain character".
+ */
+ 
 +#ifndef __DJGPP__
 +/*  Use DJGPP's own implementation of strftime.  */
 +
@@ -1061,77 +1007,34 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/strftime.c djgpp/zoneinfo/src/strftime.c
  /*
  ** Copyright (c) 1989 The Regents of the University of California.
  ** All rights reserved.
-@@ -729,5 +733,6 @@ no_locale:
+@@ -736,5 +740,6 @@ no_locale:
  	localebuf = C_time_locale;
  	locale_buf = NULL;
  	return &localebuf;
  }
  #endif /* defined LOCALE_HOME */
 +#endif /* !__DJGPP__ */
-diff -aprNU5 djgpp.orig/zoneinfo/src/zdump.c djgpp/zoneinfo/src/zdump.c
---- djgpp.orig/zoneinfo/src/zdump.c	2012-12-08 05:33:26 +0000
-+++ djgpp/zoneinfo/src/zdump.c	2012-12-08 05:39:06 +0000
-@@ -119,13 +119,15 @@
- #define INITIALIZE(x)
- #endif /* !defined GNUC_or_lint */
- #endif /* !defined INITIALIZE */
- 
- #if 2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)
--# define ATTRIBUTE_PURE __attribute__ ((__pure__))
-+# define ATTRIBUTE_PURE      __attribute__ ((__pure__))
-+# define ATTRIBUTE_NORETURN  __attribute__ ((__noreturn__))
- #else
--# define ATTRIBUTE_PURE /* empty */
-+# define ATTRIBUTE_PURE      /* empty */
-+# define ATTRIBUTE_NORETURN  /* empty */
- #endif
- 
- /*
- ** For the benefit of GNU folk...
- ** `_(MSGID)' uses the current locale's message library string for MSGID.
-@@ -264,11 +266,11 @@ abbrok(const char *const abbrp, const ch
- 		_("%s: warning: zone \"%s\" abbreviation \"%s\" %s\n"),
- 		progname, zone, abbrp, wp);
- 	warned = TRUE;
- }
- 
--static void
-+static ATTRIBUTE_NORETURN void
- usage(FILE * const stream, const int status)
- {
- 	(void) fprintf(stream,
- _("%s: usage is %s [ --version ] [ --help ] [ -v ] [ -c [loyear,]hiyear ] zonename ...\n\
- \n\
-@@ -563,11 +565,11 @@ show(char *zone, time_t t, int v)
- 		if (*abbr(tmp) != '\0')
- 			(void) printf(" %s", abbr(tmp));
- 		if (v) {
- 			(void) printf(" isdst=%d", tmp->tm_isdst);
- #ifdef TM_GMTOFF
--			(void) printf(" gmtoff=%ld", tmp->TM_GMTOFF);
-+			(void) printf(" gmtoff=%ld", (long)tmp->TM_GMTOFF);
- #endif /* defined TM_GMTOFF */
- 		}
- 	}
- 	(void) printf("\n");
- 	if (tmp != NULL && *abbr(tmp) != '\0')
 diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
---- djgpp.orig/zoneinfo/src/zic.c	2012-12-08 05:33:26 +0000
-+++ djgpp/zoneinfo/src/zic.c	2012-12-08 05:39:06 +0000
-@@ -17,17 +17,34 @@ typedef int_fast64_t	zic_t;
- #endif /* !defined ZIC_MAX_ABBR_LEN_WO_WARN */
+--- djgpp.orig/zoneinfo/src/zic.c	2013-05-28 03:26:18 +0000
++++ djgpp/zoneinfo/src/zic.c	2013-08-17 14:34:22 +0000
+@@ -5,12 +5,15 @@
  
- #if HAVE_SYS_STAT_H
- #include "sys/stat.h"
- #endif
-+#if HAVE_SYS_WAIT_H
-+#include "sys/wait.h"
-+#ifndef WEXITSTATUS
-+#define WEXITSTATUS(x)  (((x) >> 8) & 0xff)
+ #include "version.h"
+ #include "private.h"
+ #include "locale.h"
+ #include "tzfile.h"
+-
++#ifdef __DJGPP__
++#define	ZIC_VERSION	'\0'
++#else
+ #define	ZIC_VERSION	'2'
 +#endif
-+#endif
- #ifdef S_IRUSR
- #define MKDIR_UMASK (S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
+ 
+ typedef int_fast64_t	zic_t;
+ #define ZIC_MIN INT_FAST64_MIN
+ #define ZIC_MAX INT_FAST64_MAX
+ #define SCNdZIC SCNdFAST64
+@@ -27,10 +30,21 @@ typedef int_fast64_t	zic_t;
  #else
  #define MKDIR_UMASK 0755
  #endif
@@ -1153,20 +1056,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
  ** which says they are defined only if C == ((unsigned char) C) || C == EOF.
  ** Neither the C Standard nor Posix require that `isascii' exist.
  ** For portability, we check both ancient and modern requirements.
-@@ -417,11 +434,11 @@ warning(const char *const string)
- 	error(cp);
- 	free(cp);
- 	--errors;
- }
- 
--static void
-+static ATTRIBUTE_NORETURN void
- usage(FILE *stream, int status)
- {
- 	(void) fprintf(stream, _("%s: usage is %s \
- [ --version ] [ --help ] [ -v ] [ -l localtime ] [ -p posixrules ] \\\n\
- \t[ -d directory ] [ -L leapseconds ] [ -y yearistype ] [ filename ... ]\n\
-@@ -580,24 +597,38 @@ static void
+@@ -579,24 +593,37 @@ static void
  dolink(const char *const fromfield, const char *const tofield)
  {
  	register char *	fromname;
@@ -1201,13 +1091,12 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
 +			if (*p == '+')
 +				*p = '%';
 +	}
-+
  	/*
  	** We get to be careful here since
  	** there's a fair chance of root running us.
  	*/
  	if (!itsdir(toname))
-@@ -649,17 +680,24 @@ static const zic_t min_time = (zic_t) -1
+@@ -648,17 +675,24 @@ static const zic_t min_time = (zic_t) -1
  static const zic_t max_time = -1 - ((zic_t) -1 << (TIME_T_BITS_IN_FILE - 1));
  
  static int
@@ -1233,14 +1122,12 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
  
  /*
  ** Associate sets of rules with zones.
-@@ -1469,11 +1507,26 @@ writezone(const char *const name, const
- 		--leapcnt32;
+@@ -1473,10 +1507,24 @@ writezone(const char *const name, const
  		++leapi32;
  	}
  	fullname = erealloc(fullname,
  			    strlen(directory) + 1 + strlen(name) + 1);
--	(void) sprintf(fullname, "%s/%s", directory, name);
-+
+ 	(void) sprintf(fullname, "%s/%s", directory, name);
 +	/* Some zone names use `+' as part of their names, but DOS
 +	   doesn't allow `+' in file names.  Replace with a `%'.  */
 +	if (getenv ("COMSPEC") || getenv ("CROSS_BUILD"))
@@ -1255,13 +1142,42 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
 +	}
 +	else
 +		(void) sprintf(fullname, "%s/%s", directory, name);
-+
  	/*
  	** Remove old file, if any, to snap links.
  	*/
  	if (!itsdir(fullname) && remove(fullname) != 0 && errno != ENOENT) {
  		const char *e = strerror(errno);
-@@ -2573,42 +2626,40 @@ mkdirs(char *argname)
+@@ -1494,11 +1542,15 @@ writezone(const char *const name, const
+ 			(void) fprintf(stderr, _("%s: Can't create %s: %s\n"),
+ 				progname, fullname, e);
+ 			exit(EXIT_FAILURE);
+ 		}
+ 	}
++#if defined(ZIC_VERSION) && ZIC_VERSION == 2
+ 	for (pass = 1; pass <= 2; ++pass) {
++#else  /* ZIC_VERSION == 0  */
++	for (pass = 1; pass < 2; ++pass) {
++#endif  /* ZIC_VERSION == 0  */
+ 		register int	thistimei, thistimecnt;
+ 		register int	thisleapi, thisleapcnt;
+ 		register int	thistimelim, thisleaplim;
+ 		int		writetype[TZ_MAX_TIMES];
+ 		int		typemap[TZ_MAX_TYPES];
+@@ -1704,11 +1756,13 @@ writezone(const char *const name, const
+ 				(void) putc(ttisstds[i], fp);
+ 		for (i = 0; i < typecnt; ++i)
+ 			if (writetype[i])
+ 				(void) putc(ttisgmts[i], fp);
+ 	}
++#if defined(ZIC_VERSION) && ZIC_VERSION == 2
+ 	(void) fprintf(fp, "\n%s\n", string);
++#endif  /* ZIC_VERSION */
+ 	if (ferror(fp) || fclose(fp)) {
+ 		(void) fprintf(stderr, _("%s: Error writing %s\n"),
+ 			progname, fullname);
+ 		exit(EXIT_FAILURE);
+ 	}
+@@ -2608,42 +2662,40 @@ mkdirs(char *argname)
  	register char *	cp;
  
  	if (argname == NULL || *argname == '\0')
@@ -1269,7 +1185,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
  	cp = name = ecpyalloc(argname);
 -	while ((cp = strchr(cp + 1, '/')) != 0) {
 -		*cp = '\0';
--#ifndef unix
+-#ifdef HAVE_DOS_FILE_NAMES
 -		/*
 -		** DOS drive specifier?
 -		*/
@@ -1278,7 +1194,7 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
 -				*cp = '/';
 -				continue;
 -		}
--#endif /* !defined unix */
+-#endif
 -		if (!itsdir(name)) {
 -			/*
 -			** It doesn't seem to exist, so we try to create it.
@@ -1334,56 +1250,3 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
  	return 0;
  }
  
-diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
---- djgpp.orig/zoneinfo/src/date.c	2013-01-31 22:37:10 +0000
-+++ djgpp/zoneinfo/src/date.c	2013-02-16 02:55:10 +0000
-@@ -54,18 +54,18 @@ static char sccsid[] = "@(#)date.c	4.23
- 
- #ifndef SECSPERMIN
- #define SECSPERMIN	60
- #endif /* !defined SECSPERMIN */
- 
--extern double		atof();
-+extern double		atof(const char *s);
- extern char **		environ;
--extern char *		getlogin();
--extern time_t		mktime();
-+extern char *		getlogin(void);
-+extern time_t		mktime(struct tm *tptr);
- extern char *		optarg;
- extern int		optind;
--extern char *		strchr();
--extern time_t		time();
-+extern char *		strchr(const char *s, int c);
-+extern time_t		time(time_t *t);
- extern char *		tzname[2];
- 
- static int		retval = EXIT_SUCCESS;
- 
- static void		checkfinal(const char *, int, time_t, time_t);
-@@ -445,11 +445,11 @@ reset(const time_t newt, const int nflag
- #include "netdb.h"
- #define TSPTYPES
- #include "protocols/timed.h"
- #endif /* TSP_SETDATE */
- 
--extern int		logwtmp();
-+extern int		logwtmp(char *line, char *name, char *host);
- 
- #if HAVE_SETTIMEOFDAY == 1
- #define settimeofday(t, tz) (settimeofday)(t)
- #endif /* HAVE_SETTIMEOFDAY == 1 */
- 
-@@ -561,11 +561,11 @@ display(const char *const format)
- 		errensure();
- 	}
- 	exit(retval);
- }
- 
--extern size_t	strftime();
-+extern size_t	strftime(char *s, size_t maxsize, const char *format, const struct tm *t);
- 
- #define INCR	1024
- 
- static void
- timeout(FILE *const fp, const char *const format, const struct tm *const tmp)
