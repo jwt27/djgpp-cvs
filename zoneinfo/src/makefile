@@ -45,13 +45,13 @@ POSIXRULES=	America/New_York
 
 # Everything gets put in subdirectories of. . .
 
-TOPDIR=		/usr/local
+TOPDIR=		../..
 
 # "Compiled" time zone information is placed in the "TZDIR" directory
 # (and subdirectories).
 # Use an absolute path name for TZDIR unless you're just testing the software.
 
-TZDIR=		$(TOPDIR)/etc/zoneinfo
+TZDIR=		$(TOPDIR)/zoneinfo
 
 # Types to try, as an alternative to time_t.  int64_t should be first.
 TIME_T_ALTERNATIVES= int64_t int32_t uint32_t uint64_t
@@ -62,16 +62,34 @@ ETCDIR=		$(TOPDIR)/etc
 
 # If you "make INSTALL", the "date" command gets installed in. . .
 
-BINDIR=		$(TOPDIR)/bin
+BINDIR=		$(TOPDIR)/etc
 
 # Manual pages go in subdirectories of. . .
 
-MANDIR=		$(TOPDIR)/man
+SHAREDIR=	$(TOPDIR)/share
+MANDIR=		$(SHAREDIR)/man
 
 # Library functions are put in an archive in LIBDIR.
 
 LIBDIR=		$(TOPDIR)/lib
 TZLIB=		$(LIBDIR)/libtz.a
+
+# This defines several variables that enable zoneinfo/src/* files to be
+# built both natively and with cross-tools on Unix.
+
+include $(TOPDIR)/src/makefile.def
+export CROSS_BUILD
+
+# If cross compiling the native and cross-compiler versions may not match.
+# Allow different flag settings accrording the compiler version.
+GCC_MAJOR := $(word 3, $(shell ../../src/misc.exe | $(GCC) -E -dD -x c - | egrep 'define\ *__GNUC__'))
+GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(GCC) -E -dD -x c - | egrep 'define\ *__GNUC_MINOR__'))
+CROSS_GCC_MAJOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC__'))
+CROSS_GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC_MINOR__'))
+
+# A replacement for (possibly missing) Unix programs:
+
+UTIL=		$(TOPDIR)/src/misc.exe
 
 # If you always want time values interpreted as "seconds since the epoch
 # (not counting leap seconds)", use
@@ -89,7 +107,7 @@ TZLIB=		$(LIBDIR)/libtz.a
 # POSIX mandates that leap seconds not be counted; for compatibility with it,
 # use either "posix_only" or "posix_right".
 
-REDO=		posix_right
+REDO=		posix_only
 
 # Since "." may not be in PATH...
 
@@ -131,18 +149,111 @@ LDLIBS=
 #	(or some other number) to set the maximum time zone abbreviation length
 #	that zic will accept without a warning (the default is 6)
 #  $(GCC_DEBUG_FLAGS) if you are using GCC and want lots of checking
-GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-common -fstrict-aliasing \
+#GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-common -fstrict-aliasing \
+#	-Wall -Wextra \
+#	-Wbad-function-cast -Wcast-align -Wcast-qual \
+#	-Wformat=2 -Winit-self \
+#	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
+#	-Wnested-externs \
+#	-Wno-format-nonliteral -Wno-sign-compare -Wno-sign-conversion \
+#	-Wno-type-limits \
+#	-Wno-unused-parameter -Woverlength-strings -Wpointer-arith \
+#	-Wshadow -Wstrict-prototypes -Wsuggest-attribute=const \
+#	-Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines \
+#	-Wwrite-strings
+
+# Cross compiler debug flags.
+CROSS_GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g2 -fno-common -fstrict-aliasing \
 	-Wall -Wextra \
 	-Wbad-function-cast -Wcast-align -Wcast-qual \
 	-Wformat=2 -Winit-self \
 	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
-	-Wnested-externs \
-	-Wno-format-nonliteral -Wno-sign-compare -Wno-sign-conversion \
-	-Wno-type-limits \
-	-Wno-unused-parameter -Woverlength-strings -Wpointer-arith \
-	-Wshadow -Wstrict-prototypes -Wsuggest-attribute=const \
-	-Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines \
+	-Wnested-externs -Wno-format-nonliteral -Wno-sign-compare \
+	-Wno-unused-parameter  -Wpointer-arith -Wshadow -Wstrict-prototypes \
 	-Wwrite-strings
+
+ifeq ($(CROSS_GCC_MAJOR),3)
+ifeq ($(CROSS_GCC_MINOR),4)
+CROSS_GCC_DEBUG_FLAGS = $(CROSS_GCC_DEBUG_FLAGS_FOR_ALL) -Wconversion -Wtraditional
+endif
+endif
+
+ifeq ($(CROSS_GCC_MAJOR),4)
+ ifeq ($(CROSS_GCC_MINOR),0)
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = 
+ else
+  ifeq ($(CROSS_GCC_MINOR),1)
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = 
+  else
+   ifeq ($(CROSS_GCC_MINOR),2)
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings
+   else
+    ifeq ($(CROSS_GCC_MINOR),3)
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
+    else
+     ifeq ($(CROSS_GCC_MINOR),4)
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
+     else
+      ifeq ($(CROSS_GCC_MINOR),5)
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
+      else
+# gcc 4.6 and later works.
+CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines
+      endif
+     endif
+    endif
+   endif
+  endif
+CROSS_GCC_DEBUG_FLAGS = $(CROSS_GCC_DEBUG_FLAGS_FOR_ALL) $(CROSS_GCC_DEBUG_FLAGS_SPECIAL)
+ endif
+endif
+
+# Native compiler debug flags.
+GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g2 -fno-common -fstrict-aliasing \
+	-Wall -Wextra \
+	-Wbad-function-cast -Wcast-align -Wcast-qual \
+	-Wformat=2 -Winit-self \
+	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
+	-Wnested-externs -Wno-format-nonliteral -Wno-sign-compare \
+	-Wno-unused-parameter  -Wpointer-arith -Wshadow -Wstrict-prototypes \
+	-Wwrite-strings
+
+ifeq ($(GCC_MAJOR),3)
+ifeq ($(GCC_MINOR),4)
+GCC_DEBUG_FLAGS = $(GCC_DEBUG_FLAGS_FOR_ALL) -Wconversion -Wtraditional
+endif
+endif
+
+ifeq ($(GCC_MAJOR),4)
+ ifeq ($(GCC_MINOR),0)
+GCC_DEBUG_FLAGS_SPECIAL = 
+ else
+  ifeq ($(GCC_MINOR),1)
+GCC_DEBUG_FLAGS_SPECIAL = 
+  else
+   ifeq ($(GCC_MINOR),2)
+GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings
+   else
+    ifeq ($(GCC_MINOR),3)
+GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
+    else
+     ifeq ($(GCC_MINOR),4)
+GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
+     else
+      ifeq ($(GCC_MINOR),5)
+GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
+      else
+# gcc 4.6 and later works.
+GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines
+      endif
+     endif
+    endif
+   endif
+  endif
+GCC_DEBUG_FLAGS = $(GCC_DEBUG_FLAGS_FOR_ALL) $(GCC_DEBUG_FLAGS_SPECIAL)
+ endif
+endif
+
 #
 # If you want to use System V compatibility code, add
 #	-DUSG_COMPAT
@@ -231,18 +342,37 @@ GCC_DEBUG_FLAGS = -Dlint -g3 -O3 -fno-common -fstrict-aliasing \
 # before the first Monday in January when a "%V" format is used and January 1
 # falls on a Friday, Saturday, or Sunday.
 
-CFLAGS=
+# If cross compiling the native and cross-compiler versions may not match.
+# Allow different flag settings accrording the compiler version.
+# Flags for cross compiler
+CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
+		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 -DHAVE_STDINT_H=1\
+		-DSTD_INSPIRED \
+		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/share/locale\" \
+		$(CROSS_GCC_DEBUG_FLAGS) -O2
+
+# Flags for native compiler
+GCCFLAGS=	-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
+		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 -DHAVE_STDINT_H=1 \
+		-DSTD_INSPIRED \
+		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/share/locale\" \
+		$(GCC_DEBUG_FLAGS) -O2
+
+# Don't use -s here, since "gcc -s" on DJ's Irix machine dumps core
+# when invoked with -s.  To work around, we use strip explicitly.
+LFLAGS=
 
 # Linker flags.  Default to $(LFLAGS) for backwards compatibility
 # to tzcode2012h and earlier.
 
 LDFLAGS=	$(LFLAGS)
 
-zic=		./zic
+EXEEXT=		.exe
+zic=		./host-zic
 ZIC=		$(zic) $(ZFLAGS)
 
 # The name of a Posix-compliant `awk' on your system.
-AWK=		awk
+AWK=		gawk
 
 # The full path name of a Posix-compliant shell that supports the Korn shell's
 # 'select' statement, as an extension.  These days, Bash is the most popular.
@@ -292,20 +422,20 @@ GZIPFLAGS=	-9n
 
 ###############################################################################
 
-cc=		cc
-CC=		$(cc) -DTZDIR=\"$(TZDIR)\"
+cc=		$(CROSS_GCC)
+CC=		$(cc) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\"
 
 TZCSRCS=	zic.c localtime.c asctime.c scheck.c ialloc.c
 TZCOBJS=	zic.o localtime.o asctime.o scheck.o ialloc.o
 TZDSRCS=	zdump.c localtime.c ialloc.c
 TZDOBJS=	zdump.o localtime.o ialloc.o
-DATESRCS=	date.c localtime.c strftime.c asctime.c
-DATEOBJS=	date.o localtime.o strftime.o asctime.o
+DATESRCS=	date.c localtime.c logwtmp.c strftime.c asctime.c
+DATEOBJS=	date.o localtime.o logwtmp.o strftime.o asctime.o
 LIBSRCS=	localtime.c asctime.c difftime.c
 LIBOBJS=	localtime.o asctime.o difftime.o
 HEADERS=	tzfile.h private.h
 NONLIBSRCS=	zic.c zdump.c scheck.c ialloc.c
-NEWUCBSRCS=	date.c strftime.c
+NEWUCBSRCS=	date.c logwtmp.c strftime.c
 SOURCES=	$(HEADERS) $(LIBSRCS) $(NONLIBSRCS) $(NEWUCBSRCS) tzselect.ksh
 MANS=		newctime.3 newstrftime.3 newtzset.3 time2posix.3 \
 			tzfile.5 tzselect.8 zic.8 zdump.8
@@ -330,55 +460,83 @@ ENCHILADA=	$(COMMON) $(DOCS) $(SOURCES) $(DATA) $(MISC)
 
 SHELL=		/bin/sh
 
-all:		tzselect zic zdump $(LIBOBJS)
-
-ALL:		all date
+INSTALL:	ALL install date.1
+		-$(UTIL) mkdir $(TOPDIR)
+		-$(UTIL) mkdir $(BINDIR)
+		$(UTIL) cp date$(EXEEXT) $(BINDIR)/date$(EXEEXT)
+		-$(UTIL) mkdir $(SHAREDIR)
+		-$(UTIL) mkdir $(MANDIR)
+		-$(UTIL) mkdir $(MANDIR)/cat1
+		-$(UTIL) rm $(MANDIR)/cat1/date.1
+		groff -mman -Tascii date.1 > date.man
+		$(UTIL) cp date.man $(MANDIR)/cat1/date.1
 
 install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
 		$(ZIC) -y $(YEARISTYPE) \
 			-d $(TZDIR) -l $(LOCALTIME) -p $(POSIXRULES)
-		-rm -f $(TZDIR)/iso3166.tab $(TZDIR)/zone.tab
-		cp iso3166.tab zone.tab $(TZDIR)/.
-		-mkdir $(TOPDIR) $(ETCDIR)
-		cp tzselect zic zdump $(ETCDIR)/.
-		-mkdir $(TOPDIR) $(MANDIR) \
-			$(MANDIR)/man3 $(MANDIR)/man5 $(MANDIR)/man8
-		-rm -f $(MANDIR)/man3/newctime.3 \
-			$(MANDIR)/man3/newtzset.3 \
-			$(MANDIR)/man5/tzfile.5 \
-			$(MANDIR)/man8/tzselect.8 \
-			$(MANDIR)/man8/zdump.8 \
-			$(MANDIR)/man8/zic.8
-		cp newctime.3 newtzset.3 $(MANDIR)/man3/.
-		cp tzfile.5 $(MANDIR)/man5/.
-		cp tzselect.8 zdump.8 zic.8 $(MANDIR)/man8/.
+		-$(UTIL) rm -f $(TZDIR)/iso3166.tab $(TZDIR)/zone.tab
+		$(UTIL) cp iso3166.tab $(TZDIR)/iso3166.tab
+		$(UTIL) cp zone.tab $(TZDIR)/zone.tab
+		-$(UTIL) mkdir $(TOPDIR)
+		-$(UTIL) mkdir $(ETCDIR)
+		$(UTIL) cp zic$(EXEEXT) $(ETCDIR)/zic$(EXEEXT)
+		$(UTIL) cp zdump$(EXEEXT) $(ETCDIR)/zdump$(EXEEXT)
+		$(UTIL) cp tzselect $(ETCDIR)/tzselect
+		-$(UTIL) mkdir $(SHAREDIR)
+		-$(UTIL) mkdir $(MANDIR)
+		-$(UTIL) mkdir $(MANDIR)/cat3
+		-$(UTIL) mkdir $(MANDIR)/cat5
+		-$(UTIL) mkdir $(MANDIR)/cat8
+		-$(UTIL) rm -f $(MANDIR)/cat3/newctime.3 \
+			$(MANDIR)/cat3/newtzset.3 \
+			$(MANDIR)/cat5/tzfile.5 \
+			$(MANDIR)/cat8/tzselect.8 \
+			$(MANDIR)/cat8/zdump.8 \
+			$(MANDIR)/cat8/zic.8
+		groff -mman -Tascii newctime.3 > newctime.man
+		groff -mman -Tascii newtzset.3 > newtzset.man
+		groff -mman -Tascii time2posix.3 > time2posix.man
+		groff -mman -Tascii tzfile.5 > tzfile.man
+		groff -mman -Tascii tzselect.8 > tzselect.man
+		groff -mman -Tascii zdump.8 > zdump.man
+		groff -mman -Tascii zic.8 > zic.man
+		$(UTIL) cp newctime.man $(MANDIR)/cat3/newctime.3
+		$(UTIL) cp newtzset.man $(MANDIR)/cat3/newtzset.3
+		$(UTIL) cp time2posix.man $(MANDIR)/cat3/time2posix.3
+		$(UTIL) cp tzfile.man $(MANDIR)/cat5/tzfile.5
+		$(UTIL) cp tzselect.man $(MANDIR)/cat8/tzselect.8
+		$(UTIL) cp zdump.man $(MANDIR)/cat8/zdump.8
+		$(UTIL) cp zic.man $(MANDIR)/cat8/zic.8
 
-INSTALL:	ALL install date.1
-		-mkdir $(TOPDIR) $(BINDIR)
-		cp date $(BINDIR)/.
-		-mkdir $(TOPDIR) $(MANDIR) $(MANDIR)/man1
-		-rm -f $(MANDIR)/man1/date.1
-		cp date.1 $(MANDIR)/man1/.
+all:		tzselect host-zic zic$(EXEEXT) zdump$(EXEEXT) $(LIBOBJS)
+
+ALL:		all date$(EXEEXT)
 
 version.h:
 		(echo 'static char const PKGVERSION[]="($(PACKAGE)) ";' && \
 		 echo 'static char const TZVERSION[]="$(VERSION)";' && \
 		 echo 'static char const REPORT_BUGS_TO[]="$(BUGEMAIL)";') >$@
 
-zdump:		$(TZDOBJS)
+zdump$(EXEEXT):	$(TZDOBJS)
 		$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(TZDOBJS) $(LDLIBS)
+		$(CROSS_STRIP) $@
 
-zic:		$(TZCOBJS) yearistype
+host-zic:	$(TZCSRCS) yearistype version.h
+		$(GCC) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\" \
+		$(GCCFLAGS) $(LDFLAGS) $(TZCSRCS) $(LDLIBS) -o $@
+		$(STRIP) $@
+
+zic$(EXEEXT):	$(TZCOBJS) yearistype
 		$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(TZCOBJS) $(LDLIBS)
+		$(CROSS_STRIP) $@
 
 yearistype:	yearistype.sh
-		cp yearistype.sh yearistype
-		chmod +x yearistype
+		$(UTIL) cp yearistype.sh yearistype
 
-posix_only:	zic $(TDATA)
+posix_only:	$(zic) $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
 
-right_only:	zic leapseconds $(TDATA)
+right_only:	$(zic) leapseconds $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
 
 # In earlier versions of this makefile, the other two directories were
@@ -390,7 +548,7 @@ right_only:	zic leapseconds $(TDATA)
 # Therefore, the other two directories are now siblings of $(TZDIR).
 # You must replace all of $(TZDIR) to switch from not using leap seconds
 # to using them, or vice versa.
-other_two:	zic leapseconds $(TDATA)
+other_two:	$(zic) leapseconds $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null $(TDATA)
 		$(ZIC) -y $(YEARISTYPE) \
 			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
@@ -402,21 +560,26 @@ right_posix:	right_only other_two
 zones:		$(REDO)
 
 $(TZLIB):	$(LIBOBJS)
-		-mkdir $(TOPDIR) $(LIBDIR)
-		ar ru $@ $(LIBOBJS)
-		if [ -x /usr/ucb/ranlib ] || [ -x /usr/bin/ranlib ]; \
-			then ranlib $@ ; fi
+		-$(UTIL) mkdir $(TOPDIR)
+		-$(UTIL) mkdir $(LIBDIR)
+		$(CROSS_AR) rus $@ $(LIBOBJS)
 
-date:		$(DATEOBJS)
-		$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(DATEOBJS) $(LDLIBS)
+# We use the system's logwtmp in preference to ours if available.
+
+date$(EXEEXT):	$(DATEOBJS)
+		$(CROSS_AR) rs logwtmpl.a logwtmp.o
+		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
+			$(LDLIBS) -lc logwtmpl.a -o $@
+		$(CROSS_STRIP) $@
+		$(UTIL) rm logwtmpl.a
+		$(CROSS_STRIP) $@
 
 tzselect:	tzselect.ksh
 		sed \
-			-e 's|#!/bin/bash|#!$(KSHELL)|g' \
 			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
 			-e 's|\(PKGVERSION\)=.*|\1='\''($(PACKAGE)) '\''|' \
 			-e 's|\(REPORT_BUGS_TO\)=.*|\1=$(BUGEMAIL)|' \
-			-e 's|TZDIR=[^}]*|TZDIR=$(TZDIR)|' \
+			-e 's|TZDIR=[^}]*|TZDIR=/dev/env/DJDIR/zoneinfo|' \
 			-e 's|\(TZVERSION\)=.*|\1=$(VERSION)|' \
 			<$? >$@
 		chmod +x $@
@@ -433,10 +596,10 @@ check_web:	$(WEB_PAGES)
 		$(VALIDATE_ENV) $(VALIDATE) $(VALIDATE_FLAGS) $(WEB_PAGES)
 
 clean_misc:
-		rm -f core *.o *.out \
-		  date tzselect version.h zdump zic yearistype
+		$(UTIL) rm core *.o *.out tzselect zdump$(EXEEXT) zic$(EXEEXT) \
+			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man
 clean:		clean_misc
-		rm -f -r tzpublic
+		$(UTIL) rm -f -r tzpublic
 
 maintainer-clean: clean
 		@echo 'This command is intended for maintainers to use; it'
@@ -444,7 +607,7 @@ maintainer-clean: clean
 		rm -f *.[1-8].txt *.asc *.tar.gz
 
 names:
-		@echo $(ENCHILADA)
+		@$(UTIL) echo $(ENCHILADA)
 
 public:		check check_public check_time_t_alternatives \
 		set-timestamps tarballs signatures
@@ -470,7 +633,7 @@ set-timestamps:
 
 check_public:	$(ENCHILADA)
 		make maintainer-clean
-		make "CFLAGS=$(GCC_DEBUG_FLAGS)"
+		make "CFLAGS=$(CROSS_GCC_DEBUG_FLAGS)"
 		mkdir tzpublic
 		for i in $(TDATA) ; do \
 		  $(zic) -v -d tzpublic $$i 2>&1 || exit; \
