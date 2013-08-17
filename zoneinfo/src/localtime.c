@@ -29,6 +29,17 @@
 #endif /* !defined TZ_ABBR_ERR_CHAR */
 
 /*
+** Portable testing for absolute file names.
+*/
+
+#ifndef IS_SLASH
+#define IS_SLASH(c)     ((c) == '/')
+#endif
+#ifndef IS_ABSOLUTE
+#define IS_ABSOLUTE(n)  (IS_SLASH((n)[0]))
+#endif
+
+/*
 ** SunOS 4.1.1 headers lack O_BINARY.
 */
 
@@ -179,6 +190,15 @@ static int		tzload(const char * name, struct state * sp,
 				int doextend);
 static int		tzparse(const char * name, struct state * sp,
 				int lastditch);
+#ifdef STD_INSPIRED
+static int_fast64_t	leapcorr(time_t *timep);
+time_t			time2posix(time_t t);
+time_t			posix2time(time_t t);
+struct tm *		offtime(const time_t *const timep, const int_fast32_t offset);
+time_t			timelocal(struct tm *const tmp);
+time_t			timegm(struct tm *const tmp);
+time_t			timeoff(struct tm *const tmp, const int_fast32_t offset);
+#endif /* defined STD_INSPIRED */
 
 #ifdef ALL_STATE
 static struct state *	lclptr;
@@ -200,10 +220,13 @@ static char		lcl_TZname[TZ_STRLEN_MAX + 1];
 static int		lcl_is_set;
 static int		gmt_is_set;
 
+#ifndef __DJGPP__
+/*  Use DJGPP's own definition of tzname.  */
 char *			tzname[2] = {
 	wildabbr,
 	wildabbr
 };
+#endif  /* !__DJGPP__ */
 
 /*
 ** Section 4.12.3 of X3.159-1989 requires that
@@ -366,7 +389,7 @@ tzload(register const char *name, register struct state *const sp,
 
 		if (name[0] == ':')
 			++name;
-		doaccess = name[0] == '/';
+		doaccess = IS_ABSOLUTE(name);
 		if (!doaccess) {
 			if ((p = TZDIR) == NULL)
 				goto oops;
@@ -1349,6 +1372,8 @@ localsub(const time_t *const timep, const int_fast32_t offset,
 	return result;
 }
 
+#ifndef __DJGPP__
+/*  Use DJGPP's own implementation of localtime and localtime_r.  */
 struct tm *
 localtime(const time_t *const timep)
 {
@@ -1365,6 +1390,7 @@ localtime_r(const time_t *const timep, struct tm *tmp)
 {
 	return localsub(timep, 0L, tmp);
 }
+#endif  /* !__DJGPP__ */
 
 /*
 ** gmtsub is to gmtime as localsub is to localtime.
@@ -1407,6 +1433,8 @@ gmtsub(const time_t *const timep, const int_fast32_t offset,
 	return result;
 }
 
+#ifndef __DJGPP__
+/*  Use DJGPP's own implementation of gmtime and gmtime_r.  */
 struct tm *
 gmtime(const time_t *const timep)
 {
@@ -1422,6 +1450,7 @@ gmtime_r(const time_t *const timep, struct tm *tmp)
 {
 	return gmtsub(timep, 0L, tmp);
 }
+#endif  /* !__DJGPP__ */
 
 #ifdef STD_INSPIRED
 
@@ -1578,6 +1607,8 @@ timesub(const time_t *const timep, const int_fast32_t offset,
 	return tmp;
 }
 
+#ifndef __DJGPP__
+/*  Use DJGPP's own implementation of ctime and ctime_r.  */
 char *
 ctime(const time_t *const timep)
 {
@@ -1597,6 +1628,7 @@ ctime_r(const time_t *const timep, char *buf)
 
 	return asctime_r(localtime_r(timep, &mytm), buf);
 }
+#endif  /* !__DJGPP__ */
 
 /*
 ** Adapted from code provided by Robert Elz, who writes:
@@ -1959,12 +1991,15 @@ time1(struct tm *const tmp,
 	return WRONG;
 }
 
+#ifndef __DJGPP__
+/*  Use DJGPP's own implementation of mktime.  */
 time_t
 mktime(struct tm *const tmp)
 {
 	tzset();
 	return time1(tmp, localsub, 0L);
 }
+#endif  /* !__DJGPP__ */
 
 #ifdef STD_INSPIRED
 
