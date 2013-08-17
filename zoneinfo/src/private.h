@@ -124,18 +124,64 @@
 #include "stdint.h"
 #endif /* !HAVE_STDINT_H */
 
+#ifndef HAVE_INTTYPES_H
+# define HAVE_INTTYPES_H HAVE_STDINT_H
+#endif
+#if HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+
 #ifndef INT_FAST64_MAX
 /* Pre-C99 GCC compilers define __LONG_LONG_MAX__ instead of LLONG_MAX.  */
 #if defined LLONG_MAX || defined __LONG_LONG_MAX__
 typedef long long	int_fast64_t;
+# ifdef LLONG_MAX
+#  define INT_FAST64_MIN LLONG_MIN
+#  define INT_FAST64_MAX LLONG_MAX
+# else
+#  define INT_FAST64_MIN __LONG_LONG_MIN__
+#  define INT_FAST64_MAX __LONG_LONG_MAX__
+# endif
+# define SCNdFAST64 "lld"
 #else /* ! (defined LLONG_MAX || defined __LONG_LONG_MAX__) */
 #if (LONG_MAX >> 31) < 0xffffffff
 Please use a compiler that supports a 64-bit integer type (or wider);
 you may need to compile with "-DHAVE_STDINT_H".
 #endif /* (LONG_MAX >> 31) < 0xffffffff */
 typedef long		int_fast64_t;
+# define INT_FAST64_MIN LONG_MIN
+# define INT_FAST64_MAX LONG_MAX
+# define SCNdFAST64 "ld"
 #endif /* ! (defined LLONG_MAX || defined __LONG_LONG_MAX__) */
 #endif /* !defined INT_FAST64_MAX */
+
+#ifndef INT_FAST32_MAX
+# if INT_MAX >> 31 == 0
+typedef long int_fast32_t;
+# else
+typedef int int_fast32_t;
+# endif
+#endif
+
+#ifndef INTMAX_MAX
+# if defined LLONG_MAX || defined __LONG_LONG_MAX__
+typedef long long intmax_t;
+#  define PRIdMAX "lld"
+# else
+typedef long intmax_t;
+#  define PRIdMAX "ld"
+# endif
+#endif
+
+#ifndef UINTMAX_MAX
+# if defined ULLONG_MAX || defined __LONG_LONG_MAX__
+typedef unsigned long long uintmax_t;
+#  define PRIuMAX "llu"
+# else
+typedef unsigned long uintmax_t;
+#  define PRIuMAX "lu"
+# endif
+#endif
 
 #ifndef INT32_MAX
 #define INT32_MAX 0x7fffffff
@@ -144,12 +190,24 @@ typedef long		int_fast64_t;
 #define INT32_MIN (-1 - INT32_MAX)
 #endif /* !defined INT32_MIN */
 
-#if 2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)
-# define ATTRIBUTE_PURE      __attribute__ ((__pure__))
-# define ATTRIBUTE_NORETURN  __attribute__ ((__noreturn__))
+#if 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
+# define ATTRIBUTE_CONST __attribute__ ((const))
+# define ATTRIBUTE_PURE __attribute__ ((__pure__))
 #else
-# define ATTRIBUTE_PURE      /* empty */
-# define ATTRIBUTE_NORETURN  /* empty */
+# define ATTRIBUTE_CONST /* empty */
+# define ATTRIBUTE_PURE /* empty */
+#endif
+
+#if !defined _Noreturn && __STDC_VERSION__ < 201112
+# if 2 < __GNUC__ + (8 <= __GNUC_MINOR__)
+#  define _Noreturn __attribute__ ((__noreturn__))
+# else
+#  define _Noreturn
+# endif
+#endif
+
+#if __STDC_VERSION__ < 199901 && !defined restrict
+# define restrict /* empty */
 #endif
 
 /*
@@ -167,32 +225,64 @@ extern char *	asctime_r(struct tm const *, char *);
 #endif
 
 /*
+** Compile with -Dtime_tz=T to build the tz package with a private
+** time_t type equivalent to T rather than the system-supplied time_t.
+** This debugging feature can test unusual design decisions
+** (e.g., time_t wider than 'long', or unsigned time_t) even on
+** typical platforms.
+*/
+#ifdef time_tz
+static time_t sys_time(time_t *x) { return time(x); }
+
+# undef  ctime
+# define ctime tz_ctime
+# undef  ctime_r
+# define ctime_r tz_ctime_r
+# undef  difftime
+# define difftime tz_difftime
+# undef  gmtime
+# define gmtime tz_gmtime
+# undef  gmtime_r
+# define gmtime_r tz_gmtime_r
+# undef  localtime
+# define localtime tz_localtime
+# undef  localtime_r
+# define localtime_r tz_localtime_r
+# undef  mktime
+# define mktime tz_mktime
+# undef  time
+# define time tz_time
+# undef  time_t
+# define time_t tz_time_t
+
+typedef time_tz time_t;
+
+char *ctime(time_t const *);
+char *ctime_r(time_t const *, char *);
+double difftime(time_t, time_t);
+struct tm *gmtime(time_t const *);
+struct tm *gmtime_r(time_t const *restrict, struct tm *restrict);
+struct tm *localtime(time_t const *);
+struct tm *localtime_r(time_t const *restrict, struct tm *restrict);
+time_t mktime(struct tm *);
+
+static time_t
+time(time_t *p)
+{
+	time_t r = sys_time(0);
+	if (p)
+		*p = r;
+	return r;
+}
+#endif
+
+/*
 ** Private function declarations.
 */
 
 char *		icatalloc(char * old, const char * new);
 char *		icpyalloc(const char * string);
 const char *	scheck(const char * string, const char * format);
-
-/*
-** Declarations for functions which shut up GCC $(GCC_DEBUG_FLAGS).
-*/
-#ifndef STD_INSPIRED
-static
-#endif /* !defined STD_INSPIRED */
-void tzsetwall(void);
-struct tm *localtime_r(const time_t * const __timep, struct tm * __tmp);
-struct tm *gmtime_r(const time_t * const __tp, struct tm * __tm);
-char *ctime_r(const time_t * const __tp, char * __buf);
-char *asctime_r(const struct tm *, char *);
-#ifdef STD_INSPIRED
-struct tm *offtime(const time_t * const __tp, const long __off);
-time_t timelocal(struct tm * const __tmp);
-time_t timegm(struct tm * const __tmp);
-time_t timeoff(struct tm * const __tmp, const long __off);
-time_t time2posix(time_t);
-time_t posix2time(time_t);
-#endif /* defined STD_INSPIRED */
 
 /*
 ** Finally, some convenience items.
@@ -258,16 +348,6 @@ time_t posix2time(time_t);
 #define INITIALIZE(x)
 #endif /* !defined GNUC_or_lint */
 #endif /* !defined INITIALIZE */
-
-#ifdef __MSDOS__
-#define IS_SLASH(c)     ((c) == '/' || (c) == '\\')
-#define HAS_DEVICE(n)   ((n)[0] && (n)[1] == ':')
-#define IS_ABSOLUTE(n)  (IS_SLASH((n)[0]) || HAS_DEVICE(n))
-#undef  TZDIR
-#define TZDIR           (getenv("TZDIR") ? getenv("TZDIR") : "/dev/env/DJDIR/zoneinfo")
-#else /* !__MSDOS__ */
-#define HAS_DEVICE(n) 0
-#endif /* !__MSDOS__ */
 
 /*
 ** For the benefit of GNU folk...
