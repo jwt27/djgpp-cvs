@@ -349,6 +349,16 @@ const char *	scheck(const char * string, const char * format);
 #endif /* !defined GNUC_or_lint */
 #endif /* !defined INITIALIZE */
 
+#ifdef __MSDOS__
+#define IS_SLASH(c)     ((c) == '/' || (c) == '\\')
+#define HAS_DEVICE(n)   ((n)[0] && (n)[1] == ':')
+#define IS_ABSOLUTE(n)  (IS_SLASH((n)[0]) || HAS_DEVICE(n))
+#undef  TZDIR
+#define TZDIR           (getenv("TZDIR") ? getenv("TZDIR") : "/dev/env/DJDIR/zoneinfo")
+#else /* !__MSDOS__ */
+#define HAS_DEVICE(n) 0
+#endif /* !__MSDOS__ */
+
 /*
 ** For the benefit of GNU folk...
 ** `_(MSGID)' uses the current locale's message library string for MSGID.
