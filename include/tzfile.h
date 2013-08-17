@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_tzfile_h__
@@ -47,21 +48,26 @@ extern "C" {
 */
 
                         /* Time zone object file directory */
-#define TZDIR           "/usr/share/zoneinfo"
-#define TZDEFAULT       "/etc/localtime"
+#define TZDIR           "/dev/env/DJDIR/share/zoneinfo"
+#define TZDEFAULT       "/dev/env/DJDIR/etc/localtime"
 #define TZDEFRULES      "posixrules"
 
 /*
 ** Each file begins with. . .
 */
 
+#define TZ_MAGIC  "TZif"
+
 struct tzhead {
-        char    tzh_reserved[24];       /* reserved for future use */
-        char    tzh_ttisstdcnt[4];      /* coded number of trans. time flags */
-        char    tzh_leapcnt[4];         /* coded number of leap seconds */
-        char    tzh_timecnt[4];         /* coded number of transition times */
-        char    tzh_typecnt[4];         /* coded number of local time types */
-        char    tzh_charcnt[4];         /* coded number of abbr. chars */
+  char tzh_magic[4];           /* TZ_MAGIC */
+  char tzh_version[1];         /* '\0' or '2' as of 2005 */
+  char tzh_reserved[15];       /* reserved--must be zero */
+  char tzh_ttisgmtcnt[4];      /* coded number of trans. time flags */
+  char tzh_ttisstdcnt[4];      /* coded number of trans. time flags */
+  char tzh_leapcnt[4];         /* coded number of leap seconds */
+  char tzh_timecnt[4];         /* coded number of transition times */
+  char tzh_typecnt[4];         /* coded number of local time types */
+  char tzh_charcnt[4];         /* coded number of abbr. chars */
 };
 
 /*
@@ -70,7 +76,7 @@ struct tzhead {
 **      tzh_timecnt (char [4])s         coded transition times a la time(2)
 **      tzh_timecnt (unsigned char)s    types of local time starting at above
 **      tzh_typecnt repetitions of
-**              one (char [4])          coded GMT offset in seconds
+**              one (char [4])          coded UTC offset in seconds
 **              one (unsigned char)     used to set tm_isdst
 **              one (unsigned char)     that's an abbreviation list index
 **      tzh_charcnt (char)s             '\0'-terminated zone abbreviations
@@ -82,6 +88,22 @@ struct tzhead {
 **                                      transition time is wall clock time
 **                                      if absent, transition times are
 **                                      assumed to be wall clock time
+**      tzh_ttisgmtcnt (char)s          indexed by type; if TRUE, transition
+**                                      time is UTC, if FALSE,
+**                                      transition time is local time
+**                                      if absent, transition times are
+**                                      assumed to be local time
+*/
+
+/*
+** If tzh_version is '2' or greater, the above is followed by a second instance
+** of tzhead and a second instance of the data in which each coded transition
+** time uses 8 rather than 4 chars,
+** then a POSIX-TZ-environment-variable-style string for use in handling
+** instants after the last transition time stored in the file
+** (with nothing between the newlines if there is no POSIX representation for
+** such instants).
+** DJGPP does not support version 2 or higher.
 */
 
 /*
@@ -89,13 +111,7 @@ struct tzhead {
 ** exceed any of the limits below.
 */
 
-/*
-** The TZ_MAX_TIMES value below is enough to handle a bit more than a
-** year's worth of solar time (corrected daily to the nearest second) or
-** 138 years of Pacific Presidential Election time
-** (where there are three time zone transitions every fourth year).
-*/
-#define TZ_MAX_TIMES    370
+#define TZ_MAX_TIMES    1200
 
 #define NOSOLAR                 /* 4BSD doesn't currently handle solar time */
 
