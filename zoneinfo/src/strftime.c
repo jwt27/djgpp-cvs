@@ -5,6 +5,10 @@
 ** This is ANSIish only when "multibyte character == plain character".
 */
 
+#ifndef __DJGPP__
+/*  Use DJGPP's own implementation of strftime.  */
+
+
 #include "private.h"
 
 /*
@@ -738,3 +742,4 @@ no_locale:
 	return &localebuf;
 }
 #endif /* defined LOCALE_HOME */
+#endif /* !__DJGPP__ */
