@@ -30,7 +30,9 @@ static char sccsid[] = "@(#)date.c	4.23 (Berkeley) 9/20/88";
 #include "sys/time.h"	/* for struct timeval, struct timezone */
 #endif /* HAVE_ADJTIME || HAVE_SETTIMEOFDAY */
 #include "locale.h"
+#ifdef OLD_TIME
 #include "utmp.h"	/* for OLD_TIME (or its absence) */
+#endif
 #if HAVE_UTMPX_H
 #include "utmpx.h"
 #endif
@@ -54,14 +56,14 @@ static char sccsid[] = "@(#)date.c	4.23 (Berkeley) 9/20/88";
 #define SECSPERMIN	60
 #endif /* !defined SECSPERMIN */
 
-extern double		atof();
+extern double		atof(const char *s);
 extern char **		environ;
-extern char *		getlogin();
-extern time_t		mktime();
+extern char *		getlogin(void);
+extern time_t		mktime(struct tm *tptr);
 extern char *		optarg;
 extern int		optind;
-extern char *		strchr();
-extern time_t		time();
+extern char *		strchr(const char *s, int c);
+extern time_t		time(time_t *t);
 extern char *		tzname[2];
 
 static int		retval = EXIT_SUCCESS;
@@ -74,7 +76,9 @@ static void		errensure(void);
 static void		iffy(time_t, time_t, const char *, const char *);
 int			main(int, char**);
 static const char *	nondigit(const char *);
+#ifndef __MSDOS__
 static void		oops(const char *);
+#endif  /* __MSDOS__ */
 static void		reset(time_t, int);
 static int		sametm(const struct tm *, const struct tm *);
 static void		timeout(FILE *, const char *, const struct tm *);
@@ -94,15 +98,19 @@ main(const int argc, char *argv[])
 	register int		dflag = 0;
 	register int		nflag = 0;
 	register int		tflag = 0;
+#if HAVE_SETTIMEOFDAY == 2
 	register int		minuteswest;
 	register int		dsttime;
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 	register double		adjust;
 	time_t			now;
 	time_t			t;
 
 	INITIALIZE(dousg);
+#if HAVE_SETTIMEOFDAY == 2
 	INITIALIZE(minuteswest);
 	INITIALIZE(dsttime);
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 	INITIALIZE(adjust);
 	INITIALIZE(t);
 #ifdef LC_ALL
@@ -135,7 +143,9 @@ main(const int argc, char *argv[])
 			}
 			dflag = 1;
 			cp = optarg;
+#if HAVE_SETTIMEOFDAY == 2
 			dsttime = atoi(cp);
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 			if (*cp == '\0' || *nondigit(cp) != '\0')
 				wildinput(_("-t value"), optarg,
 					_("must be a non-negative number"));
@@ -148,7 +158,9 @@ main(const int argc, char *argv[])
 			}
 			tflag = 1;
 			cp = optarg;
+#if HAVE_SETTIMEOFDAY == 2
 			minuteswest = atoi(cp);
+#endif /* HAVE_SETTIMEOFDAY == 2 */
 			if (*cp == '+' || *cp == '-')
 				++cp;
 			if (*cp == '\0' || *nondigit(cp) != '\0')
@@ -426,14 +438,16 @@ reset(const time_t newt, const int nflag)
 #endif /* !defined BSD4_4 */
 #endif /* !defined TIME_NAME */
 
+#ifdef TSP_SETDATE
 #include "syslog.h"
 #include "sys/socket.h"
 #include "netinet/in.h"
 #include "netdb.h"
 #define TSPTYPES
 #include "protocols/timed.h"
+#endif
 
-extern int		logwtmp();
+extern int		logwtmp(char *line, char *name, char *host);
 
 #if HAVE_SETTIMEOFDAY == 1
 #define settimeofday(t, tz) (settimeofday)(t)
@@ -450,7 +464,9 @@ static void
 reset(const time_t newt, const int nflag)
 {
 	register const char *	username;
+#ifndef __MSDOS__
 	static struct timeval	tv;	/* static so tv_usec is 0 */
+#endif  /* __MSDOS__ */
 
 #ifdef EBUG
 	return;
@@ -458,6 +474,7 @@ reset(const time_t newt, const int nflag)
 	username = getlogin();
 	if (username == NULL || *username == '\0') /* single-user or no tty */
 		username = "root";
+#ifndef __MSDOS__
 	tv.tv_sec = newt;
 #ifdef TSP_SETDATE
 	if (nflag || !netsettime(tv))
@@ -473,6 +490,7 @@ reset(const time_t newt, const int nflag)
 				username);
 		} else	oops("settimeofday");
 	}
+#endif  /* __MSDOS__ */
 }
 
 #endif /* !defined OLD_TIME */
@@ -511,6 +529,7 @@ usage(void)
 	exit(retval);
 }
 
+#ifndef __MSDOS__
 static void
 oops(const char *const string)
 {
@@ -522,6 +541,7 @@ oops(const char *const string)
 	errensure();
 	display(NULL);
 }
+#endif /* __MSDOS__ */
 
 static void
 display(const char *const format)
@@ -543,7 +563,7 @@ display(const char *const format)
 	exit(retval);
 }
 
-extern size_t	strftime();
+extern size_t	strftime(char *s, size_t maxsize, const char *format, const struct tm *t);
 
 #define INCR	1024
 
