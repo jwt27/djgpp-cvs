@@ -468,7 +468,7 @@ INSTALL:	ALL install date.1
 		-$(UTIL) mkdir $(MANDIR)
 		-$(UTIL) mkdir $(MANDIR)/cat1
 		-$(UTIL) rm $(MANDIR)/cat1/date.1
-		groff -mman -Tascii date.1 > date.man
+		-groff -mman -Tascii date.1 > date.man
 		$(UTIL) cp date.man $(MANDIR)/cat1/date.1
 
 install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
@@ -493,13 +493,13 @@ install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
 			$(MANDIR)/cat8/tzselect.8 \
 			$(MANDIR)/cat8/zdump.8 \
 			$(MANDIR)/cat8/zic.8
-		groff -mman -Tascii newctime.3 > newctime.man
-		groff -mman -Tascii newtzset.3 > newtzset.man
-		groff -mman -Tascii time2posix.3 > time2posix.man
-		groff -mman -Tascii tzfile.5 > tzfile.man
-		groff -mman -Tascii tzselect.8 > tzselect.man
-		groff -mman -Tascii zdump.8 > zdump.man
-		groff -mman -Tascii zic.8 > zic.man
+		-groff -mman -Tascii newctime.3 > newctime.man
+		-groff -mman -Tascii newtzset.3 > newtzset.man
+		-groff -mman -Tascii time2posix.3 > time2posix.man
+		-groff -mman -Tascii tzfile.5 > tzfile.man
+		-groff -mman -Tascii tzselect.8 > tzselect.man
+		-groff -mman -Tascii zdump.8 > zdump.man
+		-groff -mman -Tascii zic.8 > zic.man
 		$(UTIL) cp newctime.man $(MANDIR)/cat3/newctime.3
 		$(UTIL) cp newtzset.man $(MANDIR)/cat3/newtzset.3
 		$(UTIL) cp time2posix.man $(MANDIR)/cat3/time2posix.3
