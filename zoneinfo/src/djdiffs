@@ -1250,3 +1250,29 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/zic.c djgpp/zoneinfo/src/zic.c
  	return 0;
  }
  
+2013-09-06  Juan Manuel Guerrero  <juan.guerrero@gmx.de>
+
+
+	* djgpp/zoneinfo/src/date.c (nondigit):  Use ATTRIBUTE_PURE macro.
+
+
+
+
+
+
+diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
+--- djgpp.orig/zoneinfo/src/date.c	2013-08-18 04:01:44 +0100
++++ djgpp/zoneinfo/src/date.c	2013-09-06 18:43:40 +0100
+@@ -510,11 +510,11 @@ errensure(void)
+ {
+ 	if (retval == EXIT_SUCCESS)
+ 		retval = EXIT_FAILURE;
+ }
+ 
+-static const char *
++static ATTRIBUTE_PURE const char *
+ nondigit(register const char *cp)
+ {
+ 	while (is_digit(*cp))
+ 		++cp;
+ 	return cp;
