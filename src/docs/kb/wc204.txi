@@ -1235,6 +1235,13 @@ function from the Windows 95 long filename functions API by inspecting the conte
 the function will ignore, fail or fall back on the corresponding SFN API function if the
 LFN API function is not provided by the @acronym{LFN} driver used.
 
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex truncf@r{ added}
+@findex trunc@r{ added}
+@findex truncl@r{ added}
+The @acronym{C99} functions @code{truncf} @code{trunc} and @code{truncl} were
+added to comply with the @acronym{C99} standard.
+
 @pindex dxe3gen@r{, resolving @code{__[de]register_frame_info} symbols in @acronym{DXE} moduls}
 The dxe3gen program inspects the @code{Augmentation String} of the @code{CIE} record
 contained in the @code{.eh_frame} section to decide if both @code{__register_frame_info}
