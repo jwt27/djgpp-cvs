@@ -1,3 +1,4 @@
+# Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details
 
@@ -5,7 +6,7 @@ include $(TOP)/../makefile.def
 
 .SUFFIXES: .o .i .c .cc .s
 
-GCC = gcc @$(TOP)/../gcc.opt -I. -I- -I$(TOP)/../../include $(CFLAGS) -c $<
+GCC = gcc @$(TOP)/../gcc.opt -I. -I$(TOP)/../../include $(CFLAGS) -c $<
 
 %.o : %.c
 	$(GCC)
@@ -66,7 +67,7 @@ EXE = @${TOP}/../../bin/stubify.exe $@
 	-diff $^ > $@
 	cat $@
 
-all :: $(EXES)
+all :: config $(EXES)
 	@rem.com
 
 tests :: $(ERRS)
@@ -76,6 +77,27 @@ testclean ::
 
 clean :: testclean
 	-rm -f *.exe *.o *.d *.i
+
+config:	$(TOP)/../gcc.opt 
+
+$(TOP)/../gcc.opt: $(TOP)/../makefile.inc
+	@$(TOP)/../../src/misc.exe echo - "-MD" >$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-O3" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-g" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-march=i386" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wall" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wbad-function-cast" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wcast-qual" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Werror" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wpointer-arith" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wshadow" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wstrict-prototypes" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wwrite-strings" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wundef" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wcast-align" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-Wsign-compare" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "-nostdinc" >>$(TOP)/../gcc.opt
+	@$(TOP)/../../src/misc.exe echo - "$(IQUOTE)" >>$(TOP)/../gcc.opt
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)
