@@ -1,6 +1,0 @@
--MD
--O2
--mcpu=pentium
--march=i386
--Wall
--nostdinc
