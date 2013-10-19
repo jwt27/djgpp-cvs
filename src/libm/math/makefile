@@ -164,9 +164,9 @@ SRC += sf_tanh.c
 SRC += sf_infinity.c
 SRC += sf_isinf.c
 SRC += sf_nan.c
-SRC += trunc
-SRC += truncf
-SRC += truncl
+SRC += trunc.c
+SRC += truncf.c
+SRC += truncl.c
 
 chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	s_atan.def w_atan2.def w_atanh.def w_j0.def \
