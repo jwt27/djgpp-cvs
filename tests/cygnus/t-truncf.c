@@ -38,7 +38,27 @@ static const float_t tests_float[][2] =
   /* Different mantissa patterns. */
   { { 0x7FFFFFU, 0x96U, 0 }, { 0x7FFFFFU, 0x96U, 0 } },
   { { 0x7FFFFFU, 0x95U, 0 }, { 0x7FFFFEU, 0x95U, 0 } },
-  { { 0x1555FFU, 0x8DU, 0 }, { 0x155400U, 0x8DU, 0 } }
+  { { 0x1555FFU, 0x8DU, 0 }, { 0x155400U, 0x8DU, 0 } },
+
+  /*  Number greater than 2**32 thus all digits are significant and will not be truncated.  */
+  { { 0x000000U, 0x7FU + 0x17U, 0 }, { 0x000000U, 0x7FU + 0x17U, 0 } }, /* 8388608.000000 */
+  { { 0x000000U, 0x7FU + 0x17U, 1 }, { 0x000000U, 0x7FU + 0x17U, 1 } }, /* -8388608.000000 */
+
+  /*  Number less than 1 thus will be truncated to 0.  */
+  { { 0x7FBE77U, 0x7FU + 0xFFFFFFFFU, 0 }, { 0x0U, 0x0U, 0 } }, /* 0.999000 */
+  { { 0x7FBE77U, 0x7FU + 0xFFFFFFFFU, 1 }, { 0x0U, 0x0U, 1 } }, /* -0.999000 */
+  { { 0x000000U, 0x7FU + 0xFFFFFFFFU, 0 }, { 0x0U, 0x0U, 0 } }, /* 0.500000 */
+  { { 0x000000U, 0x7FU + 0xFFFFFFFFU, 1 }, { 0x0U, 0x0U, 1 } }, /* -0.500000 */
+  { { 0x03126FU, 0x7FU + 0xFFFFFFF6U, 0 }, { 0x0U, 0x0U, 0 } }, /* 0.001000 */
+  { { 0x03126FU, 0x7FU + 0xFFFFFFF6U, 1 }, { 0x0U, 0x0U, 1 } }, /* -0.001000 */
+
+  /*  Number greather than 1 and less than 2**32 will truncated.  */
+  { { 0x0020C5U, 0x7FU + 0x00U, 0 }, { 0x0U, 0x7FU + 0x00U, 0 } }, /* 1.001000 */
+  { { 0x0020C5U, 0x7FU + 0x00U, 1 }, { 0x0U, 0x7FU + 0x00U, 1 } }, /* -1.001000 */
+  { { 0x14F0E5U, 0x7FU + 0x16U, 0 }, { 0x14F0E4U, 0x7FU + 0x16U, 0 } }, /* 4880498.500000 */
+  { { 0x14F0E5U, 0x7FU + 0x16U, 1 }, { 0x14F0E4U, 0x7FU + 0x16U, 1 } }, /* -4880498.500000 */
+  { { 0x000018U, 0x7FU + 0x10U, 0 }, { 0x0U, 0x7FU + 0x10U, 0 } }, /* 65536.187500 */
+  { { 0x000018U, 0x7FU + 0x10U, 1 }, { 0x0U, 0x7FU + 0x10U, 1 } } /* -65536.187500 */
 };
 
 static const size_t n_tests_float = sizeof(tests_float) / sizeof(tests_float[0]);
@@ -65,10 +85,10 @@ int main(void)
           should_be.ft.mantissa == result.ft.mantissa)
         counter++;     
       else
-        printf("truncf test failed:  value to truncate = %.5g  result = %.5g  should be = %.5g\n", value.f, result.f, should_be.f);
+        printf("truncf test failed:  value to truncate = %.12f  result = %.12f  should be = %.12f\n", value.f, result.f, should_be.f);
     }
     else
-      printf("truncf test failed:  value to truncate = %.5g  result = %.5g  should be = %.5g\n", value.f, result.f, should_be.f);
+      printf("truncf test failed:  value to truncate = %.12f  result = %.12f  should be = %.12f\n", value.f, result.f, should_be.f);
   }
   printf("%s\n", (counter < n_tests_float) ? "truncf test failed." : "truncf test succeded.");
 
