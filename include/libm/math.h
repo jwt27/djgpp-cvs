@@ -15,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.5 2013/03/05 19:06:47 juan.guerrero Exp $
+ * $Id: math.h,v 1.6 2013/10/19 18:36:14 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -95,12 +95,12 @@ extern  _LIB_VERSION_TYPE  _LIB_VERSION;
 #ifndef __cplusplus
 struct exception
 {
-	int type;
-	const char *name;
-	double arg1;
-	double arg2;
-	double retval;
-	int err;
+  int type;
+  const char *name;
+  double arg1;
+  double arg2;
+  double retval;
+  int err;
 };
 #endif
 

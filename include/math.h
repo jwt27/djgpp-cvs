@@ -246,12 +246,12 @@ void   sincos(double *_cos, double *_sin, double _x);
 
 #ifndef __cplusplus
 struct exception {
-	int type;
-	const char *name;
-	double arg1;
-	double arg2;
-	double retval;
-	int err;
+  int type;
+  const char *name;
+  double arg1;
+  double arg2;
+  double retval;
+  int err;
 };
 #endif
 
