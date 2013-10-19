@@ -96,9 +96,9 @@ all: check
 
 check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe
 	./mtest.exe > mtest.results
-	./t-trunc.exe
-	./t-truncf.exe
-	./t-truncl.exe
+	./t-trunc.exe > ttest.results
+	./t-truncf.exe >> ttest.results
+	./t-truncl.exe >> ttest.results
 
 # Pattern rules to generate test vectors.  (The funky vec.c=%.c replacement
 # is meant to create a pattern rule where actually a normal rule will
@@ -141,7 +141,7 @@ $(OFILES) $(VEC_OFILES) : test.h
 
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
-	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results t-trunc*.o
+	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results ttest.results t-trunc*.o
 
 .SECONDARY: $(GEN_PROGS) $(GEN_VEC_FILES)
 .PHONY: all check clean mostlyclean
