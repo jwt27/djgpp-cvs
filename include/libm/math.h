@@ -15,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.6 2013/10/19 18:36:14 juan.guerrero Exp $
+ * $Id: math.h,v 1.7 2013/10/20 13:57:05 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -158,6 +158,12 @@ extern double fmod __P((double, double));
     defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 /* ISO C99 types and macros. */
+extern long long int llrintf __P((float));
+extern long long int llrint __P((double));
+extern long long int llrintl __P((long double));
+extern long int lrintf __P((float));
+extern long int lrint __P((double));
+extern long int lrintl __P((long double));
 extern float truncf __P((float));
 extern double trunc __P((double));
 extern long double truncl __P((long double));
