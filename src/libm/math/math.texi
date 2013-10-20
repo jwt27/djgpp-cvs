@@ -56,6 +56,8 @@ available when you include @file{math.h} instead of @file{libm/math.h}.
 * log::		Natural logarithms
 * log10::	Base 10 logarithms
 * log1p::	Log of 1 + X
+* lrint::	Round to integer
+* llrint::	Round to integer
 * matherr::	Modifiable math error handler
 * modf::	Split fractional and integer parts
 * nan::		Floating Not a Number
@@ -226,3 +228,9 @@ The library is set to X/Open mode by default.
 
 @page
 @include trunc.def
+
+@page
+@include lrint.def
+
+@page
+@include llrint.def
