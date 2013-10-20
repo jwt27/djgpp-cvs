@@ -94,11 +94,16 @@ $(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g -Wall
 
 all: check
 
-check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe
+check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe t-lrint.exe t-lrintf.exe t-lrintl.exe t-llrint.exe t-llrintl.exe
 	./mtest.exe > mtest.results
 	./t-trunc.exe > ttest.results
 	./t-truncf.exe >> ttest.results
 	./t-truncl.exe >> ttest.results
+	./t-lrintf.exe >> ttest.results
+	./t-lrint.exe >> ttest.results
+	./t-lrintl.exe >> ttest.results
+	./t-llrint.exe >> ttest.results
+	./t-llrintl.exe >> ttest.results
 
 # Pattern rules to generate test vectors.  (The funky vec.c=%.c replacement
 # is meant to create a pattern rule where actually a normal rule will
@@ -137,11 +142,26 @@ t-truncf.exe: t-truncf.o
 t-truncl.exe: t-truncl.o
 	$(CC) -o $@ $(LDFLAGS) t-truncl.o $(LIBS)
 
+t-lrint.exe: t-lrint.o
+	$(CC) -o $@ $(LDFLAGS) t-lrint.o $(LIBS)
+
+t-lrintf.exe: t-lrintf.o
+	$(CC) -o $@ $(LDFLAGS) t-lrintf.o $(LIBS)
+
+t-lrintl.exe: t-lrintl.o
+	$(CC) -o $@ $(LDFLAGS) t-lrintl.o $(LIBS)
+
+t-llrint.exe: t-llrint.o
+	$(CC) -o $@ $(LDFLAGS) t-llrint.o $(LIBS)
+
+t-llrintl.exe: t-llrintl.o
+	$(CC) -o $@ $(LDFLAGS) t-llrintl.o $(LIBS)
+
 $(OFILES) $(VEC_OFILES) : test.h
 
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
-	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results ttest.results t-trunc*.o
+	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results ttest.results t-trunc*.o t-lrint*.o t-llrint*.o
 
 .SECONDARY: $(GEN_PROGS) $(GEN_VEC_FILES)
 .PHONY: all check clean mostlyclean

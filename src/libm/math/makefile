@@ -167,6 +167,12 @@ SRC += sf_nan.c
 SRC += trunc.c
 SRC += truncf.c
 SRC += truncl.c
+SRC += lrint.c
+SRC += lrintf.c
+SRC += lrintl.c
+SRC += llrint.c
+SRC += llrintf.c
+SRC += llrintl.c
 
 chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	s_atan.def w_atan2.def w_atanh.def w_j0.def \
@@ -177,7 +183,8 @@ chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	w_pow.def w_remainder.def s_sin.def w_sinh.def \
 	s_cbrt.def w_sqrt.def s_tan.def s_tanh.def \
 	s_infinity.def s_isnan.def s_scalbn.def s_nextafter.def \
-	s_nan.def s_ilogb.def s_expm1.def trunc.def
+	s_nan.def s_ilogb.def s_expm1.def trunc.def \
+	lrint.def llrint.def
 
 CFLAGS = -D_USE_LIBM_MATH_H
 EXTRA_FILES = $(TOP)/../../info/libm.info

@@ -1,3 +1,4 @@
+# Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 TOP=../..
@@ -5,6 +6,12 @@ TOP=../..
 SRC += errhandl.c
 SRC += hugevalf.c
 SRC += hugevall.c
+SRC += lrintf.c
+SRC += lrint.c
+SRC += lrintl.c
+SRC += llrintf.c
+SRC += llrint.c
+SRC += llrintl.c
 SRC += nan_def.c
 SRC += nan.c
 SRC += nanf.c
