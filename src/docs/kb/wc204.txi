@@ -1310,3 +1310,15 @@ Openning a file stream in the wrong mode referring to the following
 input/output operation (e.g.: openning stream in read only mode and
 then writing to it), will trigger a stream error condition that will
 set an error indicator.  This error indicator can be tested using @code{ferror}.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex lrintf@r{ added}
+@findex lrint@r{ added}
+@findex lrintl@r{ added}
+@findex llrintf@r{ added}
+@findex llrint@r{ added}
+@findex llrintl@r{ added}
+The @acronym{C99} functions @code{lrintf}, @code{lrint}, @code{lrintl}, @code{llrintf},
+@code{llrint} and @code{llrintl} were added to comply with the @acronym{C99} standard.
+These functions are available in two versions.  One fast assembler version
+in @file{libc.a} and one accurate in @file{libm.a}.
