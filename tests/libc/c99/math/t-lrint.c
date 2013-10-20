@@ -28,18 +28,18 @@ static const entry_t tests_double[] =
   /* Normals. */
   {{.dt = {0x1U, 0x0U, 0x1U, 0}},   0}, /* Small number. */
   {{.dt = {0x1U, 0x0U, 0x1U, 1}},   0}, /* Small -number. */
-  {{.dt = {0xFFFFFFFFU, 0x7FFFFU, 0x7FEU, 0}},   -2147483648}, /* Big number. */
-  {{.dt = {0xFFFFFFFFU, 0x7FFFFU, 0x7FEU, 1}},   -2147483648}, /* Big -number. */
+  {{.dt = {0xFFFFFFFFU, 0x7FFFFU, 0x7FEU, 0}},   -2147483648UL}, /* Big number. */
+  {{.dt = {0xFFFFFFFFU, 0x7FFFFU, 0x7FEU, 1}},   -2147483648UL}, /* Big -number. */
 
   /* Infs. */
-  {{.dt = {0x0U, 0x0U, 0x7FFU, 0}},   -2147483648L}, /* Inf */
-  {{.dt = {0x0U, 0x0U, 0x7FFU, 1}},   -2147483648L}, /* -Inf */
+  {{.dt = {0x0U, 0x0U, 0x7FFU, 0}},   -2147483648UL}, /* Inf */
+  {{.dt = {0x0U, 0x0U, 0x7FFU, 1}},   -2147483648UL}, /* -Inf */
 
   /* NaNs. */
-  {{.dt = {0x1U, 0x0U, 0x7FFU, 0}},   -2147483648L}, /* SNaN */
-  {{.dt = {0x1U, 0x0U, 0x7FFU, 1}},   -2147483648L}, /* -SNaN */
-  {{.dt = {0x0U, 0xFFFFFU, 0x7FFU, 1}},   -2147483648L}, /* QNaN */
-  {{.dt = {0x0U, 0xFFFFFU, 0x7FFU, 0}},   -2147483648L}, /* -QNaN */
+  {{.dt = {0x1U, 0x0U, 0x7FFU, 0}},   -2147483648UL}, /* SNaN */
+  {{.dt = {0x1U, 0x0U, 0x7FFU, 1}},   -2147483648UL}, /* -SNaN */
+  {{.dt = {0x0U, 0xFFFFFU, 0x7FFU, 1}},   -2147483648UL}, /* QNaN */
+  {{.dt = {0x0U, 0xFFFFFU, 0x7FFU, 0}},   -2147483648UL}, /* -QNaN */
 
 
   /* Number. */
@@ -69,10 +69,10 @@ static const entry_t tests_double[] =
   {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x018U, 1}},   -16777216}, /* -16777216.000000 */
   {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x01EU, 0}},   +1073741824}, /* 1073741824.000000 */
   {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x01EU, 1}},   -1073741824}, /* -1073741824.000000 */
-  {{.dt = {0xFFC00000U, 0xFFFFFU, 0x3FFU + 0x01EU, 0}},   +2147483647L}, /* 2147483647.000000 */
-  {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x01FU, 1}},   -2147483648L}, /* -2147483648.000000 */
-  {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x020U, 0}},   -2147483648L}, /* 4294967296.000000 */
-  {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x020U, 1}},   -2147483648L} /* -4294967296.000000 */
+  {{.dt = {0xFFC00000U, 0xFFFFFU, 0x3FFU + 0x01EU, 0}},   +2147483647LL}, /* 2147483647.000000 */
+  {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x01FU, 1}},   -2147483648UL}, /* -2147483648.000000 */
+  {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x020U, 0}},   -2147483648UL}, /* 4294967296.000000 */
+  {{.dt = {0x00000000U, 0x00000U, 0x3FFU + 0x020U, 1}},   -2147483648UL} /* -4294967296.000000 */
 };
 
 static const size_t n_tests_double = sizeof(tests_double) / sizeof(tests_double[0]);
