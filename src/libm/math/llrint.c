@@ -60,7 +60,7 @@ ANSI C, POSIX
 #define ROUND_MANTISSAH_TO_INTEGER(num, unbiased_exponent)                                                                          \
 (__gnuc_extension__                                                                                                                 \
   ({                                                                                                                                \
-     (num).d = two52[(num).dt.sign] + x;                                                                                            \
+     (num).d += two52[(num).dt.sign];                                                                                               \
      (num).d -= two52[(num).dt.sign];                                                                                               \
      (unbiased_exponent) = (num).dt.exponent - DOUBLE_BIAS;                                                                         \
                                                                                                                                     \
@@ -75,7 +75,7 @@ ANSI C, POSIX
 #define ROUND_MANTISSA_TO_INTEGER(num, unbiased_exponent)                                                                                         \
 (__gnuc_extension__                                                                                                                               \
   ({                                                                                                                                              \
-     (num).d = two52[(num).dt.sign] + x;                                                                                                          \
+     (num).d += two52[(num).dt.sign];                                                                                                             \
      (num).d -= two52[(num).dt.sign];                                                                                                             \
      (unbiased_exponent) = (num).dt.exponent - DOUBLE_BIAS;                                                                                       \
                                                                                                                                                   \
@@ -108,9 +108,8 @@ llrint(x)
 double x;
 #endif
 {
-  _double_union_t ieee_value;
+  volatile _double_union_t ieee_value;
   int unbiased_exponent;
-  long long int result;
 
 
   ieee_value.d = x;
@@ -118,11 +117,15 @@ double x;
 
   if (MAGNITUDE_IS_TOO_LARGE(unbiased_exponent))  /* The number is too large.  */
     return (long long int)x;                      /* It is left implementation defined what happens.  */
-  else if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
-    result = MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent) ? 0 : ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
   else
-    result = ALL_DIGITS_ARE_SIGNIFICANT(unbiased_exponent) ? CONVERT_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent)  /* >= 2^63 is already an exact integer.  */
-                                                           : ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
+  {
+    long long int result;
 
-  return ieee_value.dt.sign ? -result : result;
+    if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
+      result = MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent) ? 0 : ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
+    else
+      result = ALL_DIGITS_ARE_SIGNIFICANT(unbiased_exponent) ? CONVERT_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent)  /* >= 2^63 is already an exact integer.  */
+                                                             : ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
+    return ieee_value.dt.sign ? -result : result;
+  }
 }

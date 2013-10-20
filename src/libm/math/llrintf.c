@@ -17,12 +17,12 @@
 #define MAGNITUDE_IS_LESS_THAN_ONE(exp)                      ((exp) < 0)
 #define MAGNITUDE_IS_LESS_THAN_ONE_HALF(exp)                 ((exp) < -1)
 #define IS_ZERO(num)                                         ((((num).ft.mantissa & ~(1ULL << BIN_DIGITS_IN_FRACTION)) == 0) && (((num).ft.exponent & 0xFFU) == 0))
-#define CONVERT_MANTISSA_TO_INTEGER(num, unbiased_exponent)  ((long long int)((uint32_t)(num).ft.mantissa | 0x00800000ULL) << ((unbiased_exponent) - BIN_DIGITS_IN_FRACTION))
-#define ROUND_MANTISSA(num, unbiased_exponent)               ((long long int)((uint32_t)(num).ft.mantissa | 0x00800000ULL) >> (BIN_DIGITS_IN_FRACTION - (unbiased_exponent)))
+#define CONVERT_MANTISSA_TO_INTEGER(num, unbiased_exponent)  ((long long int)(((uint32_t)(num).ft.mantissa | 0x00800000ULL) << ((unbiased_exponent) - BIN_DIGITS_IN_FRACTION)))
+#define ROUND_MANTISSA(num, unbiased_exponent)               ((long long int)(((uint32_t)(num).ft.mantissa | 0x00800000ULL) >> (BIN_DIGITS_IN_FRACTION - (unbiased_exponent))))
 #define ROUND_MANTISSA_TO_INTEGER(num, unbiased_exponent)                                                                          \
 (__gnuc_extension__                                                                                                                \
   ({                                                                                                                               \
-     (num).f = two23[(num).ft.sign] + x;                                                                                           \
+     (num).f += two23[(num).ft.sign];                                                                                              \
      (num).f -= two23[(num).ft.sign];                                                                                              \
      (unbiased_exponent) = (num).ft.exponent - FLOAT_BIAS;                                                                         \
                                                                                                                                    \
@@ -55,9 +55,8 @@ llrintf(x)
 float x;
 #endif
 {
-  _float_union_t ieee_value;
+  volatile _float_union_t ieee_value;
   int unbiased_exponent;
-  long long int result;
 
 
   ieee_value.f = x;
@@ -67,12 +66,13 @@ float x;
     return (long long int)x;                      /* It is left implementation defined what happens.  */
   else
   {
+    long long int result;
+
     if (MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent))
       result = 0;
     else
       result = ALL_DIGITS_ARE_SIGNIFICANT(unbiased_exponent) ? CONVERT_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent)  /* >= 2^23 is already an exact integer.  */
                                                              : ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
-
     return ieee_value.ft.sign ? -result : result;
   }
 }

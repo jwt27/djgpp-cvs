@@ -23,7 +23,7 @@
 #define ROUND_MANTISSAH_TO_INTEGER(num, unbiased_exponent)                                                                          \
 (__gnuc_extension__                                                                                                                 \
   ({                                                                                                                                \
-     (num).ld = two63[(num).ldt.sign] + x;                                                                                          \
+     (num).ld += two63[(num).ldt.sign];                                                                                             \
      (num).ld -= two63[(num).ldt.sign];                                                                                             \
      (unbiased_exponent) = (num).ldt.exponent - LONG_DOUBLE_BIAS;                                                                   \
                                                                                                                                     \
@@ -38,7 +38,7 @@
 #define ROUND_MANTISSA_TO_INTEGER(num, unbiased_exponent)                                                                                     \
 (__gnuc_extension__                                                                                                                           \
   ({                                                                                                                                          \
-     (num).ld = two63[(num).ldt.sign] + x;                                                                                                    \
+     (num).ld += two63[(num).ldt.sign];                                                                                                       \
      (num).ld -= two63[(num).ldt.sign];                                                                                                       \
      (unbiased_exponent) = (num).ldt.exponent - LONG_DOUBLE_BIAS;                                                                             \
                                                                                                                                               \
@@ -71,9 +71,8 @@ lrintl(x)
 long double x;
 #endif
 {
-  _longdouble_union_t ieee_value;
+  volatile _longdouble_union_t ieee_value;
   int unbiased_exponent;
-  long int result;
 
 
   ieee_value.ld = x;
@@ -81,11 +80,15 @@ long double x;
 
   if (MAGNITUDE_IS_TOO_LARGE(unbiased_exponent))  /* The number is too large.  */
     return (long int)x;                           /* It is left implementation defined what happens.  */
-  else if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
-    result = MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent) ? 0 : ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
   else
-    result = ALL_DIGITS_ARE_SIGNIFICANT(unbiased_exponent) ? CONVERT_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent)  /* >= 2^63 is already an exact integer iff long int is 64 bit.  */
-                                                           : ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
+  {
+    long int result;
 
-  return ieee_value.ldt.sign ? -result : result;
+    if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
+      result = MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent) ? 0 : ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
+    else
+      result = ALL_DIGITS_ARE_SIGNIFICANT(unbiased_exponent) ? CONVERT_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent)  /* >= 2^63 is already an exact integer iff long int is 64 bit.  */
+                                                             : ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
+    return ieee_value.ldt.sign ? -result : result;
+  }
 }
