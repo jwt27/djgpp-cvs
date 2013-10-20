@@ -1,0 +1,38 @@
+@c ----------------------------------------------------------------------
+@node llrintf, math
+@vindex llrintf
+@subheading Syntax
+
+@example
+#include <math.h>
+
+long long int llrintf(float x);
+@end example
+
+@subheading Description
+
+The @code{llrintf} functions round their argument to the nearest integer value,
+using the current rounding direction.
+
+Note that unlike @code{rint}, etc., the return type of these functions differs
+from that of their arguments.
+
+The function do not set @code{errno}.
+
+@subheading Return Value
+
+Which floating-point error reporting methods are available.
+The function returns the rounded integer value of @var{x}.
+If @var{x} is @code{NaN} or an infinity, or the rounded value
+is too large to be stored in a long then a domain error occurs,
+and the return value is unspecified.
+
+@subheading Portability
+
+@portability ansi-c99, posix-1003.1-2001
+
+@subheading Example
+
+@example
+long long int result = llrintf(3.1415926535897932384626433832795);
+@end example
