@@ -64,6 +64,7 @@ available when you include @file{math.h} instead of @file{libm/math.h}.
 * nextafter::	Get next representable number
 * pow::		X to the power Y
 * rint::	Round and  remainder (rint, remainder)
+* round::	Round to integer, away from zero
 * scalbn::	Scale number
 * sin::		Sine or cosine (sin, cos)
 * sinh::	Hyperbolic sine
@@ -234,3 +235,6 @@ The library is set to X/Open mode by default.
 
 @page
 @include llrint.def
+
+@page
+@include round.def
