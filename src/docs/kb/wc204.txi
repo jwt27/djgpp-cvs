@@ -1322,3 +1322,10 @@ The @acronym{C99} functions @code{lrintf}, @code{lrint}, @code{lrintl}, @code{ll
 @code{llrint} and @code{llrintl} were added to comply with the @acronym{C99} standard.
 These functions are available in two versions.  One fast assembler version
 in @file{libc.a} and one accurate in @file{libm.a}.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex roundf@r{ added}
+@findex round@r{ added}
+@findex roundl@r{ added}
+The @acronym{C99} functions @code{roundf}, @code{round} and @code{roundl} were added
+to comply with the @acronym{C99} standard.
