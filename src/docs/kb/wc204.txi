@@ -1329,3 +1329,14 @@ in @file{libc.a} and one accurate in @file{libm.a}.
 @findex roundl@r{ added}
 The @acronym{C99} functions @code{roundf}, @code{round} and @code{roundl} were added
 to comply with the @acronym{C99} standard.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex lroundf@r{ added}
+@findex lround@r{ added}
+@findex lroundl@r{ added}
+@findex llroundf@r{ added}
+@findex llround@r{ added}
+@findex llroundl@r{ added}
+The @acronym{C99} functions @code{lroundf}, @code{lround}, @code{lroundl}, @code{llroundf},
+@code{llround} and @code{llroundl} were added to comply with the @acronym{C99} standard.
+These functions are available in two versions.
