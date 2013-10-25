@@ -95,7 +95,7 @@ $(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g -Wall
 all: check
 
 check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe t-lrint.exe t-lrintf.exe t-lrintl.exe t-llrint.exe t-llrintl.exe \
-       t-roundf.exe t-round.exe t-roundl.exe
+       t-roundf.exe t-round.exe t-roundl.exe t-lround.exe t-lroundf.exe t-lroundl.exe t-llround.exe t-llroundf.exe t-llroundl.exe
 	./mtest.exe > mtest.results
 	./t-trunc.exe > ttest.results
 	./t-truncf.exe >> ttest.results
@@ -108,6 +108,12 @@ check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe t-lrint.exe t-lrintf.exe 
 	./t-roundf.exe >> ttest.results
 	./t-round.exe >> ttest.results
 	./t-roundl.exe >> ttest.results
+	./t-lroundf.exe >> ttest.results
+	./t-lround.exe >> ttest.results
+	./t-lroundl.exe >> ttest.results
+	./t-llroundf.exe >> ttest.results
+	./t-llround.exe >> ttest.results
+	./t-llroundl.exe >> ttest.results
 
 # Pattern rules to generate test vectors.  (The funky vec.c=%.c replacement
 # is meant to create a pattern rule where actually a normal rule will
@@ -170,11 +176,29 @@ t-round.exe: t-round.o
 t-roundl.exe: t-roundl.o
 	$(CC) -o $@ $(LDFLAGS) t-roundl.o $(LIBS)
 
+t-lroundf.exe: t-lroundf.o
+	$(CC) -o $@ $(LDFLAGS) t-lroundf.o $(LIBS)
+
+t-lround.exe: t-lround.o
+	$(CC) -o $@ $(LDFLAGS) t-lround.o $(LIBS)
+
+t-lroundl.exe: t-lroundl.o
+	$(CC) -o $@ $(LDFLAGS) t-lroundl.o $(LIBS)
+
+t-llroundf.exe: t-llroundf.o
+	$(CC) -o $@ $(LDFLAGS) t-llroundf.o $(LIBS)
+
+t-llround.exe: t-llround.o
+	$(CC) -o $@ $(LDFLAGS) t-llround.o $(LIBS)
+
+t-llroundl.exe: t-llroundl.o
+	$(CC) -o $@ $(LDFLAGS) t-llroundl.o $(LIBS)
+
 $(OFILES) $(VEC_OFILES) : test.h
 
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
-	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results ttest.results t-trunc*.o t-lrint*.o t-llrint*.o t-round*.o
+	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results ttest.results t-trunc*.o t-lrint*.o t-llrint*.o t-round*.o t-lround*.o t-llround*.o
 
 .SECONDARY: $(GEN_PROGS) $(GEN_VEC_FILES)
 .PHONY: all check clean mostlyclean
