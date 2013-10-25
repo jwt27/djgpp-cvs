@@ -197,6 +197,10 @@ extern long long int llrint(double);
 extern long long int llrintl(long double);
 extern double round(double);
 extern long double roundl(long double);
+extern long int lround(double);
+extern long int lroundl(long double);
+extern long long int llround(double);
+extern long long int llroundl(long double);
 extern float erff(float);
 extern float erfcf(float);
 extern float hypotf(float, float);
@@ -219,6 +223,8 @@ extern float truncf(float);
 extern long int lrintf(float);
 extern long long int llrintf(float);
 extern float roundf(float);
+extern long int lroundf(float);
+extern long long int llroundf(float);
 
 /* End libm.a. */
 

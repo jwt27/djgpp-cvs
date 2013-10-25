@@ -15,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.8 2013/10/23 20:40:11 juan.guerrero Exp $
+ * $Id: math.h,v 1.9 2013/10/25 20:51:03 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -164,6 +164,12 @@ extern long long int llrintl __P((long double));
 extern long int lrintf __P((float));
 extern long int lrint __P((double));
 extern long int lrintl __P((long double));
+extern long long int llroundf __P((float));
+extern long long int llround __P((double));
+extern long long int llroundl __P((long double));
+extern long int lroundf __P((float));
+extern long int lround __P((double));
+extern long int lroundl __P((long double));
 extern float roundf __P((float));
 extern double round __P((double));
 extern long double roundl __P((long double));
