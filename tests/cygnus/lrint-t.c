@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
-/*  Shall give the same results than /djgpp/tests/libc/c99/math/t-lrint.c  */
+/*  Shall give the same results than /djgpp/tests/libc/c99/math/lrint-t.c  */
 
 
-#include "t-main.h"
+#include "main-t.h"
 
 typedef struct {
   const _double_union_t value;  /* test value */
