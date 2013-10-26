@@ -1,6 +1,6 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
-/*  Shall give the same results than /djgpp/tests/cygnus/t-lrintl.c  */
+/*  Shall give the same results than /djgpp/tests/cygnus/lrintl-t.c  */
 
 
 #include <stdio.h>
