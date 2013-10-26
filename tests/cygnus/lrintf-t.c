@@ -1,11 +1,9 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
-/*  Shall give the same results than /djgpp/tests/cygnus/t-lrintf.c  */
+/*  Shall give the same results than /djgpp/tests/libc/c99/math/lrintf-t.c  */
 
 
-#include <stdio.h>
-#include <math.h>
-#include <libc/ieee.h>
+#include "main-t.h"
 
 typedef struct {
   const _float_union_t value;  /* test value */
@@ -80,14 +78,47 @@ static const entry_t tests_float[] =
   {{.ft = {0x1555FFU, 0x8DU, 0}},  +19115},  /* 19115.000000 */
   {{.ft = {0x7FF000U, 0x96U, 1}},  -16773120},  /* -16773120.000000 */
   {{.ft = {0x7FFFFEU, 0x95U, 1}},  -8388607},  /* -8388607.000000 */
-  {{.ft = {0x1555FFU, 0x8DU, 1}},  -19115}  /* -19115.000000 */
+  {{.ft = {0x1555FFU, 0x8DU, 1}},  -19115},  /* -19115.000000 */
 
+  /*  Number greater than 2**32 thus all digits are significant and will not be truncated.  */
+  {{.ft = {0x000000U, 0x7FU + 0x1FU, 0}},  +2147483648LL},  /* 2147483648.000000 */
+  {{.ft = {0x000000U, 0x7FU + 0x1FU, 1}},  -2147483648LL},  /* -2147483648.000000 */
+
+  /*  Number less than 0.5 will be truncated to 0.  */
+  {{.ft = {0x000000U, 0x7FU + 0xFFFFFFFFU, 0}},  0},  /* 0.500000 */
+  {{.ft = {0x000000U, 0x7FU + 0xFFFFFFFFU, 1}},  -0},  /* -0.500000 */
+  {{.ft = {0x7FBC99U, 0x7FU + 0xFFFFFFFEU, 0}},  0},  /* 0.4994857609 */
+  {{.ft = {0x7FBC99U, 0x7FU + 0xFFFFFFFEU, 1}},  -0},  /* -0.4994857609 */
+  {{.ft = {0x03126FU, 0x7FU + 0xFFFFFFF6U, 0}},  0},  /* 0.001000 */
+  {{.ft = {0x03126FU, 0x7FU + 0xFFFFFFF6U, 1}},  -0},  /* -0.001000 */
+
+  /*  Number greater than 0.5 and less than 1 will be rounded to 1.  */
+  {{.ft = {0x7CD6EAU, 0x7FU + 0xFFFFFFFFU, 0}},  1},  /* 0.987654 */
+  {{.ft = {0x7CD6EAU, 0x7FU + 0xFFFFFFFFU, 1}},  -1},  /* -0.987654 */
+  {{.ft = {0x000001U, 0x7FU + 0xFFFFFFFFU, 0}},  1},  /* 0.50000006 */
+  {{.ft = {0x000001U, 0x7FU + 0xFFFFFFFFU, 1}},  -1},  /* -0.50000006 */
+
+  /*  Number greather than 1 and less than 2**23 will be rounded accordingly.  */
+  {{.ft = {0x000000U, 0x7FU + 0x00U, 0}},  1},  /* 1.0000000000 */
+  {{.ft = {0x000000U, 0x7FU + 0x00U, 1}},  -1},  /* 1.0000000000 */
+  {{.ft = {0x00000FU, 0x7FU + 0x00U, 0}},  1},  /* 1.000002 */
+  {{.ft = {0x00000FU, 0x7FU + 0x00U, 1}},  -1},  /* 1.000002 */
+  {{.ft = {0x000018U, 0x7FU + 0x10U, 0}},  65536},  /* 65536.1875000000 */
+  {{.ft = {0x000018U, 0x7FU + 0x10U, 1}},  -65536},  /* -65536.1875000000 */
+  {{.ft = {0x000040U, 0x7FU + 0x10U, 0}},  65536},  /* 65536.5000000 */
+  {{.ft = {0x000040U, 0x7FU + 0x10U, 1}},  -65536},  /* -65536.5000000 */
+  {{.ft = {0x00004DU, 0x7FU + 0x10U, 0}},  65537},  /* 65536.6015625000 */
+  {{.ft = {0x00004DU, 0x7FU + 0x10U, 1}},  -65537},  /* -65536.6015625000 */
+  {{.ft = {0x7FFFFFU, 0x7FU + 0x16U, 0}},  8388608},  /* 8388607.5000000000 */
+  {{.ft = {0x7FFFFFU, 0x7FU + 0x16U, 1}},  -8388608},  /* -8388607.5000000000 */
+  {{.ft = {0x000005U, 0x7FU + 0x14U, 0}},  1048577},  /* 1048576.6250000000 */
+  {{.ft = {0x000005U, 0x7FU + 0x14U, 1}},  -1048577},  /* -1048576.6250000000 */
 };
 
 static const size_t n_tests_float = sizeof(tests_float) / sizeof(tests_float[0]);
 
 
-int main(void)
+int lrintf_test(void)
 {
   unsigned int i, counter;
 
@@ -102,5 +133,5 @@ int main(void)
   }
   printf("%s\n", (counter < n_tests_float) ? "lrintf test failed." : "lrintf test succeded.");
 
-  return 0;
+  return (counter < n_tests_float) ? 1 : 0;
 }
