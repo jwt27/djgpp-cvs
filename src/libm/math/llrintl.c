@@ -85,6 +85,7 @@ long double x;
   {
     long long int result;
 
+
     if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
       result = MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent) ? 0 : ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
     else

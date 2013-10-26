@@ -70,25 +70,26 @@ long double x;
 
   if (ALL_DIGITS_ARE_SIGNIFICANT(unbiased_exponent))        /* Trigger an exception if INF or NAN  */
     return IS_INF_OR_NAN(unbiased_exponent) ? x + x : x;    /* else return the number.  */
-  else if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
-  {
-    /* All significant digits are in msw. */
-    if (MAGNITUDE_IS_LESS_THAN_ONE(unbiased_exponent))
-    {
-      const int sign = ieee_value.ldt.sign;
-      ieee_value.ld = MAGNITUDE_IS_GREATER_THAN_ONE_HALF(unbiased_exponent) ? 1 : 0;
-      ieee_value.ldt.sign = sign;
-    }
-    else if (!IS_MANTISSAH_INTEGRAL(ieee_value, unbiased_exponent))
-      ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
-
-    return ieee_value.ld;
-  }
   else
   {
-    /* Also digits in mantissa low part are significant.  */
-    if (!IS_INTEGRAL(ieee_value, unbiased_exponent))
-      ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
+    if (NO_SIGNIFICANT_DIGITS_IN_MANTISSAL(unbiased_exponent))
+    {
+      /* All significant digits are in msw. */
+      if (MAGNITUDE_IS_LESS_THAN_ONE(unbiased_exponent))
+      {
+        const int sign = ieee_value.ldt.sign;
+        ieee_value.ld = MAGNITUDE_IS_GREATER_THAN_ONE_HALF(unbiased_exponent) ? 1 : 0;
+        ieee_value.ldt.sign = sign;
+      }
+      else if (!IS_MANTISSAH_INTEGRAL(ieee_value, unbiased_exponent))
+        ROUND_MANTISSAH_TO_INTEGER(ieee_value, unbiased_exponent);
+    }
+    else
+    {
+      /* Also digits in mantissa low part are significant.  */
+      if (!IS_INTEGRAL(ieee_value, unbiased_exponent))
+        ROUND_MANTISSA_TO_INTEGER(ieee_value, unbiased_exponent);
+    }
 
     return ieee_value.ld;
   }

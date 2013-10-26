@@ -68,6 +68,7 @@ float x;
   {
     long int result;
 
+
     if (MAGNITUDE_IS_LESS_THAN_ONE_HALF(unbiased_exponent))
       result = 0;
     else
