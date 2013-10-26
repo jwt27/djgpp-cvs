@@ -1,7 +1,7 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
 
-#include "t-main.h"
+#include "main-t.h"
 
 static const long_double_t tests_long_double[][2] =
 {
