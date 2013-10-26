@@ -1,8 +1,7 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
-#include <stdio.h>
-#include <math.h>
-#include <libc/ieee.h>
+
+#include "t-main.h"
 
 static const long_double_t tests_long_double[][2] =
 {
@@ -73,8 +72,7 @@ static const long_double_t tests_long_double[][2] =
 static const size_t n_tests_long_double = sizeof(tests_long_double) / sizeof(tests_long_double[0]);
 
 
-
-int main(void)
+int truncl_test(void)
 {
   int i, counter;
 
@@ -104,5 +102,5 @@ int main(void)
   }
   printf("%s\n", (counter < n_tests_long_double) ? "truncl test failed." : "truncl test succeded.");
 
-  return 0;
+  return (counter < n_tests_long_double) ? 1 : 0;
 }

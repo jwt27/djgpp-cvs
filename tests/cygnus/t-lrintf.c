@@ -3,9 +3,7 @@
 /*  Shall give the same results than /djgpp/tests/libc/c99/math/t-lrintf.c  */
 
 
-#include <stdio.h>
-#include <math.h>
-#include <libc/ieee.h>
+#include "t-main.h"
 
 typedef struct {
   const _float_union_t value;  /* test value */
@@ -120,7 +118,7 @@ static const entry_t tests_float[] =
 static const size_t n_tests_float = sizeof(tests_float) / sizeof(tests_float[0]);
 
 
-int main(void)
+int lrintf_test(void)
 {
   unsigned int i, counter;
 
@@ -135,5 +133,5 @@ int main(void)
   }
   printf("%s\n", (counter < n_tests_float) ? "lrintf test failed." : "lrintf test succeded.");
 
-  return 0;
+  return (counter < n_tests_float) ? 1 : 0;
 }

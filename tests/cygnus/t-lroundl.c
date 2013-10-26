@@ -1,9 +1,7 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
 
-#include <stdio.h>
-#include <math.h>
-#include <libc/ieee.h>
+#include "t-main.h"
 
 typedef struct {
   const _longdouble_union_t value;  /* test value */
@@ -112,7 +110,7 @@ static const entry_t tests_long_double[] =
 static const size_t n_tests_long_double = sizeof(tests_long_double) / sizeof(tests_long_double[0]);
 
 
-int main(void)
+int lroundl_test(void)
 {
   unsigned int i, counter;
 
@@ -127,5 +125,5 @@ int main(void)
   }
   printf("%s\n", (counter < n_tests_long_double) ? "lroundl test failed." : "lroundl test succeded.");
 
-  return 0;
+  return (counter < n_tests_long_double) ? 1 : 0;
 }

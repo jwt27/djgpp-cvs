@@ -3,9 +3,7 @@
 /*  Shall give the same results than /djgpp/tests/libc/c99/math/t-lrint.c  */
 
 
-#include <stdio.h>
-#include <math.h>
-#include <libc/ieee.h>
+#include "t-main.h"
 
 typedef struct {
   const _double_union_t value;  /* test value */
@@ -78,7 +76,7 @@ static const entry_t tests_double[] =
 static const size_t n_tests_double = sizeof(tests_double) / sizeof(tests_double[0]);
 
 
-int main(void)
+int lrint_test(void)
 {
   unsigned int i, counter;
 
@@ -89,9 +87,9 @@ int main(void)
     if (tests_double[i].should_be == result)
       counter++;
     else
-      printf("lrint test failed:  value to round = %.6g  result = %ld  should be = %ld\n", tests_double[i].value.d, result, tests_double[i].should_be);
+      printf("lrint test failed:  value to round = %.12f  result = %ld  should be = %ld\n", tests_double[i].value.d, result, tests_double[i].should_be);
   }
   printf("%s\n", (counter < n_tests_double) ? "lrint test failed." : "lrint test succeded.");
 
-  return 0;
+  return (counter < n_tests_double) ? 1 : 0;
 }

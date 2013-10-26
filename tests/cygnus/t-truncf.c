@@ -1,8 +1,7 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
-#include <stdio.h>
-#include <math.h>
-#include <libc/ieee.h>
+
+#include "t-main.h"
 
 static const float_t tests_float[][2] =
 {
@@ -64,7 +63,7 @@ static const float_t tests_float[][2] =
 static const size_t n_tests_float = sizeof(tests_float) / sizeof(tests_float[0]);
 
 
-int main(void)
+int truncf_test(void)
 {
   int i, counter;
 
@@ -92,5 +91,5 @@ int main(void)
   }
   printf("%s\n", (counter < n_tests_float) ? "truncf test failed." : "truncf test succeded.");
 
-  return 0;
+  return (counter < n_tests_float) ? 1 : 0;
 }
