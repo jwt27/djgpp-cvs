@@ -1,8 +1,8 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
 
-#ifndef T_MAIN_H
-# define T_MAIN_H
+#ifndef MAIN_T_H
+# define MAIN_T_H
 
 # include <stdio.h>
 # include <math.h>
@@ -27,4 +27,4 @@ int trunc_test(void);
 int truncf_test(void);
 int truncl_test(void);
 
-#endif  /* T_MAIN_H */
+#endif  /* MAIN_T_H */
