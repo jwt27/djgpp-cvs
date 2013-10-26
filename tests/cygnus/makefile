@@ -40,9 +40,9 @@ LDFLAGS  = -nostdlib -L$(TOP)/../lib
 OFILES = test.o string.o convert.o conv_vec.o iconv_vec.o test_is.o \
          dvec.o sprint_vec.o sprint_ivec.o math.o math2.o test_ieee.o
 
-T_OFILES = t-main.o t-trunc.o t-truncf.o t-truncl.o t-lrint.o t-lrintf.o \
-           t-lrintl.o t-llrint.o t-llrintl.o t-roundf.o t-round.o t-roundl.o \
-           t-lroundf.o t-lround.o t-lroundl.o t-llroundf.o t-llround.o t-llroundl.o
+T_OFILES = main-t.o trunc-t.o truncf-t.o truncl-t.o lrint-t.o lrintf-t.o \
+           lrintl-t.o llrint-t.o llrintl-t.o roundf-t.o round-t.o roundl-t.o \
+           lroundf-t.o lround-t.o lroundl-t.o llroundf-t.o llround-t.o llroundl-t.o
 
 acosVEC_FILES   = acos_vec.c acosf_vec.c
 acoshVEC_FILES  = acosh_vec.c acoshf_vec.c
@@ -135,7 +135,7 @@ ttest.exe: $(T_OFILES)
 
 $(OFILES) $(VEC_OFILES) : test.h
 
-$(T_OFILES) : t-main.h
+$(T_OFILES) : main-t.h
 
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
