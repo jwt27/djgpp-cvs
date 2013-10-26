@@ -40,6 +40,10 @@ LDFLAGS  = -nostdlib -L$(TOP)/../lib
 OFILES = test.o string.o convert.o conv_vec.o iconv_vec.o test_is.o \
          dvec.o sprint_vec.o sprint_ivec.o math.o math2.o test_ieee.o
 
+T_OFILES = t-main.o t-trunc.o t-truncf.o t-truncl.o t-lrint.o t-lrintf.o \
+           t-lrintl.o t-llrint.o t-llrintl.o t-roundf.o t-round.o t-roundl.o \
+           t-lroundf.o t-lround.o t-lroundl.o t-llroundf.o t-llround.o t-llroundl.o
+
 acosVEC_FILES   = acos_vec.c acosf_vec.c
 acoshVEC_FILES  = acosh_vec.c acoshf_vec.c
 asinVEC_FILES   = asin_vec.c asinf_vec.c
@@ -90,30 +94,13 @@ GEN_VEC_FILES := $(foreach name,$(GEN_VEC_NAMES),$($(name)VEC_FILES))
 
 VEC_OFILES = $(GEN_VEC_FILES:.c=.o)
 
-$(OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g -Wall
+$(OFILES) $(T_OFILES): CFLAGS = $(DEFS) -fno-builtin -O2 -g -Wall
 
 all: check
 
-check: mtest.exe t-trunc.exe t-truncf.exe t-truncl.exe t-lrint.exe t-lrintf.exe t-lrintl.exe t-llrint.exe t-llrintl.exe \
-       t-roundf.exe t-round.exe t-roundl.exe t-lround.exe t-lroundf.exe t-lroundl.exe t-llround.exe t-llroundf.exe t-llroundl.exe
+check: mtest.exe ttest.exe
 	./mtest.exe > mtest.results
-	./t-trunc.exe > ttest.results
-	./t-truncf.exe >> ttest.results
-	./t-truncl.exe >> ttest.results
-	./t-lrintf.exe >> ttest.results
-	./t-lrint.exe >> ttest.results
-	./t-lrintl.exe >> ttest.results
-	./t-llrint.exe >> ttest.results
-	./t-llrintl.exe >> ttest.results
-	./t-roundf.exe >> ttest.results
-	./t-round.exe >> ttest.results
-	./t-roundl.exe >> ttest.results
-	./t-lroundf.exe >> ttest.results
-	./t-lround.exe >> ttest.results
-	./t-lroundl.exe >> ttest.results
-	./t-llroundf.exe >> ttest.results
-	./t-llround.exe >> ttest.results
-	./t-llroundl.exe >> ttest.results
+	./ttest.exe > ttest.results
 
 # Pattern rules to generate test vectors.  (The funky vec.c=%.c replacement
 # is meant to create a pattern rule where actually a normal rule will
@@ -143,62 +130,16 @@ tgen/g%vec.exe: tgen/g%vec.cpp tgen/genmathv.h
 mtest.exe: $(OFILES)  $(VEC_OFILES)
 	$(CC) -o $@ $(LDFLAGS) $(OFILES) $(VEC_OFILES) $(LIBS)
 
-t-trunc.exe: t-trunc.o
-	$(CC) -o $@ $(LDFLAGS) t-trunc.o $(LIBS)
-
-t-truncf.exe: t-truncf.o
-	$(CC) -o $@ $(LDFLAGS) t-truncf.o $(LIBS)
-
-t-truncl.exe: t-truncl.o
-	$(CC) -o $@ $(LDFLAGS) t-truncl.o $(LIBS)
-
-t-lrint.exe: t-lrint.o
-	$(CC) -o $@ $(LDFLAGS) t-lrint.o $(LIBS)
-
-t-lrintf.exe: t-lrintf.o
-	$(CC) -o $@ $(LDFLAGS) t-lrintf.o $(LIBS)
-
-t-lrintl.exe: t-lrintl.o
-	$(CC) -o $@ $(LDFLAGS) t-lrintl.o $(LIBS)
-
-t-llrint.exe: t-llrint.o
-	$(CC) -o $@ $(LDFLAGS) t-llrint.o $(LIBS)
-
-t-llrintl.exe: t-llrintl.o
-	$(CC) -o $@ $(LDFLAGS) t-llrintl.o $(LIBS)
-
-t-roundf.exe: t-roundf.o
-	$(CC) -o $@ $(LDFLAGS) t-roundf.o $(LIBS)
-
-t-round.exe: t-round.o
-	$(CC) -o $@ $(LDFLAGS) t-round.o $(LIBS)
-
-t-roundl.exe: t-roundl.o
-	$(CC) -o $@ $(LDFLAGS) t-roundl.o $(LIBS)
-
-t-lroundf.exe: t-lroundf.o
-	$(CC) -o $@ $(LDFLAGS) t-lroundf.o $(LIBS)
-
-t-lround.exe: t-lround.o
-	$(CC) -o $@ $(LDFLAGS) t-lround.o $(LIBS)
-
-t-lroundl.exe: t-lroundl.o
-	$(CC) -o $@ $(LDFLAGS) t-lroundl.o $(LIBS)
-
-t-llroundf.exe: t-llroundf.o
-	$(CC) -o $@ $(LDFLAGS) t-llroundf.o $(LIBS)
-
-t-llround.exe: t-llround.o
-	$(CC) -o $@ $(LDFLAGS) t-llround.o $(LIBS)
-
-t-llroundl.exe: t-llroundl.o
-	$(CC) -o $@ $(LDFLAGS) t-llroundl.o $(LIBS)
+ttest.exe: $(T_OFILES)
+	$(CC) -o $@ $(LDFLAGS) $(T_OFILES) $(LIBS)
 
 $(OFILES) $(VEC_OFILES) : test.h
 
+$(T_OFILES) : t-main.h
+
 clean mostlyclean:
 	-cd tgen; $(MAKE) $@
-	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) *~ *.exe mtest.results ttest.results t-trunc*.o t-lrint*.o t-llrint*.o t-round*.o t-lround*.o t-llround*.o
+	cd $(HERE); $(RM) $(OFILES) $(VEC_OFILES) $(T_OFILES) *~ *.exe mtest.results ttest.results
 
 .SECONDARY: $(GEN_PROGS) $(GEN_VEC_FILES)
 .PHONY: all check clean mostlyclean
