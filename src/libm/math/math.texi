@@ -53,11 +53,13 @@ available when you include @file{math.h} instead of @file{libm/math.h}.
 * infinity::	Floating infinity
 * isnan::	Check type of number
 * ldexp::	Load exponent
+* llrint::	Round to integer
+* llround::	Round to nearest integer
 * log::		Natural logarithms
 * log10::	Base 10 logarithms
 * log1p::	Log of 1 + X
 * lrint::	Round to integer
-* llrint::	Round to integer
+* lround::	Round to nearest integer
 * matherr::	Modifiable math error handler
 * modf::	Split fractional and integer parts
 * nan::		Floating Not a Number
@@ -238,3 +240,9 @@ The library is set to X/Open mode by default.
 
 @page
 @include round.def
+
+@page
+@include lround.def
+
+@page
+@include llround.def
