@@ -6,6 +6,10 @@ include $(TOP)/../makefile.def
 
 .SUFFIXES: .o .i .c .cc .s
 
+# Find GCC own include directory and add it to CFLAGS
+GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
+CFLAGS += -I$(GCC_INC_DIR)
+
 GCC = gcc @$(TOP)/../gcc.opt -I. -I$(TOP)/../../include $(CFLAGS) -c $<
 
 %.o : %.c
