@@ -23,7 +23,7 @@ main( void )
 	    char        buf[BUFSIZ];
 
 	    t	= time( &t );
-	    t	= 1024*1024*1024/4*3*o;
+	    t	= 1024U*1024*1024/4*3*o;
 	    printf( "time(        %10u )   = %s\n", t, getenv( "TZ" ));
 	    tmp = gmtime( &t ); 
 	    printf( "gmtime(      %10u )   = %s",   t, asctime( tmp ));
@@ -35,7 +35,7 @@ main( void )
 	    printf( "strftime(    %10u )   = %s",   t, buf);
 	    printf( "difftime(    %10u, 0) = %.0fs\n", t, difftime( t, 0)); 
 
-	    t	= 1024*1024*1024/4*3*o;
+	    t	= 1024U*1024*1024/4*3*o;
 	    tmp = gmtime_r( &t, &tm); 
 	    printf( "gmtime_r(    %10u, t) = %s",   t, asctime_r( tmp, buf));
 	    tmp = localtime_r( &t, &tm);
