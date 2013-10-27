@@ -55,7 +55,7 @@ the calling program to wait until the resource is available.
 @code{F_TLOCK} will cause the function to return a -1 and set
 @code{errno} to @code{EACCES} if the section is already locked.
 
-@itemx F_ULOCK
+@item F_ULOCK
 @code{F_ULOCK} removes locks from a section of the file.  This function
 will release locked sections controlled by the program.
 @end table

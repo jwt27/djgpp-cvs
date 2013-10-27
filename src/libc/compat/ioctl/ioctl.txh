@@ -1,5 +1,5 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.7 2003/04/01 20:47:28 richdawe Exp $
+@c $Id: ioctl.txh,v 1.8 2013/10/27 15:49:00 andris Exp $
 @node ioctl (General description), io
 @findex ioctl@r{, General description}
 @code{ioctl} performs low level calls to communicate with device drivers. As
@@ -203,47 +203,68 @@ transfer buffers and what to return.
 See description above.
 
 @subheading Device information word
-The bits of the device information word have the following meaning:\\
+The bits of the device information word have the following meaning:
+
 Character device:
 @table @asis
-14  Device driver can process IOCTL request
+@item 14
+Device driver can process IOCTL request
 
-13  output until busy supported
+@item 13
+output until busy supported
 
-11  driver supports OPEN/CLOSE calls
+@item 11
+driver supports OPEN/CLOSE calls
 
-7   set (indicates device)
+@item 7
+set (indicates device)
 
-6   EOF on input
+@item 6
+EOF on input
 
-5   raw (binary) mode
+@item 5
+raw (binary) mode
 
-4   device is special (uses INT 29)
+@item 4
+device is special (uses INT 29)
 
-3   clock device
+@item 3
+clock device
 
-2   NUL device
+@item 2
+NUL device
 
-1   standard output
+@item 1
+standard output
 
-0   standard input
+@item 0
+standard input
+
 @end table
 
 Disk file:
 @table @asis
-15  file is remote (DOS 3.0+)
+@item 15
+file is remote (DOS 3.0+)
 
-14  don't set file date/time on closing (DOS 3.0+)
+@item 14
+don't set file date/time on closing (DOS 3.0+)
 
-11  media not removable
+@item 11
+media not removable
 
-8   (DOS 4 only) generate INT 24 if no disk space on write or read past end of file
+@item 8
+(DOS 4 only) generate INT 24 if no disk space on write or read past end of file
 
-7   clear (indicates file)
+@item 7
+clear (indicates file)
 
-6   file has not been written
+@item 6
+file has not been written
 
-5-0 drive number (0 = A:)
+@item 5-0
+drive number (0 = A:)
+
 @end table
 
 @subheading Example

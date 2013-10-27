@@ -68,7 +68,7 @@ to specify @code{intmax_t} or @code{uintmax_t} integers;
 @item l
 to specify doubles or @code{long} integers;
 
-@itemx ll
+@item ll
 (two lower-case ell letters) to specify @code{long long} integers;
 to specify @code{long} doubles, although this is non-standard;
 

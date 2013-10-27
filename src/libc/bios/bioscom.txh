@@ -21,7 +21,6 @@ The valid values of cmd are:
 @item 1 - write byte to port
 @item 2 - read byte from port (@var{data} is ignored)
 @item 3 - get port status
-@item
 @end table
 
 For initialization, the byte is made up of the following bits:
