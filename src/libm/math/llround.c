@@ -1,6 +1,7 @@
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
 /*
+FUNCTION
 <<llround>>, <<llroundf>>, <<llroundl>>--round to integer, to nearest
 INDEX
         llround
