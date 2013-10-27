@@ -141,7 +141,7 @@ calls; in that situation, the math functions behave reentrantly.
 @printindex cp
 
 @tex
-% I think something like @colophon should be in texinfo.  In the
+% I think something like @@colophon should be in texinfo.  In the
 % meantime:
 \long\def\colophon{\hbox to0pt{}\vfill
 \centerline{The body of this manual is set in}
@@ -152,7 +152,7 @@ calls; in that situation, the math functions behave reentrantly.
 \centerline{{\sl\fontname\tensl\/}}
 \centerline{are used for emphasis.}\vfill}
 \page\colophon
-% Blame: pesch@cygnus.com, 28mar91.
+% Blame: pesch@@cygnus.com, 28mar91.
 @end tex
 
 @contents
