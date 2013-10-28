@@ -8,8 +8,9 @@ SRC += infoblk.c
 SRC += raise.c
 SRC += signals.c
 
-# This requires Make 3.77 or later.
-signals.exe: LDFLAGS += -pg
+signals.exe:  signals.o
+	$(filter-out -c,$(GCC)) -pg -o $@  
+
 signals.o: CFLAGS += -pg
 
 include $(TOP)/../makefile.inc
