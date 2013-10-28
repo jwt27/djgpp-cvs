@@ -13,9 +13,10 @@
 #include <search.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define LEN 4096
-#define MAX_BUCKETS 0x20000000
+#define LEN 4096U
+#define MAX_BUCKETS 0x20000000U
 
 int main(int argc, char *argv[])
 {
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
     i = 26;
   }
 
-  while( (1<<i) < buckets )
+  while( (1U<<i) < buckets )
   {
     i++;
   }
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
 	      "it's been splitted).\n", lines, LEN-1);
     }
     lines++;
-    v = _hash2v(s, &v2)&mask;
+    v = _hash2v((const unsigned char *)s, &v2)&mask;
     v2 &= mask;
 
 #if 0

@@ -10,6 +10,7 @@
 
 #include <search.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define N_ELEM       50
@@ -22,7 +23,7 @@ size_t n_arr = 0;
 
 int my_p_strcmp( const void *el1, const void *el2)
 {
-  return strcmp( *(const char **)el1, *(const char **)el2 );
+  return strcmp( *(const char * const *)el1, *(const char * const *)el2 );
 }
 
 

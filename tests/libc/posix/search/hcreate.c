@@ -12,7 +12,7 @@
 #include <search.h>
 #include <stdio.h>
 #include <stdlib.h>
-/*#include <string.h>*/
+#include <string.h>
 
 
 #define BUF_LEN 2048
@@ -28,7 +28,7 @@ size_t size_list = 128;
 
 static int my_p_strcmp( const void *el1, const void *el2)
 {
-  return strcmp( *(const char **)el1, *(const char **)el2 );
+  return strcmp( *(const char * const *)el1, *(const char * const *)el2 );
 }
 
 
