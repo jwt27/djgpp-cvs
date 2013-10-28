@@ -32,7 +32,7 @@ main(int argc, char **argv)
   for (i=0; i<_go32_info_block.size_of_transfer_buffer; i++)
     _farnspokeb(_go32_info_block.linear_address_of_transfer_buffer+i,
 		0x11);
-  for (i=0; i<count; i++)
+  for (i=0; i<(unsigned)count; i++)
   {
     int r = spawnlp(P_WAIT, argv[1], argv[1], argv[2], argv[3], argv[4], 0);
     printf("r = %d\n", r);
