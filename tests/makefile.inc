@@ -11,25 +11,26 @@ GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
 CFLAGS += -I$(GCC_INC_DIR)
 
 GCC = gcc @$(TOP)/../gcc.opt -I. -I$(TOP)/../../include $(CFLAGS) -c $<
+GPP = gpp @$(TOP)/../gpp.opt -I. -I$(TOP)/../../include $(CFLAGS) -c $<
 
 %.o : %.c
 	$(GCC)
 %.o : %.cc
-	$(GCC)
+	$(GPP)
 %.o : %.S
 	$(GCC)
 
 %.i : %.c
 	$(GCC) -E > $@
 %.i : %.cc
-	$(GCC) -E > $@
+	$(GPP) -E > $@
 %.i : %.S
 	$(GCC) -E > $@
 
 %.ss : %.c
 	$(GCC) -S > $@
 %.ss : %.cc
-	$(GCC) -S > $@
+	$(GPP) -S > $@
 
 LIB = ${TOP}/../../lib
 BIN = ${TOP}/../../bin
@@ -82,7 +83,7 @@ testclean ::
 clean :: testclean
 	-rm -f *.exe *.o *.d *.i
 
-config:	$(TOP)/../gcc.opt 
+config:	$(TOP)/../gcc.opt $(TOP)/../gpp.opt
 
 $(TOP)/../gcc.opt: $(TOP)/../makefile.inc
 	@$(TOP)/../../src/misc.exe echo - "-MD" >$(TOP)/../gcc.opt
@@ -102,6 +103,23 @@ $(TOP)/../gcc.opt: $(TOP)/../makefile.inc
 	@$(TOP)/../../src/misc.exe echo - "-Wsign-compare" >>$(TOP)/../gcc.opt
 	@$(TOP)/../../src/misc.exe echo - "-nostdinc" >>$(TOP)/../gcc.opt
 	@$(TOP)/../../src/misc.exe echo - "$(IQUOTE)" >>$(TOP)/../gcc.opt
+
+$(TOP)/../gpp.opt: $(TOP)/../makefile.inc
+	@$(TOP)/../../src/misc.exe echo - "-MD" >$@
+	@$(TOP)/../../src/misc.exe echo - "-O3" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-g" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-march=i386" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wall" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wcast-qual" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Werror" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wpointer-arith" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wshadow" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wwrite-strings" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wundef" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wcast-align" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-Wsign-compare" >>$@
+	@$(TOP)/../../src/misc.exe echo - "-nostdinc" >>$@
+	@$(TOP)/../../src/misc.exe echo - "$(IQUOTE)" >>$@
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)
