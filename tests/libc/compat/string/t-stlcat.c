@@ -23,7 +23,7 @@ check_too_small (const char *somestring,
   assert(strncmp(buf2 + len_somestring, somestring,
 		 fakesize - len_somestring - 1) == 0);
   assert(buf2[fakesize - 1] == '\0');
-  for (i = fakesize; i < buf2size; i++) {
+  for (i = fakesize; i < (int)buf2size; i++) {
     assert(buf2[i] == FILL_CHAR);
   }
 }
@@ -42,7 +42,7 @@ main (void)
   buf[0] = '\0'; /* Make buf a valid string. */
 
   assert(strlcat(buf, somestring, 0) == strlen(somestring));
-  for (i = 1; i < sizeof(buf); i++) {
+  for (i = 1; i < (int)sizeof(buf); i++) {
     assert(buf[i] == FILL_CHAR);
   }
 

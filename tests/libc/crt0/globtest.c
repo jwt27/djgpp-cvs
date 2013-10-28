@@ -5,7 +5,7 @@
 int
 main(int argc, char **argv)
 {
-  int i;
+  unsigned i;
   glob_t g;
   printf("Pattern: `%s'\n", argv[1]);
   glob(argv[1], 0, 0, &g);

@@ -405,7 +405,8 @@ static int verbose = 0;
 /* Run a single file FILE through all the tests.  */
 int fstest (const char *file)
 {
-  int i, retval = 0;
+  unsigned i;
+  int retval = 0;
 
   for (i = 0; i < sizeof (test_vec) / sizeof (test_vec[0]); i++)
     {

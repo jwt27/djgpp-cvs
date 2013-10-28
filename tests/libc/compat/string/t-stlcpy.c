@@ -17,7 +17,7 @@ main (void)
   memset(buf, FILL_CHAR, sizeof(buf));
 
   assert(strlcpy(buf, somestring, 0) == strlen(somestring));
-  for (i = 0; i < sizeof(buf); i++) {
+  for (i = 0; i < (int)sizeof(buf); i++) {
     assert(buf[i] == FILL_CHAR);
   }
 
@@ -47,7 +47,7 @@ main (void)
   assert(strlcpy(buf2, somestring, MADE_UP_SIZE) >= MADE_UP_SIZE);
   assert(strncmp(buf2, somestring, MADE_UP_SIZE - 1) == 0);
   assert(buf2[MADE_UP_SIZE - 1] == '\0');
-  for (i = MADE_UP_SIZE; i < sizeof(buf2); i++) {
+  for (i = MADE_UP_SIZE; i < (int)sizeof(buf2); i++) {
     assert(buf2[i] == FILL_CHAR);
   }
 #undef MADE_UP_SIZE
