@@ -44,7 +44,7 @@ main (int argc, char *argv[])
     die(argv[0], __LINE__);
   close( fd );
   stat( FILE_NAME, &s );
-  if (s.st_size != len * 2)
+  if (s.st_size != (int)len * 2)
   {
     printf("wrong size 1!\n");
     status++;
@@ -64,7 +64,7 @@ main (int argc, char *argv[])
     die(argv[0], __LINE__);
   close( fd );
   stat( FILE_NAME, &s );
-  if( s.st_size != len * 3 )
+  if( s.st_size != (int)len * 3 )
   {
     printf("wrong size 2!\n");
     status++;

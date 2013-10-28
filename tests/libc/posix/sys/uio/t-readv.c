@@ -65,7 +65,7 @@ main (int argc, char *argv[])
   close(fd);
 
   /* Reconstruct the string in bufs. */
-  for (p = allbuf, i = 0; i < n_bufs; p += iov[i].iov_len, i++) {
+  for (p = allbuf, i = 0; i < (int)n_bufs; p += iov[i].iov_len, i++) {
     memcpy(p, bufs[i], iov[i].iov_len);
   }
   *p = '\0';

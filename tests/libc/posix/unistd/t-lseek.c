@@ -10,7 +10,7 @@ int
 main (int argc, char *argv[])
 {
   int   fd;
-  off_t o;
+  /* off_t o; */
   int   ret;
 
   fd = open(TEST_FILE, O_RDWR|O_TRUNC|O_CREAT|O_BINARY, S_IRUSR|S_IWUSR);
@@ -31,7 +31,7 @@ main (int argc, char *argv[])
       return(EXIT_FAILURE);
     }
 
-  o = lseek(fd, 1024 * 1024, SEEK_SET);
+  /* o = */ lseek(fd, 1024 * 1024, SEEK_SET);
   if (ret < 0)
     {
       puts("lseek() failed!");
@@ -49,7 +49,7 @@ main (int argc, char *argv[])
       return(EXIT_FAILURE);
     }
 
-  o = lseek(fd, 2 * 1024 * 1024, SEEK_SET);
+  /* o = */ lseek(fd, 2 * 1024 * 1024, SEEK_SET);
   if (ret < 0)
     {
       puts("lseek() failed!");

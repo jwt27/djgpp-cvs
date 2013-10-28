@@ -29,7 +29,7 @@ main (int argc, char *argv[])
   int           fd;
   int           ret;
   char          buf[128];
-  int           i;
+  unsigned      i;
 
   assert(n_data <= IOV_MAX);
 

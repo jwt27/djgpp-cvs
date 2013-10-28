@@ -18,7 +18,8 @@ int
 main(int argc, char **argv)
 {
   glob_t g;
-  int rv, i;
+  int rv;
+  unsigned i;
   int flags = 0;
 
   g.gl_pathc = 0;

@@ -13,7 +13,8 @@ q(char *s, int a)
 int
 main(int argc, char **argv)
 {
-  int i, max=0;
+  int i;
+  unsigned max=0;
   for (i=1; i<argc; i++)
     if (max < strlen(argv[i]))
       max = strlen(argv[i])+1;
