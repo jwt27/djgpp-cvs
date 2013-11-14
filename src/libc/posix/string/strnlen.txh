@@ -1,0 +1,34 @@
+@node strnlen, string
+@findex strnlen
+@subheading Syntax
+
+@example
+#include <string.h>
+
+size_t strnlen(const char *string, size_t size);
+@end example
+
+@subheading Description
+
+This function returns the number of characters in @var{string},
+but at most @var{size}.  In doing this, the function looks only
+at the first @var{size} characters at @var{string} and never
+beyond @var{string} + @var{size}.
+
+@subheading Return Value
+
+The length of the string.
+
+@subheading Portability
+
+@portability !ansi, posix-1003.1-2008
+
+@subheading Example
+
+@example
+size_t max_string_length = 10000;
+
+if (strnlen(fname, max_string_length) > PATH_MAX)
+  invalid_file(fname);
+@end example
+
