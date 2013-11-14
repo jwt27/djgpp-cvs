@@ -85,7 +85,7 @@ int main(void)
   if (dst[6])
     rv++;
 
-  for (i = 0; dst[i]; i++)
+  for (i = 0; i < 7; i++)
     free(dst[i]);
 
 
