@@ -203,6 +203,15 @@ typedef struct
   int endscan;
 } double_type;
 
+typedef struct 
+{
+  int line;
+  
+  char *string;
+  float value;
+  int endscan;
+} float_type;
+
 typedef struct
 {
   long int value;
@@ -245,6 +254,13 @@ typedef struct
   char *format_string;
 } sprint_double_type;
 
+typedef struct
+{
+  int line;
+  float value;
+  char *result;
+  char *format_string;
+} sprint_float_type;
 
 typedef struct
 {
@@ -264,6 +280,7 @@ void _EXFUN(test_cvt,(void));
 void _EXFUN(line,(int));
 
 void _EXFUN(test_mok, (double, double, int));
+void _EXFUN(test_mokf, (float, float, int));
 void _EXFUN(test_iok, (int, int));
 void _EXFUN(test_eok, (int, int));
 void _EXFUN(test_sok, (char *, char*));
