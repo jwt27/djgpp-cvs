@@ -1,7 +1,10 @@
+# Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2005 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
 SRC += strtok_r.c
 SRC += strerr_r.c
+SRC += strndup.c
+SRC += strnlen.c
 
 include $(TOP)/../makefile.inc
