@@ -199,7 +199,65 @@ _DEFUN(mag_of_error,(is, shouldbe),
   
 }
 
- int ok_mag;
+
+int 
+_DEFUN(biggerf,(a,b),
+	   __ieee_float_shape_type *a  _AND
+	   __ieee_float_shape_type *b)
+{
+  return (a->p1 > b->p1) ? 1 : 0;
+}
+
+
+
+/* Return the first bit different between two float numbers */
+int 
+_DEFUN(mag_of_errorf,(is, shouldbe),
+       float is _AND
+       float shouldbe)
+{
+  __ieee_float_shape_type a,b;
+  int i;
+  int a_big;
+  unsigned  int mask;
+  unsigned long int part;						  
+  a.value = is;
+  
+  b.value = shouldbe;
+  
+  if (a.p1 == b.p1) return 32;
+
+
+  /* Subtract the larger from the smaller number */
+
+  a_big = biggerf(&a, &b);
+
+  if (!a_big) {
+    int t;
+    t = a.p1;
+    a.p1 = b.p1;
+    b.p1 = t;
+  }
+
+
+
+  part = (a.p1) - (b.p1);							
+
+  
+
+
+  /* Find out which bit the difference is in */
+  mask = 0x80000000UL;
+  for (i = 0; i < 32; i++)
+  {
+    if (((part) & mask) != 0) return i;
+    mask >>= 1;
+  }
+
+  return 32;
+}
+
+int ok_mag;
 
 
 
@@ -289,9 +347,41 @@ _DEFUN(test_mok,(value, shouldbe, okmag),
 	   iname, 
 	   theline,
 	   mag);
-     printf("%08lx%08lx %08lx%08lx) ",
+    printf("%08lx%08lx %08lx%08lx) ",
 	    a.parts.msw,	     a.parts.lsw,
 	    b.parts.msw,	     b.parts.lsw);
+    printf("(%g %g)\n",   a.value, b.value);
+    inacc++;
+  }
+}
+
+void
+_DEFUN(test_mokf,(value, shouldbe, okmag),
+       float value _AND
+       float shouldbe _AND
+       int okmag)
+{
+  __ieee_float_shape_type a,b;
+  int mag = mag_of_errorf(value, shouldbe);
+  if (mag == 0) 
+  {
+    /* error in the first bit is ok if the numbers are both 0 */
+    if (value == 0.0 && shouldbe == 0.0)
+     return;
+    
+  }
+  a.value = shouldbe;
+  b.value = value;
+  
+  if (mag < okmag) 
+  {
+    printf("%s:%d, wrong answer: bit %d ",
+	   iname, 
+	   theline,
+	   mag);
+    printf("%08lx %08lx) ",
+	    a.p1,
+	    b.p1);
     printf("(%g %g)\n",   a.value, b.value);
     inacc++;
   }
