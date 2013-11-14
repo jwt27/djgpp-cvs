@@ -188,6 +188,7 @@ extern double remainder(double, double);
 extern double copysign(double, double);
 extern int ilogb(double);
 extern double rint(double);
+extern long double rintl(long double);
 extern double scalbn(double, int);
 extern double trunc(double);
 extern long double truncl(long double);

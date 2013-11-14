@@ -15,7 +15,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.9 2013/10/25 20:51:03 juan.guerrero Exp $
+ * $Id: math.h,v 1.10 2013/11/14 19:43:44 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -219,6 +219,8 @@ extern double scalb __P((double, double));
 #ifndef __cplusplus
 extern int matherr __P((struct exception *));
 #endif
+
+extern long double rintl __P((long double));
 
 /*
  * IEEE Test Vector
