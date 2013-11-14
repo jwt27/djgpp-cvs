@@ -1344,3 +1344,9 @@ These functions are available in two versions.
 @cindex @acronym{C99} compliance, @code{math.h}
 @findex rintl@r{ added}
 The @acronym{C99} function @code{rintl} has been added to comply with the @acronym{C99} standard.
+
+@cindex @acronym{POSIX} compliance, @code{string.h}
+@findex strndup@r{ added}
+@findex strnlen@r{ added}
+The functions @code{strndup} and @code{strnlen} were added to comply with
+the @acronym{POSIX} 1003.1-2008 standard.
