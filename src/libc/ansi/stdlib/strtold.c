@@ -211,15 +211,12 @@ strtold(const char *s, char **sret)
 
     if (flags == 0)
     {
-      if (sret)
-      {
-        if (!r)
-          s--;  /*  A dot without leading numbers.  */
-        *sret = unconst(s, char *);
-      }
       errno = EINVAL;  /*  No valid mantissa, no conversion could be performed.  */
       return 0.0L;
     }
+
+    if (sret)
+      *sret = unconst(s, char *);
 
     if (digits >= max_digits)
     {
@@ -289,8 +286,10 @@ strtold(const char *s, char **sret)
         s++;  /*  Discart rest of exponent.  */
     }
 
+
     if (sret)
       *sret = unconst(s, char *);
+
     if (mantissa)
     {
       if (bin_exponent > MAX_BIN_EXPONENT)
@@ -337,15 +336,12 @@ strtold(const char *s, char **sret)
   }
   if (flags == 0)
   {
-    if (sret)
-    {
-      if (!r)
-        s--;  /*  A dot without leading numbers.  */
-      *sret = unconst(s, char *);
-    }
     errno = EINVAL;  /*  No valid mantissa, no conversion could be performed.  */
     return 0.0L;
   }
+
+  if (sret)
+    *sret = unconst(s, char *);
 
   if (IS_DEC_EXPONENT(s))
   {
