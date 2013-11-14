@@ -1340,3 +1340,7 @@ to comply with the @acronym{C99} standard.
 The @acronym{C99} functions @code{lroundf}, @code{lround}, @code{lroundl}, @code{llroundf},
 @code{llround} and @code{llroundl} were added to comply with the @acronym{C99} standard.
 These functions are available in two versions.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex rintl@r{ added}
+The @acronym{C99} function @code{rintl} has been added to comply with the @acronym{C99} standard.
