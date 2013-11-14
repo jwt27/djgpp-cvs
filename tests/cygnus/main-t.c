@@ -42,6 +42,8 @@ int main(void)
   failed += truncf_test(); number_of_functions++;
   printf("Testing truncl...\n");
   failed += truncl_test(); number_of_functions++;
+  printf("Testing rintl...\n");
+  failed += rintl_test(); number_of_functions++;
 
   printf("Tested %d functions, %d errors detected\n", number_of_functions, failed);
   if (!isatty(fileno(stdout)))
