@@ -16,10 +16,12 @@
 static char buffer[500];
 
 extern double_type doubles[];
+extern float_type floats[];
 
 /* TEST ATOF  ATOFF */
 
 double_type *pd = doubles;
+float_type *pf = floats;
 
 void
 _DEFUN_VOID(test_strtod)
@@ -38,9 +40,20 @@ _DEFUN_VOID(test_strtodf)
   char *tail;
   double v;
   /* On average we'll loose 1/2 a bit, so the test is for within 1 bit  */
-  v = strtodf(pd->string, &tail);
+  v = strtod(pd->string, &tail);
   test_mok(v, pd->value, 32);
   test_iok(tail - pd->string, pd->endscan);
+}
+
+void
+_DEFUN_VOID(test_strtof)
+{
+  char *tail;
+  float v;
+  /* On average we'll loose 1/2 a bit, so the test is for within 1 bit  */
+  v = strtof(pf->string, &tail);
+  test_mokf(v, pf->value, 32);
+  test_iok(tail - pf->string, pf->endscan);
 }
 
 void
@@ -515,6 +528,7 @@ _DEFUN_VOID(test_cvt)
   diterate(test_ecvt,"ecvt/ecvtf");
   
   iterate(test_strtod, "strtod");
+  iterate(test_strtof, "strtof");
 
   test_nan_inf();
 
