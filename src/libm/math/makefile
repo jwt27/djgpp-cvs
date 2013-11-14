@@ -182,6 +182,7 @@ SRC += lroundl.c
 SRC += llround.c
 SRC += llroundf.c
 SRC += llroundl.c
+SRC += rintl.c
 
 chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	s_atan.def w_atan2.def w_atanh.def w_j0.def \
