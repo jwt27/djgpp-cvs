@@ -13,11 +13,13 @@
 
 /*
 FUNCTION
-<<rint>>, <<rintf>>, <<remainder>>, <<remainderf>>---round and  remainder
+<<rint>>, <<rintf>>, <<rintl>>, <<remainder>>, <<remainderf>>---round and  remainder
 INDEX
 	rint
 INDEX
 	rintf
+INDEX
+	rintl
 INDEX
 	remainder
 INDEX
@@ -27,6 +29,7 @@ ANSI_SYNOPSIS
 	#include <math.h>
 	double rint(double <[x]>);
 	float rintf(float <[x]>);
+	long double rintl(long double <[x]>);
 	double remainder(double <[x]>, double <[y]>);
 	float remainderf(float <[x]>, float <[y]>);
 
@@ -36,13 +39,15 @@ TRAD_SYNOPSIS
 	double <[x]>;
 	float rintf(<[x]>)
 	float <[x]>;
+	long double rint(<[x]>)
+	long double <[x]>;
 	double remainder(<[x]>,<[y]>)
 	double <[x]>, <[y]>;
 	float remainderf(<[x]>,<[y]>)
 	float <[x]>, <[y]>;
 
 DESCRIPTION
-<<rint>> and <<rintf>> returns their argument rounded to the nearest
+<<rint>>, <<rintf>> and <<rintl>> returns their argument rounded to the nearest
 integer.  <<remainder>> and <<remainderf>> find the remainder of
 <[x]>/<[y]>; this value is in the range -<[y]>/2 .. +<[y]>/2.
 
@@ -50,7 +55,7 @@ RETURNS
 <<rint>> and <<remainder>> return the integer result as a double.
 
 PORTABILITY
-<<rint>> and <<remainder>> are System V release 4.  <<rintf>> and
+<<rint>> and <<remainder>> are System V release 4.  <<rintf>>, <<rintl>> and
 <<remainderf>> are extensions.
 
 */
