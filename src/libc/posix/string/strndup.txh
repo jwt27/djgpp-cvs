@@ -1,0 +1,34 @@
+@node strndup, string
+@findex strndup
+@subheading Syntax
+
+@example
+#include <string.h>
+
+char * strndup (const char *source, size_t size);
+@end example
+
+@subheading Description
+
+Returns a newly allocated area of memory that contains a duplicate of at most
+@var{size} of characters of the string pointed to by @var{source}.  The memory
+returned by this call must be freed by the caller.
+
+@subheading Return Value
+
+Returns the newly allocated string, or @var{NULL} if there
+is no more memory.
+
+@subheading Portability
+
+@portability !ansi, posix-1003.1-2008
+
+@subheading Example
+
+@example
+char *foo()
+@{
+  return strndup("hello world", 5);
+@}
+@end example
+
