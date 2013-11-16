@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* Provided by Cygnus Support (jtc@cygnus.com) */
@@ -15,7 +16,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.10 2013/11/14 19:43:44 juan.guerrero Exp $
+ * $Id: math.h,v 1.11 2013/11/16 21:48:24 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -176,6 +177,9 @@ extern long double roundl __P((long double));
 extern float truncf __P((float));
 extern double trunc __P((double));
 extern long double truncl __P((long double));
+extern int isinfl __P((long double));
+extern int isnanl __P((long double));
+extern int finitel __P((long double));
 #endif /* !defined (__STRICT_ANSI__) || defined(__cplusplus)
           || defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L */
 

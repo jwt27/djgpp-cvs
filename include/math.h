@@ -226,6 +226,9 @@ extern long long int llrintf(float);
 extern float roundf(float);
 extern long int lroundf(float);
 extern long long int llroundf(float);
+extern int isinfl(long double);
+extern int isnanl(long double);
+extern int finitel(long double);
 
 /* End libm.a. */
 
