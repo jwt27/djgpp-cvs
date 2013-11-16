@@ -1,3 +1,6 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 
 /* @(#)s_isnan.c 5.1 93/09/24 */
 /*
@@ -13,7 +16,7 @@
 
 /*
 FUNCTION
-	<<isnan>>,<<isnanf>>,<<isinf>>,<<isinff>>,<<finite>>,<<finitef>>---test for exceptional numbers
+	<<isnan>>,<<isnanf>>,<<isnanl>>,<<isinf>>,<<isinff>>,<<isinfl>>,<<finite>>,<<finitef>>,<<finitel>>---test for exceptional numbers
 
 INDEX
 	isnan
@@ -29,6 +32,14 @@ INDEX
 INDEX
 	finitef
 
+INDEX
+	isnanl
+INDEX
+	isinfl
+INDEX
+	finitel
+
+
 ANSI_SYNOPSIS
 	#include <ieeefp.h>
 	int isnan(double <[arg]>);
@@ -37,6 +48,9 @@ ANSI_SYNOPSIS
 	int isnanf(float <[arg]>);
 	int isinff(float <[arg]>);
 	int finitef(float <[arg]>);
+	int isnanl(long double <[arg]>);
+	int isinfl(long double <[arg]>);
+	int finitel(long double <[arg]>);
 
 TRAD_SYNOPSIS
 	#include <ieeefp.h>
@@ -52,6 +66,12 @@ TRAD_SYNOPSIS
 	float <[arg]>;
 	int finitef(<[arg]>);
 	float <[arg]>;
+	int isnanl(<[arg]>)
+	long double <[arg]>;
+	int isinfl(<[arg]>)
+	long double <[arg]>;
+	int finitel(<[arg]>);
+	long double <[arg]>;
 
 
 DESCRIPTION
@@ -80,6 +100,10 @@ DESCRIPTION
 	The <<isnanf>>, <<isinff>> and <<finitef>> perform the same
 	operations as their <<isnan>>, <<isinf>> and <<finite>>
 	counterparts, but on single precision floating point numbers.
+
+	The <<isnanl>>, <<isinfl>> and <<finitel>> perform the same
+	operations as their <<isnan>>, <<isinf>> and <<finite>>
+	counterparts, but on long double precision floating point numbers.
 
 QUICKREF
 	isnan - pure
