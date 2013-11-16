@@ -1350,3 +1350,10 @@ The @acronym{C99} function @code{rintl} has been added to comply with the @acron
 @findex strnlen@r{ added to the library}
 The functions @code{strndup} and @code{strnlen} were added to comply with
 the @acronym{POSIX} 1003.1-2008 standard.
+
+@cindex @acronym{BSD/GNU} compatibility, @code{math.h}
+@findex isinfl@r{, added to the math library}
+@findex isnanl@r{, added to the math library}
+@findex finitel@r{, added to the math library}
+Although they are obsolete, the @acronym{BSD/GNU} compatibility functions @code{isinfl},
+@code{isnanl}, and @code{finitel} were added.
