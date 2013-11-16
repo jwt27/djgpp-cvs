@@ -44,6 +44,12 @@ int main(void)
   failed += truncl_test(); number_of_functions++;
   printf("Testing rintl...\n");
   failed += rintl_test(); number_of_functions++;
+  printf("Testing isinff, isnanf and finitef...\n");
+  failed += isspecialf_test(); number_of_functions++;
+  printf("Testing isinf, isnan and finite...\n");
+  failed += isspecial_test(); number_of_functions++;
+  printf("Testing isinfl, isnanl and finitel...\n");
+  failed += isspeciall_test(); number_of_functions++;
 
   printf("Tested %d functions, %d errors detected\n", number_of_functions, failed);
   if (!isatty(fileno(stdout)))

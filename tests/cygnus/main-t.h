@@ -27,5 +27,8 @@ int trunc_test(void);
 int truncf_test(void);
 int truncl_test(void);
 int rintl_test(void);
+int isspecialf_test(void);
+int isspecial_test(void);
+int isspeciall_test(void);
 
 #endif  /* MAIN_T_H */
