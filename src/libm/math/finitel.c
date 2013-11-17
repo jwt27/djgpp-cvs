@@ -13,7 +13,7 @@ int
 finitel(long double x)
 #else
 int
-finite(x)
+finitel(x)
 long double x;
 #endif
 {
