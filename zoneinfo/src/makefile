@@ -533,11 +533,11 @@ zic$(EXEEXT):	$(TZCOBJS) yearistype
 yearistype:	yearistype.sh
 		$(UTIL) cp yearistype.sh yearistype
 
-posix_only:	$(zic) $(TDATA)
-		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
+posix_only:	$(zic) $(TDATA) TDATA_list
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null @TDATA_list
 
-right_only:	$(zic) leapseconds $(TDATA)
-		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
+right_only:	$(zic) leapseconds $(TDATA) TDATA_list
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds @TDATA_list
 
 # In earlier versions of this makefile, the other two directories were
 # subdirectories of $(TZDIR).  However, this led to configuration errors.
@@ -548,10 +548,10 @@ right_only:	$(zic) leapseconds $(TDATA)
 # Therefore, the other two directories are now siblings of $(TZDIR).
 # You must replace all of $(TZDIR) to switch from not using leap seconds
 # to using them, or vice versa.
-other_two:	$(zic) leapseconds $(TDATA)
-		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null $(TDATA)
+other_two:	$(zic) leapseconds $(TDATA) TDATA_list
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null @TDATA_list
 		$(ZIC) -y $(YEARISTYPE) \
-			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
+			-d $(TZDIR)-leaps -L leapseconds @TDATA_list
 
 posix_right:	posix_only other_two
 
@@ -597,7 +597,8 @@ check_web:	$(WEB_PAGES)
 
 clean_misc:
 		$(UTIL) rm core *.o *.out tzselect zdump$(EXEEXT) zic$(EXEEXT) \
-			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man
+			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man \
+			TDATA_list
 clean:		clean_misc
 		$(UTIL) rm -f -r tzpublic
 
@@ -706,6 +707,9 @@ typecheck:
 
 zonenames:	$(TDATA)
 		@$(AWK) '/^Zone/ { print $$2 } /^Link/ { print $$3 }' $(TDATA)
+
+TDATA_list:	$(TDATA)
+		echo $(TDATA) > TDATA_list
 
 asctime.o:	private.h tzfile.h
 date.o:		private.h

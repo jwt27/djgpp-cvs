@@ -1276,3 +1276,78 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/date.c djgpp/zoneinfo/src/date.c
  	while (is_digit(*cp))
  		++cp;
  	return cp;
+
+2013-11-23  Juan Manuel Guerrero  <juan.guerrero@gmx.de>
+
+	* djgpp/zoneinfo/src/makefile: Redirect file list into response file
+	to avoid exceeding command line limit in FreeDOS.
+
+
+diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
+--- djgpp.orig/zoneinfo/src/makefile	2013-08-22 20:21:20 +0100
++++ djgpp/zoneinfo/src/makefile	2013-11-23 17:31:24 +0100
+@@ -531,29 +531,29 @@ zic$(EXEEXT):	$(TZCOBJS) yearistype
+ 		$(CROSS_STRIP) $@
+ 
+ yearistype:	yearistype.sh
+ 		$(UTIL) cp yearistype.sh yearistype
+ 
+-posix_only:	$(zic) $(TDATA)
+-		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
++posix_only:	$(zic) $(TDATA) TDATA_list
++		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null @TDATA_list
+ 
+-right_only:	$(zic) leapseconds $(TDATA)
+-		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
++right_only:	$(zic) leapseconds $(TDATA) TDATA_list
++		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds @TDATA_list
+ 
+ # In earlier versions of this makefile, the other two directories were
+ # subdirectories of $(TZDIR).  However, this led to configuration errors.
+ # For example, with posix_right under the earlier scheme,
+ # TZ='right/Australia/Adelaide' got you localtime with leap seconds,
+ # but gmtime without leap seconds, which led to problems with applications
+ # like sendmail that subtract gmtime from localtime.
+ # Therefore, the other two directories are now siblings of $(TZDIR).
+ # You must replace all of $(TZDIR) to switch from not using leap seconds
+ # to using them, or vice versa.
+-other_two:	$(zic) leapseconds $(TDATA)
+-		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null $(TDATA)
++other_two:	$(zic) leapseconds $(TDATA) TDATA_list
++		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null @TDATA_list
+ 		$(ZIC) -y $(YEARISTYPE) \
+-			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
++			-d $(TZDIR)-leaps -L leapseconds @TDATA_list
+ 
+ posix_right:	posix_only other_two
+ 
+ right_posix:	right_only other_two
+ 
+@@ -595,11 +595,12 @@ check_tables:	checktab.awk $(PRIMARY_YDA
+ check_web:	$(WEB_PAGES)
+ 		$(VALIDATE_ENV) $(VALIDATE) $(VALIDATE_FLAGS) $(WEB_PAGES)
+ 
+ clean_misc:
+ 		$(UTIL) rm core *.o *.out tzselect zdump$(EXEEXT) zic$(EXEEXT) \
+-			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man
++			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man \
++			TDATA_list
+ clean:		clean_misc
+ 		$(UTIL) rm -f -r tzpublic
+ 
+ maintainer-clean: clean
+ 		@echo 'This command is intended for maintainers to use; it'
+@@ -705,10 +706,13 @@ typecheck:
+ 		done
+ 
+ zonenames:	$(TDATA)
+ 		@$(AWK) '/^Zone/ { print $$2 } /^Link/ { print $$3 }' $(TDATA)
+ 
++TDATA_list:	$(TDATA)
++		echo $(TDATA) > TDATA_list
++
+ asctime.o:	private.h tzfile.h
+ date.o:		private.h
+ difftime.o:	private.h
+ ialloc.o:	private.h
+ localtime.o:	private.h tzfile.h
