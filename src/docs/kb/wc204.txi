@@ -448,16 +448,16 @@ traversal more efficient.  @strong{WARNING: This makes some object files
 built with DJGPP v2.03 incompatible with programs compiled with the
 v2.04 library!}
 
-@findex moncontrol@r{, added}
-@findex monstartup@r{, added}
+@findex moncontrol@r{, added to the library}
+@findex monstartup@r{, added to the library}
 Two new functions, @code{monstartup} and @code{moncontrol}, allow to
 control when profiling starts and ends, and what range of addresses is
 recorded in the profiling data.
 
-@findex mallinfo@r{, added}
-@findex malloc_verify@r{, added}
-@findex malloc_debug@r{, added}
-@findex mallocmap@r{, added}
+@findex mallinfo@r{, added to the library}
+@findex malloc_verify@r{, added to the library}
+@findex malloc_debug@r{, added to the library}
+@findex mallocmap@r{, added to the library}
 @findex malloc@r{, debug facilities}
 There are new @code{malloc} debug facilities.  While not as powerful and
 versatile as existing external packages, such as @acronym{YAMD}, these
@@ -481,7 +481,7 @@ was fixed to print an error message and exit to @acronym{DOS} with an exit statu
 that indicates a failure, when a selector for @acronym{DOS} memory could not be
 allocated by the @acronym{DPMI} host.
 
-@findex confstr@r{, added}
+@findex confstr@r{, added to the library}
 @code{confstr} has been added to the library to support returning
 system-dependent configuration in strings.
 
@@ -498,8 +498,8 @@ using a simplified form of the implementation suggested by
 is required.  Obsolete usage of @code{shld} and @code{shrd}
 for double-precision shifts is flagged.
 
-@findex l64a@r{, added}
-@findex a64l@r{, added}
+@findex l64a@r{, added to the library}
+@findex a64l@r{, added to the library}
 Two new functions, @code{l64a} and @code{a64l} (both part of the @sc{posix}
 draft standard), allow you to convert a 32-bit integer value to and from a
 base-64 encoding, respectively.
@@ -509,7 +509,7 @@ encoding.
 
 @findex setenv@r{, minor changes for @sc{posix} compliance}
 @findex putenv@r{, minor changes for @sc{posix} compliance}
-@findex unsetenv@r{, added}
+@findex unsetenv@r{, added to the library}
 The environment functions @code{setenv} and @code{putenv} are now both
 part of the @sc{posix} draft standard and were updated to match the
 specs set forth by that standard.  Both now set @code{errno} in case of
@@ -958,10 +958,10 @@ would give different inodes.
 @code{stat} and @code{fstat} should now return the same inode for a file
 in most cases.
 
-@findex dlopen@r{ added}
-@findex dlsym@r{ added}
-@findex dlclose@r{ added}
-@findex dlerror@r{ added}
+@findex dlopen@r{, added to the library}
+@findex dlsym@r{, added to the library}
+@findex dlclose@r{, added to the library}
+@findex dlerror@r{, added to the library}
 @pindex dxe3gen@r{ added}
 @pindex dxe3res@r{ added}
 New enhanced dynamic module support has been added with a Posix compliant
@@ -1001,17 +1001,17 @@ Fix a bug in moving directories into themselves.   Previously
 @code{rename} failed to detect that a subdirectory was being moved
 into itself, when the current directory was a short filename.
 
-@findex fpclassify@r{ added}
-@findex __fpclassifyf@r{ added}
-@findex __fpclassifyd@r{ added}
-@findex __fpclassifyld@r{ added}
+@findex fpclassify@r{, added to the library}
+@findex __fpclassifyf@r{, added to the library}
+@findex __fpclassifyd@r{, added to the library}
+@findex __fpclassifyld@r{, added to the library}
 The @acronym{C99} macro @code{fpclassify} and the supporting functions
 @code{__fpclassifyf}, @code{__fpclassifyd} and @code{__fpclassifyld}
 were added.
 
-@findex nan@r{ added}
-@findex nanf@r{ added}
-@findex nanl@r{ added}
+@findex nan@r{, added to the library}
+@findex nanf@r{, added to the library}
+@findex nanl@r{, added to the library}
 The @acronym{C99} functions @code{nan}, @code{nanf} and @code{nanl} were added.
 
 @findex _doprnt@r{, and the decimal point}
@@ -1034,10 +1034,10 @@ and time format (for @code{%X}) from the current locale.
 This means that @code{%T} and @code{%X} are no longer equivalent.
 
 @vindex __djgpp_stack_overflow_eip@r{ added}
-@findex __djgpp_stack_overflow_exit@r{ added}
+@findex __djgpp_stack_overflow_exit@r{, added to the library}
 A stack overflow handler was added.
 
-@vindex math_errhandling@r{ added}
+@vindex math_errhandling@r{, added to the library}
 @code{math_errhandling} was added.
 
 @findex scanf@r{, and assignment suppression}
@@ -1054,23 +1054,23 @@ fails, if that function is compiled with @acronym{C99} features enabled.
 @cindex @acronym{C99} compliance, @file{stdbool.h}
 The @acronym{C99} file @file{stdbool.h} was added.
 
-@findex asctime_r@r{ added}
-@findex ctime_r@r{ added}
-@findex gmtime_r@r{ added}
-@findex hcreate@r{ added}
-@findex hdestroy@r{ added}
-@findex hsearch@r{ added}
-@findex lfind@r{ added}
-@findex lsearch@r{ added}
-@findex localtime_r@r{ added}
-@findex strtok_r@r{ added}
-@findex strerror_r@r{ added}
+@findex asctime_r@r{, added to the library}
+@findex ctime_r@r{, added to the library}
+@findex gmtime_r@r{, added to the library}
+@findex hcreate@r{, added to the library}
+@findex hdestroy@r{, added to the library}
+@findex hsearch@r{, added to the library}
+@findex lfind@r{, added to the library}
+@findex lsearch@r{, added to the library}
+@findex localtime_r@r{, added to the library}
+@findex strtok_r@r{, added to the library}
+@findex strerror_r@r{, added to the library}
 The @acronym{POSIX} functions @code{asctime_r}, @code{ctime_r}, @code{gmtime_r},
 @code{hcreate}, @code{hdestroy}, @code{hsearch}, @code{lfind},
 @code{lsearch}, @code{localtime_r}, @code{strtok_r} and
 @code{strerror_r} were added.  
 
-@findex _hash2v@r{ added}
+@findex _hash2v@r{, added to the library}
 Hash function @code{_hash2v} used by @code{hsearch} was added.  
 
 @findex setlocale@r{, standard and current locales supported}
@@ -1288,16 +1288,16 @@ The type @code{rlim_t} has been added.
 members of @code{struct rlimit}.
 
 @cindex @acronym{C99} compliance, @code{math.h}
-@findex isfinite@r{ added}
-@findex isinf@r{ added}
-@findex isnan@r{ added}
-@findex isnormal@r{ added}
-@findex isgreater@r{ added}
-@findex isgreaterequal@r{ added}
-@findex isless@r{ added}
-@findex islessequal@r{ added}
-@findex islessgreater@r{ added}
-@findex isunordered@r{ added}
+@findex isfinite@r{, added to the library}
+@findex isinf@r{, added to the library}
+@findex isnan@r{, added to the library}
+@findex isnormal@r{, added to the library}
+@findex isgreater@r{, added to the library}
+@findex isgreaterequal@r{, added to the library}
+@findex isless@r{, added to the library}
+@findex islessequal@r{, added to the library}
+@findex islessgreater@r{, added to the library}
+@findex isunordered@r{, added to the library}
 The @acronym{C99} macros @code{isfinite}, @code{isinf}, @code{isnan}, @code{isnormal}, @code{isgreater},
 @code{isgreaterequal}, @code{isless}, @code{islessequal}, @code{islessgreater} and @code{isunordered}
 were added to comply with the @acronym{C99} standard.
