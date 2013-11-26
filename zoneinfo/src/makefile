@@ -534,10 +534,18 @@ yearistype:	yearistype.sh
 		$(UTIL) cp yearistype.sh yearistype
 
 posix_only:	$(zic) $(TDATA) TDATA_list
+ifeq ($(CROSS_BUILD),1)
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null $(TDATA)
+else
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L /dev/null @TDATA_list
+endif
 
 right_only:	$(zic) leapseconds $(TDATA) TDATA_list
+ifeq ($(CROSS_BUILD),1)
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds $(TDATA)
+else
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR) -L leapseconds @TDATA_list
+endif
 
 # In earlier versions of this makefile, the other two directories were
 # subdirectories of $(TZDIR).  However, this led to configuration errors.
@@ -549,9 +557,15 @@ right_only:	$(zic) leapseconds $(TDATA) TDATA_list
 # You must replace all of $(TZDIR) to switch from not using leap seconds
 # to using them, or vice versa.
 other_two:	$(zic) leapseconds $(TDATA) TDATA_list
+ifeq ($(CROSS_BUILD),1)
+		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null $(TDATA)
+		$(ZIC) -y $(YEARISTYPE) \
+			-d $(TZDIR)-leaps -L leapseconds $(TDATA)
+else
 		$(ZIC) -y $(YEARISTYPE) -d $(TZDIR)-posix -L /dev/null @TDATA_list
 		$(ZIC) -y $(YEARISTYPE) \
 			-d $(TZDIR)-leaps -L leapseconds @TDATA_list
+endif
 
 posix_right:	posix_only other_two
 
