@@ -5,7 +5,7 @@
 /* Make VAL a multiple of ALIGN.  */
 static inline
 size_t
-align_val (size_t val, size_t align)
+align_val(size_t val, size_t align)
 {
   return ((val + (align - 1)) & ~(align - 1));
 }
@@ -13,14 +13,14 @@ align_val (size_t val, size_t align)
 /* Make PTR a multiple of ALIGN.  */
 static inline
 char *
-align_ptr (char *ptr, size_t align)
+align_ptr(char *ptr, size_t align)
 {
   return (char *)(((size_t)ptr + (align - 1)) & ~(align - 1));
 }
 
 /* Take part of one chunk of memory and merge it with a preceding chunk.  */
 static void *
-split_small_alloc (char *ptr, size_t split_pos)
+split_small_alloc(char *ptr, size_t split_pos)
 {
   BLOCK *b1, *b2;
   size_t b1_size;
@@ -43,7 +43,7 @@ split_small_alloc (char *ptr, size_t split_pos)
 /* Split a chunk of allocated memory into two chunks so both can
    be released with a call to free().  */
 static void *
-split_alloc (char *ptr, size_t split_pos)
+split_alloc(char *ptr, size_t split_pos)
 {
   BLOCK *b1, *b2;
   char *split_ptr;
@@ -67,7 +67,7 @@ split_alloc (char *ptr, size_t split_pos)
 /* Return a block of memory AMT bytes long whose address is a multiple
    ALIGN.  ALIGN must be a power of 2.  */
 void *
-memalign (size_t amt, size_t align)
+memalign(size_t amt, size_t align)
 {
   char *ptr, *aligned_ptr;
   size_t alloc_size, before_size, after_size;
@@ -79,9 +79,9 @@ memalign (size_t amt, size_t align)
     align = ALIGN;
 
   if (align == ALIGN)
-    return malloc (amt);
+    return malloc(amt);
     
-  amt = align_val (amt, ALIGN);
+  amt = align_val(amt, ALIGN);
   alloc_size = amt + align;
   
   ptr = malloc(alloc_size);
@@ -96,7 +96,7 @@ memalign (size_t amt, size_t align)
 
   if (before_size > 8)
   {
-    aligned_ptr = split_alloc (ptr, before_size);
+    aligned_ptr = split_alloc(ptr, before_size);
     free (ptr);
   }
   else if (before_size)
@@ -110,10 +110,9 @@ memalign (size_t amt, size_t align)
   if (after_size >= 16)
   {
     char *after;
-    after = split_alloc (aligned_ptr, amt + 8);
+    after = split_alloc(aligned_ptr, amt + 8);
     free (after);
   }
 
   return aligned_ptr;
 }
-
