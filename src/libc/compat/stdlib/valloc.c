@@ -1,6 +1,7 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 
-#include <stdlib.h>
+#include <malloc.h>
 #include <unistd.h>
 
 void *
@@ -11,5 +12,5 @@ valloc(size_t amt)
   if (page_size == -1)
     page_size = getpagesize();
 
-  return memalign(amt, page_size);
+  return memalign(page_size, amt);
 }
