@@ -3,9 +3,9 @@
 @subheading Syntax
 
 @example
-#include <stdlib.h>
+#include <malloc.h>
 
-void *memalign(size_t size, size_t alignment);
+void *memalign(size_t alignment, size_t size);
 @end example
 
 @subheading Description
@@ -25,5 +25,5 @@ A pointer to a newly allocated block of memory.
 @subheading Example
 
 @example
-char *page = memalign(1024, 1024 * 4);
+char *page = memalign(1024 * 4, 1024);
 @end example
