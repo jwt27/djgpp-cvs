@@ -1,5 +1,6 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
-#include <stdlib.h>
+#include <malloc.h>
 #include <libc/malloc.h>
 
 /* Make VAL a multiple of ALIGN.  */
@@ -67,7 +68,7 @@ split_alloc(char *ptr, size_t split_pos)
 /* Return a block of memory AMT bytes long whose address is a multiple
    ALIGN.  ALIGN must be a power of 2.  */
 void *
-memalign(size_t amt, size_t align)
+memalign(size_t align, size_t amt)
 {
   char *ptr, *aligned_ptr;
   size_t alloc_size, before_size, after_size;
