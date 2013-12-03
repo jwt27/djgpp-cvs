@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -132,7 +133,6 @@ char *		itoa(int _value, char *_buffer, int _radix);
 long            jrand48(unsigned short _state[3]);
 void            lcong48(unsigned short _param[7]);
 unsigned long   lrand48(void);
-void *		memalign (size_t _amt, size_t _align);
 long            mrand48(void);
 unsigned long   nrand48(unsigned short _state[3]);
 unsigned short *seed48(unsigned short _state_seed[3]);
