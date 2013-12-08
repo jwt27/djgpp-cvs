@@ -360,8 +360,8 @@ strtod(const char *s, char **sret)
   }
   else if (esign < 0)
   {
-    const int exp = e + 1;
-    for (i = 1; i < exp; i++)
+    const int exponent = e + 1;
+    for (i = 1; i < exponent; i++)
     {
       r *= 0.1L;
       /* Detect underflow below 2^-1075, which is half
@@ -376,8 +376,8 @@ strtod(const char *s, char **sret)
   }
   else
   {
-    const int exp = e + 1;
-    for (i = 1; i < exp; i++)
+    const int exponent = e + 1;
+    for (i = 1; i < exponent; i++)
     {
       r *= 10.0;
       if (r > DBL_MAX)  /* detect overflow */
