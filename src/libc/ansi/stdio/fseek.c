@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -14,7 +15,7 @@ int
 fseek(FILE *f, long offset, int ptrname)
 {
   const int fd = fileno(f);
-  long p = -1;			/* can't happen? */
+  long int p = -1;			/* can't happen? */
 
   /* If this is a FILE for a directory, we have no concept of position.
    * The stream I/O functions cannot be used to read/write a FILE
@@ -38,11 +39,11 @@ fseek(FILE *f, long offset, int ptrname)
       }
       /* check if the target position is in the buffer and
         optimize seek by moving inside the buffer */
-      if (ptrname == SEEK_SET && (f->_flag & (_IOUNGETC|_IORW)) == 0
-      && p-offset <= f->_ptr-f->_base && offset-p <= f->_cnt)
+      if (ptrname == SEEK_SET && (f->_flag & (_IOUNGETC | _IORW)) == 0
+          && p - offset <= f->_ptr - f->_base && offset - p <= f->_cnt)
       {
-        f->_ptr+=offset-p;
-        f->_cnt+=p-offset;
+        f->_ptr += offset - p;
+        f->_cnt += p - offset;
         return 0;
       }
     }
@@ -55,11 +56,10 @@ fseek(FILE *f, long offset, int ptrname)
     f->_ptr = f->_base;
     f->_flag &= ~_IOUNGETC;
   }
-  else if (f->_flag & (_IOWRT|_IORW))
+  else if (f->_flag & (_IOWRT | _IORW))
   {
     p = fflush(f);
-    return lseek(fd, offset, ptrname) == -1 || p == EOF ?
-      -1 : 0;
+    return lseek(fd, offset, ptrname) == -1 || p == EOF ? -1 : 0;
   }
-  return p==-1 ? -1 : 0;
+  return p == -1 ? -1 : 0;
 }

@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
@@ -20,13 +21,13 @@ fclose(FILE *f)
 
   /* A FILE for a directory won't have any of the read or write flags
    * set. But we still want to tidy it up. */
-  if (   (f->_flag & (_IOREAD|_IOWRT|_IORW) && !(f->_flag&_IOSTRG))
+  if ((f->_flag & (_IOREAD | _IOWRT | _IORW) && !(f->_flag & _IOSTRG))
       || (__get_fd_flags(fd) & FILE_DESC_DIRECTORY))
   {
     r = fflush(f);
     if (close(fd) < 0)
       r = EOF;
-    if (f->_flag&_IOMYBUF)
+    if (f->_flag & _IOMYBUF)
       free(f->_base);
   }
 
@@ -38,8 +39,8 @@ fclose(FILE *f)
   }
 
   f->_cnt = 0;
-  f->_base = 0;
-  f->_ptr = 0;
+  f->_base = NULL;
+  f->_ptr = NULL;
   f->_bufsiz = 0;
   f->_flag = 0;
   f->_file = -1;

@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <string.h>
@@ -9,7 +10,7 @@ FILE *__alloc_file(void)
 {
   __file_rec *fr = __file_rec_list;
   __file_rec **last_fr = &__file_rec_list;
-  FILE *rv=0;
+  FILE *rv = NULL;
   int i;
 
   /* Try to find an empty slot */
@@ -18,7 +19,7 @@ FILE *__alloc_file(void)
     last_fr = &(fr->next);
 
     /* If one of the existing slots is available, return it */
-    for (i=0; i<fr->count; i++)
+    for (i = 0; i < fr->count; i++)
       if (fr->files[i]->_flag == 0)
 	return fr->files[i];
 
@@ -33,16 +34,16 @@ FILE *__alloc_file(void)
   {
     /* add another one to the end, make it empty */
     fr = *last_fr = (__file_rec *)malloc(sizeof(__file_rec));
-    if (fr == 0)
-      return 0;
+    if (!fr)
+      return NULL;
     fr->next = 0;
     fr->count = 0;
   }
   /* fr is a pointer to a rec with empty slots in it */
   rv = fr->files[fr->count] = (FILE *)malloc(sizeof(FILE));
-  if (rv == 0)
-    return 0;
+  if (!rv)
+    return NULL;
   memset(rv, 0, sizeof(FILE));
-  fr->count ++;
+  fr->count++;
   return rv;
 }
