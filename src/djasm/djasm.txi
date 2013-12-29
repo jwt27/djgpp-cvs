@@ -293,6 +293,26 @@ Pentium* instructions.
 @end itemize
 
 @comment node-name, next, previous, up
+@node Applications
+@section When would I want to use @code{djasm}?
+
+Ordinarily, assembly language programmers should use @acronym{AS}, or a
+16/32-bit assembler like @acronym{NASM}, for most programming purposes.
+However, there are a few reasons why you might want to use @code{djasm}:
+
+@itemize @bullet{}
+@item
+If you are looking for a free (@i{sensu} @acronym{GPL}) 16-bit assembler.
+@item
+To keep a project compatible with the spirit of DJGPP,
+without requiring the use of @acronym{NASM} or some other assembler
+to compile 16-bit code.
+@item
+For small 16-bit projects, such as device drivers, TSRs,
+boot loaders, or micro-kernels.
+@end itemize
+
+@comment node-name, next, previous, up
 @node Invocation
 @chapter Invoking @code{djasm}
 
@@ -337,26 +357,6 @@ Produce a @file{.byte} array for @acronym{AS} @file{.s} or @file{.S} files.
 For the @file{.h}, @file{.inc}, and @file{.ah} output types,
 the @code{.type} directive is used to determine which binary
 type to emit (@pxref{General,.type}).
-
-@comment node-name, next, previous, up
-@node Applications
-@section When would I want to use @code{djasm}?
-
-Ordinarily, assembly language programmers should use @acronym{AS}, or a
-16/32-bit assembler like @acronym{NASM}, for most programming purposes.
-However, there are a few reasons why you might want to use @code{djasm}:
-
-@itemize @bullet{}
-@item
-If you are looking for a free (@i{sensu} @acronym{GPL}) 16-bit assembler.
-@item
-To keep a project compatible with the spirit of DJGPP,
-without requiring the use of @acronym{NASM} or some other assembler
-to compile 16-bit code.
-@item
-For small 16-bit projects, such as device drivers, TSRs,
-boot loaders, or micro-kernels.
-@end itemize
 
 @comment node-name, next, previous, up
 @node Language
