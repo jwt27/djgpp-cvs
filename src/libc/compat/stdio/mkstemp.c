@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2009 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -12,7 +13,7 @@
 #include <io.h>
 
 int
-mkstemp (char *_template)
+mkstemp(char *_template)
 {
   char tmp_name[FILENAME_MAX];
   char real_path[FILENAME_MAX];
@@ -23,10 +24,10 @@ mkstemp (char *_template)
   do {
     strcpy(tmp_name, _template);
     errno = 0;
-  } while (mktemp (tmp_name) != NULL
+  } while (mktemp(tmp_name) != NULL
            && __solve_symlinks(tmp_name, real_path)
-	   && (fd = _creatnew(real_path, 0, SH_DENYRW)) == -1
-	   && errno == EEXIST);
+           && (fd = _creatnew(real_path, 0, SH_DENYRW)) == -1
+           && errno == EEXIST);
 
   if (fd == -1)
     errno = ENOENT;
