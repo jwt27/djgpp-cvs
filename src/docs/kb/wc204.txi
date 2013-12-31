@@ -1366,5 +1366,5 @@ A bug was fixed in @code{memalign} and @code{valloc}.
 with linux and other @acronym{POSIX} compliant systems.  This has been changed
 so that the argument order now is the same that on @acronym{POSIX} compliant
 systems.  @code{valloc}, that calls @code{memalign}, has been adjusted accordingly.
-The @code{memalign} declaration has been moved from@file{stdlib.h} to
+The @code{memalign} declaration has been moved from @file{stdlib.h} to
 @file{malloc.h} to comply with the @acronym{C99} standard.
