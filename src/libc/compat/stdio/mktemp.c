@@ -1,3 +1,4 @@
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2009 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -13,7 +14,7 @@
 static int mktemp_count = -1;
 
 char *
-mktemp (char *_template)
+mktemp(char *_template)
 {
   static int count = 0;
   char *cp, *dp;
@@ -22,32 +23,35 @@ mktemp (char *_template)
 
   /* Reinitialize counter if we were restarted (emacs).  */
   if (__bss_count != mktemp_count)
-    {
-      mktemp_count = __bss_count;
-      count = 0;
-    }
+  {
+    mktemp_count = __bss_count;
+    count = 0;
+  }
 
-  len = strlen (_template);
+  len = strlen(_template);
   cp = _template + len;
 
   xcount = 0;
   while (xcount < 6 && cp > _template && cp[-1] == 'X')
     xcount++, cp--;
 
-  if (xcount) {
+  if (xcount)
+  {
     dp = cp;
     while (dp > _template && dp[-1] != '/' && dp[-1] != '\\' && dp[-1] != ':')
       dp--;
 
     /* Keep the first characters of the template, but turn the rest into
        Xs.  */
-    while (cp > dp + 8 - xcount) {
+    while (cp > dp + 8 - xcount)
+    {
       *--cp = 'X';
       xcount = (xcount >= 6) ? 6 : 1 + xcount;
     }
 
     /* If dots occur too early -- squash them.  */
-    while (dp < cp) {
+    while (dp < cp)
+    {
       if (*dp == '.') *dp = 'a';
       dp++;
     }
@@ -59,30 +63,31 @@ mktemp (char *_template)
       cp[xcount] = 0;
 
     /* This loop can run up to 2<<(5*6) times, or about 10^9 times.  */
-    for (loopcnt = 0; loopcnt < (1 << (5 * xcount)); loopcnt++) {
+    for (loopcnt = 0; loopcnt < (1 << (5 * xcount)); loopcnt++)
+    {
       int c = count++;
       for (i = 0; i < xcount; i++, c >>= 5)
-	cp[i] = "abcdefghijklmnopqrstuvwxyz012345"[c & 0x1f];
-      if (!__solve_symlinks(_template, real_path)) 
+        cp[i] = "abcdefghijklmnopqrstuvwxyz012345"[c & 0x1f];
+      if (!__solve_symlinks(_template, real_path))
       {
-         *_template = 0;
-         return 0;
-      }	
+        *_template = 0;
+        return NULL;
+      }
       if (!__file_exists(real_path))
-	return _template;
+        return _template;
     }
   }
 
   /* Failure:  truncate the template and return NULL.  */
   *_template = 0;
-  return 0;
+  return NULL;
 }
 
 
 
 #ifdef TEST
 int
-main ()
+main(void)
 {
   char *s, *s0;
 
