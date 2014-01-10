@@ -39,7 +39,7 @@ static char *grouping;
 #define	DEFPREC		6
 #define	DEFLPREC	6
 
-#define	BUF		(MAXEXPLD+MAXFRACT+1)	/* + decimal point */
+#define	BUF		(MAXEXPLD + MAXFRACT + 1) /* + decimal point */
 
 #define	PUTC(ch)	(void) putc(ch, fp)
 
@@ -114,32 +114,32 @@ static const char UPPER_DIGITS[] = "0123456789ABCDEF";
 int
 _doprnt(const char *fmt0, va_list argp, FILE *fp)
 {
-  const char *fmt;		/* format string */
-  int ch;			/* character from fmt */
-  int cnt;			/* return value accumulator */
-  int n;			/* random handy integer */
-  char *t;			/* buffer pointer */
-  long double _ldouble;		/* double and long double precision arguments
-				   %L.[aAeEfFgG] */
+  const char *fmt;                   /* format string */
+  int ch;                            /* character from fmt */
+  int cnt;                           /* return value accumulator */
+  int n;                             /* random handy integer */
+  char *t;                           /* buffer pointer */
+  long double _ldouble;              /* double and long double precision arguments
+                                        %L.[aAeEfFgG] */
   unsigned long long _ulonglong = 0; /* integer arguments %[diouxX] */
-  int base;			/* base for [diouxX] conversion */
-  int dprec;			/* decimal precision in [diouxX] */
-  int fieldsz;			/* field size expanded by sign, etc */
-  int flags;			/* flags as above */
-  int fpprec;			/* `extra' floating precision in [eEfFgG] */
-  int prec;			/* precision from format (%.3d), or -1 */
-  int realsz;			/* field size expanded by decimal precision */
-  int size;			/* size of converted field or string */
-  int width;			/* width from format (%8d), or 0 */
-  char sign;			/* sign prefix (' ', '+', '-', or \0) */
-  char softsign;		/* temporary negative sign for floats */
-  char buf[BUF];		/* space for %c, %[diouxX], %[aAeEfFgG] */
-  int neg_ldouble = false;	/* TRUE if _ldouble is negative */
-  struct lconv *locale_info;    /* current locale information */
-  int using_numeric_conv_spec;  /* TRUE if using numeric specifier, FALSE else */
-  va_list arg_list;		/* argument list */
-  va_list to_be_printed = NULL;	/* argument to be printed if numeric specifier are used */
-  const char *pos;		/* position in format string when checking for numeric conv spec */
+  int base;                          /* base for [diouxX] conversion */
+  int dprec;                         /* decimal precision in [diouxX] */
+  int fieldsz;                       /* field size expanded by sign, etc */
+  int flags;                         /* flags as above */
+  int fpprec;                        /* `extra' floating precision in [eEfFgG] */
+  int prec;                          /* precision from format (%.3d), or -1 */
+  int realsz;                        /* field size expanded by decimal precision */
+  int size;                          /* size of converted field or string */
+  int width;                         /* width from format (%8d), or 0 */
+  char sign;                         /* sign prefix (' ', '+', '-', or \0) */
+  char softsign;                     /* temporary negative sign for floats */
+  char buf[BUF];                     /* space for %c, %[diouxX], %[aAeEfFgG] */
+  int neg_ldouble = false;           /* TRUE if _ldouble is negative */
+  struct lconv *locale_info;         /* current locale information */
+  int using_numeric_conv_spec;       /* TRUE if using numeric specifier, FALSE else */
+  va_list arg_list;                  /* argument list */
+  va_list to_be_printed = NULL;      /* argument to be printed if numeric specifier are used */
+  const char *pos;                   /* position in format string when checking for numeric conv spec */
 
 
   locale_info = localeconv();
@@ -535,7 +535,7 @@ number:
 	else
 	  CONVERT(unsigned long, _ulonglong, base, t, flags & UPPERCASE);
         if ((flags & ALT) && base == 8 && *t != '0')
-          *--t = '0';		/* octal leading 0 */
+          *--t = '0';  /* octal leading 0 */
       }
 
       size = buf + BUF - t;
@@ -615,7 +615,7 @@ pforw:
       /* finally, adjust cnt */
       cnt += width > realsz ? width : realsz;
       break;
-    case '\0':			/* "%?" prints ?, unless ? is NULL */
+    case '\0':  /* "%?" prints ?, unless ? is NULL */
       return cnt;
     default:
       PUTC((char)*fmt);
@@ -625,13 +625,13 @@ pforw:
   /* NOTREACHED */
 }
 
-static long double pten[] =
+static long double powten[] =
 {
   1e1L, 1e2L, 1e4L, 1e8L, 1e16L, 1e32L, 1e64L, 1e128L, 1e256L,
   1e512L, 1e1024L, 1e2048L, 1e4096L
 };
 
-static long double ptenneg[] =
+static long double powtenneg[] =
 {
   1e-1L, 1e-2L, 1e-4L, 1e-8L, 1e-16L, 1e-32L, 1e-64L, 1e-128L, 1e-256L,
   1e-512L, 1e-1024L, 1e-2048L, 1e-4096L
@@ -641,7 +641,7 @@ static long double ptenneg[] =
 #define NP   12
 #define P    (4294967296.0L * 4294967296.0L * 2.0L)   /* 2^65 */
 static long double INVPREC = P;
-static long double PREC = 1.0L/P;
+static long double PREC = 1.0L / P;
 #undef P
 /*
  * Defining FAST_LDOUBLE_CONVERSION results in a little bit faster
@@ -859,28 +859,28 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
   p = endp - 1;
   if (integer)
   {
-    int i, lp=NP, pt=MAXP;
+    int i, lp = NP, pt = MAXP;
 #ifndef FAST_LDOUBLE_CONVERSION
-    long double oint = integer, dd=1.0L;
+    long double oint = integer, dd = 1.0L;
 #endif
     if (integer > INVPREC)
     {
       integer *= PREC;
       while(lp >= 0)
       {
-	if (integer >= pten[lp])
+	if (integer >= powten[lp])
 	{
 	  expcnt += pt;
-	  integer *= ptenneg[lp];
+	  integer *= powtenneg[lp];
 #ifndef FAST_LDOUBLE_CONVERSION
-	  dd *= pten[lp];
+	  dd *= powten[lp];
 #endif
 	}
 	pt >>= 1;
 	lp--;
       }
 #ifndef FAST_LDOUBLE_CONVERSION
-      integer = oint/dd;
+      integer = oint / dd;
 #else
       integer *= INVPREC;
 #endif
@@ -983,19 +983,19 @@ eformat:
 	fract *= INVPREC;
 	while(lp >= 0)
 	{
-	  if (fract <= ptenneg[lp])
+	  if (fract <= powtenneg[lp])
 	  {
 	    expcnt -= pt;
-	    fract *= pten[lp];
+	    fract *= powten[lp];
 #ifndef FAST_LDOUBLE_CONVERSION
-	    dd *= pten[lp];
+	    dd *= powten[lp];
 #endif
 	  }
 	  pt >>= 1;
 	  lp--;
 	}
 #ifndef FAST_LDOUBLE_CONVERSION
-	fract = ofract*dd;
+	fract = ofract * dd;
 #else
 	fract *= PREC;
 #endif
