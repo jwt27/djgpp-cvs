@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
@@ -406,8 +407,9 @@ rflag:
        * if the first char isn't NUL, it did.
        */
       *buf = '\0';
-      size = doprnt_cvtl(_ldouble, prec, flags, &softsign, *fmt, buf,
+      size = doprnt_cvtl(_ldouble, prec + fpprec, flags, &softsign, *fmt, buf,
                          buf + sizeof(buf));
+      fpprec = 0;  /* Floating point fraction precision already adjusted in doprnt_cvtl.  */
       /*
        * If the format specifier requested an explicit sign,
        * we print a negative sign even if no significant digits
