@@ -1,0 +1,45 @@
+@node mkdtemp, file system
+@findex mkdtemp
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+char *mkdtemp(char *template);
+@end example
+
+@subheading Description
+
+The @code{mkdtemp} function generates an uniquely named temporary directory
+from template.  @var{template} is a file specification that ends with six
+trailing @code{X} characters.  This function replaces the @code{XXXXXX} with
+a set of characters such that the resulting directory name names a nonexisting
+directory.  It then creates the directory.
+
+Note that since MS-DOS and file systems that lack of @acronym{LFN} support
+are limited to eight characters for the file name, and since none of the @code{X}'s
+get replaced by a dot, you can only have two additional characters before
+the @code{X}'s.  But if the file systems offers @acronym{LFN} support no limitation
+concerning the number of characters before the @code{X}'s is given and the
+created file names will be @acronym{POSIX} compliant.
+
+Note also that the path you give will be modified in place.
+
+@subheading Return Value
+
+The pointer to the modified template string on success,
+and @code{NULL} on failure, in which case @code{errno} is set
+appropriately.
+
+
+@subheading Portability
+
+@portability !ansi, posix
+
+@subheading Example
+
+@example
+char temp_dir, path[100];
+strcpy(path, _USE_LFN ? "/tmp/temp_directoryXXXXXX" : "/tmp/tdXXXXXX");
+temp_dir = mkdtemp(path);
+@end example
