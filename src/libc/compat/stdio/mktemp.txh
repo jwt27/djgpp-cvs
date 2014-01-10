@@ -15,9 +15,12 @@ char *mktemp(char *template);
 set of characters such that the resulting file name names a nonexisting
 file.
 
-Note that since MS-DOS is limited to eight characters for the file name,
-and since none of the @code{X}'s get replaced by a dot, you can only
-have two additional characters before the @code{X}'s. 
+Note that since MS-DOS and file systems that lack of @acronym{LFN} support
+are limited to eight characters for the file name, and since none of the @code{X}'s
+get replaced by a dot, you can only have two additional characters before
+the @code{X}'s.  But if the file systems offers @acronym{LFN} support no limitation
+concerning the number of characters before the @code{X}'s is given and the
+created file names will be @acronym{POSIX} compliant.
 
 @subheading Return Value
 
@@ -35,7 +38,7 @@ prototype is also kept in @code{<stdio.h>} but its usage is deprecated.
 @subheading Example
 
 @example
-char template[] = "/tmp/ccXXXXXX";
+char template[] = _USE_LFN ? "/tmp/c_compilerXXXXXX" : "/tmp/ccXXXXXX";
 if (mktemp(template) != NULL)
   @{
     FILE *q = fopen(template, "w");
