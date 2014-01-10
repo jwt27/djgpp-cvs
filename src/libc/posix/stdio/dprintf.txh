@@ -1,0 +1,25 @@
+@node dprintf, stdio
+@findex dprintf
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int dprintf(int file_desc, const char *format, ...);
+@end example
+
+@subheading Description
+
+The function @code{dprintf} is an exact analog of @code{fprintf} (@pxref{fprintf}),
+except that it output to a file descriptor @var{file_desc}
+instead of to a stdio stream.
+
+@subheading Return Value
+
+The number of characters written is returned; otherwise EOF
+is returned to flag encoding or buffer space errors.
+
+
+@subheading Portability
+
+@portability !ansi, posix
