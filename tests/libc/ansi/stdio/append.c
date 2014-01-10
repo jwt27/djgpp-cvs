@@ -10,7 +10,7 @@ main(void)
   FILE *f;
   int status = 0; /* Return value. */
   struct stat s;
-  size_t len;
+  off_t len;
 
   f = fopen(FILE_NAME, "w");
   fprintf(f, "hello, there\n");

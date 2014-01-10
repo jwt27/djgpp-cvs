@@ -12,7 +12,7 @@ main (void)
 {
   char BIG[] = "Hello this is a too big string for the buffer";
   char holder[24];
-  int i, j;
+  size_t i, j;
  
   i = snprintf(holder, sizeof(holder), "%s\n", BIG);
   printf("%s\n", BIG);
@@ -27,7 +27,7 @@ main (void)
     {
       fprintf(stderr, "FAILED snprintf\n");
       fprintf(stderr,
-	      "sizeof (%lu), snprintf(%d), strlen(%lu)\n",
+	      "sizeof (%lu), snprintf(%zd), strlen(%lu)\n",
 	      sizeof(holder), i, strlen(BIG)) ;
       exit(EXIT_FAILURE);
     }
@@ -50,13 +50,13 @@ main (void)
 	if (i != j)
 	  {
 	    fprintf(stderr, "FAILED snprintf\n");
-	    fprintf(stderr, "snprintf (%d) != printf (%d)\n", i, j);
+	    fprintf(stderr, "snprintf (%zd) != printf (%zd)\n", i, j);
 	    exit(EXIT_FAILURE);
 	  }
       }
     else
       {
-	printf("sscanf (%d)\n", i);
+	printf("sscanf (%zd)\n", i);
 	printf("FAILED sscanf\n");
 	exit(EXIT_FAILURE);
       }
@@ -99,14 +99,14 @@ main (void)
 
   /* Test padding a field to larger than buffer size. */
   {
-    int s = sizeof(holder) * 16;
+    size_t s = sizeof(holder) * 16;
 
-    i = snprintf(holder, sizeof(holder), "%*s", s, BIG);
+    i = snprintf(holder, sizeof(holder), "%*s", (int)s, BIG);
 
     if ((i != s) || ((strlen(holder) + 1) != sizeof(holder)))
       {
 	fprintf(stderr,
-		"FAILED with padding larger than buffer: %d output, "
+		"FAILED with padding larger than buffer: %zd output, "
 		"%lu written to buffer\n",
 		i, strlen(holder));
 	exit(EXIT_FAILURE);
@@ -115,14 +115,14 @@ main (void)
 
   /* Test precision to larger than buffer size. */
   {
-    int s = sizeof(holder) * 4;
+    size_t s = sizeof(holder) * 4;
 
-    i = snprintf(holder, sizeof(holder), "%*.*e", s, s, 1e0);
+    i = snprintf(holder, sizeof(holder), "%*.*e", (int)s, (int)s, 1e0);
 
     if ((i <= s) || ((strlen(holder) + 1) != sizeof(holder)))
       {
 	fprintf(stderr,
-		"FAILED with precision larger than buffer: %d output, "
+		"FAILED with precision larger than buffer: %zd output, "
 		"%lu written to buffer\n",
 		i, strlen(holder));
 	exit(EXIT_FAILURE);

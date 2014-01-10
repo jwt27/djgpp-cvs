@@ -67,7 +67,8 @@ int main (int argc, char *argv[])
   if (source)
     {
       FILE *fp;
-      long flen, buflen;
+      long flen;
+      size_t buflen;
       char *buf1 = 0;
       char *buf2 = 0;
       char *buf3 = 0;

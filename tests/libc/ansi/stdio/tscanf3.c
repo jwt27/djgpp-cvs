@@ -34,7 +34,8 @@ int main(void)
     { 2012, "december", 21, 1, 2, 3}    /* english */
   };
   char month[10];
-  int year, day, hour, min, sec, i, status;
+  int year, day, hour, min, sec;
+  size_t i, status;
 
 
   for (status = i = 0; i < (sizeof buffer / sizeof buffer[0]);)
