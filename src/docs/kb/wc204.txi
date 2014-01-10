@@ -1383,3 +1383,8 @@ as before.  This means only two characters before the trailing @code{X}s will be
 @findex vdprintf@r{ added to the library}
 The functions @code{dprintf} and @code{vdprintf} were added to comply with
 the @acronym{POSIX} 1003.1-2008 standard.
+
+@cindex @acronym{SUS} compliance, @code{stdlib.h}
+@findex mkdtemp@r{ added to the library}
+The function @code{mkdtemp} was added to comply with the
+@acronym{POSIX} 1003.1-2008 standard.
