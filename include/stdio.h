@@ -1,3 +1,5 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -138,12 +140,14 @@ int	vsscanf(const char *_s, const char *_format, va_list _ap);
 #define L_cusrid
 /* #define STREAM_MAX	20 - DOS can change this */
 
+int	dprintf(int _fd, const char *_format, ...);
 int	fileno(FILE *_stream);
 FILE *	fdopen(int _fildes, const char *_type);
 int	mkstemp(char *_template);
 int	pclose(FILE *_pf);
 FILE *	popen(const char *_command, const char *_mode);
 char *	tempnam(const char *_dir, const char *_prefix);
+int	vdprintf(int _fd, const char *_format, va_list _ap);
 
 #ifndef _POSIX_SOURCE
 
