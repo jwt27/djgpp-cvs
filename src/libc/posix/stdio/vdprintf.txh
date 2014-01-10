@@ -1,0 +1,25 @@
+@node vdprintf, stdio
+@findex vdprintf
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int vdprintf(int file_desc, const char *format, va_list arguments);
+@end example
+
+@subheading Description
+
+The function @code{vdprintf} is an exact analog of @code{vfprintf} (@pxref{vfprintf}),
+except that it output to a file descriptor @var{file_desc}
+instead of to a stdio stream.
+
+@subheading Return Value
+
+The number of characters written is returned; otherwise EOF
+is returned to flag encoding or buffer space errors.
+
+
+@subheading Portability
+
+@portability !ansi, posix
