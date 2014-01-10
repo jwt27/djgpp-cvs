@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -109,6 +110,7 @@ unsigned long long int	strtoull(const char *_s, char **_endptr, int _base);
 long	a64l(const char *_string);
 char *	l64a(long _value);
 char *	mktemp(char *_template);
+char *	mkdtemp(char *_template);
 int	mkstemp(char *_template);
 int	putenv(char *_val);
 char *	realpath(const char *_path, char *_resolved);
