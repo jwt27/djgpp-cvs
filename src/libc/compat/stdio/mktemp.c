@@ -19,7 +19,7 @@ static int mktemp_count = -1;
 char *
 mktemp(char *_template)
 {
-  register int i, len, xcount;
+  int i, len, xcount;
   unsigned int use_lfn = _USE_LFN;
 
   for (i = 0; _template[i]; i++)
