@@ -5,28 +5,36 @@
 @example
 #include <stdio.h>
 
-int asnprintf(char **bufferp, size_t n, const char *format, @dots{});
+char *asnprintf(char *buffer, size_t *np, const char *format, @dots{});
 @end example
 
 @subheading Description
 
 Sends formatted output from the arguments (@dots{}) including
-the terminating null byte to the allocated buffer and returns
-a pointer to it via the first parameter *@var{bufferp}.  This
-memory must be returned to the heap with @code{free} (@pxref{free}). 
-This function will write @var{n} - 1 characters.  The @var{n}th character
-is used for the terminating nul.  If @var{n} is zero, @var{buffer} is not
-touched.  This function is analog of @code{snprintf()} (@pxref{snprintf}).
+the terminating null byte to a string buffer and returns a pointer
+to it.  This buffer can be preallocated and passed to the function
+via @var{buffer}.  The buffer length must be passed by @var{np}.  The
+function will write up to *@var{np} - 1 characters.  The *@var{np}th
+character is used for the terminating nul.  Upon error, @code{errno}
+is set and a @code{NULL} pointer is returned.
+
+If @var{buffer} is a @code{NULL} pointer or *@var{np} is zero, a string
+buffer is allocated and returned by the function on success.  If dynamic
+allocation occurs, the preallocated buffer is left alone (with possibly
+modified contents).  The length of the newly allocated string buffer is
+returned by the function via the @var{np} pointer.  The allocated memory
+must be returned to the heap with @code{free} (@pxref{free}). 
 
 @subheading Return Value
 
-The number of characters that would have been written (excluding the trailing
-nul) is returned; otherwise EOF is returned to flag encoding or buffer space
-errors and the pointer *@var{bufferp} is set to @code{NULL}.
+If dynamic allocation occurs, a pointer to the newly allocated string buffer
+is returned else @var{buffer}.  The number of characters that would have been
+written (excluding the trailing nul) is returned by @var{np}; otherwise the
+function returns a @code{NULL} pointer.
 
-The maximum accepted value of @var{n} is @code{INT_MAX}.  @code{INT_MAX} is
-defined in @code{<limits.h>}.  EOF is returned and @code{errno} is set to
-@code{EFBIG}, if @var{n} is greater than this limit.
+The maximum accepted value of *@var{np} is @code{INT_MAX}.  @code{INT_MAX} is
+defined in @code{<limits.h>}.  A @code{NULL} pointer is returned and @code{errno}
+is set to @code{EFBIG}, if *@var{np} is greater than this limit.
 
 @subheading Portability
 
@@ -37,21 +45,22 @@ defined in @code{<limits.h>}.  EOF is returned and @code{errno} is set to
 @subheading Example
 
 @example
-char *strbuf;  /*  Pointer to the buffer allocated by asnprintf.  */
-int strlng;
+char *result;
+char string[100];  /*  Preallocated buffer passed to asnprintf.  */
+int len = 100;
 long double pi = 3.1415926535897932384626433832795L;
 
-strlng = asnprintf(&strbuf, 100, "Pi = %.15Lf\n", pi);
+result = asnprintf(string, &len, "Pi = %.15Lf\n", pi);
 
-if (EOF == strlng)
+if (!result)
   printf("error: asnprintf failed.\n");
 else
 @{
   /*
    *  Your code using the buffer allocated by asnprintf.
    */
-  do_something(strbuf, strlng);
-
-  free(strbuf);  /*  Release the buffer allocated by asnprintf.  */
+  do_something(result);
+  if (result != string)
+    free(result);  /*  Allocation had happened; release the buffer allocated by asnprintf.  */
 @}
 @end example

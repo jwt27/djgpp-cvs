@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,50 +8,49 @@
 #include <errno.h>
 #include <libc/file.h>
 
-int
-vasnprintf(char **strp, size_t n, const char *fmt, va_list argsp)
+char *
+vasnprintf(char *str, size_t *np, const char *fmt, va_list argsp)
 {
   FILE _strbuf;
-  int len;
+  char *buffer = str;
+  int len = *np;
 
 
   /*  _cnt is an int in the FILE structure. To prevent wrap-around,
    *  we limit n to between 0 and INT_MAX inclusively.  */
-  if (n > INT_MAX)
+  if (len > INT_MAX)
   {
     errno = EFBIG;
-    return EOF;
+    return NULL;
   }
 
-  /*  Just query how much space is needed.  */
   memset(&_strbuf, 0, sizeof(_strbuf));
-  __stropenw(&_strbuf, NULL, 0);
-  len = _doprnt(fmt, argsp, &_strbuf);
-
-  *strp = NULL;
-  if (n > 0)
+  if (buffer && len > 0)
+    len--;
+  else
   {
-    if (len != EOF)
-    {
-      len++;
-      if ((size_t)len > n)
-        len = n;
-      *strp = malloc(len);
-      if (*strp)
-      {
-        __stropenw(&_strbuf, *strp, len - 1);
-        len = _doprnt(fmt, argsp, &_strbuf);
-        __strclosew(&_strbuf);
-        if (len == EOF)
-        {
-          free(*strp);
-          *strp = NULL;
-        }
-      }
-    }
-    else
-      len = EOF;
+    /*  Just query how much space is needed.  */
+    __stropenw(&_strbuf, NULL, 0);
+    len = _doprnt(fmt, argsp, &_strbuf);
+    if (len == EOF)
+      return NULL;
+    buffer = malloc(len + 1);
+    if (!buffer)
+      return NULL;
   }
 
-  return len;
+  __stropenw(&_strbuf, buffer, len);
+  len = _doprnt(fmt, argsp, &_strbuf);
+  if (len == EOF)
+  {
+    free(buffer);
+    buffer = NULL;
+  }
+  else if (len > 0)
+  {
+    *np = len;
+    __strclosew(&_strbuf);  /* Ensure nul termination */
+  }
+
+  return buffer;
 }

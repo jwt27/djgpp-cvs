@@ -169,9 +169,9 @@ void	setbuffer(FILE *_f, void *_buf, int _size);
 void	setlinebuf(FILE *_f);
 int	_rename(const char *_old, const char *_new);	/* Simple (no directory) */
 int	asprintf(char **_sp, const char *_format, ...) __attribute__((format (__printf__, 2, 3)));
-int	asnprintf(char **_sp, size_t _n, const char *_format, ...) __attribute__((format (__printf__, 3, 4)));
+char *	asnprintf(char *_s, size_t *_np, const char *_format, ...) __attribute__((format (__printf__, 3, 4)));
 int	vasprintf(char **_sp, const char *_format, va_list _ap) __attribute__((format (__printf__, 2, 0)));
-int	vasnprintf(char **_sp, size_t _n, const char *_format, va_list _ap) __attribute__((format (__printf__, 3, 0)));
+char *	vasnprintf(char *_s, size_t *_np, const char *_format, va_list _ap) __attribute__((format (__printf__, 3, 0)));
 
 #ifndef _OFF_T
 __DJ_off_t
