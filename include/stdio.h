@@ -140,14 +140,14 @@ int	vsscanf(const char *_s, const char *_format, va_list _ap);
 #define L_cusrid
 /* #define STREAM_MAX	20 - DOS can change this */
 
-int	dprintf(int _fd, const char *_format, ...);
+int	dprintf(int _fd, const char *_format, ...) __attribute__ ((__format__ (__printf__, 2, 3)));
 int	fileno(FILE *_stream);
 FILE *	fdopen(int _fildes, const char *_type);
 int	mkstemp(char *_template);
 int	pclose(FILE *_pf);
 FILE *	popen(const char *_command, const char *_mode);
 char *	tempnam(const char *_dir, const char *_prefix);
-int	vdprintf(int _fd, const char *_format, va_list _ap);
+int	vdprintf(int _fd, const char *_format, va_list _ap) __attribute__ ((__format__ (__printf__, 2, 0)));
 
 #ifndef _POSIX_SOURCE
 
