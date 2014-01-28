@@ -19,9 +19,9 @@ extern "C" {
 #include <sys/version.h>
 #include <sys/djtypes.h>
   
-#define _IOFBF    	00001
-#define _IONBF    	00002
-#define _IOLBF    	00004
+#define _IOFBF    	00001  /*  File is full buffered.  */
+#define _IONBF    	00002  /*  File is not buffered.  */
+#define _IOLBF    	00004  /*  File is line buffered.  */
 
 /* Some programs think they know better... */
 #undef NULL
