@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -39,6 +40,7 @@ _open(const char* filename, int oflag)
        We convert the long name to a short name and open existing files
        via short name.  New files use LFN, but we know they aren't
        character devices. */
+    r.x.flags = 1;			/* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x7160;
     r.x.cx = 1;				/* Get short name equivalent */
     r.x.ds = __tb_segment;
@@ -57,6 +59,7 @@ _open(const char* filename, int oflag)
     else
     {
       /* Short name get failed, file doesn't exist or is device (same error) */
+      r.x.flags = 1;			/* Always set CF before calling a 0x71NN function. */
       r.x.ax = 0x7143;			/* Get attributes */
       r.h.bl = 0;
       r.x.dx = __tb_offset;		/* Original long name */
