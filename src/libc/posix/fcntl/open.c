@@ -118,9 +118,9 @@ open(const char* filename, int oflag, ...)
   /* Solve symlinks and honor O_NOLINK flag  */
   if (oflag & O_NOLINK)
   {
-     if (!__solve_dir_symlinks(filename, real_name))
-        return -1; /* errno from from __solve_dir_symlinks() */
-     dirs_solved = 1;
+    if (!__solve_dir_symlinks(filename, real_name))
+      return -1; /* errno from from __solve_dir_symlinks() */
+    dirs_solved = 1;
   }
   else
   {
@@ -131,36 +131,36 @@ open(const char* filename, int oflag, ...)
   /* Honor O_NOFOLLOW flag. */
   if (oflag & O_NOFOLLOW)
   {
-      /* O_NOFOLLOW, as defined in glibc, requires open() to fail if the
-       * last path component is a symlink.  However, it still requires to 
-       * resolve all other path components.
-       * We check if there were any symlinks by comparing __solve_symlinks()
-       * input and output.  That function does not perform any path 
-       * canonicalization so it should be safe.  */
-      if (strcmp(filename, real_name))
+    /* O_NOFOLLOW, as defined in glibc, requires open() to fail if the
+     * last path component is a symlink.  However, it still requires to 
+     * resolve all other path components.
+     * We check if there were any symlinks by comparing __solve_symlinks()
+     * input and output.  That function does not perform any path 
+     * canonicalization so it should be safe.  */
+    if (strcmp(filename, real_name))
+    {
+      /* Yes, there were symlinks in the path.  Now take all but the last
+       * path component from `real_name', add last path component from
+       * `filename', and try to resolve that mess. 
+       */
+      char  temp[FILENAME_MAX + 1];
+      char  resolved[2];
+      char *last_separator;
+      int   old_errno = errno;
+      strcpy(temp, real_name);
+      last_separator = basename(temp);
+      *last_separator = '\0';
+      last_separator = basename(filename);
+      strcat(temp, "/");
+      strcat(temp, last_separator);
+      if ((readlink(temp, resolved, 1) != -1) || (errno != EINVAL))
       {
-         /* Yes, there were symlinks in the path.  Now take all but the last
-          * path component from `real_name', add last path component from
-          * `filename', and try to resolve that mess. 
-          */
-         char  temp[FILENAME_MAX + 1];
-         char  resolved[2];
-         char *last_separator;
-         int   old_errno = errno;
-         strcpy(temp, real_name);
-         last_separator = basename(temp);
-         *last_separator = '\0';
-         last_separator = basename(filename);
-         strcat(temp, "/");
-         strcat(temp, last_separator);
-         if ((readlink(temp, resolved, 1) != -1) || (errno != EINVAL))
-         {
-            /* Yes, the last path component was a symlink. */
-            errno = ELOOP;
-            return -1;
-         }
-         errno = old_errno;
+        /* Yes, the last path component was a symlink. */
+        errno = ELOOP;
+        return -1;
       }
+      errno = old_errno;
+    }
   }
 
   /* Check this up front, to reduce cost and minimize effect */
@@ -181,9 +181,7 @@ open(const char* filename, int oflag, ...)
         return -1; /* errno from from __solve_dir_symlinks() */
     }
     else
-    {
       strcpy(temp_name, real_name);
-    }
 
     if (__internal_readlink(temp_name, 0, ird_buf, ird_bufsize) < 0)
     {
@@ -225,10 +223,10 @@ open(const char* filename, int oflag, ...)
   dont_have_share = ((oflag &
                      (SH_DENYNO | SH_DENYRW | SH_DENYRD | SH_DENYWR)) == 0);
   if (dont_have_share && __djgpp_share_flags)
-    {
-     dont_have_share = 0;
-     oflag |= __djgpp_share_flags;
-    }
+  {
+    dont_have_share = 0;
+    oflag |= __djgpp_share_flags;
+  }
 
   if (should_create)
     fd = _creatnew(real_name, dmode, oflag & 0xff);
@@ -300,4 +298,3 @@ open(const char* filename, int oflag, ...)
 
   return fd;
 }
-
