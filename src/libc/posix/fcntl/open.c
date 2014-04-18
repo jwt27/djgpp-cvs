@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
@@ -19,6 +20,7 @@
 #include <sys/stat.h>
 #include <io.h>
 #include <sys/fsext.h>
+#include <dos.h>
 
 #include <libc/dosio.h>
 #include <libc/fd_props.h>
@@ -254,7 +256,27 @@ open(const char* filename, int oflag, ...)
       /* Don't call _creat on existing files for which _open fails,
          since the file could be truncated as a result.  */
       else if ((oflag & O_CREAT))
+      {
 	fd = _creat(real_name, dmode);
+        if (fd == -1 && _os_trueversion == 0x532)
+        {
+          /* For Windows 2000/XP, calling _creat will create one file
+             more even if the file descriptors have already becoming exhausted.
+             This means that the created file will exist in the directory
+             but will have a file descriptor of -1 and thus becoming inaccessible.
+             To avoid this it will be deleted here.
+             The calling of _creat for the last possible file descriptor,
+             this is the highst file descriptor that is possible,
+             will already rise EMFILE.  */
+          if (errno == EMFILE || errno == ENFILE)
+          {
+            int previous_errno = errno;
+            remove(real_name);
+            errno = previous_errno;
+            return fd;
+          }
+        }
+      }
     }
   }
 
