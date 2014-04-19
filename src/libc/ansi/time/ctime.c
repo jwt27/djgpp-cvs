@@ -283,7 +283,7 @@ differ_by_repeat(const time_t t1, const time_t t0)
 {
   if (TYPE_INTEGRAL(time_t) && TYPE_BIT(time_t) - TYPE_SIGNED(time_t) < SECSPERREPEAT_BITS)
     return 0;
-  return t1 - t0 == SECSPERREPEAT;
+  return (int_fast64_t)t1 - (int_fast64_t)t0 == SECSPERREPEAT;
 }
 
 static char *
