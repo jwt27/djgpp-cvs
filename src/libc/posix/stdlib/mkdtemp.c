@@ -12,8 +12,7 @@ mkdtemp(char *_template)
 {
   char tmp_name[FILENAME_MAX];
   char real_path[FILENAME_MAX];
-  int  rv;
-
+  int  rv = -1;
 
   do {
     strcpy(tmp_name, _template);
