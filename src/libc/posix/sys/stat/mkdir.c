@@ -73,7 +73,8 @@ do_mkdir:
     {
       /* see if the directory existed, in which case
          we should return EEXIST - DJ */
-      if (access(mydirname, D_OK) == 0)
+      if ((attr = _chmod(dir_name,0,0)) != (unsigned)-1
+          && (attr & 0x10))
         errno = EEXIST;
       else
         errno = save_errno;
