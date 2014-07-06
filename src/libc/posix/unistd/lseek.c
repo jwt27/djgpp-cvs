@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -28,7 +29,7 @@ lseek(int handle, off_t offset, int whence)
   }
 
   llseek_offset = llseek(handle, offset, whence);
-  if( llseek_offset == -1 )
+  if (llseek_offset == -1)
   {
     return -1; /* llseek sets errno. */
   }
@@ -42,12 +43,12 @@ lseek(int handle, off_t offset, int whence)
    * temporarily fits. After that it's ok to or in the sign bit
    * again. 
    */
-  if( llseek_offset&0x80000000 )
+  if (llseek_offset & 0x80000000)
   {
-    return ((off_t)(llseek_offset&0x7fffffff))|0x80000000;
+    return ((off_t)(llseek_offset & 0x7fffffff)) | 0x80000000;
   }
   else
   {
-    return llseek_offset&0x7fffffff;
+    return llseek_offset & 0x7fffffff;
   }
 }
