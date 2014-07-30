@@ -15,7 +15,7 @@ actually, since the first call to @code{uclock}, which itself returns
 zero.  The number of tics per second is @code{UCLOCKS_PER_SEC} (declared
 in the @file{time.h} header file.
 
-@code{uclock} is provided for very high-resulution timing.  It is
+@code{uclock} is provided for very high-resolution timing.  It is
 currently accurate to better than 1 microsecond (actually about 840
 nanoseconds).  You cannot time across two midnights with this
 implementation, giving a maximum useful period of 48 hours and an

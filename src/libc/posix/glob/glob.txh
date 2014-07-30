@@ -144,7 +144,7 @@ No files matched the given pattern.
 
 @item GLOB_NOSPACE
 
-Not enough memory to accomodate expanded filenames.
+Not enough memory to accommodate expanded filenames.
 
 @item GLOB_ERR
 

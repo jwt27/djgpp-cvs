@@ -11,7 +11,7 @@ unsigned int _dos_setfileattr(const char *filename, unsigned int attr);
 @subheading Description
 
 This function sets the attributes of given file. Use the following
-constans in DOS.H to create @var{attr} parameter:
+constants in DOS.H to create @var{attr} parameter:
 
 @table @code
 

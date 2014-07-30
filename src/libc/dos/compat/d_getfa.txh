@@ -12,7 +12,7 @@ unsigned int _dos_getfileattr(const char *filename,
 @subheading Description
 
 This function determines the attributes of given file and fills @var{attr}
-with it. Use the following constans (in DOS.H) to check this value.
+with it. Use the following constants (in DOS.H) to check this value.
 
 @table @code
 

@@ -10,7 +10,7 @@ int fputs(const char *string, FILE *file);
 
 @subheading Description
 
-This function all the characters of @var{string} (except the trailing
+This function copies all the characters of @var{string} (except the trailing
 @code{NULL}) to the given @var{file}.
 
 @subheading Return Value

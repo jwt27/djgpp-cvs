@@ -20,7 +20,7 @@ DPMI function AX = 0x0205
 This function installs a protected-mode interrupt (not exception)
 handler.  You must pass a selector:offset pair.  Hardware interrupts
 will always be reflected to protected mode if you install a handler.
-You must explicitely @code{sti} before @code{iret} because @code{iret}
+You must explicitly @code{sti} before @code{iret} because @code{iret}
 won't always restore interrupts in a virtual environment.
 
 @subheading Return Value

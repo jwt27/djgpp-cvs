@@ -308,7 +308,7 @@ it instead of actually reading the console.
 
 @subheading Return Value
 
-The charater is returned.
+The character is returned.
 
 @subheading Portability
 
