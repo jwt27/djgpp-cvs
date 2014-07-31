@@ -15,7 +15,7 @@ unsigned int _dos_open(const char *filename, unsigned short mode,
 
 This is a direct connection to the MS-DOS open function call (%ah = 0x3D).
 This function opens the given file with the given mode and puts handle of
-file into @var{handle} if openning is successful.
+file into @var{handle} if opening is successful.
 Meaning of @var{mode} parameter is the following:
 
 Access mode bits (in FCNTL.H):

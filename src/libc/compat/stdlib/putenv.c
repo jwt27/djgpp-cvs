@@ -112,7 +112,7 @@ putenv(char *val)
       return 0;
     }
 
-  /* delete nonexisting entry? */
+  /* delete nonexistant entry? */
   if (val[nlen] == 0 && !epos)
     return 0;
 

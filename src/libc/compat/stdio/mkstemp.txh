@@ -12,7 +12,7 @@ int mkstemp(char *template);
 
 @var{template} is a file specification that ends with six trailing
 @code{X} characters.  This function replaces the @code{XXXXXX} with a
-set of characters such that the resulting file name names a nonexisting
+set of characters such that the resulting file name names a nonexistant
 file.  It then creates and opens the file in a way which guarantees that
 no other process can access this file.
 

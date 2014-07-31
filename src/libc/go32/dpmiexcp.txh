@@ -437,7 +437,7 @@ For getting similar effects via the POSIX @code{termios} functions, see
 
 @subheading Return Value
 
-The previous INTR key (scan code in bits 0-7, keyboad status in bits
+The previous INTR key (scan code in bits 0-7, keyboard status in bits
 8-15).
 
 @subheading Portability
@@ -520,7 +520,7 @@ For getting similar effects via the POSIX @code{termios} functions, see
 
 @subheading Return Value
 
-The previous QUIT key (scan code in bits 0-7, keyboad status in bits
+The previous QUIT key (scan code in bits 0-7, keyboard status in bits
 8-15).
 
 @subheading Portability

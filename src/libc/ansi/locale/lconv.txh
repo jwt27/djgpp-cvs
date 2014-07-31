@@ -43,7 +43,7 @@ currency when the result will be used internationally.
 
 @item char *mon_decimal_point
 
-A string that separates the interger and fractional parts of monetary
+A string that separates the integer and fractional parts of monetary
 values.
 
 @item char *mon_grouping

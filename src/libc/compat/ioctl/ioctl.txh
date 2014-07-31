@@ -1,5 +1,5 @@
 @c File: src/libc/posix/fcntl/ioctl.txh
-@c $Id: ioctl.txh,v 1.8 2013/10/27 15:49:00 andris Exp $
+@c $Id: ioctl.txh,v 1.9 2014/07/31 21:37:51 juan.guerrero Exp $
 @node ioctl (General description), io
 @findex ioctl@r{, General description}
 @code{ioctl} performs low level calls to communicate with device drivers. As
@@ -160,7 +160,7 @@ Get logical drive map.  A call like the following:
 
 @noindent
 will return 0 if the block device has only one logical drive assigned,
-or a number in the range 1..26 which is the last drive numer used to
+or a number in the range 1..26 which is the last drive number used to
 reference that drive (1 = A:, etc.).  Thus, on a machine which has a
 single floppy drive, calling @code{ioctl (1, DOS_GLDRVMAP);} will return
 2 if the floppy was last refered to as B:.  This function and the next

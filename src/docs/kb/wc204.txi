@@ -1306,8 +1306,8 @@ were added to comply with the @acronym{C99} standard.
 @findex fwrite@r{, and stream error condition}
 @findex fgets@r{, and stream error condition}
 @findex fputs@r{, and stream error condition}
-Openning a file stream in the wrong mode referring to the following
-input/output operation (e.g.: openning stream in read only mode and
+Opening a file stream in the wrong mode referring to the following
+input/output operation (e.g.: opening stream in read only mode and
 then writing to it), will trigger a stream error condition that will
 set an error indicator.  This error indicator can be tested using @code{ferror}.
 

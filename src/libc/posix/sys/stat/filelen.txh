@@ -17,7 +17,7 @@ you can use @code{fileno} macro (@pxref{fileno}).
 
 @subheading Return Value
 
-The size of the file in bytes, or (if any error occured) -1L and
+The size of the file in bytes, or (if any error occurred) -1L and
 @code{errno} set to a value describing the cause of the failure.  If the
 file's length is larger than a 32-bit @code{unsigned int} can hold,
 @code{errno} will be set to @code{EOVERFLOW}.

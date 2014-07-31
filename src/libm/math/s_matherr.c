@@ -50,7 +50,7 @@ This is the <<exception>> structure (defined in `<<math.h>>'):
 The members of the exception structure have the following meanings:
 o+
 o type
-The type of mathematical error that occured; macros encoding error
+The type of mathematical error that occurred; macros encoding error
 types are also defined in `<<math.h>>'.
 
 o name

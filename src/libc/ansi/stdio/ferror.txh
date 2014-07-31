@@ -15,7 +15,7 @@ encountered an error or not.  @xref{clearerr}.
 
 @subheading Return Value
 
-Nonzero for an error, zero otherwize.
+Nonzero for an error, zero otherwise.
 
 @subheading Portability
 

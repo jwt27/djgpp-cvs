@@ -27,7 +27,7 @@ diff -c src/libc/posix/signal/sigprocm.c~1 src/libc/posix/signal/sigprocm.c
   typedef void (*sighandler_t)(int);
 ! static sighandler_t prev_handlers[320];
   
-  /* A signal handler which just records that a signal occured
+  /* A signal handler which just records that a signal occurred
      (it will be raised later, if and when the signal is unblocked).  */
 --- 16,22 ----
   
@@ -35,7 +35,7 @@ diff -c src/libc/posix/signal/sigprocm.c~1 src/libc/posix/signal/sigprocm.c
   typedef void (*sighandler_t)(int);
 ! static sighandler_t prev_handlers[SIGMAX];
   
-  /* A signal handler which just records that a signal occured
+  /* A signal handler which just records that a signal occurred
      (it will be raised later, if and when the signal is unblocked).  */
 ***************
 *** 38,44 ****

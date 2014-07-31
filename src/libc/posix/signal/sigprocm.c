@@ -19,7 +19,7 @@ sigset_t __sigprocmask_pending_signals;
 typedef void (*sighandler_t)(int);
 static sighandler_t prev_handlers[SIGMAX];
 
-/* A signal handler which just records that a signal occured
+/* A signal handler which just records that a signal occurred
    (it will be raised later, if and when the signal is unblocked).  */
 static void
 sig_suspender (int signo)

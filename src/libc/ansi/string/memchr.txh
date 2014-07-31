@@ -11,7 +11,7 @@ void *memchr(const void *string, int ch, size_t num);
 @subheading Description
 
 This function searches @var{num} bytes starting at @var{string}, looking
-for the first occurence of @var{ch}. 
+for the first occurrence of @var{ch}. 
 
 @subheading Return Value
 

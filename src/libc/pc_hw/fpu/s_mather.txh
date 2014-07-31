@@ -52,7 +52,7 @@ struct exception @{
 @end example
 
 The member @code{type} is an integer code describing the type of
-exception that has occured.  It can be one of the following:
+exception that has occurred.  It can be one of the following:
 
 @table @code
 @item DOMAIN

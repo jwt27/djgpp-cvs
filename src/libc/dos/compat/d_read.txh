@@ -38,7 +38,7 @@ char *filebuffer;
 
 if ( !_dos_open("FOO.DAT", O_RDONLY, &handle) )
 @{
-   puts("FOO.DAT openning was successful.");
+   puts("FOO.DAT opening was successful.");
    if ( (filebuffer = malloc(130000)) != NULL )
    @{
      if ( !_dos_read(handle, buffer, 130000, &result) )

@@ -13,7 +13,7 @@ char *mkdtemp(char *template);
 The @code{mkdtemp} function generates an uniquely named temporary directory
 from template.  @var{template} is a file specification that ends with six
 trailing @code{X} characters.  This function replaces the @code{XXXXXX} with
-a set of characters such that the resulting directory name names a nonexisting
+a set of characters such that the resulting directory name names a nonexistant
 directory.  It then creates the directory.
 
 Note that since MS-DOS and file systems that lack of @acronym{LFN} support

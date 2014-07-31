@@ -2734,7 +2734,7 @@ void do_include(char *fname)
   f = fopen(fname, "r");
   if (!f)
   {
-    fprintf(stderr, "%s:%d: error openning `%s'", inname, lineno, fname);
+    fprintf(stderr, "%s:%d: error opening `%s'", inname, lineno, fname);
     perror("");
     return;
   }
@@ -2776,7 +2776,7 @@ void do_linkcoff (char *filename)
   f = open (filename, O_RDONLY | O_BINARY);
   if (f < 0)
     {
-      fprintf(stderr, "%s:%d: error openning `%s'", inname, lineno, filename);
+      fprintf(stderr, "%s:%d: error opening `%s'", inname, lineno, filename);
       perror("");
       return;
     }
