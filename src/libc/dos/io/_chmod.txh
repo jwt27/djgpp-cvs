@@ -38,7 +38,7 @@ file names.
 @subheading Return Value
  
 If the file exists, @code{_chmod()} returns its attribute byte in case
-it succeded, or -1 in case of failure.
+it succeeded, or -1 in case of failure.
 
 
 @subheading Portability

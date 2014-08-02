@@ -88,7 +88,7 @@ struct timeval @{
 
 @subheading Return Value
 
-On successfull return, @code{select} returns the number of files ready,
+On successful return, @code{select} returns the number of files ready,
 or 0, if the timeout expired.  The input sets are replaced with subsets
 that describe which files are ready for which operations.  If
 @code{select} returns 0 (i.e., the timeout has expired), all the

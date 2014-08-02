@@ -5,7 +5,7 @@
 @example
 #include <bios.h>
 
-unsigned _bios_serialcom(unsigned cmd, unsingned serialport,
+unsigned _bios_serialcom(unsigned cmd, unsigned serialport,
                          unsigned data);
 @end example
 

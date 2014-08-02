@@ -161,7 +161,7 @@ statfs(const char *path, struct statfs *buf)
        report the largest block of free clusters when running under 
        Windows (this info is not confirmed), so I'm using this 
        service here. It expects a path on DS:DX and it should not 
-       be an empty string or the sevice call will fail */
+       be an empty string or the service call will fail */
     if( path && !*path )
     {
       _put_path2( "/", 0x100 );
