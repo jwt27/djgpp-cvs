@@ -21,7 +21,7 @@ Gets the capabilities of the server.  @var{flags} are as follows:
 
 @example
 ---- ---X = 1="page accessed/dirty" supported
----- --X- = 1="exceptions restartble" supported
+---- --X- = 1="exceptions restartable" supported
 ---- -X-- = 1="device mapping" supported
 ---- X--- = 1="map conventional memory" supported
 ---X ---- = 1="demand zero-fill" supported

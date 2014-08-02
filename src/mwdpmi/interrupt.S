@@ -706,7 +706,7 @@ cpumode:
 .global _prot_31_entry
 _prot_31_entry:
 	/* Push SS/ESP/EFLAGS/CS/EIP done by gate assuming called from
-	   lower priviledge.  */
+	   lower privilege.  */
 	push	%ds
 	push	%es
 	push	%fs

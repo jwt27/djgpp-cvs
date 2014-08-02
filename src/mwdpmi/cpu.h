@@ -131,7 +131,7 @@ __cpu_set_ldtr (unsigned short ldtr)
   asm volatile ("lldt %0" : /* No output */ : "r" (ldtr));
 }
 /* ------------------------------------------------------------------------ */
-/* Clear New Task flag (unpriviledged).  */
+/* Clear New Task flag (unprivileged).  */
 
 static __inline__ void __cpu_clear_NT (void)
 {

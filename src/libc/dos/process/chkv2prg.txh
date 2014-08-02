@@ -14,7 +14,7 @@ const _v2_prog_type *_check_v2_prog(const char *program, int fd);
 @subheading Description
 
 This function checks a given program for various known types of
-executables and/or other things.  This function povides two different
+executables and/or other things.  This function provides two different
 entry points.  One is to call the function with a not @code{NULL}
 pointer as @code{program} (in this case @code{fd} is ignored),
 then the file named by @code{program} is opened and closed by

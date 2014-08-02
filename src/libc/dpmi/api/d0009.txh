@@ -28,7 +28,7 @@ below.  For more details, please refer to @ref{__dpmi_get_descriptor}.
                       code: 0=non-conforming
 ---- ---- ---- X--- = 0=data, 1=code
 ---- ---- ---1 ---- = must be 1
----- ---- -XX- ---- = priviledge level (must equal CPL)
+---- ---- -XX- ---- = privilege level (must equal CPL)
 ---- ---- X--- ---- = 0=absent, 1=present
 ---X ---- ---- ---- = available for the user
 --0- ---- ---- ---- = must be 0

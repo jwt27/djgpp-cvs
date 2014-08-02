@@ -77,7 +77,7 @@ The size of a pipe's internal buffer.  In DJGPP, this returns 512.
 
 @item _PC_CHOWN_RESTRICTED
 
-If non-zero, only priviledged user can change the ownership of files by
+If non-zero, only privileged user can change the ownership of files by
 calling @code{chown}, otherwise anyone may give away files.  The DJGPP
 version always returns zero, since MS-DOS files can be freely given
 away.

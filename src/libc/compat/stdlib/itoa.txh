@@ -17,7 +17,7 @@ sign and the terminating @code{NULL} is put into the buffer whose address
 is given by @var{string}.  For radixes other than 10, @var{value} is
 treated as an unsigned int (i.e., the sign bit is not interpreted as
 such).  The argument @var{radix} should specify the base, between 2 and
-36, in which the string reprsentation of @var{value} is requested.
+36, in which the string representation of @var{value} is requested.
 
 @subheading Return Value
   
