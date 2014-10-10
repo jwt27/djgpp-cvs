@@ -1393,3 +1393,9 @@ the @acronym{POSIX} 1003.1-2008 standard.
 @findex mkdtemp@r{ added to the library}
 The function @code{mkdtemp} was added to comply with the
 @acronym{POSIX} 1003.1-2008 standard.
+
+@pindex djtar@r{, new option -a}
+New option @samp{-a} has been added to djtar to skip automatically all files
+and directories that cannot be created when extracting.  Thus neither existing
+files will be overwritten nor the user will be prompted for changing the file
+name.

@@ -223,6 +223,10 @@ existing file), it will prompt you for a new name.  You may type in
 either a complete path, a replacement file name (no directory part), or
 just hit return (the file is skipped).
 
+If @command{djtar} is called as @command{djtarx -a}, it automatically
+skips every file it cannot exclusive open.  It will neither overwrite
+an existing file nor it will prompt for a new file name.
+
 If a @code{tar} archive contains @code{pax} extended headers as defined
 by @acronym{POSIX} 1003.1-2001 @command{djtar} will skip them and ignore
 any information contained in the data blocks that may follow the @code{pax}
