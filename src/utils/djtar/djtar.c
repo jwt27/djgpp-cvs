@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -99,7 +100,7 @@ get_entry(char *from)
 }
 
 static void
-DoNameChanges(char *fname)
+do_name_changes(char *fname)
 {
   struct skip_dir_list * new_entry; 
   FILE *f = fopen(fname, "r");
@@ -138,6 +139,7 @@ DoNameChanges(char *fname)
 FILE *change_file;
 
 int dot_switch = 1;
+int a_switch = 0;
 int v_switch = 0;
 int s_switch = 1;
 int z_switch = 0;
@@ -204,10 +206,21 @@ change(char *fname, const char *problem, int isadir)
     }
   }
   
-  fprintf(log_out, "  %s %s\n  new name : ", problem, fname);
-  fflush(log_out);
-  new[0] = '\0';
-  pos = fgets(new, sizeof(new), stdin);
+  if (a_switch)
+  {
+    fprintf(log_out, "  %s %s\n", problem, fname);
+    fflush(log_out);
+    pos = new;
+    pos[0] = '\n';
+    pos[1] = '\0';
+  }
+  else
+  {
+    fprintf(log_out, "  %s %s\n  new name : ", problem, fname);
+    fflush(log_out);
+    new[0] = '\0';
+    pos = fgets(new, sizeof(new), stdin);
+  }
   if (!pos)
     Fatal("EOF while reading stdin");
   for (; *pos; ++pos)
@@ -544,7 +557,7 @@ make_directory(char *dirname)
       status = !isadir(dirname); /* root might have no parent */
     else
       status = mkdir(dirname, 0755);
-    if (status && (errno==EEXIST))
+    if (status && (errno == EEXIST))
     {
       status = change(dirname, "Duplicate directory name", 2);
       continue;
@@ -575,7 +588,7 @@ main(int argc, char **argv)
 
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: %s [-n changeFile] [-p] [-i] [-t|x] [-e dir] [-o dir] [-v] [-u|d|b] [-[!].] [-!s] tarfile...\n", progname);
+    fprintf(stderr, "Usage: %s [-n changeFile] [-p] [-i] [-t|x] [-e dir] [-o dir] [-v] [-u|d|b] [-[!].] [-!s] [-a] tarfile...\n", progname);
     exit(1);
   }
 
@@ -592,8 +605,11 @@ main(int argc, char **argv)
   {
     switch (argv[i][1])
     {
+      case 'a':
+        a_switch = 1;
+        break;
       case 'n':
-        DoNameChanges(argv[++i]);
+        do_name_changes(argv[++i]);
         break;
       case 'v':
         v_switch = 1;
