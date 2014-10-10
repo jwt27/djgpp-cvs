@@ -1,3 +1,4 @@
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -121,7 +122,7 @@ extern char new[];
 
 
 void
-print_skipped_pax_headers_info()
+print_info_about_skipped_pax_headers()
 {
   if (skipped_pax_global_headers || skipped_pax_extended_headers)
   {
@@ -550,7 +551,7 @@ tar_gz_read(char *fname)
     fflush(log_out);
   }
   else if (s_switch)
-    print_skipped_pax_headers_info();
+    print_info_about_skipped_pax_headers();
   oread_close(f);
   method = -1;
 }
