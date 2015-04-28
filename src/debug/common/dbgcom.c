@@ -88,9 +88,13 @@ TSS a_tss;
 
 static jmp_buf jumper;
 
-static int my_ds, my_cs, app_cs, app_exit_cs, app_ds;
-static unsigned int app_ds_size[DS_SIZE_COUNT] __attribute_used;
-static int app_ds_index __attribute_used = 0;
+static int my_ds;
+static int my_cs;
+static int app_cs;
+static int __attribute_used app_exit_cs;
+static int app_ds;
+static unsigned int __attribute_used app_ds_size[DS_SIZE_COUNT];
+static int  __attribute_used app_ds_index = 0;
 static jmp_buf load_state;
 
 static int nset, breakhandle[4];
@@ -397,7 +401,7 @@ unsigned char __dj_forced_test[] = {
   0x2e,0x80,0x3d		/* (beginning of) %cs:cmpb $0,forced */
 }; /* four next bytes contain the address of the `forced' variable */
 
-static int forced_test_size = sizeof (__dj_forced_test);
+static int __attribute_used forced_test_size = sizeof (__dj_forced_test);
 
 static int forced_address_known = 0;
 static unsigned int forced_address = 0;
