@@ -458,6 +458,7 @@ recorded in the profiling data.
 @findex malloc_verify@r{, added to the library}
 @findex malloc_debug@r{, added to the library}
 @findex mallocmap@r{, added to the library}
+@findex malldbgdumpfile@r{, added to the library}
 @findex malloc@r{, debug facilities}
 There are new @code{malloc} debug facilities.  While not as powerful and
 versatile as existing external packages, such as @acronym{YAMD}, these

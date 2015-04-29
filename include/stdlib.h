@@ -172,31 +172,6 @@ void *		xrealloc(void *ptr, size_t _size);
 
 extern int __system_flags;
 
-extern void (*__libc_malloc_hook)(size_t, void *);
-extern void (*__libc_malloc_fail_hook)(size_t);
-extern void (*__libc_free_hook)(void *);
-extern void (*__libc_free_null_hook)(void);
-extern void (*__libc_realloc_hook)(void *, size_t);
-
-struct mallinfo {
-  int arena;
-  int ordblks;
-  int smblks;
-  int hblks;
-  int hblkhd;
-  int usmblks;
-  int fsmblks;
-  int uordblks;
-  int fordblks;
-  int keepcost;
-};
-
-struct mallinfo mallinfo(void);
-
-int malloc_verify(void);
-int malloc_debug(int);
-void mallocmap(void);
-
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
