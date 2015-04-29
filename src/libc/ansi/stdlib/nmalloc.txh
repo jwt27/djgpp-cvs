@@ -1,0 +1,659 @@
+@node malloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *malloc(size_t size);
+@end example
+
+@subheading Description
+
+This function allocates a chunk of memory from the heap large
+enough to hold any object that is @var{size} bytes in length.
+This memory must be returned to the heap with @code{free}
+(@pxref{free}).
+
+Note: excessively large requests are rejected.  At present
+excessively large means over @code{INT_MAX} - 65536.
+
+Note: this version of malloc is designed to reduce memory usage.
+A faster but less efficient version is available in the libc
+sources (@file{djlsr*.zip}) in the file
+@file{src/libc/ansi/stdlib/fmalloc.c}.
+
+@subheading Return Value
+
+A pointer to the allocated memory, or @code{NULL} if there isn't
+enough free memory to satisfy the request.
+
+@subheading Portability
+
+@portability ansi, posix
+
+@subheading Example
+
+@example
+char *c = malloc(100);
+@end example
+
+@c -------------------------------------------------------------
+
+@node free, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void free(void *ptr);
+@end example
+
+@subheading Description
+
+Returns the allocated memory to the heap (@pxref{malloc}).  If
+the @var{ptr} is @code{NULL}, @code{free} does nothing.
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@portability ansi, posix
+
+@subheading Example
+
+@example
+char *q = malloc(20);
+free(q);
+@end example
+
+@c -------------------------------------------------------------
+
+@node realloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+
+void *realloc(void *ptr, size_t size);
+@end example
+
+@subheading Description
+
+This function changes the size of the region pointed to by
+@var{ptr}. If it can, it will reuse the same memory space, but
+it may have to allocate a new memory space to satisfy the
+request.  In either case, it will return the pointer that you
+should use to refer to the (possibly new) memory area.  The
+pointer passed may be @code{NULL}, in which case this function
+acts just like @code{malloc} (@pxref{malloc}).
+
+An application that wants to be robust in the face of a possible
+failure of @code{realloc} to enlarge a buffer should save a copy
+of the old pointer in a local variable, to be able to use the
+original buffer in case @code{realloc} returns @code{NULL}.  See
+the example below for details.
+
+Note: excessively large requests are rejected.  At present
+excessively large means over @code{INT_MAX} - 65536.
+
+@subheading Return Value
+
+On success, a pointer is returned to the memory you should now
+refer to.  On failure, @code{NULL} is returned and the memory
+pointed to by @var{ptr} prior to the call is not freed.
+
+@subheading Portability
+
+@portability ansi, posix
+
+@subheading Example
+
+@example
+if (now + new > max)
+@{
+  char *old = p;
+
+  oldmax = max;
+  max = now + new;
+  p = realloc(p, max);
+  if (p == NULL) @{
+    p = old;  /* retain the old pointer */
+    max = oldmax;
+  @}
+@}
+@end example
+
+@c -------------------------------------------------------------
+
+@node mallinfo, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h> /* on non-DJGPP systems */
+
+struct mallinfo mallinfo(void);
+@end example
+
+@subheading Description
+
+This function returns information about heap space usage.  It is
+intended to be used for debugging dynamic memory allocation and
+tracking heap usage.  The @code{struct mallinfo} structure is
+defined by @file{stdlib.h} as follows:
+
+@example
+ struct mallinfo @{
+   int arena;
+   int ordblks;
+   int smblks;
+   int hblks;
+   int hblkhd;
+   int usmblks;
+   int fsmblks;
+   int uordblks;
+   int fordblks;
+   int keepcost;
+ @};
+@end example
+
+@noindent
+whose members are:
+
+@table @code
+@item arena
+The total amount of space, in bytes, handed by @code{sbrk} to
+@code{malloc}.  Note that this is not the same as
+@code{sbrk(0)}, since @code{sbrk} allocates memory in large
+chunks and then subdivides them and passes them to @code{malloc}
+as required.  In particular, the result of @code{sbrk(0)} might
+be much larger than the @code{arena} member of @code{struct
+mallinfo} when the DPMI host allocates memory in non-contiguous
+regions (happens on MS-Windows).
+
+@item ordblks
+The number of ``ordinary blocks'': the total number of allocated
+and free blocks maintained by @code{malloc}.
+
+@item smblks
+The number of ``small blocks''.  This is normally zero, unless
+a special version of @code{malloc} was installed.
+
+@item hblks
+The count of freeblocks maintained in the malloc arena.  This
+is normally much smaller than the number of freed blocks, since
+such blocks have been combined into larger blocks.
+
+@item hblkhd
+The size of the currently available top portion of the memory
+assigned by @code{sbrk}.  Sometimes known as @dfn{slop}.
+
+@item usmblks
+The space (in bytes) in ``small blocks'' that are in use.  This
+is always zero in the DJGPP implementation.
+
+@item fsmblks
+The space in free ``small blocks''.  Normally zero in the DJGPP
+implementation.
+
+@item uordblks
+The amount of space, in bytes, in the heap space currently used
+by the application.  This does not include the small overhead
+used by @code{malloc} to maintain its hidden information in each
+allocated block.
+
+@item fordblks
+The amount of free heap space maintained by @code{malloc} in its
+free list of hblks chunks.
+
+@item keepcost
+The total overhead used by @code{malloc} in maintaining the
+currently allocated blocks.
+@end table
+
+@subheading Return Value
+
+The @code{mallinfo} structure filled with information.
+
+@subheading Portability
+
+@port-note posix This function is available on many Unix systems.
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ struct mallinfo info = mallinfo();
+
+ printf("Memory in use: %d bytes\n",
+        info.usmblks + info.uordblks);
+ printf("Total heap size: %d bytes\n", info.arena);
+@end example
+
+@c -------------------------------------------------------------
+
+@node malloc_verify, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h> /* on non-DJGPP systems */
+
+int malloc_verify(void);
+@end example
+
+@subheading Description
+This function attempts to determine if the heap has been
+corrupted.  It scans all the blocks allocated by @code{malloc}
+and handed to the application, and also all the free blocks
+maintained by @code{malloc} and @code{free} in the internal free
+list.  Each block is checked for consistency of the hidden
+bookkeeping information recorded in it by @code{malloc} and
+@code{free}.
+
+What happens when a bad block is found depends on the current
+@dfn{malloc diagnostics level}: for example, the block can be
+reported, or the program may be aborted.  @xref{malloc_debug},
+for the details.
+
+@subheading Return Value
+If the program isn't aborted during the function's run (this
+depends on the current diagnostics level), @code{malloc_verify}
+returns 1 if the heap passes all tests, or zero of some of the
+tests failed.
+
+@subheading Portability
+
+@port-note posix This function is available on many Unix systems.
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ if (malloc_verify() == 0)
+   printf ("Heap corruption detected!\n");
+@end example
+
+@c -------------------------------------------------------------
+
+@node malloc_debug, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h> /* on non-DJGPP systems */
+
+int malloc_debug(int level);
+@end example
+
+@subheading Description
+This function sets the level of error diagnosis and reporting
+during subsequent calls to @code{malloc}, @code{free},
+@code{realloc}, and all functions which call them internally.
+The argument @var{level} is interpreted as follows:
+
+@table @asis 
+@item Level 0
+The memory allocation functions behave as they do if
+@code{malloc_debug} was never called.  Only passive checks are
+allowed, including @code{malloc_verify}, @code{mallocmap}, and
+@code{malldbgdumpfile} (to set the output file).  In particular
+@code{mallsethook} is disabled, to avoid accidents.  The actual
+functioning of the malloc system remains unaffected.  Any malloc
+hooks set by @code{mallsethook} are reset. If errors are detected by
+@code{malloc_verify}, it prints diagnostic messages to the
+@dfn{dumpfile} (default standard error stream), with address
+and size of the offending block and other pertinent information.
+
+@item Level 1
+All the passive checks of level 0 are allowed.  In addition
+@code{mallsethook} is enabled, thus allowing construction of
+custom debugging packages.
+
+@item Level 2
+Similar to level 1, but the consistency of the entire heap is
+also verified (by calling @code{malloc_verify}) on every call to
+the memory allocation functions.  @emph{Warning: this may
+significantly slow down the application.}  Since the malloc
+hooks are in use to connect to this system, @code{mallsethook}
+is disabled.  If there are hooks already in use the change to
+level 2 or above is rejected.
+
+@item Level 3
+Similar to level 2, except that the program is aborted whenever
+a heap corruption is detected.  In addition, failed allocations
+(i.e.@: when @code{malloc} or @code{realloc} returns @code{NULL}
+because it cannot satisfy a request) are reported to the
+dumpfile (default standard error).
+
+@item Level 4
+Similar to level 3, but calls to @code{free} with a @code{NULL}
+pointer as an argument are also reported.
+
+@item Level -1
+Does not alter the debug level, but returns the current value.
+@end table
+
+@subheading Return Value
+
+@code{malloc_debug} returns the previous error diagnostic level.  The
+default level is 0.
+
+@subheading Portability
+
+@port-note posix This function is available on many Unix systems.
+@portability !ansi, !posix
+
+@subheading Example
+
+@example
+ malloc_debug(2);
+ ...
+ malloc_verify();
+@end example
+
+@c -------------------------------------------------------------
+
+@node mallocmap, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h> /* on non-DJGPP systems */
+
+void mallocmap(void);
+@end example
+
+@subheading Description
+
+This function prints a map of the heap storage to the selected
+@file{dumpfile}. @xref{malldbgdumpfile}. For each block, its
+address and size are printed, as well as an indication whether
+it is free or in use, together with pointers to adjacent blocks.
+
+@subheading Return Value
+
+None.
+
+@subheading Portability
+
+@port-note posix This function is available on many Unix systems.
+@portability !ansi, !posix
+
+@c -------------------------------------------------------------
+
+@node malldbgdumpfile, memory
+
+@subheading Syntax
+
+@example
+  FILE *fNew = fopen("mallocdbg.out", "w");
+  FIKE *fOld = malldbgdumpfile(fNew);
+@end example
+
+@subheading Description
+
+Specifies the file used by memory allocation debug functions
+
+@subheading Return Value
+
+Returns file used earlier (before call) for this purpose.
+Initial value of output file is stderr.
+
+@subheading Portability
+@portability !ansi, !posix
+
+@c -------------------------------------------------------------
+
+@node mallsethook, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h> /* on non-DJGPP systems */
+
+M_HOOKFN mallsethook(enum m_hook_kind which,
+                     M_HOOKFN newhook);
+@end example
+
+@subheading Description
+Several @dfn{hooks} are provided for building custom
+@code{malloc} debugging packages.  Such packages typically need
+to be notified when memory is allocated and freed by the
+application, in order to be able to find memory leaks, code that
+writes beyond the limits of allocated buffers or attempts to
+@code{free} buffers which were not allocated by @code{malloc},
+etc. These hooks can be used to define callback functions which
+will be called by the library at strategic points.  Each
+callback is only called if it is non-@code{NULL}; by default,
+all of them are initialized to a @code{NULL} value.
+
+The actual hook to be set is described by the following
+constants, enumerated in @file{stdlib.h}:
+
+@table @code
+@item malloc_HK = 0    
+on entry to malloc
+
+@item malloc_fail_HK   
+when malloc or realloc fails
+
+@item free_HK          
+on entry to free
+
+@item free_null_HK     
+when free is called with a NULL pointer
+
+@item realloc_HK       
+on entry to realloc
+
+@item realloc_exit_HK  
+when realloc exits.
+
+@item HKCOUNT          
+The first invalid value for a hook descriptor.
+@end table
+
+@noindent
+and each ``callback'' function is described by:
+
+@example
+   typedef void (*M_HOOKFN)(size_t sz, void *ptr);
+@end example
+
+@noindent
+in @file{stdlib.h}.  Note that in some cases the parameters
+supplied to the ``callback'' function will be meaningless, in
+which case they will be zero or @code{NULL} as appropriate.  The
+callback function must @strong{NOT} call any of @code{malloc},
+@code{free}, or @code{realloc}.
+
+@code{mallsethook} action is disabled unless the debug_level is
+set to 1.  This interlock avoids accidental use before enabling
+the package, and avoids altering hooks that are already in use
+for debug_level of 2 or higher.
+
+For access to the internal storage of the malloc arena, see the
+@code{_sysmalloc} call and the @code{_sysinfo} struct.
+
+@table @code
+
+@item malloc_HK
+Called just before a chunk of memory is about to be returned to
+the application in response to an allocation request.
+@var{sz} is the size requested by the application
+(@strong{not} the actual size of the allocated buffer, which may
+be larger).  @var{ptr} is a pointer to the block that was
+allocated.
+
+@item malloc_fail_HK
+Called if @code{malloc} failed to find a free block large enough
+to satisfy a request, and also failed to obtain additional
+memory from @code{sbrk}.  @var{sz} is the requested allocation
+size.
+
+@item free_HK
+Called when a buffer is about to be freed.  @var{ptr} is a
+pointer to the block to be freed.  Its validity has not been
+checked.
+
+@item free_null_HK
+Called whenever a @code{NULL} pointer is passed to @code{free}.
+@acronym{ANSI} C specifically rules that this is allowed and
+should have no effect, but you might want to catch such cases if
+your program needs to be portable to old compilers whose
+libraries don't like @code{NULL} pointers in @code{free}.
+
+@item realloc_HK
+Called at entry to @code{realloc}, before the actual
+reallocation. @var{ptr} is the pointer whose contents are to be
+reallocated.  @var{sz} is the new size requested by the
+application.  (This hook is called @emph{in addition} to the
+other hooks which may be called by @code{malloc} if and when
+@code{realloc} calls them.)
+
+@item realloc_exit_HK
+Called at exit from @code{realloc}.  @var{sz} is the requested
+size, and @var{ptr} is the (possibly) revised value of the user
+pointer which will be returned by @code{realloc}.  This may be
+@code{NULL} if realloc was unable to allocate the space, in
+which case @emph{ONLY} the original value of @var{ptr} (as
+reported by @code{realloc_HK}) remains valid.
+
+@end table
+
+@subheading Return Value
+
+@code{mallsethook} returns the previous hook pointer, (usually
+@code{NULL}). If @code{mallsethook} is disabled it will also
+return @code{NULL}.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+These hooks and the function are specific to DJGPP.
+
+@subheading Example
+
+@example
+
+ static void mallocfailalert(size_t sz, void *ptr)
+ @{
+    printf("Failed to malloc %lu bytes\n", (unsigned long)sz);
+ @}
+
+ malloc_debug(1);
+ mallsethook(malloc_fail_HK, mallocfailalert);
+ ...
+ /* any malloc failure will result in a message */
+ 
+@end example
+
+@c -------------------------------------------------------------
+
+@node malldbgdmpfile, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h> (on non-DJGPP systems)
+
+FILE *malldbgdmpfile(FILE *fp);
+@end example
+
+@subheading Description
+
+This function allows diverting the output of the malldbg package
+to any suitable text file, known as the @dfn{dumpfile}.  By
+default the package uses @code{stderr}.
+
+@subheading Return Value
+
+The previous identity of the dumpfile.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+This function is specific to DJGPP.
+
+@subheading Example
+
+@example
+FILE *oldfile = malldbgdmpfile(stdout);
+@end example
+
+@c -------------------------------------------------------------
+
+@node _sysmalloc, memory
+@subheading Syntax
+
+@example
+#include <stdlib.h>
+#include <malldbg.h>  /* on non-DJGPP systems */
+#include <sysquery.h> /* alternative on non-DJGPP systems */
+
+struct _sysquery _sysmalloc(void);
+@end example
+
+@subheading Description
+
+This function exports the internal structure of the malloc arena
+and thus allows construction of such packages as malldbg.  It 
+avoids accidental exposure of system critical values, and also
+permits such values to be changed and reflected in external
+packages.
+
+@subheading Return Value
+
+A @code{struct _sysquery}, described as follows:
+
+@example
+struct _sysquery @{
+  unsigned char data, gdlo, sz, prvf, nxtf, nxt, prv, ohead;
+  void         *nilp;
+  void         *anchors;
+  set_m_hook    hookset;
+@};
+@end example
+
+Any unsigned char field set to 255 signifies the value is
+meaningless.  The @code{ohead} value is not useful in the
+present implementation.  The remaining values are small offsets
+from the internal pointers to the appropriate fields.  In
+particular @code{data} is the offset between the internal
+pointer and the user pointers.  @code{nxt} and @code{prv} link
+all allocated memory blocks, while @code{nxtf} and @code{prvf}
+are used only to link free blocks. @code{sz} is the internal
+size of the block, not the user size, and is normally rounded
+upward.  Thus the @code{nxt} field is redundant to the @code{sz}
+field (except when no @code{nxt} exists) and is used in validity
+checking. A @code{NULL} value in @code{nxtf} field signifies
+that the block is not free. The special value @code{nilp} is
+used in @code{nxtf} and @code{prvf} as a @code{NULL} value
+distinguishable from @code{NULL}.
+
+@code{anchors} points to a @code{NULL} terminated list of sets
+of chains of memory blocks.  These were allocated by @code{sbrk}
+and were not contiguous to any previous allocations.
+
+@code{hookset} is a pointer to a function that can set malloc
+hooks, as described in @code{mallsethook}.  It is only available
+through this link.
+
+@subheading Portability
+
+@portability !ansi, !posix
+
+This function is specific to DJGPP.
+
+@subheading Example
+
+@example
+struct _sysquery sysinfo = _sysmalloc();
+@end example
+
+@c -------------------------------------------------------------
