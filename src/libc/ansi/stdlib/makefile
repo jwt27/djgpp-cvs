@@ -33,4 +33,9 @@ SRC += strtoul.c
 SRC += strtoull.c
 SRC += system.c
 
+# FIXME: This is really only needed for gcc-5 .
+#        Unfortunatelly GCC version is not yet checked
+#        here.
+nmalloc.o: EXTRA_CFLAGS := -fno-builtin-malloc
+
 include $(TOP)/../makefile.inc
