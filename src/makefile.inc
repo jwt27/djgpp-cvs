@@ -86,11 +86,11 @@ XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -
 MISC = $(TOP)/../misc.exe
 
 %.o : %.c
-	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	@$(XGCC) -c $<
+	@$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
+	@$(XGCC) -c $(EXTRA_CFLAGS) $<
 %.o : %.cc
-	@$(MISC) echo - $(CROSS_GPP) '...' -c -fno-exceptions $<
-	@$(XGPP) -c -fno-exceptions $<
+	@$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
+	@$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 %.o : %.S
 	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	@$(XGCC) -c $<
