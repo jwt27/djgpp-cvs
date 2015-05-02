@@ -1,3 +1,5 @@
+/* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2007 DJ Delorie, see COPYING.DJ for details */
 /*
  * File _hash2v.c.
  *

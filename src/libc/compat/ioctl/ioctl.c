@@ -1,3 +1,5 @@
+/* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2010 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -71,8 +73,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.8 2008/04/07 20:35:57 juan.guerrero Exp $
+$Id: ioctl.c,v 1.9 2015/05/02 07:32:15 andris Exp $
 $Log: ioctl.c,v $
+Revision 1.9  2015/05/02 07:32:15  andris
+Update file copyright lines aftr running src/copyright.pl
+
 Revision 1.8  2008/04/07 20:35:57  juan.guerrero
 Use __FSEXT_func_wrapper instead of calling functions directly
 with wrong type of arguments.
