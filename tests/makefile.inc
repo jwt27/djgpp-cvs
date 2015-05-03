@@ -10,8 +10,8 @@ include $(TOP)/../makefile.def
 GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
 CFLAGS += -I$(GCC_INC_DIR)
 
-GCC = gcc @$(TOP)/../gcc.opt -I. -I$(TOP)/../../include $(CFLAGS) -c $<
-GPP = gpp @$(TOP)/../gpp.opt -I. -I$(TOP)/../../include $(CFLAGS) -c $<
+GCC = gcc @$(TOP)/../gcc.opt -Wno-cast-qual -Wno-error -I. -I$(TOP)/../../include $(CFLAGS) -c $<
+GPP = gpp @$(TOP)/../gpp.opt -Wno-cast-qual -Wno-error -I. -I$(TOP)/../../include $(CFLAGS) -c $<
 
 %.o : %.c
 	$(GCC)
@@ -56,7 +56,7 @@ DJGPP_DJL := $(subst \,/,$(DJGPP_DJL))
 export DJGPP_DJL
 endif
 
-LINK = ld $(LDFLAGS) $^ -o $@ $(LIBGCCA) -T $(DJGPP_DJL)
+LINK = ld $(LDFLAGS) $^ -o $@ $(EXTRA_LIBS) $(LIBGCCA) -T $(DJGPP_DJL)
 EXE = @${TOP}/../../bin/stubify.exe $@
 
 .PRECIOUS: %.exe %.out %.err
@@ -72,7 +72,7 @@ EXE = @${TOP}/../../bin/stubify.exe $@
 	-diff $^ > $@
 	cat $@
 
-all :: config $(EXES)
+all :: config prepare $(EXES)
 	@rem.com
 
 tests :: $(ERRS)
@@ -82,6 +82,8 @@ testclean ::
 
 clean :: testclean
 	-rm -f *.exe *.o *.d *.i
+
+prepare ::
 
 config:	$(TOP)/../gcc.opt $(TOP)/../gpp.opt
 
