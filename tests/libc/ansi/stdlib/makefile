@@ -10,7 +10,7 @@ SRC += strtod.c
 SRC += strtod1.c
 SRC += system.c
 SRC += system2.c
-SRC += tmalloc.c
+#SRC += tmalloc.c
 SRC += wcstombs.c
 
 include $(TOP)/../makefile.inc
