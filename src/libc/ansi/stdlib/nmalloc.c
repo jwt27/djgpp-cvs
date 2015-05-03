@@ -9,7 +9,7 @@
 
    Revised 2007-01-04 to include calloc.
    Revised 2007-01-28 per bug report by Florian Xaver. *f1*
-   Revised 2014-04-21 for use in DJGPP libcby andris.pavenis@iki.fi   
+   Revised 2014, 2015 for use in DJGPP libc by Andris Pavenis <andris.pavenis@iki.fi>
 */
 
 /* A re-implementation of malloc and friends for DJGPP 2.03/2.04
