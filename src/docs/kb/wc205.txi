@@ -1,0 +1,12 @@
+@node Changes in 2.05, , Changes in 2.04, What Changed
+
+Here is a list of changes from DJGPP V2.04 to DJGPP V2.05
+
+DJGPP v2.04 was actually never released and stayed in beta stage much too
+long.
+
+One of basic problems of DJGPP v2.04 was slow memory management especially
+@code{free}. In DJGPP V2.05 memory management was replaced by completely
+different implementation @strong{nmalloc} written by Charles B. Falconer
+(1931-2012). nmalloc was used already for a rather long time for various
+DJGPP packages including DJGPP port of GCC
