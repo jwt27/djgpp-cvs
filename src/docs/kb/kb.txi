@@ -32,7 +32,7 @@ The DJGPP Knowledge Base
 This document is a place to store random bits of information about
 DJGPP and how to use it efficiently.
 
-Copyright @copyright{} 1995,1996,1997,1998,1999,2001,2002 DJ Delorie
+Copyright @copyright{} 1995,1996,1997,1998,1999,2001,2002,2015 DJ Delorie
 
 @menu
 * Introduction::
