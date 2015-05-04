@@ -13,5 +13,16 @@ K = $(wildcard *.txi)
 $(INFO)/kb.info : $K
 	makeinfo --no-split kb.txi
 
+html-dir: $K
+	$(MISC) rm html/*
+	$(MISC) rmdir html
+	$(MISC) mkdir html
+	makeinfo --html kb.txi -o html
+
+html-single: $K
+	makeinfo --html --no-split kb.txi -o html
+
 clean ::
 	$(MISC) rm $(INFO)/kb.info
+	$(MISC) rm html/* kb.html
+	$(MISC) rmdir html
