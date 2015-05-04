@@ -1,0 +1,8 @@
+/flexlexe.h/ d
+/FlexLexer.h/ d
+/libintl.h/ d
+s/sys\/sysmacro.h/sys\/sysmacros.h/
+/\/[Cc][Vv][Ss]\// d
+/\/\.cvsignore/ d
+/\/_ansi/ d
+/\/_inline/ d

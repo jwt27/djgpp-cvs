@@ -1,0 +1,14 @@
+etc/date.exe
+etc/tzselect
+etc/zdump.exe
+etc/zic.exe
+share/man/cat1/date.1
+share/man/cat3/newctime.3
+share/man/cat3/newtzset.3
+share/man/cat3/time2posix.3
+share/man/cat5/tzfile.5
+share/man/cat8/tzselect.8
+share/man/cat8/zdump.8
+share/man/cat8/zic.8
+lib/libtz.a
+zoneinfo

@@ -1,0 +1,39 @@
+#
+# DSM for DJGPP library sources for 2.05
+#
+
+dsm-file-version: 1.3
+dsm-version: 0.6.0
+dsm-name: djlsr205
+
+dsm-author: Richard Dawe
+
+name: djlsr
+version: 2.05 beta 1
+type: sources
+binaries-dsm: djdev205
+manifest: djlsr205
+
+short-description: DJGPP base library sources
+license: GNU General Public License and GNU Library General Public License - see copying.dj.
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
+
+simtelnet-path: v2/
+zip: djlsr205.zip
+
+#builtin-post-install-script: echo Welcome to the world of DJGPP!
+
+pre-install-readme: readme.1st
+
+replaces: djlsr < 2.05 beta 1
+
+requires: djdev
+requires: gcc
+requires: g++
+requires: binutils
+requires: make
+requires: sed
+requires: bison
+requires: texinfo

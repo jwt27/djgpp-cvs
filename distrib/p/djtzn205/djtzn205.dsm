@@ -1,0 +1,30 @@
+#
+# DSM for DJGPP timezone support files
+#
+
+dsm-file-version: 1.3
+dsm-version: 0.6.0
+dsm-name: djtzn205
+
+dsm-author: Andris Pavenis
+
+name: djtzn
+version: 2.05 beta 1
+type: binaries
+sources-dsm: djtzs205
+manifest: djtzn205
+
+short-description: Extra timezone support files for DJGPP
+license: Various: public domain, BSD
+web-site: http://www.delorie.com/djgpp/
+newsgroup: comp.os.msdos.djgpp
+newsgroup-email-gateway: djgpp@delorie.com
+
+author: The Timezone Caballeros
+author-email: tz@iana.org
+author-ftp-site: 'ftp://ftp.iana.org/tz/
+
+simtelnet-path: v2/
+zip: djtzn205.zip
+
+replaces: djtzn < 2.05 beta 1
