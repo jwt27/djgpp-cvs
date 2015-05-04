@@ -10,7 +10,7 @@
                               DJ Delorie
 
 
-          This is the README.1ST file for DJGPP Version 2.04
+          This is the README.1ST file for DJGPP Version 2.05
 
 ************************************************************************
 *  This file contains information on obtaining, installing, and using  *
@@ -55,12 +55,12 @@ FAQ      A short file which points you to other documents you should
 
 v2/
 unzip32  A free program to unzip the archive (like PKUNZIP)
-djdev204 DJGPP V2 Development Kit and Runtime
-djlsr204 DJGPP V2 Base Library Sources
-djtst204 DJGPP V2 Test Programs (for testing the C library)
-djcrx204 DJGPP V2 Cross-to-DOS Compiler Support Files (from djlsr/djdev)
-djtzn204 DJGPP V2 Timezone Files
-djtzs204 DJGPP V2 Timezone Sources
+djdev205 DJGPP V2 Development Kit and Runtime
+djlsr205 DJGPP V2 Base Library Sources
+djtst205 DJGPP V2 Test Programs (for testing the C library)
+djcrx205 DJGPP V2 Cross-to-DOS Compiler Support Files (from djlsr/djdev)
+djtzn205 DJGPP V2 Timezone Files
+djtzs205 DJGPP V2 Timezone Sources
 faq*b    The full FAQ list in various formats (Info, ASCII, HTML...)
 faq*s    The Texinfo sources of the FAQ and tools to generate all the
           different formats of the FAQ
@@ -101,7 +101,7 @@ See http://www.delorie.com/djgpp/zip-picker.html for a form-based
 guide to what to download.  In general, download the binary
 distributions only; most people don't need the source distributions.
 
-To build C programs, you'll need djdev204.zip, gcc*b.zip, and
+To build C programs, you'll need djdev205.zip, gcc*b.zip, and
 bnu*b.zip.  For C++, also get gpp*b.zip.
 
 To read the online manuals, get txi*b.zip and run "info".  If you don't
@@ -145,9 +145,9 @@ invalid in short file names (not including the quotes: "+,;=[]").
 2. Unzip all the zip files from that directory, preserving the
    directory structure.  For example:
 
-	pkunzip -d djdev204
+	pkunzip -d djdev205
   or
-	unzip32 djdev204
+	unzip32 djdev205
 
    On Windows 9x, Windows/ME, Windows 2000 and Windows XP, use an unzip
    program which supports long file names.  Latest versions of InfoZip's
