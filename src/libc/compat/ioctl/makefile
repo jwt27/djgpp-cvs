@@ -5,6 +5,4 @@ TOP=../..
 
 SRC += ioctl.c
 
-ioctl.o:	EXTRA_CFLAGS := -Wno-error
-
 include $(TOP)/../makefile.inc
