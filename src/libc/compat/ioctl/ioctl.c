@@ -73,8 +73,11 @@
 ** and calls that if it exist. Otherwise we just return -1.
 **
 **
-$Id: ioctl.c,v 1.9 2015/05/02 07:32:15 andris Exp $
+$Id: ioctl.c,v 1.10 2015/05/08 16:38:44 andris Exp $
 $Log: ioctl.c,v $
+Revision 1.10  2015/05/08 16:38:44  andris
+src/libc/compat/ioctl/ioctl.c: add missing va_end (patch from Ozkan Sezer)
+
 Revision 1.9  2015/05/02 07:32:15  andris
 Update file copyright lines aftr running src/copyright.pl
 
@@ -356,7 +359,9 @@ int ioctl(int fd, int cmd, ...)
            inflg,outflg,voidflg,size);
     }
 #endif
-     return _unix_ioctl(fd, cmd, args);
+     rv = _unix_ioctl(fd, cmd, args);
+     va_end(args);
+     return rv;
   }
   /* Handle a DOS request */
   /* extract arguments */
