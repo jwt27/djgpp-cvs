@@ -25,13 +25,13 @@ main(int argc, char **argv)
   int col=0, i;
   if (argc < 4)
   {
-    printf("usage: %s infile symname outfile\n", basename(argv[0]));
+    printf("usage: bin2h infile symname outfile\n");
     exit(1);
   }
   f = open(argv[1], O_RDONLY|O_BINARY);
   if (f < 1)
   {
-    printf("%s: ",basename(argv[0]));
+    printf("bin2h: ");
     perror(argv[1]);
     exit(1);
   }
@@ -40,7 +40,7 @@ main(int argc, char **argv)
 
   if (of == NULL)
   {
-    printf("%s: ",basename(argv[0]));
+    printf("bin2h: ");
     perror(argv[3]);
     exit(1);
   }
