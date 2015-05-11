@@ -1617,6 +1617,7 @@ int main(int argc, char **argv)
   if (argc > 3)
   {
     FILE *mapfile = fopen(argv[3], "w");
+    lineaddr_s *laddr;
     fprintf(mapfile, "%#x bytes generated, %#x bytes in file, %#x bytes total, %d symbols\n",
       generated_bytes, bsspc, pc, symcount);
 
@@ -1633,6 +1634,7 @@ int main(int argc, char **argv)
       if (!istemp(s->name, 0))
         fprintf(mapfile, "0000:%04X  %s (%c)\n", s->value, s->name, SYMTYPES[s->type]);
     current_map_file = 0;
+    laddr = lineaddr;
     for (i=0; i<num_lineaddr; i++)
     {
       if (current_map_file != lineaddr[i].name)
@@ -1651,6 +1653,7 @@ int main(int argc, char **argv)
       else
         fputc(' ', mapfile);
     }
+    lineaddr = laddr;
     fputc('\n', mapfile);
     fclose(mapfile);
   }
