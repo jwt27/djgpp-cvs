@@ -12,6 +12,7 @@ char *
 realpath(const char *in, char *out)
 {
   char in1[PATH_MAX];
+  char *ret;
 
   if (in == NULL)
   {
@@ -25,17 +26,20 @@ realpath(const char *in, char *out)
     return NULL;
   }
 
-  if (out == NULL && (out = malloc((size_t)PATH_MAX)) == NULL)
+  if (!__solve_symlinks(in, in1))
+    return NULL; /* Return errno from from __solve_dir_symlinks().  */
+
+  if (!(ret = out) && !(ret = malloc(PATH_MAX)))
   {
     errno = ENOMEM;
     return NULL;
   }
 
-  if (!__solve_symlinks(in, in1))
-    return NULL; /* Return errno from from __solve_dir_symlinks().  */
-
-  if (__canonicalize_path(in1, out, PATH_MAX) == NULL)
+  if (__canonicalize_path(in1, ret, PATH_MAX) == NULL)
+  {
+    if (ret != out) free (ret);
     return NULL; /* Return errno from __canonicalize_path().  */
+  }
 
-  return out;
+  return ret;
 }
