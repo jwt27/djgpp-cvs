@@ -18,7 +18,6 @@
 #include <time.h>
 #include <ctype.h>
 #include <unistd.h>
-#include "../../include/sys/cdefs.h"
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -1466,18 +1465,15 @@ int main(int argc, char **argv)
     strncat(pexe + INFO_TEXT_START, copyright, (512-3-INFO_TEXT_START) - strlen(pexe + INFO_TEXT_START)); /* -3 for the following line: */
   strcat(pexe + INFO_TEXT_START, "\r\n\032");
 
-  if (argv[2] == 0)
+  if (! argv[2])
   {
-    char *cp,  *dot = NULL, *sl _ATTRIBUTE(__unused__) = NULL;
+    char *cp, *dot = NULL;
     outfilename = (char *)alloca(strlen(argv[1])+5);
     strcpy(outfilename, argv[1]);
     for (cp=outfilename; *cp; cp++)
     {
       if (*cp == ':' || *cp == '\\' || *cp == '/')
-      {
-        sl = cp+1;
-        dot = 0;
-      }
+        dot = NULL;
       if (*cp == '.')
         dot = cp;
     }
@@ -1490,24 +1486,21 @@ int main(int argc, char **argv)
   }
   else
   {
-    char *dot=0, *sl=0, *cp;
+    char *cp, *dot = NULL;
+    size_t sz = strlen(argv[2]);
     outfilename = argv[2];
     for (cp=outfilename; *cp; cp++)
     {
       if (*cp == ':' || *cp == '\\' || *cp == '/')
-      {
-        sl = cp+1;
-        dot = 0;
-      }
+        dot = NULL;
       if (*cp == '.')
         dot = cp;
     }
     if (!dot)
     {
-      sl = (char *)alloca(strlen(outfilename)+5);
-      strcpy(sl, outfilename);
-      outfilename = sl;
-      dot = outfilename + strlen(outfilename);
+      outfilename = (char *)alloca(sz+5);
+      strcpy(outfilename, argv[2]);
+      dot = outfilename + sz;
       *dot = '.';
       strcpy(dot+1, ext_types[out_type]);
     }
@@ -2663,7 +2656,7 @@ void add_copyright(char *buf)
   copyright = tmp;
 }
 
-void add_rcs_ident()
+void add_rcs_ident(void)
 {
   char tmp[500];
   time_t now;
@@ -2765,15 +2758,18 @@ void do_linkcoff (char *filename)
   SCNHDR *f_thdr;		/* Text section header */
   SCNHDR *f_dhdr;		/* Data section header */
   SCNHDR *f_bhdr;		/* Bss section header */
-/*  AOUTHDR f_ohdr;*/		/* Optional file header (a.out) */
+/*AOUTHDR f_ohdr;*/		/* Optional file header (a.out) */
   SYMENT *symbol;
   RELOC *rp;
   int cnt;
   size_t i;
   void *base;
-  int textbase, database _ATTRIBUTE(__unused__), bssbase _ATTRIBUTE(__unused__) /*, delta*/;
+  int textbase /*, delta*/;
+#ifdef DEBUG_RELOC
+  int database, bssbase;
+#endif
   char smallname[9];
-  unsigned char *cp _ATTRIBUTE(__unused__);
+/*unsigned char *cp;*/
 
   f = open (filename, O_RDONLY | O_BINARY);
   if (f < 0)
@@ -2804,9 +2800,13 @@ void do_linkcoff (char *filename)
 
   textbase = pc;
   emit(data + f_thdr->s_scnptr, f_thdr->s_size);
+#ifdef DEBUG_RELOC
   database = pc;
+#endif
   emit(data + f_dhdr->s_scnptr, f_dhdr->s_size);
+#ifdef DEBUG_RELOC
   bssbase = pc;
+#endif
   for (i = 0; i < f_bhdr->s_size; i++)
     emitb (0);
 
@@ -2948,7 +2948,7 @@ void do_linkcoff (char *filename)
 		       inname, lineno, filename, rp->r_type);
 	      delta = 0;
 	    }
-	  cp = (unsigned char *)(outbin + textbase + rp->r_vaddr);
+	  /*cp = (unsigned char *)(outbin + textbase + rp->r_vaddr);*/
 	  vaddr += delta;
 	  vaddr_ptr[0]=vaddr;
 	  vaddr_ptr[1]=vaddr>>8;
