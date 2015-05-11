@@ -24,16 +24,16 @@ DIRS = \
 all : misc.exe config $(DIRS) makemake.exe subs ../lib/libg.a ../lib/libpc.a
 
 misc.exe : misc.c
-	gcc -O2 misc.c -o misc.exe
+	gcc -O2 -Wall misc.c -o misc.exe
 
 $(DIRS) :
 	./misc.exe mkdir $@
 
 makemake.exe : makemake.c
-	gcc -O2 makemake.c -o makemake.exe
+	gcc -O2 -Wall makemake.c -o makemake.exe
 
 copyrite.exe : copyrite.cc
-	gcc -O2 copyrite.cc -o copyrite.exe
+	gcc -O2 -Wall copyrite.cc -o copyrite.exe
 
 subs:
 	$(MAKE) -C djasm native
