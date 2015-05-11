@@ -87,7 +87,7 @@ find(void)
   }
   *path_end = '/';
   subs = (char **)malloc(msubs*sizeof(char *));
-  while (de = readdir(d)) {
+  while ((de = readdir(d)) != NULL) {
 
     /* Skip . and .. */
     if (de->d_name[0] == '.')
