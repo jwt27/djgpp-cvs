@@ -75,4 +75,4 @@ config:
 	$(MAKE) -f makefile.cfg
 
 rmake.exe: rmake.cc
-	gcc -O2 rmake.cc -o rmake.exe
+	gcc -O2 -Wall -xc rmake.cc -o rmake.exe
