@@ -217,8 +217,8 @@ targetdep.texi: $(chobj) math.texi
 %.def: %.c chew.exe
 	$(CHEW) < $< > $@
 
-chew.exe: chew.c ansidecl.h
-	$(GCC) -D_HAVE_STDC -O2 -o $@ $<
+chew.exe: chew.c
+	$(GCC) -O2 -o $@ $<
 
 clean ::
 	-$(MISC) rm *.def *.d chew.exe targetdep.texi
