@@ -71,7 +71,7 @@
 	.org	0			; just in case
 stubinfo:
 stubinfo_magic:				; char [16]
-	.db	"go32stub, v 2.04"	; version may change, [0..7] won't
+	.db	"go32stub, v 2.05"	; version may change, [0..7] won't
 stubinfo_size:				; unsigned long
 	.dd	stubinfo_end		; bytes in structure
 stubinfo_minstack:			; unsigned long
