@@ -40,7 +40,7 @@ SECTIONS
     ___EH_FRAME_BEGIN__ = . ;
     *(.eh_fram*)
     ___EH_FRAME_END__ = . ;
-    LONG(0);
+    LONG(0) ;
     *(.gnu.linkonce.d*)
     edata  =  . ; PROVIDE(_edata = .) ;
     . = ALIGN(0x200);
