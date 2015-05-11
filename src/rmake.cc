@@ -12,7 +12,7 @@ main(int argc, char **argv)
 {
   int i;
   char cwd[200];
-  char path[200], *pathp;
+  char path[200];
   char file[200];
   FILE *oi = fopen("makefile.oi", "w");
   FILE *rf = fopen("makefile.rf2", "w");
