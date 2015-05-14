@@ -48,7 +48,7 @@ jmp_buf debugger_jmpbuf;
 
 /* Information about panes.  */
 #define PANECOUNT 16
-enum bool {
+enum {
   PANE_CODE = 0,
   PANE_REGISTER = 1,
   PANE_FLAG = 2,
