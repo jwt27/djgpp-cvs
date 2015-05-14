@@ -26,33 +26,33 @@ extern "C" {
 
 /* This is for g++ 2.7.2 and below */
 #pragma pack(1)
-  
+
 struct ffblk {
-  char lfn_magic[6] __attribute__((packed));			/* LFN */
-  short lfn_handle __attribute__((packed));			/* LFN */
-  unsigned short lfn_ctime __attribute__((packed));		/* LFN */
-  unsigned short lfn_cdate __attribute__((packed));		/* LFN */
-  unsigned short lfn_atime __attribute__((packed));		/* LFN */
-  unsigned short lfn_adate __attribute__((packed));		/* LFN */
-  char _ff_reserved[5] __attribute__((packed));
-  unsigned char  ff_attrib __attribute__((packed));
-  unsigned short ff_ftime __attribute__((packed));
-  unsigned short ff_fdate __attribute__((packed));
-  unsigned long  ff_fsize __attribute__((packed));
-  char ff_name[260] __attribute__((packed));
-};
+  char lfn_magic[6];			/* LFN */
+  short lfn_handle;			/* LFN */
+  unsigned short lfn_ctime;		/* LFN */
+  unsigned short lfn_cdate;		/* LFN */
+  unsigned short lfn_atime;		/* LFN */
+  unsigned short lfn_adate;		/* LFN */
+  char _ff_reserved[5];
+  unsigned char  ff_attrib;
+  unsigned short ff_ftime;
+  unsigned short ff_fdate;
+  unsigned long  ff_fsize;
+  char ff_name[260];
+} __attribute__((packed));
 
 struct ffblklfn {
-  unsigned long      fd_attrib __attribute__((packed));
-  unsigned long long fd_ctime __attribute__((packed));
-  unsigned long long fd_atime __attribute__((packed));
-  unsigned long long fd_mtime __attribute__((packed));
-  unsigned long      fd_sizehi __attribute__((packed));
-  unsigned long      fd_size __attribute__((packed));
-  unsigned long long fd_reserved __attribute__((packed));
-  char               fd_longname[260] __attribute__((packed));
-  char               fd_name[14] __attribute__((packed));
-};
+  unsigned long      fd_attrib;
+  unsigned long long fd_ctime;
+  unsigned long long fd_atime;
+  unsigned long long fd_mtime;
+  unsigned long      fd_sizehi;
+  unsigned long      fd_size;
+  unsigned long long fd_reserved;
+  char               fd_longname[260];
+  char               fd_name[14];
+} __attribute__((packed));
 
 #pragma pack()
 

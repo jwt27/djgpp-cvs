@@ -217,11 +217,11 @@ struct _dostime_t {
 struct _find_t {
   char reserved[21];
   unsigned char attrib;
-  unsigned short wr_time __attribute__((packed));
-  unsigned short wr_date __attribute__((packed));
-  unsigned long size __attribute__((packed));
+  unsigned short wr_time;
+  unsigned short wr_date;
+  unsigned long size;
   char name[256];
-};
+} __attribute__((packed));
 #define find_t _find_t
 
 struct _diskfree_t {
