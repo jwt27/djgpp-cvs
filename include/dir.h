@@ -54,7 +54,7 @@ struct ffblklfn {
   char               fd_name[14] __attribute__((packed));
 };
 
-#pragma pack(4)
+#pragma pack()
 
 #define FA_RDONLY       1
 #define FA_HIDDEN       2
