@@ -158,9 +158,10 @@ struct external_lineno {
   unsigned short l_lnno;			/* line number */
 } __attribute__((packed));
 
-
 #define LINENO	struct external_lineno
 #define LINESZ	sizeof(LINENO)
+/* make sure that structure packing is correct */
+typedef int _DJCHK_EXTLINENO[(LINESZ==6)*3 - 1];
 
 
 /********************** SYMBOLS **********************/
@@ -238,6 +239,9 @@ union external_auxent {
 #define SYMESZ	sizeof(SYMENT)
 #define AUXENT	union external_auxent
 #define AUXESZ	sizeof(AUXENT)
+/* make sure that structure packing is correct */
+typedef int _DJCHK_EXTSYMENT[(SYMESZ==18)*3 - 1];
+typedef int _DJCHK_EXTAUXENT[(AUXESZ==18)*3 - 1];
 
 
 #define _ETEXT	"etext"
@@ -325,16 +329,16 @@ union external_auxent {
 /********************** RELOCATION DIRECTIVES **********************/
 
 
-
 struct external_reloc {
   ULONG32        r_vaddr;
   ULONG32        r_symndx;
   unsigned short r_type;
 } __attribute__((packed));
 
-
 #define RELOC struct external_reloc
 #define RELSZ sizeof(RELOC)
+/* make sure that structure packing is correct */
+typedef int _DJCHK_EXTRELOC[(RELSZ==10)*3 - 1];
 
 #define RELOC_REL32	20	/* 32-bit PC-relative address */
 #define RELOC_ADDR32	6	/* 32-bit absolute address */

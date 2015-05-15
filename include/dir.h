@@ -56,6 +56,10 @@ struct ffblklfn {
 
 #pragma pack()
 
+/* make sure that structure packing is correct */
+typedef int _DJCHK_FFBLK0[(sizeof(struct ffblk)   ==290)*3 - 1];
+typedef int _DJCHK_FFBLK1[(sizeof(struct ffblklfn)==318)*3 - 1];
+
 #define FA_RDONLY       1
 #define FA_HIDDEN       2
 #define FA_SYSTEM       4

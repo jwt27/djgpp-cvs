@@ -223,6 +223,8 @@ struct _find_t {
   char name[256];
 } __attribute__((packed));
 #define find_t _find_t
+/* make sure that structure packing is correct */
+typedef int _DJCHK_FIND_T[(sizeof(struct _find_t)==286)*3 - 1];
 
 struct _diskfree_t {
   unsigned short total_clusters;
