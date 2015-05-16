@@ -41,7 +41,7 @@ int main(void) {
 
   f3GB = fopen("fcntl3GB.dat", "w");
 
-  for (i = 0; i <= BIGBUFSIZE; i++) bigbuf[i] = (char) i;
+  for (i = 0; i < BIGBUFSIZE; i++) bigbuf[i] = (char) i;
 
   for (flen = 0; flen < (long long)(3LL * (INT_MAX/2LL)); flen += BIGBUFSIZE)
   {
