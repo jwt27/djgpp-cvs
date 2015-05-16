@@ -122,29 +122,34 @@ void *dlopen (const char *filename, int mode)
   /* Find the dynamic module along the LD_LIBRARY_PATH */
   if (!ACCESS(filename))
   {
+    const char *env_names[] = {"LD_LIBRARY_PATH", "SYSTEM_DXE_PATH"};
+    const int num_env_names = sizeof(env_names) / sizeof(*env_names);
     char *nextscan;
     size_t fnl = strlen (filename) + 1;
     /* LD_LIBRARY_PATH is scanned only for relative paths */
     if ((filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':')) {
-       for (scan = getenv ("LD_LIBRARY_PATH"); scan && *scan;
-            scan = nextscan + strspn (nextscan, "; \t"))
-       {
-         char *name;
-         nextscan = strchr (scan, ';');
-         if (!nextscan) nextscan = strchr (scan, 0);
-         if (nextscan - scan > FILENAME_MAX - 12)
-           continue;
-         memcpy (tempfn, scan, nextscan - scan);
-         name = tempfn + (nextscan - scan);
-         if (name [-1] != '/' && name [-1] != '\\')
-           *name++ = '/';
-         memcpy (name, filename, fnl);
-         if (ACCESS(tempfn))
-         {
-           filename = tempfn;
-           goto found;
-         }
-       }
+      for (i = 0; i < num_env_names; i++)
+      {
+        for (scan = getenv (env_names[i]); scan && *scan;
+             scan = nextscan + strspn (nextscan, "; \t"))
+        {
+          char *name;
+          nextscan = strchr (scan, ';');
+          if (!nextscan) nextscan = strchr (scan, 0);
+          if (nextscan - scan > FILENAME_MAX - 12)
+            continue;
+          memcpy (tempfn, scan, nextscan - scan);
+          name = tempfn + (nextscan - scan);
+          if (name [-1] != '/' && name [-1] != '\\')
+            *name++ = '/';
+          memcpy (name, filename, fnl);
+          if (ACCESS(tempfn))
+          {
+            filename = tempfn;
+            goto found;
+          }
+        }
+      }
     }
     errno = ENOENT;
     return NULL;

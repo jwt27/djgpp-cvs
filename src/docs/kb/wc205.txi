@@ -1,12 +1,31 @@
 @node Changes in 2.05, , Changes in 2.04, What Changed
+@section Changes in 2.05
 
 Here is a list of changes from DJGPP V2.04 to DJGPP V2.05
 
 DJGPP v2.04 was actually never released and stayed in beta stage much too
 long.
 
+@subsection Replacement of memory managment with nmalloc
+
 One of basic problems of DJGPP v2.04 was slow memory management especially
 @code{free}. In DJGPP V2.05 memory management was replaced by completely
 different implementation @strong{nmalloc} written by Charles B. Falconer
 (1931-2012). nmalloc was used already for a rather long time for various
 DJGPP packages including DJGPP port of GCC
+
+@subsection Update of DXE lookup
+
+Updated handling of DXE search path for relative file names
+@itemize @bullet
+@item At first directories from @env{LD_LIBRARY_PATH} are tried. The predefined
+value of @env{LD_LIBRARY_PATH} is currently kept for compatibility with.
+User can use this environment variable to specify DXE search directories
+additionally to DJGPP own ones
+@item After that directories from @env{SYSTEM_DXE_PATH} are tried. The value
+of @env{SYSTEM_DXE_PATH} is predefined and contains directories where DJGPP own
+DXE files can be found.
+@end itemize
+Both environment variables contain @strong{;} separated lists of directories.
+Earlier only @env{LD_LIBRARY_PATH} was used. The result was DXE lookup failure
+when @env{LD_LIBRARY_PATH} was redefined by user.
