@@ -33,3 +33,10 @@ directories where DJGPP's own DXE files can be found.
 Both environment variables contain @strong{;} separated lists of directories.
 Before DJGPP-v2.05, only @env{LD_LIBRARY_PATH} was used. The result was DXE
 lookup failure when @env{LD_LIBRARY_PATH} was redefined by user.
+
+@subsection Bug Fixes
+
+@file{dir.h}: Fixed a wrong structure packing directive (bug introduced by
+djgpp-v2.01 back in 1996) that would infect other sources and headers with
+potentially adverse effects. NOTE: You might want to recompile your libraries.
+
