@@ -18,9 +18,12 @@ and @code{dlclose} (@pxref{dlclose}) functions.
 @vindex LD_LIBRARY_PATH
 
 If @var{filename} contains a path it is used, else it searches the path
-specified by the environment variable @env{LD_LIBRARY_PATH}.  The typical
-extension used is @file{.DXE}, and these dynamic loadable images are created 
-using @command{dxe3gen} (@pxref{dxe3gen, , dxe3gen, utils}).
+specified by the environment variable @env{LD_LIBRARY_PATH} and
+@env{SYSTEM_DXE_PATH}. DJGPP own search paths are specified in
+@env{SYSTEM_DXE_PATH}. User may add additional search path by defining
+then in @env{LD_LIBRARY_PATH}. The typical extension used is @file{.DXE},
+and these dynamic loadable images are created using
+@command{dxe3gen} (@pxref{dxe3gen, , dxe3gen, utils}).
 
 The @var{mode} field is a combination of @code{RTLD_xxx} flags, of which
 only @code{RTLD_GLOBAL} works (others are defined in @file{dlfcn.h} for

@@ -132,11 +132,16 @@ void *dlopen (const char *filename, int mode)
       {
         for (scan = getenv (env_names[i]); scan && *scan;
              scan = nextscan + strspn (nextscan, "; \t"))
-        {
+         {
           char *name;
+          int name_len;
           nextscan = strchr (scan, ';');
           if (!nextscan) nextscan = strchr (scan, 0);
-          if (nextscan - scan > FILENAME_MAX - 12)
+          name_len = nextscan - scan;
+          if (name_len == 0)
+            continue;
+          if (nextscan[-1] == '/' || nextscan[-1] == '\\') name_len++;
+          if (name_len + fnl > FILENAME_MAX)
             continue;
           memcpy (tempfn, scan, nextscan - scan);
           name = tempfn + (nextscan - scan);
