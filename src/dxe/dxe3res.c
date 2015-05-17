@@ -228,7 +228,7 @@ static int parse(const dxe3_header *dxehdr, char *scan, symset *u, symset *e)
   {
     unres_table_entry *ute = (unres_table_entry *)scan;
     u->t[u->n++] = ute->name;
-    scan = strchr(ute->name, 0) + 1 + sizeof(long) * (ute->n_rel_relocs + ute->n_abs_relocs);
+    scan = strchr(ute->name, 0) + 1 + sizeof(LONG32) * (ute->n_rel_relocs + ute->n_abs_relocs);
   }
 
   return 0;
