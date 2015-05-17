@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/dxe.h>
+#include "../../include/sys/dxe.h"
 
 #define VERSION "1.0"
 
@@ -288,7 +288,7 @@ static char *gettables(const char *filename, dxe3_header *dxehdr)
 {
   FILE *f;
   char *table;
-
+#ifdef __DJGPP__
   char *scan;
   char tempfn[FILENAME_MAX]; /* Temporary filename */
 
@@ -324,7 +324,7 @@ static char *gettables(const char *filename, dxe3_header *dxehdr)
     return NULL;
   }
 found:
-
+#endif /* __DJGPP__ */
   if ((f = fopen(filename, "rb")) != NULL)
   {
     if (readf(dxehdr, sizeof(dxe3_header), f, 0) && (isdxe(dxehdr) == 3))
