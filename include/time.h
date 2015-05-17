@@ -113,11 +113,10 @@ void		tzsetwall(void);
 uclock_t	uclock(void);
 
 #if ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (__GNUC__ > 4))
-
-/* GCC-4.8 has own built-in _rdtsc for ix86. Therefore use it insted of DJGPP one. */
-#include <x86intrin.h>
-
-#else
+/* GCC-4.8.0 and newer versions defines _rdtsc as macro in ia32intrin.h
+   included from x86intrin.h (for MMX/SSE/AVX instructions. */
+#undef _rdtsc
+#endif
 
 #include <sys/cdefs.h>
 
@@ -126,12 +125,14 @@ unsigned long long _rdtsc(void);
 _EXTERN_INLINE unsigned long long
 _rdtsc(void)
 {
+#if ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (__GNUC__ > 4))
+  return __builtin_ia32_rdtsc();
+#else
   unsigned long long result;
   __asm__ __volatile__ ("rdtsc" : "=A"(result) );
   return result;
+#endif
 }
-
-#endif /* ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (__GNUC_ > 4)) */
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
