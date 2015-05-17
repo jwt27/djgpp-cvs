@@ -763,8 +763,8 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
     ULONG32 stsz;
     SYMENT *sym;
     char *strings;
-    long int frame_begin = -1, frame_end = -1;
-    long int first_ctor = -1, last_ctor = -1, first_dtor = -1, last_dtor = -1;
+    LONG32 frame_begin = -1, frame_end = -1;
+    LONG32 first_ctor = -1, last_ctor = -1, first_dtor = -1, last_dtor = -1;
     BOOL resolve_register_deregister_info_symbols = FALSE;
 
     int init, fini;

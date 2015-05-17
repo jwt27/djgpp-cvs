@@ -14,6 +14,8 @@
 # define LONG32  long
 # define ULONG32 unsigned long
 #endif
+/* make sure it is 32 bits */
+typedef int _DJCHK_LONG32[(sizeof(LONG32) == 4)*3 - 1];
 #endif /* _DEFINED_NATIVE_TYPES */
 
 #ifdef __cplusplus
