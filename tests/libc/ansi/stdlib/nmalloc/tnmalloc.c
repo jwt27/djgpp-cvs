@@ -14,7 +14,7 @@
 #include <limits.h>
 #include <math.h>
 #include "fakesbrk.h"
-#include "cokusMT.h"
+#include "cokusmt.h"
 #include <libc/sysquery.h>
 #include <unistd.h>     /* write */
 
