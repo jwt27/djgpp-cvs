@@ -1,3 +1,4 @@
+/* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 NaN:
@@ -6,18 +7,18 @@ NaN:
 	.globl	_sincos
 _sincos:
 
-	/* void sincos(double *cosine, double *sine, double x); */
+	/* void sincos(double x, double *sine, double *cosine); */
 
-	movl	16(%esp), %ecx
+	movl	8(%esp), %ecx
 
-	movl	4(%esp), %eax		/* Point to cosine. */
-	movl	8(%esp), %edx		/* Point to sine. */
+	movl	12(%esp), %edx		/* Point to sine. */
+	movl	16(%esp), %eax		/* Point to cosine. */
 
 	andl	$0x7FF00000, %ecx	/* Examine exponent of x. */
 	cmpl	$0x43E00000, %ecx	/* |x| >= 2^63 */
 	jae	bigarg
 
-	fldl	12(%esp)
+	fldl	4(%esp)
 	fsincos
 	fstpl	(%eax)			/* cos */
 	fstpl	(%edx)			/* sin */

@@ -258,7 +258,7 @@ double exp10(double _x);
 double pow10(double _x);
 double pow2(double _x);
 double powi(double _base, int _exp);
-void   sincos(double *_cos, double *_sin, double _x);
+void   sincos(double _x, double *_sin, double *_cos);
 
 /* These are in libm.a (Cygnus).  You must link -lm to get these */
 /* See libm/math.h for comments */
