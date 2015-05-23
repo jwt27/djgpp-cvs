@@ -155,11 +155,20 @@ typedef long		int_fast64_t;
 #endif /* ! (defined LLONG_MAX || defined __LONG_LONG_MAX__) */
 #endif /* !defined INT_FAST64_MAX */
 
+#ifndef INT64_MAX
+# define INT64_MAX INT_FAST64_MAX
+# define INT64_MIN INT_FAST64_MIN
+#endif
+
 #ifndef INT_FAST32_MAX
 # if INT_MAX >> 31 == 0
 typedef long int_fast32_t;
+#  define INT_FAST32_MAX LONG_MAX
+#  define INT_FAST32_MIN LONG_MIN
 # else
 typedef int int_fast32_t;
+#  define INT_FAST32_MAX INT_MAX
+#  define INT_FAST32_MIN INT_MIN
 # endif
 #endif
 
