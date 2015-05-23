@@ -11,11 +11,11 @@
 #include "fdlibm.h"
 
 #ifdef __STDC__
-float cabsf(_Complex float);
-float cabsf(_Complex float z)
+float cabsf(__complex__ float);
+float cabsf(__complex__ float z)
 #else
 float cabsf(z)
-	_Complex float z;
+    __complex__ float z;
 #endif
 {
 	return hypotf(__real__ z, __imag__ z);

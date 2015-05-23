@@ -11,11 +11,11 @@
 #include "fdlibm.h"
 
 #ifdef __STDC__
-double cabs(_Complex double);
-double cabs(_Complex double z)
+double cabs(__complex__ double);
+double cabs(__complex__ double z)
 #else
 double cabs(z)
-     _Complex double z;
+     __complex__ double z;
 #endif
 {
 	return hypot(__real__ z, __imag__ z);
