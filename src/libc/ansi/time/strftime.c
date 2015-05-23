@@ -9,7 +9,6 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
-#include <stdbool.h>
 
 
 #define THURSDAY       4
@@ -164,21 +163,21 @@ _fmt(const char *format, const struct tm *t, int upcase)
   {
     if (*format == '%')
     {
-      int flag_seen, pad = '0', space=' ', swap_case = false;
+      int flag_seen, pad = '0', space=' ', swap_case = 0;
 
       /*  Parse flags.  */
       do {
-        flag_seen = false;
+        flag_seen = 0;
         if (format[1] == '_')
-          flag_seen = true, pad = space = ' ', format++;
+          flag_seen = 1, pad = space = ' ', format++;
         if (format[1] == '-')
-          flag_seen = true, pad = space = 0, format++;
+          flag_seen = 1, pad = space = 0, format++;
         if (format[1] == '0')
-          flag_seen = true, pad = space = '0', format++;
+          flag_seen = 1, pad = space = '0', format++;
         if (format[1] == '^')
-          flag_seen = true, upcase = true, format++;
+          flag_seen = 1, upcase = 1, format++;
         if (format[1] == '#')
-          flag_seen = true, swap_case = true, format++;
+          flag_seen = 1, swap_case = 1, format++;
       } while (flag_seen);
 
       /*  Parse modifiers.  */
@@ -192,7 +191,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	break;
       case 'A':
 	if (swap_case)
-	  upcase = true;
+	  upcase = 1;
 	if (t->tm_wday < 0 || t->tm_wday > 6)
 	  return 0;
 	if (!_add(Afmt[t->tm_wday], upcase))
@@ -200,7 +199,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	continue;
       case 'a':
 	if (swap_case)
-	  upcase = true;
+	  upcase = 1;
 	if (t->tm_wday < 0 || t->tm_wday > 6)
 	  return 0;
 	if (!_add(afmt[t->tm_wday], upcase))
@@ -208,7 +207,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	continue;
       case 'B':
 	if (swap_case)
-	  upcase = true;
+	  upcase = 1;
 	if (t->tm_mon < 0 || t->tm_mon > 11)
 	  return 0;
 	if (!_add(Bfmt[t->tm_mon], upcase))
@@ -217,7 +216,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
       case 'b':
       case 'h':
 	if (swap_case)
-	  upcase = true;
+	  upcase = 1;
 	if (t->tm_mon < 0 || t->tm_mon > 11)
 	  return 0;
 	if (!_add(bfmt[t->tm_mon], upcase))
@@ -294,7 +293,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  return 0;
 	continue;
       case 'p':
-	upcase = swap_case ? false : true;
+	upcase = swap_case ? 0 : 1;
 	if (!_add(t->tm_hour >= 12 ? "pm" : "am", upcase))
 	  return 0;
 	continue;
@@ -381,7 +380,7 @@ _fmt(const char *format, const struct tm *t, int upcase)
 	  strcpy(tm_zone, t->tm_zone);
 	  if (swap_case)
 	  {
-	    upcase = false;
+	    upcase = 0;
 	    strlwr(tm_zone);
 	  }
 	  if (!_add(tm_zone, upcase))
@@ -418,7 +417,7 @@ strftime(char *s, size_t maxsize, const char *format, const struct tm *t)
   pt = s;
   if ((gsize = maxsize) < 1)
     return 0;
-  if (_fmt(format, t, false))
+  if (_fmt(format, t, 0))
   {
     *pt = '\0';
     return maxsize - gsize;

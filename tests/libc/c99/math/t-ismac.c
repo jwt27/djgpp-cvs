@@ -1,10 +1,12 @@
 #include "../../../../include/stdio.h"
 #include "../../../../include/math.h"
 #include "../../../../include/libc/ieee.h"
-#include <stdbool.h>
 
 #define TEST_TYPE  0  /* Allowed 0 or 1 */
 
+typedef enum {
+  false = 0, true = 1
+} bool;
 
 typedef union
 {

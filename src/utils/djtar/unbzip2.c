@@ -2,16 +2,18 @@
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details */
 
-/* 
+/*
  * This file provides bzip2 support for DJTAR.
  */
 
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include "oread.h"
 #include "zread.h"
 #include "unbzip2.h"
+
+#define FALSE 0
+#define TRUE  1
 
 local int read_stream (void)
 {
@@ -39,21 +41,21 @@ local int read_stream (void)
     if ((bzip_status) == BZ_OK && nbytes == EOF &&                \
         data->avail_in == 0 && data->avail_out > 0)               \
       goto error_handler;                                         \
-  } while (false)
+  } while (FALSE)
 
 #define CHECK_IF_BZ_STREAM_END_IS_EOF(buf)                        \
   do {                                                            \
     if ((buf)[0] == 'B' && (buf)[1] == 'Z' && (buf)[2] == 'h')    \
-      EOF_reached = false;                                        \
+      EOF_reached = FALSE;                                        \
     else                                                          \
-      EOF_reached = true;                                         \
-  } while (false)
+      EOF_reached = TRUE;                                         \
+  } while (FALSE)
 
 int unbzip2 (void *f)
 {
   bz_stream* data = NULL;
   int        bzip_status;
-  int        EOF_reached = true;
+  int        EOF_reached = TRUE;
   int        small = 0;      /* Use fast decompressing algorithm. */
   int        verbosity = 0;  /* No verbose output at all. */
   int        nbytes = 0;
@@ -79,7 +81,7 @@ int unbzip2 (void *f)
     goto error_handler;
 
   /* Decompress every stream (.bz2 file) contained in this file. */
-  while (true)
+  while (TRUE)
   {
     /* Decompress the actual stream (.bz2 file) contained in this file. */
     while (bzip_status == BZ_OK)

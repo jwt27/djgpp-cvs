@@ -21,11 +21,14 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
-#include <stdbool.h>
 #include <libc/file.h>
 #include <libc/local.h>
 #include <libc/ieee.h>
 #include <sys/cdefs.h>
+
+typedef enum {
+  false = 0, true = 1
+} bool;
 
 static char decimal_point;
 static char thousands_sep;

@@ -12,11 +12,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <errno.h>
 #include <libc/file.h>
 #include <libc/local.h>
+
+typedef enum {
+  false = 0, true = 1
+} bool;
 
 #define SPC               01
 #define STP               02
