@@ -131,12 +131,8 @@ export LIBGCCA
 endif
 
 ifeq ($(DJGPP_DJL),)
-DJGPP_DJL := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=djgpp-x.djl)
-ifeq ($(DJGPP_DJL),djgpp-x.djl)
-DJGPP_DJL := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=djgpp.djl)
-endif
-DJGPP_DJL := $(subst \,/,$(DJGPP_DJL))
-export DJGPP_DJL
+DJGPP_DJL = $(LIB)/djgpp.djl
+#export DJGPP_DJL
 endif
 
 LINK = $(CROSS_LD) -s $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ $(LIBGCCA) -T $(DJGPP_DJL)
