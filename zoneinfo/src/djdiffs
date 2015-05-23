@@ -967,8 +967,33 @@ diff -aprNU5 djgpp.orig/zoneinfo/src/makefile djgpp/zoneinfo/src/makefile
  		$(zic) -v -d tzpublic $(TDATA)
 diff -aprNU5 djgpp.orig/zoneinfo/src/private.h djgpp/zoneinfo/src/private.h
 --- djgpp.orig/zoneinfo/src/private.h	2013-05-28 03:26:18 +0000
-+++ djgpp/zoneinfo/src/private.h	2013-08-17 14:34:22 +0000
-@@ -347,10 +347,20 @@ const char *	scheck(const char * string,
++++ djgpp/zoneinfo/src/private.h	2015-05-23 12:32:51 +0000
+@@ -153,15 +153,24 @@ typedef long		int_fast64_t;
+ # define INT_FAST64_MAX LONG_MAX
+ # define SCNdFAST64 "ld"
+ #endif /* ! (defined LLONG_MAX || defined __LONG_LONG_MAX__) */
+ #endif /* !defined INT_FAST64_MAX */
+ 
++#ifndef INT64_MAX
++# define INT64_MAX INT_FAST64_MAX
++# define INT64_MIN INT_FAST64_MIN
++#endif
++
+ #ifndef INT_FAST32_MAX
+ # if INT_MAX >> 31 == 0
+ typedef long int_fast32_t;
++#  define INT_FAST32_MAX LONG_MAX
++#  define INT_FAST32_MIN LONG_MIN
+ # else
+ typedef int int_fast32_t;
++#  define INT_FAST32_MAX INT_MAX
++#  define INT_FAST32_MIN INT_MIN
+ # endif
+ #endif
+ 
+ #ifndef INTMAX_MAX
+ # if defined LLONG_MAX || defined __LONG_LONG_MAX__
+@@ -347,10 +356,20 @@ const char *	scheck(const char * string,
  #ifndef GNUC_or_lint
  #define INITIALIZE(x)
  #endif /* !defined GNUC_or_lint */
