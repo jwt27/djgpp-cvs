@@ -14,8 +14,8 @@ One basic problem of DJGPP v2.04 was slow memory management, especially
 nmalloc was already used for a rather long time for various DJGPP packages
 including DJGPP port of GCC.
 
-@subsection Update of DXE lookup
-
+@cindex Update of @acronym{DXE3} lookup
+@cindex @env{SYSTEM_DXE_PATH}, new search path for @acronym{DXE3} modules
 Updated handling of DXE search path for relative file names
 
 @itemize @bullet
@@ -34,9 +34,12 @@ Both environment variables contain @strong{;} separated lists of directories.
 Before DJGPP-v2.05, only @env{LD_LIBRARY_PATH} was used. The result was DXE
 lookup failure when @env{LD_LIBRARY_PATH} was redefined by user.
 
-@subsection Bug Fixes
-
+@cindex @file{dir.h},  fixed a wrong structure packing directive
 @file{dir.h}: Fixed a wrong structure packing directive (bug introduced by
 djgpp-v2.01 back in 1996) that would infect other sources and headers with
 potentially adverse effects. NOTE: You might want to recompile your libraries.
 
+@cindex @file{math.h}, order of arguments of @code{sincos} changed
+@findex sincos@r{, order of arguments of @code{sincos} changed}
+The Order of arguments passed to the @code{sincos} function has been changed to
+match the order used by the function version as implemented in @acronym{GNU} systems.
