@@ -6,7 +6,7 @@
 @example
 #include <math.h>
 
-void   sincos(double *cosine, double *sine, double x);
+void   sincos(double x, double *sine, double *cosine);
 @end example
 
 @subheading Description
