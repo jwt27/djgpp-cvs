@@ -168,8 +168,9 @@
 #ifndef DXE_LD
 /* Cross compile ld name/location */
 #define DXE_LD  "ld"
-#else
-/* Linux violates POSIX.1 and defines this, but it shouldn't.  We fix it. */
+#endif
+#ifdef _POSIX_SOURCE
+/* Linux violates POSIX.1 and defines this, but it shouldn't.. */
 #undef _POSIX_SOURCE
 #endif
 
@@ -684,7 +685,7 @@ static BOOL have_EH_support(const char *argv[])
                 uword length;
                 sword CIE_id;
                 ubyte version;
-                unsigned char augmentation[];
+                unsigned char augmentation[0];
               } __attribute__ ((packed, aligned (__alignof__ (void *))));
 
 
