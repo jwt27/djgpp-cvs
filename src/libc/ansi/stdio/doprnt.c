@@ -1374,7 +1374,7 @@ rflag:
         return argp;
       if (prec_index == list_index)
       {
-        va_arg(argp, int);  /* discard */
+        _ulonglong = va_arg(argp, int);  /* discard */
         list_index++;
       }
       goto rflag;
@@ -1387,7 +1387,7 @@ rflag:
           return argp;
         if (prec_index == list_index)
         {
-          va_arg(argp, int);  /* discard */
+          _ulonglong = va_arg(argp, int);  /* discard */
           list_index++;
         }
       }
@@ -1422,7 +1422,7 @@ rflag:
         return argp;
       if (arg_index == list_index)
       {
-        va_arg(argp, int);  /* discard */
+        _ulonglong = va_arg(argp, int);  /* discard */
         list_index++;
       }
       break;
@@ -1445,9 +1445,9 @@ rflag:
       if (arg_index == list_index)
       {
         if (flags & LONGDBL)
-          va_arg(argp, long double);  /* discard */
+          _ulonglong = va_arg(argp, long double);  /* discard */
         else
-          va_arg(argp, double);  /* discard */
+          _ulonglong = va_arg(argp, double);  /* discard */
         list_index++;
       }
       break;
@@ -1468,7 +1468,7 @@ rflag:
         return argp;
       if (arg_index == list_index)
       {
-        va_arg(argp, void *);  /* discard */
+        _ulonglong = (size_t) va_arg(argp, void *);  /* discard */
         list_index++;
       }
       break;
