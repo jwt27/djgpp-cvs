@@ -87,6 +87,27 @@ GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(GCC) -E -dD -x c - | egrep
 CROSS_GCC_MAJOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC__'))
 CROSS_GCC_MINOR := $(word 3, $(shell ../../src/misc.exe | $(CROSS_GCC) -E -dD -x c - | egrep 'define\ *__GNUC_MINOR__'))
 
+# very old gcc, e.g. gcc-2.95, fails the above, so we invent a default.
+ifeq ($(GCC_MAJOR),)
+GCC_MAJOR := 2
+GCC_MINOR := 7
+endif
+ifeq ($(CROSS_GCC_MAJOR),)
+CROSS_GCC_MAJOR := 2
+CROSS_GCC_MINOR := 7
+endif
+
+ifeq ($(LIBGCCA),)
+LIBGCCA := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=libgcc.a)
+LIBGCCA := $(subst \,/,$(LIBGCCA))
+export LIBGCCA
+endif
+
+ifeq ($(DJGPP_DJL),)
+DJGPP_DJL = $(TOPDIR)/lib/djgpp.djl
+#export DJGPP_DJL
+endif
+
 # A replacement for (possibly missing) Unix programs:
 
 UTIL=		$(TOPDIR)/src/misc.exe
@@ -162,97 +183,48 @@ LDLIBS=
 #	-Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines \
 #	-Wwrite-strings
 
+COMMON_DEBUG_FLAGS = -Dlint -g -fno-common -fstrict-aliasing \
+	-Wall -W -Wcast-align -Wcast-qual -Wpointer-arith \
+	-Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes \
+	-Wnested-externs -Wshadow -Wwrite-strings
+
 # Cross compiler debug flags.
-CROSS_GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g2 -fno-common -fstrict-aliasing \
-	-Wall -Wextra \
-	-Wbad-function-cast -Wcast-align -Wcast-qual \
-	-Wformat=2 -Winit-self \
-	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
-	-Wnested-externs -Wno-format-nonliteral -Wno-sign-compare \
-	-Wno-unused-parameter  -Wpointer-arith -Wshadow -Wstrict-prototypes \
-	-Wwrite-strings
-
-ifeq ($(CROSS_GCC_MAJOR),3)
-ifeq ($(CROSS_GCC_MINOR),4)
-CROSS_GCC_DEBUG_FLAGS = $(CROSS_GCC_DEBUG_FLAGS_FOR_ALL) -Wconversion -Wtraditional
+ifeq ($(filter 2,$(CROSS_GCC_MAJOR)),)
+# gcc >= 3.x
+CROSS_GCC3_DFLAGS = -Wbad-function-cast -Wno-sign-compare -Wno-unused-parameter
+ifeq ($(filter 3,$(CROSS_GCC_MAJOR)),)
+ifeq ($(filter 4,$(CROSS_GCC_MAJOR)),)
+# gcc >= 5.x
+CROSS_GCC4_DFLAGS = -Wno-type-limits
+else
+# gcc >= 4.x
+ifeq ($(filter 0 1 2,$(CROSS_GCC_MINOR)),)
+# gcc >= 4.3
+CROSS_GCC4_DFLAGS = -Wno-type-limits
 endif
 endif
-
-ifeq ($(CROSS_GCC_MAJOR),4)
- ifeq ($(CROSS_GCC_MINOR),0)
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = 
- else
-  ifeq ($(CROSS_GCC_MINOR),1)
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = 
-  else
-   ifeq ($(CROSS_GCC_MINOR),2)
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings
-   else
-    ifeq ($(CROSS_GCC_MINOR),3)
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
-    else
-     ifeq ($(CROSS_GCC_MINOR),4)
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
-     else
-      ifeq ($(CROSS_GCC_MINOR),5)
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
-      else
-# gcc 4.6 and later works.
-CROSS_GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines
-      endif
-     endif
-    endif
-   endif
-  endif
-CROSS_GCC_DEBUG_FLAGS = $(CROSS_GCC_DEBUG_FLAGS_FOR_ALL) $(CROSS_GCC_DEBUG_FLAGS_SPECIAL)
- endif
 endif
+endif
+CROSS_GCC_DEBUG_FLAGS = $(COMMON_DEBUG_FLAGS) $(CROSS_GCC3_DFLAGS) $(CROSS_GCC4_DFLAGS)
 
 # Native compiler debug flags.
-GCC_DEBUG_FLAGS_FOR_ALL = -Dlint -g2 -fno-common -fstrict-aliasing \
-	-Wall -Wextra \
-	-Wbad-function-cast -Wcast-align -Wcast-qual \
-	-Wformat=2 -Winit-self \
-	-Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes \
-	-Wnested-externs -Wno-format-nonliteral -Wno-sign-compare \
-	-Wno-unused-parameter  -Wpointer-arith -Wshadow -Wstrict-prototypes \
-	-Wwrite-strings
-
-ifeq ($(GCC_MAJOR),3)
-ifeq ($(GCC_MINOR),4)
-GCC_DEBUG_FLAGS = $(GCC_DEBUG_FLAGS_FOR_ALL) -Wconversion -Wtraditional
+ifeq ($(filter 2,$(GCC_MAJOR)),)
+# gcc >= 3.x
+GCC3_DEBUG_FLAGS = -Wbad-function-cast -Wno-sign-compare -Wno-unused-parameter
+ifeq ($(filter 3,$(GCC_MAJOR)),)
+ifeq ($(filter 4,$(GCC_MAJOR)),)
+# gcc >= 5.x
+GCC4_DEBUG_FLAGS = -Wno-type-limits
+else
+# gcc >= 4.x
+ifeq ($(filter 0 1 2,$(GCC_MINOR)),)
+# gcc >= 4.3
+GCC4_DEBUG_FLAGS = -Wno-type-limits
 endif
 endif
-
-ifeq ($(GCC_MAJOR),4)
- ifeq ($(GCC_MINOR),0)
-GCC_DEBUG_FLAGS_SPECIAL = 
- else
-  ifeq ($(GCC_MINOR),1)
-GCC_DEBUG_FLAGS_SPECIAL = 
-  else
-   ifeq ($(GCC_MINOR),2)
-GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings
-   else
-    ifeq ($(GCC_MINOR),3)
-GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
-    else
-     ifeq ($(GCC_MINOR),4)
-GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
-     else
-      ifeq ($(GCC_MINOR),5)
-GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits
-      else
-# gcc 4.6 and later works.
-GCC_DEBUG_FLAGS_SPECIAL = -Woverlength-strings -Wno-sign-conversion -Wno-type-limits -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wtrampolines
-      endif
-     endif
-    endif
-   endif
-  endif
-GCC_DEBUG_FLAGS = $(GCC_DEBUG_FLAGS_FOR_ALL) $(GCC_DEBUG_FLAGS_SPECIAL)
- endif
 endif
+endif
+GCC_DEBUG_FLAGS = $(COMMON_DEBUG_FLAGS) $(GCC3_DEBUG_FLAGS) $(GCC4_DEBUG_FLAGS)
 
 #
 # If you want to use System V compatibility code, add
@@ -349,7 +321,7 @@ CFLAGS=		-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
 		-DHAVE_STRERROR=1 -DHAVE_SYMLINK=0 -DHAVE_STDINT_H=1\
 		-DSTD_INSPIRED \
 		-DLOCALE_HOME=\"/dev/env/DJDIR~c:/djgpp~/share/locale\" \
-		$(CROSS_GCC_DEBUG_FLAGS) -O2
+		$(CROSS_GCC_DEBUG_FLAGS) -O2 -nostdinc -I$(TOPDIR)/include
 
 # Flags for native compiler
 GCCFLAGS=	-DHAVE_ADJTIME=0 -DHAVE_LONG_DOUBLE=1 -DHAVE_SETTIMEOFDAY=1 \
@@ -368,7 +340,12 @@ LFLAGS=
 LDFLAGS=	$(LFLAGS)
 
 EXEEXT=		.exe
-zic=		./host-zic
+HOST_ZIC=	$(TOPDIR)/hostbin/zic$(EXEEXT)
+ifeq ($(CROSS_BUILD),1)
+zic=		$(HOST_ZIC)
+else
+zic=		zic$(EXEEXT)
+endif
 ZIC=		$(zic) $(ZFLAGS)
 
 # The name of a Posix-compliant `awk' on your system.
@@ -508,7 +485,7 @@ install:	all $(DATA) $(REDO) $(TZLIB) $(MANS) $(TABDATA)
 		$(UTIL) cp zdump.man $(MANDIR)/cat8/zdump.8
 		$(UTIL) cp zic.man $(MANDIR)/cat8/zic.8
 
-all:		tzselect host-zic zic$(EXEEXT) zdump$(EXEEXT) $(LIBOBJS)
+all:		tzselect $(HOST_ZIC) zic$(EXEEXT) zdump$(EXEEXT) $(LIBOBJS)
 
 ALL:		all date$(EXEEXT)
 
@@ -517,18 +494,23 @@ version.h:
 		 echo 'static char const TZVERSION[]="$(VERSION)";' && \
 		 echo 'static char const REPORT_BUGS_TO[]="$(BUGEMAIL)";') >$@
 
-zdump$(EXEEXT):	$(TZDOBJS)
-		$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(TZDOBJS) $(LDLIBS)
-		$(CROSS_STRIP) $@
+zdump$(EXEEXT):	$(TZDOBJS) $(TOPDIR)/lib/crt0.o $(TOPDIR)/lib/libc.a
+		$(CROSS_LD) -s $(LDFLAGS) $(TOPDIR)/lib/crt0.o $(TZDOBJS) -o $@ $(TOPDIR)/lib/libc.a $(LIBGCCA) -T $(DJGPP_DJL)
+		$(TOPDIR)/hostbin/stubify.exe $@
 
-host-zic:	$(TZCSRCS) yearistype version.h
+ifneq ($(CROSS_BUILD),1)
+$(HOST_ZIC):	zic$(EXEEXT)
+		$(UTIL) cp zic$(EXEEXT) $(HOST_ZIC)
+else
+$(HOST_ZIC):	$(TZCSRCS) yearistype version.h
 		$(GCC) -DTZDIR=\"/dev/env/DJDIR~c:/djgpp~/zoneinfo\" \
 		$(GCCFLAGS) $(LDFLAGS) $(TZCSRCS) $(LDLIBS) -o $@
 		$(STRIP) $@
+endif
 
-zic$(EXEEXT):	$(TZCOBJS) yearistype
-		$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(TZCOBJS) $(LDLIBS)
-		$(CROSS_STRIP) $@
+zic$(EXEEXT):	$(TZCOBJS) $(TOPDIR)/lib/crt0.o $(TOPDIR)/lib/libc.a yearistype
+		$(CROSS_LD) -s $(LDFLAGS) $(TOPDIR)/lib/crt0.o $(TZCOBJS) -o $@ $(TOPDIR)/lib/libc.a $(LIBGCCA) -T $(DJGPP_DJL)
+		$(TOPDIR)/hostbin/stubify.exe $@
 
 yearistype:	yearistype.sh
 		$(UTIL) cp yearistype.sh yearistype
@@ -578,15 +560,9 @@ $(TZLIB):	$(LIBOBJS)
 		-$(UTIL) mkdir $(LIBDIR)
 		$(CROSS_AR) rus $@ $(LIBOBJS)
 
-# We use the system's logwtmp in preference to ours if available.
-
-date$(EXEEXT):	$(DATEOBJS)
-		$(CROSS_AR) rs logwtmpl.a logwtmp.o
-		$(CC) $(CFLAGS) date.o localtime.o asctime.o strftime.o \
-			$(LDLIBS) -lc logwtmpl.a -o $@
-		$(CROSS_STRIP) $@
-		$(UTIL) rm logwtmpl.a
-		$(CROSS_STRIP) $@
+date$(EXEEXT):	$(DATEOBJS) $(TOPDIR)/lib/crt0.o $(TOPDIR)/lib/libc.a
+		$(CROSS_LD) -s $(LDFLAGS) $(TOPDIR)/lib/crt0.o $(DATEOBJS) -o $@ $(TOPDIR)/lib/libc.a $(LIBGCCA) -T $(DJGPP_DJL)
+		$(TOPDIR)/hostbin/stubify.exe $@
 
 tzselect:	tzselect.ksh
 		sed \
@@ -611,7 +587,7 @@ check_web:	$(WEB_PAGES)
 
 clean_misc:
 		$(UTIL) rm core *.o *.out tzselect zdump$(EXEEXT) zic$(EXEEXT) \
-			yearistype date$(EXEEXT) logwtmpl* *.tar.gz host-zic *.exe *.man \
+			yearistype date$(EXEEXT) logwtmpl* *.tar.gz $(HOST_ZIC) *.exe *.man \
 			TDATA_list
 clean:		clean_misc
 		$(UTIL) rm -f -r tzpublic
