@@ -284,7 +284,7 @@ debugger's standard handle is redirected as well.
 @example
 #include <debug/dbgcom.h>
 
-void read_child (unsigned child_addr, void *buf, unsigned len);
+int read_child (unsigned child_addr, void *buf, unsigned len);
 @end example
 
 @subheading Description
@@ -316,7 +316,7 @@ the limits of the debuggee's code segment.
 @example
 #include <debug/dbgcom.h>
 
-void write_child (unsigned child_addr, void *buf, unsigned len);
+int write_child (unsigned child_addr, void *buf, unsigned len);
 @end example
 
 @subheading Description
@@ -349,8 +349,8 @@ the limits of the debuggee's code segment.
 @example
 #include <debug/dbgcom.h>
 
-void read_sel_addr (unsigned offset, void *buf, unsigned len,
-                    unsigned sel);
+int read_sel_addr (unsigned offset, void *buf, unsigned len,
+                   unsigned sel);
 @end example
 
 @subheading Description
@@ -379,8 +379,8 @@ the limits of the segment whose selector is @var{sel}).
 @example
 #include <debug/dbgcom.h>
 
-void write_sel_addr (unsigned sel, unsigned offset,
-                     void *buf, unsigned len);
+int write_sel_addr (unsigned sel, unsigned offset,
+                    void *buf, unsigned len);
 @end example
 
 @subheading Description
