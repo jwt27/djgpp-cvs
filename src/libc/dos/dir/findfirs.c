@@ -35,7 +35,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
   _put_path(pathname);
   if (use_lfn)
   {
-
+    struct ffblklfn ffblk32;
     /* si = 1 indicates DOS style dates, 0 means Win32 type dates.
        DOS style dates are broken in some Win95 betas, build for either.
        Release works with DOS date, it's faster, so use it. */
@@ -45,6 +45,11 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
     #else
       extern long _Win32_to_DOS(long long WinTime);
     #endif
+
+    /* Clear result area to avoid WinXP bug not setting ending 0 into filename
+       in case it contains a Unicode character greater than 255. */
+    memset(&ffblk32, 0, sizeof(ffblk32));
+    dosmemput(&ffblk32, sizeof(ffblk32), __tb + pathlen);
 
     r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x714e;
@@ -61,7 +66,6 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
           so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
           If not supported fall back on SFN API 0x4E.  */
 
-      struct ffblklfn ffblk32;
       unsigned long t1;
       /* Recover results */
       dosmemget(__tb+pathlen, sizeof(struct ffblklfn), &ffblk32);

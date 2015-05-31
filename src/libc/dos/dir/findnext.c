@@ -24,6 +24,8 @@ findnext(struct ffblk *ffblk)
 
   if (_USE_LFN)
   {
+    struct ffblklfn ffblk32;
+
     /* si = 1 indicates DOS style dates, 0 means Win32 type dates.
        DOS style dates are broken in some Win95 betas, build for either.
        Release works with DOS date, it's faster, so use it. */
@@ -33,6 +35,11 @@ findnext(struct ffblk *ffblk)
     #else
       extern long _Win32_to_DOS(long long WinTime);
     #endif
+
+    /* Clear result area to avoid WinXP bug not setting ending 0 into filename
+       in case it contains a Unicode character greater than 255. */
+    memset(&ffblk32, 0, sizeof(ffblk32));
+    dosmemput(&ffblk32, sizeof(ffblk32), __tb);
 
     r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x714f;
@@ -54,7 +61,6 @@ findnext(struct ffblk *ffblk)
           If not supported fall back on SFN API 0x4F.  */
 
       unsigned long t1; 
-      struct ffblklfn ffblk32;
       /* Recover results */
       dosmemget(__tb, sizeof(struct ffblklfn), &ffblk32);
 
