@@ -1,3 +1,4 @@
+/* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -36,6 +37,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
   if (use_lfn)
   {
     struct ffblklfn ffblk32;
+
     /* si = 1 indicates DOS style dates, 0 means Win32 type dates.
        DOS style dates are broken in some Win95 betas, build for either.
        Release works with DOS date, it's faster, so use it. */
@@ -68,7 +70,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
 
       unsigned long t1;
       /* Recover results */
-      dosmemget(__tb+pathlen, sizeof(struct ffblklfn), &ffblk32);
+      dosmemget(__tb + pathlen, sizeof(struct ffblklfn), &ffblk32);
 
       ffblk->ff_attrib = (char)ffblk32.fd_attrib;
 
