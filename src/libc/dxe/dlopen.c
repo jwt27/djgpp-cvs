@@ -1,3 +1,4 @@
+/* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 Borca Daniel <dborca@yahoo.com>
  * Copyright (C) 2000 Andrew Zabolotny <bit@eltech.ru>
