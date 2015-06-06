@@ -15,7 +15,7 @@ int
 main (int argc, char *argv[])
 {
   int          fd;
-  int          ret;
+  size_t       ret;
   const char   orig_buf[]   = "abc";
   const size_t orig_bufsize = strlen(orig_buf);
   const char   repl_char[]  = "d"; /* Replacement character */
