@@ -8,7 +8,7 @@ int
 main (void)
 {
   const uintmax_t i = UINTMAX_MAX;
-  intmax_t        res;
+  uintmax_t       res;
   char            buf[64];
   char           *p = NULL;
 
