@@ -44,5 +44,6 @@ potentially adverse effects. NOTE: You might want to recompile your libraries.
 The Order of arguments passed to the @code{sincos} function has been changed to
 match the order used by the function version as implemented in @acronym{GNU} systems.
 
-@cindex @file{errno.h}, do not exclude errno macros for C++ when -std=c++0x, -std=c++11,
-or newer C++ standards are being used
+@cindex @acronym{C++} compliance, @file{errno.h}
+In @file{errno.h}, do not exclude errno macros for C++ when -std=c++0x, -std=c++11,
+or newer C++ standards are being used.
