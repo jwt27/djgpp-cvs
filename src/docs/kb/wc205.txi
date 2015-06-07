@@ -6,8 +6,11 @@ Here is a list of changes from DJGPP V2.04 to DJGPP V2.05
 DJGPP v2.04 was actually never released and stayed in beta stage much too
 long.
 
-@subsection Replacement of memory management with nmalloc
-
+@cindex Replacement of memory management with nmalloc
+@findex calloc@r{, replacement of memory management with nmalloc}
+@findex malloc@r{, replacement of memory management with nmalloc}
+@findex free@r{, replacement of memory management with nmalloc}
+Replacement of memory management with nmalloc.
 One basic problem of DJGPP v2.04 was slow memory management, especially
 @code{free}. In DJGPP v2.05, memory management was replaced by the
 @strong{nmalloc} implementation written by Charles B. Falconer (1931-2012).
