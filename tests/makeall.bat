@@ -1,5 +1,9 @@
 @echo off
 
+cd ..\src
+make rmake.exe
+cd ..\tests
+
 cd libc
 call rmake
 
