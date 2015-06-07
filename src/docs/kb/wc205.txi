@@ -44,7 +44,7 @@ potentially adverse effects. NOTE: You might want to recompile your libraries.
 
 @cindex @file{math.h}, order of arguments of @code{sincos} changed
 @findex sincos@r{, order of arguments of @code{sincos} changed}
-The Order of arguments passed to the @code{sincos} function has been changed to
+The order of arguments passed to the @code{sincos} function has been changed to
 match the order used by the function version as implemented in @acronym{GNU} systems.
 
 @cindex @acronym{C++} compliance, @file{errno.h}
