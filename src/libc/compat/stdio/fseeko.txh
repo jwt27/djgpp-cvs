@@ -1,0 +1,68 @@
+@node fseeko, stdio
+@findex fseeko
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+int fseeko(FILE *file, off_t offset, int mode);
+@end example
+
+@subheading Description
+
+@code{fseeko} is a wrapper function of @code{fseek} (@pxref{fseek}).
+So it is identical to @code{fseek}, except that the offset argument
+of @code{fseeko} is of type @code{off_t} instead of @code{long}.
+
+
+This function moves the file pointer for @var{file} according to
+@var{mode}:
+
+@table @code
+
+@item SEEK_SET
+
+The file pointer is moved to the offset specified.
+
+@item SEEK_CUR
+
+The file pointer is moved relative to its current position.
+
+@item SEEK_END
+
+The file pointer is moved to a position @var{offset} bytes from the end
+of the file.  The offset is usually nonpositive in this case.
+
+@end table
+
+@emph{Warning!} The ANSI standard only allows values of zero for
+@var{offset} when @var{mode} is not @code{SEEK_SET} and the file has
+been opened as a text file.  Although this restriction is not enforced,
+beware that there is not a one-to-one correspondence between file
+characters and text characters under MS-DOS, so some @code{fseeko}
+operations may not do exactly what you expect.
+
+Also, since @code{lseek} under DOS does not return an error indication
+when you try to move the file pointer before the beginning of the file,
+neither will @code{fseeko}.  Portable programs should call @code{ftello}
+after @code{fseeko} to get the actual position of the file pointer.
+
+Note that DOS does not mind if you seek before the beginning of the
+file, like seeking from the end of the file by more than the file's
+size.  Therefore, @code{lseek} will not return with an error in such
+cases either.
+
+@subheading Return Value
+
+Zero if successful, nonzero if not. 
+
+@subheading Portability
+
+@portability ansi, posix
+
+@subheading Example
+
+@example
+fseeko(stdin, 12, SEEK_CUR); /* skip 12 bytes */
+@end example
+
