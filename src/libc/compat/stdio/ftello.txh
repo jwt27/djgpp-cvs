@@ -1,0 +1,33 @@
+@node ftello, stdio
+@findex ftello
+@subheading Syntax
+
+@example
+#include <stdio.h>
+
+off_t ftello(FILE *file);
+@end example
+
+@subheading Description
+
+@code{ftello} is a wrapper function of @code{ftell} (@pxref{ftell}).
+So it is identical to @code{ftell}, except that the return value of
+@code{ftello} is of type @code{off_t} instead of @code{long}.
+
+Returns the current file position for @code{file}.  This is suitable for
+a future call to @code{fseeko}. 
+
+@subheading Return Value
+
+The file position, or -1 on error. 
+
+@subheading Portability
+
+@portability ansi, posix
+
+@subheading Example
+
+@example
+off_t p = ftello(stdout);
+@end example
+
