@@ -26,6 +26,7 @@ ifeq ($(CROSS_BUILD),0)
 # For building distributed (djgpp) libraries and programs
 CROSS_GCC = gcc
 CROSS_AR = ar
+CROSS_AS = as
 CROSS_LD = ld
 CROSS_STRIP = strip
 CROSS_BISON = bison
@@ -33,6 +34,7 @@ CROSS_BISON = bison
 # For building native programs (hostbin/*); assumes GNU versions
 GCC = gcc -g
 AR = ar
+AS = as
 LD = ld
 STRIP = strip
 BISON = bison
@@ -47,6 +49,7 @@ else
 
 CROSS_GCC = i586-pc-msdosdjgpp-gcc -pipe
 CROSS_AR = i586-pc-msdosdjgpp-ar
+CROSS_AS = i586-pc-msdosdjgpp-as
 CROSS_LD = i586-pc-msdosdjgpp-ld
 CROSS_STRIP = i586-pc-msdosdjgpp-strip
 CROSS_BISON = bison
@@ -56,6 +59,7 @@ CROSS_BISON = bison
 
 GCC = gcc -g -O2
 AR = ar
+AS = as
 LD = ld
 STRIP = strip
 BISON = bison
