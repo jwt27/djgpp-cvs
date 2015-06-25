@@ -166,10 +166,23 @@
 #endif  /*  !DEBUG_SUPPORT_PRINT_RELOCATION_DIRECTIVES  */
 
 
+/* Cross compile tool names */
+#ifndef DXE_CC
+#define DXE_CC  "gcc"
+#endif
+#ifndef DXE_AS
+#define DXE_AS  "as"
+#endif
+#ifndef DXE_AR
+#define DXE_AR  "ar"
+#endif
 #ifndef DXE_LD
-/* Cross compile ld name/location */
 #define DXE_LD  "ld"
 #endif
+#ifndef DXE_SC
+#define DXE_SC  "dxe.ld"
+#endif
+
 #ifdef _POSIX_SOURCE
 /* Linux violates POSIX.1 and defines this, but it shouldn't.. */
 #undef _POSIX_SOURCE
@@ -298,6 +311,15 @@ static struct
 };
 
 
+static char *libdir;
+/* build tools */
+static char *dxe_cc; /* default: "gcc" */
+static char *dxe_as; /* default: "as" */
+static char *dxe_ar; /* default: "ar" */
+static char *dxe_ld; /* default: "ld" */
+/* linker script */
+static char *dxe_sc; /* default: "dxe.ld" */
+
 
 /* Desc: replaces backslash with slash in a path
  *
@@ -411,6 +433,45 @@ static void display_help(void)
 
 
 
+/* Desc: process the DXE_?? environment variables
+ */
+static void process_env(void)
+{
+  const char *e;
+
+  if ((e = getenv("DXE_CC")) != NULL)
+       dxe_cc = strdup(e);
+  else dxe_cc = strdup(DXE_CC);
+
+  if ((e = getenv("DXE_AS")) != NULL)
+       dxe_as = strdup(e);
+  else dxe_as = strdup(DXE_AS);
+
+  if ((e = getenv("DXE_AR")) != NULL)
+       dxe_ar = strdup(e);
+  else dxe_ar = strdup(DXE_AR);
+
+  if ((e = getenv("DXE_LD")) != NULL)
+       dxe_ld = strdup(e);
+  else dxe_ld = strdup(DXE_LD);
+
+  if ((e = getenv("DXE_SC")) != NULL)
+       dxe_sc = strdup(e);
+  else dxe_sc = strdup(DXE_SC);
+
+  if ((e = getenv("DXE_LD_LIBRARY_PATH")) != NULL)
+       libdir = strdup(e);
+  else if ((e = getenv("DJDIR")) != NULL) {
+       size_t sz = strlen(e) + 5U;
+       libdir = malloc(sz);
+       strcpy(libdir, e);
+       strcat(libdir, "/lib");
+       canonicalize_path(libdir);
+  }
+  else libdir = NULL;
+}
+
+
 /* Desc: process command line args
  *
  * In  : no of arguments, argument list, ptr to store linker args
@@ -420,30 +481,15 @@ static void display_help(void)
  */
 static void process_args(int argc, char *argv[], const char *new_argv[])
 {
-  static char libdir[FILENAME_MAX];
-  char *p;
   int i, new_argc = NUMBER_OF_LINKER_ARGS;
 
-  p = getenv("DXE_LD_LIBRARY_PATH");
-  if (p)
-    strcpy(libdir, p);
-  else
+  if (!libdir)
   {
-    p = getenv("DJDIR");
-    if (p)
-    {
-      strcpy(libdir, p);
-      strcat(libdir, "/lib");
-      canonicalize_path(libdir);
-    }
-    else
-    {
       fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
       exit(1);
-    }
   }
 
-  new_argv[0] = DXE_LD;
+  new_argv[0] = dxe_ld;
   new_argv[1] = "-X";
   new_argv[2] = "-S";
   new_argv[3] = "-r";
@@ -452,7 +498,7 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
   new_argv[6] = "-L";
   new_argv[7] = libdir;
   new_argv[8] = "-T";
-  new_argv[9] = "dxe.ld";
+  new_argv[9] = dxe_sc;
 
   if (!strcmp(base_name(argv[0]), "dxegen"))
     /* invoked as `dxegen' */
@@ -737,7 +783,7 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
   if ((rv = my_spawn(argv)) != 0)
   {
     if (rv == -1)
-      perror(DXE_LD);
+      perror("ld");
     exit(rv);
   }
 
@@ -862,7 +908,7 @@ static FILE *run_ld(const char *argv[], FILHDR *fh)
       if (rv)
       {
         if (rv == -1)
-          perror(DXE_LD);
+          perror("ld");
         exit(rv);
       }
 
@@ -1337,7 +1383,8 @@ static int make_implib(void)
     }
 
     /* Pre-compile the resolver's output. */
-    rv = system("gcc -o "TEMP_S_FILE" -O2 -S "TEMP_BASE".c");
+    sprintf(cmdbuf, "%s -o %s -O2 -S %s.c", dxe_cc, TEMP_S_FILE, TEMP_BASE);
+    rv = system(cmdbuf);
     remove(TEMP_BASE".c");
     if (rv != 0)
     {
@@ -1421,7 +1468,8 @@ static int make_implib(void)
   atexit(exit_cleanup);
 
   /* Allright, now run the assembler on the resulting file */
-  if ((rv = system("as -o "TEMP_O_FILE" "TEMP_S_FILE)) != 0)
+  sprintf(cmdbuf, "%s -o %s %s", dxe_as, TEMP_O_FILE, TEMP_S_FILE);
+  if ((rv = system(cmdbuf)) != 0)
   {
     if (rv == -1)
       perror("as");
@@ -1429,7 +1477,7 @@ static int make_implib(void)
   }
 
   /* Okey-dokey, let's stuff the object file into the archive */
-  sprintf(cmdbuf, "ar crs %s "TEMP_O_FILE, opt.implib);
+  sprintf(cmdbuf, "%s crs %s "TEMP_O_FILE, dxe_ar, opt.implib);
   if ((rv = system(cmdbuf)) != 0)
   {
     if (rv == -1)
@@ -1513,6 +1561,7 @@ int main(int argc, char **argv)
   progname = argv[0];
   /* Prepare the command line for ld */
   new_argv = (const char **)malloc((argc - 1 + NUMBER_OF_LINKER_ARGS + NUMBER_OF_ADDITIONAL_LOADED_LIBS + 2 + 1) * sizeof(char *));
+  process_env();
   process_args(argc, argv, new_argv);
 
   if (opt.showdep || opt.showexp || opt.showunres)
