@@ -50,3 +50,353 @@ match the order used by the function version as implemented in @acronym{GNU} sys
 @cindex @acronym{C++} compliance, @file{errno.h}
 In @file{errno.h}, do not exclude errno macros for C++ when -std=c++0x, -std=c++11,
 or newer C++ standards are being used.
+
+@findex asctime_r@r{, added to the library}
+@findex ctime_r@r{, added to the library}
+@findex gmtime_r@r{, added to the library}
+@findex hcreate@r{, added to the library}
+@findex hdestroy@r{, added to the library}
+@findex hsearch@r{, added to the library}
+@findex lfind@r{, added to the library}
+@findex lsearch@r{, added to the library}
+@findex localtime_r@r{, added to the library}
+@findex strtok_r@r{, added to the library}
+@findex strerror_r@r{, added to the library}
+The @acronym{POSIX} functions @code{asctime_r}, @code{ctime_r}, @code{gmtime_r},
+@code{hcreate}, @code{hdestroy}, @code{hsearch}, @code{lfind},
+@code{lsearch}, @code{localtime_r}, @code{strtok_r} and
+@code{strerror_r} were added.
+
+@findex _hash2v@r{, added to the library}
+Hash function @code{_hash2v} used by @code{hsearch} was added.
+
+@findex setlocale@r{, standard and current locales supported}
+The function @code{setlocale} now supports the following categories in
+environment variables: @env{LC_CTYPE}, @env{LC_COLLATE},
+@env{LC_NUMERIC}, @env{LC_MONETARY}, @env{LC_TIME}, as well as
+@env{LC_ALL} and also @env{LANG}, which provide defaults for all
+categories not explicitly given.  @acronym{POSIX} @env{LC_MESSAGES} are not
+supported.  
+Due to limitations of the @file{country.sys} driver only
+the current user locale @code{""} or its name in the @acronym{POSIX} form
+@code{"@var{LL}_@var{TT}@var{ECU}.@var{CP}"}.
+@xref{setlocale, locale code format, , libc, Libc}, for an explanation
+of the syntax.
+Modifies the character classes used by functions defined in headers
+@file{ctype.h} and @file{regex.h}, returns appropriate values from
+@code{strcoll} and @code{localeconv} functions, changes the decimal
+character used by functions for converting numeric strings from input
+and to output, and function @code{strftime} uses the appropriate NLS
+formats for @code{"%x"} and @code{"%X"} conversions.
+
+@pindex djasm@r{, cr4 register}
+@code{djasm} recognises the fourth control register, @code{cr4}.
+
+@findex signbit@r{ added to the library}
+@findex __signbitf@r{ added to the library}
+@findex __signbitd@r{ added to the library}
+@findex __signbitld@r{ added to the library}
+The @acronym{C99} macro @code{signbit} and the supporting functions
+@code{__signbitf}, @code{__signbitd} and @code{__signbitld}
+were added.
+
+@findex asnprintf@r{, added to the library}
+@findex asprintf@r{, added to the library}
+@findex vasnprintf@r{, added to the library}
+@findex vasprintf@r{, added to the library}
+New @acronym{BSD/GNU} compatibility functions @code{asnprintf}, @code{asprintf},
+@code{vasnprintf} and @code{vasprintf} were added.
+
+@findex atof@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex _atold@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex strtod@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex strtof@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex strtold@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+@findex _strtold@r{, @code{[+|-]0xH.HHHp[+|-]DDD} in input}
+The functions @code{strtod}, @code{strtof}, @code{strtold} and
+@code{_strtold} now understand hex floating point strings like
+@code{[+|-]0xH.HHHp[+|-]DDD} and any variations of case in the
+input string.
+
+@findex _doprnt@r{, and @acronym{C99} conversion flags}
+@findex printf@r{, and @acronym{C99} conversion flags}
+The @code{'} conversion flag is now supported by @code{_doprnt}
+and the @code{printf} family of functions.
+
+@findex _doprnt@r{, and return string for special numbers like @code{pseudo-nan}}
+@findex printf@r{, and return string for special numbers like @code{pseudo-nan}}
+To increase compatibility with @acronym{GNU} glibc's @code{printf}, @code{printf} will
+return for the following special numbers @code{Quiet NaN},  @code{Signalling NaN},
+@code{Pseudo-Denormal}, @code{Pseudo-NaN}, @code{Pseudo-Infinity},
+@code{Pseudo-Zero} and denormalized numbers @code{nan} or @code{NAN} instead
+of @code{Unnormal}.
+
+@findex _doprnt@r{, and @acronym{C99} conversion specifiers}
+@findex printf@r{, and @acronym{C99} conversion specifiers}
+The @code{a}, @code{A} and @code{F} conversion specifiers
+are now supported by @code{_doprnt} and the @code{printf}
+family of functions.
+
+@findex _doprnt@r{, and numeric conversion specifiers}
+@findex printf@r{, and numeric conversion specifiers}
+The @code{%n$} and @code{*m$} numeric conversion specifiers
+are now supported by @code{_doprnt} and the @code{printf}
+family of functions.
+
+@findex strftime@r{, and @acronym{C99} conversion modifiers}
+The modifiers @code{%E} and @code{%O} of the conversion specifiers are ignored
+because djgpp only supports @acronym{C/POSIX} locale.
+
+@findex strftime@r{, and @acronym{C99} conversion specifiers}
+The conversion specifiers @code{%F}, @code{%G}, @code{%g}, @code{%P}, @code{%s}, and @code{%V} have been added.
+Also the @code{#} flag has been added.
+
+@findex realpath@r{, and no longer report ENOSYS on plain @acronym{DOS}}
+@findex _fixpath@r{, and no longer report ENOSYS on plain @acronym{DOS}}
+@findex __canonicalize_path@r{, and no longer report ENOSYS on plain @acronym{DOS}}
+@code{realpath} and @code{_fixpath} will no longer report to their calling function
+@code{ENOSYS} if the used operating system (usualy plain @acronym{DOS}) does not provide a LFN API.
+The existance of a LFN API has no influence on the canonicalization of the path.
+
+@findex realpath@r{, and Windows 2000/XP root directories and drive specifier character case}
+@findex _fixpath@r{, and Windows 2000/XP root directories and drive specifier character case}
+@findex __canonicalize_path@r{, and Windows 2000/XP root directories and drive specifier character case}
+Lower case drive specifier characters will now be recognized as valid drive specifier too.
+Relative paths that start from the root directory will be correctly canonicalized
+because the backslash following the drive specifier is now removed.
+
+@findex opendir@r{, fixed malformed path string for symlinks}
+@findex readdir@r{, fixed malformed path string for symlinks}
+@findex __set_need_fake_dot_dotdot@r{, fixed malformed path string for symlinks}
+The trailing search pattern @code{/*.*} has been removed from the path string
+stored in the member @code{name} of the @code{DIR} structure created by @code{opendir}
+and used by @code{readdir}, @code{rewinddir} and @code{__set_need_fake_dot_dotdot}.
+Now it only contains the canonicalized path to the directory without a terminating slash.
+Those functions that require the trailing search pattern @code{/*.*} will append it.
+
+@findex mktemp@r{, and SUS compliance}
+@findex mkstemp@r{, and SUS compliance}
+The function prototypes of @code{mktemp} and @code{mkstemp} are now also in
+@code{<sdtlib.h>}.  This is to achieve Single @acronym{Unix} Specification compliance.
+To keep backward compatibility, the prototypes are also kept in @code{<sdtio.h>}
+but their usage is deprecated.
+
+@findex _O_TEMPORARY@r{, new flag accepted by @code{open}}
+@findex open@r{, supports temporary files}
+The @code{_O_TEMPORARY} flag is an alias for the @code{O_TEMPORARY} flag
+supported by @code{open}.  It is supported to increase compatibility
+with other C compilers.
+
+@findex realpath@r{, and POSIX.1-2008 compliance}
+If the pointer that shall point to the buffer that shall contain the resolved
+path is a @code{NULL} pointer, then @code{realpath} will call @code{malloc} to allocate
+a buffer of @code{PATH_MAX} bytes to store the resolved path name and return this
+pointer to the caller.
+
+@pindex djtar@r{, and empty lines in the file to change filenames}
+djtar now ignores empty lines in filename change files instead
+of skipping the extraction of the file named in the line before the
+empty line.
+
+@findex flushdc@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex dosexec@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex fixpath@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex opendir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex getcwd@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex mkdir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex rmdir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex chdir@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex filelen@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex lfilelen@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex fstat@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex fchmod@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _open@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _chmod@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _creat_n@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _creat@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex remove@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex findfirs@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex findnext@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex truename@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex lfnshort@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _use_lfn@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+@findex _rename@r{, @acronym{LFN} support on plain @acronym{DOS} with @acronym{DOSLFN} and other @acronym{LFN} drivers}
+
+Functions @code{flushdc}, @code{dosexec}, @code{fixpath}, @code{opendir}, @code{getcwd},
+@code{mkdir}, @code{rmdir}, @code{chdir}, @code{filelen}, @code{lfilelen}, @code{fstat},
+@code{fchmod}, @code{_open}, @code{_chmod}, @code{_creat_n}, @code{_creat}, @code{remove},
+@code{findfirs}, @code{findnext}, @code{truename}, @code{lfnshort}, @code{_use_lfn} and
+@code{_rename} now check that the used @acronym{LFN} driver supplies the required @code{0x71}
+function from the Windows 95 long filename functions API by inspecting the content of the
+@code{AX} register after return from the API function call.  Depending on the function type,
+the function will ignore, fail or fall back on the corresponding SFN API function if the
+LFN API function is not provided by the @acronym{LFN} driver used.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex truncf@r{ added to the math library}
+@findex trunc@r{ added to the math library}
+@findex truncl@r{ added to the math library}
+The @acronym{C99} functions @code{truncf} @code{trunc} and @code{truncl} were
+added to comply with the @acronym{C99} standard.
+
+@pindex dxe3gen@r{, resolving @code{__[de]register_frame_info} symbols in @acronym{DXE} moduls}
+The dxe3gen program inspects the @code{Augmentation String} of the @code{CIE} record
+contained in the @code{.eh_frame} section to decide if both @code{__register_frame_info}
+and @code{__deregister_frame_info} symbols that exist in the object file shall be
+auto-resolved or not.  They will be resolved by the dxe3gen program if the used
+programing language does not support exception handling like @acronym{C}.  They will not
+be resolved if the used programing language supports exception handling like
+@acronym{C++} and the exception handling has been enabled with an option like
+@option{-fexceptions}.  In this case the application has to be linked with
+@file{libgcc.a} to resolve both symbols.
+
+@findex STYP_NRELOC_OVFL@r{, new flag bit added to @code{s_flags} of @acronym{COFF} section header}
+The @code{s_flags} of the @acronym{COFF} section header now honors the new @code{STYP_NRELOC_OVFL} bit
+that signals that the section contains extended relocations and that the @code{s_nreloc} counter has
+overflown.  The bit set in case of overflow by @code{STYP_NRELOC_OVFL} is @code{0x01000000}.
+
+@pindex djtar@r{, new options -!s and -v}
+@pindex djtar@r{, support for @code{tar} archives with @code{pax} headers}
+The djtar program can now unpack @code{tar} archives that contain @code{pax} headers
+conforming to @acronym{POSIX} 1003.1-2001.  The @code{pax} headers are always skipped
+and their contents are discarded.
+The new option @samp{-!s} will allow to extract the @code{pax} headers as regular files
+instead of being skipped.  The new option @samp{-v} will print the names of the headers,
+the number of data blocks following each header and the position of the header in the
+@code{tar} archive.
+
+@findex _doscan@r{, and C99 conversion specifiers}
+@findex scanf@r{, and C99 conversion specifiers}
+The @code{a}, @code{A} and @code{F} conversion specifiers
+are now supported by @code{_doscan} and the @code{scanf}
+family of functions.
+
+@findex _doscan@r{, and m modifier character}
+@findex scanf@r{, and m modifier character}
+The @code{m} modifier character is now supported by @code{_doscan}
+and the @code{scanf} family of functions.  This is a @acronym{GNU}
+glibc extension and it is specified in the upcoming revision
+of the @acronym{POSIX.1} standard.
+
+@findex _doscan@r{, and @acronym{C99} numeric conversion specifiers}
+@findex scanf@r{, and @acronym{C99} numeric conversion specifiers}
+The @code{%@var{n}$} numeric conversion specifiers are now supported
+by @code{_doscan} and the @code{scanf} family of functions.
+
+@tindex rlim_t
+@tindex struct rlimit@r{, and }rlim_t
+The type @code{rlim_t} has been added.
+@code{rlim_t} is now used for the @code{rlim_cur} and @code{rlim_max}
+members of @code{struct rlimit}.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex isfinite@r{, added to the library}
+@findex isinf@r{, added to the library}
+@findex isnan@r{, added to the library}
+@findex isnormal@r{, added to the library}
+@findex isgreater@r{, added to the library}
+@findex isgreaterequal@r{, added to the library}
+@findex isless@r{, added to the library}
+@findex islessequal@r{, added to the library}
+@findex islessgreater@r{, added to the library}
+@findex isunordered@r{, added to the library}
+The @acronym{C99} macros @code{isfinite}, @code{isinf}, @code{isnan}, @code{isnormal}, @code{isgreater},
+@code{isgreaterequal}, @code{isless}, @code{islessequal}, @code{islessgreater} and @code{isunordered}
+were added to comply with the @acronym{C99} standard.
+
+@findex fread@r{, and stream error condition}
+@findex fwrite@r{, and stream error condition}
+@findex fgets@r{, and stream error condition}
+@findex fputs@r{, and stream error condition}
+Opening a file stream in the wrong mode referring to the following
+input/output operation (e.g.: opening stream in read only mode and
+then writing to it), will trigger a stream error condition that will
+set an error indicator.  This error indicator can be tested using @code{ferror}.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex lrintf@r{ added to the math library}
+@findex lrint@r{ added to the math library}
+@findex lrintl@r{ added to the math library}
+@findex llrintf@r{ added to the math library}
+@findex llrint@r{ added to the math library}
+@findex llrintl@r{ added to the math library}
+The @acronym{C99} functions @code{lrintf}, @code{lrint}, @code{lrintl}, @code{llrintf},
+@code{llrint} and @code{llrintl} were added to comply with the @acronym{C99} standard.
+These functions are available in two versions.  One fast assembler version
+in @file{libc.a} and one accurate in @file{libm.a}.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex roundf@r{ added to the math library}
+@findex round@r{ added to the math library}
+@findex roundl@r{ added to the math library}
+The @acronym{C99} functions @code{roundf}, @code{round} and @code{roundl} were added
+to comply with the @acronym{C99} standard.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex lroundf@r{ added to the math library}
+@findex lround@r{ added to the math library}
+@findex lroundl@r{ added to the math library}
+@findex llroundf@r{ added to the math library}
+@findex llround@r{ added to the math library}
+@findex llroundl@r{ added to the math library}
+The @acronym{C99} functions @code{lroundf}, @code{lround}, @code{lroundl}, @code{llroundf},
+@code{llround} and @code{llroundl} were added to comply with the @acronym{C99} standard.
+These functions are available in two versions.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex rintl@r{ added to the math library}
+The @acronym{C99} function @code{rintl} has been added to comply with the @acronym{C99} standard.
+
+@cindex @acronym{POSIX} compliance, @code{string.h}
+@findex strndup@r{ added to the library}
+@findex strnlen@r{ added to the library}
+The functions @code{strndup} and @code{strnlen} were added to comply with
+the @acronym{POSIX} 1003.1-2008 standard.
+
+@cindex @acronym{BSD/GNU} compatibility, @code{math.h}
+@findex isinfl@r{, added to the math library}
+@findex isnanl@r{, added to the math library}
+@findex finitel@r{, added to the math library}
+Although they are obsolete, the @acronym{BSD/GNU} compatibility functions @code{isinfl},
+@code{isnanl}, and @code{finitel} were added.
+
+@cindex @acronym{C99} compliance, @file{stdlib.h}
+@findex memalign@r{, and argument order}
+@findex valloc@r{, and argument order}
+A bug was fixed in @code{memalign} and @code{valloc}.
+@code{memalign} used to expects its two arguments in the reverse order compared
+with linux and other @acronym{POSIX} compliant systems.  This has been changed
+so that the argument order now is the same that on @acronym{POSIX} compliant
+systems.  @code{valloc}, that calls @code{memalign}, has been adjusted accordingly.
+The @code{memalign} declaration has been moved from @file{stdlib.h} to
+@file{malloc.h} to comply with the @acronym{C99} standard.
+
+@findex mktemp@r{, and @acronym{SUS} compliance}
+@findex mkstemp@r{, and @acronym{SUS} compliance}
+The behavior of @code{mktemp} and @code{mkstemp} now depends on if @acronym{LFN} support
+is available or not.  If @acronym{LFN} support is available the generated file names
+will comply with the @acronym{POSIX} standard.  This means all characters of the template
+before the trailing six upper case @code{X}s will not be truncated to create a valid
+short file name.  If @acronym{LFN} support is not available @code{mktemp} will behave
+as before.  This means only two characters before the trailing @code{X}s will be possible.
+
+@cindex @acronym{SUS} compliance, @code{stdio.h}
+@findex dprintf@r{ added to the library}
+@findex vdprintf@r{ added to the library}
+The functions @code{dprintf} and @code{vdprintf} were added to comply with
+the @acronym{POSIX} 1003.1-2008 standard.
+
+@cindex @acronym{SUS} compliance, @code{stdlib.h}
+@findex mkdtemp@r{ added to the library}
+The function @code{mkdtemp} was added to comply with the
+@acronym{POSIX} 1003.1-2008 standard.
+
+@pindex djtar@r{, new option -a}
+New option @samp{-a} has been added to djtar to skip automatically all files
+and directories that cannot be created when extracting.  Thus neither existing
+files will be overwritten nor the user will be prompted for changing the file
+name.
+
+@cindex @file{stdbool.h} added
+@cindex @acronym{C99} compliance, @file{stdbool.h}
+The @acronym{C99} file @file{stdbool.h} was added.
