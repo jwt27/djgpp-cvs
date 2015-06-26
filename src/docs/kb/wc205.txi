@@ -51,6 +51,11 @@ match the order used by the function version as implemented in @acronym{GNU} sys
 In @file{errno.h}, do not exclude errno macros for C++ when -std=c++0x, -std=c++11,
 or newer C++ standards are being used.
 
+@pindex dxe3gen@r{, and new environment variables @env{DXE_CC, DXE_AS}, @env{DXE_AR}, @env{DXE_LD} and @env{DXE_SC}}
+dxe3gen now responds to @env{DXE_CC}, @env{DXE_AS}, @env{DXE_AR} and @env{DXE_LD} environment
+variables to pick required build tools, and to @env{DXE_SC} environment variable
+to pick the required linker script.
+
 @findex asctime_r@r{, added to the library}
 @findex ctime_r@r{, added to the library}
 @findex gmtime_r@r{, added to the library}
@@ -265,8 +270,8 @@ instead of being skipped.  The new option @samp{-v} will print the names of the 
 the number of data blocks following each header and the position of the header in the
 @code{tar} archive.
 
-@findex _doscan@r{, and C99 conversion specifiers}
-@findex scanf@r{, and C99 conversion specifiers}
+@findex _doscan@r{, and @acronym{C99} conversion specifiers}
+@findex scanf@r{, and @acronym{C99} conversion specifiers}
 The @code{a}, @code{A} and @code{F} conversion specifiers
 are now supported by @code{_doscan} and the @code{scanf}
 family of functions.
