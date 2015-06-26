@@ -18,7 +18,7 @@
 
 #ifdef __DJGPP__
 #include <io.h>
-#define ACCESS(f) (_chmod(f, 0) != -1)
+#define ACCESS(f)  (_chmod(f, 0) != -1)
 #define OPEN _open
 #define READ _read
 #define CLOSE _close
@@ -26,7 +26,7 @@
 #define REALPATH _truename
 #else
 #include <unistd.h>
-#define ACCESS(f) (access(f, R_OK) == 0)
+#define ACCESS(f)  (access(f, R_OK) == 0)
 #define OPEN open
 #define READ read
 #define CLOSE close
@@ -40,8 +40,8 @@
 
 /* private stack */
 typedef struct stk_node {
-        const char *name;
-        struct stk_node *next;
+  const char *name;
+  struct stk_node *next;
 } stk_node;
 
 /* Exported symbols table entry */
@@ -90,14 +90,13 @@ static
 #ifdef __GNUC__
 __attribute__((destructor))
 #endif
-void _closeall (void)
+void _closeall(void)
 {
- while (dxe_chain) {
-       dlclose(dxe_chain);
- }
+  while (dxe_chain)
+    dlclose(dxe_chain);
 }
 
-void *dlopen (const char *filename, int mode)
+void *dlopen(const char *filename, int mode)
 {
   dxe3_header dxehdr;			/* The header of DXE module */
   dxe_h cur;				/* A module handle */
@@ -105,8 +104,8 @@ void *dlopen (const char *filename, int mode)
   int i, j, fh;				/* Miscelaneous variables */
   int hdrsize;				/* Resident header size */
   char *scan;				/* Work variable */
-  char realfn [FILENAME_MAX];		/* Real module filename */
-  char tempfn [FILENAME_MAX];		/* Temporary filename */
+  char realfn[FILENAME_MAX];		/* Real module filename */
+  char tempfn[FILENAME_MAX];		/* Temporary filename */
   int discardsize;
   char *discardable;
 
@@ -126,29 +125,30 @@ void *dlopen (const char *filename, int mode)
     const char *env_names[] = {"LD_LIBRARY_PATH", "SYSTEM_DXE_PATH"};
     const int num_env_names = sizeof(env_names) / sizeof(*env_names);
     char *nextscan;
-    size_t fnl = strlen (filename) + 1;
+    size_t fnl = strlen(filename) + 1;
     /* LD_LIBRARY_PATH is scanned only for relative paths */
-    if ((filename[0] != '/') && (filename[0] != '\\') && (filename[1] != ':')) {
+    if (filename[0] != '/' && filename[0] != '\\' && (filename[1] != ':')
+    {
       for (i = 0; i < num_env_names; i++)
       {
-        for (scan = getenv (env_names[i]); scan && *scan;
-             scan = nextscan + strspn (nextscan, "; \t"))
-         {
+        for (scan = getenv(env_names[i]); scan && *scan;
+             scan = nextscan + strspn(nextscan, "; \t"))
+        {
           char *name;
           int name_len;
-          nextscan = strchr (scan, ';');
-          if (!nextscan) nextscan = strchr (scan, 0);
+          nextscan = strchr(scan, ';');
+          if (!nextscan) nextscan = strchr(scan, 0);
           name_len = nextscan - scan;
           if (name_len == 0)
             continue;
           if (nextscan[-1] == '/' || nextscan[-1] == '\\') name_len++;
           if (name_len + fnl > FILENAME_MAX)
             continue;
-          memcpy (tempfn, scan, nextscan - scan);
+          memcpy(tempfn, scan, nextscan - scan);
           name = tempfn + (nextscan - scan);
           if (name [-1] != '/' && name [-1] != '\\')
             *name++ = '/';
-          memcpy (name, filename, fnl);
+          memcpy(name, filename, fnl);
           if (ACCESS(tempfn))
           {
             filename = tempfn;
@@ -161,39 +161,38 @@ void *dlopen (const char *filename, int mode)
     return NULL;
   }
 found:
-  if (REALPATH(filename, realfn) == NULL) {
-     return NULL;
-  }
+  if (REALPATH(filename, realfn) == NULL)
+    return NULL;
 
   /* First of all, look through the semi-loaded list */
-  for (node=stk_top; node!=NULL; node=node->next) {
-      if (!strcmp(node->name, realfn)) {
-         errno = ELOOP;
-         return NULL;
-      }
-  }
+  for (node = stk_top; node; node=node->next)
+    if (!strcmp(node->name, realfn))
+    {
+      errno = ELOOP;
+      return NULL;
+    }
   
   /* Look through the loaded modules list */
   for (cur = dxe_chain; cur; cur = cur->next)
-    if (!strcmp (realfn, cur->fname))
+    if (!strcmp(realfn, cur->fname))
     {
       cur->inuse++;
       return cur;
     }
 
-  fh = OPEN (filename, OPENFLAGS);
+  fh = OPEN(filename, OPENFLAGS);
   if (fh < 0) return NULL;
 
-  if (READ (fh, &dxehdr, sizeof (dxehdr)) != sizeof(dxehdr))
+  if (READ(fh, &dxehdr, sizeof(dxehdr)) != sizeof(dxehdr))
   {
-    CLOSE (fh);
+    CLOSE(fh);
     return NULL;
   }
 
-  if ((dxehdr.magic != DXE_MAGIC) || (dxehdr.element_size != -1) || (dxehdr.major > 1))
+  if (dxehdr.magic != DXE_MAGIC || dxehdr.element_size != -1 || dxehdr.major > 1)
   {
     errno = ENOEXEC;
-    CLOSE (fh);
+    CLOSE(fh);
     return NULL;
   }
 
@@ -204,50 +203,52 @@ found:
   dxe.n_exp_syms = dxehdr.n_exp_syms;
 
   /* Read DXE tables and the data section */
-  hdrsize = dxehdr.symbol_offset - sizeof (dxehdr);
+  hdrsize = dxehdr.symbol_offset - sizeof(dxehdr);
   discardsize = dxehdr.dep_size + dxehdr.unres_size + dxehdr.nrelocs * sizeof(long);
-  if ((dxe.header = malloc (hdrsize + dxehdr.sec_size)) == NULL) {
+  if ((dxe.header = malloc(hdrsize + dxehdr.sec_size)) == NULL)
+  {
     errno = ENOMEM;
-    CLOSE (fh);
+    CLOSE(fh);
     return NULL;
   }
-  if ((discardable = malloc (discardsize)) == NULL) {
+  if ((discardable = malloc(discardsize)) == NULL)
+  {
     errno = ENOMEM;
-    CLOSE (fh);
+    CLOSE(fh);
     goto midwayerror;
   }
   /* [dBorca]
    * the resident header and actual section share the same block
    */
   dxe.section = dxe.header + hdrsize;
-  if ((READ (fh, dxe.header, hdrsize + dxehdr.sec_f_size) != (hdrsize + dxehdr.sec_f_size))
-      || (READ (fh, discardable, discardsize) != discardsize))
+  if ((READ(fh, dxe.header, hdrsize + dxehdr.sec_f_size) != (hdrsize + dxehdr.sec_f_size))
+      || (READ(fh, discardable, discardsize) != discardsize))
   {
-    CLOSE (fh);
+    CLOSE(fh);
     goto unrecoverable;
   }
 
   /* We don't need the file anymore */
-  CLOSE (fh);
+  CLOSE(fh);
 
   /* Fill the unfilled portion of code+data+bss segment with zeros */
-  memset (dxe.section + dxehdr.sec_f_size, 0, dxehdr.sec_size - dxehdr.sec_f_size);
+  memset(dxe.section + dxehdr.sec_f_size, 0, dxehdr.sec_size - dxehdr.sec_f_size);
 
   /* Load the dependencies */
   scan = discardable;
-  for (i = 0; i < dxehdr.n_deps; i++) {
-      stk_node tmp;
-      tmp.name = realfn;
-      tmp.next = stk_top;
-      stk_top = &tmp;
+  for (i = 0; i < dxehdr.n_deps; i++)
+  {
+    stk_node tmp;
+    tmp.name = realfn;
+    tmp.next = stk_top;
+    stk_top = &tmp;
 
-      if (dlopen(scan, RTLD_GLOBAL) == NULL) {
-         goto unrecoverable;
-      }
+    if (dlopen(scan, RTLD_GLOBAL) == NULL)
+      goto unrecoverable;
 
-      stk_top = tmp.next;
+    stk_top = tmp.next;
 
-      scan = strchr(scan, 0) + 1;
+    scan = strchr(scan, 0) + 1;
   }
 
   /* Allright, now we're ready to resolve all unresolved symbols */
@@ -256,7 +257,7 @@ found:
   for (i = 0; i < dxehdr.n_unres_syms; i++)
   {
     unres_table_entry *ute = (unres_table_entry *)scan;
-    long offset = (long)(long *)dlsym (RTLD_DEFAULT, ute->name);
+    long offset = (long)(long *)dlsym(RTLD_DEFAULT, ute->name);
 
     if (offset)
     {
@@ -270,18 +271,17 @@ found:
       for (j = 0; j < ute->n_abs_relocs; j++, relocs++)
         *(long *)(dxe.section + *relocs) += offset;
       _dl_unresolved_count--;
-    } else if (_dl_unresolved_symbol[0] == 0) {
-      strcpy(_dl_unresolved_symbol, ute->name);
     }
+    else if (_dl_unresolved_symbol[0] == 0)
+      strcpy(_dl_unresolved_symbol, ute->name);
 
     scan = strchr (ute->name, 0) + 1 +
       sizeof (long) * (ute->n_rel_relocs + ute->n_abs_relocs);
   }
 
   /* Are there any unresolved symbols? */
-  if (_dl_unresolved_count) {
-     goto unrecoverable;
-  }
+  if (_dl_unresolved_count)
+    goto unrecoverable;
 
   /* Apply relocations */
   for (i = 0; i < dxehdr.nrelocs; i++)
@@ -292,48 +292,51 @@ found:
 
   /* Parse the header again and fill the exported names table */
   scan = dxe.header;
-  if ((dxe.exp_table = malloc (dxehdr.n_exp_syms * sizeof (void *))) == NULL) {
-     errno = ENOMEM;
-     goto midwayerror;
+  if ((dxe.exp_table = malloc(dxehdr.n_exp_syms * sizeof(void *))) == NULL)
+  {
+    errno = ENOMEM;
+    goto midwayerror;
   }
   for (i = 0; i < dxehdr.n_exp_syms; i++)
   {
-    dxe.exp_table [i] = (exp_table_entry *)scan;
-    scan = strchr (dxe.exp_table [i]->name, 0) + 1;
+    dxe.exp_table[i] = (exp_table_entry *)scan;
+    scan = strchr(dxe.exp_table[i]->name, 0) + 1;
   }
 
   /* initialization */
-  if (dxehdr._init != -1) {
-     ((void (*) (void))(dxehdr._init + (long)dxe.section))();
-  }
+  if (dxehdr._init != -1)
+    ((void (*) (void))(dxehdr._init + (long)dxe.section))();
   dxe._fini = dxehdr._fini;
 
   /* Put the dxe module in loaded modules chain */
   dxe.next = dxe_chain;
-  if ((dxe_chain = malloc(sizeof(dxe_handle))) == NULL) {
-     free(dxe.exp_table);
-     errno = ENOMEM;
-     goto midwayerror;
+  if ((dxe_chain = malloc(sizeof(dxe_handle))) == NULL)
+  {
+    free(dxe.exp_table);
+    errno = ENOMEM;
+    goto midwayerror;
   }
   memcpy(dxe_chain, &dxe, sizeof(dxe_handle));
 
 #ifndef __GNUC__
-  if (!cleanup) {
-     cleanup = !0;
-     atexit(_closeall);
+  if (!cleanup)
+  {
+    cleanup = !0;
+    atexit(_closeall);
   }
 #endif
 
   return dxe_chain;
 
 unrecoverable:
-  free (discardable);
+  free(discardable);
 midwayerror:
-  free (dxe.header);
+  free(dxe.header);
+
   return NULL;
 }
 
-int dlclose (void *dxe)
+int dlCLOSE(void *dxe)
 {
   if (!dxe)
     return -1;
@@ -342,9 +345,8 @@ int dlclose (void *dxe)
     return 0;
 
   /* finalization */
-  if (((dxe_h)dxe)->_fini != -1) {
-     ((void (*) (void))(((dxe_h)dxe)->_fini + (long)((dxe_h)dxe)->section))();
-  }
+  if (((dxe_h)dxe)->_fini != -1)
+    ((void (*) (void))(((dxe_h)dxe)->_fini + (long)((dxe_h)dxe)->section))();
 
   /* Remove the module from the list of loaded DXE modules */
   {
@@ -357,13 +359,14 @@ int dlclose (void *dxe)
       }
   }
 
-  free (((dxe_h)dxe)->header);
-  free (((dxe_h)dxe)->exp_table);
-  free (dxe);
+  free(((dxe_h)dxe)->header);
+  free(((dxe_h)dxe)->exp_table);
+  free(dxe);
+
   return 0;
 }
 
-void *dlsym (void *dxe, const char *symname)
+void *dlsym(void *dxe, const char *symname)
 {
   int i, j;
 
@@ -374,11 +377,11 @@ void *dlsym (void *dxe, const char *symname)
 
     for (i = 0; (i < _dl_nsymtab) && !sym; i++)
     {
-      dxe_symbol_table *table = _dl_symtabs [i];
+      dxe_symbol_table *table = _dl_symtabs[i];
       for (j = 0; table[j].name != 0; j++)
-        if (!strcmp (symname, table [j].name))
+        if (!strcmp(symname, table[j].name))
         {
-          sym = table [j].offset;
+          sym = table[j].offset;
           break;
         }
     }
@@ -386,21 +389,22 @@ void *dlsym (void *dxe, const char *symname)
     for (cur = dxe_chain; cur; cur = cur->next)
       if (cur->mode & RTLD_GLOBAL)
         for (i = 0; i < cur->n_exp_syms; i++)
-          if (!strcmp (symname, cur->exp_table [i]->name))
+          if (!strcmp(symname, cur->exp_table[i]->name))
           {
-            sym = cur->section + cur->exp_table [i]->offset;
+            sym = cur->section + cur->exp_table[i]->offset;
             goto modscan_done;
           }
 modscan_done:
 
     if (!sym && _dlsymresolver)
-      sym = _dlsymresolver (symname);
+      sym = _dlsymresolver(symname);
 
     return sym;
   }
   else
     for (i = 0; i < ((dxe_h)dxe)->n_exp_syms; i++)
-      if (!strcmp (((dxe_h)dxe)->exp_table [i]->name, symname))
-        return ((dxe_h)dxe)->section + ((dxe_h)dxe)->exp_table [i]->offset;
+      if (!strcmp(((dxe_h)dxe)->exp_table[i]->name, symname))
+        return ((dxe_h)dxe)->section + ((dxe_h)dxe)->exp_table[i]->offset;
+
   return NULL;
 }
