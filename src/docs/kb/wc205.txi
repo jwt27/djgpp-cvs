@@ -270,8 +270,8 @@ instead of being skipped.  The new option @samp{-v} will print the names of the 
 the number of data blocks following each header and the position of the header in the
 @code{tar} archive.
 
-@findex _doscan@r{, and C99 conversion specifiers}
-@findex scanf@r{, and C99 conversion specifiers}
+@findex _doscan@r{, and @acronym{C99} conversion specifiers}
+@findex scanf@r{, and @acronym{C99} conversion specifiers}
 The @code{a}, @code{A} and @code{F} conversion specifiers
 are now supported by @code{_doscan} and the @code{scanf}
 family of functions.
