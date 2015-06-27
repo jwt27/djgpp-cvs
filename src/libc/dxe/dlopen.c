@@ -127,7 +127,7 @@ void *dlopen(const char *filename, int mode)
     char *nextscan;
     size_t fnl = strlen(filename) + 1;
     /* LD_LIBRARY_PATH is scanned only for relative paths */
-    if (filename[0] != '/' && filename[0] != '\\' && (filename[1] != ':')
+    if (filename[0] != '/' && filename[0] != '\\' && filename[1] != ':')
     {
       for (i = 0; i < num_env_names; i++)
       {
@@ -336,7 +336,7 @@ midwayerror:
   return NULL;
 }
 
-int dlCLOSE(void *dxe)
+int dlclose(void *dxe)
 {
   if (!dxe)
     return -1;
