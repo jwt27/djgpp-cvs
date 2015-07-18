@@ -405,3 +405,9 @@ name.
 @cindex @file{stdbool.h} added
 @cindex @acronym{C99} compliance, @file{stdbool.h}
 The @acronym{C99} file @file{stdbool.h} was added.
+
+@cindex @file{math.h}, added @code{log2f} and @code{log2}
+@findex log2f@r{, added @code{log2f} to @file{libm.a}}
+@findex log2@r{, added @code{log2} to @file{libm.a}}
+The base 2 logarithm function for arguments of type @code{double} and @code{float}
+have been added to the mathematical library @file{libm.a}.
