@@ -23,6 +23,7 @@ SRC += e_jn.c
 SRC += er_lgamma.c
 SRC += e_log.c
 SRC += e_log10.c
+SRC += e_log2.c
 SRC += e_pow.c
 SRC += e_rem_pio2.c
 SRC += e_remainder.c
@@ -47,6 +48,7 @@ SRC += w_lgamma.c
 SRC += wr_lgamma.c
 SRC += w_log.c
 SRC += w_log10.c
+SRC += w_log2.c
 SRC += w_pow.c
 SRC += w_remainder.c
 SRC += w_scalb.c
@@ -105,6 +107,7 @@ SRC += ef_jn.c
 SRC += erf_lgamma.c
 SRC += ef_log.c
 SRC += ef_log10.c
+SRC += ef_log2.c
 SRC += ef_pow.c
 SRC += ef_rem_pio2.c
 SRC += ef_remainder.c
@@ -129,6 +132,7 @@ SRC += wf_lgamma.c
 SRC += wrf_lgamma.c
 SRC += wf_log.c
 SRC += wf_log10.c
+SRC += wf_log2.c
 SRC += wf_pow.c
 SRC += wf_remainder.c
 SRC += wf_scalb.c
@@ -192,9 +196,9 @@ chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	s_copysign.def w_cosh.def s_erf.def w_exp.def \
 	s_fabs.def s_floor.def w_fmod.def s_frexp.def \
 	w_gamma.def w_hypot.def s_ldexp.def w_log.def \
-	w_log10.def s_log1p.def s_matherr.def s_modf.def \
-	w_pow.def w_remainder.def s_sin.def w_sinh.def \
-	s_cbrt.def w_sqrt.def s_tan.def s_tanh.def \
+	w_log10.def w_log2.def s_log1p.def s_matherr.def \
+	s_modf.def w_pow.def w_remainder.def s_sin.def \
+	w_sinh.def s_cbrt.def w_sqrt.def s_tan.def s_tanh.def \
 	s_infinity.def s_isnan.def s_scalbn.def s_nextafter.def \
 	s_nan.def s_ilogb.def s_expm1.def trunc.def \
 	lrint.def llrint.def round.def lround.def llround.def
