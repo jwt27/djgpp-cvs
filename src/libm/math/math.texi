@@ -57,6 +57,7 @@ available when you include @file{math.h} instead of @file{libm/math.h}.
 * llround::	Round to nearest integer
 * log::		Natural logarithms
 * log10::	Base 10 logarithms
+* log2::	Base 2 logarithms
 * log1p::	Log of 1 + X
 * lrint::	Round to integer
 * lround::	Round to nearest integer
@@ -189,6 +190,9 @@ The library is set to X/Open mode by default.
 
 @page
 @include w_log10.def
+
+@page
+@include w_log2.def
 
 @page
 @include s_log1p.def
