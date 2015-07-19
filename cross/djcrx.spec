@@ -36,6 +36,7 @@ make
 
 cd ../distrib
 gcc -O2 nobins.c -o nobins
+mkdir -p ../zips ../manifest
 TMPDIR=/tmp perl mkdist
 
 cd ../src/utils
