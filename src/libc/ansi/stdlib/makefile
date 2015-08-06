@@ -22,6 +22,7 @@ SRC += labs.c
 SRC += ldiv.c
 SRC += llabs.c
 SRC += lldiv.c
+SRC += nmalign.c
 SRC += nmalloc.c
 SRC += nmalldbg.c
 SRC += qsort.c
