@@ -205,7 +205,7 @@ typedef struct memblock {
 /* Magic constants.  MINSBRK must be MINSAVE or larger */
 enum {NFLISTS = (int)(CHAR_BIT * sizeof(size_t)), MINSBRK = 1024};
 
-inline ulong roundup(size_t sz)
+static __inline ulong roundup(size_t sz)
 {
    ulong size;
 
