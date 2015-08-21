@@ -243,8 +243,10 @@ found:
     tmp.next = stk_top;
     stk_top = &tmp;
 
-    if (dlopen(scan, RTLD_GLOBAL) == NULL)
+    if (dlopen(scan, RTLD_GLOBAL) == NULL) {
+      stk_top = tmp.next;
       goto unrecoverable;
+    }
 
     stk_top = tmp.next;
 
