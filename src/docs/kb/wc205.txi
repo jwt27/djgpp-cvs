@@ -411,3 +411,7 @@ The @acronym{C99} file @file{stdbool.h} was added.
 @findex log2@r{, added @code{log2} to @file{libm.a}}
 The base 2 logarithm function for arguments of type @code{double} and @code{float}
 have been added to the mathematical library @file{libm.a}.
+
+@findex dlopen@r{, failing to reload @acronym{DXE} module with @code{ELOOP}}
+The function @code{dlopen} no longer fails to reload an available @acronym{DXE} module
+a second time.
