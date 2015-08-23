@@ -97,10 +97,10 @@ formats for @code{"%x"} and @code{"%X"} conversions.
 @pindex djasm@r{, cr4 register}
 @code{djasm} recognises the fourth control register, @code{cr4}.
 
-@findex signbit@r{ added to the library}
-@findex __signbitf@r{ added to the library}
-@findex __signbitd@r{ added to the library}
-@findex __signbitld@r{ added to the library}
+@findex signbit@r{, added to the library}
+@findex __signbitf@r{, added to the library}
+@findex __signbitd@r{, added to the library}
+@findex __signbitld@r{, added to the library}
 The @acronym{C99} macro @code{signbit} and the supporting functions
 @code{__signbitf}, @code{__signbitd} and @code{__signbitld}
 were added.
@@ -238,9 +238,9 @@ the function will ignore, fail or fall back on the corresponding SFN API functio
 LFN API function is not provided by the @acronym{LFN} driver used.
 
 @cindex @acronym{C99} compliance, @code{math.h}
-@findex truncf@r{ added to the math library}
-@findex trunc@r{ added to the math library}
-@findex truncl@r{ added to the math library}
+@findex truncf@r{, added to the math library}
+@findex trunc@r{, added to the math library}
+@findex truncl@r{, added to the math library}
 The @acronym{C99} functions @code{truncf} @code{trunc} and @code{truncl} were
 added to comply with the @acronym{C99} standard.
 
@@ -319,42 +319,42 @@ then writing to it), will trigger a stream error condition that will
 set an error indicator.  This error indicator can be tested using @code{ferror}.
 
 @cindex @acronym{C99} compliance, @code{math.h}
-@findex lrintf@r{ added to the math library}
-@findex lrint@r{ added to the math library}
-@findex lrintl@r{ added to the math library}
-@findex llrintf@r{ added to the math library}
-@findex llrint@r{ added to the math library}
-@findex llrintl@r{ added to the math library}
+@findex lrintf@r{, added to the math library}
+@findex lrint@r{, added to the math library}
+@findex lrintl@r{, added to the math library}
+@findex llrintf@r{, added to the math library}
+@findex llrint@r{, added to the math library}
+@findex llrintl@r{, added to the math library}
 The @acronym{C99} functions @code{lrintf}, @code{lrint}, @code{lrintl}, @code{llrintf},
 @code{llrint} and @code{llrintl} were added to comply with the @acronym{C99} standard.
 These functions are available in two versions.  One fast assembler version
 in @file{libc.a} and one accurate in @file{libm.a}.
 
 @cindex @acronym{C99} compliance, @code{math.h}
-@findex roundf@r{ added to the math library}
-@findex round@r{ added to the math library}
-@findex roundl@r{ added to the math library}
+@findex roundf@r{, added to the math library}
+@findex round@r{, added to the math library}
+@findex roundl@r{, added to the math library}
 The @acronym{C99} functions @code{roundf}, @code{round} and @code{roundl} were added
 to comply with the @acronym{C99} standard.
 
 @cindex @acronym{C99} compliance, @code{math.h}
-@findex lroundf@r{ added to the math library}
-@findex lround@r{ added to the math library}
-@findex lroundl@r{ added to the math library}
-@findex llroundf@r{ added to the math library}
-@findex llround@r{ added to the math library}
-@findex llroundl@r{ added to the math library}
+@findex lroundf@r{, added to the math library}
+@findex lround@r{, added to the math library}
+@findex lroundl@r{, added to the math library}
+@findex llroundf@r{, added to the math library}
+@findex llround@r{, added to the math library}
+@findex llroundl@r{, added to the math library}
 The @acronym{C99} functions @code{lroundf}, @code{lround}, @code{lroundl}, @code{llroundf},
 @code{llround} and @code{llroundl} were added to comply with the @acronym{C99} standard.
 These functions are available in two versions.
 
 @cindex @acronym{C99} compliance, @code{math.h}
-@findex rintl@r{ added to the math library}
+@findex rintl@r{, added to the math library}
 The @acronym{C99} function @code{rintl} has been added to comply with the @acronym{C99} standard.
 
 @cindex @acronym{POSIX} compliance, @code{string.h}
-@findex strndup@r{ added to the library}
-@findex strnlen@r{ added to the library}
+@findex strndup@r{, added to the library}
+@findex strnlen@r{, added to the library}
 The functions @code{strndup} and @code{strnlen} were added to comply with
 the @acronym{POSIX} 1003.1-2008 standard.
 
@@ -386,13 +386,13 @@ short file name.  If @acronym{LFN} support is not available @code{mktemp} will b
 as before.  This means only two characters before the trailing @code{X}s will be possible.
 
 @cindex @acronym{SUS} compliance, @code{stdio.h}
-@findex dprintf@r{ added to the library}
-@findex vdprintf@r{ added to the library}
+@findex dprintf@r{, added to the library}
+@findex vdprintf@r{, added to the library}
 The functions @code{dprintf} and @code{vdprintf} were added to comply with
 the @acronym{POSIX} 1003.1-2008 standard.
 
 @cindex @acronym{SUS} compliance, @code{stdlib.h}
-@findex mkdtemp@r{ added to the library}
+@findex mkdtemp@r{, added to the library}
 The function @code{mkdtemp} was added to comply with the
 @acronym{POSIX} 1003.1-2008 standard.
 
