@@ -99,7 +99,7 @@ with copying* and readme files.
 /tmp/djgpp-dist/*
 
 %changelog
-* Sub Aug 30 2015 Andris Pavenis <andris.pavenis@iki.fi> 2.05-4
+* Sun Aug 30 2015 Andris Pavenis <andris.pavenis@iki.fi> 2.05-4
 - Rebuild DJGPP v2.05 with latest updates
 
 * Sun Jul 19 2015 Andris Pavenis <andris.pavenis@iki.fi> 2.05-3
