@@ -1,7 +1,7 @@
 Name: djcrx
 Summary:  DJGPP C library and some tools Linux to i586-pc-msdosdjgpp cross-compiler
 Version: 2.05
-Release: 3
+Release: 4
 License: http://www.delorie.com/djgpp/dl/ofc/simtel/v2/copying.dj
 Group: Development/Tools
 URL: http://www.delorie.com/djgpp/
@@ -99,8 +99,11 @@ with copying* and readme files.
 /tmp/djgpp-dist/*
 
 %changelog
+* Sun Aug 30 2015 Andris Pavenis <andris.pavenis@iki.fi> 2.05-4
+- Rebuild DJGPP v2.05 with latest updates
+
 * Sun Jul 19 2015 Andris Pavenis <andris.pavenis@iki.fi> 2.05-3
-- Rebuild DJGPP v2.05 with latest updates to
+- Rebuild DJGPP v2.05 with latest updates
 
 * Thu Jul  2 2015 Andris Pavenis <andris.pavenis@iki.fi> 2.05-2
 - Rebuild DJGPP v2.05 with latest updates
@@ -173,4 +176,4 @@ with copying* and readme files.
 - Some small updates 
 
 * Tue Nov 15 2005 Andris Pavenis <pavenis@latnet.lv>
-— Initial version of rpm spec file for DJGPP libc and some included tools (based on djcrx204 beta)
+- Initial version of rpm spec file for DJGPP libc and some included tools (based on djcrx204 beta)
