@@ -176,4 +176,4 @@ with copying* and readme files.
 - Some small updates 
 
 * Tue Nov 15 2005 Andris Pavenis <pavenis@latnet.lv>
-— Initial version of rpm spec file for DJGPP libc and some included tools (based on djcrx204 beta)
+- Initial version of rpm spec file for DJGPP libc and some included tools (based on djcrx204 beta)
