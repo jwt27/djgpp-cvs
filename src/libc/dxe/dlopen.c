@@ -119,6 +119,11 @@ void *dlopen(const char *filename, int mode)
   _dl_unresolved_count = 0;
   errno = 0;
 
+  if (!filename || !*filename) {
+    errno = EINVAL;
+    return NULL;
+  }
+
   /* Find the dynamic module along the LD_LIBRARY_PATH */
   if (!ACCESS(filename))
   {
