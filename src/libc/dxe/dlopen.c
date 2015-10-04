@@ -119,7 +119,8 @@ void *dlopen(const char *filename, int mode)
   _dl_unresolved_count = 0;
   errno = 0;
 
-  if (!filename || !*filename) {
+  if (!filename || !*filename)
+  {
     errno = EINVAL;
     return NULL;
   }
@@ -248,7 +249,8 @@ found:
     tmp.next = stk_top;
     stk_top = &tmp;
 
-    if (dlopen(scan, RTLD_GLOBAL) == NULL) {
+    if (dlopen(scan, RTLD_GLOBAL) == NULL)
+    {
       stk_top = tmp.next;
       goto unrecoverable;
     }
@@ -269,11 +271,11 @@ found:
     if (offset)
     {
       /* Resolve all the references to this symbol */
-      long *relocs = (long *)(strchr (ute->name, 0) + 1);
+      long *relocs = (long *)(strchr(ute->name, 0) + 1);
       for (j = 0; j < ute->n_rel_relocs; j++, relocs++)
       {
         char *fixaddr = dxe.section + *relocs;
-        *(long *)fixaddr = offset - (long)fixaddr - sizeof (long);
+        *(long *)fixaddr = offset - (long)fixaddr - sizeof(long);
       }
       for (j = 0; j < ute->n_abs_relocs; j++, relocs++)
         *(long *)(dxe.section + *relocs) += offset;
@@ -282,8 +284,8 @@ found:
     else if (_dl_unresolved_symbol[0] == 0)
       strcpy(_dl_unresolved_symbol, ute->name);
 
-    scan = strchr (ute->name, 0) + 1 +
-      sizeof (long) * (ute->n_rel_relocs + ute->n_abs_relocs);
+    scan = strchr(ute->name, 0) + 1 +
+      sizeof(long) * (ute->n_rel_relocs + ute->n_abs_relocs);
   }
 
   /* Are there any unresolved symbols? */

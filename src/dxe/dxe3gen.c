@@ -434,41 +434,34 @@ static void display_help(void)
 
 
 /* Desc: process the DXE_?? environment variables
+ *
+ * In  : -
+ * Out : -
+ *
+ * Note: -
  */
 static void process_env(void)
 {
   const char *e;
 
-  if ((e = getenv("DXE_CC")) != NULL)
-       dxe_cc = strdup(e);
-  else dxe_cc = strdup(DXE_CC);
+  dxe_cc = (e = getenv("DXE_CC")) ? strdup(e) : strdup(DXE_CC);
+  dxe_as = (e = getenv("DXE_AS")) ? strdup(e) : strdup(DXE_AS);
+  dxe_ar = (e = getenv("DXE_AR")) ? strdup(e) : strdup(DXE_AR);
+  dxe_ld = (e = getenv("DXE_LD")) ? strdup(e) : strdup(DXE_LD);
+  dxe_sc = (e = getenv("DXE_SC")) ? strdup(e) : strdup(DXE_SC);
 
-  if ((e = getenv("DXE_AS")) != NULL)
-       dxe_as = strdup(e);
-  else dxe_as = strdup(DXE_AS);
-
-  if ((e = getenv("DXE_AR")) != NULL)
-       dxe_ar = strdup(e);
-  else dxe_ar = strdup(DXE_AR);
-
-  if ((e = getenv("DXE_LD")) != NULL)
-       dxe_ld = strdup(e);
-  else dxe_ld = strdup(DXE_LD);
-
-  if ((e = getenv("DXE_SC")) != NULL)
-       dxe_sc = strdup(e);
-  else dxe_sc = strdup(DXE_SC);
-
-  if ((e = getenv("DXE_LD_LIBRARY_PATH")) != NULL)
-       libdir = strdup(e);
-  else if ((e = getenv("DJDIR")) != NULL) {
-       size_t sz = strlen(e) + 5U;
-       libdir = malloc(sz);
-       strcpy(libdir, e);
-       strcat(libdir, "/lib");
-       canonicalize_path(libdir);
+  if ((e = getenv("DXE_LD_LIBRARY_PATH")))
+    libdir = strdup(e);
+  else if ((e = getenv("DJDIR")))
+  {
+    size_t sz = strlen(e) + 5U;
+    libdir = malloc(sz);
+    strcpy(libdir, e);
+    strcat(libdir, "/lib");
+    canonicalize_path(libdir);
   }
-  else libdir = NULL;
+  else
+    libdir = NULL;
 }
 
 
@@ -485,8 +478,8 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
 
   if (!libdir)
   {
-      fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
-      exit(1);
+    fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
+    exit(1);
   }
 
   new_argv[0] = dxe_ld;
