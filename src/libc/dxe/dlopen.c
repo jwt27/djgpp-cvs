@@ -38,10 +38,12 @@
 #define ELOOP EMLINK
 #endif
 
+#define DEBUG_DXE3 0	/* Prints struct __dxe_handle members.  Always commited as 0. */
+
 /* private stack */
-typedef struct stk_node {
+typedef struct __stk_node {
   const char *name;
-  struct stk_node *next;
+  struct __stk_node *next;
 } stk_node;
 
 /* Exported symbols table entry */
@@ -59,6 +61,12 @@ typedef struct
   char name [1];		/* expanded as needed */
 } __attribute__((packed)) unres_table_entry;
 
+/* This is a linked list of implicitly loaded dxe modules.  */
+typedef struct __llist {
+  struct __dxe_handle *handle;	/* last implicitly opened module  */
+  struct __llist *next;
+} dxe_list;
+
 /* This is the private dxe_h structure */
 typedef struct __dxe_handle
 {
@@ -71,6 +79,7 @@ typedef struct __dxe_handle
   char *header;				/* The resident portion of header */
   char *section;			/* code+data+bss section */
   long _fini;				/* finalization */
+  dxe_list *deps;			/* Linked list of implicitly open module by this module or NULL */
 } dxe_handle, *dxe_h;
 
 /* Last-resort symbol resolver */
@@ -111,6 +120,8 @@ void *dlopen(const char *filename, int mode)
 
   stk_node *node;
   static stk_node *stk_top = NULL;
+
+  dxe_list *deps;
 
 #ifndef __GNUC__
   static int cleanup = 0;
@@ -207,6 +218,7 @@ found:
   dxe.inuse = 1;
   dxe.mode = mode;
   dxe.n_exp_syms = dxehdr.n_exp_syms;
+  dxe.deps = NULL;
 
   /* Read DXE tables and the data section */
   hdrsize = dxehdr.symbol_offset - sizeof(dxehdr);
@@ -242,22 +254,46 @@ found:
 
   /* Load the dependencies */
   scan = discardable;
-  for (i = 0; i < dxehdr.n_deps; i++)
+  for (deps = NULL, i = 0; i < dxehdr.n_deps; i++)
   {
     stk_node tmp;
+    dxe_h dep_h;
+
     tmp.name = realfn;
     tmp.next = stk_top;
     stk_top = &tmp;
 
-    if (dlopen(scan, RTLD_GLOBAL) == NULL)
+    if ((dep_h = dlopen(scan, RTLD_GLOBAL)) == NULL)
     {
       stk_top = tmp.next;
       goto unrecoverable;
     }
+    else
+    {
+      dxe_list *next;
 
-    stk_top = tmp.next;
+      stk_top = tmp.next;
 
-    scan = strchr(scan, 0) + 1;
+      scan = strchr(scan, 0) + 1;
+
+      /* Register all implicitly open modules by this one.  */
+      if ((next = malloc(sizeof(dxe_list))) == NULL)
+      {
+        dlclose(dep_h);
+        errno = ENOMEM;
+        goto unrecoverable;
+      }
+      next->handle = dep_h;
+      next->next = NULL;
+
+      if (deps)
+      {
+        deps->next = next;
+        deps = deps->next;
+      }
+      else
+        dxe.deps = deps = next;
+    }
   }
 
   /* Allright, now we're ready to resolve all unresolved symbols */
@@ -327,6 +363,46 @@ found:
   }
   memcpy(dxe_chain, &dxe, sizeof(dxe_handle));
 
+#if (DEBUG_DXE3 -0) == 1
+  {
+    FILE *f = fopen("c:/tmp/dxe_chain.txt", "a");
+
+    if (f)
+    {
+      fprintf(f, "dxe_chain                    : 0x%p\n"
+                 "  next                       : 0x%p\n"
+                 "  fname                      : %s\n"
+                 "  mode                       : %s\n"
+                 "  inuse                      : %d\n"
+                 "  n_exp_syms                 : %d\n"
+                 "  exp_table                  : 0x%p\n",
+                 dxe_chain, dxe_chain->next, dxe_chain->fname,
+                 dxe_chain->mode == RTLD_LAZY ? "RTLD_LAZY" :
+                 dxe_chain->mode == RTLD_NOW ? "RTLD_NOW" :
+                 dxe_chain->mode == RTLD_LOCAL ? "RTLD_LOCAL" :
+                 dxe_chain->mode == RTLD_GLOBAL ? "RTLD_GLOBAL" : "unknown",
+                 dxe_chain->inuse, dxe_chain->n_exp_syms, dxe_chain->exp_table);
+      for (i = 0; i < dxe_chain->n_exp_syms; i++)
+        fprintf(f, "    exp_table[%d]->offset     : %ld\n"
+                   "    exp_table[%d]->name       : %s\n",
+                   i, dxe_chain->exp_table[i]->offset, i, dxe_chain->exp_table[i]->name);
+      fprintf(f, "  header                     : 0x%p\n"
+                 "  section                    : 0x%p\n"
+                 "  _fini                      : %ld\n",
+                 dxe_chain->header, dxe_chain->section, dxe_chain->_fini);
+      if ((deps = dxe_chain->deps))
+        for (; deps; deps = deps->next)
+          fprintf(f, "  deps                       : 0x%p\n"
+                     "    handle                   : 0x%p\n"
+                     "    handle->fname            : %s\n\n",
+                     deps, deps->handle, deps->handle->fname);
+      else
+        fprintf(f, "  deps                       : 0x00000000\n\n");
+      fclose(f);
+    }
+  }
+#endif
+
 #ifndef __GNUC__
   if (!cleanup)
   {
@@ -341,6 +417,16 @@ unrecoverable:
   free(discardable);
 midwayerror:
   free(dxe.header);
+
+  deps = dxe.deps;
+  while (deps)
+  {
+    dxe_list *next = deps->next;
+
+    dlclose(deps->handle);
+    free(deps);
+    deps = next;
+  }
 
   return NULL;
 }
@@ -366,6 +452,19 @@ int dlclose(void *dxe)
         *cur = ((dxe_h)dxe)->next;
         break;
       }
+  }
+
+  /* remove all implicitly loaded modules by this module.  */
+  {
+    dxe_list *deps = ((dxe_h)dxe)->deps;
+    while (deps)
+    {
+      dxe_list *next = deps->next;
+
+      dlclose(deps->handle);
+      free(deps);
+      deps = next;
+    }
   }
 
   free(((dxe_h)dxe)->header);
