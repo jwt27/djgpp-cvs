@@ -1,3 +1,4 @@
+/* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -147,7 +148,7 @@ int		rmdir(const char *_path);
 int		setgid(gid_t _gid);
 int		setpgid(pid_t _pid, pid_t _pgid);
 pid_t		setsid(void);
-int		setuid(uid_t uid);
+int		setuid(uid_t _uid);
 unsigned int	sleep(unsigned int _seconds);
 long		sysconf(int _name);
 pid_t		tcgetpgrp(int _fildes);
