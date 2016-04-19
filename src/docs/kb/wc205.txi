@@ -1,4 +1,4 @@
-@node Changes in 2.05, , Changes in 2.04, What Changed
+@node Changes in 2.05, Changes in 2.06, Changes in 2.04, What Changed
 @section Changes in 2.05
 
 Here is a list of changes from DJGPP V2.04 to DJGPP V2.05

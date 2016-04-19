@@ -3,11 +3,12 @@
 
 @menu
 
-* Changes in 2.01::		DJGPP 2.01
-* Changes in 2.02::		DJGPP 2.02
-* Changes in 2.03::		DJGPP 2.03
-* Changes in 2.04::		DJGPP 2.04
-* Changes in 2.05::             DJGPP 2.05
+* Changes in 2.01::            DJGPP 2.01
+* Changes in 2.02::            DJGPP 2.02
+* Changes in 2.03::            DJGPP 2.03
+* Changes in 2.04::            DJGPP 2.04
+* Changes in 2.05::            DJGPP 2.05
+* Changes in 2.06::            DJGPP 2.06
 
 @end menu
 
@@ -16,3 +17,4 @@
 @include wc203.txi
 @include wc204.txi
 @include wc205.txi
+@include wc206.txi
