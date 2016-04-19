@@ -3,6 +3,7 @@ TOP=../..
 SRC += access.c
 SRC += append.c
 SRC += chdr.c
+SRC += dup2.c
 SRC += gcwd.c
 SRC += getpid.c
 SRC += sleep.c
