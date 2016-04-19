@@ -1,3 +1,4 @@
+/* Copyright (C) 2016 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -15,8 +16,16 @@ int
 dup2(int fd, int newfd)
 {
   __dpmi_regs r;
+
+  if (newfd < 0 || newfd >= getdtablesize() || _get_dev_info(fd) == -1)
+  {
+    errno = EBADF;
+    return -1;
+  }
+
   if (fd == newfd)
     return newfd;
+
   /* Reset the text/binary modes, the fsext, and the properties, since
      DOS function 46h closes newfd.  */
   __file_handle_set(newfd, __file_handle_modes[fd] ^ (O_BINARY|O_TEXT));

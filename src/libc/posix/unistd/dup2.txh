@@ -12,7 +12,9 @@ int dup2(int existing_handle, int new_handle);
 
 This call causes @var{new_handle} to refer to the same file and file
 pointer as @var{existing_handle}.  If @var{new_handle} is an open file,
-it is closed. 
+it is closed.  If @var{existing_handle} is not a valid open file descriptor
+or if @var{new_handle} out of the allowed range for file descriptors the
+call will fail and @code{errno} will be set to @code{EBADF}.
 
 @subheading Return Value
 
@@ -20,7 +22,7 @@ The new handle, or -1 on error.
 
 @subheading Portability
 
-@portability !ansi, posix
+@portability !ansi, posix-1003.1-2001
 
 @subheading Example
 
