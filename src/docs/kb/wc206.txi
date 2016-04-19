@@ -1,0 +1,12 @@
+@node Changes in 2.06, , Changes in 2.05, What Changed
+@section Changes in 2.06
+
+Here is a list of changes from DJGPP V2.05 to DJGPP V2.06
+
+@findex dup2@r{, and POSIX.1-2001 compliance}
+The validity of the file descriptors passed to @code{dup2} is now checked.
+If @var{existing_handle} is not a valid open file descriptor or
+if @var{new_handle} is out of the allowed range for file descriptors
+the call of @code{dup2} will fail and @code{errno} will be set to @code{EBADF}.
+With this adjustment, the @acronym{Posix} compliance of the @code{dup2} implementation
+is increased.
