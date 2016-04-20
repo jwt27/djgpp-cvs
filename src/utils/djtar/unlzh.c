@@ -1,3 +1,4 @@
+/* Copyright (C) 2016 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
@@ -11,7 +12,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unlzh.c,v 1.5 2015/05/02 07:32:38 andris Exp $";
+static char rcsid[] = "$Id: unlzh.c,v 1.6 2016/04/20 21:45:00 juan.guerrero Exp $";
 #endif
 
 #include "tailor.h"
@@ -236,7 +237,8 @@ local void read_pt_len(int nn, int nbit, int i_special)
       {
         mask = (unsigned) 1 << (BITBUFSIZ - 1 - 3);
         while (mask & bitbuf)
-          mask >>= 1;  c++;
+          mask >>= 1;
+        c++;
       }
       fillbuf((c < 7) ? 3 : c - 3);
       pt_len[i++] = c;
