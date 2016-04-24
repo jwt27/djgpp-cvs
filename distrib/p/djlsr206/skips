@@ -1,0 +1,17 @@
+/src\/cwsdpmi/ d
+/src\/libc\/libc.i/ d
+/src\/libc\/libc2.tex/ d
+/src\/libemu\/emu387.dxe/ d
+/src\/stub\/djasm.c$/ d
+/src\/stub\/stub.h$/ d
+/src\/libc\/stubs\/.*\.S$/ d
+/src\/libc\/stubs\/makefil2$/ d
+/makefile.oi/ d
+/makefile.rf/ d
+/makefile.sub/ d
+/src\/libm\/.*\.def$/ d
+/\/[Cc][Vv][Ss]\// d
+/\/\.cvsignore/ d
+/src\/debug\/ar\.in/ d
+/src\/libc\/dpmi\/api\/_dpmi/ d
+/src\/mwdpmi/ d
