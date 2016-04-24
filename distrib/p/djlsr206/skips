@@ -15,3 +15,6 @@
 /src\/debug\/ar\.in/ d
 /src\/libc\/dpmi\/api\/_dpmi/ d
 /src\/mwdpmi/ d
+/src\/gcc-l\.opt/ d
+/src\/gcc\.opt/ d
+/src\/gpp\.opt/ d
