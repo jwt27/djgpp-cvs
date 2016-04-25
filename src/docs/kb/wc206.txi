@@ -10,3 +10,9 @@ if @var{new_handle} is out of the allowed range for file descriptors
 the call of @code{dup2} will fail and @code{errno} will be set to @code{EBADF}.
 With this adjustment, the @acronym{Posix} compliance of the @code{dup2} implementation
 is increased.
+
+@findex fcntl@r{, and POSIX.1-2001 compliance}
+If the passed file descriptors are not valid for the @code{F_DUPFD} command then
+the call of @code{fcntl} will fail and @code{errno} will be set to @code{EINVAL}.
+With this adjustment, the @acronym{Posix} compliance of the @code{fcntl} implementation
+is increased.
