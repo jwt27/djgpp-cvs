@@ -1,3 +1,4 @@
+/* Copyright (C) 2016 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2010 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -324,8 +325,6 @@ fcntl(int fd, int cmd, ...)
       /* DOS only passes the first 20 handles to child programs.  In
          addition, handles 19 and 18 will be closed by the stub of the
          child program (if it is a DJGPP program).  */
-
-
       if (fd >= 18)
         return FD_CLOEXEC;
 
@@ -425,6 +424,7 @@ fcntl(int fd, int cmd, ...)
       unsigned char sft_open_flags;
       int flags = 0;
 
+
       /*
        * Use the data in the SFT.
        *
@@ -494,6 +494,7 @@ fcntl(int fd, int cmd, ...)
       struct flock64 lock_r64;
       int ret = -1, lcmd = -1;
 
+
       va_start (ap, cmd);
       lock_req = va_arg(ap, struct flock *);
       va_end (ap);
@@ -527,6 +528,7 @@ fcntl(int fd, int cmd, ...)
     {
       struct flock64 *lock_r64; /* shut up -Wall */
       int ret;
+
 
       va_start (ap, cmd);
       lock_r64 = va_arg(ap, struct flock64 *);
