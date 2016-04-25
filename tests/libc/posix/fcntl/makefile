@@ -2,6 +2,7 @@ TOP=../..
 
 SRC += binpr.c
 SRC += bt.c
+SRC += fcntl.c
 SRC += fcntl3gb.c
 SRC += inherit.c
 SRC += makef3gb.c
