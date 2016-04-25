@@ -1,3 +1,4 @@
+/* Copyright (C) 2016 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2009 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -33,6 +34,8 @@ extern "C" {
 #define F_GETLK64	9
 #define F_SETLK64	10
 #define F_SETLKW64	11
+#define F_GETOWN	12
+#define F_SETOWN	13
 
 #define F_UNLCK		0
 #define F_RDLCK		1
