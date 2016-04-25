@@ -464,7 +464,7 @@ static void vbios_write_ch(unsigned char ch, int *col, int *row)
     __dpmi_int(0x10, &r);
     if (++(*col) > __tty_screen.max_col)
     {
-      col = 0;
+      *col = 0;
       ++row;
     }
     __tty_screen.set_cursor(*col, *row);
