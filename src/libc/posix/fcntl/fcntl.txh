@@ -154,9 +154,11 @@ calling @code{fcntl} with the @code{F_DUPFD} command, you should use
 If an invalid or unsupported value is passed in @var{cmd}, or @var{fd}
 is an invalid file handle, the function returns -1 and sets @code{errno}
 to the appropriate value.  Unsupported values of @var{cmd} cause
-@code{ENOSYS} to be stored in @code{errno}.  If @var{cmd} is
-@code{F_DUPFD}, the function returns the new descriptor or -1 in case of
-a failure.
+@code{ENOSYS} to be stored in @code{errno}.  Invalid values of @var{cmd}
+cause @code{EINVAL} to be stored in @code{errno}.  If @var{cmd} is @code{F_DUPFD},
+the function returns the new descriptor or -1 in case of a failure and sets
+@code{errno} to @code{EINVAL}.  If @var{fd} is an invalid file handle,
+the function sets @code{errno} to @code{EBADF}.
 
 Lock requests which specify the open file's current @code{EOF} position
 as the value of @var{l_start} and zero as the @var{l_len} value will
@@ -166,7 +168,7 @@ fail, returning -1 with @code{errno} set to @code{EACCES}.
 @subheading Portability
 
 @port-note posix Contrary to Posix requirement, the handle returned by @code{F_DUPFD} shares the @code{FD_CLOEXEC} flag with @var{fd} (unless they are on different sides of the 20-handle mark), since DOS/Windows only maintain a single set of bits for all the handles associated with the same call to @code{open}.
-@portability !ansi, posix
+@portability !ansi, posix-1003.1-2001
 
 
 @subheading Example

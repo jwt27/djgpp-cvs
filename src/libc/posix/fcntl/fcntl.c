@@ -270,7 +270,10 @@ fcntl(int fd, int cmd, ...)
   /* Verify the descriptor is valid by retrieving
      the handle's device info word.  */
   if (dev_info == -1)
+  {
+    errno = EBADF;
     return dev_info;
+  }
 
 
   /* Allow a fd to override with a FSEXT.  */
@@ -307,13 +310,13 @@ fcntl(int fd, int cmd, ...)
 
       if (tofd >= open_max)
       {
-        errno = EMFILE;
+        errno = EINVAL;
         return -1;
       }
 
 
-      errno = errno_save;
-      return dup2(fd, tofd);
+      errno = (tofd = dup2(fd, tofd)) == -1 ? EINVAL : errno_save;
+      return tofd;
     }
 
 
@@ -538,10 +541,18 @@ fcntl(int fd, int cmd, ...)
 
       return ret;
     }
-  }
+ 
+
+    case F_GETOWN:
+    case F_SETOWN:
+    {
+      errno = ENOSYS;
+      return -1;
+    }
+ }
 
 
   /* In case fcntl is called with an unrecognized command.  */
-  errno = ENOSYS;
+  errno = EINVAL;
   return -1;
 }
