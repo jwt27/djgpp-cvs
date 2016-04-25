@@ -8,3 +8,5 @@ SRC += strndup.c
 SRC += strnlen.c
 
 include $(TOP)/../makefile.inc
+
+strndup.o:	EXTRA_CFLAGS += -fno-builtin-strndup

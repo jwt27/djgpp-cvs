@@ -36,3 +36,7 @@ fp-asm.h: fp-asm.sed $(TOP)/../../include/math.h
 
 clean::
 	$(MISC) rm fp-asm.h
+
+nan.o: EXTRA_CFLAGS += -fno-builtin-nan
+nanf.o: EXTRA_CFLAGS += -fno-builtin-nanf
+nanl.o: EXTRA_CFLAGS += -fno-builtin-nanl
