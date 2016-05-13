@@ -33,7 +33,7 @@ will provide additional debugging output when it executes.
 
 Usage: @kbd{stubify [-v] [-g] [-stubparams=param[,param@dots{}]] files}
 
-@command{stubify} is a utility that adds a DOS exectuable stub loader to the
+@command{stubify} is a utility that adds a DOS executable stub loader to the
 front of a @acronym{COFF} image.  The input program may be @acronym{COFF}
 or a stubbed @file{.exe}, and may be @acronym{COFF} with @file{.exe}
 extension.  The resulting file will have @file{.exe} extension.
@@ -72,7 +72,7 @@ for the available parameters.
 
 Usage: @kbd{stubedit [-h] [-v] file.exe [field=value . . .]}
 
-@command{stubedit} is a utility that allows you to modify the DOS exectuable
+@command{stubedit} is a utility that allows you to modify the DOS executable
 stub loader parameters.  These parameters allow you to set the default
 stack size, real mode memory transfer buffer size, the @code{argv0} value,
 and @acronym{DPMI} provider.
@@ -134,7 +134,7 @@ finally the current default directory.
 @chapter @command{exe2coff}
 @pindex exe2coff
 
-@command{exe2coff} is a utility that strips the DOS exectuable stub loader
+@command{exe2coff} is a utility that strips the DOS executable stub loader
 from the front of @acronym{DJGPP} executable image and writes a
 @acronym{COFF} image.  This would be used as the first step in replacing
 the stub with a different stub.  For example:
