@@ -12,7 +12,7 @@
  */
 
 #ifdef RCSID
-static char rcsid[] = "$Id: unlzh.c,v 1.6 2016/04/20 21:45:00 juan.guerrero Exp $";
+static char rcsid[] = "$Id: unlzh.c,v 1.7 2016/06/22 08:05:12 sezeroz Exp $";
 #endif
 
 #include "tailor.h"
@@ -237,8 +237,10 @@ local void read_pt_len(int nn, int nbit, int i_special)
       {
         mask = (unsigned) 1 << (BITBUFSIZ - 1 - 3);
         while (mask & bitbuf)
+        {
           mask >>= 1;
-        c++;
+          c++;
+        }
       }
       fillbuf((c < 7) ? 3 : c - 3);
       pt_len[i++] = c;
