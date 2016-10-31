@@ -74,5 +74,5 @@ clean : misc.exe makemake.exe
 config:
 	$(MAKE) -f makefile.cfg
 
-rmake.exe: rmake.cc
-	gcc -O2 -Wall -xc rmake.cc -o rmake.exe
+rmake.exe: rmake.c
+	gcc -O2 -Wall rmake.c -o rmake.exe
