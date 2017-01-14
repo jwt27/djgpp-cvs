@@ -1,8 +1,11 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #ifndef __dj_include_memory_h_
 #define __dj_include_memory_h_
+
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
