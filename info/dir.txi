@@ -447,9 +447,14 @@ RHIDE
 * RHIDE: (rhide).               RHIDE, an IDE for DJGPP or Linux.
 
 
-Miscellaneous Utilities
+Data Compression
 
 * Bzip2: (bzip2).               A program and library for data compression.
+* Clzip: (clzip).               LZMA lossless data compressor
+* Lzlib: (lzlib).               Compression library for the lzip format
+
+
+Miscellaneous Utilities
 
 
 Miscellaneous Documentation
