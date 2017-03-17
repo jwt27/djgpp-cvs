@@ -156,6 +156,12 @@ From gdbNNNb.zip
 * Standards: (standards).       GNU coding standards.
 
 
+GNU libraries
+
+* Libiberty: (libiberty).       Library of utility functions which
+                                are missing or broken on some systems.
+
+
 Miscellaneous GNU utilities
 
 * Autoconf: (autoconf).
