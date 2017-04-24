@@ -171,6 +171,10 @@ Miscellaneous GNU utilities
 * aclocal: (automake)Invoking aclocal.    Generating aclocal.m4
 
 
+* BC: (bc).                     An arbitrary precision calculator language.
+* DC: (dc).                     An arbitrary precision postfix desk calculator.
+
+
 * Bison: (bison).               The GNU yacc-like parser generator
 
 * Bash: (bash).                 The GNU Bourne-Again SHell.
@@ -181,9 +185,6 @@ Miscellaneous GNU utilities
 
 * CVS: (cvs).                   A distributed configuration management system.
 * cvsclient: (cvsclient).       The CVS client/server protocol docs.
-
-
-* DC: (dc).                     An arbitrary precision postfix desk calculator.
 
 
 * Diffutils: (diffutils).       The GNU difference utilities.
