@@ -3,6 +3,10 @@
 
 Here is a list of changes from DJGPP V2.05 to DJGPP V2.06
 
+@cindex Update of DXE linker script
+The dxe linker script, dxe.ld, now handles @code{.gnu.linkonce.b.*} and
+@code{.bss.*} sections.
+
 @findex dup2@r{, and POSIX.1-2001 compliance}
 The validity of the file descriptors passed to @code{dup2} is now checked.
 If @var{existing_handle} is not a valid open file descriptor or
