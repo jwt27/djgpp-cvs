@@ -3,6 +3,9 @@
 
 Here is a list of changes from DJGPP V2.05 to DJGPP V2.06
 
+@cindex dxe3gen and extended coff relocations
+dxe3gen now handles extended coff relocations (more than 65535 relocs.)
+
 @cindex Update of DXE linker script
 The dxe linker script, dxe.ld, now handles @code{.gnu.linkonce.b.*} and
 @code{.bss.*} sections.

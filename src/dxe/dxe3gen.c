@@ -193,7 +193,7 @@
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
 
-#define VERSION  "1.0.3"
+#define VERSION  "1.0.4"
 
 #define TEMP_BASE    "dxe_tmp"       /* 7 chars, 1 char suffix */
 #define TEMP_O_FILE  TEMP_BASE".o"
@@ -937,6 +937,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   char *strings;
   RELOC *relocs;
   unsigned int i, j, errcount;
+  ULONG32 real_nrelocs;
   size_t hdrsize;
 
   /* Exported symbols table */
@@ -985,9 +986,23 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   strings[0] = 0;
 
   /* Read the relocation table */
-  relocs = (RELOC *)malloc(sc.s_nreloc * sizeof(RELOC));
   fseek(inf, sc.s_relptr, SEEK_SET);
-  fread(relocs, RELSZ, sc.s_nreloc, inf);
+  if (sc.s_flags & STYP_NRELOC_OVFL)
+  {
+    fread(&real_nrelocs, 4, 1, inf); /* read r_vaddr */
+    fseek(inf, RELSZ - 4, SEEK_CUR); /* skip the rest */
+    dh.nrelocs = --real_nrelocs;
+#if 0
+    if (opt.verbose)
+      printf("%s: found extended relocations, nrelocs = %lu\n", progname, (unsigned long)real_nrelocs);
+#endif
+  }
+  else
+  {
+    real_nrelocs = dh.nrelocs;
+  }
+  relocs = (RELOC *)malloc(real_nrelocs * sizeof(RELOC));
+  fread(relocs, RELSZ, real_nrelocs, inf);
 
   /* Close input file */
   fclose(inf);
@@ -1042,7 +1057,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
       int n_abs_relocs = 0, n_rel_relocs = 0;
 
       /* count the amount of relocations pointing to this symbol */
-      for (j = 0; j < sc.s_nreloc; j++)
+      for (j = 0; j < real_nrelocs; j++)
       {
         if (relocs[j].r_symndx == i)
         {
@@ -1101,7 +1116,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
 
       unres_size = newsize;
 
-      for (j = 0; j < sc.s_nreloc; j++)
+      for (j = 0; j < real_nrelocs; j++)
       {
         if (relocs[j].r_symndx == i)
         {
@@ -1202,7 +1217,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
 
   /* Compute the amount of valid relocations */
   DEBUG_PRINT_RELOCATION_DIRECTIVE_PROLOG();
-  for (i = 0; i < sc.s_nreloc; i++)
+  for (i = 0; i < real_nrelocs; i++)
   {
     DEBUG_PRINT_RELOCATION_DIRECTIVE(i, relocs);
     if (!VALID_RELOC(relocs[i]))
@@ -1278,7 +1293,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   free(data);
 
   /* Output the relocations */
-  for (i = 0; i < sc.s_nreloc; i++)
+  for (i = 0; i < real_nrelocs; i++)
   {
     if (VALID_RELOC(relocs[i]))
       fwrite(&relocs[i].r_vaddr, 1, sizeof(relocs[0].r_vaddr), outf);
