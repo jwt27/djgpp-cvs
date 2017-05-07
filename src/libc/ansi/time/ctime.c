@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2005 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -362,7 +363,7 @@ tzload(const char *name, struct state *const sp, const int doextend)
 
     /* We've got a built-in copy of posixrules just in case */
     memcpy(buf, _posixrules_data, sizeof(_posixrules_data));
-    i = sizeof(_posixrules_data);
+    nread = sizeof(_posixrules_data);
   }
   else
   {
@@ -944,6 +945,7 @@ tzparse(const char *name, struct state *const sp, const int lastditch)
     name += stdlen;
     if (stdlen >= sizeof sp->chars)
       stdlen = (sizeof sp->chars) - 1;
+    stdoffset = 0;
   }
   else
   {
@@ -1156,6 +1158,7 @@ tzparse(const char *name, struct state *const sp, const int lastditch)
     sp->ttis[0].tt_gmtoff = -stdoffset;
     sp->ttis[0].tt_isdst = 0;
     sp->ttis[0].tt_abbrind = 0;
+    sp->defaulttype = 0;
   }
   sp->charcnt = stdlen + 1;
   if (dstlen != 0)
