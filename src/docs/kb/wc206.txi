@@ -3,6 +3,10 @@
 
 Here is a list of changes from DJGPP V2.05 to DJGPP V2.06
 
+@findex ctime@r{, fixed wrong return value of @code{ctime(0)}}
+@findex ctime_r@r{, fixed wrong return value of @code{ctime_r(0)}}
+A call of @code{ctime(0)} or @code{ctime_r(0)} now returns the correct value.
+
 @cindex dxe3gen and extended coff relocations
 dxe3gen now handles extended coff relocations (more than 65535 relocs.)
 
