@@ -32,6 +32,13 @@ _put_path(const char *path)
   return _put_path2(path, 0);
 }
 
+static int _is_dev_path(const char *p)
+{
+  return (p[0] == '/' || p[0] == '\\')
+    && strncmp(p + 1, "dev", 3) == 0
+    && (p[4] == '/' || p[4] == '\\');
+}
+
 int
 _put_path2(const char *path, int offset)
 {
@@ -49,7 +56,7 @@ _put_path2(const char *path, int offset)
 
   if (p[0] && p[1] == ':')
     p += 2;
-  if (strncmp(p, "/dev/", 5) == 0)
+  if (_is_dev_path(p))
   {
     if (strcmp(p+5, "null") == 0)
       path = "nul";
