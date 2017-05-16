@@ -1160,7 +1160,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
         BOOL ok = FALSE;
         for (j = 0; j < opt.num_excl; j++)
         {
-          if (memcmp(opt.excl_prefix[j], name, strlen(opt.excl_prefix[j])) == 0)
+          if (strncmp(opt.excl_prefix[j], name, strlen(opt.excl_prefix[j])) == 0)
           {
             ok = TRUE;
             break;
@@ -1175,7 +1175,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
         BOOL ok = FALSE;
         for (j = 0; j < opt.num_prefix; j++)
         {
-          if (memcmp(opt.export_prefix[j], name, strlen(opt.export_prefix[j])) == 0)
+          if (strncmp(opt.export_prefix[j], name, strlen(opt.export_prefix[j])) == 0)
           {
             ok = TRUE;
             break;
