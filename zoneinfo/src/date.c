@@ -128,6 +128,7 @@ main(const int argc, char *argv[])
 		switch (ch) {
 		default:
 			usage();
+			break;
 		case 'u':		/* do it in UTC */
 		case 'c':
 			dogmt();
@@ -660,6 +661,7 @@ convert(register const char * const value, const int dousg, const time_t t)
 		default:
 			wildinput(_("time"), value,
 				_("main part is wrong length"));
+			break;
 		case 12:
 			if (!dousg) {
 				cent = ATOI2(cp);
