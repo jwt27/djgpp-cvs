@@ -196,6 +196,10 @@ ifeq ($(filter 3,$(CROSS_GCC_MAJOR)),)
 ifeq ($(filter 4,$(CROSS_GCC_MAJOR)),)
 # gcc >= 5.x
 CROSS_GCC4_DFLAGS = -Wno-type-limits
+ifeq ($(filter 6,$(CROSS_GCC_MAJOR)),)
+# gcc >= 7.x
+CROSS_GCC4_DFLAGS = -Wno-implicit-fallthrough
+endif
 else
 # gcc >= 4.x
 ifeq ($(filter 0 1 2,$(CROSS_GCC_MINOR)),)
@@ -215,6 +219,10 @@ ifeq ($(filter 3,$(GCC_MAJOR)),)
 ifeq ($(filter 4,$(GCC_MAJOR)),)
 # gcc >= 5.x
 GCC4_DEBUG_FLAGS = -Wno-type-limits
+ifeq ($(filter 6,$(GCC_MAJOR)),)
+# gcc >= 7.x
+GCC4_DFLAGS = -Wno-implicit-fallthrough
+endif
 else
 # gcc >= 4.x
 ifeq ($(filter 0 1 2,$(GCC_MINOR)),)
