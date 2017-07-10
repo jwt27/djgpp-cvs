@@ -275,6 +275,7 @@ GNU Gettext Utilities
 
 * History: (history).           The GNU history library API.
 * Readline: (readline).         The GNU readline library API.
+* RLuserman: (rluserman).       The GNU readline library User's Manual.
 
 
 * Id-utils: (id-utils).         The GNU Identifier database utilities.
