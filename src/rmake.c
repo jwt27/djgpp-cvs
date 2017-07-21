@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -11,6 +12,7 @@ int
 main(int argc, char **argv)
 {
   int i;
+  glob_t makefile_list;
   char cwd[200];
   char path[200];
   char file[200];
@@ -21,14 +23,16 @@ main(int argc, char **argv)
 
   argv[0] = (char*)"make";
 
-  glob_t makefile_list;
   glob(".../makefile", 0, 0, &makefile_list);
 
   for (i = 0; i<makefile_list.gl_pathc; i++)
   {
-    char *mf = makefile_list.gl_pathv[i];
+    char *lsl, *mf;
+    FILE *oh;
+
+    mf = makefile_list.gl_pathv[i];
     strcpy(path, mf);
-    char *lsl = strrchr(path, '/');
+    lsl = strrchr(path, '/');
     if (lsl) *lsl = 0;
 
     if (strcmp(mf, "makefile") == 0)
@@ -45,7 +49,7 @@ main(int argc, char **argv)
     if (spawnvp(P_WAIT, "make", argv))
       exit(1);
 
-    FILE *oh = fopen("makefile.oh", "r");
+    oh = fopen("makefile.oh", "r");
     if (oh)
     {
       int last_was_nl = 1;
