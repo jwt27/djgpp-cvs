@@ -100,7 +100,7 @@ int convert_and_print (const char *fmt, const char *buf)
         else
           printf ("Result: long long %lld (0x%llx)\n", llnum[0], llnum[0]);
 
-          return converted;
+        return converted;
       }
       else
       {
