@@ -1,8 +1,20 @@
+#include <stdlib.h>
 #include <sys/farptr.h>
 
 int
-main(long l, short s, char c)
+main(int argc, char *argv[])
 {
+  char c, *end = NULL;
+  long l;
+  short s;
+
+  if (argc < 4)
+    return 1;
+
+  l = (long)strtol(argv[1], &end, 0);
+  s = (short)strtol(argv[2], &end, 0);
+  c = (char)argv[3][0];
+
   asm("\n/* ------------ farpokeb */");
   _farpokeb(s, l, l);
   _farpokeb(s, l, s);
