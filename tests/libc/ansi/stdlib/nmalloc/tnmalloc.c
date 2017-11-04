@@ -454,8 +454,8 @@ double gaussrand(void)
    if (phase) Y = V2 * X;
    else {
       do {
-         U1 = (double)randomMT() / ranMTMAX;
-         U2 = (double)randomMT() / ranMTMAX;
+         U1 = randomMT() / (double)ranMTMAX;
+         U2 = randomMT() / (double)ranMTMAX;
 
          V1 = 2 * U1 - 1;
          V2 = 2 * U2 - 1;
