@@ -47,11 +47,12 @@ else
 
 # For building distributed (djgpp) libraries and programs
 
-CROSS_GCC = i586-pc-msdosdjgpp-gcc -pipe
-CROSS_AR = i586-pc-msdosdjgpp-ar
-CROSS_AS = i586-pc-msdosdjgpp-as
-CROSS_LD = i586-pc-msdosdjgpp-ld
-CROSS_STRIP = i586-pc-msdosdjgpp-strip
+CROSS_PREFIX = i586-pc-msdosdjgpp-
+CROSS_GCC = $(CROSS_PREFIX)gcc -pipe
+CROSS_AR = $(CROSS_PREFIX)ar
+CROSS_AS = $(CROSS_PREFIX)as
+CROSS_LD = $(CROSS_PREFIX)ld
+CROSS_STRIP = $(CROSS_PREFIX)strip
 CROSS_BISON = bison
 
 # For building programs that *run* during the build (hostbin/*);
