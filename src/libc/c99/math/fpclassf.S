@@ -9,7 +9,7 @@
  */
 
 #include "fp-asm.h"
-		
+
 /*
  * Bits:	31 (sign), 30-23 (exponent), 22-0 (fraction)
  * Zero:	+/-		0		0
@@ -40,12 +40,12 @@ zero_exponent:
 	movl	$FP_SUBNORMAL, %eax
 zero:
 	ret
-	
+
 all_ones_exponent:
 	movl    $FP_INFINITE, %eax
 	testl	$0x7fffff, %edx
 	jz	infinity
-	
+
 	movl    $FP_NAN, %eax
 infinity:
 	ret

@@ -19,7 +19,7 @@ _asinh:
 	can be put in the form
 
 		asinh(x) = log1p(x + x*x/(sqrt(x*x + 1.) + 1.))
-	
+
 	where log1p(x) = log(1+x), a built-in x87 coprocessor function.	 This
 	form has no cancellation problems, since all the subexpressions are
 	positive.

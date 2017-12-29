@@ -62,7 +62,7 @@ xzero:					/* x == 0; y is in st(0); test y */
 	ja	zeroresult		/* x = 0 y > 0 */
 	jb	infresult		/* x = 0, y < 0 (including y = -inf) */
 					/* x = 0, y = 0: */
-	fld1				/* return 1 but raise EDOM */ 
+	fld1				/* return 1 but raise EDOM */
 	movl	$1, _errno
 	jmp	CleanUp
 

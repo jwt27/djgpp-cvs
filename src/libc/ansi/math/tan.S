@@ -23,7 +23,7 @@ abarg:
 					   so ill-conditioned here that
 					   result is meaningless anyway. */
 	fldz				/* Return 0. by default. */
-	ret	
+	ret
 
 badarg:					/* x = inf or NaN */
 	movl	$1, _errno

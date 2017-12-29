@@ -9,7 +9,7 @@
  */
 
 #include "fp-asm.h"
-	
+
 /*
  * Bits:	79 (sign), 78-64 (exponent), 63 (integer), 62-0 (fraction)
  * Zero:	+/-		0		0		0
@@ -38,7 +38,7 @@ ___fpclassifyld:
 	andl	$0x7fffffff, %edx /* Remove integer bit. */
 	andl	$0x7fff, %eax
 	jz	unnormal
-	
+
 	cmpl	$0x7fff, %eax
 	je	all_ones_exponent
 
@@ -54,10 +54,10 @@ no_one_bit:
 	jz	zero
 
 	movl    $FP_SUBNORMAL, %eax
-zero:	
+zero:
 	ret
-	
-unnormal:	
+
+unnormal:
 	movl	$FP_UNNORMAL, %eax
 	ret
 
@@ -65,7 +65,7 @@ all_ones_exponent:
 	orl	4(%esp), %edx
 	movl    $FP_INFINITE, %eax
 	jz	infinity
-	
+
 	movl    $FP_NAN, %eax
 infinity:
 	ret

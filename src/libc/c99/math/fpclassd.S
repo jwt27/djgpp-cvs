@@ -9,7 +9,7 @@
  */
 
 #include "fp-asm.h"
-	
+
 /*
  * Bits:	63 (sign), 62-52 (exponent), 51-0 (fraction)
  * Zero:	+/-		0		0
@@ -53,7 +53,7 @@ all_ones_exponent:
 	orl	4(%esp), %edx
 	movl    $FP_INFINITE, %eax
 	jz	infinity
-	
+
 	movl    $FP_NAN, %eax
 infinity:
 	ret

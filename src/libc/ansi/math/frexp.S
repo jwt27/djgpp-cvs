@@ -14,7 +14,7 @@ _frexp:
 	returns mantissa in range [0.5, 1), exponent such that
 	value = mantissa * (2^expon)
 	*/
-	
+
 	movl	12(%esp), %edx		/* Load pointer to expon. */
 
 	movl	8(%esp), %eax
@@ -25,7 +25,7 @@ _frexp:
 	movl	4(%esp), %eax
 	testl	%eax, %eax
 	jnz	inftest
-	
+
 	movl	$0, (%edx)		/* If so, return zeros. */
 	fldz
 	ret

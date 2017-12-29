@@ -73,7 +73,7 @@ onetotwo:
 	movl	4(%esp), %eax
 	testl	%eax, %eax
 	jz	argok
-	
+
 badarg:
 	movl	$1, _errno
 	flds	NaN
