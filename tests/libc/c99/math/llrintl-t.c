@@ -9,7 +9,7 @@
 
 typedef struct {
   const _longdouble_union_t value;  /* test value */
-  const long long int should_be;         /* result */
+  const long long int should_be;    /* result */
 } entry_t;
 
 static const entry_t tests_long_double[] =
