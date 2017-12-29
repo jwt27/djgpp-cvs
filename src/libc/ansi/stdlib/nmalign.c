@@ -129,6 +129,7 @@ void *nmemalign(size_t alignment, size_t size)
          return nmalloc(szneed);                      /* EXIT */
       }
       else if ((minit = nmalloc(szneed + XTRA))) {
+         m = MEMBLKp(minit);
          /* alignment >= 2*ALIGN and power of 2 if here */
          misalign = (ulong)minit % alignment;
          DBGPRTM("  misalignment = %d", misalign);
@@ -138,9 +139,10 @@ void *nmemalign(size_t alignment, size_t size)
          }
          else {
             /* two or more chunks to release */
-            /* for now, just return NULL and have a leak */
             DBGPRTM("  Complex case, release multiple chunks");
             DBGEOLN;
+            nfree(PTR(__nmalloc_split(&m, alignment - misalign)));
+            return nrealloc(PTR(m), size);
          }
       } /* alignment > ALIGN */
    } /* valid parameters */

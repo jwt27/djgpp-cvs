@@ -392,7 +392,7 @@ static int searchfree(ulong szneed)
 /* The higher portion is returned in *mp,     */
 /* the lower portion via the function return. */
 /* and the lower portion is marked non-free   */
-static memblockp split(memblockp *mp, ulong sz)
+memblockp __nmalloc_split(memblockp *mp, ulong sz)
 {
    memblockp m1, m;
 
@@ -562,13 +562,13 @@ void *nmalloc(size_t size)
          if (m1->sz < szneed + MINSAVE)
             m = m1;
          else {
-            m = split(&m1, szneed);
+            m = __nmalloc_split(&m1, szneed);
             mv2freelist(m1);
          }
       }
       else if (lastsbrk &&
               (lastsbrk->sz >= (szneed + DATAOFFSET))) {
-         m = split(&lastsbrk, szneed);
+         m = __nmalloc_split(&lastsbrk, szneed);
       }
       /* if not found get more from system */
       else if ((m1 = extendsbrk(szneed))) {
@@ -577,7 +577,7 @@ void *nmalloc(size_t size)
             DBGPRTM(EOL "**FOULED lastsbrk\a");
          }
          else {
-            m = split(&lastsbrk, szneed);
+            m = __nmalloc_split(&lastsbrk, szneed);
          }
       }
    /* else abject_failure(); */
@@ -652,7 +652,7 @@ static memblockp mv2lastsbrk(memblockp m, ulong szneed)
 {
    memblockp m1;
 
-   m1 = split(&lastsbrk, szneed);
+   m1 = __nmalloc_split(&lastsbrk, szneed);
 
    /* Now m1 is the proposed new block, of the right size */
    /* links are already revised so copy data from m to m2 */
@@ -698,7 +698,7 @@ void *nrealloc(void *ptr, size_t size)
    if (szneed <= m->sz) {
       DBGPRTR(EOL "  Realloc is reducing");
       if ((m->sz - szneed) >= MINSAVE) {
-         m = split(&m1, szneed);
+         m = __nmalloc_split(&m1, szneed);
          mv2freelist(m1);
       }
    /* else just return old pointer, i.e. NOP */
@@ -714,7 +714,7 @@ void *nrealloc(void *ptr, size_t size)
       m = m1 = combinehi(m);
       /* now split off the excess, if any */
       if ((m->sz - szneed) >= MINSAVE) {
-         m = split(&m1, szneed);
+         m = __nmalloc_split(&m1, szneed);
          mv2freelist(m1);
       }
    /* else m is the oversized return block */
@@ -724,7 +724,7 @@ void *nrealloc(void *ptr, size_t size)
       /* lastsbrk is adequate and adjacent so use it */
       DBGPRTR(EOL "  Realloc is using lastsbrk to extend");
       m = m1 = combinehi(m1);
-      m = split(&m1, szneed);
+      m = __nmalloc_split(&m1, szneed);
       lastsbrk = m1;
    }
    else if (ISFREE(m->prev) &&
@@ -743,7 +743,7 @@ void *nrealloc(void *ptr, size_t size)
       m = m1;        /* done with the old m value */
       /* Is there something leftover */
       if ((m->sz - szneed) >= MINSAVE) {
-         m = split(&m1, szneed);
+         m = __nmalloc_split(&m1, szneed);
          mv2freelist(m1);
       }
    }
@@ -755,7 +755,7 @@ void *nrealloc(void *ptr, size_t size)
          m2 = m1;
       }
       else {
-         m2 = split(&m1, szneed);
+         m2 = __nmalloc_split(&m1, szneed);
          mv2freelist(m1);
       }
       /* Now m2 is the proposed new block, of the right size */
@@ -776,7 +776,7 @@ void *nrealloc(void *ptr, size_t size)
          DBGPRTR(EOL "  Realloc is now using lastsbrk extended");
          /* last chance to avoid copying */
          m = m1 = combinehi(m);
-         m = split(&m1, szneed);
+         m = __nmalloc_split(&m1, szneed);
          lastsbrk = m1;
       }
       else {
