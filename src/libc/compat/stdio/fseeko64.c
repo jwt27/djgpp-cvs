@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2007 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2006 DJ Delorie, see COPYING.DJ for details */
@@ -19,6 +20,10 @@ fseeko64(FILE *_stream, off64_t _offset, int _mode)
   o = llseek(fileno(_stream), _offset, _mode);
   if (o == -1)
     return -1;
+  if (_stream)
+    {
+      _stream->_cnt = 0;
+    }
   return 0;
 }
 
