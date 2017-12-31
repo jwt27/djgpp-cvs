@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2004 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -6,7 +7,7 @@
 #undef bcmp
 
 int
-bcmp(const void *vptr1, const void *vptr2, int length)
+bcmp(const void *vptr1, const void *vptr2, size_t length)
 {
   const char *ptr1 = vptr1;
   const char *ptr2 = vptr2; 

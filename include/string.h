@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -67,7 +68,7 @@ char *	strtok_r(char *  _s1, const char *  _s2, char ** _s3);
 
 #include <sys/movedata.h>
 
-int	bcmp(const void *_ptr1, const void *_ptr2, int _length);
+int	bcmp(const void *_ptr1, const void *_ptr2, size_t _length);
 void 	bcopy(const void *_a, void *_b, size_t _len);
 void 	bzero(void *ptr, size_t _len);
 int	ffs(int _mask);
