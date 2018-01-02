@@ -13,16 +13,19 @@
 
 /*
 FUNCTION
-       <<frexp>>, <<frexpf>>---split floating-point number
+       <<frexp>>, <<frexpf>>, <<frexpl>>---split floating-point number
 INDEX
 	frexp
 INDEX
 	frexpf
+INDEX
+	frexpl
 
 ANSI_SYNOPSIS
 	#include <math.h>
         double frexp(double <[val]>, int *<[exp]>);
         float frexpf(float <[val]>, int *<[exp]>);
+        long double frexpl(long double <[val]>, int *<[exp]>);
 
 TRAD_SYNOPSIS
 	#include <math.h>
@@ -32,6 +35,10 @@ TRAD_SYNOPSIS
 
         float frexpf(<[val]>, <[exp]>)
         float <[val]>;
+        int *<[exp]>;
+
+        long double frexpl(<[val]>, <[exp]>)
+        long double <[val]>;
         int *<[exp]>;
 
 
@@ -54,6 +61,9 @@ $ val = m \times 2^p $.
 
 <<frexpf>> is identical, other than taking and returning
 floats rather than doubles.
+
+<<frexpl>> is identical, other than taking and returning
+long doubles rather than doubles.
 
 RETURNS
 <<frexp>> returns the mantissa <[m]>. If <[val]> is <<0>>, infinity,

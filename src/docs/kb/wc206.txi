@@ -27,3 +27,7 @@ If the passed file descriptors are not valid for the @code{F_DUPFD} command then
 the call of @code{fcntl} will fail and @code{errno} will be set to @code{EINVAL}.
 With this adjustment, the @acronym{Posix} compliance of the @code{fcntl} implementation
 is increased.
+
+@cindex @acronym{C99} compliance, @code{math.h}
+@findex frexpl@r{, added to the math library}
+The @acronym{C99} function @code{frexpl} was added to comply with the @acronym{C99} standard.
