@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -84,6 +85,8 @@ extern float ceilf(float);
 extern float fabsf(float);
 extern float floorf(float);
 extern float fmodf(float, float);
+
+extern long double frexpl(long double, int *);
 
 /* End libm.a. */
 

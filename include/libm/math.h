@@ -1,3 +1,4 @@
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -17,7 +18,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.12 2015/07/19 11:28:00 juan.guerrero Exp $
+ * $Id: math.h,v 1.13 2018/01/02 22:02:05 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -155,6 +156,8 @@ extern double ceil __P((double));
 extern double fabs __P((double));
 extern double floor __P((double));
 extern double fmod __P((double, double));
+
+extern long double frexpl __P((long double, int *));
 
 #if !defined(__STRICT_ANSI__) || defined(__cplusplus) || \
     defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
