@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
 #include <unistd.h>
@@ -50,6 +52,8 @@ int main(void)
   failed += isspecial_test(); number_of_functions++;
   printf("Testing isinfl, isnanl and finitel...\n");
   failed += isspeciall_test(); number_of_functions++;
+  printf("Testing frexpl...\n");
+  failed += frexpl_test(); number_of_functions++;
 
   printf("Tested %d functions, %d errors detected\n", number_of_functions, failed);
   if (!isatty(fileno(stdout)))

@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 
 
@@ -5,6 +7,7 @@
 # define MAIN_T_H
 
 # include <stdio.h>
+# include <float.h>
 # include <math.h>
 # include <libc/ieee.h>
 
@@ -30,5 +33,6 @@ int rintl_test(void);
 int isspecialf_test(void);
 int isspecial_test(void);
 int isspeciall_test(void);
+int frexpl_test(void);
 
 #endif  /* MAIN_T_H */

@@ -43,7 +43,7 @@ OFILES = test.o string.o convert.o conv_vec.o iconv_vec.o test_is.o \
 T_OFILES = main-t.o trunc-t.o truncf-t.o truncl-t.o lrint-t.o lrintf-t.o \
            lrintl-t.o llrint-t.o llrintl-t.o roundf-t.o round-t.o roundl-t.o \
            lroundf-t.o lround-t.o lroundl-t.o llroundf-t.o llround-t.o llroundl-t.o \
-           rintl-t.o isspecial-t.o
+           rintl-t.o isspecial-t.o frexpl-t.o
 
 acosVEC_FILES   = acos_vec.c acosf_vec.c
 acoshVEC_FILES  = acosh_vec.c acoshf_vec.c
