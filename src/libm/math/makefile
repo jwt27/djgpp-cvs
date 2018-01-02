@@ -1,3 +1,5 @@
+# Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details
+# Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 TOP=..
@@ -68,6 +70,7 @@ SRC += s_fabs.c
 SRC += s_finite.c
 SRC += s_floor.c
 SRC += s_frexp.c
+SRC += s_frexpl.c
 SRC += s_ilogb.c
 SRC += s_isnan.c
 SRC += s_ldexp.c
@@ -194,7 +197,7 @@ SRC += finitel.c
 chobj = w_acos.def w_acosh.def w_asin.def s_asinh.def \
 	s_atan.def w_atan2.def w_atanh.def w_j0.def \
 	s_copysign.def w_cosh.def s_erf.def w_exp.def \
-	s_fabs.def s_floor.def w_fmod.def s_frexp.def \
+	s_fabs.def s_floor.def w_fmod.def s_frexp.def s_frexpl.def \
 	w_gamma.def w_hypot.def s_ldexp.def w_log.def \
 	w_log10.def w_log2.def s_log1p.def s_matherr.def \
 	s_modf.def w_pow.def w_remainder.def s_sin.def \
