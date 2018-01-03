@@ -18,10 +18,11 @@ It returns the value of the mantissa and stores the integer exponent in
 
 @subheading Return Value
 
-The mantissa.  If the value of @var{x} is @code{NaN} or @code{Inf}, the
-return value is @code{NaN}, zero is stored in @code{*pexp}, and
-@code{errno} is set to @code{EDOM}.  If @var{x} is zero, @var{*pexp} and
-the return value are also both zero.
+The mantissa.  If the value of @var{x} is @code{NaN}, the return value is
+@code{NaN} and zero is stored in @code{*pexp}.  If the value of @var{x} is
+@code{Inf}, the return value is @code{Inf} and zero is stored in @code{*pexp}.
+If @var{x} is zero, @var{*pexp} and the return value are also both zero.
+@code{errno} is not modified.
 
 @subheading Portability
 
