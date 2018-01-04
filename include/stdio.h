@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -158,9 +160,6 @@ extern FILE __dj_stdprn, __dj_stdaux;
 #define P_tmpdir "c:/"
 
 void	_djstat_describe_lossage(FILE *_to_where);
-int	_doprnt(const char *_fmt, va_list _args, FILE *_f);
-int	_doscan(FILE *_f, const char *_fmt, va_list _args);
-int	_doscan_low(FILE *, int (*)(FILE *_get), int (*_unget)(int, FILE *), const char *_fmt, va_list _args);
 int	fpurge(FILE *_f);
 int	getw(FILE *_f);
 char *	mktemp(char *_template);
