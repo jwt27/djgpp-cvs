@@ -1,8 +1,11 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 #include <stdarg.h>
 #include <stdio.h>
+#include <libc/doprsc.h>
 
 int
 snprintf(char *str, size_t n, const char *fmt, ...)

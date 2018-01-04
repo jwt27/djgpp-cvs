@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
@@ -17,6 +19,7 @@
 #include <conio.h>
 #include <libc/bss.h>
 #include <libc/unconst.h>
+#include <libc/doprsc.h>
 
 int _wscroll = 1;
 

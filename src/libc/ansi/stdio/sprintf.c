@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2004 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -7,6 +9,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <libc/file.h>
+#include <libc/doprsc.h>
 
 int
 sprintf(char *str, const char *fmt, ...)

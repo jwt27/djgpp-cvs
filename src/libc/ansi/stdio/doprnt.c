@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
@@ -25,6 +27,7 @@
 #include <libc/file.h>
 #include <libc/local.h>
 #include <libc/ieee.h>
+#include <libc/doprsc.h>
 #include <sys/cdefs.h>
 
 typedef enum {

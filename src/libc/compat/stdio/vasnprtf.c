@@ -1,3 +1,5 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -7,6 +9,7 @@
 #include <limits.h>
 #include <errno.h>
 #include <libc/file.h>
+#include <libc/doprsc.h>
 
 char *
 vasnprintf(char *str, size_t *np, const char *fmt, va_list argsp)

@@ -1,8 +1,11 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2008 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <libc/file.h>
+#include <libc/doprsc.h>
 
 int
 vasprintf(char **strp, const char *fmt, va_list argsp)
