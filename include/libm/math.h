@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2017 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
@@ -18,7 +19,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $Id: math.h,v 1.13 2018/01/02 22:02:05 juan.guerrero Exp $
+ * $Id: math.h,v 1.14 2018/01/05 16:06:39 juan.guerrero Exp $
  */
 
 #ifndef _MATH_H_
@@ -200,7 +201,7 @@ extern double j0 __P((double));
 extern double j1 __P((double));
 extern double jn __P((int, double));
 extern double lgamma __P((double));
-extern double nan __P((void));
+extern double nan __P((const char *));
 extern double y0 __P((double));
 extern double y1 __P((double));
 extern double yn __P((int, double));
@@ -220,7 +221,7 @@ extern double nextafter __P((double, double));
 extern double pow10 __P((double));
 extern double pow2 __P((double));
 extern double powi __P((double, int));
-extern void   sincos __P((double *, double *, double));
+extern void   sincos __P((double, double *, double *));
 extern double remainder __P((double, double));
 extern double scalb __P((double, double));
 
@@ -299,7 +300,7 @@ extern float j0f __P((float));
 extern float j1f __P((float));
 extern float jnf __P((int, float));
 extern float lgammaf __P((float));
-extern float nanf __P((void));
+extern float nanf __P((const char *));
 extern float y0f __P((float));
 extern float y1f __P((float));
 extern float ynf __P((int, float));

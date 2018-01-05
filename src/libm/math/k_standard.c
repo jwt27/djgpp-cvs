@@ -105,7 +105,7 @@ static double zero = 0.0;	/* used as const */
 		/* acos(|x|>1) */
 		exc.type = DOMAIN;
 		exc.name = type < 100 ? "acos" : "acosf";
-		exc.retval = nan();
+		exc.retval = nan("");
 		if (_LIB_VERSION == _POSIX_)
 		  errno = EDOM;
 		else if (!matherr(&exc)) {
@@ -120,7 +120,7 @@ static double zero = 0.0;	/* used as const */
 		/* asin(|x|>1) */
 		exc.type = DOMAIN;
 		exc.name = type < 100 ? "asin" : "asinf";
-		exc.retval = nan();
+		exc.retval = nan("");
 		if(_LIB_VERSION == _POSIX_)
 		  errno = EDOM;
 		else if (!matherr(&exc)) {
@@ -539,7 +539,7 @@ static double zero = 0.0;	/* used as const */
                 if (_LIB_VERSION == _SVID_)
                     exc.retval = x;
 		else
-		    exc.retval = nan();
+		    exc.retval = nan("");
                 if (_LIB_VERSION == _POSIX_)
                   errno = EDOM;
                 else if (!matherr(&exc)) {
@@ -554,7 +554,7 @@ static double zero = 0.0;	/* used as const */
                 /* remainder(x,0) */
                 exc.type = DOMAIN;
                 exc.name = type < 100 ? "remainder" : "remainderf";
-                exc.retval = nan();
+                exc.retval = nan("");
                 if (_LIB_VERSION == _POSIX_)
                   errno = EDOM;
                 else if (!matherr(&exc)) {
@@ -569,7 +569,7 @@ static double zero = 0.0;	/* used as const */
                 /* acosh(x<1) */
                 exc.type = DOMAIN;
                 exc.name = type < 100 ? "acosh" : "acoshf";
-                exc.retval = nan();
+                exc.retval = nan("");
                 if (_LIB_VERSION == _POSIX_)
                   errno = EDOM;
                 else if (!matherr(&exc)) {
@@ -584,7 +584,7 @@ static double zero = 0.0;	/* used as const */
                 /* atanh(|x|>1) */
                 exc.type = DOMAIN;
                 exc.name = type < 100 ? "atanh" : "atanhf";
-                exc.retval = nan();
+                exc.retval = nan("");
                 if (_LIB_VERSION == _POSIX_)
                   errno = EDOM;
                 else if (!matherr(&exc)) {
