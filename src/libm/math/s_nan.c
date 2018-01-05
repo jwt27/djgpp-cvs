@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -16,18 +17,21 @@ INDEX
 
 ANSI_SYNOPSIS
 	#include <math.h>
-	double nan(void);
-	float nanf(void);
+	double nan(const char *tagp);
+	float nanf(const char *tagp);
 
 TRAD_SYNOPSIS
 	#include <math.h>
-	double nan();
-	float nanf();
+	double nan(tagp);
+	const char *tagp;
+	float nanf(tagp);
+	const char *tagp;
 
 
 DESCRIPTION
 	<<nan>> and <<nanf>> return an IEEE NaN (Not a Number) in
-	double and single precision arithmetic respectivly.
+	double- and single-precision arithmetic respectively.  The
+	argument is currently disregarded.
 
 QUICKREF
 	nan - pure
@@ -49,9 +53,10 @@ QUICKREF
 static const ieee_double_shape_type a_nan = { {0, 0x7ff80000} };
 
 #ifdef __STDC__
-	double nan(void)
+	double nan(const char *tagp)
 #else
-	double nan()
+	double nan(tagp)
+	const char *tagp;
 #endif
 {
 	return a_nan.value;

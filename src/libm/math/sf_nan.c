@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details */
 /*
@@ -17,16 +18,16 @@
    to not mess this up.  */
 static const ieee_float_shape_type a_nan = { 0x7fc00000 };
 
-	float nanf()
+	float nanf(const char *tagp)
 {
 	return a_nan.value;
 }
 
 #ifdef _DOUBLE_IS_32BITS
 
-	double nan()
+	double nan(const char *tagp)
 {
-	return (double) nanf();
+	return (double) nanf(tagp);
 }
 
 #endif /* defined(_DOUBLE_IS_32BITS) */
