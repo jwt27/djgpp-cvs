@@ -161,7 +161,7 @@ GenDblVector(char *Name)
     WriteVector(DBL_MEAS_BIT, Argument, Expected, errno);
     _fpreset();
 
-    Argument = nan();
+    Argument = nan("");
     if (EQUAL(Name, StrCeil))
     {
 	Expected = Argument;
@@ -180,7 +180,7 @@ GenDblVector(char *Name)
     WriteVector(DBL_MEAS_BIT, Argument, Expected, errno);
     _fpreset();
 
-    Argument = -nan();
+    Argument = -nan("");
     if (EQUAL(Name, StrCeil))
     {
 	Expected = Argument;
@@ -321,7 +321,7 @@ GenFltVector(char *Name)
     WriteVector(FLT_MEAS_BIT, Argument, Expected, errno);
     _fpreset();
 
-    Argument = nan();
+    Argument = nan("");
     if (EQUAL(Name, StrCeilf))
     {
 	Expected = Argument;
@@ -340,7 +340,7 @@ GenFltVector(char *Name)
     WriteVector(FLT_MEAS_BIT, Argument, Expected, errno);
     _fpreset();
 
-    Argument = -nan();
+    Argument = -nan("");
     if (EQUAL(Name, StrCeilf))
     {
 	Expected = Argument;

@@ -161,14 +161,14 @@ GenDblVector(char *Name)
     Write2Vector(DBL_MEAS_BIT, ArgY, ArgX, Expected, __NO_ERROR_);
 
     ArgY = 1.0;
-    ArgX = nan();
-    Expected = nan();
+    ArgX = nan("");
+    Expected = nan("");
     _fpreset();
     Write2Vector(DBL_MEAS_BIT, ArgY, ArgX, Expected, __NO_ERROR_);
 
-    ArgY = nan();
+    ArgY = nan("");
     ArgX = infinity();
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
     Write2Vector(DBL_MEAS_BIT, ArgY, ArgX, Expected, __NO_ERROR_);
 
@@ -329,14 +329,14 @@ GenFltVector(char *Name)
     Write2Vector(FLT_MEAS_BIT, ArgY, ArgX, Expected, __NO_ERROR_);
 
     ArgY = 1.0;
-    ArgX = nan();
-    Expected = nan();
+    ArgX = nan("");
+    Expected = nan("");
     _fpreset();
     Write2Vector(FLT_MEAS_BIT, ArgY, ArgX, Expected, __NO_ERROR_);
 
-    ArgY = nan();
+    ArgY = nan("");
     ArgX = infinityf();
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
     Write2Vector(FLT_MEAS_BIT, ArgY, ArgX, Expected, __NO_ERROR_);
 

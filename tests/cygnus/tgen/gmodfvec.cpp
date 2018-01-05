@@ -101,7 +101,7 @@ GenDblVector(char *Name)
 
     NEXT_DBL_VECTOR(DBL_MIN, 0.0, DBL_MIN, __NO_ERROR_);
     NEXT_DBL_VECTOR(DBL_MAX, DBL_MAX, 0.0, __NO_ERROR_);
-    NEXT_DBL_VECTOR(nan(), nan(), 0.0, __NO_ERROR_);
+    NEXT_DBL_VECTOR(nan(""), nan(""), 0.0, __NO_ERROR_);
     NEXT_DBL_VECTOR(infinity(), infinity(), 0.0, __NO_ERROR_);
     // Generate last lines (code lines) of file
 
@@ -186,7 +186,7 @@ GenFltVector(char *Name)
 
     NEXT_FLT_VECTOR(FLT_MIN, 0.0, FLT_MIN, __NO_ERROR_);
     NEXT_FLT_VECTOR(FLT_MAX, FLT_MAX, 0.0, __NO_ERROR_);
-    NEXT_FLT_VECTOR(nan(), nan(), 0.0, __NO_ERROR_);
+    NEXT_FLT_VECTOR(nan(""), nan(""), 0.0, __NO_ERROR_);
     NEXT_FLT_VECTOR(infinityf(), infinityf(), 0.0, __NO_ERROR_);
 
     // Generate last lines (code lines) of file

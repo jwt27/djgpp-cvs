@@ -94,7 +94,7 @@ GenDblVector(char *Name)
 	Write2Vector(DBL_MEAS_BIT, ArgX, ArgY, Expected, Err);	\
 	_fpreset();						\
     }
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
     NEXT_DBL_VECTOR(0, 0, NextAns, EDOM)
 
@@ -104,7 +104,7 @@ GenDblVector(char *Name)
     NextAns = 0.0;
     NEXT_DBL_VECTOR(DBL_MAX, DBL_MAX, NextAns, __NO_ERROR_)
 
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
     NEXT_DBL_VECTOR(DBL_MAX, 0, NextAns, EDOM)
 
@@ -114,21 +114,21 @@ GenDblVector(char *Name)
     NextAns = DBL_MIN;
     NEXT_DBL_VECTOR(DBL_MIN, DBL_MAX, NextAns, __NO_ERROR_)
 
-    NextAns = -nan();
+    NextAns = -nan("");
     _fpreset();
     NEXT_DBL_VECTOR(infinity(), infinity(), NextAns, __NO_ERROR_)
 
-    NextAns = -nan();
+    NextAns = -nan("");
     _fpreset();
     NEXT_DBL_VECTOR(-infinity(), -infinity(), NextAns, __NO_ERROR_)
 
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
-    NEXT_DBL_VECTOR(nan(), nan(), NextAns, __NO_ERROR_)
+    NEXT_DBL_VECTOR(nan(""), nan(""), NextAns, __NO_ERROR_)
 
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
-    NEXT_DBL_VECTOR(infinity(), nan(), NextAns, __NO_ERROR_)
+    NEXT_DBL_VECTOR(infinity(), nan(""), NextAns, __NO_ERROR_)
 
     // Generate last lines (code lines) of file
 
@@ -198,7 +198,7 @@ GenFltVector(char *Name)
 	Write2Vector(FLT_MEAS_BIT, ArgX, ArgY, Expected, Err);	\
 	_fpreset();						\
     }
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
     NEXT_FLT_VECTOR(0, 0, NextAns, EDOM)
 
@@ -208,7 +208,7 @@ GenFltVector(char *Name)
     NextAns = 0.0;
     NEXT_FLT_VECTOR(FLT_MAX, FLT_MAX, NextAns, __NO_ERROR_)
 
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
     NEXT_FLT_VECTOR(FLT_MAX, 0, NextAns, EDOM)
 
@@ -218,21 +218,21 @@ GenFltVector(char *Name)
     NextAns = FLT_MIN;
     NEXT_FLT_VECTOR(FLT_MIN, FLT_MAX, NextAns, __NO_ERROR_)
 
-    NextAns = -nan();
+    NextAns = -nan("");
     _fpreset();
     NEXT_FLT_VECTOR(infinityf(), infinityf(), NextAns, __NO_ERROR_)
 
-    NextAns = -nan();
+    NextAns = -nan("");
     _fpreset();
     NEXT_FLT_VECTOR(-infinityf(), -infinityf(), NextAns, __NO_ERROR_)
 
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
-    NEXT_FLT_VECTOR(nan(), nan(), NextAns, __NO_ERROR_)
+    NEXT_FLT_VECTOR(nan(""), nan(""), NextAns, __NO_ERROR_)
 
-    NextAns = nan();
+    NextAns = nan("");
     _fpreset();
-    NEXT_FLT_VECTOR(infinity(), nan(), NextAns, __NO_ERROR_)
+    NEXT_FLT_VECTOR(infinity(), nan(""), NextAns, __NO_ERROR_)
 
     // Generate last lines (code lines) of file
 

@@ -61,7 +61,7 @@ GenDblVector(char *Name)
     // --------------
 
     Argument = -1.25;
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, EDOM);
@@ -73,7 +73,7 @@ GenDblVector(char *Name)
     WriteVector(DBL_MEAS_BIT, Argument, Expected, EDOM);
 
     Argument = 1.25;
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, EDOM);
@@ -85,25 +85,25 @@ GenDblVector(char *Name)
     WriteVector(DBL_MEAS_BIT, Argument, Expected, EDOM);
 
     Argument = -infinity();
-    Expected =  nan();
+    Expected =  nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, EDOM);
 
     Argument = infinity();
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, EDOM);
 
-    Argument = -nan();
-    Expected = -nan();
+    Argument = -nan("");
+    Expected = -nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, __NO_ERROR_);
 
-    Argument = nan();
-    Expected = nan();
+    Argument = nan("");
+    Expected = nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, __NO_ERROR_);
@@ -150,7 +150,7 @@ GenFltVector(char *Name)
     // --------------
 
     Argument = -1.25;
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(FLT_MEAS_BIT, Argument, Expected, EDOM);
@@ -162,7 +162,7 @@ GenFltVector(char *Name)
     WriteVector(FLT_MEAS_BIT, Argument, Expected, EDOM);
 
     Argument = 1.25;
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(FLT_MEAS_BIT, Argument, Expected, EDOM);
@@ -174,25 +174,25 @@ GenFltVector(char *Name)
     WriteVector(FLT_MEAS_BIT, Argument, Expected, EDOM);
 
     Argument = -infinityf();
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(FLT_MEAS_BIT, Argument, Expected, EDOM);
 
     Argument = infinityf();
-    Expected = nan();
+    Expected = nan("");
     _fpreset();
 
     WriteVector(FLT_MEAS_BIT, Argument, Expected, EDOM);
 
-    Argument = -nan();
-    Expected = -nan();
+    Argument = -nan("");
+    Expected = -nan("");
     _fpreset();
 
     WriteVector(FLT_MEAS_BIT, Argument, Expected, __NO_ERROR_);
 
-    Argument = nan();
-    Expected = nan();
+    Argument = nan("");
+    Expected = nan("");
     _fpreset();
 
     WriteVector(FLT_MEAS_BIT, Argument, Expected, __NO_ERROR_);

@@ -87,8 +87,8 @@ GenDblVector(char *Name)
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, __NO_ERROR_);
 
-    Argument = nan();
-    Expected = nan();
+    Argument = nan("");
+    Expected = nan("");
     _fpreset();
 
     WriteVector(DBL_MEAS_BIT, Argument, Expected, __NO_ERROR_);
@@ -156,8 +156,8 @@ GenFltVector(char *Name)
     _fpreset();
     WriteVector(FLT_MEAS_BIT, Argument, Expected, __NO_ERROR_);
 
-    Argument = nan();
-    Expected = nan();
+    Argument = nan("");
+    Expected = nan("");
     _fpreset();
     WriteVector(FLT_MEAS_BIT, Argument, Expected, __NO_ERROR_);
 

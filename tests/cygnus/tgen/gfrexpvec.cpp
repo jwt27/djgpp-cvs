@@ -89,7 +89,7 @@ GenDblVector(char *Name)
     NextFrac = xtod(xfrexp(DBL_MAX, NextInt));
     NEXT_DBL_VECTOR(DBL_MAX, NextInt, NextFrac, __NO_ERROR_);
 
-    NEXT_DBL_VECTOR(nan(), 0.0, nan(), __NO_ERROR_);
+    NEXT_DBL_VECTOR(nan(""), 0.0, nan(""), __NO_ERROR_);
     NEXT_DBL_VECTOR(infinity(), 0.0, infinity(), __NO_ERROR_);
 
     // Generate last lines (code lines) of file
@@ -162,7 +162,7 @@ GenFltVector(char *Name)
     NextFrac = xtod(xfrexp(FLT_MAX, NextInt));
     NEXT_FLT_VECTOR(FLT_MAX, NextInt, NextFrac, __NO_ERROR_);
 
-    NEXT_FLT_VECTOR(nan(), 0.0, nan(), __NO_ERROR_);
+    NEXT_FLT_VECTOR(nan(""), 0.0, nan(""), __NO_ERROR_);
     NEXT_FLT_VECTOR(infinity(), 0.0, infinity(), __NO_ERROR_);
 
     // Generate last lines (code lines) of file
