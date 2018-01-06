@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "test.h"
 int
-main()
+main(void)
 {
     unsigned k, m;
     double  Choice[] = {0.5, 0.975, 1.0};

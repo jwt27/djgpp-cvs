@@ -27,15 +27,15 @@ LOOP_LIMITS  Ctls[] =
 #define	DBL_MEAS_BIT	62
 #define	FLT_MEAS_BIT	34
 
-static	char   *StrJn	= "jn";
-static	char   *StrJnf	= "jnf";
-static	char   *StrYn	= "yn";
-static	char   *StrYnf	= "ynf";
+static	const char   *StrJn	= "jn";
+static	const char   *StrJnf	= "jnf";
+static	const char   *StrYn	= "yn";
+static	const char   *StrYnf	= "ynf";
 // -------------------------------------------------------------------
 // GenDblVector - Generates Test Vectors for Double Precision Function
 // -------------------------------------------------------------------
 void
-GenDblVector(char *Name)
+GenDblVector(const char *Name)
 {
     unsigned J;
     double   K;
@@ -104,7 +104,7 @@ GenDblVector(char *Name)
 // GenFltVector - Generates Test Vectors for Float Precision Function
 // -------------------------------------------------------------------
 void
-GenFltVector(char *Name)
+GenFltVector(const char *Name)
 {
     unsigned J;
     double   K;

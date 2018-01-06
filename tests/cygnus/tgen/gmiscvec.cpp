@@ -29,12 +29,12 @@ LOOP_LIMITS  Ctls[] =
 #define	DBL_MEAS_BIT	62
 #define	FLT_MEAS_BIT	34
 
-static	char   *StrCeil   = "ceil";
-static	char   *StrCeilf  = "ceilf";
-static	char   *StrFabs   = "fabs";
-static	char   *StrFabsf  = "fabsf";
-static	char   *StrFloor  = "floor";
-static	char   *StrFloorf = "floorf";
+static	const char   *StrCeil   = "ceil";
+static	const char   *StrCeilf  = "ceilf";
+static	const char   *StrFabs   = "fabs";
+static	const char   *StrFabsf  = "fabsf";
+static	const char   *StrFloor  = "floor";
+static	const char   *StrFloorf = "floorf";
 
 inline qfloat xceil (const qfloat &x)
 {
@@ -48,7 +48,7 @@ inline qfloat xceil (const qfloat &x)
 // GenDblVector - Generates Test Vectors for Double Precision Function
 // -------------------------------------------------------------------
 void
-GenDblVector(char *Name)
+GenDblVector(const char *Name)
 {
     unsigned J;
     double   K;
@@ -208,7 +208,7 @@ GenDblVector(char *Name)
 // GenFltVector - Generates Test Vectors for Float Precision Function
 // -------------------------------------------------------------------
 void
-GenFltVector(char *Name)
+GenFltVector(const char *Name)
 {
     unsigned J;
     double   K;

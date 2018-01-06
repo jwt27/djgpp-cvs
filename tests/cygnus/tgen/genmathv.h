@@ -70,7 +70,7 @@ WriteVector(int MeasBit, double Arg, double Exp, int ErrExp)
 // AssignOutputFile - Reopens stdout as a diskfile based on Name
 // -------------------------------------------------------------
 void
-AssignOutputFile(char *Name)
+AssignOutputFile(const char *Name)
 {
     FILE     *OutPtr;
     char     OutNam[128];

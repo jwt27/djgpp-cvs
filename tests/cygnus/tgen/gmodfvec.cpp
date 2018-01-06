@@ -46,7 +46,7 @@ MyModf(double Mixed, double *Int)
 // GenDblVector - Generates Test Vectors for Double Precision Function
 // -------------------------------------------------------------------
 void
-GenDblVector(char *Name)
+GenDblVector(const char *Name)
 {
     unsigned J;
 
@@ -128,7 +128,7 @@ MyModff(float Mixed, float *Int)
 // GenFltVector - Generates Test Vectors for Float Precision Function
 // ------------------------------------------------------------------
 void
-GenFltVector(char *Name)
+GenFltVector(const char *Name)
 {
     unsigned J;
 

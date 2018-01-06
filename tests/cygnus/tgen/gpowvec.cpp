@@ -39,7 +39,7 @@ LOOP_LIMITS  FltCtlsY[] =
 // GenDblVector - Generates Test Vectors for Double Precision Function
 // -------------------------------------------------------------------
 void
-GenDblVector(char *Name)
+GenDblVector(const char *Name)
 {
     unsigned J, K;
 
@@ -210,7 +210,7 @@ GenDblVector(char *Name)
 // GenFltVector - Generates Test Vectors for Float Precision Function
 // ------------------------------------------------------------------
 void
-GenFltVector(char *Name)
+GenFltVector(const char *Name)
 {
     unsigned J, K;
 
