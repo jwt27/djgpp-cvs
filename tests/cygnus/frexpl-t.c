@@ -219,68 +219,6 @@ int frexpl_test(void)
              tests_long_double[i].value.ld, mantissa.ld, exponent, tests_long_double[i].mantissa.ld, tests_long_double[i].exponent);
   }
 
-  {
-    volatile long double mantissa, x;
-    result = 0;
-    /* Test on finite numbers that fails on AIX 5.1.  */
-    x = 16.0L;
-    {
-      exponent = -9999;
-      frexpl (x, &exponent);
-      if (exponent != 5)
-        result |= 1;
-    }
-    /* Test on finite numbers that fails on Mac OS X 10.4, because its frexpl
-       function returns an invalid (incorrectly normalized) value: it returns
-                 y = { 0x3fe028f5, 0xc28f5c28, 0x3c9eb851, 0xeb851eb8 }
-       but the correct result is
-            0.505L = { 0x3fe028f5, 0xc28f5c29, 0xbc547ae1, 0x47ae1480 }  */
-    x = 1.01L;
-    {
-      exponent = -9999;
-      mantissa = frexpl (x, &exponent);
-      if (!(exponent == 1 && mantissa == 0.505L))
-        result |= 2;
-    }
-    /* Test on large finite numbers.  This fails on BeOS at i = 16322, while
-       LDBL_MAX_EXP = 16384.
-       In the loop end test, we test x against Infinity, rather than comparing
-       i with LDBL_MAX_EXP, because BeOS <float.h> has a wrong LDBL_MAX_EXP.  */
-    {
-      for (i = 1, x = 1.0L; x != x + x; i++, x *= 2.0L)
-      {
-        exponent = -9999;
-        frexpl (x, &exponent);
-        if (exponent != i)
-        {
-          result |= 4;
-          break;
-        }
-      }
-    }
-    /* Test on denormalized numbers.  */
-    {
-      int i;
-      for (i = 1, x = 1.0L; i >= LDBL_MIN_EXP; i--, x *= 0.5L)
-        ;
-      if (x > 0.0L)
-      {
-        mantissa = frexpl (x, &exponent);
-        /* On machines with IEEE854 arithmetic: x = 1.68105e-4932,
-           exp = -16382, y = 0.5.  On Mac OS X 10.5: exp = -16384, y = 0.5.  */
-        if (exponent != LDBL_MIN_EXP - 1)
-          result |= 8;
-      }
-    }
-    /* Test on infinite numbers.  */
-    x = 1.0L / 0.0L;
-    {
-      mantissa = frexpl (x, &exponent);
-      if (mantissa != x)
-        result |= 16;
-    }
-  }
-
   result = counter < n_tests_long_double || result ? 1 : 0;
   printf("%s\n", result ? "frexpl test failed." : "frexpl test succeded.");
 
