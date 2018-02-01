@@ -27,7 +27,6 @@
 #include <libc/file.h>
 #include <libc/local.h>
 #include <libc/ieee.h>
-#include <libc/doprsc.h>
 #include <sys/cdefs.h>
 
 typedef enum {

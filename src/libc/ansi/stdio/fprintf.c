@@ -7,7 +7,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 fprintf(register FILE *iop, const char *fmt, ...)

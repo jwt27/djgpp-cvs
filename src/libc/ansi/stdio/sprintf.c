@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <limits.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 sprintf(char *str, const char *fmt, ...)

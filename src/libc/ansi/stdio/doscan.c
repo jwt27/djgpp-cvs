@@ -16,7 +16,6 @@
 #include <locale.h>
 #include <stddef.h>
 #include <errno.h>
-#include <libc/doprsc.h>
 #include <libc/file.h>
 #include <libc/local.h>
 

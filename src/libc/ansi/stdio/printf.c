@@ -6,7 +6,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 printf(const char *fmt, ...)

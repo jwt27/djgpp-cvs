@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 sscanf(const char *str, const char *fmt, ...)

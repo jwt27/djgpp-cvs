@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 vfprintf(FILE *f, const char *fmt, va_list ap)

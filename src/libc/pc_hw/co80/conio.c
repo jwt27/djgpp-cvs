@@ -19,7 +19,6 @@
 #include <conio.h>
 #include <libc/bss.h>
 #include <libc/unconst.h>
-#include <libc/doprsc.h>
 
 int _wscroll = 1;
 

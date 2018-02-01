@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 vasprintf(char **strp, const char *fmt, va_list argsp)

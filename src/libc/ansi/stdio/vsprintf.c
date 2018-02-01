@@ -8,7 +8,6 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 vsprintf(char *str, const char *fmt, va_list ap)

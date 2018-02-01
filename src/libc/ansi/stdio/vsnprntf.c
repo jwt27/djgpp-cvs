@@ -9,7 +9,6 @@
 #include <limits.h>
 #include <errno.h>
 #include <libc/file.h>
-#include <libc/doprsc.h>
 
 int
 vsnprintf(char *str, size_t n, const char *fmt, va_list ap)

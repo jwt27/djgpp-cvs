@@ -31,11 +31,3 @@ is increased.
 @cindex @acronym{C99} compliance, @code{math.h}
 @findex frexpl@r{, added to the math library}
 The @acronym{C99} function @code{frexpl} was added to comply with the @acronym{C99} standard.
-
-@cindex @file{libc/doprsc.h}, declarations of _doprnt, _doscan and _doscan_low
-@findex _doprnt@r{, and declaration moved to @file{libc/doprsc.h}}
-@findex _doscan@r{, and declaration moved to @file{libc/doprsc.h}}
-@findex _doscan_low@r{, and declaration moved to @file{libc/doprsc.h}}
-To avoid function name and declaration clashes with third party libraries, the
-prototypes of @code{_doprnt}, @code{_doscan} and @code{_doscan_low} have been
-moved from @file{stdio.h} to @file{libc/doprsc.h}.
