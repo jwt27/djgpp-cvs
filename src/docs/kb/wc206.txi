@@ -31,3 +31,22 @@ is increased.
 @cindex @acronym{C99} compliance, @code{math.h}
 @findex frexpl@r{, added to the math library}
 The @acronym{C99} function @code{frexpl} was added to comply with the @acronym{C99} standard.
+
+@findex fseeko64@r{, fixed resetting the }_cnt@r{ field}
+Fixed @code{fseeko64} where it missed resetting the @code{_cnt}
+field of the FILE structure.
+
+@findex termios@r{, fixed NULL pointer dereference}
+Fixed a @code{NULL} pointer dereference in termios @code{vbios_write_ch}
+private procedure.
+
+@findex _put_path@r{, and the @file{/dev/} directory}
+The low-level @code{_put_path} procedure was changed to support
+[/\\]dev[/\\] instead of only /dev/ in file names.
+
+@cindex Compatibility with new gcc versions
+Compatibility with gcc-6 and newer versions achieved by using proper
+@option{-fno-builtin-*} compiler flags where needed in library builds.
+
+@pindex djtar@r{, fixed a bug introduced in v2.05}
+Fixed a bug in @command{djtar}/unlzh (bug was introduced by djgpp-v2.05.)
