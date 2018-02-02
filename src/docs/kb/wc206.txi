@@ -3,6 +3,11 @@
 
 Here is a list of changes from DJGPP V2.05 to DJGPP V2.06
 
+@findex memalign@r{, fixed NULL return bug introduced in v2.05}
+@findex valloc@r{, fixed NULL return bug introduced in v2.05}
+Fixed @code{memalign} and @code{valloc} functions failing and
+returning @code{NULL} (bug was introduced in djgpp-v2.05.)
+
 @findex ctime@r{, fixed wrong return value of @code{ctime(0)}}
 @findex ctime_r@r{, fixed wrong return value of @code{ctime_r(0)}}
 A call of @code{ctime(0)} or @code{ctime_r(0)} now returns the correct value.
