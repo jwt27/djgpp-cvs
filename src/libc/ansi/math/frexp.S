@@ -4,8 +4,6 @@
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 pos_NaN:
 	.long	0x7FC00000
-neg_NaN:
-	.long	0xFFC00000
 
 pos_inf:
 	.long	0x7F800000
@@ -54,9 +52,9 @@ poszero:
 inftest:
 	andl	$0x7FF00000, %eax
 	cmpl	$0x7FF00000, %eax
-	je	badarg			/* +/- inf or +/- NaN */
+	je	nonnormals		/* +/- inf or +/- NaN */
 
-argok:
+normals:
 	fldl	4(%esp)
 	fxtract
 	flds	onehalf
@@ -67,7 +65,7 @@ argok:
 	incl	(%edx)
 	ret
 
-badarg:					/* arg is +/- inf or +/- NaN */
+nonnormals:				/* arg is +/- inf or +/- NaN */
 	movl	$0, (%edx)
 
 	movl	%ecx, %eax
@@ -92,15 +90,11 @@ posNaN:
 
 negarg:					/* arg is - inf or - NaN */
 	cmpl	$0x80000000, %eax
-	jnz	negNaN
+	jnz	posNaN
 
 	movl	4(%esp), %eax
 	testl	%eax, %eax
-	jnz	negNaN
+	jnz	posNaN
 
 	flds	neg_inf
-	ret
-
-negNaN:
-	flds	neg_NaN
 	ret
