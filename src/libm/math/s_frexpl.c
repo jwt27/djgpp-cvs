@@ -26,10 +26,10 @@
  * with *exp=0. 
  */
 
-#define IS_INF_OR_NAN(v)       ((v).ldt.exponent == 0x7FFF)
-#define IS_DENORMAL(v)         ((v).ldt.exponent == 0x0000 && (((v).ldt.mantissah & 0x80000000) == 0x00000000))
-#define IS_PSEUDO_DENORMAL(v)  ((v).ldt.exponent == 0x0000 && (((v).ldt.mantissah & 0x80000000) == 0x80000000))
-#define IS_ZERO(v)             (((v).ldt.mantissah | (v).ldt.mantissal) == 0x00000000)
+#define IS_DENORMAL(v)         (((v).ldt.exponent == 0x0000) && (((v).ldt.mantissah & 0x80000000) == 0x00000000))
+#define IS_PSEUDO_DENORMAL(v)  (((v).ldt.exponent == 0x0000) && (((v).ldt.mantissah & 0x80000000) == 0x80000000))
+#define IS_INF_OR_ZERO(v)      ((((v).ldt.exponent == 0x7FFF) || ((v).ldt.exponent == 0x0000)) && ((((v).ldt.mantissah & 0x7FFFFFFF) | (v).ldt.mantissal) == 0x00000000))
+#define IS_NAN(v)              (((v).ldt.exponent == 0x7FFF) && ((((v).ldt.mantissah & 0x7FFFFFFF) | (v).ldt.mantissal) != 0x00000000))
 
 #include <libc/ieee.h>
 #include "fdlibm.h"
@@ -51,7 +51,11 @@ two64 =  1.8446744073709551616E+19;  /* 0, 0x3FFF + 0x0040, 0x80000000U, 0x00000
         _longdouble_union_t value;
         value.ld = x;
 	*eptr = 0;
-	if (IS_INF_OR_NAN(value) || IS_ZERO(value)) return x;	/* 0,inf,nan */
+	if (IS_INF_OR_ZERO(value)) return x;	/* 0 or inf */
+	if (IS_NAN(value)) {			/* nan */
+	    value.ldt.sign = 0;
+	    return value.ld;
+        }
 	if (IS_DENORMAL(value)) {		/* subnormal */
 	    value.ld *= two65;
 	    *eptr = -65;
