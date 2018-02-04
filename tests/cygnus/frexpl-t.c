@@ -105,9 +105,9 @@ static const entry_t tests_long_double[] =
 
   /* NaNs. */
   {{.ldt = {0x1U, 0x80000000U, 0x7FFFU, 0}},  {.ldt = {0x1U, 0x80000000U, 0x7FFFU, 0}}, 0}, /* SNaN */
-  {{.ldt = {0x1U, 0x80000000U, 0x7FFFU, 1}},  {.ldt = {0x1U, 0x80000000U, 0x7FFFU, 1}}, 0}, /* -SNaN */
+  {{.ldt = {0x1U, 0x80000000U, 0x7FFFU, 1}},  {.ldt = {0x1U, 0x80000000U, 0x7FFFU, 0}}, 0}, /* -SNaN */
   {{.ldt = {0x0U, 0xFFFFFFFFU, 0x7FFFU, 0}},  {.ldt = {0x0U, 0xFFFFFFFFU, 0x7FFFU, 0}}, 0}, /* QNaN */
-  {{.ldt = {0x0U, 0xFFFFFFFFU, 0x7FFFU, 1}},  {.ldt = {0x0U, 0xFFFFFFFFU, 0x7FFFU, 1}}, 0}, /* -QNaN */
+  {{.ldt = {0x0U, 0xFFFFFFFFU, 0x7FFFU, 1}},  {.ldt = {0x0U, 0xFFFFFFFFU, 0x7FFFU, 0}}, 0}, /* -QNaN */
 
   /* Number. */
   {{.ldt = {0x2168C000U, 0xC90FDAA2U, 0x3FFFU + 0x0001U, 0}},  {.ldt = {0x2168C000U, 0xC90FDAA2U, 0x3FFEU, 0}}, 2}, /* PI */
@@ -198,6 +198,7 @@ static const size_t n_tests_long_double = sizeof(tests_long_double) / sizeof(tes
 
 #undef  IS_EQUAL
 #define IS_EQUAL(a, b) (((a).ldt.sign == (b).ldt.sign) && ((a).ldt.exponent == (b).ldt.exponent) && ((a).ldt.mantissah == (b).ldt.mantissah) && ((a).ldt.mantissal == (b).ldt.mantissal))
+#define IS_EQUAL_NAN(a, b) ((((a).ldt.sign == (b).ldt.sign) || ((a).ldt.sign != (b).ldt.sign))&& ((a).ldt.exponent == (b).ldt.exponent) && ((a).ldt.mantissah == (b).ldt.mantissah) && ((a).ldt.mantissal == (b).ldt.mantissal))
 
 
 int frexpl_test(void)
@@ -212,6 +213,8 @@ int frexpl_test(void)
 
     if (IS_EQUAL(tests_long_double[i].mantissa, mantissa) && tests_long_double[i].exponent == exponent)
       counter++;
+    else if(IS_EQUAL_NAN(tests_long_double[i].mantissa, mantissa) && tests_long_double[i].exponent == exponent)
+      counter++;
     else
       printf("frexpl test failed:  value to frexpl = %.12Lf\n"
              "mantissa result = %.12Lf  exponent result = %d\n"
@@ -219,7 +222,7 @@ int frexpl_test(void)
              tests_long_double[i].value.ld, mantissa.ld, exponent, tests_long_double[i].mantissa.ld, tests_long_double[i].exponent);
   }
 
-  result = counter < n_tests_long_double || result ? 1 : 0;
+  result = counter < n_tests_long_double ? 1 : 0;
   printf("%s\n", result ? "frexpl test failed." : "frexpl test succeded.");
 
   return result;
