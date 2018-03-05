@@ -239,6 +239,7 @@ Disk usage
 
 * Gawk: (gawk).
 	GNU Awk, an interpreted batch language for processing text files.
+* awkinet: (gawkinet).          TCP/IP Internetworking With 'gawk'.
 
 
 * GDBM: (gdbm).                 The GNU hashed database library.
