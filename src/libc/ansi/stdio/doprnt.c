@@ -68,10 +68,10 @@ static char *grouping;
 
 #define IS_FINITE(x)         (((x).ldt.exponent < 0x7FFFU && (x).ldt.exponent > 0x0000U && (x).ldt.mantissah & 0x80000000UL)  \
                               || ((x).ldt.exponent == 0x0000U && !((x).ldt.mantissah & 0x80000000UL)))
-#define IS_ZERO(x)           ((x).ldt.exponent == 0x0U && (x).ldt.mantissah == 0x0UL && (x).ldt.mantissal == 0x0UL)
-#define IS_NAN(x)            ((x).ldt.exponent == 0x7FFFU && ((x).ldt.mantissah & 0x7FFFFFFFUL || (x).ldt.mantissal))
-#define IS_PSEUDO_NUMBER(x)  (((x).ldt.exponent != 0x0000U && !((x).ldt.mantissah & 0x80000000UL))   /*  Pseudo-NaN, Pseudo-Infinity and Unnormal.  */  \
-                              || ((x).ldt.exponent == 0x0000U && (x).ldt.mantissah & 0x80000000UL))  /*  Pseudo-Denormal.  */
+#define IS_ZERO(x)           ((x).ldt.exponent == 0x0U && (((x).ldt.mantissah & (x).ldt.mantissal) == 0x0UL))
+#define IS_NAN(x)            ((x).ldt.exponent == 0x7FFFU && (((x).ldt.mantissah & 0x7FFFFFFFUL) | (x).ldt.mantissal))
+#define IS_PSEUDO_NUMBER(x)  ((x).ldt.exponent == 0x0U && (((x).ldt.mantissah & 0x7FFFFFFFUL) | (x).ldt.mantissal))
+
 
 static __inline__ int todigit(char c)
 {
@@ -1257,10 +1257,6 @@ doprnt_isspeciall(long double d, char *bufp, int flags)
    *    5.1.3 "Representation of Values in Floating-Point Registers"
    *    Table 5-2 "Floating-Point Register Encodings"
    *    Figure 5-11 "Floating-Point Exception Fault Prioritization"
-   *
-   *  To be compatible with printf of GNU glibc Quiet NaN, signalling NaN, Pseudo-NaN,
-   *  Pseudo-Infinity, Pseudo-Zero, Pseudo-Denormal and denormalized numbers (unnormal)
-   *  will all return nan/NAN instead of "Unnormal" as used to be.
    */
 
   static const char INF_REP[2][4] = {"inf", "INF"};
@@ -1270,11 +1266,9 @@ doprnt_isspeciall(long double d, char *bufp, int flags)
 
 
   ieee_value.ld = d;
-  if (IS_PSEUDO_NUMBER(ieee_value))  /*  Pseudo-NaN, Pseudo-Infinity, Unnormal and Pseudo-Denormal.  */
-    strcpy(bufp, NAN_REP[style]);
-  else if (ieee_value.ldt.exponent != 0x7FFFU)
+  if (IS_PSEUDO_NUMBER(ieee_value) || ieee_value.ldt.exponent != 0x7FFFU)         /*  All finite numbers.  */
     return 0;
-  else if (ieee_value.ldt.mantissah & 0x7FFFFFFFUL || ieee_value.ldt.mantissal)  /*  Quiet NaN and signalling NaN.  */
+  else if ((ieee_value.ldt.mantissah & 0x7FFFFFFFUL) | ieee_value.ldt.mantissal)  /*  Quiet NaN and signalling NaN.  */
     strcpy(bufp, NAN_REP[style]);
   else
     strcpy(bufp, INF_REP[style]);
