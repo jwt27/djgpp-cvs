@@ -140,9 +140,9 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   char sign;                         /* sign prefix (' ', '+', '-', or \0) */
   char softsign;                     /* temporary negative sign for floats */
   char buf[BUF];                     /* space for %c, %[diouxX], %[aAeEfFgG] */
-  int neg_ldouble = false;           /* TRUE if _ldouble is negative */
+  bool neg_ldouble = false;          /* TRUE if _ldouble is negative */
   struct lconv *locale_info;         /* current locale information */
-  int using_numeric_conv_spec;       /* TRUE if using numeric specifier, FALSE else */
+  bool using_numeric_conv_spec;      /* TRUE if using numeric specifier, FALSE else */
   va_list arg_list;                  /* argument list */
   va_list to_be_printed = NULL;      /* argument to be printed if numeric specifier are used */
   const char *pos;                   /* position in format string when checking for numeric conv spec */
@@ -664,8 +664,8 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
   char *p, *t;
   long double fract = 0;
   int dotrim, expcnt, gformat;
-  int doextradps = false;    /* Do extra decimal places if the precision needs it */
-  int doingzero = false;     /* We're displaying 0.0 */
+  bool doextradps = false;   /* Do extra decimal places if the precision needs it */
+  bool doingzero = false;    /* We're displaying 0.0 */
   long double integer, tmp;
 
   if ((expcnt = doprnt_isspeciall(number, startp, flags)))
@@ -692,8 +692,9 @@ doprnt_cvtl(long double number, int prec, int flags, char *signp, unsigned char 
 #define IEEE754_LONG_DOUBLE_BIAS        0x3FFFU
 
     _longdouble_union_t ieee_value;
+    bool precision_given, positive_exponent;
     char *fraction_part;
-    int left_shifts, precision_given, positive_exponent, exponent;
+    int left_shifts, exponent;
     unsigned long long int mantissa;
 
 
