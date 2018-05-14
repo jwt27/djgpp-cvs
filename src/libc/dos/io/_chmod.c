@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -19,7 +20,8 @@ _chmod(const char *filename, int func, ...)
     r.x.flags = 1;			/* Always set CF before calling a 0x71NN function. */
     r.x.ax = 0x7143;
     r.h.bl = func;			/* Get or Put */
-  } else
+  }
+  else
     r.x.ax = 0x4300 + func;
   _put_path(filename);
   if (func == 1)

@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -37,27 +38,27 @@ int __djgpp_share_flags;
 
    This jewel is due to Morten Welinder <terra@diku.dk>.  */
 static int
-move_fd (int fd, int min_fd)
+move_fd(int fd, int min_fd)
 {
   int new_fd, tmp_fd;
 
   if (fd == -1 || fd >= min_fd)
     return fd;
 
-  tmp_fd = dup (fd);
+  tmp_fd = dup(fd);
   if (tmp_fd == -1)
     return tmp_fd;
 
-  new_fd = move_fd (tmp_fd, min_fd);
+  new_fd = move_fd(tmp_fd, min_fd);
   if (new_fd != -1)
-    close (fd);		/* success--get rid of the original descriptor */
+    close(fd);		/* success--get rid of the original descriptor */
   else
-    close (tmp_fd);	/* failure--get rid of the temporary descriptor */
+    close(tmp_fd);	/* failure--get rid of the temporary descriptor */
   return new_fd;
 }
 
 static int
-opendir_as_fd (const char *filename, const int oflag)
+opendir_as_fd(const char *filename, const int oflag)
 {
   int fd, old_fd, flags, ret;
 
@@ -313,7 +314,7 @@ open(const char* filename, int oflag, ...)
   setmode(fd, bintext);
   __set_fd_properties(fd, real_name, oflag);
 
-  if ( oflag & O_APPEND )
+  if (oflag & O_APPEND)
   {
     llseek(fd, 0, SEEK_END);
   }
