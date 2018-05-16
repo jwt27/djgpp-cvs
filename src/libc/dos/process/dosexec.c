@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
@@ -62,7 +63,7 @@ static unsigned long tbuf_beg;
 static unsigned long tbuf_end;
 static unsigned long tbuf_len;
 #ifdef __ENABLE_TB_REALLOC
-static int	     tbuf_selector;
+static int           tbuf_selector;
 #endif
 
 static int script_exec(const char *, char **, char **);
@@ -134,14 +135,14 @@ static int check_talloc(size_t amt)
       tbuf_selector = max_avail;
 
     new_tb *= 16;  /* convert to linear address */
-    movedata (_dos_ds, tbuf_beg, _dos_ds, new_tb, tbuf_ptr - tbuf_beg);
+    movedata(_dos_ds, tbuf_beg, _dos_ds, new_tb, tbuf_ptr - tbuf_beg);
     tbuf_ptr = new_tb + tbuf_ptr - tbuf_beg;
     tbuf_beg = new_tb;
     tbuf_end = tbuf_beg + tbuf_len - 1;
 
     errno = e;
 
-  done:
+done:
     /* Assume caller will return immediately in case of
        failure to reallocate, so they won't need the old data.  */
     if (!retval)
@@ -169,9 +170,9 @@ size_t __cmdline_str_len = sizeof(__cmdline_str) - 1;
    if LFN is 2, there is a possiblity that the contents of the
    transfer buffer will be overrun!  */
 static int
-direct_exec_tail_1 (const char *program, const char *args,
-		 char * const envp[], const char *proxy, int lfn,
-		 const char *cmdline_var)
+direct_exec_tail_1(const char *program, const char *args,
+                   char * const envp[], const char *proxy, int lfn,
+                   const char *cmdline_var)
 {
   __dpmi_regs r;
   unsigned long program_la;
@@ -194,7 +195,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   int long_args_via_cmdline = 0;
   /* The funky +1 below is because we need to copy the environment
      variables with their terminating null characters.  */
-  size_t cmdline_var_len = cmdline_var ? strlen(cmdline_var)+1 : 0;
+  size_t cmdline_var_len = cmdline_var ? strlen(cmdline_var) + 1 : 0;
 
   /* This used to just call sync().  But `sync' flushes the disk
      cache nowadays, and that can slow down the child tremendously,
@@ -249,10 +250,10 @@ direct_exec_tail_1 (const char *program, const char *args,
   {
     arg_len = CMDLEN_LIMIT;
     if (cmdline_var)
-      {
-	arg_header[0] = 127;
-	long_args_via_cmdline = 1;
-      }
+    {
+      arg_header[0] = 127;
+      long_args_via_cmdline = 1;
+    }
     else
       arg_header[0] = CMDLEN_LIMIT; /* truncate the command tail */
   }
@@ -262,7 +263,7 @@ direct_exec_tail_1 (const char *program, const char *args,
 
   dosmemput(arg_header, 1, arg_la); /* command tail length byte */
   dosmemput(args, arg_len, arg_la + 1); /* command tail itself */
-  dosmemput(arg_header+1, 1, arg_la + 1 + arg_len); /* terminating CR */
+  dosmemput(arg_header + 1, 1, arg_la + 1 + arg_len); /* terminating CR */
 
 #ifdef __ENABLE_TB_REALLOC
   if (strncmp(args, __PROXY, __PROXY_LEN) == 0 && args[__PROXY_LEN] == ' ')
@@ -270,9 +271,9 @@ direct_exec_tail_1 (const char *program, const char *args,
 #endif
 
   /* The 2 FCBs.  Some programs (like XCOPY from DOS 6.x) need them.  */
-  fcb1_la = talloc(16);	       /* allocate space for 1st FCB */
+  fcb1_la = talloc(16);        /* allocate space for 1st FCB */
   fname_la = arg_la + 1;       /* first character of command tail */
-  r.x.ax = 0x2901;	       /* AL = 1 means skip leading separators */
+  r.x.ax = 0x2901;             /* AL = 1 means skip leading separators */
   r.x.ds = fname_la / 16;      /* pointer to 1st cmd argument */
   r.x.si = fname_la & 15;
   r.x.es = fcb1_la / 16;       /* pointer to FCB buffer */
@@ -345,13 +346,13 @@ direct_exec_tail_1 (const char *program, const char *args,
       else
 	continue;
     }
-    else if (long_args_via_cmdline
-	     && strncmp(ep, __cmdline_str, __cmdline_str_len) == 0)
-      {
-	seen_cmdline = 1;
-	ep = cmdline_var;
-	env_len = cmdline_var_len;
-      }
+    else if (long_args_via_cmdline &&
+             strncmp(ep, __cmdline_str, __cmdline_str_len) == 0)
+    {
+      seen_cmdline = 1;
+      ep = cmdline_var;
+      env_len = cmdline_var_len;
+    }
     if (!check_talloc(env_len))
       return -1;
     env_e_la = talloc(env_len);
@@ -406,14 +407,14 @@ direct_exec_tail_1 (const char *program, const char *args,
   if ((initial_tbuf_selector != tbuf_selector) && proxy_off)
   {
     char temp[65], *s, t2[5];
-    sprintf (t2, "%04X", (unsigned short)(tbuf_beg>>4));
-    dosmemget (tbuf_beg+proxy_off, 64, temp);
+    sprintf(t2, "%04X", (unsigned short)(tbuf_beg >> 4));
+    dosmemget(tbuf_beg + proxy_off, 64, temp);
     temp[64] = 0;
-    s = strchr(temp,'\r');
+    s = strchr(temp, '\r');
     if (s) *s = 0;
-    dosmemput (t2, 4, tbuf_beg + proxy_off + 13);
+    dosmemput(t2, 4, tbuf_beg + proxy_off + 13);
     if (strlen(temp) > 23) 
-        dosmemput (t2, 4, tbuf_beg + proxy_off + 23);
+      dosmemput(t2, 4, tbuf_beg + proxy_off + 23);
   }
 #endif
 
@@ -426,7 +427,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   parm.fcb2_off = fcb2_la & 15;
   dosmemput(&parm, sizeof(parm), parm_la);
 
-  r.x.ax = 0x4b00;
+  r.x.ax = 0x4B00;
   r.x.ds = program_la / 16;
   r.x.dx = program_la & 15;
   r.x.es = parm_la / 16;
@@ -434,7 +435,7 @@ direct_exec_tail_1 (const char *program, const char *args,
   __dpmi_int(0x21, &r);
 #ifdef __ENABLE_TB_REALLOC
   if (tbuf_selector)
-    __dpmi_free_dos_memory (tbuf_selector);
+    __dpmi_free_dos_memory(tbuf_selector);
   tbuf_selector = 0;
 #endif
   /* Work around the W2K NTVDM bug; see dpmiexcp.c for detailed
@@ -445,10 +446,10 @@ direct_exec_tail_1 (const char *program, const char *args,
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
-  
+
   r.h.ah = 0x4d;
   __dpmi_int(0x21, &r);
-  
+
   if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
@@ -459,10 +460,10 @@ direct_exec_tail_1 (const char *program, const char *args,
      child was aborted by Ctrl-C, or Critical Device error (also
      if the child installs itself as a TSR).  */
   if (r.h.ah && r.h.ah != 3) /* 3 means it exited as TSR (is it ``normal''?) */
-    {
-      errno = EINTR;	/* what else can we put in `errno'? */
-      return (((r.h.ah == 1 ? SIGINT : SIGABRT) << 8) | r.h.al);
-    }
+  {
+    errno = EINTR;	/* what else can we put in `errno'? */
+    return (((r.h.ah == 1 ? SIGINT : SIGABRT) << 8) | r.h.al);
+  }
   return r.h.al;	/* AL holds the child exit code */
 }
 
@@ -493,8 +494,8 @@ static int direct_exec_tail (const char *program, const char *args,
     ret = __dpmi_get_capabilities(&flags, dpmi_vendor);
     if (ret == 0 && strcmp(dpmi_vendor + 2, "CWSDPMI") == 0)
       workaround_descriptor_leaks = 0;
-    else {
-
+    else
+    {
       /* Test the DPMI provider to see how it behaves.  We allocate
          a descriptor, get its access rights and full 8 byte descriptor.
          We then free it, and see what changed.  The present bit, run
@@ -531,7 +532,7 @@ static int direct_exec_tail (const char *program, const char *args,
   if (workaround_descriptor_leaks)		/* Create the unused map */
   {
     unsigned char desc_buf[8];
-    char * map = desc_map;
+    char *map = desc_map;
 
     /* Create a map of the free descriptors in the probable range the
        children will use.  We start by allocating a descriptor, assuming
@@ -542,34 +543,38 @@ static int direct_exec_tail (const char *program, const char *args,
        determined in the one pass identification. */
 
     sel1 = __dpmi_allocate_ldt_descriptors(1);
-    if(sel1 < _dos_ds) {			/* Failure -1 also matches */
-      sel1 = _dos_ds;				/* Our last descriptor */
-      *map++ = 0;				/* don't free it */
-    } else
-      *map++ = 1;				/* sel1 always released */
-    sel2 = sel1 + 8 * how_deep - 8;		/* end of scan range inclusive */
+    if (sel1 < _dos_ds)
+    {                                /* Failure -1 also matches */
+      sel1 = _dos_ds;                /* Our last descriptor */
+      *map++ = 0;                    /* don't free it */
+    }
+    else
+      *map++ = 1;                    /* sel1 always released */
+    sel2 = sel1 + 8 * how_deep - 8;  /* end of scan range inclusive */
 
-    if (workaround_descriptor_leaks == 1) {
+    if (workaround_descriptor_leaks == 1)
+    {
       for (i = sel1 + 8; i <= sel2; i += 8)
         *map++ = (__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte;
-
-    } else if (workaround_descriptor_leaks == 2) {
+    }
+    else if (workaround_descriptor_leaks == 2)
+    {
       for (i = sel1 + 8; i <= sel2; i += 8)
         if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte)
-          *map++ = 1;				/* Never touched, free it */
+          *map++ = 1;                /* Never touched, free it */
         else if (__dpmi_get_descriptor(i, &desc_buf) == -1)
-          *map++ = 1;				/* Means free on NT */
+          *map++ = 1;                /* Means free on NT */
         else
           *map++ = (desc_buf[5] & 0xf0) != larbyte;
     }
   }
 
-  ret = direct_exec_tail_1 ( program, args, envp, proxy, lfn, cmdline_var );
+  ret = direct_exec_tail_1(program, args, envp, proxy, lfn, cmdline_var);
 
-  if (workaround_descriptor_leaks)		/* Free the unused map */
+  if (workaround_descriptor_leaks)   /* Free the unused map */
   {
     int endsel;
-    char * map;
+    char *map;
 
     /* First, allocate a selector to estimate the end of the leaked range.
        This is only used to determine if our "how_deep" range was adequate.
@@ -588,15 +593,17 @@ static int direct_exec_tail (const char *program, const char *args,
     endsel = __dpmi_allocate_ldt_descriptors(1);
     __dpmi_free_ldt_descriptor (endsel);
 
-    if (workaround_descriptor_leaks) {		/* Algorithms 1 & 2 */
+    if (workaround_descriptor_leaks)
+    {							/* Algorithms 1 & 2 */
       for (i = sel2; i >= sel1; i -= 8)
         if (*--map)
           if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) == larbyte)
             __dpmi_free_ldt_descriptor(i);
     }
 
-    if (endsel > sel2) {
-      how_deep = (endsel - sel1) / 4;		/* Twice what's needed */
+    if (endsel > sel2)
+    {
+      how_deep = (endsel - sel1) / 4;			/* Twice what's needed */
 #if 0
       for (i = endsel - 8; i >= sel2; i -= 8)		/* Unsafe free, no map */
         __dpmi_free_ldt_descriptor(i);
@@ -729,7 +736,7 @@ static int direct_pe_exec(const char *, char **, char **);
 static int direct_exec(const char *program, char **argv, char **envp)
 {
   int i;
-  char args[CMDLEN_LIMIT+1], *argp = args;
+  char args[CMDLEN_LIMIT + 1], *argp = args;
   int need_quote = !__dosexec_in_system;
   int unescape_quote = __dosexec_in_system;
   int dos_shell = _is_dos_shell(program);
