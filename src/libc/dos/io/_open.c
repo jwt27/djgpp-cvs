@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -6,6 +7,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -23,6 +25,7 @@ _open(const char* filename, int oflag)
   __dpmi_regs r;
   int rv;
   int use_lfn = _USE_LFN;
+  bool retry_with_lfn = false;
 
   if (filename == 0)
   {
@@ -50,6 +53,7 @@ _open(const char* filename, int oflag)
     __dpmi_int(0x21, &r);
     if (!(r.x.flags & 1))		/* Get short name success */
     {
+      retry_with_lfn = true;
       r.x.ax = 0x6c00;
       r.x.bx = (oflag & 0xff);
       r.x.dx = 1;			/* Open existing file */
@@ -83,6 +87,7 @@ _open(const char* filename, int oflag)
       }
     }
   }
+fallback:
   if (use_lfn)
   {
     r.x.flags = 1;		/* Always set CF before calling a 0x71NN function. */
@@ -136,6 +141,15 @@ do_open:
   }
   else if (r.x.flags & 1)
   {
+    if ((r.x.ax == 2 || r.x.ax == 3) && retry_with_lfn)
+    {
+      /* On partitions like NTFS and exFAT, files and paths with long names
+         do not have 8.3 aliases.  If an attempt to open the file with short
+         name failed with "file not found" or "path not found", retry with
+         the LFN API. */
+      retry_with_lfn = false;
+      goto fallback;
+    }
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
