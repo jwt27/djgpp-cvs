@@ -55,3 +55,8 @@ The low-level @code{_put_path} procedure was changed to support
 @cindex Compatibility with new gcc versions
 Compatibility with gcc-6 and newer versions achieved by using proper
 @option{-fno-builtin-*} compiler flags where needed in library builds.
+
+@findex open@r{, and failure on file systems without SFN alias}
+@code{open} will no longer fail when trying to open a file that has no
+short file name alias.  This used to happen for the NTFS and the exFAT
+file systems.
