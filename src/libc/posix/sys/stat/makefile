@@ -16,6 +16,7 @@ SRC += mkdir.c
 SRC += mkfifo.c
 SRC += st_loss.c
 SRC += stat.c
+SRC += statbits.c
 SRC += umask.c
 SRC += xstat.c
 
