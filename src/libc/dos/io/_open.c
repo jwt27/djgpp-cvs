@@ -7,7 +7,6 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdarg.h>
-#include <stdbool.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -18,6 +17,10 @@
 #include <libc/dosio.h>
 #include <sys/fsext.h>
 #include <libc/fsexthlp.h>
+
+typedef enum {
+  false = 0, true = 1
+} bool;
 
 int
 _open(const char* filename, int oflag)
