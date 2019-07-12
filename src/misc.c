@@ -14,7 +14,11 @@ main(int argc, char **argv)
 {
   /* MS-DOS uses \, unix uses / */
   if (argc > 2 && strcmp(argv[1], "mkdir") == 0)
+#if defined(__MINGW32__) || defined(__MINGW64__)
+    mkdir(argv[2]);
+#else
     mkdir(argv[2], 0777);
+#endif
 
   /* redirection and long command lines don't always
      mix well under MS-DOS */
