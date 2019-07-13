@@ -13,7 +13,8 @@ all :: native \
 	$(BIN)/dxe3res.exe \
 	$E
 
-native :: $(HOSTBIN)/dxegen.exe
+native :: $(HOSTBIN)/dxegen.exe \
+	$(HOSTBIN)/dxe3res.exe
 	$(NOP)
 
 .o.h:
@@ -35,6 +36,9 @@ $(BIN)/dxe3res.exe : $(C) dxe3res.o $(L)
 CROSS_CC = $(word 1,$(CROSS_GCC))
 $(HOSTBIN)/dxegen.exe : dxe3gen.c init1.h init2.h init3.h init4.h init5.h fini1.h fini2.h fini3.h fini4.h fini5.h
 	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" -DDXE_CC=\"$(CROSS_CC)\" -DDXE_AR=\"$(CROSS_AR)\" -DDXE_AS=\"$(CROSS_AS)\" dxe3gen.c -o $@
+
+$(HOSTBIN)/dxe3res.exe: dxe3res.c
+	$(GCC) -O2 -Wall dxe3res.c -o $@
 
 clean ::
 	@-$(MISC) rm *.o *.h $(HOSTBIN)/dxegen.exe
