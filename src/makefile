@@ -21,7 +21,7 @@ DIRS = \
 	../info		\
 	../lib
 
-all : misc.exe config $(DIRS) makemake.exe subs ../lib/libg.a ../lib/libpc.a
+all : misc.exe config $(DIRS) makemake.exe subs
 
 misc.exe : misc.c
 	gcc -O2 -Wall misc.c -o misc.exe
