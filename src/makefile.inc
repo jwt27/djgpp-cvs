@@ -165,7 +165,8 @@ ifneq ($(MAKEFILE_LIB),1)
 all :: makefile.oh
 makefile.oh : makefile
 	@$(MISC) echo - building new response file
-	@$(MISC) echo makefile.oh $(addprefix \&/,$(OBJS))
+	#@echo " $(addprefix $(subst $(abspath $(CURDIR)/$(TOP))/,,$(CURDIR)/),$(OBJS))" > makefile.oh
+	@echo "$(addprefix &/,$(OBJS))" > makefile.oh
 endif
 
 clean ::

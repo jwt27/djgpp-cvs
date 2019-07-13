@@ -23,6 +23,7 @@ $(LIB)/lib$(LIBNAME).a : $(OBJS) makefile.rf $(TOP)/../ident.c
 ifeq ($(CROSS_BUILD),0)
 	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
 else
+	dos2unix makefile.rf
 	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a `cat makefile.rf` id_$(LIBNAME).o
 endif
 	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
