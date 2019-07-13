@@ -1338,13 +1338,13 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
     ("										\n\
       movw  %2,%%ax								\n\
       verr  %%ax								\n\
-      jnz   .Ldoes_not_has_read_right						\n\
+      jnz   .Ldoes_not_has_read_right%=					\n\
       movb  $1,%0								\n\
-.Ldoes_not_has_read_right:							\n\
+.Ldoes_not_has_read_right%=:							\n\
       verw  %%ax								\n\
-      jnz   .Ldoes_not_has_write_right						\n\
+      jnz   .Ldoes_not_has_write_right%=					\n\
       movb  $1,%1								\n\
-.Ldoes_not_has_write_right: "
+.Ldoes_not_has_write_right%=: "
      : "=qm" (read_allowed), "=qm" (write_allowed)
      : "g" (sel)
      );
