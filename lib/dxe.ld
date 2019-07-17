@@ -31,5 +31,5 @@ SECTIONS {
     *(.bss .bss.* .gnu.linkonce.b.*)
     *(COMMON)
   }
-  /DISCARD/ : { *(gnu.lto_*) }
+  /DISCARD/ : { *(.gnu.lto_*) }
 }
