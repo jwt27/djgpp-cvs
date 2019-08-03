@@ -160,13 +160,21 @@ resize_again:
 ;  Scan environment for "PATH=" and the stub's full name after environment
 
 	mov	es, es:[0x2c]		; get environment segment
+	mov	di, es
+	or	di, di			; check if no env
+	jnz	@f1
+	mov	al, 111
+	mov	dx, msg_no_env
+	jmpl	error
+@f1:
 	xor	di, di			; begin search for NUL/NUL (di = 0)
 ;	mov	cx, 0xff04		; effectively `infinite' loop
 	xor 	al, al
-	.db	0xa9			; "test ax,...." -- skip 2 bytes
+	jmp	@f1
 scan_environment:
 	repne
 	scasb				; search for NUL
+@f1:
 	cmpw	es:[di], 0x4150		; "PA"
 	jne	not_path
 	scasw
@@ -182,6 +190,8 @@ not_path:
 	scasb
 	jne	scan_environment	; no, still environment
 	scasw				; adjust pointer to point to prog name
+	push	es
+	push	di
 
 ;; When we are spawned from a program which has more than 20 handles in use,
 ;; all the handles passed to us by DOS are taken (since only the first 20
@@ -199,8 +209,6 @@ not_path:
 ;-----------------------------------------------------------------------------
 ;  Get DPMI information before doing anything 386-specific
 
-	push	es
-	push	di
 	xor	cx, cx			; flag for load attempt set cx = 0
 	jz	@f2			; We always jump, shorter than jmp
 @b1:
@@ -828,6 +836,8 @@ msg_not_exe:
 	.db	": not EXE$"
 msg_not_coff:
 	.db	": not COFF (Check for viruses)$"
+msg_no_env:
+	.db	"no envseg$"
 msg_no_dpmi:
 	.db	"no DPMI - Get csdpmi*b.zip$"
 msg_no_dos_memory:
