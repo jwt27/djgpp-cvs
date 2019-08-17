@@ -45,6 +45,7 @@
 extern char **_environ;
 
 int __dosexec_in_system = 0;
+int __spawn_flags = __spawn_leak_workaround;
 
 typedef struct {
   unsigned short eseg;
@@ -492,7 +493,8 @@ static int direct_exec_tail (const char *program, const char *args,
     /* r5 as corresponding DPMI call is supported beginning with v5.  */
 
     ret = __dpmi_get_capabilities(&flags, dpmi_vendor);
-    if (ret == 0 && strcmp(dpmi_vendor + 2, "CWSDPMI") == 0)
+    if ((ret == 0 && strcmp(dpmi_vendor + 2, "CWSDPMI") == 0)
+        || (__spawn_flags & __spawn_leak_workaround) == 0)
       workaround_descriptor_leaks = 0;
     else
     {

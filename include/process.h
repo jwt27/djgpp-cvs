@@ -52,6 +52,10 @@ int __djgpp_spawn(int _mode, const char *_path, char *const _argv[], char *const
 #define SPAWN_EXTENSION_SRCH    1
 #define SPAWN_NO_EXTENSION_SRCH 2
 
+#define __spawn_leak_workaround             0x0001 /* free descriptor leaks */
+
+extern int __spawn_flags;
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
