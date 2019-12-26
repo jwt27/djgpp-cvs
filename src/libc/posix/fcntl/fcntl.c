@@ -1,3 +1,4 @@
+/* Copyright (C) 2019 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2016 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2010 DJ Delorie, see COPYING.DJ for details */
@@ -281,7 +282,7 @@ fcntl(int fd, int cmd, ...)
   if (func)
   {
     int rv;
-    if (__FSEXT_func_wrapper(func, __FSEXT_fcntl, &rv, fd))
+    if (__FSEXT_func_wrapper(func, __FSEXT_fcntl, &rv, fd, cmd))
       return rv;
   }
 
