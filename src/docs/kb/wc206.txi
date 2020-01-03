@@ -66,3 +66,11 @@ file systems.
 This happened because not all @code{fcntl} arguments had been passed to the
 file system extension API.  Now the complete set of aguments is passed to the
 API.
+
+@findex utime@r{, and failure when trying to set access time on plain DOS}
+@code{utime} will no longer try to to set the access time neither on FreeDOS
+nor any version of MS-DOS with or without LFN support.  This is because the
+required function 5705h is neither provided by the kernel nor by the LFN driver.
+Previously @code{utime} produced an error (EIO) on plain DOS when a LFN driver
+was installed because the access time could not be modified, although the creation
+time had been modified.

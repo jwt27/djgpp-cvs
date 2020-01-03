@@ -1,3 +1,4 @@
+/* Copyright (C) 2020 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -84,9 +85,10 @@ utime(const char *path, const struct utimbuf *times)
     e = EIO;
     retval = -1;
   }
-  else if (_USE_LFN)
+  else if (_USE_LFN && (_os_trueversion == 0x532 || _os_trueversion == 0x700 || _os_trueversion == 0x710))
   {
-    /* We can set access time as well.  */
+    /* We can set access time as well on Win95 and above but not on
+       FreeDOS or any version of MS-DOS with or without LFN support.  */
     if (times)
       modtime = times->actime;
     tm = localtime(&modtime);
@@ -97,7 +99,7 @@ utime(const char *path, const struct utimbuf *times)
 
     r.x.ax = 0x5705;
     r.x.bx = fildes;
-    r.x.cx = dostime;	/* this might be ignored */
+    r.x.cx = _os_trueversion == 0x700 ? 0 : dostime;  /* Acccording to RBIL this must be 0 for Win95 */
     r.x.dx = dosdate;
     __dpmi_int(0x21, &r);
     if (r.x.flags & 1)
