@@ -60,3 +60,9 @@ Compatibility with gcc-6 and newer versions achieved by using proper
 @code{open} will no longer fail when trying to open a file that has no
 short file name alias.  This used to happen for the NTFS and the exFAT
 file systems.
+
+@findex fcntl@r{, and failure when using file system extension}
+@code{fcntl} will no longer fail when using the file system extension API.
+This happened because not all @code{fcntl} arguments had been passed to the
+file system extension API.  Now the complete set of aguments is passed to the
+API.
