@@ -1,3 +1,4 @@
+/* Copyright (C) 2020 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
@@ -41,33 +42,30 @@ utime(const char *path, const struct utimbuf *times)
     (tm->tm_hour << 11);
 
 
-  if ((_USE_LFN)    &&
+  if ((_USE_LFN) &&
       (_os_trueversion == 0x532)) /* LFN and NT (or 2000 or XP) */
   {
+    _put_path(path);
+    r.x.ds = __tb_segment;  /* DS:DX -> ASCIZ filename */
+    r.x.dx = __tb_offset;
 
-     _put_path(path);
-     r.x.ds = __tb_segment;  /* DS:DX -> ASCIZ filename */
-     r.x.dx = __tb_offset;
+    r.x.cx = dostime; /* New time */
+    r.x.di = dosdate; /* New date */
+    r.x.si = 0x00;    /* Set to zero just in case */
 
-     r.x.cx = dostime; /* New time */
-     r.x.di = dosdate; /* New date */
-     r.x.si = 0x00;    /* Set to zero just in case */
-     
-     r.x.ax = 0x7143;  /* LFN API for extended get and set time */
-     r.x.bx = 0x03;    /* Set last write date / time */
-     __dpmi_int(0x21, &r);
-     
-     if (!(r.x.flags & 1))  /* Pass then continue */
-     {
-         /* Uses date allready in r.x.di */
-         r.x.ax = 0x7143;  /* LFN API for extended get and set time */
-         r.x.bx = 0x05;    /* Set last access date / time */
-         __dpmi_int(0x21, &r);
-         if (!(r.x.flags & 1))  /* Pass then continue */
-         {
-             return 0;
-         }
-     }
+    r.x.ax = 0x7143;  /* LFN API for extended get and set time */
+    r.x.bx = 0x03;    /* Set last write date / time */
+    __dpmi_int(0x21, &r);
+
+    if (!(r.x.flags & 1))  /* Pass then continue */
+    {
+      /* Uses date allready in r.x.di */
+      r.x.ax = 0x7143;  /* LFN API for extended get and set time */
+      r.x.bx = 0x05;    /* Set last access date / time */
+      __dpmi_int(0x21, &r);
+      if (!(r.x.flags & 1))  /* Pass then continue */
+        return 0;
+    }
   }
 
   /* DOS wants the file open */
@@ -87,9 +85,10 @@ utime(const char *path, const struct utimbuf *times)
     e = EIO;
     retval = -1;
   }
-  else if (_USE_LFN)
+  else if (_USE_LFN && (_os_trueversion == 0x532 || _os_trueversion == 0x700 || _os_trueversion == 0x710))
   {
-    /* We can set access time as well.  */
+    /* We can set access time as well on Win95 and above but not on
+       FreeDOS or any version of MS-DOS with or without LFN support.  */
     if (times)
       modtime = times->actime;
     tm = localtime(&modtime);
@@ -100,7 +99,7 @@ utime(const char *path, const struct utimbuf *times)
 
     r.x.ax = 0x5705;
     r.x.bx = fildes;
-    r.x.cx = dostime;	/* this might be ignored */
+    r.x.cx = _os_trueversion == 0x700 ? 0 : dostime;  /* Acccording to RBIL this must be 0 for Win95 */
     r.x.dx = dosdate;
     __dpmi_int(0x21, &r);
     if (r.x.flags & 1)

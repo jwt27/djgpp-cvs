@@ -184,6 +184,7 @@ Miscellaneous GNU utilities
         entire directory trees.
 
 * CVS: (cvs).                   A distributed configuration management system.
+* cvs: (cvs)CVS commands.       Concurrent Versions System commands.
 * cvsclient: (cvsclient).       The CVS client/server protocol docs.
 
 
