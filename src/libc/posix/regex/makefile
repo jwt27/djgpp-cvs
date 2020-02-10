@@ -4,7 +4,7 @@
 TOP=../..
 
 # supress all warnings here
-CFLAGS = -w
+CFLAGS += -w
 
 SRC += regcomp.c
 SRC += regerror.c
