@@ -53,7 +53,7 @@ SECTIONS
      . = ALIGN(0x200);
   }
   /* Discard LTO sections.  */
-  /DISCARD/ : { *(gnu.lto_*) }
+  /DISCARD/ : { *(.gnu.lto_*) }
   /* Stabs debugging sections.  */
   .stab 0 : { *(.stab) }
   .stabstr 0 : { *(.stabstr) }
