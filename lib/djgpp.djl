@@ -33,9 +33,6 @@ SECTIONS
     LONG(0) ;
     *(.data)
     *(.data.*)
-    /* Ugly workaround to prevent entire .bss to have attribute CONTENT */
-    /* for C++ executables. */
-    *( .bss.*)
     *(.gcc_exc*)
     ___EH_FRAME_BEGIN__ = . ;
     *(.eh_fram*)
@@ -47,7 +44,7 @@ SECTIONS
   }
   .bss  SIZEOF(.data) + ADDR(.data) :
   {
-    *(.bss .gnu.linkonce.b.*)
+    *(.bss .bss.* .gnu.linkonce.b.*)
     *(COMMON)
      end = . ; PROVIDE(_end = .) ;
      . = ALIGN(0x200);
