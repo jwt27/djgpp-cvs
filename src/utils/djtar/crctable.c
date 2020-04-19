@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
+/* Copyright (C) 2000-2020 DJ Delorie, see COPYING.DJ for details */
 
 /*-------------------------------------------------------------*/
 /*--- Table for doing CRCs                                  ---*/
@@ -9,8 +9,8 @@
    This file is part of bzip2/libbzip2, a program and library for
    lossless, block-sorting data compression.
 
-   bzip2/libbzip2 version 1.0.6 of 6 September 2010
-   Copyright (C) 1996-2010 Julian Seward <jseward@bzip.org>
+   bzip2/libbzip2 version 1.0.8 of 13 July 2019
+   Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
 
    Please read the WARNING, DISCLAIMER and PATENTS sections in the 
    README file.
@@ -19,6 +19,10 @@
    in the file LICENSE.
 
    Minor changes for DJTAR program, Juan Manuel Guerrero  (2011-01-08).
+
+   Minor changes for DJTAR program, Juan Manuel Guerrero  (2020-04-19).
+   Original source code and license file available at:
+     <https://www.sourceware.org/bzip2/>
    ------------------------------------------------------------------ */
 
 
