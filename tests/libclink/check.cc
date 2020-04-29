@@ -426,7 +426,8 @@ void do_missing(const char *which, const char **fns, StringList &all_defs)
 
 //-----------------------------------------------------------------------------
 
-main()
+int
+main(void)
 {
   char line[1000];
   char sym[1000];
