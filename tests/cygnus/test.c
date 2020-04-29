@@ -412,10 +412,12 @@ double
   return log2(arg);
 }
 #endif /* log2 */
+#ifdef log2f
 float
 (log2f)(float arg)
 {
   return log2f(arg);
 }
+#endif /* log2f */
 
 #endif /* __DJGPP__ */
