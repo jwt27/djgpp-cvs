@@ -12,6 +12,8 @@ EOBJS += unassmbl.o
 
 include $(TOP)/../makefile.inc
 
+CFLAGS += -fcommon
+
 #relax error checking:
 XGCC = $(XLGCC)
 

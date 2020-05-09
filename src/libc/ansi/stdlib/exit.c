@@ -15,7 +15,7 @@
 
 struct __atexit *__atexit_ptr = 0;
 
-void (*__stdio_cleanup_hook)(void);
+extern void (*__stdio_cleanup_hook)(void);
 
 /* A hook to close down the file system extensions if any where opened.
    This does not force them to be linked in. */
