@@ -132,7 +132,7 @@ if (now + new > max)
 
 @example
 #include <stdlib.h>
-#include <malldbg.h> /* on non-DJGPP systems */
+#include <libc/malldbg.h> /* on non-DJGPP systems */
 
 struct mallinfo mallinfo(void);
 @end example
@@ -239,7 +239,7 @@ The @code{mallinfo} structure filled with information.
 
 @example
 #include <stdlib.h>
-#include <malldbg.h> /* on non-DJGPP systems */
+#include <libc/malldbg.h> /* on non-DJGPP systems */
 
 int malloc_verify(void);
 @end example
@@ -283,7 +283,7 @@ tests failed.
 
 @example
 #include <stdlib.h>
-#include <malldbg.h> /* on non-DJGPP systems */
+#include <libc/malldbg.h> /* on non-DJGPP systems */
 
 int malloc_debug(int level);
 @end example
@@ -361,7 +361,7 @@ default level is 0.
 
 @example
 #include <stdlib.h>
-#include <malldbg.h> /* on non-DJGPP systems */
+#include <libc/malldbg.h> /* on non-DJGPP systems */
 
 void mallocmap(void);
 @end example
@@ -412,7 +412,7 @@ Initial value of output file is stderr.
 
 @example
 #include <stdlib.h>
-#include <malldbg.h> /* on non-DJGPP systems */
+#include <libc/malldbg.h> /* on non-DJGPP systems */
 
 M_HOOKFN mallsethook(enum m_hook_kind which,
                      M_HOOKFN newhook);
@@ -559,7 +559,7 @@ These hooks and the function are specific to DJGPP.
 
 @example
 #include <stdlib.h>
-#include <malldbg.h> (on non-DJGPP systems)
+#include <libc/malldbg.h> (on non-DJGPP systems)
 
 FILE *malldbgdmpfile(FILE *fp);
 @end example
@@ -593,8 +593,8 @@ FILE *oldfile = malldbgdmpfile(stdout);
 
 @example
 #include <stdlib.h>
-#include <malldbg.h>  /* on non-DJGPP systems */
-#include <sysquery.h> /* alternative on non-DJGPP systems */
+#include <libc/malldbg.h>  /* on non-DJGPP systems */
+#include <libc/sysquery.h> /* alternative on non-DJGPP systems */
 
 struct _sysquery _sysmalloc(void);
 @end example
