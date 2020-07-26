@@ -1,3 +1,4 @@
+/* Copyright (C) 2020 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
@@ -38,7 +39,7 @@ extern long __djgpp_clock_tick_interval;
 
 int getitimer(int _which, struct itimerval *_value);
 int setitimer(int _which, struct itimerval *_value, struct itimerval *_ovalue);
-int utimes(const char *_file, struct timeval _tvp[2]);
+int utimes(const char *_file, const struct timeval _tvp[2]);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
