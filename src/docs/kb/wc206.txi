@@ -22,7 +22,8 @@ Fixed a @code{NULL} pointer dereference in termios @code{vbios_write_ch}
 private procedure.
 
 @cindex dxe3gen and extended coff relocations
-@command{dxe3gen} now handles extended coff relocations (more than 65535 relocs.)
+@command{dxe3gen} now handles extended coff relocations (more than 65535 relocs.
+Requires a DJGPP port of binutils-2.22 or newer.)
 
 @cindex Update of DXE linker script
 The dxe linker script @file{dxe.ld} now handles @code{.gnu.linkonce.b.*}
