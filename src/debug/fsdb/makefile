@@ -12,6 +12,9 @@ EOBJS += unassmbl.o
 
 include $(TOP)/../makefile.inc
 
+#see screen.h as to why this is needed
+CFLAGS += -fcommon
+
 #relax error checking:
 XGCC = $(XLGCC)
 

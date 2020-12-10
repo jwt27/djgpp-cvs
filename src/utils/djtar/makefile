@@ -1,3 +1,4 @@
+# Copyright (C) 2020 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details
 # Copyright (C) 2000 DJ Delorie, see COPYING.DJ for details
@@ -32,6 +33,9 @@ EXTRA_FILES += $(BIN)/djtart.exe
 
 include $(TOP)/../makefile.inc
 XGCC = $(XLGCC)
+
+# Avoid duplicated symbols with gcc-10 where -fno-common is on by default.
+CFLAGS += -fcommon
 
 all :: $(BIN)/djtar.exe
 
