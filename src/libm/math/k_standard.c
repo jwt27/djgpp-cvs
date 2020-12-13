@@ -99,6 +99,7 @@ static double zero = 0.0;	/* used as const */
 	exc.arg1 = x;
 	exc.arg2 = y;
 	exc.err = 0;
+        exc.retval = zero;  /* Pacify compiler. */
 	switch(type) {
 	    case 1:
 	    case 101:

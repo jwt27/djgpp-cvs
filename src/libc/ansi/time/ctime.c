@@ -1550,12 +1550,12 @@ asctime_r(const struct tm * __restrict__ timeptr, char * __restrict__ result)
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   };
 
-  (void) sprintf(result, "%.3s %.3s%3d %02d:%02d:%02d %d\n",
+  (void) sprintf(result, "%.3s %.3s%3d %02d:%02d:%02d %hd\n",
                  wday_name[timeptr->tm_wday],
                  mon_name[timeptr->tm_mon],
                  timeptr->tm_mday, timeptr->tm_hour,
                  timeptr->tm_min, timeptr->tm_sec,
-                 TM_YEAR_BASE + timeptr->tm_year);
+                 (short)(TM_YEAR_BASE + timeptr->tm_year));
   return result;
 }
 
