@@ -1,3 +1,4 @@
+/* Copyright (C) 2021 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
@@ -1338,13 +1339,13 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
     ("										\n\
       movw  %2,%%ax								\n\
       verr  %%ax								\n\
-      jnz   .Ldoes_not_has_read_right_%=					\n\
+      jnz   Ldoes_not_has_read_right_%=						\n\
       movb  $1,%0								\n\
-.Ldoes_not_has_read_right_%=:							\n\
+Ldoes_not_has_read_right_%=:							\n\
       verw  %%ax								\n\
-      jnz   .Ldoes_not_has_write_right_%=					\n\
+      jnz   Ldoes_not_has_write_right_%=					\n\
       movb  $1,%1								\n\
-.Ldoes_not_has_write_right_%=: "
+Ldoes_not_has_write_right_%=: "
      : "=qm" (read_allowed), "=qm" (write_allowed)
      : "g" (sel)
      );
