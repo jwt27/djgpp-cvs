@@ -1,3 +1,4 @@
+/* Copyright (C) 2021 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
@@ -9,7 +10,8 @@
 #include <dpmi.h>
 #include <fcntl.h>
 #include <libc/dosio.h>
- 
+#include <stdarg.h>
+
 int
 _chmod(const char *filename, int func, ...)
 {
@@ -25,7 +27,12 @@ _chmod(const char *filename, int func, ...)
     r.x.ax = 0x4300 + func;
   _put_path(filename);
   if (func == 1)
-    r.x.cx = *(&func + 1);		/* Value to set */
+  {
+    va_list ap;
+    va_start(ap, func);
+    r.x.cx = va_arg(ap, int);		/* Value to set */
+    va_end(ap);
+  }
   r.x.dx = __tb_offset;
   r.x.ds = __tb_segment;
   __dpmi_int(0x21, &r);

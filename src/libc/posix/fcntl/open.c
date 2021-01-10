@@ -1,3 +1,4 @@
+/* Copyright (C) 2021 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2018 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
@@ -22,6 +23,7 @@
 #include <io.h>
 #include <sys/fsext.h>
 #include <dos.h>
+#include <stdarg.h>
 
 #include <libc/dosio.h>
 #include <libc/fd_props.h>
@@ -117,6 +119,10 @@ open(const char* filename, int oflag, ...)
   char real_name[FILENAME_MAX + 1];
   int should_create = (oflag & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL);
   int dirs_solved = 0; /* Only directories resolved in real_name? */
+  va_list ap;
+  va_start(ap, oflag);
+  int permissions = va_arg(ap, int);
+  va_end(ap);
 
   /* Solve symlinks and honor O_NOLINK flag  */
   if (oflag & O_NOLINK)
@@ -220,7 +226,7 @@ open(const char* filename, int oflag, ...)
   /* DOS doesn't want to see these bits */
   oflag &= ~(O_TEXT | O_BINARY);
 
-  dmode = (*((&oflag) + 1) & S_IWUSR) ? 0 : 1;
+  dmode = (permissions & S_IWUSR) ? 0 : 1;
 
   /* Merge the share flags if they are specified */
   dont_have_share = ((oflag &

@@ -1,3 +1,4 @@
+/* Copyright (C) 2021 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /*
  * Copyright (c) 1987, 1991 Regents of the University of California.
@@ -46,6 +47,18 @@
 #define	PDP_ENDIAN	3412	/* LSB first in word, MSW first in long */
 
 #define	BYTE_ORDER	LITTLE_ENDIAN
+
+/* Define other macros used.  */
+#define __LITTLE_ENDIAN    LITTLE_ENDIAN
+#define __BIG_ENDIAN       BIG_ENDIAN
+#define __PDP_ENDIAN       PDP_ENDIAN
+#define __BYTE_ORDER       LITTLE_ENDIAN
+
+#define __LITTLE_ENDIAN__  LITTLE_ENDIAN
+#define __BIG_ENDIAN__     BIG_ENDIAN
+#define __PDP_ENDIAN__     PDP_ENDIAN
+#define __BYTE_ORDER__     LITTLE_ENDIAN
+
 
 #include <sys/cdefs.h>
 

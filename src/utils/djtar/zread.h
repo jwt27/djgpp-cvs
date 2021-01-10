@@ -1,3 +1,4 @@
+/* Copyright (C) 2021 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
@@ -162,7 +163,7 @@ extern int s_switch;          /* do not skip pax headers (-!s) */
 #define WARN(msg) {if (v_switch) fprintf msg ; \
                    if (exit_code == OK) exit_code = WARNING;}
 
-int (*decompressor)(void *);
+extern int (*decompressor)(void *);
 
 typedef enum { DOS_BINARY, DOS_TEXT, UNIX_TEXT } File_type;
 
