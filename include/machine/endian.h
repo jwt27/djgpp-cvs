@@ -54,11 +54,6 @@
 #define __PDP_ENDIAN       PDP_ENDIAN
 #define __BYTE_ORDER       LITTLE_ENDIAN
 
-#define __LITTLE_ENDIAN__  LITTLE_ENDIAN
-#define __BIG_ENDIAN__     BIG_ENDIAN
-#define __PDP_ENDIAN__     PDP_ENDIAN
-#define __BYTE_ORDER__     LITTLE_ENDIAN
-
 
 #include <sys/cdefs.h>
 
