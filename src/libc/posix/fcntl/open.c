@@ -119,9 +119,11 @@ open(const char* filename, int oflag, ...)
   char real_name[FILENAME_MAX + 1];
   int should_create = (oflag & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL);
   int dirs_solved = 0; /* Only directories resolved in real_name? */
+  int permissions;
   va_list ap;
+
   va_start(ap, oflag);
-  int permissions = va_arg(ap, int);
+  permissions = va_arg(ap, int);
   va_end(ap);
 
   /* Solve symlinks and honor O_NOLINK flag  */
