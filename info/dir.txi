@@ -161,6 +161,8 @@ GNU libraries
 * Libiberty: (libiberty).       Library of utility functions which
                                 are missing or broken on some systems.
 
+* libidn: (libidn).             Internationalized string processing library.
+
 
 Miscellaneous GNU utilities
 
@@ -177,7 +179,9 @@ Miscellaneous GNU utilities
 
 * Bison: (bison).               The GNU yacc-like parser generator
 
+
 * Bash: (bash).                 The GNU Bourne-Again SHell.
+
 
 * cpio: (cpio).
 	A program to manage tape or disk archives, or to copy
@@ -288,6 +292,11 @@ GNU Gettext Utilities
 * xtokid: (id-utils)xtokid invocation.          Testing mkid scanners.
 
 
+Localization
+* idn: (libidn)Invoking idn.    Internationalized Domain Name (IDN) string 
+                                  conversion.
+
+
 * Indent: (indent).             C/C++ code formatter.
 
 
@@ -304,6 +313,7 @@ GNU Gettext Utilities
 
 
 * Sed: (sed).                   The GNU Stream EDitor.
+
 
 * Shell utilities: (sh-utils).  The GNU shell utilities.
 Printing text
@@ -345,6 +355,7 @@ Modified command invocation
 Delaying
 * sleep: (sh-utils)sleep invocation.            Delay for a specified time.
 
+
 * Shar utilities: (sharutils).  The GNU shar utilities.
 * mail-files: (sharutils)mail-files invocation. Send files to remote site.
 * mailshar: (sharutils)mailshar invocation.     Make and send a shell archive.
@@ -354,7 +365,9 @@ Delaying
 * uudecode: (sharutils)uudecode invocation.     Restore file from 7-bits.
 * uuencode: (sharutils)uuencode invocation.     Force binary file to 7-bits.
 
+
 * Tar: (tar).               GNU Tar, a program for handling archives of files.
+
 
 * Text utilities: (textutils).  The GNU text utilities.
 Output of entire files
@@ -391,7 +404,9 @@ Operating on characters
 * expand: (textutils)expand invocation.         Convert tabs to spaces.
 * unexpand: (textutils)unexpand invocation.     Convert spaces to tabs.
 
+
 * Which: (which).               Show the full path of commands.
+
 
 TeX
 * Web2c: (web2c).               TeX, Metafont, and companion programs.
@@ -470,5 +485,8 @@ Miscellaneous Utilities
 Miscellaneous Documentation
 
 * Elisp: (elisp).               The Emacs Lisp Reference Manual.
+
+* IDN Library: (libidn)Emacs API.
+                                Emacs API for IDN functions.
 
 @end menu
