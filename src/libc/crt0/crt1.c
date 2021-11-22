@@ -210,7 +210,7 @@ setup_os_version(void)
   _osminor = v & 0xff;
 }
 
-__attribute__((force_align_arg_pointer))
+
 void
 __crt1_startup(void)
 {
