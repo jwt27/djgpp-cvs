@@ -188,7 +188,7 @@ typedef struct memblock {
 /* conversion and access macros */
 #define MEMBLKp(p) (memblockp)((byte*)(p) - DATAOFFSET)
 #define PTR(m)     (void*)((byte*)(m) + DATAOFFSET)
-#define ALIGN 8
+#define ALIGN 16
 
 #define ALIGNMASK (ALIGN-1)
 
