@@ -109,6 +109,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -384,7 +385,7 @@ get_inode_from_sda(const char *mybasename)
       /* Copy the directory entry from the SDA to local storage.
          The filename is stored there in infamous DOS format: name and
          extension blank-padded to 8/3 characters, no dot between them.  */
-      movedata(dos_mem_base, src_address, our_mem_base, (unsigned int)cmp_buf,
+      movedata(dos_mem_base, src_address, our_mem_base, (uintptr_t)cmp_buf,
                sizeof(struct full_dirent));
 
       /* If this is the filename we are looking for, return

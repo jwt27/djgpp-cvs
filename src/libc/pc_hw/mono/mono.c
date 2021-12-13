@@ -56,7 +56,7 @@ void _mono_printf(const char *fmt, ...)
 {
   int i;
   char buf[1000];
-  va_list a = 0;
+  va_list a;
   va_start(a, fmt);
   vsprintf(buf, fmt, a);
   for (i=0; buf[i]; i++)

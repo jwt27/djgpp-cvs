@@ -12,7 +12,7 @@ int
 sscanf(const char *str, const char *fmt, ...)
 {
   int r;
-  va_list a=0;
+  va_list a;
   FILE _strbuf;
 
   va_start(a, fmt);

@@ -4,6 +4,7 @@
 
 #include <io.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <errno.h>
 #include <sys/dxe.h>
 
@@ -41,7 +42,7 @@ void *_dxe_load(char *name)
     _close(h);
 
     for (i=0; i<dh.nrelocs; i++)
-      *(long *)(data + relocs[i]) += (int)data;
+      *(long *)(data + relocs[i]) += (uintptr_t)data;
   }
 
   return (void *)(data + dh.symbol_offset);

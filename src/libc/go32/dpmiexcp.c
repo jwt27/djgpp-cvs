@@ -5,6 +5,7 @@
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <float.h>
 #include <unistd.h>
@@ -119,14 +120,14 @@ show_call_frame(void)
        limit by the maximum that the stack could hold (2 int's per frame).  */
     max = _stklen / (2*sizeof(unsigned));
 
-  tos = (unsigned *)__djgpp_selector_limit;
-  vbp = (unsigned *)__djgpp_exception_state->__ebp;
+  tos = (unsigned *)(uintptr_t)__djgpp_selector_limit;
+  vbp = (unsigned *)(uintptr_t)__djgpp_exception_state->__ebp;
   err("Call frame traceback EIPs:\r\n  0x");
   itox(__djgpp_exception_state->__eip, 8);
   max--;
-  while (((unsigned)vbp >= __djgpp_exception_state->__esp) && (vbp >= &end) && (vbp < tos))
+  while (((uintptr_t)vbp >= __djgpp_exception_state->__esp) && (vbp >= &end) && (vbp < tos))
   {
-    vbp_new = (unsigned *)*vbp;
+    vbp_new = (unsigned *)(uintptr_t)*vbp;
     if (vbp_new == 0)
       break;
     veip = *(vbp + 1);
@@ -191,14 +192,15 @@ do_faulting_finish_message(int fake_exception)
 {
   const char *en;
   unsigned long signum = __djgpp_exception_state->__signum;
-  unsigned excpt_stack_addr = (unsigned)&djgpp_exception_stack;
+  unsigned excpt_stack_addr = (uintptr_t)&djgpp_exception_stack;
   int i;
   const char *prog_name;
-  
+#if 0
   /* check video mode for original here and reset (not if PC98) */
   if(ScreenPrimary != 0xa0000 && _farpeekb(_dos_ds, 0x449) != old_video_mode) {
     asm volatile ("pusha;movzbl _old_video_mode,%eax; int $0x10;popa;nop");
   }
+#endif
   en = (signum >= EXCEPTION_COUNT) ? 0 : 
   exception_names[signum];
   if (signum == 0x75)
@@ -229,8 +231,8 @@ do_faulting_finish_message(int fake_exception)
       && (unsigned)__djgpp_exception_state->__ebp
 		>= __djgpp_exception_state->__esp
       && (unsigned *)__djgpp_exception_state->__ebp >= &end
-      && (unsigned *)__djgpp_exception_state->__ebp
-		< (unsigned *)__djgpp_selector_limit)
+      && __djgpp_exception_state->__ebp
+		< (unsigned)__djgpp_selector_limit)
     itox(*((unsigned *)__djgpp_exception_state->__ebp + 1), 8);
   else
     itox(__djgpp_exception_state->__eip, 8);
@@ -363,7 +365,7 @@ raise(int sig)
     return 0;			/* Ignore it */
   if(temp == (SignalHandler)SIG_DFL)
     __djgpp_traceback_exit(sig); /* this does not return */
-  else if((unsigned)temp < 4096)
+  else if((uintptr_t)temp < 4096)
   {
     err("Bad signal handler, ");
     __djgpp_traceback_exit(sig); /* does not return */
@@ -542,30 +544,30 @@ __djgpp_exception_setup(void)
   __djgpp_dos_sel = _dos_ds;
 
   /* lock addresses which may see HW interrupts */
-  lockmem.address = __djgpp_base_address + (unsigned) &__djgpp_hw_lock_start;
-  lockmem.size = ((unsigned) &__djgpp_hw_lock_end
-		  - (unsigned) &__djgpp_hw_lock_start);
+  lockmem.address = __djgpp_base_address + (uintptr_t) &__djgpp_hw_lock_start;
+  lockmem.size = ((uintptr_t) &__djgpp_hw_lock_end
+		  - (uintptr_t) &__djgpp_hw_lock_start);
   __dpmi_lock_linear_region(&lockmem);
   
   asm volatile ("mov %%cs,%0" : "=g" (except.selector) );
-  except.offset32 = (unsigned) &__djgpp_exception_table;
+  except.offset32 = (uintptr_t) &__djgpp_exception_table;
   for(i=0; i < EXCEPTION_COUNT; i++)
   {
     except_ori[i] = except;	/* New value to set */
     except.offset32 += 4;	/* This is the size of push n, jmp */
   }
   kbd_ori.selector = npx_ori.selector = except.selector;
-  npx_ori.offset32 = (unsigned) &__djgpp_npx_hdlr;
+  npx_ori.offset32 = (uintptr_t) &__djgpp_npx_hdlr;
   if(ScreenPrimary != 0xa0000)
-    kbd_ori.offset32 = (unsigned) &__djgpp_kbd_hdlr;
+    kbd_ori.offset32 = (uintptr_t) &__djgpp_kbd_hdlr;
   else
   {
-    kbd_ori.offset32 = (unsigned) &__djgpp_kbd_hdlr_pc98;
+    kbd_ori.offset32 = (uintptr_t) &__djgpp_kbd_hdlr_pc98;
     cbrk_vect = 0x06;
-    except.offset32 = (unsigned) &__djgpp_iret;		/* TDPMI98 bug */
+    except.offset32 = (uintptr_t) &__djgpp_iret;		/* TDPMI98 bug */
     __dpmi_set_protected_mode_interrupt_vector(0x23, &except);
   }
-  except.offset32 = (unsigned) &__djgpp_i24;
+  except.offset32 = (uintptr_t) &__djgpp_i24;
   __dpmi_set_protected_mode_interrupt_vector(0x24, &except);
 
   __dpmi_get_protected_mode_interrupt_vector(9, &__djgpp_old_kbd);

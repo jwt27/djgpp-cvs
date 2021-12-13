@@ -65,9 +65,9 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 # Moved setting of $(GCC{L}_OPT) to top of file
 #
 ifneq ($(CROSS_BUILD),1)
-XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -isystem $(TOP)/../../include $(CFLAGS)
-XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -isystem $(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -isystem $(TOP)/../../include $(CFLAGS)
+XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
+XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
 else
 XGCC = $(CROSS_GCC) $(GCC_OPT) -isystem $(TOP)/../../include $(CFLAGS)
 XGPP = $(CROSS_GCC) $(GPP_OPT) -isystem $(TOP)/../../include $(CFLAGS)
@@ -86,17 +86,17 @@ XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -
 MISC = $(TOP)/../misc.exe
 
 %.o : %.c
-	@$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
-	@$(XGCC) -c $(EXTRA_CFLAGS) $<
+	$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
+	$(XGCC) -c $(EXTRA_CFLAGS) $<
 %.o : %.cc
-	@$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
-	@$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
+	$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
+	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 %.o : %.S
-	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	@$(XGCC) -c $<
+	$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	$(XGCC) -m32 -c $<
 %.o : %.s
-	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	@$(XGCC) -x assembler-with-cpp -c $<
+	$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	$(XGCC) -m32 -x assembler-with-cpp -c $<
 
 %.i : %.c
 	$(XGCC) -c $< -E > $@

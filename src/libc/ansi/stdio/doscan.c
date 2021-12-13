@@ -75,9 +75,10 @@ _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *)
   int suppressed;
   bool allocate_char_buffer;
   int previous_errno = errno;
-  const va_list arg_list = argp;
+  va_list arg_list;
   bool retrieve_arg_ptr;
 
+  va_copy(arg_list, argp);
   decimal_point = localeconv()->decimal_point[0];
   nchars = 0;
   nmatch = 0;

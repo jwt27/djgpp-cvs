@@ -33,6 +33,7 @@
    so we now require NEWMALLDBG to enable the original action
 */
 
+#include <stdint.h>
 #include "nmalcdef.h"
 
 /* ============== Globals ============= */
@@ -451,14 +452,14 @@ static memblockp extendsbrk(ulong szxtra)
       expected = ((byte*)lastsbrk) + lastsbrk->sz;
    else expected = NULL;
 
-   if ((aligndelta = (ulong)expected & ALIGNMASK)) {
+   if ((aligndelta = (uintptr_t)expected & ALIGNMASK)) {
       /* lastsbrk end was misaligned, try to align end of this */
       szxtra += ALIGN - aligndelta;
       aligndelta = 0;
    }
 
    m = fakesbrk(szxtra);
-   if (-1 == (int)m) return NULL;
+   if ((uintptr_t)-1 == (uintptr_t)m) return NULL;
    else {
       if ((byte*)m == expected) {  /* Extending size of lastsbrk */
          DBGPRTM(EOL "  sbrk(%4u=0x%05x) got expected %p"
@@ -474,7 +475,7 @@ static memblockp extendsbrk(ulong szxtra)
                      " lastsbrk %p sz %d",
                        szxtra, szxtra, m, expected,
                        lastsbrk, expected - (byte*)lastsbrk);
-         if ((alignerr = (ALIGNMASK & (ulong)m))) {
+         if ((alignerr = (ALIGNMASK & (uintptr_t)m))) {
 /*f1*/      m = (memblockp)((char*)m +
                             (aligndelta = ALIGN - alignerr));
             DBGPRTM(", szerr %d/%d", aligndelta, alignerr);

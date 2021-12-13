@@ -4,7 +4,7 @@
 size_t
 strnlen(const char *_str, size_t _n)
 {
-  if (_str == NULL || *_str == '\0' || _n == 0)
+  if (*_str == '\0' || _n == 0)
     return 0;
   else
   {

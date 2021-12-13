@@ -102,6 +102,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
 #include <io.h>
@@ -322,7 +323,7 @@ get_sft_entry(int fhandle)
            */
 	  movedata(_dos_ds,
                    entry_addr + 6 + sft_idx * sft_size,
-		   _my_ds_base, (unsigned int)sft_buf, sft_size);
+		   _my_ds_base, (uintptr_t)sft_buf, sft_size);
           return retval;
         }
       /* Our target not in this subtable.

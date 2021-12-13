@@ -7,6 +7,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/exceptn.h>
 
@@ -123,7 +124,7 @@ static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
   *(long  *)(wrapper+0x39) = info->pm_offset - ((long)wrapper + 0x3d);
   *(long  *)(wrapper+0x47) = (long) stack + 4;
 
-  info->size = (int)wrapper;
+  info->size = (uintptr_t)wrapper;
 
   return __dpmi_allocate_real_mode_callback((void *)wrapper, regs,
                                             (__dpmi_raddr *)&info->rm_offset);

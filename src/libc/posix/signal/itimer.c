@@ -18,6 +18,7 @@
 #include <libc/stubs.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <stdint.h>
 #include <dpmi.h>
 #include <signal.h>
 #include <go32.h>
@@ -43,8 +44,8 @@ static uclock_t u_now;
 static inline long
 muldiv(long val, long m, long d)
 {
-  __asm__ __volatile__ ("imull %2\n\t"
-			"idivl %3"
+  __asm__ __volatile__ ("imul %2\n\t"
+			"idiv %3"
 			: "=a" (val) : "0" (val), "rm" (m), "rm" (d) : "edx");
   return val;
 }
@@ -195,7 +196,7 @@ start_timer(void)
   signal(SIGTIMR, timer_action);
   __dpmi_get_protected_mode_interrupt_vector(8, &__djgpp_old_timer);
   int8.selector = _my_cs();
-  int8.offset32 = (unsigned) &__djgpp_timer_hdlr;
+  int8.offset32 = (uintptr_t) &__djgpp_timer_hdlr;
   __dpmi_set_protected_mode_interrupt_vector(8, &int8);
 }
 

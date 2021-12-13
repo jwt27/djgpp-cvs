@@ -106,11 +106,11 @@ static int doprnt_cvtl(long double number, int prec, int flags, char *signp,
 static char *doprnt_roundl(long double fract, int *expv, char *start,
 			   char *end, char ch, char *signp);
 static char *doprnt_exponentl(char *p, int expv, unsigned char fmtch, int flags);
-#ifdef __GO32__
+//#ifdef __GO32__
 static int doprnt_isspeciall(long double d, char *bufp, int flags);
-#endif
+//#endif
 static __inline__ char * __grouping_format(char *string_start, char *string_end, char *buffer_end, int flags);
-static __inline__ va_list __traverse_argument_list(int index_of_arg_to_be_fetched, const char *format_string, va_list arg_list);
+static __inline__ void __traverse_argument_list(int index_of_arg_to_be_fetched, const char *format_string, va_list *arg_list);
 
 static char NULL_REP[] = "(null)";
 static const char LOWER_DIGITS[] = "0123456789abcdef";
@@ -144,7 +144,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   struct lconv *locale_info;         /* current locale information */
   bool using_numeric_conv_spec;      /* TRUE if using numeric specifier, FALSE else */
   va_list arg_list;                  /* argument list */
-  va_list to_be_printed = NULL;      /* argument to be printed if numeric specifier are used */
+  va_list to_be_printed;             /* argument to be printed if numeric specifier are used */
   const char *pos;                   /* position in format string when checking for numeric conv spec */
 
 
@@ -160,7 +160,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
     return (EOF);
 
   using_numeric_conv_spec = false;
-  arg_list = argp;
+  va_copy(arg_list, argp);
   fmt = fmt0;
   for (cnt = 0;; ++fmt)
   {
@@ -216,7 +216,8 @@ rflag:
       if (*fmt == '$')
       {
         using_numeric_conv_spec = true;
-        argp = __traverse_argument_list(n, fmt0, arg_list);
+        __traverse_argument_list(n, fmt0, &arg_list);
+        va_copy(argp, arg_list);
       }
       else
         fmt = pos;
@@ -239,7 +240,8 @@ rflag:
         if (*fmt == '$')
         {
           using_numeric_conv_spec = true;
-          argp = __traverse_argument_list(n, fmt0, arg_list);
+          __traverse_argument_list(n, fmt0, &arg_list);
+          va_copy(argp, arg_list);
         }
         else
           fmt = pos;
@@ -271,7 +273,8 @@ rflag:
       if (*fmt == '$')
       {
         using_numeric_conv_spec = true;
-        to_be_printed = __traverse_argument_list(n, fmt0, arg_list);
+        __traverse_argument_list(n, fmt0, &arg_list);
+        va_copy(to_be_printed, arg_list);
       }
       else
       {
@@ -1327,8 +1330,8 @@ __grouping_format(char *string_start, char *string_end, char *buffer_end, int fl
   return (*dst == thousands_sep) ? dst + 1 : dst;  /*  Remove leading thousands separator character.  */
 }
 
-static __inline__ va_list
-__traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_list argp)
+static __inline__ void
+__traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_list *_argp)
 {
   /*
    *  Traverse an argument list until certain position.
@@ -1340,6 +1343,7 @@ __traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_li
    *  wanted element from the list.
    */
 
+#define argp (*_argp)
   const char *fmt = fmt0;
   int arg_index = 0, prec_index = 0, list_index;
   int ch, flags, n = index_of_arg_to_be_fetched + 1;
@@ -1355,7 +1359,7 @@ __traverse_argument_list(int index_of_arg_to_be_fetched, const char *fmt0, va_li
       if (list_index < n)
         fmt = fmt0;
       else
-        return argp;
+        return;
     }
 
     flags = 0;
@@ -1372,7 +1376,7 @@ rflag:
       for (prec_index = 0, fmt++; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
         prec_index = 10 * prec_index + todigit(*fmt);
       if (prec_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-        return argp;
+        return;
       if (prec_index == list_index)
       {
         _ulonglong = va_arg(argp, int);  /* discard */
@@ -1385,7 +1389,7 @@ rflag:
         for (prec_index = 0, fmt++; isascii((unsigned char)*fmt) && isdigit((unsigned char)*fmt); fmt++)
           prec_index = 10 * prec_index + todigit(*fmt);
         if (prec_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-          return argp;
+          return;
         if (prec_index == list_index)
         {
           _ulonglong = va_arg(argp, int);  /* discard */
@@ -1420,7 +1424,7 @@ rflag:
     /* Conversion specifiers */
     case 'c':
       if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-        return argp;
+        return;
       if (arg_index == list_index)
       {
         _ulonglong = va_arg(argp, int);  /* discard */
@@ -1432,7 +1436,7 @@ rflag:
       /*FALLTHROUGH*/
     case 'd': case 'i':
       if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-        return argp;
+        return;
       if (arg_index == list_index)
       {
         ARG(signed);  /* discard */
@@ -1442,7 +1446,7 @@ rflag:
     case 'A': case 'E': case 'F': case 'G':
     case 'a': case 'e': case 'f': case 'g':
       if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-        return argp;
+        return;
       if (arg_index == list_index)
       {
         if (flags & LONGDBL)
@@ -1457,7 +1461,7 @@ rflag:
       /*FALLTHROUGH*/
     case 'o': case 'u': case 'x':
       if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-        return argp;
+        return;
       if (arg_index == list_index)
       {
         ARG(unsigned);  /* discard */
@@ -1466,7 +1470,7 @@ rflag:
       break;
     case 'n': case 'p': case 's':
       if (arg_index == index_of_arg_to_be_fetched && list_index == index_of_arg_to_be_fetched)
-        return argp;
+        return;
       if (arg_index == list_index)
       {
         _ulonglong = (size_t) va_arg(argp, void *);  /* discard */
@@ -1475,9 +1479,7 @@ rflag:
       break;
 
     case '\0':
-      return argp;
+      return;
     }
   }
-
-  return argp;
 }

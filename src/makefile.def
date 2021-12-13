@@ -6,7 +6,7 @@
 ifneq ($(COMSPEC),)
 CROSS_BUILD = 0
 else
-CROSS_BUILD = 1
+CROSS_BUILD = 0
 endif
 
 # OK, pay attention: The CROSS_* programs are used to build objects

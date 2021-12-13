@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <dpmi.h>
 #ifdef TEST
@@ -175,7 +176,7 @@ setlocalecollate(const char *locale __attribute__((unused)), int selector,
     unsigned int table = _farpeekw(selector, 3) * 16 + _farpeekw(selector, 1);
     int size = _farpeekw(_dos_ds, table);
 
-    movedata(_dos_ds, table + 2, _my_ds(), (unsigned int) __dj_collate_table,
+    movedata(_dos_ds, table + 2, _my_ds(), (uintptr_t) __dj_collate_table,
              size);
     return 1;
   }
@@ -206,7 +207,7 @@ setlocalectype(const char *locale __attribute__((unused)), int selector,
     int size = _farpeekw(_dos_ds, table);
 
     movedata(_dos_ds, table + 2, _my_ds(),
-             (unsigned int) &(__dj_ctype_toupper[128 + 1]), size);
+             (uintptr_t) &(__dj_ctype_toupper[128 + 1]), size);
 
     /* let's build lowercase table from uppercase... */
     for (i = 0; i < size; i++)
@@ -257,11 +258,11 @@ setlocalemonetary(const char *locale, int selector,
     if ((p != NULL) && !strnicmp(p + 1, "EURO", 4))
       strcpy(currency_symbol, "EUR");
     else
-      movedata(selector, 9, _my_ds(), (unsigned) currency_symbol, 5);
+      movedata(selector, 9, _my_ds(), (uintptr_t) currency_symbol, 5);
     lcnv->int_curr_symbol = lcnv->currency_symbol = currency_symbol;
-    movedata(selector, 14, _my_ds(), (unsigned) mon_thousands_sep, 2);
+    movedata(selector, 14, _my_ds(), (uintptr_t) mon_thousands_sep, 2);
     lcnv->mon_thousands_sep = mon_thousands_sep;
-    movedata(selector, 16, _my_ds(), (unsigned) mon_decimal_point, 2);
+    movedata(selector, 16, _my_ds(), (uintptr_t) mon_decimal_point, 2);
     lcnv->mon_decimal_point = mon_decimal_point;
     /* lcnv->mon_grouping = ""; */
     /* lcnv->negative_sign = ""; */
@@ -287,9 +288,9 @@ setlocalenumeric(const char *locale __attribute__((unused)), int selector,
     return 0;
   else
   {
-    movedata(selector, 14, _my_ds(), (unsigned) thousands_sep, 2);
+    movedata(selector, 14, _my_ds(), (uintptr_t) thousands_sep, 2);
     lcnv->thousands_sep = thousands_sep;
-    movedata(selector, 16, _my_ds(), (unsigned) decimal_point, 2);
+    movedata(selector, 16, _my_ds(), (uintptr_t) decimal_point, 2);
     lcnv->decimal_point = decimal_point;
     /* lcnv->grouping = ""; */
     return 1;

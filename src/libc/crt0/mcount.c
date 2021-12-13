@@ -3,6 +3,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
@@ -55,6 +56,7 @@ static int profiling_p;
 void mcount(int _to);
 void mcount(int _to)
 {
+#if 0
   MTAB *m;
   int i;
   unsigned int to;
@@ -76,7 +78,7 @@ void mcount(int _to)
 
   to = *((&_to)-1) - 12;
   ebp = *((&_to)-2); /* glean the caller's return address from the stack */
-  from = ((int *)ebp)[1];
+  from = ((int *)(uintptr_t)ebp)[1];
   /* Do nothing if the FROM address is outside the sampling range.  */
   if (from < h.low || from >= h.high)
     return;
@@ -131,6 +133,7 @@ void mcount(int _to)
   m->calls[0].count = 1;
   *cache = m->calls;
   mcount_skip = 0;
+#endif
 }
 
 /* ARGSUSED */

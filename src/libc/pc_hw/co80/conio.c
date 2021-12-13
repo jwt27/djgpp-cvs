@@ -8,6 +8,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <pc.h>
@@ -550,7 +551,7 @@ cputs(const char *s)
   short sa = ScreenAttrib << 8;
   int srow, scol, ecol;
   ScreenGetCursor(&row, &col);
-  viaddr = (short *)VIDADDR(row,col);
+  viaddr = (short *)(uintptr_t)VIDADDR(row,col);
   /*
    * DOS/V: simply it refreshes screen between scol and ecol when cursor moving.
    */
@@ -577,7 +578,7 @@ cputs(const char *s)
     else if (c == '\r')
     {
       col = txinfo.winleft - 1;
-      viaddr = (short *)VIDADDR(row,col);
+      viaddr = (short *)(uintptr_t)VIDADDR(row,col);
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
@@ -597,7 +598,7 @@ cputs(const char *s)
 	 */
 	row--;
 	col = txinfo.winright-1;
-	viaddr = (short *)VIDADDR(row,col);
+	viaddr = (short *)(uintptr_t)VIDADDR(row,col);
       }
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
@@ -606,7 +607,7 @@ cputs(const char *s)
       bell();
     else {
       short q = c | sa;
-      dosmemput(&q, 2, (int)viaddr);
+      dosmemput(&q, 2, (uintptr_t)viaddr);
       viaddr++;
       col++;
       ecol++;
@@ -617,7 +618,7 @@ cputs(const char *s)
     if (col >= txinfo.winright) {
       col = txinfo.winleft - 1;
       row++;
-      viaddr = (short *)VIDADDR(row,col);
+      viaddr = (short *)(uintptr_t)VIDADDR(row,col);
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
     }

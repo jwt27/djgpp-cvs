@@ -10,6 +10,7 @@
    Revised 2014, 2015 for use in DJGPP libc by Andris Pavenis <andris.pavenis@iki.fi>
 */
 
+#include <stdint.h>
 #include "nmalcdef.h"
 
 /* 1------------------1 */
@@ -131,7 +132,7 @@ void *nmemalign(size_t alignment, size_t size)
       else if ((minit = nmalloc(szneed + XTRA))) {
          m = MEMBLKp(minit);
          /* alignment >= 2*ALIGN and power of 2 if here */
-         misalign = (ulong)minit % alignment;
+         misalign = (uintptr_t)minit % alignment;
          DBGPRTM("  misalignment = %d", misalign);
          if (0 == misalign) { /* aligned, just return XTRA */
             DBGPRTM(" Just realloc the block."); DBGEOLN;

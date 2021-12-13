@@ -10,6 +10,7 @@
 #include <io.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <crt0.h>
 #include <go32.h>
 #include <fcntl.h>
@@ -404,7 +405,7 @@ __crt0_setup_arguments(void)
     char doscmd[128];
     char *cmdline;
 
-    movedata(_stubinfo->psp_selector, 128, ds, (int)doscmd, 128);
+    movedata(_stubinfo->psp_selector, 128, ds, (uintptr_t)doscmd, 128);
     if (doscmd[0] != 127 || ((cmdline = getenv("CMDLINE")) == NULL))
       arglist = parse_bytes(doscmd + 1, doscmd[0] & 0x7f,
 			    (_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES)==0);
@@ -458,7 +459,7 @@ __crt0_setup_arguments(void)
     delete_arglist(arglist);
 
     rm_argv = (unsigned short *)alloca(__crt0_argc*sizeof(unsigned short));
-    movedata(_dos_ds, argv_seg*16+argv_ofs, ds, (int)rm_argv, __crt0_argc*sizeof(unsigned short));
+    movedata(_dos_ds, argv_seg*16+argv_ofs, ds, (uintptr_t)rm_argv, __crt0_argc*sizeof(unsigned short));
 
     arglist = new_arglist(__crt0_argc);
     if (proxy_v)
@@ -472,7 +473,7 @@ __crt0_setup_arguments(void)
       int al = far_strlen(_dos_ds, argv_seg*16 + rm_argv[i]);
       arglist->argv[i] = new_arg();
       arglist->argv[i]->arg = (char *)c1xmalloc(al+1);
-      movedata(_dos_ds, argv_seg*16 + rm_argv[i], ds, (int)(arglist->argv[i]->arg), al+1);
+      movedata(_dos_ds, argv_seg*16 + rm_argv[i], ds, (uintptr_t)(arglist->argv[i]->arg), al+1);
       if (proxy_v && !(_crt0_startup_flags & _CRT0_FLAG_KEEP_QUOTES))
       {
 	size_t ln;

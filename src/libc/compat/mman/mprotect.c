@@ -7,6 +7,7 @@
 #include <dpmi.h>
 #include <crt0.h>
 #include <errno.h>
+#include <stdint.h>
 
 int mprotect(void *addr, size_t len, int prot)
 {
@@ -14,8 +15,8 @@ int mprotect(void *addr, size_t len, int prot)
   unsigned npage;
   unsigned short newprot;
 
-  start = ~0xfff & (unsigned)addr;
-  end = ((unsigned)addr + len + 0xfff) & ~0xfff;
+  start = ~0xfff & (uintptr_t)addr;
+  end = ((uintptr_t)addr + len + 0xfff) & ~0xfff;
   npage = (end - start) / 0x1000;
   
   if(prot & PROT_WRITE)

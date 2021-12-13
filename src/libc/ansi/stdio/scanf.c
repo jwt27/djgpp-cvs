@@ -9,7 +9,7 @@ int
 scanf(const char *fmt, ...)
 {
   int r;
-  va_list a=0;
+  va_list a;
   va_start(a, fmt);
   r = _doscan(stdin, fmt, a);
   va_end(a);

@@ -16,6 +16,7 @@
 #include <libc/dosio.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
@@ -137,7 +138,7 @@ lfn_retry:
 
   /* Now get the result from lower memory. */
   movedata(dos_mem_selector, __tb + MAX_TRUE_NAME,
-           our_mem_selector, (unsigned int)true_name, MAX_TRUE_NAME);
+           our_mem_selector, (uintptr_t)true_name, MAX_TRUE_NAME);
 
   if (regs.x.flags & 1)
     {

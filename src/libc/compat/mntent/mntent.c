@@ -33,6 +33,7 @@
  */
 #include <libc/stubs.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
@@ -120,7 +121,7 @@ get_cds_entry(int drive_num, char *currdir)
   /* The current directory: 67-byte ASCIIZ string at the beginning
      of the CDS structure for our drive.  */
   movedata(dos_mem_base, cds_entry_address,
-           our_mem_base, (unsigned int)currdir, 0x43);
+           our_mem_base, (uintptr_t)currdir, 0x43);
 
   /* The drive attribute word is at the offset 43h, right after the
      current directory string.  NT doesn't support this.  */
@@ -305,7 +306,7 @@ get_jam_info(int drive_num)
   /* Copy the full name of the Jam archive file.  */
   offset = (jam_version >= 0x120) ? 0x38 : 0x2a;
   movedata(dos_mem_base, __tb + offset,
-           our_mem_base, (unsigned) mnt_fsname, 127);
+           our_mem_base, (uintptr_t) mnt_fsname, 127);
   mnt_fsname[127] = 0;
 
   mnt_type = NAME_jam;
@@ -371,7 +372,7 @@ get_netredir_entry(int drive_num)
               (devname.ch[1] == ':' || devname.ch[1] == '\0'))
             {
               movedata(dos_mem_base, tb + 16,
-                       our_mem_base, (unsigned)mnt_fsname, 128);
+                       our_mem_base, (uintptr_t)mnt_fsname, 128);
               return 1; /* found! */
             }
         }

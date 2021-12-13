@@ -8,6 +8,8 @@
 #ifndef __dj_include_dos_h_
 #define __dj_include_dos_h_
 
+#define ULONG unsigned
+
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #ifndef __STRICT_ANSI__
@@ -26,26 +28,26 @@ extern int _8087;
 int _detect_80387(void);
 
 struct DWORDREGS {
-  unsigned long edi;
-  unsigned long esi;
-  unsigned long ebp;
-  unsigned long cflag;
-  unsigned long ebx;
-  unsigned long edx;
-  unsigned long ecx;
-  unsigned long eax;
+  ULONG edi;
+  ULONG esi;
+  ULONG ebp;
+  ULONG cflag;
+  ULONG ebx;
+  ULONG edx;
+  ULONG ecx;
+  ULONG eax;
   unsigned short eflags;
 };
 
 struct DWORDREGS_W {
-  unsigned long di;
-  unsigned long si;
-  unsigned long bp;
-  unsigned long cflag;
-  unsigned long bx;
-  unsigned long dx;
-  unsigned long cx;
-  unsigned long ax;
+  ULONG di;
+  ULONG si;
+  ULONG bp;
+  ULONG cflag;
+  ULONG bx;
+  ULONG dx;
+  ULONG cx;
+  ULONG ax;
   unsigned short flags;
 };
 
@@ -65,7 +67,7 @@ struct BYTEREGS {
   unsigned short di, _upper_di;
   unsigned short si, _upper_si;
   unsigned short bp, _upper_bp;
-  unsigned long cflag;
+  ULONG cflag;
   unsigned char bl;
   unsigned char bh;
   unsigned short _upper_bx;
@@ -220,7 +222,7 @@ struct _find_t {
   unsigned char attrib;
   unsigned short wr_time;
   unsigned short wr_date;
-  unsigned long size;
+  ULONG size;
   char name[256];
 } __attribute__((packed));
 #define find_t _find_t

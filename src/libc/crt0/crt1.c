@@ -12,6 +12,7 @@
 #include <string.h>
 #include <libc/internal.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <errno.h>
 #include <go32.h>
 #include <stubinfo.h>
@@ -131,8 +132,8 @@ setup_environment(void)
   char *dos_environ = alloca(_stubinfo->env_size), *cp;
   short env_selector;
   int env_count=0;
-  movedata(_stubinfo->psp_selector, 0x2c, ds, (int)&env_selector, 2);
-  movedata(env_selector, 0, ds, (int)dos_environ, _stubinfo->env_size);
+  movedata(_stubinfo->psp_selector, 0x2c, ds, (uintptr_t)&env_selector, 2);
+  movedata(env_selector, 0, ds, (uintptr_t)dos_environ, _stubinfo->env_size);
   cp = dos_environ;
   do {
     env_count++;

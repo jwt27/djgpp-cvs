@@ -5,6 +5,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/exceptn.h>
 
@@ -183,7 +184,7 @@ static int _go32_dpmi_chain_protected_mode_interrupt_vector_with_stack(int vecto
   *(long  *)(wrapper+0x5B) = pm_int.offset32;
   *(short *)(wrapper+0x5F) = pm_int.selector;
 
-  pm_int.offset32 = (int)wrapper;
+  pm_int.offset32 = (uintptr_t)wrapper;
   pm_int.selector = _my_cs();
   __dpmi_set_protected_mode_interrupt_vector(vector, &pm_int);
   return 0;
@@ -220,7 +221,7 @@ static int _go32_dpmi_allocate_iret_wrapper_with_stack(_go32_dpmi_seginfo *info,
 
   FILL_INT_WRAPPER();
 
-  info->pm_offset = (int)wrapper;
+  info->pm_offset = (uintptr_t)wrapper;
   info->pm_selector = _my_cs();
   return 0;
 }
