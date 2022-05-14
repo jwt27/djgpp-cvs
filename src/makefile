@@ -71,7 +71,7 @@ clean : misc.exe makemake.exe
 	./misc.exe rm gcc.opt gcc-l.opt
 	./misc.exe rm makemake.exe copyrite.exe misc.exe
 
-config:
+config: misc.exe
 	$(MAKE) -f makefile.cfg
 
 rmake.exe: rmake.c
