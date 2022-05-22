@@ -17,6 +17,27 @@
 #include <stdarg.h>
 #include "ed.h"
 #include "screen.h"
+
+int debug_screen_p;
+int dual_monitor_p;
+char *user_screen_save, *debug_screen_save;
+unsigned char screen_attr;
+unsigned char screen_attr_normal;
+unsigned char screen_attr_source;
+unsigned char screen_attr_focus;
+unsigned char screen_attr_break;
+unsigned char screen_attr_message;
+unsigned char screen_attr_error;
+unsigned char screen_attr_menu;
+unsigned char screen_attr_menufocus;
+unsigned char screen_attr_editframe;
+unsigned char screen_attr_edittxt;
+unsigned char screen_attr_editfield;
+unsigned char screen_attr_editfocus;
+int cols, rows;
+int toplines, bottomlines;
+char *read_buffer;
+
 void *xmalloc (size_t);
 /* ------------------------------------------------------------------------- */
 static char *colours[] = {
