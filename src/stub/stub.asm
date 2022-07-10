@@ -700,6 +700,10 @@ zero_regs:
 	ret
 
 pm_dos:
+	xor	ax, ax
+	mov	dpmi_regs[dr_ss], ax
+	mov	dpmi_regs[dr_sp], ax
+	mov	dpmi_regs[dr_efl], ax
 	mov	ax, 0x0300		; simulate interrupt
 	mov	bx, 0x0021		; int 21, no flags
 	xor 	cx, cx			; cx = 0x0000 (copy no args)
