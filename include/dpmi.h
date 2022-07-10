@@ -5,6 +5,9 @@
 #ifndef __dj_include_dpmi_h_
 #define __dj_include_dpmi_h_
 
+#include <stdint.h>
+#define ULONG uint32_t
+
 #ifdef __cplusplus
 extern "C" {
 #endif

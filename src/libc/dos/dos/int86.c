@@ -56,7 +56,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
         dosmemget(__tb, 64, ptr);
         goto doexit;
       }
-      
+
     case 0x3f:
       {
         char *ptr = (char *)regs.d.edx;

@@ -6,7 +6,8 @@
 #ifndef __dj_include_dir_h_
 #define __dj_include_dir_h_
 
-#define ULONG unsigned
+#include <stdint.h>
+#define ULONG uint32_t
 
 #ifdef __cplusplus
 extern "C" {
