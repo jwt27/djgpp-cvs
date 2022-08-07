@@ -1,6 +1,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #define USE_EBX
 #define USE_EDI
+#define USE_ESI
 #include "dpmidefs.h"
 
 	.text
