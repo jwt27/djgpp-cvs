@@ -126,6 +126,7 @@ push_dir(const char *dir)
   if (pool_end + dspace >= dirnames_pool + pool_size)
     {
       char * temp;
+      unsigned long delta = pool_end - dirnames_pool;
 
       /* Make its size doubled, plus a space for this directory.  */
       pool_size += dspace + pool_size;
@@ -135,7 +136,7 @@ push_dir(const char *dir)
           errno = ENOMEM;
           return 0;
         }
-      pool_end += temp - dirnames_pool;
+      pool_end = temp + delta;
       dirnames_pool = temp;
     }
 
@@ -144,6 +145,7 @@ push_dir(const char *dir)
     {
       /* Not enough storage--reallocate.  */
       Stacked_Dir * temp;
+      unsigned long delta = stack_top - dirstack;
 
       stack_size *= 2;
       temp = (Stacked_Dir *)realloc(dirstack,
@@ -153,7 +155,7 @@ push_dir(const char *dir)
           errno = ENOMEM;
           return 0;
         }
-      stack_top += temp - dirstack;
+      stack_top = temp + delta;
       dirstack = temp;
     }
 
