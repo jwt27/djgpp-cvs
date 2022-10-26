@@ -15,7 +15,7 @@
  * of the pages will have been affected.
  */
 int
-__djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
+__djgpp_set_page_attributes (void *_our_addr, ULONG _num_bytes,
 			     unsigned short _attributes)
 {
   unsigned long p, end;

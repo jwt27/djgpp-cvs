@@ -12,8 +12,8 @@
  * but it shouldn't get called all that often.
  */
 int
-__djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
-			     unsigned long _phys_addr)
+__djgpp_map_physical_memory (void *_our_addr, ULONG _num_bytes,
+			     uint64_t _phys_addr)
 {
   unsigned long p, end;
 

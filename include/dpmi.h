@@ -342,8 +342,8 @@ int _go32_dpmi_lock_data( void *_lockaddr, unsigned long _locksize);
 
 int __djgpp_set_page_attributes(void *our_addr, unsigned long num_bytes,
 			        unsigned short attributes);
-int __djgpp_map_physical_memory(void *our_addr, unsigned long num_bytes,
-			        unsigned long phys_addr);
+int __djgpp_map_physical_memory(void *our_addr, ULONG num_bytes,
+			        uint64_t phys_addr);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
