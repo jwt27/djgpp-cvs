@@ -536,9 +536,10 @@ _instr(char *ptr, int type, int len, FILE *iop,
     }
     if (allocate_char_buffer)
     {
-      *(char **)arg_ptr = realloc(orig_ptr, string_length);
+      char *tmp_ptr = realloc(orig_ptr, string_length);
+      *(char **)arg_ptr = tmp_ptr;
       ptr = arg_ptr;
-      if (!*ptr)
+      if (!tmp_ptr)
       {
         free(orig_ptr);
         errno = ENOMEM;
