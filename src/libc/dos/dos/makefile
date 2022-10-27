@@ -5,7 +5,7 @@
 TOP=../..
 
 SRC += bdos.c
-SRC += bdosptr.S
+AS_SRC += bdosptr.S
 SRC += delay.c
 SRC += fexistp.c
 SRC += getcbrk.c
@@ -19,7 +19,7 @@ SRC += getftime.c
 SRC += gettime.c
 SRC += gettimeo.c
 SRC += int86.c
-SRC += int86x.S
+AS_SRC += int86x.S
 SRC += intdos.c
 SRC += intdosx.c
 SRC += iscdrom.c

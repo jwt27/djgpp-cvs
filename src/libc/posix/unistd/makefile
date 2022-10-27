@@ -51,7 +51,7 @@ SRC += setuid.c
 SRC += sleep.c
 SRC += sysconf.c
 SRC += ttyname.c
-SRC += unlink.s
+AS_SRC += unlink.S
 SRC += write.c
 
 include $(TOP)/../makefile.inc

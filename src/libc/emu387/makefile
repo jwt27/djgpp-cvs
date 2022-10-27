@@ -2,6 +2,6 @@
 TOP=..
 
 SRC += npxsetup.c
-SRC += fpu.S
+AS_SRC += fpu.S
 
 include $(TOP)/../makefile.inc

@@ -3,9 +3,9 @@ TOP=../..
 
 SRC += memchr.c
 SRC += memcmp.c
-SRC += memcpy.S
-SRC += memmove.S
-SRC += memset.S
+AS_SRC += memcpy.S
+AS_SRC += memmove.S
+AS_SRC += memset.S
 SRC += strcat.c
 SRC += strchr.c
 SRC += strcmp.c

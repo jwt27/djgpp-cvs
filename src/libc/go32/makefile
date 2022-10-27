@@ -4,9 +4,9 @@
 TOP=..
 
 SRC += dpmiexcp.c
-SRC += exceptn.S
+AS_SRC += exceptn.S
 SRC += go32cbrk.c
-SRC += godefv1.S
+AS_SRC += godefv1.S
 SRC += gopint.c
 SRC += gopvec.c
 SRC += goqmem.c
@@ -14,6 +14,6 @@ SRC += gormcb.c
 SRC += gormem.c
 SRC += gorvec.c
 SRC += infostrc.c
-SRC += overflow.S
+AS_SRC += overflow.S
 
 include $(TOP)/../makefile.inc

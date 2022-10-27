@@ -5,18 +5,18 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-SRC += ffs.S
+AS_SRC += ffs.S
 SRC += memccpy.c
 SRC += memicmp.c
 SRC += stpcpy.c
 SRC += stpncpy.c
-SRC += strcasec.S
+AS_SRC += strcasec.S
 SRC += strdup.c
 SRC += stricmp.c
 SRC += strlcat.c
 SRC += strlcpy.c
 SRC += strlwr.c
-SRC += strncase.S
+AS_SRC += strncase.S
 SRC += strnicmp.c
 SRC += strsep.c
 SRC += strupr.c

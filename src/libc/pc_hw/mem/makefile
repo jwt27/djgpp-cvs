@@ -2,8 +2,8 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-SRC += djmd.S
-SRC += djmdr.S
+AS_SRC += djmd.S
+AS_SRC += djmdr.S
 SRC += dmg.c
 SRC += dmgb.c
 SRC += dmgl.c
@@ -12,9 +12,9 @@ SRC += dmp.c
 SRC += dmpb.c
 SRC += dmpl.c
 SRC += dmpw.c
-SRC += md.S
-SRC += mdb.S
-SRC += mdl.S
-SRC += mdw.S
+AS_SRC += md.S
+AS_SRC += mdb.S
+AS_SRC += mdl.S
+AS_SRC += mdw.S
 
 include $(TOP)/../makefile.inc
