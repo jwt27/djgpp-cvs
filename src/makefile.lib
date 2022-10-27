@@ -6,7 +6,7 @@ all ::
 	../makemake.exe
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
-	$(MAKE) $(LIB)/lib$(LIBNAME).a
+	$(MAKE) $(LIB)/lib$(LIBNAME).so
 
 MAKEFILE_LIB = 1
 include $(TOP)/../makefile.inc
@@ -26,6 +26,9 @@ else
 	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a `cat makefile.rf` id_$(LIBNAME).o
 endif
 	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
+
+$(LIB)/lib$(LIBNAME).so : $(OBJS) makefile.rf
+	$(CROSS_GCC) -shared -o $@ @makefile.rf
 
 newlib:
 	$(MISC) rm $(LIB)/lib$(LIBNAME).a

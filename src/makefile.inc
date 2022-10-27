@@ -122,7 +122,7 @@ INFO=$(TOP)/../../info
 HOSTBIN = $(TOP)/../../hostbin
 
 C = $(LIB)/crt0.o
-L = $(LIB)/libc.a
+L = $(LIB)/libc.so
 
 ifeq ($(LIBGCCA),)
 LIBGCCA := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=libgcc.a)
