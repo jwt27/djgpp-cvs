@@ -56,8 +56,8 @@ main(int argc, char **argv)
 #endif
     fclose(as);
 
-    fprintf(mk, "SRC += %s\n", fn);
-    fprintf(oh, "&/stub%04d.o ", i);
+    fprintf(mk, "AS_SRC += %s\n", fn);
+//    fprintf(oh, "&/stub%04d.o ", i);
 
     i++;
   }

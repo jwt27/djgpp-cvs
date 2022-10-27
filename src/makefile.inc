@@ -139,6 +139,7 @@ LINK = $(CROSS_LD) -s $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ $(L
 EXE = $(HOSTBIN)/stubify.exe $@
 
 OBJS := $(addsuffix .o, $(basename $(SRC)))
+AS_OBJS := $(addsuffix .o, $(basename $(AS_SRC)))
 EXES := $(addprefix $(BIN)/,$(addsuffix .exe, $(basename $(SRC))))
 
 NOP = @$(MISC)
