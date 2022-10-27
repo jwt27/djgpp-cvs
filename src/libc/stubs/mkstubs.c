@@ -47,8 +47,13 @@ main(int argc, char **argv)
      * http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view&pr=3081&database=gcc
      *
      * for details. */
+#ifdef __x86_64__
+    fprintf(as, "\n\t.file \"%s.stub\"\n\t.global %s\n%s:\n\tjmp %s\n",
+	    stubname, stubname, stubname, realname);
+#else
     fprintf(as, "\n\t.file \"%s.stub\"\n\t.global _%s\n_%s:\n\tjmp _%s\n",
 	    stubname, stubname, stubname, realname);
+#endif
     fclose(as);
 
     fprintf(mk, "SRC += %s\n", fn);
