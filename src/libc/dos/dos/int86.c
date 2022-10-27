@@ -7,6 +7,9 @@
 #include <go32.h>
 #include <dpmi.h>
 
+/* for now just type-cast */
+#define DATA_PTR(l) ((char *)(uintptr_t)(l))
+
 int _int86(int ivec, union REGS *in, union REGS *out);
 
 int int86(int ivec, union REGS *in, union REGS *out)
@@ -22,7 +25,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
   switch (regs.h.ah) {
     case 0x56:
       {
-        char *ptr = (char *)regs.d.edi;
+        char *ptr = DATA_PTR(regs.d.edi);
         dosmemput(ptr, strlen(ptr)+1, __tb + 512);
         regs.x.di = 512;
       }
@@ -35,7 +38,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
     case 0x41:
     case 0x43:
       {
-        char *ptr = (char *)regs.d.edx;
+        char *ptr = DATA_PTR(regs.d.edx);
         unsigned len;
         if(regs.h.ah == 9)
           for(len=0; ptr[len] != '$'; len++);
@@ -50,7 +53,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
       
     case 0x47:
       {
-        char *ptr = (char *)regs.d.esi;
+        char *ptr = DATA_PTR(regs.d.esi);
         regs.x.si = 0;
         __dpmi_int(0x21, &regs);
         dosmemget(__tb, 64, ptr);
@@ -59,7 +62,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
 
     case 0x3f:
       {
-        char *ptr = (char *)regs.d.edx;
+        char *ptr = DATA_PTR(regs.d.edx);
         unsigned count = regs.d.ecx;
         unsigned total = 0;
         regs.x.dx = 0;
@@ -83,7 +86,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
 
     case 0x40:
       {
-        char *ptr = (char *)regs.d.edx;
+        char *ptr = DATA_PTR(regs.d.edx);
         unsigned count = regs.d.ecx;
         unsigned total = 0;
         regs.x.dx = 0;
