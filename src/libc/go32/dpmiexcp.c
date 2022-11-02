@@ -539,8 +539,8 @@ __djgpp_exception_setup(void)
     signal_list[i] = (SignalHandler)SIG_DFL;
 
   /* app_DS only used when converting HW interrupts to exceptions */
-  asm volatile ("mov %ds,___djgpp_app_DS");
-  asm volatile ("mov %ds,___djgpp_our_DS");
+  asm volatile ("mov %%ds,%0" : "=r"(__djgpp_app_DS));
+  asm volatile ("mov %%ds,%0" : "=r"(__djgpp_our_DS));
   __djgpp_dos_sel = _dos_ds;
 
   /* lock addresses which may see HW interrupts */
