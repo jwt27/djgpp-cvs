@@ -89,7 +89,7 @@ static unsigned char wrapper_iret[] = {
          0xcf					/* iret                    */
 };
 
-unsigned long _go32_rmcb_stack_size = 32256;
+ULONG _go32_rmcb_stack_size = 32256;
 
 static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
   __dpmi_regs *regs, unsigned char *stack, unsigned long stack_length)
@@ -202,6 +202,6 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info)
   if (*(long *) stack & STACK_WAS_MALLOCED)
       free(stack);
 
-  free((char *)info->size);
+  free(DATA_PTR(info->size));
   return __dpmi_free_real_mode_callback((__dpmi_raddr *)&info->rm_offset);
 }

@@ -7,9 +7,6 @@
 #include <go32.h>
 #include <dpmi.h>
 
-/* for now just type-cast */
-#define DATA_PTR(l) ((char *)(uintptr_t)(l))
-
 int _int86(int ivec, union REGS *in, union REGS *out);
 
 int int86(int ivec, union REGS *in, union REGS *out)

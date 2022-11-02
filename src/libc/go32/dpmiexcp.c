@@ -168,7 +168,7 @@ static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
 static void
 dump_selector(const char *name, int sel)
 {
-  unsigned long base;
+  ULONG base;
   unsigned limit;
   _write(STDERR_FILENO, name, 2);
   err(": sel="); itox(sel, 4);
