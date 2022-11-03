@@ -25,8 +25,8 @@ extern "C" {
 #include <debug/tss.h>
 
 typedef struct {
-  unsigned long app_base;	/* linear base address of application */
-  unsigned long dr[8];		/* debug registers, set when a_tss runs */
+  ULONG app_base;	/* linear base address of application */
+  ULONG dr[8];		/* debug registers, set when a_tss runs */
 } ExternalDebuggerInfo;
 
 extern ExternalDebuggerInfo edi;

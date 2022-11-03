@@ -254,7 +254,7 @@ void _set_break_DPMI(void)
   int i, rv;
   unsigned extract;
   unsigned char brtype;
-  unsigned long vbase;
+  ULONG vbase;
   __dpmi_meminfo bpinfo;
   
   if(__dpmi_get_segment_base_address(app_ds, &vbase) == -1)
@@ -281,7 +281,7 @@ void _set_break_DPMI(void)
       }
       else
       {
-        printf("Error allocating DPMI breakpoint type %d of size %d at address 0x%08lx\n", brtype, (int)bpinfo.size, edi.dr[i]);
+        printf("Error allocating DPMI breakpoint type %d of size %d at address 0x%08x\n", brtype, (int)bpinfo.size, edi.dr[i]);
         breakhandle[i] = -1;
       }
     }
@@ -1095,13 +1095,13 @@ static void call_app_exception(int signum, char return_to_debuggee)
    exit(-1);
   }
   load_state->__ss = my_ds;
-  load_state->__esp= (int) cur_pos;
+  load_state->__esp= PTR_DATA(cur_pos);
   /* where to return */
   ret_cs = my_cs;
   if (return_to_debuggee)
-    ret_eip = (int) &dbgcom_exception_return_to_debuggee;
+    ret_eip = PTR_DATA(&dbgcom_exception_return_to_debuggee);
   else
-    ret_eip = (int) &dbgcom_exception_return_to_here;
+    ret_eip = PTR_DATA(&dbgcom_exception_return_to_here);
   cur_pos[0] = ret_eip;
   cur_pos[1] = ret_cs;
   cur_pos[2] = errcode;
@@ -1129,7 +1129,7 @@ static void dbgsig(int sig)
     /* If forced_address is known then
        signum contains the fake exception value (PM) */
     if (forced_address_known)
-      movedata(app_cs, forced_address, my_ds, (int) &signum, 4);
+      movedata(app_cs, forced_address, my_ds, PTR_DATA(&signum), 4);
     else
       signum = 0x1B;  /* else we default to SIGINT */
 
@@ -1313,7 +1313,7 @@ int read_child(unsigned child_addr, void *buf, unsigned len)
 {
   if (invalid_addr(child_addr, len))
     return 1;
-  movedata(app_ds, child_addr, my_ds, (int)buf, len);
+  movedata(app_ds, child_addr, my_ds, PTR_DATA(buf), len);
   return 0;
 }
 
@@ -1321,7 +1321,7 @@ int write_child(unsigned child_addr, void *buf, unsigned len)
 {
   if (invalid_addr(child_addr, len))
     return 1;
-  movedata(my_ds, (int)buf, app_ds, child_addr, len);
+  movedata(my_ds, PTR_DATA(buf), app_ds, child_addr, len);
   return 0;
 }
 
@@ -1379,7 +1379,7 @@ int read_sel_addr(unsigned child_addr, void *buf, unsigned len, unsigned sel)
   memset(buf, 0, len);
   if (invalid_sel_addr(sel, child_addr, len, 0))
     return 1;
-  movedata(sel, child_addr, my_ds, (int)buf, len);
+  movedata(sel, child_addr, my_ds, PTR_DATA(buf), len);
   return 0;
 }
 
@@ -1387,7 +1387,7 @@ int write_sel_addr(unsigned sel, unsigned child_addr, void *buf, unsigned len)
 {
   if (invalid_sel_addr(sel, child_addr, len, 1))
     return 1;
-  movedata(my_ds, (int)buf, sel, child_addr, len);
+  movedata(my_ds, PTR_DATA(buf), sel, child_addr, len);
   return 0;
 }
 
@@ -1444,7 +1444,7 @@ void edi_init(jmp_buf start_state)
   oldINT = signal(SIGINT, dbgsig);
   oldQUIT = signal(SIGQUIT, dbgsig);
   oldILL = signal(SIGILL, dbgsig);
-  movedata(a_tss.tss_fs, 0, my_ds, (unsigned)&si, sizeof(si));
+  movedata(a_tss.tss_fs, 0, my_ds, PTR_DATA(&si), sizeof(si));
   memset(mem_handles, 0, sizeof(mem_handles));
   mem_handles[0] = si.memory_handle;
   memset(descriptors, 0, sizeof(descriptors));
@@ -1726,7 +1726,7 @@ _init_dbg_fsext(void)
   memset(handles, 0xFF, sizeof(handles));
 
   /* Get a copy of all already opened handles */
-  movedata(_dos_ds, jft_ofs, _my_ds(), (int)handles, jft_count);
+  movedata(_dos_ds, jft_ofs, _my_ds(), PTR_DATA(handles), jft_count);
 
   /* enable the fsext function */
   in_dbg_fsext = 0;

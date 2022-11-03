@@ -6,7 +6,7 @@
 
 TOP = .
 
-EXTRA_FILES += $(INFO)/djasm.info
+#EXTRA_FILES += $(INFO)/djasm.info
 
 include ../makefile.inc
 # djasm.y would be killed by -Werror -Wall, so let's relax a bit:

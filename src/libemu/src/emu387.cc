@@ -428,7 +428,7 @@ static void *get_modrm()
 {
   int mod = modrm>>6;
   int rm = modrm & 7;
-  int rv = 0;
+  unsigned long rv = 0;
   switch (mod)
   {
     case 0:
@@ -2092,7 +2092,7 @@ static void fsincos()
   st() = rv;
 
   top--;
-  register int qq = q & 3;
+  int qq = q & 3;
   if ((qq == 1) || (qq == 2))
     rvc.sign ^= SIGN_POS ^ SIGN_NEG;
   st() = rvc;
@@ -2523,7 +2523,7 @@ static void fcos()
     rv = tmp;
   }
   setcc(0);
-  register int qq = q & 3;
+  int qq = q & 3;
   if ((qq == 1) || (qq == 2))
     rv.sign ^= SIGN_POS ^ SIGN_NEG;
   st() = rv;
