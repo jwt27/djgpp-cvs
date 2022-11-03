@@ -42,15 +42,6 @@ subs:
 	$(MAKE) -C dxe native
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
-	$(MAKE) -C debug
-	$(MAKE) -C djasm
-	$(MAKE) -C stub
-	$(MAKE) -C dxe
-	$(MAKE) -C libemu
-	$(MAKE) -C libm
-	$(MAKE) -C utils
-	$(MAKE) -C docs
-	-$(MAKE) -C ../zoneinfo/src
 	$(MAKE) -f makempty
 
 .PHONY : clean
