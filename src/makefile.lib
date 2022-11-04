@@ -7,24 +7,24 @@ all ::
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
 	$(MAKE) $(LIB)/lib$(LIBNAME).so
+	$(MAKE) $(LIB)/lib$(LIBNAME).a
 
 MAKEFILE_LIB = 1
 include $(TOP)/../makefile.inc
 
 OBJS :=
+AS_OBJS :=
 
 ifneq ($(wildcard makefile.oi),)
 include makefile.oi
 endif
-
-$(LIB)/lib$(LIBNAME).a : $(OBJS) makefile.rf $(TOP)/../ident.c
-	$(CROSS_GCC) -c -DLIB=lib$(LIBNAME) $(TOP)/../ident.c -o id_$(LIBNAME).o
-	@-$(MISC) rm $@
-ifeq ($(CROSS_BUILD),0)
-	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
-else
-	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a `cat makefile.rf` id_$(LIBNAME).o
+ifneq ($(wildcard makefile.oio),)
+include makefile.oio
 endif
+
+$(LIB)/lib$(LIBNAME).a : $(AS_OBJS) makefile.rfo
+	@-$(MISC) rm $@
+	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rfo
 	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
 
 $(LIB)/lib$(LIBNAME).so : $(OBJS) makefile.rf
@@ -38,4 +38,4 @@ newlib:
 clean ::
 	$(TOP)/../makemake.exe
 	$(MAKE) -f makefile.sub SUBARGS=clean
-	@-$(MISC) rm makefile.oi makefile.rf
+	@-$(MISC) rm makefile.oi makefile.rf makefile.rfo

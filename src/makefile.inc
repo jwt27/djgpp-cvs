@@ -163,14 +163,17 @@ all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
 	$(NOP)
 
 ifneq ($(MAKEFILE_LIB),1)
-all :: makefile.oh
-makefile.oh : makefile
+all :: makefile.oh makefile.oho
+makefile.oh: makefile
 	@$(MISC) echo - building new response file
 	@$(MISC) echo makefile.oh $(addprefix \&/,$(OBJS))
+makefile.oho: makefile
+	@$(MISC) echo - building new response file for as objs
+	@$(MISC) echo makefile.oho $(addprefix \&/,$(AS_OBJS))
 endif
 
 clean ::
-	-$(MISC) rm *.o *.d *.i makefile.oh
+	-$(MISC) rm *.o *.d *.i makefile.oh makefile.oho
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)
