@@ -45,12 +45,12 @@ nonpos:
 	jz	negone
 
 badarg:
-	movl	$1, _errno
+	stlcm	$1, _errno
 	flds	NaN
 	ret
 
 negone:
-	movl	$2, _errno
+	stlcm	$2, _errno
 	flds	ninf			/* arg == -1; load -inf. */
 	ret
 

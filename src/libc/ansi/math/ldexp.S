@@ -37,7 +37,7 @@ CleanUp:
 	ret
 
 abarg:
-	movl	$1, _errno
+	stlcm	$1, _errno
 	movl	16(%esp), %eax		/* inf or NaN */
 	testl	$0x000FFFFF, %eax
 	jnz	badarg
@@ -50,7 +50,7 @@ badarg:					/* arg is NaN */
 	jmp	CleanUp
 
 RangeError:
-	movl	$2, _errno
+	stlcm	$2, _errno
 	jmp	CleanUp
 
 VerySmall:				/* exp = max negative */

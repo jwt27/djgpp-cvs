@@ -88,7 +88,7 @@ bigarg:
 	andl	$0x7FF00000, %eax	/* |x| > asinh(DBL_MAX) */
 	cmpl	$0x7FF00000, %eax
 	je	abarg
-	movl	$2, _errno
+	stlcm	$2, _errno
 	jmp	infarg			/* Treat as infinite arg */
 
 edge:					/* |x| is nearly asinh(DBL_MAX) */
@@ -108,6 +108,6 @@ abarg:
 	jz	infarg
 
 badarg:					/* arg is NaN */
-	movl	$1, _errno
+	stlcm	$1, _errno
 	flds	NaN
 	ret

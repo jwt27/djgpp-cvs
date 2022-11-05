@@ -101,6 +101,6 @@ abarg:
 	jz	pnbig
 
 badarg:					/* arg is NaN */
-	movl	$1, _errno
+	stlcm	$1, _errno
 	flds	NaN
 	ret

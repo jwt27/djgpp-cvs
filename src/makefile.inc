@@ -93,7 +93,7 @@ MISC = $(TOP)/../misc.exe
 	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 %.o : %.S
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	$(XGCC) -m32 -o $@ -c $<
+	$(XGCC) -m32 -include _asm.h -o $@ -c $<
 %.o : %.s
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	$(XGCC) -m32 -x assembler-with-cpp -o $@ -c $<

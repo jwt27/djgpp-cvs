@@ -33,7 +33,7 @@ bigarg:
 	movl	NaN+4, %ecx
 	movl	%ecx, 4(%eax)
 	movl	%ecx, 4(%edx)
-	movl	$1, _errno
+	stlcm	$1, _errno
 	ret
 
 finite:

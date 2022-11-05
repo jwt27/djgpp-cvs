@@ -34,13 +34,13 @@ bigarg:
 	andl	$0x7FF00000, %eax	/* |x| > log(DBL_MAX) */
 	cmpl	$0x7FF00000, %eax
 	je	abarg
-	movl	$2, _errno		/* |x| is really big, but finite */
+	stlcm	$2, _errno		/* |x| is really big, but finite */
 	jmp	argok
 
 edge:					/* |x| is nearly log10(DBL_MAX) */
 	cmpl	$0x509F79FF, 4(%esp)
 	jbe	argok
-	movl	$2, _errno
+	stlcm	$2, _errno
 	jmp	argok
 
 abarg:					/* x = +/-inf, or +NaN */
@@ -63,6 +63,6 @@ posinf:
 	ret
 
 badarg:					/* arg is NaN */
-	movl	$1, _errno
+	stlcm	$1, _errno
 	flds	NaN
 	ret

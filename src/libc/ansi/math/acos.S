@@ -50,6 +50,6 @@ onetotwo:
 	jz	argok
 
 badarg:
-	movl	$1, _errno
+	stlcm	$1, _errno
 	flds	NaN
 	ret
