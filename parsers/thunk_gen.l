@@ -49,6 +49,8 @@
 "UBYTE"		{ return UBYTE; }
 "unsigned char"	{ return UBYTE; }
 "unsigned short"	{ return UWORD; }
+"int"		{ return DWORD; }
+"unsigned int"	{ return UDWORD; }
 "ULONG"		{ return UDWORD; }
 "DWORD"		{ return DWORD; }
 "UDWORD"	{ return UDWORD; }
