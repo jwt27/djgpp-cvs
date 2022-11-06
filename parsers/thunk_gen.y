@@ -232,7 +232,7 @@ input:		  input line NEWLINE
 		|
 ;
 
-line:		lnum rdecls fname lb args rb SEMIC
+line:		lnum rdecls fname lb args rb attrs SEMIC
 			{
 			  switch (thunk_type) {
 			  case 0:
@@ -322,6 +322,13 @@ fatr:		  ASMCFUNC
 
 fatrs:		  fatr fatrs
 		| fatr
+;
+
+attr:		NORETURN	{ is_noret = 1; }
+;
+
+attrs:		attr attrs
+		|
 ;
 
 rq_fa:		  rquals fatrs

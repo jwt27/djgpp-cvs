@@ -1,9 +1,15 @@
+if [ $# -lt 4 ]; then
+    echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out>"
+    exit 1
+fi
+
 extr_proto() {
     readtags -t "$1" "$2" | \
 	expand | \
 	sed -E \
 	    -e 's/.*\/\^(.*;).*/\1/' \
 	    -e 's/__P\((.*)\);/\1;/' \
+	    -e 's/__attribute__\(\((.*)\)\)/\U\1/' \
 	    -e "s/(.*)( [^ (]+)( *\([^(]+.*;)/\1 $3 \2\3/" \
 	       | \
 	tr -s '[:blank:]'
