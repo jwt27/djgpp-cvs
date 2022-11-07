@@ -26,6 +26,7 @@ static int is_rptr;
 static int is_far;
 static int is_rfar;
 static int is_ffar;
+static int is_cbk;
 static int is_void;
 static int is_rvoid;
 static int is_const;
@@ -47,6 +48,7 @@ static void beg_arg(void)
 {
     is_far = 0;
     is_ptr = 0;
+    is_cbk = 0;
     is_void = 0;
     is_const = 0;
     cvtype = CVTYPE_OTHER;
@@ -116,6 +118,18 @@ static void do_start_arg(int anum)
 		}
 		break;
 	    }
+	}
+    } else if (is_cbk) {
+	switch (anum) {
+	case 0:
+	    strcat(abuf, "_ARG_CBK(");
+	    break;
+	case 1:
+	    strcat(abuf, "_ARG_CBK_A(");
+	    break;
+	case 2:
+	    strcat(abuf, "_CNV_SIMPLE, _L_NONE");
+	    break;
 	}
     } else {
 	switch (anum) {
@@ -301,6 +315,8 @@ sname:		STRING
 ;
 tname:		STRING
 ;
+cname:		STRING
+;
 
 rquals:		  FAR ASTER	{ is_rfar = 1; is_rptr = 1; }
 		| ASTER		{ is_rptr = 1; }
@@ -420,6 +436,13 @@ atype:		  VOID		{
 		| UBYTE		{
 				  arg_size = 1;
 				  strcat(atype, "UBYTE");
+				  strcat(atype3, "UDWORD");
+				  al_arg_size = AL(arg_size);
+				}
+		| VOID LB ASTER cname RB LB VOID RB {
+				  arg_size = 4;
+				  is_cbk = 1;
+				  strcat(atype, "VOID");
 				  strcat(atype3, "UDWORD");
 				  al_arg_size = AL(arg_size);
 				}
