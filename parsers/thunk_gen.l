@@ -60,6 +60,7 @@
 "UDWORD"	{ return UDWORD; }
 "double"	{ return DOUBLE; }
 "struct"	{ return STRUCT; }
+"union"		{ return UNION; }
 "const"		{ return CONST; }
 "NORETURN"	{ return NORETURN; }
 "/*".*"*/"	{ /* comments */ }

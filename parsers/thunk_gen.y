@@ -234,7 +234,7 @@ static const int align = 4;
 
 %token LB RB SEMIC COMMA ASTER NEWLINE STRING NUM
 %token ASMCFUNC ASMPASCAL FAR SEGM INITTEXT
-%token VOID WORD UWORD CHAR BYTE UBYTE DWORD UDWORD DOUBLE STRUCT
+%token VOID WORD UWORD CHAR BYTE UBYTE DWORD UDWORD DOUBLE STRUCT UNION
 %token LBR RBR
 %token CONST
 %token NORETURN
@@ -449,6 +449,10 @@ atype:		  VOID		{
 		| STRUCT sname	{
 				  arg_size = -1;
 				  sprintf(atype + strlen(atype), "struct %s", $2);
+				}
+		| UNION sname	{
+				  arg_size = -1;
+				  sprintf(atype + strlen(atype), "union %s", $2);
 				}
 		| tname		{
 				  arg_size = -1;
