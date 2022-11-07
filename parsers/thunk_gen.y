@@ -213,6 +213,9 @@ static const char *get_flags(void)
     return buf;
 }
 
+static const int align = 4;
+#define AL(x) (((x) + (align - 1)) & ~(align - 1))
+
 %}
 
 %token LB RB SEMIC COMMA ASTER NEWLINE STRING NUM
@@ -368,47 +371,49 @@ atype:		  VOID		{
 				  arg_size = 0;
 				  cvtype = CVTYPE_VOID;
 				  strcat(atype, "VOID");
-				  al_arg_size = 0;
+				  al_arg_size = AL(arg_size);
 				  is_void = 1;
 				}
 		| CHAR		{
 				  arg_size = 1;
 				  cvtype = CVTYPE_CHAR;
 				  strcat(atype, "char");
-				  strcat(atype3, "WORD");
-				  al_arg_size = 2;
+				  strcat(atype3, "DWORD");
+				  al_arg_size = AL(arg_size);
 				}
 		| WORD		{
 				  arg_size = 2;
 				  strcat(atype, "WORD");
-				  al_arg_size = 2;
+				  strcat(atype3, "DWORD");
+				  al_arg_size = AL(arg_size);
 				}
 		| UWORD		{
 				  arg_size = 2;
 				  strcat(atype, "UWORD");
-				  al_arg_size = 2;
+				  strcat(atype3, "UDWORD");
+				  al_arg_size = AL(arg_size);
 				}
 		| DWORD		{
 				  arg_size = 4;
 				  strcat(atype, "DWORD");
-				  al_arg_size = 4;
+				  al_arg_size = AL(arg_size);
 				}
 		| UDWORD	{
 				  arg_size = 4;
 				  strcat(atype, "UDWORD");
-				  al_arg_size = 4;
+				  al_arg_size = AL(arg_size);
 				}
 		| BYTE		{
 				  arg_size = 1;
 				  strcat(atype, "BYTE");
-				  strcat(atype3, "WORD");
-				  al_arg_size = 2;
+				  strcat(atype3, "DWORD");
+				  al_arg_size = AL(arg_size);
 				}
 		| UBYTE		{
 				  arg_size = 1;
 				  strcat(atype, "UBYTE");
-				  strcat(atype3, "UWORD");
-				  al_arg_size = 2;
+				  strcat(atype3, "UDWORD");
+				  al_arg_size = AL(arg_size);
 				}
 		| STRUCT sname	{
 				  arg_size = -1;
