@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 if [ $# -lt 4 ]; then
     echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out>"
     exit 1

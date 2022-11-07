@@ -32,4 +32,5 @@ clean ::
 	@$(MISC) rm libc2.tex
 	@$(MAKE) -C stubs $@
 	@$(MAKE) -C crt0 $@
-		@$(MISC) rm makefile.sub
+	@$(MISC) rm makefile.sub
+	@$(MISC) rm *.tmp *.h
