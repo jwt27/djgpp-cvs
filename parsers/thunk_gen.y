@@ -220,7 +220,7 @@ static const int align = 4;
 
 %token LB RB SEMIC COMMA ASTER NEWLINE STRING NUM
 %token ASMCFUNC ASMPASCAL FAR SEGM INITTEXT
-%token VOID WORD UWORD CHAR BYTE UBYTE DWORD UDWORD STRUCT
+%token VOID WORD UWORD CHAR BYTE UBYTE DWORD UDWORD DOUBLE STRUCT
 %token LBR RBR
 %token CONST
 %token NORETURN
@@ -356,6 +356,9 @@ rtype:		  VOID		{ rlen = 0;
 		| UDWORD	{ rlen = 4;
 				  strcpy(rtbuf, "UDWORD");
 				}
+		| DOUBLE	{ rlen = 8;
+				  strcpy(rtbuf, "double");
+				}
 		| BYTE		{ rlen = 1;
 				  strcpy(rtbuf, "BYTE");
 				}
@@ -401,6 +404,11 @@ atype:		  VOID		{
 		| UDWORD	{
 				  arg_size = 4;
 				  strcat(atype, "UDWORD");
+				  al_arg_size = AL(arg_size);
+				}
+		| DOUBLE	{
+				  arg_size = 8;
+				  strcat(atype, "double");
 				  al_arg_size = AL(arg_size);
 				}
 		| BYTE		{

@@ -56,6 +56,7 @@
 "ULONG"		{ return UDWORD; }
 "DWORD"		{ return DWORD; }
 "UDWORD"	{ return UDWORD; }
+"double"	{ return DOUBLE; }
 "struct"	{ return STRUCT; }
 "const"		{ return CONST; }
 "NORETURN"	{ return NORETURN; }
