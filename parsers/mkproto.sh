@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 if [ $# -lt 4 ]; then
+    echo "generate thunk prototypes compatible with fdpp's thunk_gen & plt"
     echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out>"
     exit 1
 fi
@@ -26,6 +27,7 @@ list_syms() {
 TF=/tmp/tagsxx
 TL=/tmp/a.so
 set -e
+
 ld -melf_i386 -shared -Bsymbolic -o $TL --whole-archive "$1" 2>/dev/null
 find $2 -name libm -prune -o -print | \
 	ctags -L - --kinds-C=p --pattern-length-limit=0 -f $TF
@@ -33,6 +35,9 @@ find $2 -name libm -prune -o -print | \
 export -f extr_proto
 list_syms $TL T | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMFUNC" | nl -n ln -v 0 >$3
 list_syms $TL U | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMCFUNC" | nl -n ln -v 0 >$4
+list_syms $TL U | xargs readtags -t $TF | expand | \
+	cut -d " " -f 1 | nl -n ln -v 0 | expand | tr -s '[:blank:]' | \
+	sed -E 's/([^ ]+) +(.*)/asmcfunc \2,\1/' >$5
 
 rm $TF
 rm $TL

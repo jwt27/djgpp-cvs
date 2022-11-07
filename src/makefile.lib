@@ -34,8 +34,8 @@ $(TG):
 	$(MAKE) -C $(PD)
 
 # XXX not yet complete
-thunk_calls.tmp thunk_asms.tmp &: $(LIB)/lib$(LIBNAME).a $(TG)
-	$(MP) $< $(TOP)/../../include thunk_asms.tmp thunk_calls.tmp
+thunk_calls.tmp thunk_asms.tmp plt.inc &: $(LIB)/lib$(LIBNAME).a $(TG)
+	$(MP) $< $(TOP)/../../include thunk_asms.tmp thunk_calls.tmp plt.inc
 
 thunk_calls.h: thunk_calls.tmp
 	$(TG) <$< >$@
