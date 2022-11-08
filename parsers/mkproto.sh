@@ -28,16 +28,19 @@ TF=/tmp/tagsxx
 TL=/tmp/a.so
 set -e
 
-ld -melf_i386 -shared -Bsymbolic -o $TL --whole-archive "$1" 2>/dev/null
-find $2 -name libm -prune -o -print | \
+ld -melf_i386 -shared -Bsymbolic -o $TL "$2" --whole-archive "$1" 2>/dev/null
+shift 2
+find $1 -name libm -prune -o -print | \
 	ctags -L - --kinds-C=p --pattern-length-limit=0 -f $TF
+shift
 # https://stackoverflow.com/questions/11003418/calling-shell-functions-with-xargs
 export -f extr_proto
-list_syms $TL T | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMFUNC" | nl -n ln -v 0 >$3
-list_syms $TL U | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMCFUNC" | nl -n ln -v 0 >$4
+list_syms $TL T | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMFUNC" | nl -n ln -v 0 >$1
+list_syms $TL U | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMCFUNC" | nl -n ln -v 0 >$2
 list_syms $TL U | xargs readtags -t $TF | expand | \
 	cut -d " " -f 1 | nl -n ln -v 0 | expand | tr -s '[:blank:]' | \
-	sed -E 's/([^ ]+) +(.*)/asmcfunc \2,\1/' >$5
+	sed -E 's/([^ ]+) +(.*)/asmcfunc \2,\1/' >$3
+shift 3
 
 rm $TF
 rm $TL
