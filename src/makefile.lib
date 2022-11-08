@@ -10,7 +10,7 @@ all ::
 	../makemake.exe
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
-	$(MAKE) $(LIB)/lib$(LIBNAME).so
+	$(MAKE) $(LIB)/libdj64.so
 
 MAKEFILE_LIB = 1
 include $(TOP)/../makefile.inc
@@ -47,7 +47,7 @@ thunk_calls.h: thunk_calls.tmp
 thunk_asms.h: thunk_asms.tmp
 	$(GT) $(TG) $< $(PD) >$@
 
-$(LIB)/lib$(LIBNAME).so : $(OBJS) makefile.rf thunk_calls.h thunk_asms.h
+$(LIB)/libdj64.so : $(OBJS) makefile.rf thunk_calls.h thunk_asms.h
 	$(CROSS_GCC) -shared -o $@ @makefile.rf
 
 newlib:
