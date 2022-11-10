@@ -47,8 +47,10 @@ thunk_calls.h: thunk_calls.tmp
 thunk_asms.h: thunk_asms.tmp
 	$(GT) $(TG) $< $(PD) >$@
 
-$(LIB)/libdj64.so : $(OBJS) makefile.rf thunk_calls.h thunk_asms.h
-	$(CROSS_GCC) -shared -o $@ @makefile.rf
+thunks.o: thunk_calls.h thunk_asms.h
+
+$(LIB)/libdj64.so : $(OBJS) makefile.rf thunk_calls.h thunk_asms.h thunks.o
+	$(CROSS_GCC) -shared -o $@ @makefile.rf thunks.o
 
 newlib:
 	$(MISC) rm $(LIB)/lib$(LIBNAME).a
