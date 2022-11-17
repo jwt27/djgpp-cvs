@@ -50,6 +50,7 @@
 "unsigned char"	{ return UBYTE; }
 "unsigned short"	{ return UWORD; }
 "int"		{ return DWORD; }
+"unsigned"	{ return UDWORD; }
 "unsigned int"	{ return UDWORD; }
 "long"		{ return DWORD; }
 "unsigned long"	{ return UDWORD; }
