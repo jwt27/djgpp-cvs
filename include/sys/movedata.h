@@ -22,6 +22,7 @@ extern "C" {
 #ifndef _POSIX_SOURCE
 
 #include <sys/djtypes.h>
+#include <stdint.h>
 
 #ifndef _SIZE_T
 __DJ_size_t
@@ -51,9 +52,9 @@ void movedata(unsigned _source_selector, unsigned _source_offset,
 	       size_t _length);
 
 /* The lengths here are in TRANSFERS, not bytes! */
-void _movedatab(unsigned, unsigned, unsigned, unsigned, size_t);
-void _movedataw(unsigned, unsigned, unsigned, unsigned, size_t);
-void _movedatal(unsigned, unsigned, unsigned, unsigned, size_t);
+void _movedatab(unsigned, unsigned, unsigned, unsigned, uint32_t);
+void _movedataw(unsigned, unsigned, unsigned, unsigned, uint32_t);
+void _movedatal(unsigned, unsigned, unsigned, unsigned, uint32_t);
   
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
