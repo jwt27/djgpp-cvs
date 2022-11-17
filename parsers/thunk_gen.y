@@ -130,7 +130,7 @@ static void do_start_arg(int anum)
 	    strcat(abuf, "_ARG_CBK_A(");
 	    break;
 	case 2:
-	    strcat(abuf, "_CNV_SIMPLE, _L_NONE");
+	    strcat(abuf, "_CNV_CBK, _L_NONE");
 	    break;
 	}
     } else {
