@@ -1,13 +1,17 @@
 #include "dpmi.h"
-#include "string.h"
 #include "dos.h"
 #include "libc/internal.h"
 #include "signal.h"
 #include "stdio.h"
 #include "unistd.h"
 #include "io.h"
-#include "ctype.h"
+#include "math.h"
+#include "float.h"
+#include "netinet/in.h"
+#include "stdlib.h"
+#include "sys/movedata.h"
 
+#define PACKED __attribute__((packed))
 enum DispStat { DISP_OK, DISP_NORET };
 enum { ASM_CALL_OK, ASM_CALL_ABORT };
 enum { FDPP_RET_ABORT = -1, FDPP_RET_OK, FDPP_RET_NORET };
@@ -18,6 +22,8 @@ static __dpmi_regs s_regs;
 #define UBYTE uint8_t
 #define UDWORD uint32_t
 #define DWORD int32_t
+#define UWORD uint16_t
+#define WORD int16_t
 #define VOID void
 
 #define _ARG(n, t, ap) (*(t *)(ap + n))
@@ -109,3 +115,52 @@ int FdppCall(__dpmi_regs *regs)
     recur_cnt--;
     return ret;
 }
+
+
+#define _TFLG_NONE 0
+#define _TFLG_FAR 1
+#define _TFLG_NORET 2
+#define _TFLG_INIT 4
+
+static uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
+{
+    return 0;
+}
+
+static uint8_t *clean_stk(size_t len)
+{
+//    uint8_t *ret = (uint8_t *)so2lin(s_regs.ss, LO_WORD(s_regs.esp));
+//    s_regs.esp += len;
+//    return ret;
+    return NULL;
+}
+
+#define __ARG(t) t
+#define __ARG_PTR(t) t *
+#define __ARG_PTR_FAR(t)
+#define __ARG_A(t) t
+#define __ARG_PTR_A(t) t *
+#define __ARG_PTR_FAR_A(t)
+typedef void (*_cbk_VOID)(void);
+#define __ARG_CBK(t) _cbk_##t
+#define __ARG_CBK_A(t) UDWORD
+#define __RET(t, v) v
+#define __RET_PTR(t, v) DATA_PTR(v)
+#define __RET_PTR_FAR(t, v) FP_FROM_D(t, v)
+#define __CALL(n, s, l, f) do_asm_call(n, s, l, f)
+#define __CSTK(l) clean_stk(l)
+
+#define __CNV_PTR_FAR(t, d, f, l) // unused
+#define __CNV_PTR(t, d, f, l) t d  = (f)
+#define __CNV_PTR_CCHAR(t, d, f, l) t d = (f)
+#define __CNV_PTR_CHAR(t, d, f, l) t d = (f)
+#define __CNV_PTR_ARR(t, d, f, l) t d = (f)
+#define __CNV_PTR_VOID(t, d, f, l) t d = (f)
+#define __CNV_CBK(t, d, f, l) UDWORD d = PTR_DATA(f)
+#define __CNV_SIMPLE(t, d, f, l) t d = (f)
+
+#define _CNV(c, at, l, n) c(at, _a##n, a##n, l)
+#define _L_REF(nl) a##nl
+#define _L_IMM(n, l) (sizeof(*_L_REF(n)) * (l))
+
+#include "thunk_asms.h"
