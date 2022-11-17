@@ -21,8 +21,8 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
-unsigned long  htonl(unsigned long _val);
-unsigned long  ntohl(unsigned long _val);
+uint32_t htonl(uint32_t _val);
+uint32_t ntohl(uint32_t _val);
 unsigned short htons(unsigned short _val);
 unsigned short ntohs(unsigned short _val);
 
@@ -33,8 +33,8 @@ unsigned short ntohs(unsigned short _val);
 #ifndef __dj_ENFORCE_FUNCTION_CALLS
 #include <sys/cdefs.h>
 
-_EXTERN_INLINE unsigned long
-htonl(unsigned long _val)
+_EXTERN_INLINE uint32_t
+htonl(uint32_t _val)
 {
   return (_val << 24) | ((_val&0xff00) << 8) | ((_val&0xff0000) >> 8) | (_val >> 24);
 }
