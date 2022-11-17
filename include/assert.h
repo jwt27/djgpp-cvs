@@ -21,7 +21,11 @@
 extern "C" {
 #endif
 
-void	__dj_assert(const char *,const char *,int,const char *) __attribute__((__noreturn__));
+#ifndef NORETURN
+#define NORETURN
+#endif
+
+void	__dj_assert(const char *,const char *,int,const char *) NORETURN;
 
 #ifdef __cplusplus
 }

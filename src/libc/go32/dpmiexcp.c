@@ -650,7 +650,7 @@ __maybe_fix_w2k_ntvdm_bug(void)
   }
 }
 
-void __attribute__((noreturn))
+void
 _exit(int status)
 {
   __maybe_fix_w2k_ntvdm_bug();
