@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 #include <sys/cdefs.h>
+#include <stdint.h>
 
 _EXTERN_INLINE unsigned char
 inportb (unsigned short _port)
@@ -30,7 +31,7 @@ inportw (unsigned short _port)
   return rv;
 }
 
-_EXTERN_INLINE unsigned long
+_EXTERN_INLINE uint32_t
 inportl (unsigned short _port)
 {
   unsigned long rv;
