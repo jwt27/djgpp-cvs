@@ -32,6 +32,7 @@ ld -melf_i386 -shared -Bsymbolic -o $TL "$2" --whole-archive "$1" 2>/dev/null
 shift 2
 PRUNES="-name libm -prune -o -name machine -prune"
 PRUNES="$PRUNES -o -name string.h -prune -o -name in.h -prune"
+PRUNES="$PRUNES -o -name ctype.h -prune"
 # bad/temporary prunes below
 PRUNES="$PRUNES -o -name setjmp.h -prune"
 find $1 $PRUNES -o -print | \
