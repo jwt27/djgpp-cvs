@@ -5,7 +5,7 @@
 TOP=../..
 
 SRC += bdos.c
-AS_SRC += bdosptr.S
+#AS_SRC += bdosptr.S
 SRC += delay.c
 SRC += fexistp.c
 SRC += getcbrk.c
