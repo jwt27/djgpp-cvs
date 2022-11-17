@@ -31,6 +31,8 @@ set -e
 ld -melf_i386 -shared -Bsymbolic -o $TL "$2" --whole-archive "$1" 2>/dev/null
 shift 2
 PRUNES="-name libm -prune -o -name machine -prune"
+# bad/temporary prunes below
+PRUNES="$PRUNES -o -name setjmp.h -prune"
 find $1 $PRUNES -o -print | \
 	ctags -L - --kinds-C=p --pattern-length-limit=0 -f $TF
 shift
