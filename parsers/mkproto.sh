@@ -30,7 +30,8 @@ set -e
 
 ld -melf_i386 -shared -Bsymbolic -o $TL "$2" --whole-archive "$1" 2>/dev/null
 shift 2
-find $1 -name libm -prune -o -print | \
+PRUNES="-name libm -prune -o -name machine -prune"
+find $1 $PRUNES -o -print | \
 	ctags -L - --kinds-C=p --pattern-length-limit=0 -f $TF
 shift
 # https://stackoverflow.com/questions/11003418/calling-shell-functions-with-xargs
