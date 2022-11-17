@@ -460,7 +460,6 @@ atype:		  VOID		{
 				  arg_size = 4;
 				  is_cbk = 1;
 				  strcat(atype, "VOID");
-				  strcat(atype3, "UDWORD");
 				  al_arg_size = AL(arg_size);
 				}
 		| STRUCT sname	{
