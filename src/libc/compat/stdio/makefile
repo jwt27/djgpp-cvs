@@ -16,7 +16,7 @@ SRC += tempnam.c
 SRC += vasnprtf.c
 SRC += vasprntf.c
 SRC += vscanf.c
-AS_SRC += vfscanf.S
+#AS_SRC += vfscanf.S
 SRC += vsscanf.c
 
 include $(TOP)/../makefile.inc

@@ -9,3 +9,9 @@ vscanf(const char *fmt, va_list ap)
 {
   return _doscan(stdin, fmt, ap);
 }
+
+int
+vfscanf(FILE *stream, const char *fmt, va_list ap)
+{
+  return _doscan(stream, fmt, ap);
+}
