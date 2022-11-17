@@ -56,6 +56,7 @@
 "unsigned long"	{ return UDWORD; }
 "size_t"	{ return UDWORD; }
 "ssize_t"	{ return DWORD; }
+"uint32_t"	{ return UDWORD; }
 "ULONG"		{ return UDWORD; }
 "DWORD"		{ return DWORD; }
 "UDWORD"	{ return UDWORD; }
