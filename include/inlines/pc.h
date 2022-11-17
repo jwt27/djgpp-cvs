@@ -60,7 +60,7 @@ outportw (unsigned short _port, unsigned short _data)
 }
 
 _EXTERN_INLINE void
-outportl (unsigned short _port, unsigned long _data)
+outportl (unsigned short _port, uint32_t _data)
 {
   __asm__ __volatile__ ("outl %1, %0"
 	  :
