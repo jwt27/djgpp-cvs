@@ -36,6 +36,7 @@ GCC = gcc -g
 AR = ar
 AS = as
 LD = ld
+OBJCOPY = objcopy
 STRIP = strip
 BISON = bison
 LIBSTDCXX = -lstdcxx

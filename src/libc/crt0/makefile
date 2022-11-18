@@ -34,8 +34,11 @@ plt.o : plt.S ../plt.inc
 _crt0.o : crt0.S exit16.ah sbrk16.ah
 	$(XGCC) -MMD -m32 -c -o $@ $<
 
-$(LIB)/crt0.o : _crt0.o plt.o
+crt0.o : _crt0.o plt.o
 	$(LD) -melf_i386 -r -o $@ $^
+
+$(LIB)/crt0.o : crt0.o
+	$(OBJCOPY) -O pe-i386 $< $@
 
 $(LIB)/gcrt0.o : gcrt0.S crt0.S exit16.ah sbrk16.ah
 	$(XGCC) -MMD -m32 -c gcrt0.S

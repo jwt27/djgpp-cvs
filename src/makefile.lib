@@ -11,6 +11,7 @@ all ::
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
 	$(MAKE) $(LIB)/libdj64.so
+	$(MAKE) $(LIB)/libc.a
 
 MAKEFILE_LIB = 1
 include $(TOP)/../makefile.inc
@@ -25,10 +26,13 @@ ifneq ($(wildcard makefile.oio),)
 include makefile.oio
 endif
 
-$(LIB)/lib$(LIBNAME).a : $(AS_OBJS) makefile.rfo
+$(LIB)/lib$(LIBNAME).a : $(LIB)/lib$(LIBNAME).elf.a
+	$(OBJCOPY) -O pe-i386 $< $@
+
+$(LIB)/lib$(LIBNAME).elf.a : $(AS_OBJS) makefile.rfo
 	@-$(MISC) rm $@
-	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rfo
-	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
+	$(CROSS_AR) q $@ @makefile.rfo
+	$(CROSS_AR) s $@
 
 $(TG):
 	$(MAKE) -C $(PD)
@@ -36,9 +40,8 @@ $(TG):
 crt0/_crt0.o:
 	$(MAKE) -C crt0 _crt.o
 
-# XXX not yet complete
-thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: $(LIB)/lib$(LIBNAME).a \
-    crt0/_crt0.o $(TG)
+thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
+    $(LIB)/lib$(LIBNAME).elf.a crt0/_crt0.o $(TG)
 	$(MP) $< $(TOP)/crt0/_crt0.o $(TOP)/../../include thunk_asms.tmp \
 		thunk_calls.tmp plt.inc thunk_incs.h
 
