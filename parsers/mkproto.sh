@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 4 ]; then
+if [ $# -lt 5 ]; then
     echo "generate thunk prototypes compatible with fdpp's thunk_gen & plt"
-    echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out>"
+    echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out> <incs_out>"
     exit 1
 fi
 
@@ -21,6 +21,11 @@ extr_proto() {
 
 list_syms() {
     nm -A "$1" | grep " $2 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
+	sed 's/^_//'
+}
+
+list_syms2() {
+    nm -A "$1" | egrep " $2 "\|" $3 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
 	sed 's/^_//'
 }
 
@@ -45,6 +50,9 @@ list_syms $TL U | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMCFUNC" | nl -n l
 list_syms $TL U | xargs readtags -t $TF | expand | \
 	cut -d " " -f 1 | nl -n ln -v 0 | expand | tr -s '[:blank:]' | \
 	sed -E 's/([^ ]+) +(.*)/asmcfunc \2,\1/' >$3
+list_syms2 $TL U T | xargs readtags -t $TF | expand | tr -s '[:blank:]' | \
+	cut -d " " -f 2 | sort | uniq | \
+	sed -E 's/.*(include)\/(.*)/#\1 "\2"/' >$4
 shift 3
 
 rm $TF

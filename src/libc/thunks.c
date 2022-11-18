@@ -1,15 +1,4 @@
-#include "dpmi.h"
-#include "dos.h"
-#include "libc/internal.h"
-#include "signal.h"
-#include "stdio.h"
-#include "unistd.h"
-#include "io.h"
-#include "math.h"
-#include "float.h"
-#include "netinet/in.h"
-#include "stdlib.h"
-#include "sys/movedata.h"
+#include "thunk_incs.h"
 
 #define PACKED __attribute__((packed))
 enum DispStat { DISP_OK, DISP_NORET };
