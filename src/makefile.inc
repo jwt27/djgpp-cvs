@@ -159,7 +159,7 @@ $(BIN)/%.exe : $C %.o $L
 $(HOSTBIN)/%.exe : %
 	$(GCC) -o $@ $^
 
-all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
+all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS)
 	$(NOP)
 
 ifneq ($(MAKEFILE_LIB),1)
