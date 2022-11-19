@@ -25,6 +25,8 @@ void _npxsetup(char *argv0);
 void __emu387_exception_handler(void);
 void __djgpp_exception_processor(void);
 void __djgpp_exception_setup(void);
+void __register_frame_info(const void *begin, const void *object);
+void __deregister_frame_info(const void *begin);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
