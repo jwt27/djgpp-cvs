@@ -33,6 +33,7 @@ _crt0.o : crt0.S exit16.ah sbrk16.ah
 
 crt0.o : crt0.S plt.S ../plt.inc
 	$(XGCC) -MMD -m32 -DWITH_PLT -c -o $@ $<
+	$(STRIP) --strip-debug $@
 
 $(LIB)/crt0.o : crt0.o
 	$(OBJCOPY) -O pe-i386 $< $@
