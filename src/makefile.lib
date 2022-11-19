@@ -38,7 +38,7 @@ $(TG):
 	$(MAKE) -C $(PD)
 
 crt0/_crt0.o:
-	$(MAKE) -C crt0 _crt.o
+	$(MAKE) -C crt0 _crt0.o
 
 thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
     $(LIB)/lib$(LIBNAME).elf.a crt0/_crt0.o $(TG)
