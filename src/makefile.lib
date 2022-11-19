@@ -16,9 +16,6 @@ all ::
 MAKEFILE_LIB = 1
 include $(TOP)/../makefile.inc
 
-OBJS :=
-AS_OBJS :=
-
 ifneq ($(wildcard makefile.oi),)
 include makefile.oi
 endif
@@ -29,7 +26,7 @@ endif
 $(LIB)/lib$(LIBNAME).a : $(LIB)/lib$(LIBNAME).elf.a
 	$(OBJCOPY) -O pe-i386 $< $@
 
-$(LIB)/lib$(LIBNAME).elf.a : $(AS_OBJS) makefile.rfo
+$(LIB)/lib$(LIBNAME).elf.a : makefile.rfo
 	@-$(MISC) rm $@
 	$(CROSS_AR) q $@ @makefile.rfo
 	$(CROSS_AR) s $@
