@@ -28,14 +28,11 @@ exit16.ah : exit16.asm
 sbrk16.ah : sbrk16.asm
 	$(HOSTBIN)/djasm.exe sbrk16.asm sbrk16.ah
 
-plt.o : plt.S ../plt.inc
-	$(XGCC) -MMD -m32 -c -o $@ $<
-
 _crt0.o : crt0.S exit16.ah sbrk16.ah
 	$(XGCC) -MMD -m32 -c -o $@ $<
 
-crt0.o : _crt0.o plt.o
-	$(LD) -melf_i386 -r -o $@ $^
+crt0.o : crt0.S plt.S ../plt.inc
+	$(XGCC) -MMD -m32 -DWITH_PLT -c -o $@ $<
 
 $(LIB)/crt0.o : crt0.o
 	$(OBJCOPY) -O pe-i386 $< $@
