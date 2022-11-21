@@ -26,7 +26,7 @@ nparg:					/* x is non-positive or NaN */
 	je	maybezero
 
 badarg:					/* x is definitely <0 or NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret
 

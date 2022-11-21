@@ -136,7 +136,7 @@ abarg:					/* x = inf, or NaN */
 	jz	special
 
 badarg:					/* arg is negative or NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret
 

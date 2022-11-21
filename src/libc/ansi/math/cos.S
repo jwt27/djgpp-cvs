@@ -19,7 +19,7 @@ bigarg:
 	cmpl	$0x7FF00000, %eax	/* x is INF or NaN. */
 	jb	finite
 	flds	NaN			/* Result is undefined. */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	ret
 finite:
 	fld1				/* cos = 1. */

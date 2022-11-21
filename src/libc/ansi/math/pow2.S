@@ -30,7 +30,7 @@ bigarg:
 	andl	$0x7FF00000, %eax	/* |x| > log2(DBL_MAX) */
 	cmpl	$0x7FF00000, %eax
 	je	abarg
-	stlcm	$2, _errno		/* |x| is really big, but finite */
+	movl	$2, _errno		/* |x| is really big, but finite */
 	jmp	argok
 
 abarg:					/* x = +/-inf, or +NaN */
@@ -53,6 +53,6 @@ posinf:
 	ret
 
 badarg:					/* arg is NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret

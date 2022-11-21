@@ -41,6 +41,6 @@ abarg:
 	jz	argok
 
 badarg:					/* arg is NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	jmp	cleanup

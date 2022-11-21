@@ -61,13 +61,13 @@ bigarg:
 	andl	$0x7FF00000, %eax	/* |x| > acosh(DBL_MAX) */
 	cmpl	$0x7FF00000, %eax
 	je	abarg
-	stlcm	$2, _errno
+	movl	$2, _errno
 	jmp	infarg			/* Treat as infinite arg */
 
 edge:					/* |x| is nearly acosh(DBL_MAX) */
 	cmpl	$0x8FB9F87D, 4(%esp)
 	jbe	argok
-	stlcm	$2, _errno
+	movl	$2, _errno
 
 infarg:
 	flds	pinf
@@ -82,6 +82,6 @@ abarg:
 	jz	infarg
 
 badarg:					/* arg is NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret

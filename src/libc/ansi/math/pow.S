@@ -63,11 +63,11 @@ xzero:					/* x == 0; y is in st(0); test y */
 	jb	infresult		/* x = 0, y < 0 (including y = -inf) */
 					/* x = 0, y = 0: */
 	fld1				/* return 1 but raise EDOM */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	jmp	CleanUp
 
 badresult:
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	jmp	CleanUp
 
@@ -183,5 +183,5 @@ CleanUp:
 	ret
 
 range_error:
-	stlcm	$2, _errno
+	movl	$2, _errno
 	jmp	CleanUp

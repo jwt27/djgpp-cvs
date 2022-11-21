@@ -26,7 +26,7 @@ verysmall:				/* exp = max negative */
 	jne	argok			/* arg > 0; proceed */
 
 zeroarg:
-	stlcm	$2, _errno
+	movl	$2, _errno
 	flds	ninf			/* arg = 0; handle separately. */
 	ret
 
@@ -46,6 +46,6 @@ badarg:					/* arg is negative or NaN */
 	jz	zeroarg
 
 negarg:
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret

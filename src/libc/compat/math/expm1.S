@@ -44,7 +44,7 @@ bigarg:
 posneg:
 	testl	$0x80000000, 8(%esp)
 	jnz	argok			/* Large negative -- OK */
-	stlcm	$2, _errno		/* |x| is really big, but finite */
+	movl	$2, _errno		/* |x| is really big, but finite */
 	jmp	argok
 
 edge:					/* |x| is nearly log(DBL_MAX) */
@@ -69,11 +69,11 @@ neginf:
 	ret
 
 posinf:
-	stlcm	$2, _errno
+	movl	$2, _errno
 	flds	pinf
 	ret
 
 badarg:					/* arg is NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret

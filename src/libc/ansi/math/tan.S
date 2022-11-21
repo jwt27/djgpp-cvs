@@ -26,6 +26,6 @@ abarg:
 	ret
 
 badarg:					/* x = inf or NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret

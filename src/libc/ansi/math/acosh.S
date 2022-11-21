@@ -65,7 +65,7 @@ abarg:
 	jz	argok
 
 badarg:
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	addl	$4, %esp
 	ret

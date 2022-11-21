@@ -65,7 +65,7 @@ argok:
 	ret
 
 onetotwo:
-	stlcm	$2, _errno
+	movl	$2, _errno
 	movl	8(%esp), %eax		/* is x = +/-1? */
 	andl	$0x7FFFFFFF, %eax	/* |x| */
 	cmpl	$0x3FF00000, %eax
@@ -75,6 +75,6 @@ onetotwo:
 	jz	argok
 
 badarg:
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret

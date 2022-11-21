@@ -30,7 +30,7 @@ loop:
 	ret				/* fract(x) */
 
 abarg:					/* arg is inf or NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	movl	8(%esp), %eax
 	testl	$0x000FFFFF, %eax
 	jne	badarg			/* y = NaN */

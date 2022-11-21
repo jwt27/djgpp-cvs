@@ -59,7 +59,7 @@ hugey:
 	jmp	bigarg
 
 badarg:					/* arg is NaN */
-	stlcm	$1, _errno
+	movl	$1, _errno
 	flds	NaN
 	ret
 					/* Both args are finite, but at */
@@ -77,5 +77,5 @@ bigarg:					/* least one arg is huge.  Proceed */
 	ret
 
 range_error:
-	stlcm	$2, _errno
+	movl	$2, _errno
 	ret
