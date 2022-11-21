@@ -18,10 +18,7 @@
 #include <errno.h>
 #include <libc/file.h>
 #include <libc/local.h>
-
-typedef enum {
-  false = 0, true = 1
-} bool;
+#include <stdbool.h>
 
 #define SPC               01
 #define STP               02

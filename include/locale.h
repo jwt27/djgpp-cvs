@@ -8,7 +8,7 @@
 #define __dj_include_locale_h_
 
 #ifdef __cplusplus
-namespace std {
+//namespace std {
 extern "C" {
 #endif
 
@@ -78,7 +78,7 @@ char *		setlocale(int _category, const char *_locale);
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 
 #ifdef __cplusplus
-}
+//}
 }
 #endif
 
@@ -88,9 +88,9 @@ char *		setlocale(int _category, const char *_locale);
 #if defined(__cplusplus) && !defined(__dj_ENFORCE_ANSI_FREESTANDING)
 #ifndef __dj_via_cplusplus_header_
 
-using std::lconv;
-using std::localeconv;
-using std::setlocale;
+//using std::lconv;
+//using std::localeconv;
+//using std::setlocale;
 
 #endif /* !__dj_via_cplusplus_header_ */
 #endif /* __cplusplus && !__dj_ENFORCE_ANSI_FREESTANDING */

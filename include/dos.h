@@ -240,11 +240,7 @@ struct _diskfree_t {
 
 struct _DOSERROR {
   int  exterror;
-  #ifdef __cplusplus
-  char errclass;
-  #else
-  char class;
-  #endif
+  char _class;
   char action;
   char locus;
 };
@@ -252,11 +248,7 @@ struct _DOSERROR {
 
 struct _DOSERROR_STR {
   char *exterror_str;
-  #ifdef __cplusplus
-  char *errclass_str;
-  #else
   char *class_str;
-  #endif
   char *action_str;
   char *locus_str;
 };

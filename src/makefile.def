@@ -24,7 +24,7 @@ ifeq ($(CROSS_BUILD),0)
 # when building djgpp *with* djgpp.
 
 # For building distributed (djgpp) libraries and programs
-CROSS_GCC = gcc
+CROSS_GCC = g++
 CROSS_AR = ar
 CROSS_AS = as
 CROSS_LD = ld

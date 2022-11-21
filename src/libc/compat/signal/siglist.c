@@ -44,12 +44,12 @@ xstrdup (const char *src)
   if (src)
   {
     size_t src_size = strlen (src) + 1;
-    char *new = (char *)malloc (src_size);
+    char *_new = (char *)malloc (src_size);
 
-    if (new)
+    if (_new)
     {
-      memcpy (new, src, src_size);
-      return new;
+      memcpy (_new, src, src_size);
+      return _new;
     }
   }
 
@@ -59,7 +59,7 @@ xstrdup (const char *src)
 static int signum;
 
 static void
-fill_dull_names (const char *template, size_t tpl_size, int count)
+fill_dull_names (const char *_template, size_t tpl_size, int count)
 {
   int i;
 
@@ -67,7 +67,7 @@ fill_dull_names (const char *template, size_t tpl_size, int count)
   {
     char *signame = (char *)malloc (tpl_size);
 
-    memcpy (signame, template, tpl_size);
+    memcpy (signame, _template, tpl_size);
     put_hex_digits (signame, i, tpl_size - 3);
     sys_siglist[signum++] = signame;
   }

@@ -379,14 +379,10 @@ _dostrerr(struct _DOSERROR *p_error, struct _DOSERROR_STR *p_str)
   if (strcmp(p_str->exterror_str, RESERVED) == 0)
     p_str->exterror_str = _err_unknown(p_error->exterror);
 
-  if (p_error->class >= 0 && p_error->class < __dos_ncls)
-  #ifdef __cplusplus
-    p_str->errclass_str = unconst(__dos_errclass[(unsigned char)p_error->errclass], char *);
-  #else
-    p_str->class_str = unconst(__dos_errclass[(unsigned char)p_error->class], char *);
-  #endif
+  if (p_error->_class >= 0 && p_error->_class < __dos_ncls)
+    p_str->class_str = unconst(__dos_errclass[(unsigned char)p_error->_class], char *);
   else
-    p_str->class_str = _err_unknown(p_error->class);
+    p_str->class_str = _err_unknown(p_error->_class);
 
   if (p_error->action >= 0 && p_error->action < __dos_nact)
     p_str->action_str = unconst(__dos_erraction[(unsigned char)p_error->action], char *);

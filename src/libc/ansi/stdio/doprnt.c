@@ -28,10 +28,7 @@
 #include <libc/local.h>
 #include <libc/ieee.h>
 #include <sys/cdefs.h>
-
-typedef enum {
-  false = 0, true = 1
-} bool;
+#include <stdbool.h>
 
 static char decimal_point;
 static char thousands_sep;
