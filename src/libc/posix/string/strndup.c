@@ -9,9 +9,9 @@ strndup(const char *_s, size_t _n)
     return NULL;
   else
   {
-    register const size_t length = strlen(_s);
-    register const size_t bytes = length > _n ? _n : length;
-    register char *new_string = malloc(bytes + 1);
+    const size_t length = strlen(_s);
+    const size_t bytes = length > _n ? _n : length;
+    char *new_string = (char *)malloc(bytes + 1);
 
     if (new_string)
     {

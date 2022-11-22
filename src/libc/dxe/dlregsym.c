@@ -27,7 +27,7 @@ int dlregsym (const dxe_symbol_table *symtab)
 {
  if (_dl_nsymtab >= _dl_nmaxsymtab) {
     const dxe_symbol_table **p;
-    p = realloc(_dl_symtabs, (_dl_nmaxsymtab + 8) * sizeof(dxe_symbol_table *));
+    p = (const dxe_symbol_table**)realloc(_dl_symtabs, (_dl_nmaxsymtab + 8) * sizeof(dxe_symbol_table *));
     if (p == NULL) {
        return -1;
     }

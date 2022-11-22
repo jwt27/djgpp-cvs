@@ -71,7 +71,7 @@ typedef unsigned char byte;
 static void initsysinfo(void)
 {
    sysinfo   = _sysmalloc();
-   freehdrsp = (void*)((byte*)(sysinfo.nilp)-sizeof(void*));
+   freehdrsp = (void*(*)[NFLISTS])((byte*)(sysinfo.nilp)-sizeof(void*));
    if (!dumpfile) dumpfile = stderr;
    initialized = 1;
 } /* initsysinfo */
@@ -366,7 +366,7 @@ static void releaseallhooks(void)
    int hk;
 
    for (hk = malloc_HK; hk < HKCOUNT; hk++)
-      sethook(hk, NULL);
+      sethook((enum m_hook_kind)hk, NULL);
 } /* freeallhooks */
 
 /* ----------------- */

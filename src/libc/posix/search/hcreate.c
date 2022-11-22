@@ -57,7 +57,7 @@ int hcreate( size_t nel )
   buckets = 1U<<i;
   mask = buckets-1;
 
-  hash = calloc(buckets, sizeof(ENTRY));
+  hash = (ENTRY*)calloc(buckets, sizeof(ENTRY));
 
   return NULL != hash;
 }

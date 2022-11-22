@@ -66,7 +66,7 @@ _doscan(FILE *iop, const char *fmt, va_list argp)
 int
 _doscan_low(FILE *iop, int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *), const char *fmt, va_list argp)
 {
-  register int ch;
+  int ch;
   int nmatch, n, len, ch1;
   int *ptr, fileended, size;
   int suppressed;
@@ -272,9 +272,9 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
        int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
        int *eofptr, const bool allocate_char_buffer)
 {
-  register char *np;
+  char *np;
   char numbuf[64];
-  register int c, base;
+  int c, base;
   int expseen, scale, negflg, c1, ndigit;
   long long lcval;
   int cpos;
@@ -432,7 +432,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
        int (*scan_getc)(FILE *), int (*scan_ungetc)(int, FILE *),
        int *eofptr, const bool allocate_char_buffer)
 {
-  register int ch;
+  int ch;
   char *arg_ptr = NULL, *orig_ptr = NULL;
   size_t string_length;
   int ignstp;
@@ -453,7 +453,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
     else
     {
       arg_ptr = ptr;
-      orig_ptr = ptr = malloc(buffer_size);
+      orig_ptr = ptr = (char *)malloc(buffer_size);
       if (!ptr)
       {
         errno = ENOMEM;
@@ -486,7 +486,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
       if (--buffer_size < 1)
       {
         const ptrdiff_t offset = ptr - orig_ptr;
-        char *new_ptr = realloc(orig_ptr, (size_t)(offset + BUFFER_INCREMENT));
+        char *new_ptr = (char *)realloc(orig_ptr, (size_t)(offset + BUFFER_INCREMENT));
         if (!new_ptr)
         {
           free(orig_ptr);
@@ -533,7 +533,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
     }
     if (allocate_char_buffer)
     {
-      char *tmp_ptr = realloc(orig_ptr, string_length);
+      char *tmp_ptr = (char *)realloc(orig_ptr, string_length);
       *(char **)arg_ptr = tmp_ptr;
       ptr = arg_ptr;
       if (!tmp_ptr)
@@ -553,7 +553,7 @@ _instr(char *ptr, int type, int len, FILE *iop,
 static const char *
 _getccl(const unsigned char *s)
 {
-  register int t;
+  int t;
   size_t c;
 
   t = 0;

@@ -223,13 +223,13 @@ found:
   /* Read DXE tables and the data section */
   hdrsize = dxehdr.symbol_offset - sizeof(dxehdr);
   discardsize = dxehdr.dep_size + dxehdr.unres_size + dxehdr.nrelocs * sizeof(long);
-  if ((dxe.header = malloc(hdrsize + dxehdr.sec_size)) == NULL)
+  if ((dxe.header = (char *)malloc(hdrsize + dxehdr.sec_size)) == NULL)
   {
     errno = ENOMEM;
     CLOSE(fh);
     return NULL;
   }
-  if ((discardable = malloc(discardsize)) == NULL)
+  if ((discardable = (char *)malloc(discardsize)) == NULL)
   {
     errno = ENOMEM;
     CLOSE(fh);
@@ -263,7 +263,7 @@ found:
     tmp.next = stk_top;
     stk_top = &tmp;
 
-    if ((dep_h = dlopen(scan, RTLD_GLOBAL)) == NULL)
+    if ((dep_h = (dxe_h)dlopen(scan, RTLD_GLOBAL)) == NULL)
     {
       stk_top = tmp.next;
       goto unrecoverable;
@@ -277,7 +277,7 @@ found:
       scan = strchr(scan, 0) + 1;
 
       /* Register all implicitly open modules by this one.  */
-      if ((next = malloc(sizeof(dxe_list))) == NULL)
+      if ((next = (dxe_list*)malloc(sizeof(dxe_list))) == NULL)
       {
         dlclose(dep_h);
         errno = ENOMEM;
@@ -337,7 +337,7 @@ found:
 
   /* Parse the header again and fill the exported names table */
   scan = dxe.header;
-  if ((dxe.exp_table = malloc(dxehdr.n_exp_syms * sizeof(void *))) == NULL)
+  if ((dxe.exp_table = (exp_table_entry**)malloc(dxehdr.n_exp_syms * sizeof(void *))) == NULL)
   {
     errno = ENOMEM;
     goto midwayerror;
@@ -355,7 +355,7 @@ found:
 
   /* Put the dxe module in loaded modules chain */
   dxe.next = dxe_chain;
-  if ((dxe_chain = malloc(sizeof(dxe_handle))) == NULL)
+  if ((dxe_chain = (dxe_h)malloc(sizeof(dxe_handle))) == NULL)
   {
     free(dxe.exp_table);
     errno = ENOMEM;

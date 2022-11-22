@@ -78,7 +78,7 @@ FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
   char *temp_name;
 
   /* make new node */
-  if ((l1 = malloc(sizeof(*l1))) == NULL)
+  if ((l1 = (struct pipe_list *)malloc(sizeof(*l1))) == NULL)
     return NULL;
 
   /* if empty list - just grab new node */
@@ -88,7 +88,7 @@ FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
   /* stick in elements we know already */
   l1->command = NULL;
 
-  if ((temp_name = malloc(L_tmpnam)) == NULL)
+  if ((temp_name = (char *)malloc(L_tmpnam)) == NULL)
     goto error;
 
   if (tmpnam(temp_name) == NULL)
@@ -138,7 +138,7 @@ FILE *popen(const char *cm, const char *md) /* program name, pipe mode */
   /* caller wants to write */
   {
     /* if can save the program name, build temp file */
-    if (!(l1->command = malloc(strlen(cm) + 1)))
+    if (!(l1->command = (char *)malloc(strlen(cm) + 1)))
       goto error;
 
     strcpy(l1->command, cm);

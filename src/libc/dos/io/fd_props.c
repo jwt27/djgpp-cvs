@@ -75,13 +75,13 @@ __set_fd_properties(int fd, const char *file, int open_flags)
   {
     size_t size = 255 * sizeof(fd_properties *);
     old_bss_count = __bss_count;
-    __fd_properties = malloc(size);
+    __fd_properties = (fd_properties**)malloc(size);
     active_fds = NULL;
     cached_fds = NULL;
     if (__fd_properties == NULL)
       return -1;
     memset(__fd_properties, 0, size);
-    __fd_properties_cleanup_hook = exit_cleanup;
+    __fd_properties_cleanup_hook = (void *)exit_cleanup;
   }
 
   /* This function may be called twice for the same fd,
@@ -160,10 +160,10 @@ static fd_properties *
 alloc_fd_properties(void)
 {
   fd_properties *ptr;
-  
+
   if (cached_fds == NULL)
   {
-    ptr = malloc(sizeof(fd_properties));
+    ptr = (fd_properties*)malloc(sizeof(fd_properties));
     if (ptr == NULL)
       return ptr;
   }

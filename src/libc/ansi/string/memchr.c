@@ -8,7 +8,7 @@ memchr(const void *s, int c, size_t n)
 {
   if (n)
   {
-    const char *p = s;
+    const char *p = (const char *)s;
     char cc = c;
     do {
       if (*p == cc)

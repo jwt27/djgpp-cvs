@@ -1115,9 +1115,9 @@ mcadd(struct parse *p, cset *cs, char *cp)
 
 	cs->smultis += strlen(cp) + 1;
 	if (cs->multis == NULL)
-		cs->multis = malloc(cs->smultis);
+		cs->multis = (char *)malloc(cs->smultis);
 	else
-		cs->multis = realloc(cs->multis, cs->smultis);
+		cs->multis = (char *)realloc(cs->multis, cs->smultis);
 	if (cs->multis == NULL) {
 		SETERROR(REG_ESPACE);
 		return;
@@ -1148,7 +1148,7 @@ mcsub(cset *cs, char *cp)
 		return;
 	}
 
-	cs->multis = realloc(cs->multis, cs->smultis);
+	cs->multis = (char *)realloc(cs->multis, cs->smultis);
 	assert(cs->multis != NULL);
 }
 
@@ -1471,7 +1471,7 @@ findmust(struct parse *p, struct re_guts *g)
 		return;
 
 	/* turn it into a character string */
-	g->must = malloc((size_t)g->mlen + 1);
+	g->must = (char *)malloc((size_t)g->mlen + 1);
 	if (g->must == NULL) {		/* argh; just forget it */
 		g->mlen = 0;
 		return;

@@ -739,8 +739,8 @@ cscanf(const char *fmt, ...)
 int
 movetext(int left, int top, int right, int bottom, int dleft, int dtop)
 {
-  char    *buf = alloca((right - left + 1) * (bottom - top + 1) * 2);
-  
+  char *buf = (char *)alloca((right - left + 1) * (bottom - top + 1) * 2);
+
   _conio_gettext(left, top, right, bottom, buf);
   puttext(dleft, dtop, dleft + right - left, dtop + bottom - top, buf);
   return 1;

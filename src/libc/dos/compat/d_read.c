@@ -37,7 +37,7 @@ unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned in
   }
 
   /* Reads blocks of file and transfers these into user buffer. */
-  p_buffer = buffer;
+  p_buffer = (unsigned char *)buffer;
   *result  = 0;
   while( count )
   {

@@ -51,7 +51,7 @@ read(int handle, void* buffer, size_t count)
     if (ngot > 0)
     {
       /* convert CR/LF to NL */
-      ngot = crlf2nl(buffer, ngot);
+      ngot = crlf2nl((char *)buffer, ngot);
       if(!ngot)
 	return read(handle, buffer, count);		/* if all CR's read more data */
     }

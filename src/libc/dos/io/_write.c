@@ -35,7 +35,7 @@ _write(int handle, const void* buffer, size_t count)
       return -1;
   }
 
-  return _write_int(handle, buffer, count);
+  return _write_int(handle, (const char *)buffer, count);
 }
 
 /* If the file pointer offset is beyond EOF, fill the gap between EOF and

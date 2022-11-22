@@ -44,7 +44,7 @@ _flsbuf(int c, FILE *f)
   if ((base = f->_base) == NULL && !(f->_flag & _IONBF))
   {
     size = __tb_size;
-    if ((f->_base = base = malloc (size)) == NULL)
+    if ((f->_base = base = (char *)malloc (size)) == NULL)
     {
       f->_flag |= _IONBF;
       f->_flag &= ~(_IOFBF | _IOLBF);

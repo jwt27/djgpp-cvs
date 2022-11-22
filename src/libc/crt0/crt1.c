@@ -129,7 +129,7 @@ char *__dos_argv0;
 static void
 setup_environment(void)
 {
-  char *dos_environ = alloca(_stubinfo->env_size), *cp;
+  char *dos_environ = (char *)alloca(_stubinfo->env_size), *cp;
   short env_selector;
   int env_count=0;
   movedata(_stubinfo->psp_selector, 0x2c, ds, (uintptr_t)&env_selector, 2);

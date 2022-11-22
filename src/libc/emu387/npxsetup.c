@@ -115,7 +115,7 @@ void _npxsetup(char *argv0)
         strcat(emuname,"emu387.dxe");
         cp = emuname;
       }
-      _emu_entry = _dxe_load(cp);
+      _emu_entry = (int (*)(jmp_buf))_dxe_load(cp);
       if (_emu_entry == 0)
         return;
 #endif

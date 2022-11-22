@@ -15,7 +15,7 @@ init_confstr(void)
   char *djdir = getenv("DJDIR");
   if (djdir)
   {
-    startup_djdir = malloc(strlen(djdir) + 1);
+    startup_djdir = (char *)malloc(strlen(djdir) + 1);
     if (startup_djdir)
       strcpy(startup_djdir, djdir);
   }

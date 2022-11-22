@@ -87,7 +87,7 @@ _put_path2(const char *path, int offset)
       int c;
 
       p += 9;           /* point to the beginning of the variable name */
-      var_name = alloca(strlen (p) + 1);
+      var_name = (char *)alloca(strlen (p) + 1);
       for (d = var_name; *p && *p != '/' && *p != '\\'; *d++ = *p++)
         if (*p == env_delim)
         {

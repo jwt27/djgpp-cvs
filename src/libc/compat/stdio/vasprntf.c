@@ -21,7 +21,7 @@ vasprintf(char **strp, const char *fmt, va_list argsp)
   *strp = NULL;
   if (len != EOF)
   {
-    *strp = malloc(len + 1);
+    *strp = (char *)malloc(len + 1);
     if (*strp)
     {
       __stropenw(&_strbuf, *strp, len);

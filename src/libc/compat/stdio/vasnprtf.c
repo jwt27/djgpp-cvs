@@ -36,7 +36,7 @@ vasnprintf(char *str, size_t *np, const char *fmt, va_list argsp)
     len = _doprnt(fmt, argsp, &_strbuf);
     if (len == EOF)
       return NULL;
-    buffer = malloc(len + 1);
+    buffer = (char *)malloc(len + 1);
     if (!buffer)
       return NULL;
   }

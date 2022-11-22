@@ -56,7 +56,7 @@ static char *grouping;
 #define CONVERT(type, value, base, string, case)               \
   do {                                                         \
     const char *digit = (case) ? UPPER_DIGITS : LOWER_DIGITS;  \
-    register type _value = (type)(value);                      \
+    type _value = (type)(value);                      \
                                                                \
     do {                                                       \
       *--(string) = digit[(_value) % (base)];                  \
@@ -478,7 +478,7 @@ rflag:
 	 */
 	char *p			/*, *memchr() */;
 
-	if ((p = memchr(t, 0, (size_t)prec)))
+	if ((p = (char *)memchr(t, 0, (size_t)prec)))
 	{
 	  size = p - t;
 	  if (size > prec)
@@ -550,7 +550,7 @@ number:
 pforw:
       if ((flags & FINITENUMBER) && (flags & GROUPING) && (base == 10) && thousands_sep && (*grouping != CHAR_MAX))
       {
-        register char *p;
+        char *p;
 
         for (p = buf; *t; *p++ = *t++)
           ;  /*  The function expects the string to be formated at the beginning of the buffer.  */
@@ -1289,7 +1289,7 @@ __grouping_format(char *string_start, char *string_end, char *buffer_end, int fl
    */
 
   ptrdiff_t grouping_size;
-  register char *pos, *src, *dst;
+  char *pos, *src, *dst;
 
 
   src = string_end;

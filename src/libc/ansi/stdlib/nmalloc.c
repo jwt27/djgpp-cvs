@@ -458,7 +458,7 @@ static memblockp extendsbrk(ulong szxtra)
       aligndelta = 0;
    }
 
-   m = fakesbrk(szxtra);
+   m = (memblockp)fakesbrk(szxtra);
    if ((uintptr_t)-1 == (uintptr_t)m) return NULL;
    else {
       if ((byte*)m == expected) {  /* Extending size of lastsbrk */

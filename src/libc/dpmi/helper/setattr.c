@@ -34,7 +34,7 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG _num_bytes,
 
   /* Set up an array of page attribute information. */
   num_pages = _num_bytes / 0x1000;
-  attr = alloca (num_pages * sizeof attr[0]);
+  attr = (short int *)alloca (num_pages * sizeof attr[0]);
   for (i = num_pages - 1; i >= 0; i--)
     attr[i] = _attributes;
 
