@@ -346,7 +346,7 @@ void __djgpp_traceback_exit(int sig)
   print_signal_name(sig);
   if(__djgpp_exception_state_ptr)
     /* This exits, does not return.  */
-    do_faulting_finish_message(__djgpp_exception_state == fake_exception);
+    do_faulting_finish_message(__djgpp_exception_state_ptr == &fake_exception);
   _exit(-1);
 }
 

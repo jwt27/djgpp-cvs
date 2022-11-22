@@ -9,7 +9,7 @@
 #include <libc/file.h>
 
 int
-fprintf(register FILE *iop, const char *fmt, ...)
+fprintf(FILE *iop, const char *fmt, ...)
 {
   va_list args;
   int len;

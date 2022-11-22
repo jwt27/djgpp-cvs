@@ -549,8 +549,8 @@ stat_assist(const char *path, struct stat *statbuf)
       /* _truename() failed.  (This really shouldn't happen, but who knows?)
          At least uppercase all letters, convert forward slashes to backward
          ones, and pray... */
-      register const char *src = pathname;
-      register       char *dst = canon_path;
+      const char *src = pathname;
+            char *dst = canon_path;
 
       while ( (*dst = (*src > 'a' && *src < 'z'
                        ? *src++ - ('a' - 'A')
@@ -869,7 +869,7 @@ stat_assist(const char *path, struct stat *statbuf)
 	   !done;
 	   done = __findnext(&ff_blk))
 	{
-	  register char *fname = ff_blk.ff_name;
+	  char *fname = ff_blk.ff_name;
 
 	  /* Don't count "." and ".." entries.  This will show empty
 	     directories as size 0.  */

@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <libc/fd_props.h>
 
-extern void (*__fd_properties_cleanup_hook);
+extern void *__fd_properties_cleanup_hook;
 
 static void open_fd(fd_properties *fd, int open_flags);
 static void close_fd(fd_properties *fd);

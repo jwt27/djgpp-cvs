@@ -8,7 +8,7 @@ strnlen(const char *_str, size_t _n)
     return 0;
   else
   {
-    register size_t i;
+    size_t i;
 
     for (i = 1; _str[i] && i < _n; i++)
       ;
