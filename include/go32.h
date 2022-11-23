@@ -6,9 +6,6 @@
 #ifndef __dj_include_go32_h_
 #define __dj_include_go32_h_
 
-#include <stdint.h>
-#define ULONG uint32_t
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -34,17 +31,17 @@ __DJ_size_t
 #endif
 
 typedef struct {
-  ULONG  size_of_this_structure_in_bytes;
-  ULONG  linear_address_of_primary_screen;
-  ULONG  linear_address_of_secondary_screen;
-  ULONG  linear_address_of_transfer_buffer;
-  ULONG  size_of_transfer_buffer; /* >= 4k */
-  ULONG  pid;
+  ULONG32  size_of_this_structure_in_bytes;
+  ULONG32  linear_address_of_primary_screen;
+  ULONG32  linear_address_of_secondary_screen;
+  ULONG32  linear_address_of_transfer_buffer;
+  ULONG32  size_of_transfer_buffer; /* >= 4k */
+  ULONG32  pid;
   unsigned char  master_interrupt_controller_base;
   unsigned char  slave_interrupt_controller_base;
   unsigned short selector_for_linear_memory;
-  ULONG  linear_address_of_stub_info_structure;
-  ULONG  linear_address_of_original_psp;
+  ULONG32  linear_address_of_stub_info_structure;
+  ULONG32  linear_address_of_original_psp;
   unsigned short run_mode;
   unsigned short run_mode_info;
 } __Go32_Info_Block;

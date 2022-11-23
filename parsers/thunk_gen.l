@@ -58,6 +58,7 @@
 "ssize_t"	{ return DWORD; }
 "uint32_t"	{ return UDWORD; }
 "ULONG"		{ return UDWORD; }
+"ULONG32"	{ return UDWORD; }
 "DWORD"		{ return DWORD; }
 "UDWORD"	{ return UDWORD; }
 "double"	{ return DOUBLE; }

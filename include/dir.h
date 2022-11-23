@@ -6,8 +6,7 @@
 #ifndef __dj_include_dir_h_
 #define __dj_include_dir_h_
 
-#include <stdint.h>
-#define ULONG uint32_t
+#include <sys/cdefs.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,17 +38,17 @@ struct ffblk {
   unsigned char  ff_attrib;
   unsigned short ff_ftime;
   unsigned short ff_fdate;
-  ULONG  ff_fsize;
+  ULONG32  ff_fsize;
   char ff_name[260];
 } __attribute__((packed));
 
 struct ffblklfn {
-  ULONG      fd_attrib;
+  ULONG32      fd_attrib;
   unsigned long long fd_ctime;
   unsigned long long fd_atime;
   unsigned long long fd_mtime;
-  ULONG      fd_sizehi;
-  ULONG      fd_size;
+  ULONG32      fd_sizehi;
+  ULONG32      fd_size;
   unsigned long long fd_reserved;
   char               fd_longname[260];
   char               fd_name[14];

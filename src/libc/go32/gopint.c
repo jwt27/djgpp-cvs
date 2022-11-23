@@ -86,11 +86,11 @@ static unsigned char wrapper_intchain[] = {
 /* 5F */ FILL, FILL,			/*     old_segment 		*/
 };
 
-ULONG _go32_interrupt_stack_size = 32256;
+ULONG32 _go32_interrupt_stack_size = 32256;
 
-int _go32_dpmi_lock_data( void *lockaddr, ULONG locksize )
+int _go32_dpmi_lock_data( void *lockaddr, ULONG32 locksize )
     {
-    ULONG baseaddr;
+    ULONG32 baseaddr;
     __dpmi_meminfo memregion;
 
     if( __dpmi_get_segment_base_address( _go32_my_ds(), &baseaddr) == -1 ) return( -1 );
@@ -105,9 +105,9 @@ int _go32_dpmi_lock_data( void *lockaddr, ULONG locksize )
     return( 0 );
     }
 
-int _go32_dpmi_lock_code( void *lockaddr, ULONG locksize )
+int _go32_dpmi_lock_code( void *lockaddr, ULONG32 locksize )
     {
-    ULONG baseaddr;
+    ULONG32 baseaddr;
     __dpmi_meminfo memregion;
 
     if( __dpmi_get_segment_base_address( _go32_my_cs(), &baseaddr) == -1 ) return( -1 );

@@ -89,7 +89,7 @@ static unsigned char wrapper_iret[] = {
          0xcf					/* iret                    */
 };
 
-ULONG _go32_rmcb_stack_size = 32256;
+ULONG32 _go32_rmcb_stack_size = 32256;
 
 static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
   __dpmi_regs *regs, unsigned char *stack, unsigned long stack_length)

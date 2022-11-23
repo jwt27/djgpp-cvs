@@ -12,6 +12,14 @@
 */DEFINE(x, (*__##x))/*
 */
 
+#ifdef  _LP64			/* Note: win64 is LLP64 */
+# define LONG32  int
+# define ULONG32 unsigned int
+#else
+# define LONG32  long
+# define ULONG32 unsigned long
+#endif
+
 #undef __P
 #if defined(__STDC__) || defined(__cplusplus)
 #define __P(p) p

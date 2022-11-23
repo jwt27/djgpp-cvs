@@ -3,7 +3,7 @@
 #include <string.h>
 #include <dpmi.h>
 
-ULONG _go32_dpmi_remaining_physical_memory(void)
+ULONG32 _go32_dpmi_remaining_physical_memory(void)
 {
   union a_union
   {
@@ -17,7 +17,7 @@ ULONG _go32_dpmi_remaining_physical_memory(void)
   return info.go32info.available_memory;
 }
 
-ULONG _go32_dpmi_remaining_virtual_memory(void)
+ULONG32 _go32_dpmi_remaining_virtual_memory(void)
 {
   union a_union
   {

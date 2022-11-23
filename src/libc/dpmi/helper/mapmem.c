@@ -12,7 +12,7 @@
  * but it shouldn't get called all that often.
  */
 int
-__djgpp_map_physical_memory (void *_our_addr, ULONG _num_bytes,
+__djgpp_map_physical_memory (void *_our_addr, ULONG32 _num_bytes,
 			     uint64_t _phys_addr)
 {
   unsigned long p, end;
