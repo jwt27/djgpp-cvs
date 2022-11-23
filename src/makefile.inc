@@ -87,7 +87,7 @@ MISC = $(TOP)/../misc.exe
 
 %.o : %.c
 	$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
-	$(XGCC) -c $(EXTRA_CFLAGS) $<
+	$(XGCC) -E -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 %.o : %.cc
 	$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<

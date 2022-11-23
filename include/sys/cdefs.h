@@ -5,6 +5,13 @@
 #ifndef __dj_include_sys_cdefs_h_
 #define __dj_include_sys_cdefs_h_
 
+#define _h #
+#define _f(x) x
+#define DEFINE(x, y) _f(_h)define x y
+#define ASM(x) *__##x;/*
+*/DEFINE(x, (*__##x))/*
+*/
+
 #undef __P
 #if defined(__STDC__) || defined(__cplusplus)
 #define __P(p) p

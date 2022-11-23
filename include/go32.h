@@ -26,6 +26,7 @@ extern "C" {
 
 #include <sys/version.h>
 #include <sys/djtypes.h>
+#include <sys/cdefs.h>
 
 #ifndef _SIZE_T
 __DJ_size_t
@@ -48,7 +49,7 @@ typedef struct {
   unsigned short run_mode_info;
 } __Go32_Info_Block;
 
-extern __Go32_Info_Block _go32_info_block;
+extern __Go32_Info_Block ASM(_go32_info_block);
 
 #define _GO32_RUN_MODE_UNDEF	0
 #define _GO32_RUN_MODE_RAW	1
