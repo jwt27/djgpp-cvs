@@ -101,7 +101,7 @@ stubinfo_argv0:				# char [16]
 stubinfo_dpmi_server:			# char [16]
 	.ascii	"CWSDPMI.EXE\0\0\0\0\0"	# used by stub to load DPMI server if no DPMI already present
 
-	.align	4
+	.balign	4
 stubinfo_end:
 
 #-----------------------------------------------------------------------------
@@ -844,7 +844,7 @@ msg_no_dpmi_memory:
 
 last_generated_byte:
 
-	.align	512			# Align ourselves to a sector
+	.balign	512			# Align ourselves to a sector
 					#  boundary for startup speed.
 	.bss				# data after this isn't in file.
 
@@ -920,7 +920,7 @@ dr_ss  = 0x30
 
 #-----------------------------------------------------------------------------
 
-	.align	16			# so that stack ends on para boundary
+	.balign	16			# so that stack ends on para boundary
 	.fill	128,2
 #	.stack
 	.text
@@ -968,7 +968,7 @@ old_umb:
 dos_major:
 	.byte	0
 
-	.align	16			# Align ourselves to a paragraph
+	.balign	16			# Align ourselves to a paragraph
 end_of_memory:				# resize is done early so must keep all
 
 #-----------------------------------------------------------------------------
