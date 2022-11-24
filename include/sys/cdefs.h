@@ -5,13 +5,6 @@
 #ifndef __dj_include_sys_cdefs_h_
 #define __dj_include_sys_cdefs_h_
 
-#define _h #
-#define _f(x) x
-#define DEFINE(x, y) _f(_h)define x y
-#define ASM(x) *__##x;/*
-*/DEFINE(x, (*__##x))/*
-*/
-
 #ifdef  _LP64			/* Note: win64 is LLP64 */
 # define LONG32  int
 # define ULONG32 unsigned int

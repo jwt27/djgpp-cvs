@@ -5,8 +5,9 @@ PD = $(TOP)/../../parsers
 TG = $(PD)/thunk_gen
 MP = $(PD)/mkproto.sh
 GT = $(PD)/gen_thunks.sh
+GA = $(PD)/gen_asms.sh
 
-all ::
+all :: plt.inc plt_asms.inc
 	../makemake.exe
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
@@ -26,9 +27,12 @@ endif
 $(LIB)/lib$(LIBNAME).a : $(LIB)/lib$(LIBNAME).elf.a
 	$(OBJCOPY) -O pe-i386 $< $@
 
-$(LIB)/lib$(LIBNAME).elf.a : makefile.rfo
+thunk_syms.o: thunk_syms.c asm_incs.h
+	$(XGCC) -m32 -g0 -c $< $(EXTRA_CFLAGS) -o $@
+
+$(LIB)/lib$(LIBNAME).elf.a : makefile.rfo thunk_syms.o
 	@-$(MISC) rm $@
-	$(CROSS_AR) q $@ @makefile.rfo
+	$(CROSS_AR) q $@ @$^
 	$(CROSS_AR) s $@
 
 $(TG):
@@ -36,6 +40,12 @@ $(TG):
 
 crt0/_crt0.o:
 	$(MAKE) -C crt0 _crt0.o
+
+asm_incs.h:
+	$(GA) 0 $(TOP)/../../include >$@
+
+plt_asms.inc:
+	$(GA) 1 $(TOP)/../../include >$@
 
 thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
     $(LIB)/lib$(LIBNAME).elf.a crt0/_crt0.o $(TG)

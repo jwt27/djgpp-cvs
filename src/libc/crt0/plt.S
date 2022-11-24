@@ -15,7 +15,13 @@ lib_nm: .ascii "libdj64.so"
     lcalll *__plt_call
 .endm
 
+.macro asmsym nm
+\nm\()_ptr:
+    .long \nm
+.endm
+
 #include "../plt.inc"
+#include "../plt_asms.inc"
 
 .global plt_init
 plt_init:

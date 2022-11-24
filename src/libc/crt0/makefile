@@ -31,7 +31,7 @@ sbrk16.ah : sbrk16.asm
 _crt0.o : crt0.S exit16.ah sbrk16.ah
 	$(XGCC) -MMD -m32 -c -o $@ $<
 
-crt0.o : crt0.S plt.S ../plt.inc
+crt0.o : crt0.S plt.S ../plt.inc ../plt_asms.inc
 	$(XGCC) -MMD -m32 -DWITH_PLT -c -o $@ $<
 	$(STRIP) --strip-debug $@
 
