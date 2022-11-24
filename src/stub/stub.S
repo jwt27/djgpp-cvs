@@ -73,7 +73,7 @@
 	.org	0			# just in case
 stubinfo:
 stubinfo_magic:				# char [16]
-	.byte	"go32stub, v 2.05"	# version may change, [0..7] won't
+	.ascii	"go32stub, v 2.05"	# version may change, [0..7] won't
 stubinfo_size:				# unsigned long
 	.long	stubinfo_end		# bytes in structure
 stubinfo_minstack:			# unsigned long
@@ -107,7 +107,7 @@ stubinfo_end:
 #-----------------------------------------------------------------------------
 #  First, set up our memory and stack environment
 
-#	.start				# execution begins here
+	.text				# execution begins here
 	push	cs
 	pop	ds
 	mov	[stubinfo_ds_segment], ds
@@ -817,26 +817,27 @@ restore_umb:
 
 #-----------------------------------------------------------------------------
 #  Stored Data
+	.data
 err_string:
-	.byte	"Load error: $"
+	.ascii	"Load error: $"
 msg_no_progfile:
-	.byte	": can't open$"
+	.ascii	": can't open$"
 msg_not_exe:
-	.byte	": not EXE$"
+	.ascii	": not EXE$"
 msg_not_coff:
-	.byte	": not COFF (Check for viruses)$"
+	.ascii	": not COFF (Check for viruses)$"
 msg_no_dpmi:
-	.byte	"no DPMI - Get csdpmi*b.zip$"
+	.ascii	"no DPMI - Get csdpmi*b.zip$"
 msg_no_dos_memory:
-	.byte	"no DOS memory$"
+	.ascii	"no DOS memory$"
 msg_bad_dos:
-	.byte	"need DOS 3$"
+	.ascii	"need DOS 3$"
 msg_error_in_modesw:
-	.byte	"can't switch mode$"
+	.ascii	"can't switch mode$"
 msg_no_selectors:
-	.byte	"no DPMI selectors$"
+	.ascii	"no DPMI selectors$"
 msg_no_dpmi_memory:
-	.byte	"no DPMI memory$"
+	.ascii	"no DPMI memory$"
 
 #-----------------------------------------------------------------------------
 #  Unstored Data, available during and after mode switch
@@ -922,6 +923,7 @@ dr_ss  = 0x30
 	.align	16			# so that stack ends on para boundary
 	.fill	128,2
 #	.stack
+	.text
 
 #-----------------------------------------------------------------------------
 # At one time real mode only data.  Header stuff now used during image load.
