@@ -52,6 +52,7 @@ thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h
 
 $(LIB)/libdj64.so : $(OBJS) makefile.rf thunk_calls.h thunk_asms.h thunks.o
 	$(CROSS_GCC) -shared -Wl,-Bsymbolic -o $@ @makefile.rf thunks.o
+	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
 newlib:
 	$(MISC) rm $(LIB)/lib$(LIBNAME).a
