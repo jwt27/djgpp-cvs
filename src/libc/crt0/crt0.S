@@ -94,6 +94,7 @@ exit16_first_byte:
 #include "exit16.ah"
 exit16_last_byte:
 
+#if 0
 hook_387_emulator:
 	.long	___emu387_load_hook
 
@@ -102,7 +103,7 @@ hook_387_emulator:
 
 	/* this is for when main comes from a library */
 	.long	_main
-
+#endif
 	.text
 
 	.globl	start
