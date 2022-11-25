@@ -1,6 +1,6 @@
 gen_incs() {
-    grep -R " ASM(" "$1" | grep EXTERN | cut -d ":" -f 1 | xargs basename | \
-	sed -E 's/(.+)/#include "\1"/'
+    grep -R " ASM(" "$1" | grep EXTERN | cut -d ":" -f 1 | \
+	xargs -L 1 basename | sed -E 's/(.+)/#include "\1"/'
 }
 
 gen_asms() {
