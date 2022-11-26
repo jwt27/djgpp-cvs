@@ -8,6 +8,13 @@
 /* the following are needed when cross compiling hostbin exes */
 #ifndef _DJ_DEFINED_NATIVE_TYPES
 #define _DJ_DEFINED_NATIVE_TYPES
+#ifdef  _LP64			/* Note: win64 is LLP64 */
+# define LONG32  int
+# define ULONG32 unsigned int
+#else
+# define LONG32  long
+# define ULONG32 unsigned long
+#endif
 /* make sure it is 32 bits */
 typedef int _DJCHK_LONG32[(sizeof(LONG32) == 4)*3 - 1];
 #endif /* _DEFINED_NATIVE_TYPES */
