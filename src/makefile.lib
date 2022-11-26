@@ -7,7 +7,7 @@ MP = $(PD)/mkproto.sh
 GT = $(PD)/gen_thunks.sh
 GA = $(PD)/gen_asms.sh
 
-all :: plt.inc plt_asms.inc
+all ::
 	../makemake.exe
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
@@ -24,13 +24,20 @@ ifneq ($(wildcard makefile.oio),)
 include makefile.oio
 endif
 
-$(LIB)/lib$(LIBNAME).a : $(LIB)/lib$(LIBNAME).elf.a
-	$(OBJCOPY) -O pe-i386 $< $@
-
 thunk_syms.o: thunk_syms.c asm_incs.h
-	$(XGCC) -m32 -g0 -c $< $(EXTRA_CFLAGS) -o $@
+	$(XGCC) -m32 -g0 -c $< $(EXTRA_CFLAGS) -o _$@
+	$(OBJCOPY) -O pe-i386 _$@ $@
+	rm _$@
 
-$(LIB)/lib$(LIBNAME).elf.a : makefile.rfo thunk_syms.o
+makefile.rfo2 : makefile.rfo
+	sed -E 's/\.o/\.O/g' $< >$@
+
+$(LIB)/lib$(LIBNAME).a : makefile.rfo2 thunk_syms.o
+	@-$(MISC) rm $@
+	$(CROSS_AR) q $@ @$^
+	$(CROSS_AR) s $@
+
+$(LIB)/lib$(LIBNAME).elf.a : makefile.rfo
 	@-$(MISC) rm $@
 	$(CROSS_AR) q $@ @$^
 	$(CROSS_AR) s $@
@@ -61,9 +68,9 @@ thunk_calls.h: thunk_calls.tmp
 thunk_asms.h: thunk_asms.tmp
 	$(GT) $(TG) $< $(PD) >$@
 
-thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
+thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h asm_incs.h
 
-$(LIB)/libdj64.so : $(OBJS) makefile.rf thunk_calls.h thunk_asms.h thunks.o
+$(LIB)/libdj64.so : makefile.rf thunk_calls.h thunk_asms.h thunks.o
 	$(CROSS_GCC) -shared -Wl,-Bsymbolic -o $@ @makefile.rf thunks.o
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
@@ -75,4 +82,4 @@ newlib:
 clean ::
 	$(TOP)/../makemake.exe
 	$(MAKE) -f makefile.sub SUBARGS=clean
-	@-$(MISC) rm makefile.oi makefile.rf makefile.rfo
+	@-$(MISC) rm makefile.oi makefile.rf makefile.rfo makefile.rfo2

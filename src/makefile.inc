@@ -8,7 +8,7 @@ include $(TOP)/../makefile.def
 
 MAKEFLAGS := --no-print-directory
 
-.SUFFIXES: .o .i .c .cc .s
+.SUFFIXES: .o .i .c .cc .s .O
 
 # Set $(GCC{L}_OPT) here so they are defined before first use
 #
@@ -66,6 +66,7 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 #
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
+XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include
 XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
 else
@@ -97,6 +98,12 @@ MISC = $(TOP)/../misc.exe
 %.o : %.s
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	$(XGCC) -m32 -x assembler-with-cpp -o $@ -c $<
+%.O : %.S
+	$(MISC) echo - $(CROSS_XGCC) '...' -c $<
+	$(XASGCC) $< | $(CROSS_AS) -o $@ -
+%.O : %.s
+	$(MISC) echo - $(CROSS_XGCC) '...' -c $<
+	$(XASGCC) -x assembler-with-cpp $< | $(CROSS_AS) -o $@ -
 
 %.i : %.c
 	$(XGCC) -c $< -E > $@
@@ -140,6 +147,7 @@ EXE = $(HOSTBIN)/stubify.exe $@
 
 OBJS := $(addsuffix .o, $(basename $(SRC)))
 AS_OBJS := $(addsuffix .o, $(basename $(AS_SRC)))
+AS_OBJS2 := $(addsuffix .O, $(basename $(AS_SRC)))
 EXES := $(addprefix $(BIN)/,$(addsuffix .exe, $(basename $(SRC))))
 
 NOP = @$(MISC)
@@ -159,7 +167,8 @@ $(BIN)/%.exe : $C %.o $L
 $(HOSTBIN)/%.exe : %
 	$(GCC) -o $@ $^
 
-all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS)
+all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS) \
+    $(AS_OBJS2)
 	$(NOP)
 
 ifneq ($(MAKEFILE_LIB),1)
@@ -173,7 +182,7 @@ makefile.oho: makefile
 endif
 
 clean ::
-	-$(MISC) rm *.o *.d *.i makefile.oh makefile.oho
+	-$(MISC) rm *.o *.O *.d *.i makefile.oh makefile.oho
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)
