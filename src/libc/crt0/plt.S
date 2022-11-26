@@ -1,8 +1,8 @@
 __plt_open: .quad 0
 __plt_call: .quad 0
 __plt_handle: .long 0
-ext_nm: .ascii "DJ64"
-lib_nm: .ascii "libdj64.so"
+ext_nm: .asciz "DJ64"
+lib_nm: .asciz "libdj64.so"
 
 .macro asmcfunc nm,num
     .global \nm
@@ -29,6 +29,8 @@ plt_init:
     movl $ext_nm, %esi
     int $0x2f
     jc 2f
+    orb %al, %al
+    jnz 2f
     movl %es, %eax
     movl %eax, __plt_open + 4
     movl %edi, __plt_open
