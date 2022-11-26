@@ -10,14 +10,7 @@ include ../makefile.inc
 # Many .c source files would be killed by -Werror -Wall, so let's relax a bit:
 XGCC = $(XLGCC)
 
-all :: native \
-	$(BIN)/go32-v2.exe \
-	$(BIN)/stubedit.exe \
-	$(BIN)/stubify.exe \
-	$(BIN)/coff2exe.exe \
-	$(BIN)/exe2coff.exe \
-	$(INC)/stubinfo.h \
-	$E
+all :: native
 
 native :: \
 	$(HOSTBIN)/stubedit.exe \

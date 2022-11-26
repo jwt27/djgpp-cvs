@@ -24,6 +24,7 @@ extern "C" {
 #include <sys/version.h>
 #include <sys/djtypes.h>
 #include <sys/asmobj.h>
+#include <sys/cdefs.h>
 
 #ifndef _SIZE_T
 __DJ_size_t
