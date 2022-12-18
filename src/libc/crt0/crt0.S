@@ -323,8 +323,8 @@ use_stubinfo_stack_size:
 	movl	%eax, ___djgpp_stack_limit	/* Bottom of stack */
 	addl	__stklen, %eax
 	movw	%ds, %dx		/* set stack */
-	movw	%dx, %ss
 	andb	$0xf8, %al		/* align to 8-byte boundary */
+	movw	%dx, %ss
 	movl	%eax, %esp
 	movl	%eax, ___djgpp_stack_top	/* Top of stack */
 	subl	___djgpp_stack_limit, %eax
