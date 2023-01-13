@@ -4,6 +4,8 @@
 #ifndef __dj_include_sys_nearptr_h_
 #define __dj_include_sys_nearptr_h_
 
+#include "sys/asmobj.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,7 +30,12 @@ void __djgpp_nearptr_disable(void);	/* Enables protection */
 extern int __djgpp_selector_limit;	/* Limit on CS and on DS if prot */
 extern int __djgpp_base_address;	/* Used in calculation below */
 
+#ifdef __LP64__
+extern char *__djgpp_mem_base;
+#define __djgpp_conventional_base ((unsigned long)__djgpp_mem_base)
+#else
 #define __djgpp_conventional_base (-__djgpp_base_address)
+#endif
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

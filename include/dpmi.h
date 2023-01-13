@@ -356,8 +356,14 @@ int __djgpp_map_physical_memory(void *our_addr, ULONG32 num_bytes,
 }
 #endif
 
+#ifdef __LP64__
+extern char *__djgpp_mem_base;
+extern int __djgpp_base_address;
+#define DATA_PTR(l) (__djgpp_mem_base + __djgpp_base_address + (l))
+#else
+#define DATA_PTR(l) ((char *)(l))
+#endif
 /* for now just type-cast */
-#define DATA_PTR(l) ((char *)(uintptr_t)(l))
 #define PTR_DATA(p) ((uintptr_t)(p))
 
 #endif /* !__dj_include_dpmi_h_ */
