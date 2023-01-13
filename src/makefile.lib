@@ -13,6 +13,8 @@ all ::
 	../makemake.exe -2
 	$(MAKE) $(LIB)/libdj64.so
 	$(MAKE) $(LIB)/libc.a
+	$(MAKE) plt.inc plt_asms.inc
+	$(MAKE) -C crt0 final
 
 MAKEFILE_LIB = 1
 include $(TOP)/../makefile.inc

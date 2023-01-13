@@ -17,9 +17,6 @@ SRC += memhandl.c
 SRC += rfinfo.c
 SRC += dfinfo.c
 
-EXTRA_OBJS += $(LIB)/crt0.o
-EXTRA_OBJS += $(LIB)/gcrt0.o
-
 include $(TOP)/../makefile.inc
 
 exit16.ah : exit16.asm
@@ -39,6 +36,8 @@ $(LIB)/gcrt0.o : gcrt0.S crt0.S exit16.ah sbrk16.ah
 	$(MISC) cp gcrt0.o $@
 	$(MISC) rm gcrt0.o
 	sed 's@gcrt0.o@$(LIB)/gcrt0.o@' gcrt0.d > gcrt02.d
+
+final : $(LIB)/crt0.o $(LIB)/gcrt0.o
 
 mcount.o : mcount.c
 	$(XNOPGGCC) -c $<
