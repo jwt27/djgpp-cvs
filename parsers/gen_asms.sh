@@ -1,15 +1,16 @@
 gen_incs() {
-    grep -R " ASM(" "$1" | grep EXTERN | cut -d ":" -f 1 | \
-	xargs -L 1 basename | sed -E 's/(.+)/#include "\1"/'
+    cd "$1" && grep -R " ASM(" . | grep EXTERN | cut -d ":" -f 1 | uniq | \
+	sed -E 's/\.\/(.+)/#include "\1"/'
 }
 
 gen_asms() {
-    grep -R " ASM(" . "$1" | grep EXTERN | sed -E 's/.+\((.+)\);/asmsym _\1/'
+    grep -R " ASM(" . "$1" | grep EXTERN | \
+	sed -E 's/.+\((.+)\);.*/asmsym _\1/' | sort | uniq
 }
 
 gen_asyms() {
     grep -R " ASM(" . "$1" | grep EXTERN | \
-	sed -E 's/.+\((.+)\);/\(void \*\*\)\&__\1,/'
+	sed -E 's/.+\((.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq
 }
 
 case "$1" in
