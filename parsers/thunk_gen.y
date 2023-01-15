@@ -231,6 +231,11 @@ static const char *get_flags(void)
 
 static const int align = 4;
 #define AL(x) (((x) + (align - 1)) & ~(align - 1))
+static const char *al_s_type = (align == 2 ? "WORD" : "DWORD");
+static const char *al_u_type = (align == 2 ? "UWORD" : "UDWORD");
+#define ATYPE3(s) \
+    if (al_arg_size > arg_size) \
+	strcat(atype3, al_##s##_type)
 
 %}
 
@@ -414,20 +419,20 @@ atype:		  VOID		{
 				  arg_size = 1;
 				  cvtype = CVTYPE_CHAR;
 				  strcat(atype, "char");
-				  strcat(atype3, "DWORD");
 				  al_arg_size = AL(arg_size);
+				  ATYPE3(s);
 				}
 		| WORD		{
 				  arg_size = 2;
 				  strcat(atype, "WORD");
-				  strcat(atype3, "DWORD");
 				  al_arg_size = AL(arg_size);
+				  ATYPE3(s);
 				}
 		| UWORD		{
 				  arg_size = 2;
 				  strcat(atype, "UWORD");
-				  strcat(atype3, "UDWORD");
 				  al_arg_size = AL(arg_size);
+				  ATYPE3(u);
 				}
 		| DWORD		{
 				  arg_size = 4;
@@ -447,14 +452,14 @@ atype:		  VOID		{
 		| BYTE		{
 				  arg_size = 1;
 				  strcat(atype, "BYTE");
-				  strcat(atype3, "DWORD");
 				  al_arg_size = AL(arg_size);
+				  ATYPE3(s);
 				}
 		| UBYTE		{
 				  arg_size = 1;
 				  strcat(atype, "UBYTE");
-				  strcat(atype3, "UDWORD");
 				  al_arg_size = AL(arg_size);
+				  ATYPE3(u);
 				}
 		| VOID LB ASTER cname RB LB VOID RB {
 				  arg_size = 4;
