@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-
-#define PTR_SIZE 4
+#include "tg_params.h"
 
 #define YYDEBUG 1
 
@@ -42,7 +41,7 @@ static char atype2[256];
 static char atype3[256];
 static char rtbuf[256];
 /* conversion types for flat pointers */
-enum { CVTYPE_OTHER, CVTYPE_VOID, CVTYPE_CHAR, CVTYPE_ARR };
+enum { CVTYPE_OTHER, CVTYPE_VOID, CVTYPE_CHAR, CVTYPE_ARR, CVTYPE_CHAR_ARR };
 static int cvtype;
 
 
@@ -109,6 +108,16 @@ static void do_start_arg(int anum)
 			strcat(abuf, "_CNV_PTR_CCHAR, _L_NONE");
 		    else
 			strcat(abuf, "_CNV_PTR_CHAR, _L_UNIMP");
+		    break;
+		case CVTYPE_CHAR_ARR:
+		    if (is_const) {
+			if (arr_sz == -1)  // main() template
+			    strcat(abuf, "_CNV_PTR_CCHAR_ARR, _L_REF(1)");
+			else
+			    sprintf(abuf + strlen(abuf), "_CNV_PTR_CCHAR_ARR, "
+				    "_L_IMM(%i, %i)", arg_num + 1, arr_sz);
+		    } else
+			strcat(abuf, "_CNV_PTR_CHAR_ARR, _L_UNIMP");
 		    break;
 		case CVTYPE_ARR:
 		    sprintf(abuf + strlen(abuf), "_CNV_PTR_ARR, _L_IMM(%i, %i)",
@@ -229,7 +238,6 @@ static const char *get_flags(void)
     return buf;
 }
 
-static const int align = 4;
 #define AL(x) (((x) + (align - 1)) & ~(align - 1))
 static const char *al_s_type = (align == 2 ? "WORD" : "DWORD");
 static const char *al_u_type = (align == 2 ? "UWORD" : "UDWORD");
@@ -350,7 +358,8 @@ quals:		  FAR quals	{ is_far = 1; }
 		|
 ;
 
-arr:		  LBR num RBR	{ is_ptr = 1; cvtype = CVTYPE_ARR; arr_sz = $2; }
+arr:		  LBR num RBR	{ cvtype == CVTYPE_CHAR ? cvtype = CVTYPE_CHAR_ARR : CVTYPE_ARR; arr_sz = $2; }
+		| LBR RBR	{ cvtype == CVTYPE_CHAR ? cvtype = CVTYPE_CHAR_ARR : CVTYPE_ARR; arr_sz = -1; }
 ;
 
 fatr:		  ASMCFUNC

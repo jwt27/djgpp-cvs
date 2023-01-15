@@ -8,7 +8,7 @@ thunk_gen: lex.yy.o thunk_gen.tab.o
 lex.yy.o: lex.yy.c thunk_gen.tab.h
 
 %.o: %.c
-	$(CC_FOR_BUILD) $(CFLAGS) -c -Wno-unused-function -o $@ $<
+	$(CC_FOR_BUILD) $(CFLAGS) -I $(srcdir) -c -Wno-unused-function -o $@ $<
 
 # not sure why GNU make does not set BISON
 BISON ?= bison
