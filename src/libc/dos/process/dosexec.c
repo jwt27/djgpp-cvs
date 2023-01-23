@@ -173,7 +173,7 @@ size_t __cmdline_str_len = sizeof(__cmdline_str) - 1;
 static int
 direct_exec_tail_1(const char *program, const char *args,
                    char * const envp[], const char *proxy, int lfn,
-                   const char *cmdline_var)
+                   const char *cmdline_var, unsigned char flags)
 {
   __dpmi_regs r;
   unsigned long program_la;
@@ -428,7 +428,7 @@ direct_exec_tail_1(const char *program, const char *args,
   parm.fcb2_off = fcb2_la & 15;
   dosmemput(&parm, sizeof(parm), parm_la);
 
-  r.x.ax = 0x4B00;
+  r.x.ax = 0x4B00 | flags;
   r.x.ds = program_la / 16;
   r.x.dx = program_la & 15;
   r.x.es = parm_la / 16;
@@ -470,7 +470,7 @@ direct_exec_tail_1(const char *program, const char *args,
 
 static int direct_exec_tail (const char *program, const char *args,
 		 char * const envp[], const char *proxy, int lfn,
-		 const char *cmdline_var)
+		 const char *cmdline_var, unsigned char flags)
 {
   int i, ret;
   int sel1, sel2;
@@ -571,7 +571,8 @@ static int direct_exec_tail (const char *program, const char *args,
     }
   }
 
-  ret = direct_exec_tail_1(program, args, envp, proxy, lfn, cmdline_var);
+  ret = direct_exec_tail_1(program, args, envp, proxy, lfn, cmdline_var,
+      flags);
 
   if (workaround_descriptor_leaks)   /* Free the unused map */
   {
@@ -622,7 +623,17 @@ _dos_exec(const char *program, const char *args, char * const envp[],
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
-  return direct_exec_tail(program, args, envp, 0, 2, cmdline_var);
+  return direct_exec_tail(program, args, envp, 0, 2, cmdline_var, 0);
+}
+
+int
+_dos_exec5(const char *program, const char *args, char * const envp[],
+	  const char *cmdline_var, unsigned char flags)
+{
+  tbuf_beg = tbuf_ptr = __tb;
+  tbuf_len = __tb_size;
+  tbuf_end = tbuf_beg + tbuf_len - 1;
+  return direct_exec_tail(program, args, envp, 0, 2, cmdline_var, flags);
 }
 
 static char GO32_V2_STRING[] = "go32-v2.exe";
@@ -823,7 +834,7 @@ static int direct_exec(const char *program, char **argv, char **envp)
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
-  return direct_exec_tail(program, args, envp, 0, 2, 0);
+  return direct_exec_tail(program, args, envp, 0, 2, 0, 0);
 }
 
 static int direct_pe_exec(const char *program, char **argv, char **envp)
@@ -944,7 +955,7 @@ static int direct_pe_exec(const char *program, char **argv, char **envp)
      contents of the command line into the CMDLINE variable.
      direct_exec_tail will take care of the final details. */
   return direct_exec_tail(program, args, envp, 0, 2,
-			  argp - args > CMDLEN_LIMIT ? varp : 0);
+			  argp - args > CMDLEN_LIMIT ? varp : 0, 0);
 }
 
 static int go32_exec(const char *program, char **argv, char **envp)
@@ -1134,7 +1145,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
     pcmd = proxy_cmdline;
   }
 
-  return direct_exec_tail(rpath, pcmd, envp, pproxy, lfn, 0);
+  return direct_exec_tail(rpath, pcmd, envp, pproxy, lfn, 0, 0);
 }
 
 int
@@ -1282,7 +1293,7 @@ __dosexec_command_exec(const char *program, char **argv, char **envp)
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = __tb_size;
   tbuf_end = tbuf_ptr + tbuf_len - 1;
-  return direct_exec_tail(comspec, cmdline, envp, 0, 2, cmdline_var);
+  return direct_exec_tail(comspec, cmdline, envp, 0, 2, cmdline_var, 0);
 }
 
 static int script_exec(const char *program, char **argv, char **envp)
