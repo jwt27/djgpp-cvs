@@ -60,15 +60,12 @@ Usage: @kbd{dxe3gen [-o output.dxe] [options] [object-files] [ld-options]}
 dxe3gen responds to the following environment variables:
 
 DXE_CC: C compiler name. If not set, defaults to gcc for native build
-environments, and i586-pc-msdosdjgpp-gcc for cross-build environmlents.
-DXE_AS: Assembler name. If not set, defaults to as for native build
-environments, and i586-pc-msdosdjgpp-as for cross-build environmlents.
+environments, and i586-pc-msdosdjgpp-gcc for cross-build environments.
+This is used to invoke the linker and assembler.
 DXE_AR: Archiver name. If not set, defaults to ar for native build
-environments, and i586-pc-msdosdjgpp-ar for cross-build environmlents.
-DXE_LD: Linker name. If not set, defaults to ld for native build
-environments, and i586-pc-msdosdjgpp-ld for cross-build environmlents.
+environments, and i586-pc-msdosdjgpp-ar for cross-build environments.
 DXE_SC: Path to linker script name. If not set, defaults to dxe.ld.
-Passed internally to ld, like 'ld -T dxe.ld'
+Passed internally to the linker, like 'gcc -Wl,-T,dxe.ld'
 @end example
 
 @command{dxe3gen} is a utility which allows you to create files which contain
