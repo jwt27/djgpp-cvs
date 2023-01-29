@@ -61,12 +61,16 @@ dxe3gen responds to the following environment variables:
 
 DXE_CC: C compiler name. If not set, defaults to gcc for native build
 environments, and i586-pc-msdosdjgpp-gcc for cross-build environmlents.
+
 DXE_AS: Assembler name. If not set, defaults to as for native build
 environments, and i586-pc-msdosdjgpp-as for cross-build environmlents.
+
 DXE_AR: Archiver name. If not set, defaults to ar for native build
 environments, and i586-pc-msdosdjgpp-ar for cross-build environmlents.
+
 DXE_LD: Linker name. If not set, defaults to ld for native build
 environments, and i586-pc-msdosdjgpp-ld for cross-build environmlents.
+
 DXE_SC: Path to linker script name. If not set, defaults to dxe.ld.
 Passed internally to ld, like 'ld -T dxe.ld'
 @end example
@@ -214,7 +218,17 @@ symbols are nothing but wrappers to @code{dlopen}.  The worst case is when
 the module and so on.  As a workaround, keep such names unexported by
 filtering exported names through @kbd{-E} option.
 
+@item
+Linking to gcc-provided libraries like @file{libgcc} might need special care,
+because the linker has no idea where @file{libgcc.a} actually is. A solution
+to that when using a makefile is, retrieving the libgcc directory and
+using it with  @option{-L} before  @option{-lgcc}:
 @end itemize
+@example
+LIBGCCDIR = $(dir $(shell $(CC) -print-libgcc-file-name))
+my.dxe:
+	dxe3gen -o my.dxe -E _sym -U $(OBJS) -L$(LIBGCCDIR) -lgcc
+@end example
 
 -*- The best way is to leave the symbols unresolved and resolve them at
 runtime. To tell @command{dxe3gen} to not fail on unresolved symbols, add the
