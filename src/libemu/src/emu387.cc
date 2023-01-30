@@ -2092,7 +2092,7 @@ static void fsincos()
   st() = rv;
 
   top--;
-  register int qq = q & 3;
+  int qq = q & 3;
   if ((qq == 1) || (qq == 2))
     rvc.sign ^= SIGN_POS ^ SIGN_NEG;
   st() = rvc;
@@ -2523,7 +2523,7 @@ static void fcos()
     rv = tmp;
   }
   setcc(0);
-  register int qq = q & 3;
+  int qq = q & 3;
   if ((qq == 1) || (qq == 2))
     rv.sign ^= SIGN_POS ^ SIGN_NEG;
   st() = rv;
