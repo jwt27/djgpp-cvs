@@ -5,7 +5,7 @@
 TOP=..
 
 SRC += k_standard.c
-SRC += k_rem_pio2.c
+#SRC += k_rem_pio2.c
 SRC += k_cos.c
 SRC += k_sin.c
 SRC += k_tan.c
@@ -90,7 +90,7 @@ SRC += s_infinity.c
 SRC += s_isinf.c
 SRC += s_nan.c
 SRC += s_signgam.c
-SRC += kf_rem_pio2.c
+#SRC += kf_rem_pio2.c
 SRC += kf_cos.c
 SRC += kf_sin.c
 SRC += kf_tan.c
