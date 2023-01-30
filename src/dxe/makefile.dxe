@@ -10,6 +10,7 @@ CROSS_LD    = $(CROSS_PREFIX)ld
 CROSS_STRIP = $(CROSS_PREFIX)strip
 
 CC = gcc
+HOST_CC = gcc
 
 all: dxe3gen dxegen dxe3res
 
@@ -41,7 +42,7 @@ dxe3res: dxe3res.c
 	$(CC) -O2 -Wall dxe3res.c -o $@
 
 bin2h.exe: ../utils/bin2h.c
-	$(CC) ../utils/bin2h.c -o $@
+	$(HOST_CC) ../utils/bin2h.c -o $@
 
 clean:
 	rm -f *.o *.h bin2h.exe dxegen dxe3gen dxe3res
