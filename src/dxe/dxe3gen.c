@@ -277,8 +277,12 @@ static struct
   char *implib;                 /* name of import library */
   char *dxefile;                /* the name of dxe file on command line */
   char *description;            /* a description of the module */
+  unsigned int num_names;       /* number of exported symbol names */
+  unsigned int max_names;       /* maximal number of exported symbol names */
+  char **export_names;          /* exported symbol names */
   unsigned int num_prefix;      /* number of exported prefixes */
   unsigned int max_prefix;      /* maximal number of exported prefixes */
+  BOOL nomissing;               /* error on missing exports */
   char **export_prefix;         /* exported symbol prefixes */
   unsigned int num_excl;        /* number of excluded prefixes */
   unsigned int max_excl;        /* maximal number of excluded prefixes */
@@ -304,6 +308,10 @@ static struct
   NULL,
   0,
   0,
+  FALSE,
+  NULL,
+  0,
+  0,
   NULL,
   0,
   0,
@@ -319,6 +327,8 @@ static char *dxe_ar; /* default: "ar" */
 static char *dxe_ld; /* default: "ld" */
 /* linker script */
 static char *dxe_sc; /* default: "dxe.ld" */
+/* exports file */
+static char *expfile;
 
 
 /* Desc: replaces backslash with slash in a path
@@ -422,6 +432,8 @@ static void display_help(void)
   printf("-X prefix\tExclude symbols that start with <prefix> (cumulative)\n");
   printf("-U\t\tAllow unresolved symbols in DXE file\n");
   printf("-V\t\tVerbose output (minimal output by default)\n");
+  printf("--exports file\tExport symbols from this file (mutually exclusive with -E/-X)\n");
+  printf("--nomissing\tError upon missing exports from the --exports file\n");
   printf("--show-dep\tShow dependencies for specified module\n");
   printf("--show-exp\tShow symbols exported by the DXE module\n");
   printf("--show-unres\tShow unresolved symbols in the DXE module\n");
@@ -465,6 +477,61 @@ static void process_env(void)
 }
 
 
+/* Desc: process the exports file pointed to by --exports option.
+ *
+ * In  : -
+ * Out : -
+ *
+ * Note: -
+ */
+static void process_exp_file(const char *name)
+{
+  FILE *f = fopen(name, "rb");
+  char *ptr;
+  long len;
+
+  if (!f)
+  {
+    fprintf(stderr, "Error: Couldn't open exports file %s.\n", name);
+    exit(1);
+  }
+
+  fseek(f, 0, SEEK_END);
+  len = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  expfile = malloc(len + 1);
+  fread(expfile, 1, len, f);
+  fclose(f);
+  expfile[len] = '\0';
+
+  ptr = expfile;
+  for (;;)
+  {
+    while (*ptr == '\r' || *ptr == '\n' || *ptr == ' ' || *ptr == '\t')
+      *ptr++ = '\0';
+
+    if (!*ptr) break;
+
+    if (*ptr == '#') /* comment */
+    {
+      while (*ptr && *ptr != '\r' && *ptr != '\n')
+        ++ptr;
+      continue;
+    }
+
+    if (opt.num_names >= opt.max_names)
+    {
+      opt.max_names += 16;
+      opt.export_names = (char **)realloc(opt.export_names, opt.max_names * sizeof(char *));
+    }
+    opt.export_names[opt.num_names++] = ptr++;
+
+    while (*ptr && *ptr != '\r' && *ptr != '\n' && *ptr != ' ' && *ptr != '\t')
+      ++ptr;
+  }
+}
+
+
 /* Desc: process command line args
  *
  * In  : no of arguments, argument list, ptr to store linker args
@@ -475,10 +542,22 @@ static void process_env(void)
 static void process_args(int argc, char *argv[], const char *new_argv[])
 {
   int i, new_argc = NUMBER_OF_LINKER_ARGS;
+  int use_exports = 0;
 
   if (!libdir)
   {
     fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
+    exit(1);
+  }
+
+  for (i = 1; i < argc; ++i)
+  {
+     if (!strcmp(argv[i], "--exports"))
+       ++use_exports;
+  }
+  if (use_exports > 1)
+  {
+    fprintf(stderr, "Error: multiple --exports arguments not allowed.\n");
     exit(1);
   }
 
@@ -512,6 +591,11 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
     {
       printf("Usage: %s output.dxe symbol input.o [input2.o ... -lgcc -lc]\n", progname);
       exit(-1);
+    }
+    if (use_exports)
+    {
+      fprintf(stderr, "Error: --exports not allowed in legacy mode.\n");
+      exit(1);
     }
 
     opt.max_prefix = 16;
@@ -552,8 +636,17 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
         opt.implib = argv[++i];
         opt.autoresolve = TRUE;
       }
+      else if (!strcmp(argv[i], "--exports"))
+      {
+        process_exp_file(argv[++i]);
+      }
+      else if (!strcmp(argv[i], "--nomissing"))
+      {
+        opt.nomissing = TRUE;
+      }
       else if (!strcmp(argv[i], "-E"))
       {
+        if (use_exports) goto bad_opt1;
         if (opt.num_prefix >= opt.max_prefix)
         {
           opt.max_prefix += 16;
@@ -563,6 +656,11 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
       }
       else if (!strcmp(argv[i], "-X"))
       {
+        if (use_exports)
+        { bad_opt1:
+          fprintf(stderr, "Error: --exports and -E / -X options are mutually exclusive.\n");
+          exit(1);
+        }
         if (opt.num_excl >= opt.max_excl)
         {
            opt.max_excl += 16;
@@ -1185,6 +1283,24 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
           continue;
       }
 
+      if (opt.num_names)
+      {
+        BOOL ok = FALSE;
+        for (j = 0; j < opt.num_names; j++)
+        {
+          if (!opt.export_names[j])
+            continue;
+          if (strcmp(opt.export_names[j], name) == 0)
+          {
+            ok = TRUE;
+            opt.export_names[j] = NULL;
+            break;
+          }
+        }
+        if (!ok)
+          continue;
+      }
+
       /* exported symbol */
       dh.n_exp_syms++;
 
@@ -1207,6 +1323,25 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
     }
   }
   DEBUG_PRINT_SYMBOL_TABLE_EPILOG();
+
+  if (opt.num_names && opt.num_names != dh.n_exp_syms)
+  {
+    FILE *out = stdout;
+    if (opt.nomissing)
+    {
+      errcount = opt.num_names - dh.n_exp_syms;
+      fprintf(stderr, "Error: %d symbols to be exported are missing:\n", errcount);
+      out = stderr;
+    }
+    if (opt.nomissing || opt.verbose)
+    {
+      for (j = 0; j < opt.num_names; j++)
+      {
+        if (opt.export_names[j])
+          fprintf(out, "missing export: `%s'\n", opt.export_names[j]);
+      }
+    }
+  }
 
   if (errcount)
   {
