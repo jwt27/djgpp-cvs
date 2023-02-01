@@ -170,14 +170,8 @@
 #ifndef DXE_CC
 #define DXE_CC  "gcc"
 #endif
-#ifndef DXE_AS
-#define DXE_AS  "as"
-#endif
 #ifndef DXE_AR
 #define DXE_AR  "ar"
-#endif
-#ifndef DXE_LD
-#define DXE_LD  "ld"
 #endif
 #ifndef DXE_SC
 #define DXE_SC  "dxe.ld"
@@ -193,7 +187,7 @@
 #include "../../include/sys/dxe.h"
 #include "../../include/coff.h"
 
-#define VERSION  "1.0.4"
+#define VERSION  "1.0.5"
 
 #define TEMP_BASE    "dxe_tmp"       /* 7 chars, 1 char suffix */
 #define TEMP_O_FILE  TEMP_BASE".o"
@@ -204,7 +198,7 @@
 #define IS_SLASH(path)          (((path) == '/') || ((path) == '\\'))
 #define IS_DIR_SEPARATOR(path)  (IS_SLASH(path) || ((path) == ':'))
 
-#define NUMBER_OF_LINKER_ARGS             10
+#define NUMBER_OF_LINKER_ARGS             7
 #define NUMBER_OF_ADDITIONAL_LOADED_LIBS  0
 
 #define IS_VALID_CIE(id)        ((id) == 0)
@@ -322,9 +316,7 @@ static struct
 static char *libdir;
 /* build tools */
 static char *dxe_cc; /* default: "gcc" */
-static char *dxe_as; /* default: "as" */
 static char *dxe_ar; /* default: "ar" */
-static char *dxe_ld; /* default: "ld" */
 /* linker script */
 static char *dxe_sc; /* default: "dxe.ld" */
 /* exports file */
@@ -363,6 +355,7 @@ static void exit_cleanup(void)
 {
   remove(TEMP_O_FILE);
   remove(TEMP_S_FILE);
+  remove(TEMP_BASE".exe"); /* produced by stubify */
 }
 
 
@@ -437,7 +430,7 @@ static void display_help(void)
   printf("--show-dep\tShow dependencies for specified module\n");
   printf("--show-exp\tShow symbols exported by the DXE module\n");
   printf("--show-unres\tShow unresolved symbols in the DXE module\n");
-  printf("[ld-options]\tAny other options are passed unchanged to ld\n\n");
+  printf("[ld-options]\tAny other options are passed via -Wl to the linker\n\n");
   printf("-1\t\tSwitch into legacy mode (disables all other options)\n\n");
   printf("You should provide appropriate environment at load-time for unresolved modules.\n");
   exit(-1);
@@ -457,9 +450,7 @@ static void process_env(void)
   const char *e;
 
   dxe_cc = (e = getenv("DXE_CC")) ? strdup(e) : strdup(DXE_CC);
-  dxe_as = (e = getenv("DXE_AS")) ? strdup(e) : strdup(DXE_AS);
   dxe_ar = (e = getenv("DXE_AR")) ? strdup(e) : strdup(DXE_AR);
-  dxe_ld = (e = getenv("DXE_LD")) ? strdup(e) : strdup(DXE_LD);
   dxe_sc = (e = getenv("DXE_SC")) ? strdup(e) : strdup(DXE_SC);
 
   if ((e = getenv("DXE_LD_LIBRARY_PATH")))
@@ -544,12 +535,6 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
   int i, new_argc = NUMBER_OF_LINKER_ARGS;
   int use_exports = 0;
 
-  if (!libdir)
-  {
-    fprintf(stderr, "Error: neither DXE_LD_LIBRARY_PATH nor DJDIR are set in environment\n");
-    exit(1);
-  }
-
   for (i = 1; i < argc; ++i)
   {
      if (!strcmp(argv[i], "--exports"))
@@ -561,16 +546,21 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
     exit(1);
   }
 
-  new_argv[0] = dxe_ld;
-  new_argv[1] = "-X";
-  new_argv[2] = "-S";
-  new_argv[3] = "-r";
-  new_argv[4] = "-o";
-  new_argv[5] = TEMP_O_FILE;
-  new_argv[6] = "-L";
-  new_argv[7] = libdir;
-  new_argv[8] = "-T";
-  new_argv[9] = dxe_sc;
+  new_argv[0] = dxe_cc;
+  new_argv[1] = "-nostdlib";
+  new_argv[2] = "-Wl,-X,-S,-r";
+  new_argv[3] = "-o";
+  new_argv[4] = TEMP_O_FILE;
+  new_argv[5] = "-T";
+  new_argv[6] = dxe_sc;
+
+  if (libdir)
+  {
+    /* For compatibility with version 1.0.4 and earlier, also search
+       $DXE_LD_LIBRARY_PATH or $DJDIR/lib, if set. */
+    new_argv[new_argc++] = "-L";
+    new_argv[new_argc++] = libdir;
+  }
 
   if (!strcmp(base_name(argv[0]), "dxegen"))
     /* invoked as `dxegen' */
@@ -686,13 +676,19 @@ static void process_args(int argc, char *argv[], const char *new_argv[])
       else
       {
         char *dot = strrchr(argv[i], '.');
-        new_argv[new_argc++] = argv[i];
         if (dot)
         {
           if (!strcasecmp(dot, ".o") || !strcasecmp(dot, ".a"))
             opt.objcount++;
           else if (!strcasecmp(dot, ".dxe") || !strcasecmp(dot, ".so"))
             opt.dxefile = argv[i];
+          new_argv[new_argc++] = argv[i];
+        }
+        else
+        {
+          char *arg = (char *)malloc(strlen(argv[i]) + 5U);
+          sprintf(arg, "-Wl,%s", argv[i]);
+          new_argv[new_argc++] = arg;
         }
       }
     }
@@ -1610,8 +1606,8 @@ static int make_implib(void)
   /* We already have what to clean up */
   atexit(exit_cleanup);
 
-  /* Allright, now run the assembler on the resulting file */
-  sprintf(cmdbuf, "%s -o %s %s", dxe_as, TEMP_O_FILE, TEMP_S_FILE);
+  /* Alright, now run gcc to assemble the resulting file */
+  sprintf(cmdbuf, "%s -c -o %s %s", dxe_cc, TEMP_O_FILE, TEMP_S_FILE);
   if ((rv = system(cmdbuf)) != 0)
   {
     if (rv == -1)
@@ -1697,14 +1693,17 @@ static int show_symbols(const char *fname)
  */
 int main(int argc, char **argv)
 {
-  int i;
-  int rv;
+  int i, rv;
   const char **new_argv;
+  size_t cnt;
 
   progname = argv[0];
-  /* Prepare the command line for ld */
-  new_argv = (const char **)malloc((argc - 1 + NUMBER_OF_LINKER_ARGS + NUMBER_OF_ADDITIONAL_LOADED_LIBS + 2 + 1) * sizeof(char *));
   process_env();
+  /* Prepare the command line for ld */
+  cnt = argc - 1 + NUMBER_OF_LINKER_ARGS + NUMBER_OF_ADDITIONAL_LOADED_LIBS + 2 + 1;
+  if (libdir != NULL)
+    cnt += 2;
+  new_argv = (const char **)malloc(cnt * sizeof(char *));
   process_args(argc, argv, new_argv);
 
   if (opt.showdep || opt.showexp || opt.showunres)
