@@ -34,7 +34,7 @@ $(BIN)/dxe3res.exe : $(C) dxe3res.o $(L)
 
 CROSS_CC = $(word 1,$(CROSS_GCC))
 $(HOSTBIN)/dxegen.exe : dxe3gen.c init1.h init2.h init3.h init4.h init5.h fini1.h fini2.h fini3.h fini4.h fini5.h
-	$(GCC) -DDXE_LD=\"$(CROSS_LD)\" -DDXE_CC=\"$(CROSS_CC)\" -DDXE_AR=\"$(CROSS_AR)\" -DDXE_AS=\"$(CROSS_AS)\" dxe3gen.c -o $@
+	$(GCC) -DDXE_CC=\"$(CROSS_CC)\" -DDXE_AR=\"$(CROSS_AR)\" dxe3gen.c -o $@
 
 clean ::
 	@-$(MISC) rm *.o *.h $(HOSTBIN)/dxegen.exe
