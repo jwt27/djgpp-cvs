@@ -38,7 +38,8 @@
    the static storage.  */
 int __bss_count = 1;
 
-extern char **_environ;
+char **_environ;
+extern char **__attribute__((alias("_environ"))) environ;
 
 int __crt0_argc;
 char **__crt0_argv;
