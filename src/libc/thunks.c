@@ -159,9 +159,3 @@ static UDWORD alloc_cbk_VOID(_cbk_VOID cbk)
 #define _L_IMM(n, l) (sizeof(*_L_REF(n)) * (l))
 
 #include "thunk_asms.h"
-
-#include "asm_incs.h"
-__attribute__((unused)) // TODO!
-static void **asm_thunks[] = {
-    #include "asym_incs.h"
-};

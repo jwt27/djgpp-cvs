@@ -4,7 +4,7 @@
 #ifndef __dj_include_float_h_
 #define __dj_include_float_h_
 
-#include <sys/asmobj.h>
+#include <libc/asmobj.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,7 +116,7 @@ unsigned int _control87(unsigned int newcw, unsigned int mask);
 void         _fpreset(void);
 unsigned int _status87(void);
 
-EXTERN int ASM(__emu387_load_hook);
+extern int __emu387_load_hook;
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

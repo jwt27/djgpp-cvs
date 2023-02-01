@@ -4,7 +4,7 @@
 #ifndef __dj_include_sys_nearptr_h_
 #define __dj_include_sys_nearptr_h_
 
-#include "sys/asmobj.h"
+#include "libc/asmobj.h"
 
 #ifdef __cplusplus
 extern "C" {

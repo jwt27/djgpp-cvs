@@ -47,6 +47,7 @@ main(int argc, char **argv)
     }
   }
   fprintf(outf, "#ifndef __ASSEMBLER__\n");
+  fprintf(outf, "#include \"libc/asmobj.h\"\n");
   fprintf(outf, "typedef struct {\n");
   while (1)
   {
@@ -64,7 +65,7 @@ main(int argc, char **argv)
       fprintf(outf, "  %s %s;\n", type, name+9);
   }
   fprintf(outf, "} _GO32_StubInfo;\n");
-  fprintf(outf, "extern _GO32_StubInfo *_stubinfo;\n");
+  fprintf(outf, "EXTERN ASM_P(_GO32_StubInfo, _stubinfo);\n");
   fprintf(outf, "#endif\n");
   fprintf(outf, "\n#endif /* __dj_include_stub_h__ */\n");
   fclose(inf);

@@ -13,7 +13,6 @@ XGCC = $(XLGCC)
 all :: native
 
 native :: \
-	$(HOSTBIN)/stubedit.exe \
 	$(HOSTBIN)/stubify.exe \
 	$(INC)/stubinfo.h \
 	$E

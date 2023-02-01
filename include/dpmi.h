@@ -6,7 +6,7 @@
 #define __dj_include_dpmi_h_
 
 #include <sys/cdefs.h>
-#include <sys/asmobj.h>
+#include <libc/asmobj.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
