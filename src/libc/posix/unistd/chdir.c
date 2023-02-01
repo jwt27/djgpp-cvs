@@ -82,3 +82,5 @@ do_chdir:
 
   return 0;
 }
+
+int __attribute__((alias("__chdir"))) chdir(const char *mydirname);

@@ -16,7 +16,7 @@ extern "C" {
 #ifndef _POSIX_SOURCE
 
 /* POSIX functions (for when compiling an ANSI function) */
-
+#if 0
 #define access __access
 #define asctime_r __asctime_r
 #define chdir __chdir
@@ -86,7 +86,13 @@ extern "C" {
 #define tell __tell
 #define tzsetwall __tzsetwall
 #define uclock __uclock
-
+#else
+#include <stddef.h>
+int __spawnve(int mode, const char *path, char *const argv[],
+              char *const envp[]);
+int __chdir (const char *mydirname);
+char * __getcwd(char *buf, size_t size);
+#endif
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
