@@ -23,6 +23,8 @@ SRC += sgnbitd.c
 SRC += sgnbitf.c
 SRC += sgnbitld.c
 
+include $(TOP)/../makefile.inc
+
 fpclassf.o: fp-asm.h
 
 fpclassd.o: fp-asm.h
@@ -31,8 +33,6 @@ fpclassl.o: fp-asm.h
 
 fp-asm.h: fp-asm.sed $(TOP)/../../include/math.h
 	sed -n -f fp-asm.sed $(TOP)/../../include/math.h > fp-asm.h
-
-include $(TOP)/../makefile.inc
 
 clean::
 	$(MISC) rm fp-asm.h
