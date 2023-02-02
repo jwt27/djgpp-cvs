@@ -2,7 +2,7 @@
 #include <unistd.h>
 
 extern int __brk(void *);
-extern void *___sbrk(int delta);
+extern void *__sbrk(int delta);
 
 int
 brk(void *_heaptop)
@@ -14,5 +14,5 @@ brk(void *_heaptop)
 
 void *sbrk(int delta)
 {
-  return ___sbrk(delta);
+  return __sbrk(delta);
 }

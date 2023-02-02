@@ -19,6 +19,7 @@ AS_SRC += floor.S
 AS_SRC += fmod.S
 AS_SRC += frexp.S
 SRC += huge_val.c
+SRC += _modfl.c
 AS_SRC += hypot.S
 AS_SRC += ldexp.S
 AS_SRC += log.S
