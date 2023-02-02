@@ -1,5 +1,5 @@
 gen_incs() {
-    cd "$1" && egrep -R --include="*.h" " ASM\(| ASM_P\(| ASM_N\(" . | grep EXTERN | \
+    cd "$1" && egrep -R --include="*.h" " ASM\(| ASM_P\(| ASM_N\(| ASM_F\(" . | grep EXTERN | \
 	cut -d ":" -f 1 | uniq | sed -E 's/\.\/(.+)/#include "\1"/'
 }
 
@@ -9,12 +9,12 @@ gen_incsn() {
 }
 
 gen_asms() {
-    egrep -R --include="*.h" " ASM\(| ASM_P\(| ASM_N\(" . "$1" | grep EXTERN | \
+    egrep -R --include="*.h" " ASM\(| ASM_P\(| ASM_N\(| ASM_F\(" . "$1" | grep EXTERN | \
 	sed -E 's/.+\((.+)\);.*/asmsym _\1/' | sort | uniq
 }
 
 gen_asyms() {
-    egrep -R --include="*.h" " ASM\(| ASM_N\(" . "$1" | grep EXTERN | \
+    egrep -R --include="*.h" " ASM\(| ASM_N\(| ASM_F\(" . "$1" | grep EXTERN | \
 	sed -E 's/.+\((.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq
     grep -R --include="*.h" " ASM_P(" . "$1" | grep EXTERN | \
 	sed -E 's/.+\(.+, (.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq

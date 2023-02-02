@@ -36,8 +36,6 @@ extern unsigned __djgpp_stack_limit;
 extern int __djgpp_exception_table;
 extern int __djgpp_kbd_hdlr;
 extern int __djgpp_kbd_hdlr_pc98;
-extern short __excep_ds_alias;
-extern void __djgpp_cbrk_hdlr(void);
 extern __dpmi_paddr __djgpp_old_kbd;
 extern __dpmi_paddr __djgpp_old_timer;
 

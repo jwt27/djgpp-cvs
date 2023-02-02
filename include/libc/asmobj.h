@@ -22,6 +22,11 @@ extern int *____djgpp_base_address;
 */DEFINE(x, ((t *)_DP(*__##x)))/*
 */
 
+#define _PD(l) ((char *)(l) - (unsigned long)(__djgpp_mem_base + *____djgpp_base_address))
+#define ASM_F(x) *__##x;/*
+*/DEFINE(x, (void (*)(void))_PD(__##x))/*
+*/
+
 #define EXTERN extern
 
 #else
@@ -36,6 +41,7 @@ extern int *____djgpp_base_address;
 
 #if IN_ASMOBJ == 3
 #define ASM(x) *__##x
+#define ASM_F(x) *__##x
 #define ASM_N(x) extern *__##x
 #define ASM_P(t, x) unsigned *__##x
 #endif
