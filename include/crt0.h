@@ -22,6 +22,8 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
+#include "libc/asmobj.h"
+
 /*****************************************************************************\
  * crt0.h - specific to go32 v2.0 applications, controls command line
  * argument creation.
@@ -192,7 +194,7 @@ typedef struct {
   unsigned address;
   } __djgpp_sbrk_handle;
 
-extern __djgpp_sbrk_handle __djgpp_memory_handle_list[256];
+EXTERN ASM_P(__djgpp_sbrk_handle, __djgpp_memory_handle_list);
 __djgpp_sbrk_handle *__djgpp_memory_handle(unsigned address);
 extern unsigned __djgpp_memory_handle_size[256];
 
