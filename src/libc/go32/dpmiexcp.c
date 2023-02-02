@@ -31,7 +31,6 @@ static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
 extern unsigned _stklen;
 extern unsigned __djgpp_stack_limit;
-extern unsigned __djgpp_stack_top;
 
 /* These are all defined in exceptn.S and only used here */
 extern int __djgpp_exception_table;
@@ -39,7 +38,6 @@ extern int __djgpp_npx_hdlr;
 extern int __djgpp_kbd_hdlr;
 extern int __djgpp_kbd_hdlr_pc98;
 extern short __excep_ds_alias;
-extern int __djgpp_iret, __djgpp_i24;
 extern void __djgpp_cbrk_hdlr(void);
 extern __dpmi_paddr __djgpp_old_kbd;
 extern __dpmi_paddr __djgpp_old_timer;

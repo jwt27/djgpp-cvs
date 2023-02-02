@@ -42,6 +42,9 @@ EXTERN unsigned ASM(__djgpp_cbrk_count);	/* Count of CTRL-BREAK hits */
 EXTERN int ASM(__djgpp_exception_inprog);	/* Nested exception count */
 EXTERN int ASM(__djgpp_hw_lock_start);
 EXTERN int ASM(__djgpp_hw_lock_end);
+EXTERN int ASM(__djgpp_iret);
+EXTERN int ASM(__djgpp_i24);
+EXTERN unsigned ASM(__djgpp_stack_top);
 EXTERN unsigned short ASM(__djgpp_sigint_key);  /* key that raises SIGINT */
 EXTERN unsigned short ASM(__djgpp_sigquit_key); /* key that raises SIGQUIT */
 EXTERN unsigned short ASM(__djgpp_sigint_mask); /* kb mask for SIGINT key */
