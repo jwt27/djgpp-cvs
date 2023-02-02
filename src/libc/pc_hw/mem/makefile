@@ -12,6 +12,7 @@ SRC += dmp.c
 SRC += dmpb.c
 SRC += dmpl.c
 SRC += dmpw.c
+SRC += mda.c
 AS_SRC += md.S
 AS_SRC += mdb.S
 AS_SRC += mdl.S

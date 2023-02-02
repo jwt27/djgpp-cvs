@@ -49,7 +49,10 @@ void _dosmemputl(const void *_buffer, size_t _xfers, unsigned long _offset);
 /* This length is in bytes, optimized for speed */
 void movedata(unsigned _source_selector, unsigned _source_offset,
 	       unsigned _dest_selector, unsigned _dest_offset,
-	       size_t _length);
+	       uint32_t _length);
+void __movedata(unsigned _source_selector, unsigned _source_offset,
+	       unsigned _dest_selector, unsigned _dest_offset,
+	       uint32_t _length);
 
 /* The lengths here are in TRANSFERS, not bytes! */
 void _movedatab(unsigned, unsigned, unsigned, unsigned, uint32_t);
