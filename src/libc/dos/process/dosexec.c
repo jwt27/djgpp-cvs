@@ -1560,6 +1560,10 @@ int __spawnve(int mode, const char *path, char *const argv[],
   return __djgpp_spawn(mode, path, argv, envp, SPAWN_EXTENSION_SRCH);
 }
 
+int __attribute__((alias("__spawnve")))
+spawnve(int mode, const char *path, char *const argv[],
+              char *const envp[]);
+
 int __djgpp_spawn(int mode, const char *path, char *const argv[],
                      char *const envp[], unsigned long flags)
 {

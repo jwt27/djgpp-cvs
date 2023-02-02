@@ -94,6 +94,7 @@ int __spawnve(int mode, const char *path, char *const argv[],
               char *const envp[]);
 int __chdir (const char *mydirname);
 char * __getcwd(char *buf, size_t size);
+int __brk(void *_heaptop);
 
 EXTERN unsigned ASM(__djgpp_timer_countdown);
 EXTERN __dpmi_paddr ASM(__djgpp_old_timer);

@@ -3,9 +3,9 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <sys/resource.h>
+#include <sys/exceptn.h>
 #include <libc/bss.h>
 
-extern unsigned int _stklen;
 extern struct rlimit __libc_limits[];
 
 static int rlimit_count = -1;

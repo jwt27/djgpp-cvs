@@ -35,6 +35,7 @@ extern unsigned short __djgpp_ds_alias;	/* Data selector always valid */
 extern unsigned short __djgpp_dos_sel;	/* Linear mem selector copy in locked mem */
 EXTERN short ASM(__excep_ds_alias);
 EXTERN void ASM_F(__djgpp_cbrk_hdlr);
+EXTERN unsigned ASM(_stklen);
 /* Hardware Interrupt Flags:
 
    1 = Disable INTR and QUIT keys (Ctrl-C and Ctrl-\);
