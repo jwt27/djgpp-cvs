@@ -86,9 +86,6 @@ getitimer(int which, struct itimerval *value)
   return 0;
 }
 
-extern unsigned __djgpp_timer_countdown;
-extern __dpmi_paddr __djgpp_old_timer;
-extern int __djgpp_timer_hdlr;
 static char timer_on = 0;
 
 /* Set back IRQ2 handler to default values and disable own signal

@@ -88,10 +88,17 @@ extern "C" {
 #define uclock __uclock
 #else
 #include <stddef.h>
+#include <dpmi.h>
+#include <libc/asmobj.h>
 int __spawnve(int mode, const char *path, char *const argv[],
               char *const envp[]);
 int __chdir (const char *mydirname);
 char * __getcwd(char *buf, size_t size);
+
+EXTERN unsigned ASM(__djgpp_timer_countdown);
+EXTERN __dpmi_paddr ASM(__djgpp_old_timer);
+EXTERN int ASM(__djgpp_timer_hdlr);
+
 #endif
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
