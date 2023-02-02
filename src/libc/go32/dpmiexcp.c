@@ -34,7 +34,6 @@ extern unsigned __djgpp_stack_limit;
 
 /* These are all defined in exceptn.S and only used here */
 extern int __djgpp_exception_table;
-extern int __djgpp_npx_hdlr;
 extern int __djgpp_kbd_hdlr;
 extern int __djgpp_kbd_hdlr_pc98;
 extern short __excep_ds_alias;
@@ -323,11 +322,11 @@ void __djgpp_traceback_exit(int sig)
 
   if (sig >= SIGABRT && sig <= SIGTRAP)
   {
-    if (!__djgpp_exception_state_ptr)
+    if (!*____djgpp_exception_state_ptr)
     {
       /* This is a software signal, like SIGABRT or SIGKILL.
 	 Fill the exception structure, so we get the traceback.  */
-      __djgpp_exception_state_ptr = &fake_exception;
+      *____djgpp_exception_state_ptr = PTR_DATA(&fake_exception);
       if (setjmp(__djgpp_exception_state))
       {
 	err("Bad longjmp to __djgpp_exception_state--aborting\r\n");

@@ -22,9 +22,10 @@ extern "C" {
 #ifndef _POSIX_SOURCE
 
 #include "libc/asmobj.h"
+#include <setjmp.h>
 
 #ifdef __dj_include_setjmp_h_
-extern jmp_buf *__djgpp_exception_state_ptr;	/* Must include setjmp.h first */
+EXTERN ASM_P(jmp_buf, __djgpp_exception_state_ptr);	/* Must include setjmp.h first */
 #define __djgpp_exception_state (*__djgpp_exception_state_ptr)
 #endif
 
@@ -45,6 +46,7 @@ EXTERN int ASM(__djgpp_hw_lock_end);
 EXTERN int ASM(__djgpp_iret);
 EXTERN int ASM(__djgpp_i24);
 EXTERN unsigned ASM(__djgpp_stack_top);
+EXTERN int ASM(__djgpp_npx_hdlr);
 EXTERN unsigned short ASM(__djgpp_sigint_key);  /* key that raises SIGINT */
 EXTERN unsigned short ASM(__djgpp_sigquit_key); /* key that raises SIGQUIT */
 EXTERN unsigned short ASM(__djgpp_sigint_mask); /* kb mask for SIGINT key */

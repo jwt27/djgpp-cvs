@@ -133,3 +133,6 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
   errno = __doserr_to_errno(r.x.ax);
   return errno;
 }
+
+int __attribute__((alias("findfirst")))
+__findfirst(const char *pathname, struct ffblk *ffblk, int attrib);
