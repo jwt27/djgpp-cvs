@@ -24,7 +24,7 @@ extern "C" {
 
 //#ifndef _POSIX_SOURCE
 
-extern unsigned short __dpmi_error;
+EXTERN unsigned short ASM(__dpmi_error);
 
 typedef struct {
   unsigned short offset16;

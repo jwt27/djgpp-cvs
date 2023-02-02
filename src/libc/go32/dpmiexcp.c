@@ -41,7 +41,6 @@ extern int __djgpp_kbd_hdlr_pc98;
 extern short __excep_ds_alias;
 extern int __djgpp_iret, __djgpp_i24;
 extern void __djgpp_cbrk_hdlr(void);
-extern int __djgpp_hw_lock_start, __djgpp_hw_lock_end;
 extern __dpmi_paddr __djgpp_old_kbd;
 extern __dpmi_paddr __djgpp_old_timer;
 
