@@ -21,6 +21,8 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
+#include "libc/asmobj.h"
+
 #ifdef __dj_include_setjmp_h_
 extern jmp_buf *__djgpp_exception_state_ptr;	/* Must include setjmp.h first */
 #define __djgpp_exception_state (*__djgpp_exception_state_ptr)
@@ -35,14 +37,16 @@ extern unsigned short __djgpp_dos_sel;	/* Linear mem selector copy in locked mem
    1 = Disable INTR and QUIT keys (Ctrl-C and Ctrl-\);
    2 = Count Ctrl-Break (don't kill);
    4 = IRET from our timer interrupt handler, don't chain */
-extern unsigned short __djgpp_hwint_flags;
-extern unsigned __djgpp_cbrk_count;	/* Count of CTRL-BREAK hits */
-extern int __djgpp_exception_inprog;	/* Nested exception count */
+EXTERN unsigned short ASM(__djgpp_hwint_flags);
+EXTERN unsigned ASM(__djgpp_cbrk_count);	/* Count of CTRL-BREAK hits */
+EXTERN int ASM(__djgpp_exception_inprog);	/* Nested exception count */
 
-extern unsigned short __djgpp_sigint_key;  /* key that raises SIGINT */
-extern unsigned short __djgpp_sigquit_key; /* key that raises SIGQUIT */
-extern unsigned short __djgpp_sigint_mask; /* kb mask for SIGINT key */
-extern unsigned short __djgpp_sigquit_mask;/* kb mask for SIGQUIT key */
+EXTERN unsigned short ASM(__djgpp_sigint_key);  /* key that raises SIGINT */
+EXTERN unsigned short ASM(__djgpp_sigquit_key); /* key that raises SIGQUIT */
+EXTERN unsigned short ASM(__djgpp_sigint_mask); /* kb mask for SIGINT key */
+EXTERN unsigned short ASM(__djgpp_sigquit_mask);/* kb mask for SIGQUIT key */
+EXTERN unsigned ASM(exception_stack);
+#define djgpp_exception_stack exception_stack
 
 void __djgpp_exception_toggle(void);
 int  __djgpp_set_ctrl_c(int __enable);	/* On by default */

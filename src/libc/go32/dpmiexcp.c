@@ -43,7 +43,6 @@ extern int __djgpp_iret, __djgpp_i24;
 extern void __djgpp_cbrk_hdlr(void);
 extern int __djgpp_hw_lock_start, __djgpp_hw_lock_end;
 extern __dpmi_paddr __djgpp_old_kbd;
-extern unsigned djgpp_exception_stack __asm__("exception_stack");
 extern __dpmi_paddr __djgpp_old_timer;
 
 static void
