@@ -29,13 +29,15 @@ EXTERN ASM_P(jmp_buf, __djgpp_exception_state_ptr);	/* Must include setjmp.h fir
 #define __djgpp_exception_state (*__djgpp_exception_state_ptr)
 #endif
 
-extern unsigned short __djgpp_our_DS;
-extern unsigned short __djgpp_app_DS;	/* Data selector invalidated by HW ints */
-extern unsigned short __djgpp_ds_alias;	/* Data selector always valid */
-extern unsigned short __djgpp_dos_sel;	/* Linear mem selector copy in locked mem */
+EXTERN unsigned short ASM(__djgpp_our_DS);
+EXTERN unsigned short ASM(__djgpp_app_DS);	/* Data selector invalidated by HW ints */
+EXTERN unsigned short ASM(__djgpp_ds_alias);	/* Data selector always valid */
+EXTERN unsigned short ASM(__djgpp_dos_sel);	/* Linear mem selector copy in locked mem */
 EXTERN short ASM(__excep_ds_alias);
 EXTERN void ASM_F(__djgpp_cbrk_hdlr);
 EXTERN unsigned ASM(_stklen);
+EXTERN unsigned ASM(__djgpp_stack_limit);
+
 /* Hardware Interrupt Flags:
 
    1 = Disable INTR and QUIT keys (Ctrl-C and Ctrl-\);

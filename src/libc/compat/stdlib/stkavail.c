@@ -1,7 +1,6 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 #include <stdlib.h>
-
-extern unsigned __djgpp_stack_limit;
+#include <sys/exceptn.h>
 
 /* make return value signed, just in case we already overflowed the stack */
 int stackavail(void)

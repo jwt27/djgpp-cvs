@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <io.h>
 #include <dpmi.h>
+#include <sys/exceptn.h>
 
 static const char env_delim = '~';
 
@@ -20,7 +21,6 @@ static const char env_delim = '~';
 static int __inline__
 enough_stack_p(void)
 {
-  extern unsigned __djgpp_stack_limit;
   unsigned sp;
   __asm__ __volatile__ ("movl %%esp,%k0\n" : "=r" (sp) : );
   return (int) (sp - __djgpp_stack_limit) > 4*1024;

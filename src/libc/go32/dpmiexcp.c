@@ -29,7 +29,6 @@
 extern unsigned end __asm__ ("end");
 static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
-extern unsigned __djgpp_stack_limit;
 
 /* These are all defined in exceptn.S and only used here */
 extern int __djgpp_exception_table;
