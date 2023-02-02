@@ -1,6 +1,6 @@
 gen_incs() {
-    cd "$1" && egrep -R " ASM\(| ASM_P\(" . | grep EXTERN | cut -d ":" -f 1 | uniq | \
-	sed -E 's/\.\/(.+)/#include "\1"/'
+    cd "$1" && egrep -R " ASM\(| ASM_P\(| ASM_N\(" . | grep EXTERN | \
+	cut -d ":" -f 1 | uniq | sed -E 's/\.\/(.+)/#include "\1"/'
 }
 
 gen_incsn() {
@@ -9,13 +9,15 @@ gen_incsn() {
 }
 
 gen_asms() {
-    grep -R " ASM(" . "$1" | grep EXTERN | \
+    egrep -R " ASM\(| ASM_P\(| ASM_N\(" . "$1" | grep EXTERN | \
 	sed -E 's/.+\((.+)\);.*/asmsym _\1/' | sort | uniq
 }
 
 gen_asyms() {
-    grep -R " ASM(" . "$1" | grep EXTERN | \
+    egrep -R " ASM\(| ASM_N\(" . "$1" | grep EXTERN | \
 	sed -E 's/.+\((.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq
+    grep -R " ASM_P(" . "$1" | grep EXTERN | \
+	sed -E 's/.+\(.+, (.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq
 }
 
 case "$1" in
