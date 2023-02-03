@@ -223,6 +223,8 @@ __crt1_startup(void)
   setup_screens();
   setup_go32_info_block();
   __djgpp_exception_setup();
+  init_sys_siglist();
+  init_confstr();
   setup_environment();
   __environ_changed++;
   __setup_file_rec_list();

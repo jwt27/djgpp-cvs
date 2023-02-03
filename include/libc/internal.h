@@ -36,6 +36,9 @@ EXTERN ASM_AP(FUNC, djgpp_last_ctor);
 EXTERN ASM_AP(FUNC, djgpp_first_dtor);
 EXTERN ASM_AP(FUNC, djgpp_last_dtor);
 
+void init_sys_siglist(void);
+void init_confstr(void);
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */

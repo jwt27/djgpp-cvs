@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
+#include <libc/internal.h>
 
 char *sys_siglist[NSIG + 1]; /* initially all-zero */
 
@@ -73,8 +74,7 @@ fill_dull_names (const char *_template, size_t tpl_size, int count)
   }
 }
 
-static void __attribute__((constructor))
-init_sys_siglist (void)
+void init_sys_siglist (void)
 {
   static char int_name[]   = "Interrupt XXh";
   static size_t int_size   = sizeof(int_name);
