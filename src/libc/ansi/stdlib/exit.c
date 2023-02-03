@@ -28,7 +28,7 @@ void (*__fd_properties_cleanup_hook)(void) = NULL;
 void
 exit(int status)
 {
-  int i;
+//  int i;
   struct __atexit *a,*o;
 
   a = __atexit_ptr;
@@ -40,12 +40,12 @@ exit(int status)
     a = a->__next;
     free(o);
   }
-
+#if 0
   /* Destructors should probably be called after functions registered
      with atexit(), this is the way it happens in Linux anyway. */
   for (i=0; i<djgpp_last_dtor-djgpp_first_dtor; i++)
     _djgpp_first_dtor(i);
-
+#endif
   /* Do this last so that everyone else may write to files
      during shutdown */
   if (__stdio_cleanup_hook)
