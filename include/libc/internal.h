@@ -32,6 +32,8 @@ void __deregister_frame_info(const void *begin);
 typedef void (*FUNC)(void);
 EXTERN ASM_AP(FUNC, djgpp_first_ctor);
 EXTERN ASM_AP(FUNC, djgpp_last_ctor);
+EXTERN ASM_AP(FUNC, djgpp_first_dtor);
+EXTERN ASM_AP(FUNC, djgpp_last_dtor);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

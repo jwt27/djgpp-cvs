@@ -31,9 +31,6 @@ static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
 
 /* These are all defined in exceptn.S and only used here */
-extern int __djgpp_exception_table;
-extern int __djgpp_kbd_hdlr;
-extern int __djgpp_kbd_hdlr_pc98;
 extern __dpmi_paddr __djgpp_old_kbd;
 extern __dpmi_paddr __djgpp_old_timer;
 
@@ -541,7 +538,7 @@ __djgpp_exception_setup(void)
   __dpmi_lock_linear_region(&lockmem);
   
   asm volatile ("mov %%cs,%0" : "=g" (except.selector) );
-  except.offset32 = (uintptr_t) &__djgpp_exception_table;
+  except.offset32 = (uintptr_t) __djgpp_exception_table;
   for(i=0; i < EXCEPTION_COUNT; i++)
   {
     except_ori[i] = except;	/* New value to set */
@@ -550,10 +547,10 @@ __djgpp_exception_setup(void)
   kbd_ori.selector = npx_ori.selector = except.selector;
   npx_ori.offset32 = (uintptr_t) &__djgpp_npx_hdlr;
   if(ScreenPrimary != 0xa0000)
-    kbd_ori.offset32 = (uintptr_t) &__djgpp_kbd_hdlr;
+    kbd_ori.offset32 = (uintptr_t) __djgpp_kbd_hdlr;
   else
   {
-    kbd_ori.offset32 = (uintptr_t) &__djgpp_kbd_hdlr_pc98;
+    kbd_ori.offset32 = (uintptr_t) __djgpp_kbd_hdlr_pc98;
     cbrk_vect = 0x06;
     except.offset32 = (uintptr_t) &__djgpp_iret;		/* TDPMI98 bug */
     __dpmi_set_protected_mode_interrupt_vector(0x23, &except);
