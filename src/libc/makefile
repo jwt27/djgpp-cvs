@@ -33,4 +33,4 @@ clean ::
 	@$(MAKE) -C stubs $@
 	@$(MAKE) -C crt0 $@
 	@$(MISC) rm makefile.sub
-	@$(MISC) rm *.tmp *.h
+	@$(MISC) rm *.tmp *.h *.inc
