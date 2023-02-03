@@ -23,6 +23,7 @@ extern "C" {
 
 #include "libc/asmobj.h"
 #include <setjmp.h>
+#include <dpmi.h>
 
 #ifdef __dj_include_setjmp_h_
 EXTERN ASM_P(jmp_buf, __djgpp_exception_state_ptr);	/* Must include setjmp.h first */
@@ -40,6 +41,10 @@ EXTERN int ASM_F(__djgpp_kbd_hdlr);
 EXTERN int ASM_F(__djgpp_kbd_hdlr_pc98);
 EXTERN unsigned ASM(_stklen);
 EXTERN unsigned ASM(__djgpp_stack_limit);
+
+/* These are all defined in exceptn.S and only used here */
+EXTERN __dpmi_paddr ASM(__djgpp_old_kbd);
+EXTERN __dpmi_paddr ASM(__djgpp_old_timer);
 
 /* Hardware Interrupt Flags:
 

@@ -161,6 +161,8 @@ int intdosx(union REGS *_in, union REGS *_out, struct SREGS *_seg);
 int bdos(int _func, unsigned _dx, unsigned _al);
 int bdosptr(int _func, void *_dx, unsigned _al);
 
+int _int86(int ivec, union REGS *in, union REGS *out);
+
 #define bdosptr(_a, _b, _c) bdos(_a, (unsigned)(_b), _c)
 #define intdos(_a, _b) int86(0x21, _a, _b)
 #define intdosx(_a, _b, _c) int86x(0x21, _a, _b, _c)

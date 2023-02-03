@@ -30,10 +30,6 @@ extern unsigned end __asm__ ("end");
 static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
 
-/* These are all defined in exceptn.S and only used here */
-extern __dpmi_paddr __djgpp_old_kbd;
-extern __dpmi_paddr __djgpp_old_timer;
-
 static void
 itox(int v, int len)
 {

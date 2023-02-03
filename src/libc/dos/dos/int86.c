@@ -7,8 +7,6 @@
 #include <go32.h>
 #include <dpmi.h>
 
-int _int86(int ivec, union REGS *in, union REGS *out);
-
 int int86(int ivec, union REGS *in, union REGS *out)
 {
   __dpmi_regs regs = {};
@@ -47,7 +45,7 @@ int int86(int ivec, union REGS *in, union REGS *out)
         out->d.ecx = regs.x.cx;		/* 0x43 needs this */
         goto doexit;
       }
-      
+
     case 0x47:
       {
         char *ptr = DATA_PTR(regs.d.esi);
