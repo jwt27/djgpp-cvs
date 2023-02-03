@@ -77,7 +77,7 @@ thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
 thunks_a.o: asm_incs.h
 
 $(LIB)/libdj64.so : makefile.rf thunk_calls.h thunk_asms.h thunks.o thunks_a.o
-	$(CROSS_GCC) -shared -nostdlib -Wl,-Bsymbolic -o $@ @makefile.rf \
+	$(CROSS_GCC) -shared -Wl,-Bsymbolic -o $@ @makefile.rf \
   thunks.o thunks_a.o
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 

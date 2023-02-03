@@ -12,12 +12,15 @@
 extern "C" {
 #endif
 
+#include "libc/asmobj.h"
+
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #define EDOM		1
 #define ERANGE		2
 
-extern int errno;
+#define errno __dj_errno
+EXTERN int ASM_N(__dj_errno);
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
   || !defined(__STRICT_ANSI__) || defined(__cplusplus)
