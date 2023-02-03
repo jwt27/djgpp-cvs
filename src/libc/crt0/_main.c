@@ -2,10 +2,6 @@
 #include <libc/internal.h>
 #include <libc/bss.h>
 
-typedef void (*FUNC)(void);
-extern FUNC djgpp_first_ctor[] __asm__("djgpp_first_ctor");
-extern FUNC djgpp_last_ctor[] __asm__("djgpp_last_ctor");
-
 void
 __main(void)
 {
@@ -15,5 +11,5 @@ __main(void)
     return;
   been_there_done_that = __bss_count;
   for (i=0; i<djgpp_last_ctor-djgpp_first_ctor; i++)
-    djgpp_first_ctor[i]();
+    _djgpp_first_ctor(i);
 }

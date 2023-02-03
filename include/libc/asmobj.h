@@ -22,6 +22,11 @@ extern int *____djgpp_base_address;
 */DEFINE(x, ((t *)_DP(*__##x)))/*
 */
 
+#define ASM_AP(t, x) unsigned *__##x;/*
+*/static inline void _##x(int idx) { /*TODO: asm call to __x[idx]*/ }/*
+*/DEFINE(x, ((t *)__##x))/*
+*/
+
 #define _PD(l) ((char *)(l) - (unsigned long)(__djgpp_mem_base + *____djgpp_base_address))
 #define ASM_F(x) *__##x;/*
 */DEFINE(x, (void (*)(void))_PD(__##x))/*
@@ -44,6 +49,7 @@ extern int *____djgpp_base_address;
 #define ASM_F(x) *__##x
 #define ASM_N(x) extern *__##x
 #define ASM_P(t, x) unsigned *__##x
+#define ASM_AP(t, x) unsigned *__##x
 #endif
 
 #define EXTERN

@@ -18,6 +18,7 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #ifndef _POSIX_SOURCE
+#include "libc/asmobj.h"
 
 void __crt1_startup(void);
 void __main(void);
@@ -27,6 +28,10 @@ void __djgpp_exception_processor(void);
 void __djgpp_exception_setup(void);
 void __register_frame_info(const void *begin, const void *object);
 void __deregister_frame_info(const void *begin);
+
+typedef void (*FUNC)(void);
+EXTERN ASM_AP(FUNC, djgpp_first_ctor);
+EXTERN ASM_AP(FUNC, djgpp_last_ctor);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
