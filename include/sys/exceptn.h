@@ -53,7 +53,7 @@ EXTERN __dpmi_paddr ASM(__djgpp_old_timer);
    4 = IRET from our timer interrupt handler, don't chain */
 EXTERN unsigned short ASM(__djgpp_hwint_flags);
 EXTERN unsigned ASM(__djgpp_cbrk_count);	/* Count of CTRL-BREAK hits */
-EXTERN int ASM(__djgpp_exception_inprog);	/* Nested exception count */
+extern int __djgpp_exception_inprog;	/* Nested exception count */
 EXTERN int ASM(__djgpp_hw_lock_start);
 EXTERN int ASM(__djgpp_hw_lock_end);
 EXTERN int ASM(__djgpp_iret);

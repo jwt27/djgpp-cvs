@@ -37,7 +37,7 @@
 /* Length 64 bytes plus non-used FPU */
 	.data
 	.balign 8
-	.comm	exception_stack, 8000
+	.comm	_exception_stack, 8000
 
 	.text
 	.balign	16,,7
@@ -154,7 +154,7 @@ not_forced:
 	jne	1f
 	movw	%ax,32(%ebp)
 	jmp	stack_ok
-1:	movl	$exception_stack+8000, 28(%ebp)
+1:	movl	$_exception_stack+8000, 28(%ebp)
 	movw	%ax, 32(%ebp)
 stack_ok:
 /* Now copy the exception structure to the new stack before returning */
@@ -258,7 +258,7 @@ ___djgpp_save_interrupt_regs:
 	cmpw	%ax, %bx			/* is SS = DS ? */
 	je	Lss_ok
 	movw	%ax, %ss			/* set new SS:ESP */
-	movl	$exception_stack+8000, %esp
+	movl	$_exception_stack+8000, %esp
 Lss_ok:	subl	$92, %esp		/* 64 plus extra for longjmp */
 	movl	%esp, %edi
 	movl	$16, %ecx

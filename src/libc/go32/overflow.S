@@ -3,7 +3,7 @@
 	.file	"overflow.S"
 	.data
 	.balign	8
-	.comm	exception_stack, 8000
+	.comm	_exception_stack, 8000
 	.balign	8
 overflow_state_buf:		/* jmp_buf */
 	.long	0, 0, 0, 0	/* eax, ebx, ecx, edx */
@@ -24,7 +24,7 @@ ___djgpp_stack_overflow_exit:
 
 	/* change stack as soon as possible */
 	movl	%esp, 28(%eax)
-	movl	$exception_stack + 8000, %esp
+	movl	$_exception_stack + 8000, %esp
 
 	/* eax already stored */
 	movl	%ebx, 4(%eax)
