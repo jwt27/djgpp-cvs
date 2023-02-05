@@ -14,7 +14,7 @@ all :: native
 
 native :: \
 	$(HOSTBIN)/stubify.exe \
-	$(INC)/stubinfo.h \
+	$(INC)/libc/stubinfo.h \
 	$E
 	$(NOP)
 
@@ -22,8 +22,8 @@ native :: \
 sbrk16.ah : sbrk16.asm
 	$(HOSTBIN)/djasm.exe sbrk16.asm sbrk16.ah
 
-$(INC)/stubinfo.h : stub.asm stub.map ./stub2inc.exe
-	./stub2inc.exe stub.map stub.asm $(INC)/stubinfo.h
+$(INC)/libc/stubinfo.h : stub.asm stub.map ./stub2inc.exe
+	./stub2inc.exe stub.map stub.asm $@
 
 stub.h stub.map : stub.asm
 	$(HOSTBIN)/djasm.exe stub.asm stub.h stub.map
@@ -65,4 +65,5 @@ $(HOSTBIN)/stubedit.exe : stubedit.c $(INC)/stubinfo.h
 
 clean ::
 	@-$(MISC) rm stub.map stub.h stub2inc.exe stubbify.exe
+	@-$(MISC) rm $(INC)/libc/stubinfo.h
 	@-$(MISC) rm $(HOSTBIN)/stubedit.exe $(HOSTBIN)/stubify.exe
