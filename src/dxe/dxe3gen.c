@@ -1,3 +1,4 @@
+/* Copyright (C) 2023 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2012 DJ Delorie, see COPYING.DJ for details */
@@ -1320,7 +1321,7 @@ static int write_dxe(FILE *inf, FILE *outf, FILHDR *fh)
   }
   DEBUG_PRINT_SYMBOL_TABLE_EPILOG();
 
-  if (opt.num_names && opt.num_names != dh.n_exp_syms)
+  if (opt.num_names && opt.num_names != (ULONG32)dh.n_exp_syms)
   {
     FILE *out = stdout;
     if (opt.nomissing)
