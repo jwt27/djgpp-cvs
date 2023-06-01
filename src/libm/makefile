@@ -5,6 +5,6 @@ TOP=.
 LIBNAME=m
 
 include $(TOP)/../makefile.lib
-	
+
 clean ::
 	$(MISC) rm makefile.sub
