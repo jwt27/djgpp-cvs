@@ -1,18 +1,37 @@
 __plt_open: .quad 0
+PLT_OPEN_CMD = 0
+PLT_CLOSE_CMD = 1
 __plt_call: .quad 0
 __plt_handle: .long 0
+AUX_CORE = 0
+AUX_USER = 1
 ext_nm: .asciz "DJ64"
+
+.macro call_plt
+    movl __plt_handle, %eax
+    lcalll *__plt_call
+.endm
 
 .macro asmcfunc nm,num
     .global \nm
     \nm:
-    movl __plt_handle, %eax
-    movl $0, %ebx        // reserve
-    movl \num, %ecx
+    pushl %ebp
+    movl %esp, %ebp
+    pushal
     movl %esp, %edx
-    addl $4, %edx
-    lcalll *__plt_call
+    movl \num, %ecx
+    movl $AUX_CORE, %ebx
+    call_plt
+    popal
+    popl %ebp
+    ret
 .endm
+
+.global dj64_plt_call
+dj64_plt_call:
+    movl $AUX_USER, %ebx
+    call_plt
+    ret
 
 .macro asmsym nm
 \nm\()_ptr:
@@ -90,6 +109,8 @@ plt_init:
     int $0x31
 
     // now open lib
+    movl $0, %eax
+    movl $PLT_OPEN_CMD, %ebx
     movw shm_block + SHM_HANDLE, %di
     movw shm_block + SHM_HANDLE + 2, %si
     movl %fs:STUBINFO_PAYLOAD_SIZE, %ecx
