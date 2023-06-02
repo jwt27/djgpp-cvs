@@ -5,6 +5,6 @@ SRC += bcmp.c
 SRC += bcopy.c
 SRC += bzero.c
 AS_SRC += index.S
-AS_SRC += rindex.S
+SRC += rindex.c
 
 include $(TOP)/../makefile.inc
