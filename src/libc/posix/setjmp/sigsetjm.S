@@ -2,3 +2,7 @@
 	.global	_sigsetjmp
 _sigsetjmp:
 	jmp	_setjmp
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

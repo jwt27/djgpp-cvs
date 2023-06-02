@@ -2,3 +2,7 @@
 	.global	_strcasecmp
 _strcasecmp:
 	jmp	___stricmp
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

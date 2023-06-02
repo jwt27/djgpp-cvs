@@ -143,3 +143,7 @@ badarg:					/* arg is negative or NaN */
 special:
 	fldl	4(%esp)			/* x = 0 or inf: just load x */
 	jmp	cleanup
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

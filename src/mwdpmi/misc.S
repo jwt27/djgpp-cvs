@@ -57,3 +57,7 @@ _callback_entry:
 	pushal
 	jmp	_callback_handler
 /* ------------------------------------------------------------------------- */
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

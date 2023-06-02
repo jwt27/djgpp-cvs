@@ -2,3 +2,7 @@
 #include <libc/asmdefs.h>
 	FUNC(_index)
 	jmp	_strchr
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

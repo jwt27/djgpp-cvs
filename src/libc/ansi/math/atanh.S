@@ -78,3 +78,7 @@ badarg:
 	movl	$1, _errno
 	flds	NaN
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

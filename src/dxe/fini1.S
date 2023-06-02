@@ -23,3 +23,7 @@ _fini:
 	1:
 		popl	%ebx
 		ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

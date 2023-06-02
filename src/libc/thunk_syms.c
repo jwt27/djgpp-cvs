@@ -3,4 +3,4 @@
 #include "asm_incsn.h"
 
 #undef errno
-extern int __attribute__((alias("___dj_errno"))) errno;
+extern int __attribute__((alias("___dj_errno"))) _errno;

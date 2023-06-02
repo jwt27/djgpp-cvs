@@ -736,3 +736,7 @@ _prot_31_entry:
 	pop	%ds
 	iretl
 /* ------------------------------------------------------------------------- */
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

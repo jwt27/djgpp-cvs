@@ -3,3 +3,7 @@
 	.global	__bcopy
 __bcopy:
 	jmp	_bcopy
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

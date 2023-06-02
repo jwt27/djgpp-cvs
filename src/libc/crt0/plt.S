@@ -132,3 +132,7 @@ plt_init:
     movb $0x4c, %ah
     int $0x21
     jmp 1b
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

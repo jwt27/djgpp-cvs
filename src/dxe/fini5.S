@@ -32,3 +32,7 @@ ___deregister_frame_info:
 		movl	%esp, %ebp
 		popl	%ebp
 		ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

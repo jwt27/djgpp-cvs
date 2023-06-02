@@ -69,3 +69,7 @@ badarg:
 	flds	NaN
 	addl	$4, %esp
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

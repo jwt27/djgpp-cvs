@@ -50,3 +50,7 @@ L3:	rep
 	movl	8(%ebp),%eax
 	leave
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

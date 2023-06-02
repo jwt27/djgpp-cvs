@@ -39,3 +39,7 @@ ___modfl:
 1:
 	leave
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

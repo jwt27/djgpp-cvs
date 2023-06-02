@@ -98,3 +98,7 @@ negarg:					/* arg is - inf or - NaN */
 
 	flds	neg_inf
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

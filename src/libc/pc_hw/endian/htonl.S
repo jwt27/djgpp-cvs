@@ -8,3 +8,7 @@
 	rorl	$16, %eax
 	xchgb	%ah, %al
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

@@ -106,9 +106,9 @@ hook_387_emulator:
 #endif
 	.text
 
-	.globl	start
+	.globl	_start
 	.balign	16,,7
-start:
+_start:
 
 	pushl	%ds			/* set %es same as %ds */
 	popl	%es			/* push/pop 4 bytes shorter than ax */
@@ -131,7 +131,7 @@ start:
 /* Enable NULL pointer protection if DPMI supports it */
 	testb	$0x1, __crt0_startup_flags+1		/* include/crt0.h */
 	jnz	1f
-	movl	$start, %eax
+	movl	$_start, %eax
 	cmpl	$0x1000, %eax
 	jl	1f
 	movw	$0x507, %ax

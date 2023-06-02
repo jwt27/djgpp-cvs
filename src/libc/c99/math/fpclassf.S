@@ -49,3 +49,7 @@ all_ones_exponent:
 	movl    $FP_NAN, %eax
 infinity:
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

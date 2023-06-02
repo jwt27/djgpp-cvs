@@ -61,3 +61,7 @@ ___djgpp_stack_overflow_exit:
 
 	/* this does not return */
 	call	___djgpp_traceback_exit
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

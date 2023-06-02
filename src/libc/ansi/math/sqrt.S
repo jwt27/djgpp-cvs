@@ -39,3 +39,7 @@ maybezero:
 	jne	badarg
 	fldz
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

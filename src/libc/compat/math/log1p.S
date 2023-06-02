@@ -64,3 +64,7 @@ abarg:
 
 	flds	pinf			/* arg = +inf */
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

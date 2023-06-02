@@ -2,3 +2,7 @@
 	.global	__Exit
 __Exit:
 	jmp	__exit
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

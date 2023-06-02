@@ -82,3 +82,7 @@ _longjmp:
 	popl	%esi
 
 	iret			/* actually jump to new cs:eip loading flags */
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

@@ -8,7 +8,7 @@ include $(TOP)/../makefile.def
 
 MAKEFLAGS := --no-print-directory
 
-.SUFFIXES: .o .i .c .cc .s .O
+.SUFFIXES: .o .i .c .cc .s
 
 # Set $(GCC{L}_OPT) here so they are defined before first use
 #
@@ -98,12 +98,6 @@ MISC = $(TOP)/../misc.exe
 %.o : %.s
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	$(XGCC) -m32 -x assembler-with-cpp -o $@ -c $<
-%.O : %.S
-	$(MISC) echo - $(CROSS_XGCC) '...' -c $<
-	$(XASGCC) $< | $(CROSS_AS) -o $@ -
-%.O : %.s
-	$(MISC) echo - $(CROSS_XGCC) '...' -c $<
-	$(XASGCC) -x assembler-with-cpp $< | $(CROSS_AS) -o $@ -
 
 %.i : %.c
 	$(XGCC) -c $< -E > $@
@@ -147,7 +141,6 @@ EXE = $(HOSTBIN)/stubify.exe $@
 
 OBJS := $(addsuffix .o, $(basename $(SRC)))
 AS_OBJS := $(addsuffix .o, $(basename $(AS_SRC)))
-AS_OBJS2 := $(addsuffix .O, $(basename $(AS_SRC)))
 EXES := $(addprefix $(BIN)/,$(addsuffix .exe, $(basename $(SRC))))
 
 NOP = @$(MISC)
@@ -167,8 +160,7 @@ $(BIN)/%.exe : $C %.o $L
 $(HOSTBIN)/%.exe : %
 	$(GCC) -o $@ $^
 
-all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS) \
-    $(AS_OBJS2)
+all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS)
 	$(NOP)
 
 ifneq ($(MAKEFILE_LIB),1)

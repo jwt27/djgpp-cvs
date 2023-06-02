@@ -20,3 +20,7 @@ _init:
 		ret
 
 .lcomm		eh_frame, 32
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

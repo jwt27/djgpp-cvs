@@ -29,7 +29,7 @@ _crt0.o : crt0.S exit16.ah sbrk16.ah
 	$(XGCC) -MMD -m32 -c -o $@ $<
 
 $(LIB)/crt0.o : crt0.S plt.S ../plt.inc ../plt_asms.inc
-	$(XASGCC) -DWITH_PLT $< | $(CROSS_AS) -o $@ -
+	$(XGCC) -m32 -DWITH_PLT $< -c -o $@
 
 $(LIB)/gcrt0.o : gcrt0.S crt0.S exit16.ah sbrk16.ah
 	$(XGCC) -MMD -m32 -c gcrt0.S

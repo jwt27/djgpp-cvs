@@ -2,3 +2,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #define IN_GCRT0
 #include "crt0.S"
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif
