@@ -21,7 +21,7 @@ DIRS = \
 	../info		\
 	../lib
 
-all : misc.exe config $(DIRS) makemake.exe subs ../lib/libg.a ../lib/libpc.a
+all : misc.exe config $(DIRS) makemake.exe subs
 
 misc.exe : misc.c
 	gcc -O2 -Wall misc.c -o misc.exe
@@ -42,7 +42,6 @@ subs:
 	$(MAKE) -C djdev64
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
-	$(MAKE) -f makempty
 
 .PHONY : clean
 clean : misc.exe makemake.exe
@@ -57,7 +56,6 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C docs clean
 	$(MAKE) -C djasm clean
 	-$(MAKE) -C ../zoneinfo/src clean
-	$(MAKE) -f makempty clean
 	$(MAKE) -C ../parsers clean
 	./misc.exe rm gpp.opt
 	./misc.exe rm gcc.opt gcc-l.opt

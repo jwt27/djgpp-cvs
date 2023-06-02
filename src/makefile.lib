@@ -12,7 +12,7 @@ all ::
 	$(MAKE) -f makefile.sub
 	../makemake.exe -2
 	$(MAKE) $(LIB)/libdj64.so
-	$(MAKE) $(LIB)/libc.a
+	$(MAKE) $(TOP)/libc_tmp.a
 	$(MAKE) plt.inc plt_asms.inc
 	$(MAKE) -C crt0 final
 
@@ -29,7 +29,7 @@ endif
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
 
-$(LIB)/lib$(LIBNAME).a : makefile.rfo thunk_syms.o
+$(TOP)/libc_tmp.a : makefile.rfo thunk_syms.o
 	@-$(MISC) rm $@
 	$(CROSS_AR) q $@ @$^
 	$(CROSS_AR) s $@
@@ -50,7 +50,7 @@ asym_incs.h:
 	$(GA) 3 $(TOP)/../../include >$@
 
 thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
-    $(LIB)/lib$(LIBNAME).a $(TG)
+    $(TOP)/libc_tmp.a $(TG)
 	$(MP) $< $(TOP)/../../include thunk_asms.tmp \
 		thunk_calls.tmp plt.inc thunk_incs.h
 
@@ -67,11 +67,6 @@ $(LIB)/libdj64.so : makefile.rf thunk_calls.h thunk_asms.h thunks.o thunks_a.o
 	$(CROSS_GCC) -shared -Wl,-Bsymbolic -o $@ @makefile.rf \
   thunks.o thunks_a.o
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
-
-newlib:
-	$(MISC) rm $(LIB)/lib$(LIBNAME).a
-	$(CROSS_AR) q $(LIB)/lib$(LIBNAME).a @makefile.rf id_$(LIBNAME).o
-	$(CROSS_AR) s $(LIB)/lib$(LIBNAME).a
 
 clean ::
 	$(TOP)/../makemake.exe
