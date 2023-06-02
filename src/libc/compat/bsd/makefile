@@ -4,7 +4,7 @@ TOP=../..
 SRC += bcmp.c
 SRC += bcopy.c
 SRC += bzero.c
-AS_SRC += index.S
+SRC += index.c
 SRC += rindex.c
 
 include $(TOP)/../makefile.inc
