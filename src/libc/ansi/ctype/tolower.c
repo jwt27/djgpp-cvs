@@ -2,7 +2,9 @@
 #include <ctype.h>
 #include <inlines/ctype.ha>
 
-int (tolower)(int c)
+int tolower(int c)
 {
-  return tolower(c);
+  return __tolower(c);
 }
+
+int __attribute__((alias("tolower"))) _tolower(int c);
