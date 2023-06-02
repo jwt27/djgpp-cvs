@@ -302,7 +302,7 @@ static void print_signal_name(int sig)
   }
   err("\r\n");
 }
-    
+
 void __djgpp_traceback_exit(int);
 
 void __djgpp_traceback_exit(int sig)
@@ -653,6 +653,9 @@ _exit(int status)
     __djgpp_exception_toggle ();
   __exit (status);
 }
+
+void __attribute__((alias("_exit")))
+_Exit(int status);
 
 #ifdef TEST
 
