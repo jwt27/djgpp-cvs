@@ -46,3 +46,7 @@ L_not_busy:
 	xorl	%eax,%eax
 
 	LEAVEP(decb dpmi_busy; popl %ss; popl %es)
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

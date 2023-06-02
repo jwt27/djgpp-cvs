@@ -485,3 +485,7 @@ already_forced:
 	.global ___djgpp_hw_lock_end
 ___djgpp_hw_lock_end:
 	ret					/* LD does weird things */
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

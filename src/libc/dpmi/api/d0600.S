@@ -18,3 +18,7 @@
 	DPMI(0x0600)
 	xorl	%eax,%eax
 	LEAVE
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

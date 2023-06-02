@@ -11,3 +11,7 @@
 	xorl	%eax, %eax		/* Indicate zero limit if not legal */
 1:
 	LEAVE
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

@@ -66,7 +66,7 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 #
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
-XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include
+XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include -U __ELF__
 XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
 else

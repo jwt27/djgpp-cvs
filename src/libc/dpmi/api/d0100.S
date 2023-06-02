@@ -24,3 +24,7 @@ L_no_ptr:
 	movl	$-1, %eax
 	
 	LEAVE
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif
