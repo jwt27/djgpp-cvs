@@ -20,10 +20,6 @@
 
 #include "stubinfo.h"
 
-#ifdef WITH_PLT
-#include "plt.S"
-#endif
-
 #if    (GAS_MAJOR == 2) \
     && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
 #define LJMP(there) \
@@ -124,9 +120,7 @@ _start:
 	stosl
 #endif
 
-#ifdef WITH_PLT
 	call plt_init
-#endif
 
 /* Enable NULL pointer protection if DPMI supports it */
 	testb	$0x1, __crt0_startup_flags+1		/* include/crt0.h */

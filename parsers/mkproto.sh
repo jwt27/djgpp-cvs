@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 7 ]; then
+if [ $# -lt 6 ]; then
     echo "generate thunk prototypes compatible with fdpp's thunk_gen & plt"
-    echo "$0 <lib_path> <o_path> <hdr_path> <athunks_out> <cthunks_out> <plti_out> <incs_out>"
+    echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out> <plti_out> <incs_out>"
     exit 1
 fi
 
@@ -33,8 +33,8 @@ TF=/tmp/tagsxx
 TL=/tmp/a.so
 set -e
 
-ld -melf_i386 -shared -Bsymbolic -o $TL "$2" --whole-archive "$1" 2>/dev/null
-shift 2
+ld -melf_i386 -shared -Bsymbolic -o $TL --whole-archive "$1" 2>/dev/null
+shift
 PRUNES="-name libm -prune -o -name machine -prune"
 PRUNES="$PRUNES -o -name string.h -prune -o -name in.h -prune"
 PRUNES="$PRUNES -o -name ctype.h -prune"

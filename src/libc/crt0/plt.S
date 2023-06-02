@@ -1,3 +1,7 @@
+#include "stubinfo.h"
+
+.text
+
 __plt_open: .quad 0
 PLT_OPEN_CMD = 0
 PLT_CLOSE_CMD = 1
