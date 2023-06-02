@@ -32,6 +32,3 @@ $(LIB)/crt0.o : plt.S ../plt.inc ../plt_asms.inc
 	$(XGCC) -m32 $< -c -o $@
 
 final : $(LIB)/crt0.o
-
-mcount.o : mcount.c
-	$(XNOPGGCC) -c $<
