@@ -2,7 +2,6 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-AS_SRC += _bcopy.S
 SRC += fpurge.c
 SRC += setenv.c
 
