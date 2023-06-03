@@ -1,6 +1,8 @@
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # -*- makefile -*-
 
+SHELL := /bin/bash -o pipefail
+
 #  These define the cross-to-djgpp and native programs.
 
 ifneq ($(COMSPEC),)
