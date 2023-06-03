@@ -136,8 +136,8 @@ setup_environment(void)
   char *dos_environ = (char *)alloca(_stubinfo->env_size), *cp;
   short env_selector;
   int env_count=0;
-  movedata(_stubinfo->psp_selector, 0x2c, ds, (uintptr_t)&env_selector, 2);
-  movedata(env_selector, 0, ds, (uintptr_t)dos_environ, _stubinfo->env_size);
+  fmemcpy2(&env_selector, DP(_stubinfo->psp_selector, 0x2c), 2);
+  fmemcpy2(dos_environ, DP(env_selector, 0), _stubinfo->env_size);
   cp = dos_environ;
   do {
     env_count++;

@@ -6,7 +6,5 @@
 void	
 ScreenUpdate(const void *_virtual_screen)
 {
-  movedata(_my_ds(), (uintptr_t)_virtual_screen,
-	   dossel, co80,
-	   ScreenRows() * ScreenCols() * 2);
+  fmemcpy1(DP(dossel, co80), _virtual_screen, ScreenRows() * ScreenCols() * 2);
 }

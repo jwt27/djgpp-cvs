@@ -493,8 +493,9 @@ insline(void)
   fill = ' ' | (ScreenAttrib << 8);
   while (bot > row)
   {
-    movedata(_dos_ds, VIDADDR(bot-1, left),
-	     _dos_ds, VIDADDR(bot, left),
+    fmemcpy12(
+	     DP(_dos_ds, VIDADDR(bot, left)),
+	     DP(_dos_ds, VIDADDR(bot-1, left)),
 	     nbytes);
     if (ScreenVirtualSegment != 0)
       refreshvirtualscreen(left, bot-1, nbytes/2);
@@ -516,8 +517,9 @@ delline(void)
   fill = ' ' | (ScreenAttrib << 8);
   while(row < bot)
   {
-    movedata(_dos_ds, VIDADDR(row+1, left),
-	     _dos_ds, VIDADDR(row, left),
+    fmemcpy12(
+	     DP(_dos_ds, VIDADDR(row, left)),
+	     DP(_dos_ds, VIDADDR(row+1, left)),
 	     nbytes);
     if (ScreenVirtualSegment != 0)
       refreshvirtualscreen(left, row, nbytes/2);

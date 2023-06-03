@@ -23,6 +23,10 @@ extern "C" {
 
 #include <sys/djtypes.h>
 #include <stdint.h>
+#ifndef IN_ASMOBJ
+#include <sys/fmemcpy.h>
+#define DP(s, o) (__dpmi_paddr){ .selector = s, .offset32 = o, }
+#endif
 
 #ifndef _SIZE_T
 __DJ_size_t
@@ -45,20 +49,6 @@ void _dosmemputb(const void *_buffer, size_t _xfers, unsigned long _offset);
 void _dosmemputw(const void *_buffer, size_t _xfers, unsigned long _offset);
 void _dosmemputl(const void *_buffer, size_t _xfers, unsigned long _offset);
 
-
-/* This length is in bytes, optimized for speed */
-void movedata(unsigned _source_selector, unsigned _source_offset,
-	       unsigned _dest_selector, unsigned _dest_offset,
-	       uint32_t _length);
-void __movedata(unsigned _source_selector, unsigned _source_offset,
-	       unsigned _dest_selector, unsigned _dest_offset,
-	       uint32_t _length);
-
-/* The lengths here are in TRANSFERS, not bytes! */
-void _movedatab(unsigned, unsigned, unsigned, unsigned, uint32_t);
-void _movedataw(unsigned, unsigned, unsigned, unsigned, uint32_t);
-void _movedatal(unsigned, unsigned, unsigned, unsigned, uint32_t);
-  
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */

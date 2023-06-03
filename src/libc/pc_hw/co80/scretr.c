@@ -5,8 +5,6 @@
 void	
 ScreenRetrieve(void *_virtual_screen)
 {
-  movedata(dossel, co80,
-	   _my_ds(), (uintptr_t)_virtual_screen,
-	   ScreenRows() * ScreenCols() * 2);
+  fmemcpy2(_virtual_screen, DP(dossel, co80), ScreenRows() * ScreenCols() * 2);
 }
 

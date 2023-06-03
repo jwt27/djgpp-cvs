@@ -6,9 +6,5 @@
 void
 _dosmemputb(const void *buffer, size_t length, unsigned long offset)
 {
-  _movedatab((unsigned)_my_ds(),
-	     (uintptr_t)buffer,
-	     (unsigned)_dos_ds,
-	     (unsigned)offset,
-	     length);
+  fmemcpy1(DP(_dos_ds, offset), buffer, length);
 }

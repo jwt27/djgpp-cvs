@@ -42,7 +42,7 @@ unsigned int _dos_write(int handle, const void *buffer, unsigned int count, unsi
   while( count )
   {
     write_size = ( count < dos_buffer_size ) ? count : dos_buffer_size;
-    movedata(_my_ds(), (uintptr_t)p_buffer, dos_selector, 0, write_size);
+    fmemcpy1(DP(dos_selector, 0), p_buffer, write_size);
     r.h.ah = 0x40;
     r.x.bx = handle;
     r.x.cx = write_size;

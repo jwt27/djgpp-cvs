@@ -54,7 +54,6 @@ _truename_internal(const char *file, char *buf, const int try_lfn)
 {
   __dpmi_regs     regs;
   unsigned short  dos_mem_selector = _dos_ds;
-  unsigned short  our_mem_selector = _my_ds();
   int             e                = errno;
   unsigned	  use_lfn	   = _USE_LFN;
   int		  first_time	   = 1;
@@ -137,8 +136,8 @@ lfn_retry:
   }
 
   /* Now get the result from lower memory. */
-  movedata(dos_mem_selector, __tb + MAX_TRUE_NAME,
-           our_mem_selector, (uintptr_t)true_name, MAX_TRUE_NAME);
+  fmemcpy2(true_name, DP(dos_mem_selector, __tb + MAX_TRUE_NAME),
+            MAX_TRUE_NAME);
 
   if (regs.x.flags & 1)
     {

@@ -329,7 +329,6 @@ get_inode_from_sda(const char *mybasename)
   int            count          = dirent_count;
   unsigned int * dirent_p       = dirent_table;
   unsigned short dos_mem_base   = _dos_ds;
-  unsigned short our_mem_base   = _my_ds();
   char  * dot                   = strchr(mybasename, '.');
   size_t  total_len             = strlen(mybasename);
   int     name_len;
@@ -385,7 +384,7 @@ get_inode_from_sda(const char *mybasename)
       /* Copy the directory entry from the SDA to local storage.
          The filename is stored there in infamous DOS format: name and
          extension blank-padded to 8/3 characters, no dot between them.  */
-      movedata(dos_mem_base, src_address, our_mem_base, (uintptr_t)cmp_buf,
+      fmemcpy2(cmp_buf, DP(dos_mem_base, src_address),
                sizeof(struct full_dirent));
 
       /* If this is the filename we are looking for, return

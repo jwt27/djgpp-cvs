@@ -8,9 +8,5 @@
 void
 dosmemput(const void *buffer, size_t length, unsigned long offset)
 {
-  movedata((unsigned)_my_ds(),
-	    (uintptr_t)buffer,
-	    (unsigned)_dos_ds,
-	    (unsigned)offset,
-	    length);
+  fmemcpy1(DP(_dos_ds, offset), buffer, length);
 }

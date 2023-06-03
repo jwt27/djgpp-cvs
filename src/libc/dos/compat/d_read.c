@@ -55,7 +55,7 @@ unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned in
       return r.x.ax;
     }
     if ( r.x.ax )
-      movedata(dos_selector, 0, _my_ds(), (uintptr_t)p_buffer, r.x.ax);
+      fmemcpy2(p_buffer, DP(dos_selector, 0), r.x.ax);
     count    -= read_size;
     p_buffer += r.x.ax;
     *result  += r.x.ax;

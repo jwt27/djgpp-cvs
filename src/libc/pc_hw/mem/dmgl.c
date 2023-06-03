@@ -6,9 +6,5 @@
 void
 _dosmemgetl(unsigned long offset, size_t length, void *buffer)
 {
-  _movedatal((unsigned)_dos_ds,
-	     (unsigned)offset,
-	     (unsigned)_my_ds(),
-	     (uintptr_t)buffer,
-	     length);
+  fmemcpy2(buffer, DP(_dos_ds, offset), length);
 }

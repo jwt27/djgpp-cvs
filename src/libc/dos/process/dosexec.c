@@ -135,7 +135,7 @@ static int check_talloc(size_t amt)
       tbuf_selector = max_avail;
 
     new_tb *= 16;  /* convert to linear address */
-    movedata(_dos_ds, tbuf_beg, _dos_ds, new_tb, tbuf_ptr - tbuf_beg);
+    fmemcpy12(DP(_dos_ds, new_tb), DP(_dos_ds, tbuf_beg), tbuf_ptr - tbuf_beg);
     tbuf_ptr = new_tb + tbuf_ptr - tbuf_beg;
     tbuf_beg = new_tb;
     tbuf_end = tbuf_beg + tbuf_len - 1;
