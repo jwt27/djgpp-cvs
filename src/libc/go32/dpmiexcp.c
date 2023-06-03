@@ -30,6 +30,7 @@ extern unsigned end __asm__ ("end");
 static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
 
+#if 0
 static void
 itox(int v, int len)
 {
@@ -123,6 +124,7 @@ show_call_frame(void)
   } 
   err("\r\n");
 }
+#endif
 
 static const char *exception_names[] = {
   "Division by Zero",
@@ -145,9 +147,10 @@ static const char *exception_names[] = {
   "Alignment Check"
 };
 
-static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
-
 #define EXCEPTION_COUNT (sizeof(exception_names)/sizeof(exception_names[0]))
+
+#if 0
+static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
 
 static void
 dump_selector(const char *name, int sel)
@@ -262,10 +265,11 @@ do_faulting_finish_message(int fake_exception)
   err("]  Exceptn stack: ["); itox(excpt_stack_addr+8000, 8);
   err(".."); itox(excpt_stack_addr, 8); err("]\r\n");
   err("\r\n");
-  if (__djgpp_exception_state->__cs == _my_cs())
-    show_call_frame();
+//  if (__djgpp_exception_state->__cs == _my_cs())
+//    show_call_frame();
   _exit(-1);
 }
+#endif
 
 typedef void (*SignalHandler) (int);
 
@@ -287,6 +291,7 @@ signal(int sig, SignalHandler func)
 
 static const char signames[] = "ABRTFPE ILL SEGVTERMALRMHUP INT KILLPIPEQUITUSR1USR2NOFPTRAP";
 
+#if 0
 static void print_signal_name(int sig)
 {
   err("Exiting due to signal ");
@@ -302,11 +307,13 @@ static void print_signal_name(int sig)
   }
   err("\r\n");
 }
+#endif
 
 void __djgpp_traceback_exit(int);
 
 void __djgpp_traceback_exit(int sig)
 {
+#if 0
   jmp_buf fake_exception;
 
   if (sig >= SIGABRT && sig <= SIGTRAP)
@@ -319,7 +326,7 @@ void __djgpp_traceback_exit(int sig)
       if (setjmp(__djgpp_exception_state))
       {
 	err("Bad longjmp to __djgpp_exception_state--aborting\r\n");
-	do_faulting_finish_message(0); /* does not return */
+//	do_faulting_finish_message(0); /* does not return */
       }
       else
 	/* Fake the exception number.  7Ah is the last one hardwired
@@ -328,9 +335,10 @@ void __djgpp_traceback_exit(int sig)
     }
   }
   print_signal_name(sig);
-  if(__djgpp_exception_state_ptr)
+#endif
+//  if(__djgpp_exception_state_ptr)
     /* This exits, does not return.  */
-    do_faulting_finish_message(__djgpp_exception_state_ptr == &fake_exception);
+//    do_faulting_finish_message(__djgpp_exception_state_ptr == &fake_exception);
   _exit(-1);
 }
 
@@ -364,16 +372,18 @@ raise(int sig)
 void
 __djgpp_exception_processor(void)
 {
+#if 0
   int sig;
-  
+
   sig = except_to_sig(__djgpp_exception_state->__signum);
   raise(sig);
   if(__djgpp_exception_state->__signum >= EXCEPTION_COUNT) /* Not exception so continue OK */
     longjmp(__djgpp_exception_state, __djgpp_exception_state->__eax);
   /* User handler did not exit or longjmp, we must exit */
+#endif
   err("Cannot continue from exception, ");
-  print_signal_name(sig);
-  do_faulting_finish_message(0);
+//  print_signal_name(sig);
+//  do_faulting_finish_message(0);
 }
 
 static __dpmi_paddr except_ori[EXCEPTION_COUNT];

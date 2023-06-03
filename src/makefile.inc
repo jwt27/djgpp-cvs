@@ -50,8 +50,8 @@ GAS_MINORMINOR := 0
 endif
 
 # Find GCC own include directory and add it to CFLAGS
-GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
-CFLAGS += -I$(GCC_INC_DIR)
+#GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
+#CFLAGS += -I$(GCC_INC_DIR)
 
 # Pass defines as compiler/assembler switches
 CFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
@@ -174,7 +174,7 @@ makefile.oho: makefile
 endif
 
 clean ::
-	-$(MISC) rm *.o *.O *.d *.i makefile.oh makefile.oho
+	-$(MISC) rm *.o *.d *.i makefile.oh makefile.oho
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)

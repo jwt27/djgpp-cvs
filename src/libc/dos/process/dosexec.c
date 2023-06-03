@@ -438,9 +438,12 @@ direct_exec_tail_1(const char *program, const char *args,
     __dpmi_free_dos_memory(tbuf_selector);
   tbuf_selector = 0;
 #endif
+#if 0
   /* Work around the W2K NTVDM bug; see dpmiexcp.c for detailed
      explanations.  */
   __maybe_fix_w2k_ntvdm_bug();
+#endif
+
   if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);

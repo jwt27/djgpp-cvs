@@ -25,11 +25,6 @@ extern "C" {
 #include <setjmp.h>
 #include <dpmi.h>
 
-#ifdef __dj_include_setjmp_h_
-EXTERN ASM_P(jmp_buf, __djgpp_exception_state_ptr);	/* Must include setjmp.h first */
-#define __djgpp_exception_state (*__djgpp_exception_state_ptr)
-#endif
-
 EXTERN unsigned short ASM(__djgpp_our_DS);
 EXTERN unsigned short ASM(__djgpp_app_DS);	/* Data selector invalidated by HW ints */
 EXTERN unsigned short ASM(__djgpp_ds_alias);	/* Data selector always valid */
