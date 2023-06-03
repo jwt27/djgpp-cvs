@@ -14,7 +14,7 @@ int	strcoll(const char *_s1, const char *_s2);
 char *	strerror(int _errcode);
 size_t	strxfrm(char *  _s1, const char *  _s2, size_t _n);
 
-int	strerror_r(int _errnum, char *_strerrbuf, size_t _buflen);
+//int	strerror_r(int _errnum, char *_strerrbuf, size_t _buflen);
 
 int	memicmp(const void *_s1, const void *_s2, size_t _n);
 char *	strdup(const char *_s);
@@ -28,7 +28,9 @@ int	strncasecmp(const char *_s1, const char *_s2, size_t _n);
 int	strnicmp(const char *_s1, const char *_s2, size_t _n);
 char *	strupr(char *_s);
 
+#define __USE_GNU
 #include_next <string.h>
+#undef __USE_GNU
 #ifdef __USE_POSIX_IMPLICITLY
 #undef __USE_POSIX_IMPLICITLY
 #undef _DEFAULT_SOURCE
