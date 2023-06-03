@@ -28,6 +28,7 @@ endif
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
+	$(CROSS_STRIP) --strip-debug $@
 
 $(TOP)/libc_tmp.a : makefile.rfo thunk_syms.o
 	@-$(MISC) rm $@
