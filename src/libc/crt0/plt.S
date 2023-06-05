@@ -107,6 +107,11 @@ plt_init:
     int $0x21
     popl %ds
     jc 2f
+    /* unmap shm */
+    movw shm_block + SHM_LINEAR + 2, %bx
+    movw shm_block + SHM_LINEAR, %cx
+    movl $0x801, %eax
+    int $0x31
     /* free desc */
     movw sel, %bx
     movl $1, %eax
@@ -124,6 +129,7 @@ plt_init:
     movl %es, %eax
     movl %eax, __plt_call + 4
     movl %edi, __plt_call
+
     /* free mem */
     movl $0xd01, %eax
     movw shm_block + SHM_HANDLE, %di
