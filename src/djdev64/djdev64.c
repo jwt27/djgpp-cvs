@@ -67,12 +67,10 @@ int djdev64_open(const char *path)
 
 int djdev64_call(int handle, int libid, int fn, unsigned char *sp)
 {
-    enum DispStat stat;
-    int len, rc;
-
+    int rc;
     if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
         return -1;
-    rc = dlhs[handle].cdisp(libid, fn, sp, &stat, &len);
+    rc = dlhs[handle].cdisp(libid, fn, sp);
     return rc;
 }
 

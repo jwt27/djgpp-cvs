@@ -1,9 +1,8 @@
+#include <dj64init.h>
 #include "thunk_incs.h"
 
 #define PACKED __attribute__((packed))
-enum DispStat { DISP_OK, DISP_NORET };
 enum { ASM_CALL_OK, ASM_CALL_ABORT };
-enum { FDPP_RET_ABORT = -1, FDPP_RET_OK, FDPP_RET_NORET };
 enum { ASM_OK, ASM_NORET, ASM_ABORT, PING_ABORT };
 #define ___assert(x)
 static int recur_cnt;
@@ -63,7 +62,7 @@ static UDWORD FdppThunkCall(int fn, UBYTE *sp, enum DispStat *r_stat,
     return ret;
 }
 
-static int _FdppCall(__dpmi_regs *regs)
+static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp)
 {
     int len;
     UDWORD res;
@@ -72,10 +71,10 @@ static int _FdppCall(__dpmi_regs *regs)
 //    assert(fdpp);
 
     s_regs = *regs;
-    res = FdppThunkCall(regs->d.ecx, (UBYTE *)DATA_PTR(regs->d.edx), &stat, &len);
+    res = FdppThunkCall(regs->d.ecx, sp, &stat, &len);
     *regs = s_regs;
     if (stat == DISP_NORET)
-        return (res == ASM_NORET ? FDPP_RET_NORET : FDPP_RET_ABORT);
+        return (res == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
     switch (len) {
     case 0:
         break;
@@ -92,19 +91,25 @@ static int _FdppCall(__dpmi_regs *regs)
 //        _fail();
         break;
     }
-    return FDPP_RET_OK;
+    return DJ64_RET_OK;
 }
 
-int FdppCall(__dpmi_regs *regs); // XXX
-int FdppCall(__dpmi_regs *regs)
+static int FdppCall(int libid, int fn, uint8_t *sp)
 {
     int ret;
+    __dpmi_regs *regs = (__dpmi_regs *)sp;
+    sp += sizeof(*regs);
     recur_cnt++;
-    ret = _FdppCall(regs);
+    ret = _FdppCall(libid, fn, regs, sp);
     recur_cnt--;
     return ret;
 }
 
+dj64cdispatch_t *DJ64_INIT_FN(int handle, dj64dispatch_t *disp)
+{
+    // TODO
+    return FdppCall;
+}
 
 #define _TFLG_NONE 0
 #define _TFLG_FAR 1
