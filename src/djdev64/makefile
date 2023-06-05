@@ -8,7 +8,7 @@ LIB = ../../lib
 all : libdjdev64.so
 
 clean :
-	rm *.o libdjdev64.so
+	rm -f *.o libdjdev64.so
 
 libdjdev64.so : djdev64.o
 	$(GCC) -shared -o $@ $^

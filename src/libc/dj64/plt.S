@@ -42,8 +42,8 @@ dj64_plt_call:
     .long \nm
 .endm
 
-#include "../plt.inc"
-#include "../plt_asms.inc"
+#include "plt.inc"
+#include "plt_asms.inc"
 
 sel: .word 0
 SHM_REQ_LEN = 0

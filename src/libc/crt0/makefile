@@ -27,13 +27,3 @@ sbrk16.ah : sbrk16.asm
 	$(HOSTBIN)/djasm.exe sbrk16.asm sbrk16.ah
 
 crt0.o : crt0.S exit16.ah sbrk16.ah
-plt.o : plt.S ../plt.inc ../plt_asms.inc
-	$(XGCC) -m32 $< -c -o $@
-
-$(LIB)/libc.a : $(TOP)/libc_tmp.a plt.o
-	cp -f $< libctmp.a
-	$(CROSS_AR) q libctmp.a plt.o
-	$(CROSS_AR) s libctmp.a
-	mv -f libctmp.a $@
-
-final: $(LIB)/libc.a
