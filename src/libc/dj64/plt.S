@@ -6,6 +6,7 @@ __plt_open: .quad 0
 PLT_OPEN_CMD = 0
 PLT_CLOSE_CMD = 1
 __plt_call: .quad 0
+__plt_ctrl: .quad 0
 __plt_handle: .long 0
 AUX_CORE = 0
 AUX_USER = 1
@@ -35,6 +36,13 @@ ext_nm: .asciz "DJ64"
 dj64_plt_call:
     movl $AUX_USER, %ebx
     call_plt
+    ret
+
+.global dj64_plt_ctrl
+dj64_plt_ctrl:
+    movl $AUX_USER, %ebx
+    movl __plt_handle, %eax
+    lcalll *__plt_ctrl
     ret
 
 .macro asmsym nm
@@ -129,6 +137,8 @@ plt_init:
     movl %es, %eax
     movl %eax, __plt_call + 4
     movl %edi, __plt_call
+    movl %eax, __plt_ctrl + 4
+    movl %esi, __plt_ctrl
 
     /* free mem */
     movl $0xd01, %eax

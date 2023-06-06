@@ -74,6 +74,12 @@ int djdev64_call(int handle, int libid, int fn, unsigned char *sp)
     return rc;
 }
 
+int djdev64_ctrl(int handle, int libid, int fn, unsigned char *sp)
+{
+    // TODO!
+    return 0;
+}
+
 void djdev64_close(int handle)
 {
     if (handle >= HNDL_MAX)
