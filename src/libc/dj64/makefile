@@ -7,6 +7,7 @@ TG = $(PD)/thunk_gen
 MP = $(PD)/mkproto.sh
 GT = $(PD)/gen_thunks.sh
 GA = $(PD)/gen_asms.sh
+PC = $(PD)/parse_decls.sh
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
@@ -29,6 +30,9 @@ asm_incsn.h:
 plt_asms.inc:
 	$(GA) 2 $(TOP)/../../include >$@
 
+plt_asmc.inc: thunk_asms.tmp
+	$(PC) 4 $< >$@
+
 asym_incs.h:
 	$(GA) 3 $(TOP)/../../include >$@
 
@@ -46,7 +50,7 @@ thunk_asms.h: thunk_asms.tmp
 thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
 thunks_a.o: asm_incs.h
 
-plt.o : plt.S plt.inc plt_asms.inc
+plt.o : plt.S plt.inc plt_asms.inc plt_asmc.inc
 	$(XGCC) -m32 $< -c -o $@
 
 $(LIB)/libdj64.so : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h thunks.o \

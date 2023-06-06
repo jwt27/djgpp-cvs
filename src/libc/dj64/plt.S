@@ -46,12 +46,20 @@ dj64_plt_ctrl:
     ret
 
 .macro asmsym nm
-\nm\()_ptr:
     .long \nm
 .endm
 
 #include "plt.inc"
 #include "plt_asms.inc"
+
+.macro asmcsym nm,num
+    .long \num
+    .long _\nm
+.endm
+
+__asm_callsymtab_start:
+#include "plt_asmc.inc"
+__asm_callsymtab_end:
 
 sel: .word 0
 SHM_REQ_LEN = 0
