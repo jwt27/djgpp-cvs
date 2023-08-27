@@ -13,7 +13,7 @@
 	movl	ARG2, %edx
 
 	DPMI(0x0d03)
-	movzwl	%ax,%eax
+	xorl	%eax,%eax
 
 	LEAVE
 
