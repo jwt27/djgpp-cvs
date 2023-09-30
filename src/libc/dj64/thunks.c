@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <dj64init.h>
 #include "plt.h"
 #include "thunk_incs.h"
@@ -63,7 +64,8 @@ static UDWORD FdppThunkCall(int fn, UBYTE *sp, enum DispStat *r_stat,
     return ret;
 }
 
-static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp)
+static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
+    dj64dispatch_t *disp)
 {
     int len;
     UDWORD res;
@@ -72,7 +74,7 @@ static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp)
 //    assert(fdpp);
 
     s_regs = *regs;
-    res = FdppThunkCall(regs->d.ecx, sp, &stat, &len);
+    res = (libid ? disp : FdppThunkCall)(regs->d.ecx, sp, &stat, &len);
     *regs = s_regs;
     if (stat == DISP_NORET)
         return (res == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
@@ -95,22 +97,43 @@ static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp)
     return DJ64_RET_OK;
 }
 
-static int FdppCall(int libid, int fn, uint8_t *sp)
+struct udisp {
+    dj64dispatch_t *disp;
+    dj64symtab_t *st;
+};
+#define MAX_HANDLES 10
+static struct udisp udisps[MAX_HANDLES];
+
+static int FdppCall(int handle, int libid, int fn, uint8_t *sp)
 {
     int ret;
+    struct udisp *u;
     __dpmi_regs *regs = (__dpmi_regs *)sp;
     sp += sizeof(*regs);
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
     recur_cnt++;
-    ret = _FdppCall(libid, fn, regs, sp);
+    ret = _FdppCall(libid, fn, regs, sp, u->disp);
     recur_cnt--;
     return ret;
 }
 
-static int FdppCtrl(int libid, int fn, uint8_t *sp)
+static int FdppCtrl(int handle, int libid, int fn, uint8_t *sp)
 {
+//    struct udisp *u;
+//    struct dj64_symtab *st;
+    __dpmi_regs *regs = (__dpmi_regs *)sp;
+    sp += sizeof(*regs);
+    assert(handle < MAX_HANDLES);
+//    u = &udisps[handle];
     switch (fn) {
     case DL_SET_SYMTAB:
 #if 0
+        st = (struct dj64_symtab *)DATA_PTR(regs->d.esi);
+        if (libid) {
+            u->st(st);
+            return 0;
+        }
         if (HI_BYTE(regs->eax) != FDPP_KERNEL_VERSION) {
             fdloudprintf("\nfdpp version mismatch: expected %i, got %i\n",
                     FDPP_KERNEL_VERSION, HI_BYTE(regs->eax));
@@ -129,7 +152,11 @@ static dj64cdispatch_t *ops[] = { FdppCall, FdppCtrl };
 dj64cdispatch_t **DJ64_INIT_FN(int handle, dj64dispatch_t *disp,
     dj64symtab_t *st)
 {
-    // TODO
+    struct udisp *u;
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
+    u->disp = disp;
+    u->st = st;
     return ops;
 }
 

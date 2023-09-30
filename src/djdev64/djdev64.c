@@ -78,14 +78,14 @@ int djdev64_call(int handle, int libid, int fn, unsigned char *sp)
 {
     if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
         return -1;
-    return dlhs[handle].cdisp(libid, fn, sp);
+    return dlhs[handle].cdisp(handle, libid, fn, sp);
 }
 
 int djdev64_ctrl(int handle, int libid, int fn, unsigned char *sp)
 {
     if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
         return -1;
-    return dlhs[handle].ctrl(libid, fn, sp);
+    return dlhs[handle].ctrl(handle, libid, fn, sp);
 }
 
 void djdev64_close(int handle)

@@ -159,6 +159,8 @@ plt_init:
     int $0x31
     jc 2f
 
+    pushl %ebp
+    movl %esp, %ebp
     // fill in struct dj64_symtab
     pushw $__asm_callsymtab_end - __asm_callsymtab_start  // calltab_len
     pushw __asm_callsymtab_start  // calltab
@@ -166,10 +168,15 @@ plt_init:
     pushw __asm_symtab_start      // symtab
     // dj64_symtab filled
     movl %esp, %esi
+    pushal
+    movl %esp, %edx
     movl __plt_handle, %eax
     movl $AUX_CORE, %ebx
     movl $DL_SET_SYMTAB, %ecx
     lcalll *__plt_ctrl
+    popal
+    movl %ebp, %esp
+    popl %ebp
 1:
     ret
 2:
