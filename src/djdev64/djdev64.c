@@ -24,6 +24,7 @@ static int handle;
 struct dj64handle {
     void *dlobj;
     dj64cdispatch_t *cdisp;
+    dj64cdispatch_t *ctrl;
 };
 static struct dj64handle dlhs[HNDL_MAX];
 
@@ -35,7 +36,8 @@ int djdev64_open(const char *path)
   int h;
   dj64init_t *init;
   dj64dispatch_t *disp;
-  dj64cdispatch_t *cdisp;
+  dj64cdispatch_t **cdisp;
+  dj64symtab_t *st;
   void *dlh = dlopen(path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
@@ -53,7 +55,13 @@ int djdev64_open(const char *path)
     dlclose(dlh);
     return -1;
   }
-  cdisp = init(handle, disp);
+  st = dlsym(dlh, _S(DJ64_SYMTAB_FN));
+  if (!st) {
+    fprintf(stderr, "cannot find " _S(DJ64_SYMTAB_FN) "\n");
+    dlclose(dlh);
+    return -1;
+  }
+  cdisp = init(handle, disp, st);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     dlclose(dlh);
@@ -61,23 +69,23 @@ int djdev64_open(const char *path)
   }
   h = handle++;
   dlhs[h].dlobj = dlh;
-  dlhs[h].cdisp = cdisp;
+  dlhs[h].cdisp = cdisp[0];
+  dlhs[h].ctrl = cdisp[1];
   return h;
 }
 
 int djdev64_call(int handle, int libid, int fn, unsigned char *sp)
 {
-    int rc;
     if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
         return -1;
-    rc = dlhs[handle].cdisp(libid, fn, sp);
-    return rc;
+    return dlhs[handle].cdisp(libid, fn, sp);
 }
 
 int djdev64_ctrl(int handle, int libid, int fn, unsigned char *sp)
 {
-    // TODO!
-    return 0;
+    if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
+        return -1;
+    return dlhs[handle].ctrl(libid, fn, sp);
 }
 
 void djdev64_close(int handle)

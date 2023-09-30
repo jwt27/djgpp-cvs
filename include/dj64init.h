@@ -5,7 +5,9 @@
 
 typedef int (dj64cdispatch_t)(int libid, int fn, uint8_t *sp);
 #define DJ64_INIT_FN dj64init
-typedef dj64cdispatch_t *(dj64init_t)(int handle, dj64dispatch_t *disp);
-dj64cdispatch_t *DJ64_INIT_FN(int handle, dj64dispatch_t *disp);
+typedef dj64cdispatch_t **(dj64init_t)(int handle, dj64dispatch_t *disp,
+    dj64symtab_t *st);
+dj64cdispatch_t **DJ64_INIT_FN(int handle, dj64dispatch_t *disp,
+    dj64symtab_t *st);
 
 #endif

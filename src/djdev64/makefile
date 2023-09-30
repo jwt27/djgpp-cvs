@@ -1,7 +1,7 @@
 GCC = gcc
 
 %.o : %.c
-	$(GCC) $(CFLAGS) -iquote ../../include -fpic -c -o $@ $<
+	$(GCC) $(CFLAGS) -iquote ../../include -fpic -ggdb3 -Wall -c -o $@ $<
 
 LIB = ../../lib
 

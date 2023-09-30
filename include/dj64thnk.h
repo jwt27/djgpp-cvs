@@ -13,6 +13,18 @@ typedef uint32_t (dj64dispatch_t)(int fn, uint8_t *sp, enum DispStat *r_stat,
 uint32_t DJ64_DISPATCH_FN(int fn, uint8_t *sp, enum DispStat *r_stat,
     int *r_len);
 
+#define DJ64_SYMTAB_FN dj64symtab
+
+struct dj64_symtab {
+    void *symtab;
+    uint16_t symtab_len;
+    void *calltab;
+    uint16_t calltab_len;
+};
+
+typedef void (dj64symtab_t)(struct dj64_symtab *st);
+void DJ64_SYMTAB_FN(struct dj64_symtab *st);
+
 #define ARG1(sp)		(*(uint32_t *)(sp + 8))
 #define ARG1h(sp)		(*(uint16_t *)(sp + 10))
 #define ARG2(sp)		(*(uint32_t *)(sp + 12))

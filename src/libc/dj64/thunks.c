@@ -1,4 +1,5 @@
 #include <dj64init.h>
+#include "plt.h"
 #include "thunk_incs.h"
 
 #define PACKED __attribute__((packed))
@@ -105,10 +106,31 @@ static int FdppCall(int libid, int fn, uint8_t *sp)
     return ret;
 }
 
-dj64cdispatch_t *DJ64_INIT_FN(int handle, dj64dispatch_t *disp)
+static int FdppCtrl(int libid, int fn, uint8_t *sp)
+{
+    switch (fn) {
+    case DL_SET_SYMTAB:
+#if 0
+        if (HI_BYTE(regs->eax) != FDPP_KERNEL_VERSION) {
+            fdloudprintf("\nfdpp version mismatch: expected %i, got %i\n",
+                    FDPP_KERNEL_VERSION, HI_BYTE(regs->eax));
+            _fail();
+        }
+        FdppSetSymTab(
+                (struct fdpp_symtab *)so2lin(regs->ss, LO_WORD(regs->esi)));
+#endif
+        return 0;
+    }
+    return -1;
+}
+
+static dj64cdispatch_t *ops[] = { FdppCall, FdppCtrl };
+
+dj64cdispatch_t **DJ64_INIT_FN(int handle, dj64dispatch_t *disp,
+    dj64symtab_t *st)
 {
     // TODO
-    return FdppCall;
+    return ops;
 }
 
 #define _TFLG_NONE 0

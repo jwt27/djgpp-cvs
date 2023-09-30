@@ -1,4 +1,5 @@
 #include "stubinfo.h"
+#include "plt.h"
 
 .text
 
@@ -32,6 +33,8 @@ ext_nm: .asciz "DJ64"
     ret
 .endm
 
+#include "plt.inc"
+
 .global dj64_plt_call
 dj64_plt_call:
     movl $AUX_USER, %ebx
@@ -49,8 +52,9 @@ dj64_plt_ctrl:
     .long \nm
 .endm
 
-#include "plt.inc"
+__asm_symtab_start:
 #include "plt_asms.inc"
+__asm_symtab_end:
 
 .macro asmcsym nm,num
     .long \num
@@ -154,7 +158,20 @@ plt_init:
     movw shm_block + SHM_HANDLE + 2, %si
     int $0x31
     jc 2f
-1:  ret
+
+    // fill in struct dj64_symtab
+    pushw $__asm_callsymtab_end - __asm_callsymtab_start  // calltab_len
+    pushw __asm_callsymtab_start  // calltab
+    pushw $__asm_symtab_end - __asm_symtab_start  // symtab_len
+    pushw __asm_symtab_start      // symtab
+    // dj64_symtab filled
+    movl %esp, %esi
+    movl __plt_handle, %eax
+    movl $AUX_CORE, %ebx
+    movl $DL_SET_SYMTAB, %ecx
+    lcalll *__plt_ctrl
+1:
+    ret
 2:
     // TODO: print error
     movb $0x4c, %ah
