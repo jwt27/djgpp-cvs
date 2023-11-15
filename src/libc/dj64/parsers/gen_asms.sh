@@ -10,9 +10,9 @@ gen_incsn() {
 
 gen_asms() {
     egrep -R --include="*.h" " ASM\(| ASM_N\(| ASM_F\(" . "$1" | grep EXTERN | \
-	sed -E 's/.+\((.+)\);.*/asmsym _\1/' | sort | uniq
+	sed -E 's/.+\((.+)\);.*/ASMSYM\(\1\)/' | sort | uniq
     egrep -R --include="*.h" " ASM_P\(| ASM_AP\(" . "$1" | grep EXTERN | \
-	sed -E 's/.+\(.+, (.+)\);.*/asmsym _\1/' | sort | uniq
+	sed -E 's/.+\(.+, (.+)\);.*/ASMSYM\(\1\)/' | sort | uniq
 }
 
 gen_asyms() {

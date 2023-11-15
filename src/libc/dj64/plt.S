@@ -48,23 +48,6 @@ dj64_plt_ctrl:
     lcalll *__plt_ctrl
     ret
 
-.macro asmsym nm
-    .long \nm
-.endm
-
-__asm_symtab_start:
-#include "plt_asms.inc"
-__asm_symtab_end:
-
-.macro asmcsym nm,num
-    .long \num
-    .long _\nm
-.endm
-
-__asm_callsymtab_start:
-#include "plt_asmc.inc"
-__asm_callsymtab_end:
-
 sel: .word 0
 SHM_REQ_LEN = 0
 SHM_RET_LEN = 4
@@ -159,24 +142,6 @@ plt_init:
     int $0x31
     jc 2f
 
-    pushl %ebp
-    movl %esp, %ebp
-    // fill in struct dj64_symtab
-    pushw $__asm_callsymtab_end - __asm_callsymtab_start  // calltab_len
-    pushw __asm_callsymtab_start  // calltab
-    pushw $__asm_symtab_end - __asm_symtab_start  // symtab_len
-    pushw __asm_symtab_start      // symtab
-    // dj64_symtab filled
-    movl %esp, %esi
-    pushal
-    movl %esp, %edx
-    movl __plt_handle, %eax
-    movl $AUX_CORE, %ebx
-    movl $DL_SET_SYMTAB, %ecx
-    lcalll *0
-    popal
-    movl %ebp, %esp
-    popl %ebp
 1:
     ret
 2:
