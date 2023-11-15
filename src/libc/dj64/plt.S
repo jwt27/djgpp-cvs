@@ -55,6 +55,8 @@ SHM_HANDLE = 8
 SHM_LINEAR = 0xc
 SHM_NAME = 0x10
 shm_block: .fill 0x1b, 1, 0
+handle: .long 0
+maddr: .long 0
 
 .global plt_init
 plt_init:
@@ -87,22 +89,23 @@ plt_init:
     movl $0, %eax
     movl $1, %ecx
     int $0x31
+    movw %ax, sel
     /* set base */
-    movl %eax, %ebx
+    movw %ax, %bx
     movw shm_block + SHM_LINEAR + 2, %cx
     movw shm_block + SHM_LINEAR, %dx
     movl $7, %eax
     int $0x31
     /* set limit */
+    movw sel, %bx
     movw %fs:STUBINFO_PAYLOAD_SIZE, %dx
     decw %dx
     movw %fs:STUBINFO_PAYLOAD_SIZE+2, %cx
     movl $8, %eax
     int $0x31
-    movw %bx, sel
     /* read payload */
     pushl %ds
-    movw %bx, %ds
+    movw sel, %ds
     movl %fs:STUBINFO_SELF_FD, %ebx
     movl %fs:STUBINFO_PAYLOAD_SIZE, %ecx
     movl $0, %edx
@@ -114,10 +117,6 @@ plt_init:
     movw shm_block + SHM_LINEAR + 2, %bx
     movw shm_block + SHM_LINEAR, %cx
     movl $0x801, %eax
-    int $0x31
-    /* free desc */
-    movw sel, %bx
-    movl $1, %eax
     int $0x31
 
     // now open lib
@@ -139,6 +138,63 @@ plt_init:
     movl $0xd01, %eax
     movw shm_block + SHM_HANDLE, %di
     movw shm_block + SHM_HANDLE + 2, %si
+    int $0x31
+    jc 2f
+
+    movl %fs:STUBINFO_SELF_SIZE, %ecx
+    orl %ecx, %ecx
+    jz 2f
+    addl $(4096-1), %ecx
+    andl $~(4096-1), %ecx
+    movl %ecx, %ebx
+    shrl $16, %ebx
+    andl $0xffff, %ecx
+    /* alloc mem */
+    movl $0x501, %eax
+    int $0x31
+    jc 2f
+    movw %cx, maddr
+    movw %bx, maddr + 2
+    movw %di, handle
+    movw %si, handle + 2
+    /* set base */
+    movw maddr, %dx
+    movw maddr + 2, %cx
+    movw sel, %bx
+    movl $7, %eax
+    int $0x31
+    /* set limit */
+    movw sel, %bx
+    movw %fs:STUBINFO_SELF_SIZE, %dx
+    decw %dx
+    movw %fs:STUBINFO_SELF_SIZE+2, %cx
+    movl $8, %eax
+    int $0x31
+    /* read payload */
+    pushl %ds
+    movw sel, %ds
+    movl %fs:STUBINFO_SELF_FD, %ebx
+    movl %fs:STUBINFO_SELF_SIZE, %ecx
+    movl $0, %edx
+    movl $0x3f00, %eax
+    int $0x21
+    popl %ds
+    jc 2f
+    /* free desc */
+    movw sel, %bx
+    movl $1, %eax
+    int $0x31
+    /* call manager */
+    movl __plt_handle, %eax
+    movl $AUX_CORE, %ebx
+    movl $DL_SET_SYMTAB, %ecx
+    pushl maddr
+    lcalll *__plt_ctrl
+    popl %eax
+    /* free mem */
+    movl $0x502, %eax
+    movw handle, %di
+    movw handle + 2, %si
     int $0x31
     jc 2f
 

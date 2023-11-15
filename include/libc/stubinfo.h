@@ -18,9 +18,11 @@
 #define STUBINFO_DPMI_SERVER 0x44
 #define STUBINFO_STUBINFO_VER 0x54
 #define STUBINFO_SELF_FD 0x58
-#define STUBINFO_PAYLOAD_OFFS 0x5C
-#define STUBINFO_PAYLOAD_SIZE 0x60
-#define STUBINFO_END 0x64
+#define STUBINFO_SELF_OFFS 0x5C
+#define STUBINFO_SELF_SIZE 0x60
+#define STUBINFO_PAYLOAD_OFFS 0x64
+#define STUBINFO_PAYLOAD_SIZE 0x68
+#define STUBINFO_END 0x6C
 #ifndef __ASSEMBLER__
 typedef struct {
   char magic[16];
@@ -40,9 +42,13 @@ typedef struct {
   /* standard djgpp stubinfo ends here */
   unsigned long stubinfo_ver;
   long self_fd;
+  unsigned long self_offs;
+  long self_size;
   unsigned long payload_offs;
   long payload_size;
 } _GO32_StubInfo;
 #endif
+
+//static_assert(sizeof(_GO32_StubInfo) == STUBINFO_END, "size mismatch");
 
 #endif /* __dj_include_stub_h__ */
