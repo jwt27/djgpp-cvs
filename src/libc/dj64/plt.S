@@ -173,7 +173,7 @@ plt_init:
     movl __plt_handle, %eax
     movl $AUX_CORE, %ebx
     movl $DL_SET_SYMTAB, %ecx
-    lcalll *__plt_ctrl
+    lcalll *0
     popal
     movl %ebp, %esp
     popl %ebp

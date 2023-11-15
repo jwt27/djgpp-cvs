@@ -2,12 +2,12 @@ TOP = ..
 
 include $(TOP)/../makefile.inc
 
-PD = $(TOP)/../../parsers
-TG = $(PD)/thunk_gen
+PD = parsers
+TG = thunk_gen/thunk_gen
 MP = $(PD)/mkproto.sh
-GT = $(PD)/gen_thunks.sh
 GA = $(PD)/gen_asms.sh
 PC = $(PD)/parse_decls.sh
+TFLAGS = -a 4 -p 4
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
@@ -42,10 +42,15 @@ thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
 		thunk_calls.tmp plt.inc thunk_incs.h
 
 thunk_calls.h: thunk_calls.tmp
-	$(TG) <$< >$@
+	$(TG) $(TFLAGS) <$< >$@
 
 thunk_asms.h: thunk_asms.tmp
-	$(GT) $(TG) $< $(PD) >$@
+	$(TG) $(TFLAGS) 1 <$< | sort | uniq | autom4te -l m4sugar $(PD)/thunks.m4 - >$@_ \
+		|| ($(RM) $@_ ; false)
+	$(TG) $(TFLAGS) 2 <$< >$@__ \
+		|| ($(RM) $@__ ; false)
+	cat $@_ $@__ >$@
+	rm -f $@_ $@__
 
 thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
 thunks_a.o: asm_incs.h
@@ -68,4 +73,5 @@ $(LIB)/libc.a : libc_tmp.a plt.o
 final: $(LIB)/libc.a $(LIB)/libdj64.so
 
 clean ::
-	@$(MISC) rm *.a *.tmp *.inc *.h
+	$(MAKE) -C thunk_gen clean
+	@$(MISC) rm *.a *.tmp *.inc asm_*.h thunk_*.h
