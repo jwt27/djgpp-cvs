@@ -1,0 +1,32 @@
+Source: dj64
+Section: devel
+Priority: optional
+Maintainer: Stas Sergeev <stsp@users.sourceforge.net>
+Standards-Version: 3.9.7
+Build-Depends:
+    make,
+    bison,
+    flex,
+    sed,
+    bash,
+    binutils,
+    binutils-x86-64-linux-gnu,
+    coreutils,
+    pkg-config,
+    debhelper (>= 9~)
+Homepage: https://github.com/stsp/djgpp-cvs
+
+Package: dj64
+Architecture: amd64
+Section: devel
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: 64-bit djgpp-alike dev suite
+ dj64 is a 64-bit djgpp-alike dev suite.
+
+Package: dj64-dev
+Architecture: amd64
+Section: libdevel
+Priority: optional
+Depends: dj64 (= ${binary:Version}), ${misc:Depends}
+Description: dj64 development headers
+ This package contains headers for dj64 usage.
