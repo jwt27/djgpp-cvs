@@ -400,7 +400,7 @@ _innum(int *ptr, int type, int len, int size, FILE *iop,
     break;
 
   case (FLOAT << 4) | LONGDOUBLE:
-    *(long double *)ptr = _atold(numbuf);
+//    *(long double *)ptr = _atold(numbuf);
     break;
 
   case (INT << 4) | CHAR:
