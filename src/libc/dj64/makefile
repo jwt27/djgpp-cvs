@@ -8,6 +8,7 @@ MP = $(PD)/mkproto.sh
 GA = $(PD)/gen_asms.sh
 PC = $(PD)/parse_decls.sh
 TFLAGS = -a 4 -p 4
+LIBN = libdj64.so.0.1
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
@@ -58,9 +59,9 @@ thunks_a.o: asm_incs.h plt_asmc.h plt_asms.h
 plt.o : plt.S plt.inc
 	$(XGCC) -m32 $< -c -o $@
 
-$(LIB)/libdj64.so : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h thunks.o \
+$(LIB)/$(LIBN) : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h thunks.o \
   thunks_a.o
-	$(CROSS_GCC) -shared -Wl,-Bsymbolic -o $@ \
+	$(CROSS_GCC) -shared -Wl,-soname=$(LIBN) -Wl,-Bsymbolic -o $@ \
   $(addprefix ../,$(file < $<)) thunks.o thunks_a.o
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
@@ -70,8 +71,12 @@ $(LIB)/libc.a : libc_tmp.a plt.o
 	$(CROSS_AR) s libctmp.a
 	mv -f libctmp.a $@
 
+$(LIB)/libdj64.so: $(LIB)/$(LIBN)
+	ln -sf $(LIBN) $@
+
 final: $(LIB)/libc.a $(LIB)/libdj64.so
 
 clean ::
 	$(MAKE) -C thunk_gen clean
-	@$(MISC) rm *.a *.tmp *.inc asm_*.h thunk_*.h
+	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h
+	$(RM) $(LIB)/libc.a $(LIB)/libdj64.so*

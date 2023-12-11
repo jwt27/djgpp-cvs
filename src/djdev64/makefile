@@ -1,14 +1,23 @@
+TOP = ../..
 GCC = gcc
 
-%.o : %.c
+%.o: %.c
 	$(GCC) $(CFLAGS) -iquote ../../include -fpic -ggdb3 -Wall -c -o $@ $<
 
-LIB = ../../lib
+LIBDIR = $(TOP)/lib
+LIBN = libdjdev64.so.0.1
+LIB = $(LIBDIR)/$(LIBN)
 
-all : libdjdev64.so
+all: $(LIBDIR)/libdjdev64.so
 
-clean :
-	rm -f *.o libdjdev64.so
+clean:
+	$(RM) *.o $(LIBDIR)/libdjdev64.so*
 
-libdjdev64.so : djdev64.o
-	$(GCC) -shared -o $@ $^
+$(LIBDIR):
+	mkdir $@
+
+$(LIB): djdev64.o | $(LIBDIR)
+	$(GCC) -shared -Wl,-soname=$(LIBN) -o $@ $^
+
+$(LIBDIR)/libdjdev64.so: $(LIB)
+	ln -sf $(LIBN) $@
