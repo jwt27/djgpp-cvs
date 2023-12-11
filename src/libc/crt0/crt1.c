@@ -166,7 +166,7 @@ setup_environment(void)
    * when `DJGPP' is not set in the environment.
    */
   putenv(unconst("", char *));
-  
+
   __dos_argv0 = (char *)malloc(strlen(cp + 3)+1);
   if (__dos_argv0 == 0)
     abort();
@@ -240,6 +240,5 @@ __crt1_startup(void)
   gppconio_init();
   __main();
   errno = 0;	/* ANSI says errno should be zero at program startup */
-  exit(main(__crt0_argc, __crt0_argv, _environ));
+//  exit(main(__crt0_argc, __crt0_argv, _environ));
 }
-
