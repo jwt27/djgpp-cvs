@@ -78,5 +78,5 @@ final: $(LIB)/libc.a $(LIB)/libdj64.so
 
 clean ::
 	$(MAKE) -C thunk_gen clean
-	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h
+	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h
 	$(RM) $(LIB)/libc.a $(LIB)/libdj64.so*
