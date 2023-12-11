@@ -4,15 +4,15 @@
 TOP=../..
 
 SRC += errhandl.c
-SRC += hugevalf.c
-SRC += hugevall.c
+#SRC += hugevalf.c
+#SRC += hugevall.c
 SRC += lrintf.c
 SRC += lrint.c
 SRC += lrintl.c
 SRC += llrintf.c
 SRC += llrint.c
 SRC += llrintl.c
-SRC += nan_def.c
+#SRC += nan_def.c
 SRC += nan.c
 SRC += nanf.c
 SRC += nanl.c
