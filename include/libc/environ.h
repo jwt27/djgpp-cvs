@@ -8,6 +8,9 @@
 extern "C" {
 #endif
 
+#define environ __dj_environ
+#define _environ __dj_environ
+
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \

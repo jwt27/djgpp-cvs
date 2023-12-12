@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libc/environ.h>
 
 extern char **_environ;
 

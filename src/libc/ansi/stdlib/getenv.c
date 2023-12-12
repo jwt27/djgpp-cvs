@@ -2,6 +2,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <stdlib.h>
 #include <string.h>
+#include <libc/environ.h>
 
 extern char **_environ;
 

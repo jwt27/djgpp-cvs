@@ -4,6 +4,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <libc/unconst.h>
+#include <libc/environ.h>
 #include <process.h>
 
 extern char **_environ;
