@@ -66,6 +66,7 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 #
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
+XCPP = $(CROSS_GCC) -I $(TOP)/../../include $(CFLAGS) -E
 XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include -U __ELF__
 XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
@@ -88,7 +89,7 @@ MISC = $(TOP)/../misc.exe
 
 %.o : %.c
 	$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
-	$(XGCC) -E -CC -g0 $< | $(XGCC) -undef -xc - -c $(EXTRA_CFLAGS) -o $@
+	$(XCPP) -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 %.o : %.cc
 	$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
