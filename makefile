@@ -2,13 +2,14 @@ TOP ?= .
 PREFIX ?= /usr/local
 INSTALL ?= install
 
+VERSION = 0.1
 DJLIBC = $(TOP)/lib/libc.a
 DJ64LIB = $(TOP)/lib/libdj64.so.0.1
 DJ64DEVL = $(TOP)/lib/libdj64.so
 DJDEV64LIB = $(TOP)/lib/libdjdev64.so.0.1
 DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
 
-all:
+all: dj64.pc
 	$(MAKE) -C src
 
 install:
@@ -24,6 +25,8 @@ install:
 	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(PREFIX)/lib
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/include/djdev64
 	$(INSTALL) -m 0644 $(TOP)/src/djdev64/djdev64.h $(DESTDIR)$(PREFIX)/include/djdev64
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/lib/pkgconfig
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/i386-pc-dj64
@@ -35,3 +38,11 @@ clean:
 
 deb:
 	debuild -i -us -uc -b
+
+%.pc: %.pc.in makefile
+	sed \
+		-e 's!@PREFIX[@]!$(PREFIX)!g' \
+		-e 's!@INCLUDEDIR[@]!$(INCLUDEDIR)!g' \
+		-e 's!@LIBDIR[@]!$(LIBDIR)!g' \
+		-e 's!@VERSION[@]!$(VERSION)!g' \
+		$< >$@
