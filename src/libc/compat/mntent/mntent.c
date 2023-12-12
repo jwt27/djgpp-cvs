@@ -33,6 +33,7 @@
  */
 #include <libc/stubs.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
@@ -116,11 +117,10 @@ get_cds_entry(int drive_num, char *currdir)
 
   /* The address of the CDS element for this drive.  */
   cds_entry_address = cds_address + (drive_num - 1)*cds_elsize;
-  
+
   /* The current directory: 67-byte ASCIIZ string at the beginning
      of the CDS structure for our drive.  */
-  movedata(dos_mem_base, cds_entry_address,
-           our_mem_base, (unsigned int)currdir, 0x43);
+  fmemcpy2(currdir, DP(dos_mem_base, cds_entry_address),  0x43);
 
   /* The drive attribute word is at the offset 43h, right after the
      current directory string.  NT doesn't support this.  */
@@ -301,11 +301,10 @@ get_jam_info(int drive_num)
   __dpmi_int(0x21, &r);
   if (r.h.al != 0)              /* drive is not mounted (or other error) */
     return 0;
-       
+
   /* Copy the full name of the Jam archive file.  */
   offset = (jam_version >= 0x120) ? 0x38 : 0x2a;
-  movedata(dos_mem_base, __tb + offset,
-           our_mem_base, (unsigned) mnt_fsname, 127);
+  fmemcpy2(mnt_fsname, DP(dos_mem_base, __tb + offset), 127);
   mnt_fsname[127] = 0;
 
   mnt_type = NAME_jam;
@@ -370,8 +369,7 @@ get_netredir_entry(int drive_num)
           if (devname.ch[0] == '@' + drive_num &&
               (devname.ch[1] == ':' || devname.ch[1] == '\0'))
             {
-              movedata(dos_mem_base, tb + 16,
-                       our_mem_base, (unsigned)mnt_fsname, 128);
+              fmemcpy2(mnt_fsname, DP(dos_mem_base, tb + 16), 128);
               return 1; /* found! */
             }
         }

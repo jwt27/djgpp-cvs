@@ -50,8 +50,8 @@ GAS_MINORMINOR := 0
 endif
 
 # Find GCC own include directory and add it to CFLAGS
-GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
-CFLAGS += -I$(GCC_INC_DIR)
+#GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
+#CFLAGS += -I$(GCC_INC_DIR)
 
 # Pass defines as compiler/assembler switches
 CFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
@@ -65,9 +65,10 @@ ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 # Moved setting of $(GCC{L}_OPT) to top of file
 #
 ifneq ($(CROSS_BUILD),1)
-XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -isystem $(TOP)/../../include $(CFLAGS)
-XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -isystem $(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -isystem $(TOP)/../../include $(CFLAGS)
+XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
+XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include -U __ELF__
+XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
+XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
 else
 XGCC = $(CROSS_GCC) $(GCC_OPT) -isystem $(TOP)/../../include $(CFLAGS)
 XGPP = $(CROSS_GCC) $(GPP_OPT) -isystem $(TOP)/../../include $(CFLAGS)
@@ -86,17 +87,17 @@ XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -
 MISC = $(TOP)/../misc.exe
 
 %.o : %.c
-	@$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
-	@$(XGCC) -c $(EXTRA_CFLAGS) $<
+	$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
+	$(XGCC) -E -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 %.o : %.cc
-	@$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
-	@$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
+	$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
+	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 %.o : %.S
-	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	@$(XGCC) -c $<
+	$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	$(XGCC) -m32 -o $@ -c $<
 %.o : %.s
-	@$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	@$(XGCC) -x assembler-with-cpp -c $<
+	$(MISC) echo - $(CROSS_GCC) '...' -c $<
+	$(XGCC) -m32 -x assembler-with-cpp -o $@ -c $<
 
 %.i : %.c
 	$(XGCC) -c $< -E > $@
@@ -139,6 +140,7 @@ LINK = $(CROSS_LD) -s $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ $(L
 EXE = $(HOSTBIN)/stubify.exe $@
 
 OBJS := $(addsuffix .o, $(basename $(SRC)))
+AS_OBJS := $(addsuffix .o, $(basename $(AS_SRC)))
 EXES := $(addprefix $(BIN)/,$(addsuffix .exe, $(basename $(SRC))))
 
 NOP = @$(MISC)
@@ -158,19 +160,21 @@ $(BIN)/%.exe : $C %.o $L
 $(HOSTBIN)/%.exe : %
 	$(GCC) -o $@ $^
 
-all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES)
+all :: $(TOP)/../gpp.opt $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS)
 	$(NOP)
 
 ifneq ($(MAKEFILE_LIB),1)
-all :: makefile.oh
-makefile.oh : makefile
+all :: makefile.oh makefile.oho
+makefile.oh: makefile
 	@$(MISC) echo - building new response file
-	#@echo " $(addprefix $(subst $(abspath $(CURDIR)/$(TOP))/,,$(CURDIR)/),$(OBJS))" > makefile.oh
-	@echo "$(addprefix &/,$(OBJS))" > makefile.oh
+	@$(MISC) echo makefile.oh $(addprefix \&/,$(OBJS))
+makefile.oho: makefile
+	@$(MISC) echo - building new response file for as objs
+	@$(MISC) echo makefile.oho $(addprefix \&/,$(AS_OBJS))
 endif
 
 clean ::
-	-$(MISC) rm *.o *.d *.i makefile.oh
+	-$(MISC) rm *.o *.d *.i makefile.oh makefile.oho
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)

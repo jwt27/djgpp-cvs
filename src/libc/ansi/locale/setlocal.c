@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <dpmi.h>
 #ifdef TEST
@@ -175,8 +176,7 @@ setlocalecollate(const char *locale __attribute__((unused)), int selector,
     unsigned int table = _farpeekw(selector, 3) * 16 + _farpeekw(selector, 1);
     int size = _farpeekw(_dos_ds, table);
 
-    movedata(_dos_ds, table + 2, _my_ds(), (unsigned int) __dj_collate_table,
-             size);
+    fmemcpy2(__dj_collate_table, DP(_dos_ds, table + 2), size);
     return 1;
   }
 }
@@ -205,8 +205,7 @@ setlocalectype(const char *locale __attribute__((unused)), int selector,
     unsigned int table = _farpeekw(selector, 3) * 16 + _farpeekw(selector, 1);
     int size = _farpeekw(_dos_ds, table);
 
-    movedata(_dos_ds, table + 2, _my_ds(),
-             (unsigned int) &(__dj_ctype_toupper[128 + 1]), size);
+    fmemcpy2(&(__dj_ctype_toupper[128 + 1]), DP(_dos_ds, table + 2), size);
 
     /* let's build lowercase table from uppercase... */
     for (i = 0; i < size; i++)
@@ -257,11 +256,11 @@ setlocalemonetary(const char *locale, int selector,
     if ((p != NULL) && !strnicmp(p + 1, "EURO", 4))
       strcpy(currency_symbol, "EUR");
     else
-      movedata(selector, 9, _my_ds(), (unsigned) currency_symbol, 5);
+      fmemcpy2(currency_symbol, DP(selector, 9), 5);
     lcnv->int_curr_symbol = lcnv->currency_symbol = currency_symbol;
-    movedata(selector, 14, _my_ds(), (unsigned) mon_thousands_sep, 2);
+    fmemcpy2(mon_thousands_sep, DP(selector, 14), 2);
     lcnv->mon_thousands_sep = mon_thousands_sep;
-    movedata(selector, 16, _my_ds(), (unsigned) mon_decimal_point, 2);
+    fmemcpy2(mon_decimal_point, DP(selector, 16), 2);
     lcnv->mon_decimal_point = mon_decimal_point;
     /* lcnv->mon_grouping = ""; */
     /* lcnv->negative_sign = ""; */
@@ -287,9 +286,9 @@ setlocalenumeric(const char *locale __attribute__((unused)), int selector,
     return 0;
   else
   {
-    movedata(selector, 14, _my_ds(), (unsigned) thousands_sep, 2);
+    fmemcpy2(thousands_sep, DP(selector, 14), 2);
     lcnv->thousands_sep = thousands_sep;
-    movedata(selector, 16, _my_ds(), (unsigned) decimal_point, 2);
+    fmemcpy2(decimal_point, DP(selector, 16), 2);
     lcnv->decimal_point = decimal_point;
     /* lcnv->grouping = ""; */
     return 1;

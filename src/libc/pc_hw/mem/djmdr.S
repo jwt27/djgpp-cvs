@@ -56,3 +56,7 @@ small_move:
 	movsb
 	ret
 
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

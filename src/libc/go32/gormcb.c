@@ -7,6 +7,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/exceptn.h>
 
@@ -88,7 +89,7 @@ static unsigned char wrapper_iret[] = {
          0xcf					/* iret                    */
 };
 
-unsigned long _go32_rmcb_stack_size = 32256;
+ULONG32 _go32_rmcb_stack_size = 32256;
 
 static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
   __dpmi_regs *regs, unsigned char *stack, unsigned long stack_length)
@@ -123,9 +124,9 @@ static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
   *(long  *)(wrapper+0x39) = info->pm_offset - ((long)wrapper + 0x3d);
   *(long  *)(wrapper+0x47) = (long) stack + 4;
 
-  info->size = (int)wrapper;
+  info->size = (uintptr_t)wrapper;
 
-  return __dpmi_allocate_real_mode_callback((void *)wrapper, regs,
+  return __dpmi_allocate_real_mode_callback((void (*)())wrapper, regs,
                                             (__dpmi_raddr *)&info->rm_offset);
 }
 
@@ -201,6 +202,6 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info)
   if (*(long *) stack & STACK_WAS_MALLOCED)
       free(stack);
 
-  free((char *)info->size);
+  free(DATA_PTR(info->size));
   return __dpmi_free_real_mode_callback((__dpmi_raddr *)&info->rm_offset);
 }

@@ -269,14 +269,14 @@ run_v1_coff(int argc, char **argv)
 	rm_argv=(unsigned short *)alloca(proxy_argc*sizeof(unsigned short));
 	arglist = (char **)alloca (proxy_argc * sizeof (char *));
 	movedata(_dos_ds, proxy_seg * 16 + proxy_ofs,
-		 _my_ds(), (int)rm_argv, proxy_argc*sizeof(unsigned short));
+		 _my_ds(), PTR_DATA(rm_argv), proxy_argc*sizeof(unsigned short));
     
 	for (i = 0; i < proxy_argc; i++)
 	{
 	  int al = far_strlen(_dos_ds, proxy_seg*16 + rm_argv[i]);
 	  char *arg = (char *)alloca(al+1);
 	  movedata(_dos_ds, proxy_seg*16 + rm_argv[i],
-		   _my_ds(), (int)(arg), al+1);
+		   _my_ds(), PTR_DATA(arg), al+1);
 	  arglist[i] = arg;
 	  if (verbose)
 	    fprintf (stderr, "%s ", arg);
@@ -487,7 +487,7 @@ main(int argc, char **argv)
     
     printf("Set GO32_V2_DEBUG=y in the environment to get verbose output.\n\n");
     /* Add the memory that we use for ourselves to the free amount.  */
-    i = (_go32_dpmi_remaining_physical_memory() + (int)sbrk(0))/1024;
+    i = (_go32_dpmi_remaining_physical_memory() + PTR_DATA(sbrk(0)))/1024;
     printf("DPMI memory available: %d Kb\n",i);
     i = _go32_dpmi_remaining_virtual_memory()/1024-i;
     if(i < 0)

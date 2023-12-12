@@ -3,6 +3,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
@@ -47,7 +48,7 @@ _read(int handle, void* buffer, size_t count)
     ngot += k;
     if (k)
       dosmemget(__tb, k, buffer);
-    buffer = (void *)((int)buffer + k);
+    buffer = (void *)((uintptr_t)buffer + k);
   } while(count && j == k);	/* if not == on DOS then no more */
   return ngot;
 }

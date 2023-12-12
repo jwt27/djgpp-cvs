@@ -46,3 +46,7 @@ Lexit:
 	popl	%esi			/* Fix stack first */
 	popl	%esi
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

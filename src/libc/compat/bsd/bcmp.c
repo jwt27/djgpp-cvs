@@ -9,8 +9,8 @@
 int
 bcmp(const void *vptr1, const void *vptr2, size_t length)
 {
-  const char *ptr1 = vptr1;
-  const char *ptr2 = vptr2; 
+  const char *ptr1 = (const char *)vptr1;
+  const char *ptr2 = (const char *)vptr2;
   if (ptr1 == ptr2)
     return 0;
 

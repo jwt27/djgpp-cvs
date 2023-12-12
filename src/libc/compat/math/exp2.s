@@ -4,3 +4,7 @@
 	.global	_exp2
 _exp2:
 	jmp	___pow2
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

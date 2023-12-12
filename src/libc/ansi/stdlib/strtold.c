@@ -402,3 +402,6 @@ strtold(const char *s, char **sret)
 
   return r * sign;
 }
+
+long double __attribute__((alias("strtold")))
+_strtold(const char *s, char **sret);

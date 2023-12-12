@@ -8,6 +8,7 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <pc.h>
@@ -492,8 +493,9 @@ insline(void)
   fill = ' ' | (ScreenAttrib << 8);
   while (bot > row)
   {
-    movedata(_dos_ds, VIDADDR(bot-1, left),
-	     _dos_ds, VIDADDR(bot, left),
+    fmemcpy12(
+	     DP(_dos_ds, VIDADDR(bot, left)),
+	     DP(_dos_ds, VIDADDR(bot-1, left)),
 	     nbytes);
     if (ScreenVirtualSegment != 0)
       refreshvirtualscreen(left, bot-1, nbytes/2);
@@ -515,8 +517,9 @@ delline(void)
   fill = ' ' | (ScreenAttrib << 8);
   while(row < bot)
   {
-    movedata(_dos_ds, VIDADDR(row+1, left),
-	     _dos_ds, VIDADDR(row, left),
+    fmemcpy12(
+	     DP(_dos_ds, VIDADDR(row, left)),
+	     DP(_dos_ds, VIDADDR(row+1, left)),
 	     nbytes);
     if (ScreenVirtualSegment != 0)
       refreshvirtualscreen(left, row, nbytes/2);
@@ -550,7 +553,7 @@ cputs(const char *s)
   short sa = ScreenAttrib << 8;
   int srow, scol, ecol;
   ScreenGetCursor(&row, &col);
-  viaddr = (short *)VIDADDR(row,col);
+  viaddr = (short *)(uintptr_t)VIDADDR(row,col);
   /*
    * DOS/V: simply it refreshes screen between scol and ecol when cursor moving.
    */
@@ -577,7 +580,7 @@ cputs(const char *s)
     else if (c == '\r')
     {
       col = txinfo.winleft - 1;
-      viaddr = (short *)VIDADDR(row,col);
+      viaddr = (short *)(uintptr_t)VIDADDR(row,col);
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
@@ -597,7 +600,7 @@ cputs(const char *s)
 	 */
 	row--;
 	col = txinfo.winright-1;
-	viaddr = (short *)VIDADDR(row,col);
+	viaddr = (short *)(uintptr_t)VIDADDR(row,col);
       }
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
@@ -606,7 +609,7 @@ cputs(const char *s)
       bell();
     else {
       short q = c | sa;
-      dosmemput(&q, 2, (int)viaddr);
+      dosmemput(&q, 2, (uintptr_t)viaddr);
       viaddr++;
       col++;
       ecol++;
@@ -617,7 +620,7 @@ cputs(const char *s)
     if (col >= txinfo.winright) {
       col = txinfo.winleft - 1;
       row++;
-      viaddr = (short *)VIDADDR(row,col);
+      viaddr = (short *)(uintptr_t)VIDADDR(row,col);
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
@@ -738,8 +741,8 @@ cscanf(const char *fmt, ...)
 int
 movetext(int left, int top, int right, int bottom, int dleft, int dtop)
 {
-  char    *buf = alloca((right - left + 1) * (bottom - top + 1) * 2);
-  
+  char *buf = (char *)alloca((right - left + 1) * (bottom - top + 1) * 2);
+
   _conio_gettext(left, top, right, bottom, buf);
   puttext(dleft, dtop, dleft + right - left, dtop + bottom - top, buf);
   return 1;
@@ -1091,5 +1094,3 @@ gppconio_init(void)
   ScreenAttrib = txinfo.normattr = txinfo.attribute = oldattrib;
 #endif
 }
-
-__asm__(".section .ctor; .long _gppconio_init; .section .text");

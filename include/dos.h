@@ -8,6 +8,8 @@
 #ifndef __dj_include_dos_h_
 #define __dj_include_dos_h_
 
+#include <sys/cdefs.h>
+
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #ifndef __STRICT_ANSI__
@@ -26,26 +28,26 @@ extern int _8087;
 int _detect_80387(void);
 
 struct DWORDREGS {
-  unsigned long edi;
-  unsigned long esi;
-  unsigned long ebp;
-  unsigned long cflag;
-  unsigned long ebx;
-  unsigned long edx;
-  unsigned long ecx;
-  unsigned long eax;
+  ULONG32 edi;
+  ULONG32 esi;
+  ULONG32 ebp;
+  ULONG32 cflag;
+  ULONG32 ebx;
+  ULONG32 edx;
+  ULONG32 ecx;
+  ULONG32 eax;
   unsigned short eflags;
 };
 
 struct DWORDREGS_W {
-  unsigned long di;
-  unsigned long si;
-  unsigned long bp;
-  unsigned long cflag;
-  unsigned long bx;
-  unsigned long dx;
-  unsigned long cx;
-  unsigned long ax;
+  ULONG32 di;
+  ULONG32 si;
+  ULONG32 bp;
+  ULONG32 cflag;
+  ULONG32 bx;
+  ULONG32 dx;
+  ULONG32 cx;
+  ULONG32 ax;
   unsigned short flags;
 };
 
@@ -65,7 +67,7 @@ struct BYTEREGS {
   unsigned short di, _upper_di;
   unsigned short si, _upper_si;
   unsigned short bp, _upper_bp;
-  unsigned long cflag;
+  ULONG32 cflag;
   unsigned char bl;
   unsigned char bh;
   unsigned short _upper_bx;
@@ -159,6 +161,8 @@ int intdosx(union REGS *_in, union REGS *_out, struct SREGS *_seg);
 int bdos(int _func, unsigned _dx, unsigned _al);
 int bdosptr(int _func, void *_dx, unsigned _al);
 
+int _int86(int ivec, union REGS *in, union REGS *out);
+
 #define bdosptr(_a, _b, _c) bdos(_a, (unsigned)(_b), _c)
 #define intdos(_a, _b) int86(0x21, _a, _b)
 #define intdosx(_a, _b, _c) int86x(0x21, _a, _b, _c)
@@ -220,7 +224,7 @@ struct _find_t {
   unsigned char attrib;
   unsigned short wr_time;
   unsigned short wr_date;
-  unsigned long size;
+  ULONG32 size;
   char name[256];
 } __attribute__((packed));
 #define find_t _find_t
@@ -237,11 +241,7 @@ struct _diskfree_t {
 
 struct _DOSERROR {
   int  exterror;
-  #ifdef __cplusplus
-  char errclass;
-  #else
-  char class;
-  #endif
+  char _class;
   char action;
   char locus;
 };
@@ -249,11 +249,7 @@ struct _DOSERROR {
 
 struct _DOSERROR_STR {
   char *exterror_str;
-  #ifdef __cplusplus
-  char *errclass_str;
-  #else
   char *class_str;
-  #endif
   char *action_str;
   char *locus_str;
 };

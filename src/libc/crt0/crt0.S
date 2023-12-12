@@ -90,6 +90,7 @@ exit16_first_byte:
 #include "exit16.ah"
 exit16_last_byte:
 
+#if 0
 hook_387_emulator:
 	.long	___emu387_load_hook
 
@@ -98,12 +99,12 @@ hook_387_emulator:
 
 	/* this is for when main comes from a library */
 	.long	_main
-
+#endif
 	.text
 
-	.globl	start
+	.globl	_start
 	.balign	16,,7
-start:
+_start:
 
 	pushl	%ds			/* set %es same as %ds */
 	popl	%es			/* push/pop 4 bytes shorter than ax */
@@ -119,10 +120,12 @@ start:
 	stosl
 #endif
 
+	call plt_init
+
 /* Enable NULL pointer protection if DPMI supports it */
 	testb	$0x1, __crt0_startup_flags+1		/* include/crt0.h */
 	jnz	1f
-	movl	$start, %eax
+	movl	$_start, %eax
 	cmpl	$0x1000, %eax
 	jl	1f
 	movw	$0x507, %ax
@@ -314,8 +317,8 @@ use_stubinfo_stack_size:
 	movl	%eax, ___djgpp_stack_limit	/* Bottom of stack */
 	addl	__stklen, %eax
 	movw	%ds, %dx		/* set stack */
-	movw	%dx, %ss
 	andb	$0xf0, %al		/* align to 16-byte boundary */
+	movw	%dx, %ss
 	movl	%eax, %esp
 	movl	%eax, ___djgpp_stack_top	/* Top of stack */
 	subl	___djgpp_stack_limit, %eax
@@ -660,4 +663,8 @@ __crt0_init_mcount:
 	jmp	__mcount_init
 #else
 	ret
+#endif
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
 #endif

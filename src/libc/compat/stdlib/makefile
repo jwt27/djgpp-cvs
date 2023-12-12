@@ -24,7 +24,7 @@ SRC += fcvtbuf.c
 SRC += fcvt.c
 SRC += gcvt.c
 SRC += rand48.c
-#SRC += memalign.c
+SRC += memalign.c
 SRC += valloc.c
 
 include $(TOP)/../makefile.inc

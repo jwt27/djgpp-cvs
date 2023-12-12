@@ -5,20 +5,20 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-SRC += ffs.S
-SRC += memccpy.c
+#AS_SRC += ffs.S
+#SRC += memccpy.c
 SRC += memicmp.c
-SRC += stpcpy.c
-SRC += stpncpy.c
-SRC += strcasec.S
+#SRC += stpcpy.c
+#SRC += stpncpy.c
+SRC += strcasec.c
 SRC += strdup.c
 SRC += stricmp.c
 SRC += strlcat.c
 SRC += strlcpy.c
 SRC += strlwr.c
-SRC += strncase.S
+SRC += strncase.c
 SRC += strnicmp.c
-SRC += strsep.c
+#SRC += strsep.c
 SRC += strupr.c
 
 include $(TOP)/../makefile.inc

@@ -5,6 +5,21 @@
 #ifndef __dj_include_sys_cdefs_h_
 #define __dj_include_sys_cdefs_h_
 
+#include_next <sys/cdefs.h>
+#ifdef __USE_POSIX_IMPLICITLY
+#undef __USE_POSIX_IMPLICITLY
+#undef _DEFAULT_SOURCE
+#undef _POSIX_SOURCE
+#endif
+
+#ifdef  _LP64			/* Note: win64 is LLP64 */
+# define LONG32  int
+# define ULONG32 unsigned int
+#else
+# define LONG32  long
+# define ULONG32 unsigned long
+#endif
+
 #undef __P
 #if defined(__STDC__) || defined(__cplusplus)
 #define __P(p) p

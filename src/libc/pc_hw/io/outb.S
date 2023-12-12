@@ -2,3 +2,7 @@
 	.global	_outb
 _outb:
 	jmp	_outportb
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

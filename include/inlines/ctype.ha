@@ -38,7 +38,7 @@ extern unsigned char __dj_ctype_tolower[];
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
 
-#define tolower(c) (__dj_ctype_tolower[(int)(c)+1])
-#define toupper(c) (__dj_ctype_toupper[(int)(c)+1])
+#define __tolower(c) (__dj_ctype_tolower[(int)(c)+1])
+#define __toupper(c) (__dj_ctype_toupper[(int)(c)+1])
 
 #endif /* __dj_include_inline_ctype_ha_ */

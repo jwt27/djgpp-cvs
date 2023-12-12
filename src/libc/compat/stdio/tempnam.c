@@ -19,7 +19,7 @@ static const char x8[] = "XXXXXXXX";
 char *
 tempnam(const char *tmpdir, const char *pfx)
 {
-  char template[FILENAME_MAX];
+  char _template[FILENAME_MAX];
   size_t lastc;
   char *s, *fname;
   const char **p = tdirs;
@@ -38,19 +38,19 @@ tempnam(const char *tmpdir, const char *pfx)
     }
 
   /* Append a slash, if needed.  */
-  lastc = strlen (strcpy (template, tmpdir)) - 1;
-  if (template[lastc] != '/' && template[lastc] != '\\')
-    template[++lastc] = '/';
+  lastc = strlen (strcpy (_template, tmpdir)) - 1;
+  if (_template[lastc] != '/' && _template[lastc] != '\\')
+    _template[++lastc] = '/';
 
   /* Append the prefix.  */
   if (!pfx || !*pfx)
     pfx = "tm";
-  strcpy (template + lastc + 1, pfx);
+  strcpy (_template + lastc + 1, pfx);
 
   /* Create the template.  */
-  strncat (template, x8, 8 - strlen (pfx));
+  strncat (_template, x8, 8 - strlen (pfx));
 
-  s = mktemp (template);
+  s = mktemp (_template);
   if (s)
     {
       fname = (char *)malloc (strlen (s) + 1);

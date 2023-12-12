@@ -2,7 +2,9 @@
 #include <ctype.h>
 #include <inlines/ctype.ha>
 
-int (toupper)(int c)
+int toupper(int c)
 {
-  return toupper(c);
+  return __toupper(c);
 }
+
+int __attribute__((alias("toupper"))) _toupper(int c);

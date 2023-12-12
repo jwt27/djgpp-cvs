@@ -23,6 +23,8 @@ extern "C" {
 
 #include <sys/version.h>
 #include <sys/djtypes.h>
+#include <libc/asmobj.h>
+#include <sys/cdefs.h>
 
 #ifndef _SIZE_T
 __DJ_size_t
@@ -30,22 +32,22 @@ __DJ_size_t
 #endif
 
 typedef struct {
-  unsigned long  size_of_this_structure_in_bytes;
-  unsigned long  linear_address_of_primary_screen;
-  unsigned long  linear_address_of_secondary_screen;
-  unsigned long  linear_address_of_transfer_buffer;
-  unsigned long  size_of_transfer_buffer; /* >= 4k */
-  unsigned long  pid;
+  ULONG32  size_of_this_structure_in_bytes;
+  ULONG32  linear_address_of_primary_screen;
+  ULONG32  linear_address_of_secondary_screen;
+  ULONG32  linear_address_of_transfer_buffer;
+  ULONG32  size_of_transfer_buffer; /* >= 4k */
+  ULONG32  pid;
   unsigned char  master_interrupt_controller_base;
   unsigned char  slave_interrupt_controller_base;
   unsigned short selector_for_linear_memory;
-  unsigned long  linear_address_of_stub_info_structure;
-  unsigned long  linear_address_of_original_psp;
+  ULONG32  linear_address_of_stub_info_structure;
+  ULONG32  linear_address_of_original_psp;
   unsigned short run_mode;
   unsigned short run_mode_info;
 } __Go32_Info_Block;
 
-extern __Go32_Info_Block _go32_info_block;
+EXTERN __Go32_Info_Block ASM_N(_go32_info_block);
 
 #define _GO32_RUN_MODE_UNDEF	0
 #define _GO32_RUN_MODE_RAW	1

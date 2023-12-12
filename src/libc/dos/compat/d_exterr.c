@@ -20,7 +20,7 @@ int _dosexterr(struct _DOSERROR *p_error)
   r.x.bx = 0;
   __dpmi_int(0x21, &r);
   p_error->exterror = (int)r.x.ax;
-  p_error->class    = r.h.bh;
+  p_error->_class    = r.h.bh;
   p_error->action   = r.h.bl;
   p_error->locus    = r.h.ch;
   return (int)r.x.ax;

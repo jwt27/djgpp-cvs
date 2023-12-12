@@ -6,16 +6,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <libc/internal.h>
 
 static char *startup_djdir;
 
-static void __attribute__((constructor))
-init_confstr(void)
+void init_confstr(void)
 {
   char *djdir = getenv("DJDIR");
   if (djdir)
   {
-    startup_djdir = malloc(strlen(djdir) + 1);
+    startup_djdir = (char *)malloc(strlen(djdir) + 1);
     if (startup_djdir)
       strcpy(startup_djdir, djdir);
   }

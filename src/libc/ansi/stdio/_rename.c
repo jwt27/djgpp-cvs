@@ -18,7 +18,7 @@
 #include <dpmi.h>
 #include <libc/dosio.h>
  
-int _rename(const char *old, const char *new)
+int _rename(const char *old, const char *_new)
 {
   __dpmi_regs r;
   int i;
@@ -29,18 +29,18 @@ int _rename(const char *old, const char *new)
   int lfn_fd = -1;
   int identical_but_for_case = 0;
 
-  if (__file_exists(new)
-      && strcmp(_truename(old, tempfile), _truename(new, tempfile1)) == 0)
+  if (__file_exists(_new)
+      && strcmp(_truename(old, tempfile), _truename(_new, tempfile1)) == 0)
     {
       /* NEW might seem to exist because the filesystem is case-
 	 insensitive, if OLD and NEW are identical but for the
 	 letter case.  Allow renaming `foo' into `Foo' under LFN.  */
       if (use_lfn)
 	{
-	  const char *s1 = old + strlen(old), *s2 = new + strlen(new);
+	  const char *s1 = old + strlen(old), *s2 = _new + strlen(_new);
 
 	  /* Find the basename of both OLD and NEW.  */
-	  while (s1 > old && s2 > new
+	  while (s1 > old && s2 > _new
 		 && strchr(":/\\", s1[-1]) == NULL
 		 && strchr(":/\\", s2[-1]) == NULL)
 	  {
@@ -140,7 +140,7 @@ int _rename(const char *old, const char *new)
 #endif
     else
       r.h.ah = 0x56;
-    _put_path2(new, olen);
+    _put_path2(_new, olen);
     _put_path(old);
     __dpmi_int(0x21, &r);
     if ((r.x.flags & 1) || (r.x.ax == 0x7100))
@@ -154,7 +154,7 @@ int _rename(const char *old, const char *new)
 	  && (r.x.ax == 5 || (r.x.ax == 2 && __file_exists(old))
 	      /* Windows 2000 returns B7h when the target file exists.  */
 	      || r.x.ax == 0xb7))
-	remove(new);		 /* and try again */
+	remove(_new);		 /* and try again */
       else
       {
 	errno = __doserr_to_errno(r.x.ax);

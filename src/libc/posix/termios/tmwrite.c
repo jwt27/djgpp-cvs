@@ -178,7 +178,7 @@ __libc_termios_write_tty(int handle, const void *buffer, size_t count,
 
   get_cursor(&col, &row);
 
-  rp = buffer;
+  rp = (const unsigned char *)buffer;
   n = count;
   while (n > 0)
   {

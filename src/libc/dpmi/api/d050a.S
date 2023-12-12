@@ -23,3 +23,7 @@
 	movw	%bx, 10(%edx)
 
 	LEAVE
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

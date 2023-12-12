@@ -5,6 +5,10 @@
 #ifndef __dj_include_dpmi_h_
 #define __dj_include_dpmi_h_
 
+#include <sys/cdefs.h>
+#include <libc/asmobj.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,9 +22,9 @@ extern "C" {
 
 #ifndef __STRICT_ANSI__
 
-#ifndef _POSIX_SOURCE
+//#ifndef _POSIX_SOURCE
 
-extern unsigned short __dpmi_error;
+EXTERN unsigned short ASM(__dpmi_error);
 
 typedef struct {
   unsigned short offset16;
@@ -28,26 +32,26 @@ typedef struct {
 } __dpmi_raddr;
 
 typedef struct {
-  unsigned long  offset32;
+  ULONG32  offset32;
   unsigned short selector;
 } __dpmi_paddr;
 
 typedef struct {
-  unsigned long handle;			/* 0, 2 */
-  unsigned long size; 	/* or count */	/* 4, 6 */
-  unsigned long address;		/* 8, 10 */
+  ULONG32 handle;			/* 0, 2 */
+  ULONG32 size; 	/* or count */	/* 4, 6 */
+  ULONG32 address;		/* 8, 10 */
 } __dpmi_meminfo;
 
 typedef union {
   struct {
-    unsigned long edi;
-    unsigned long esi;
-    unsigned long ebp;
-    unsigned long res;
-    unsigned long ebx;
-    unsigned long edx;
-    unsigned long ecx;
-    unsigned long eax;
+    ULONG32 edi;
+    ULONG32 esi;
+    ULONG32 ebp;
+    ULONG32 res;
+    ULONG32 ebx;
+    ULONG32 edx;
+    ULONG32 ecx;
+    ULONG32 eax;
   } d;
   struct {
     unsigned short di, di_hi;
@@ -78,8 +82,8 @@ typedef union {
     unsigned char cl, ch, ecx_b2, ecx_b3;
     unsigned char al, ah, eax_b2, eax_b3;
   } h;
-} __dpmi_regs;
-  
+} __attribute__((packed)) __dpmi_regs;
+
 typedef struct {
   unsigned char  major;
   unsigned char  minor;
@@ -90,54 +94,54 @@ typedef struct {
 } __dpmi_version_ret;
 
 typedef struct {
-  unsigned long largest_available_free_block_in_bytes;
-  unsigned long maximum_unlocked_page_allocation_in_pages;
-  unsigned long maximum_locked_page_allocation_in_pages;
-  unsigned long linear_address_space_size_in_pages;
-  unsigned long total_number_of_unlocked_pages;
-  unsigned long total_number_of_free_pages;
-  unsigned long total_number_of_physical_pages;
-  unsigned long free_linear_address_space_in_pages;
-  unsigned long size_of_paging_file_partition_in_pages;
-  unsigned long reserved[3];
+  ULONG32 largest_available_free_block_in_bytes;
+  ULONG32 maximum_unlocked_page_allocation_in_pages;
+  ULONG32 maximum_locked_page_allocation_in_pages;
+  ULONG32 linear_address_space_size_in_pages;
+  ULONG32 total_number_of_unlocked_pages;
+  ULONG32 total_number_of_free_pages;
+  ULONG32 total_number_of_physical_pages;
+  ULONG32 free_linear_address_space_in_pages;
+  ULONG32 size_of_paging_file_partition_in_pages;
+  ULONG32 reserved[3];
 } __dpmi_free_mem_info;
 
 typedef struct {
-  unsigned long total_allocated_bytes_of_physical_memory_host;
-  unsigned long total_allocated_bytes_of_virtual_memory_host;
-  unsigned long total_available_bytes_of_virtual_memory_host;
-  unsigned long total_allocated_bytes_of_virtual_memory_vcpu;
-  unsigned long total_available_bytes_of_virtual_memory_vcpu;
-  unsigned long total_allocated_bytes_of_virtual_memory_client;
-  unsigned long total_available_bytes_of_virtual_memory_client;
-  unsigned long total_locked_bytes_of_memory_client;
-  unsigned long max_locked_bytes_of_memory_client;
-  unsigned long highest_linear_address_available_to_client;
-  unsigned long size_in_bytes_of_largest_free_memory_block;
-  unsigned long size_of_minimum_allocation_unit_in_bytes;
-  unsigned long size_of_allocation_alignment_unit_in_bytes;
-  unsigned long reserved[19];
+  ULONG32 total_allocated_bytes_of_physical_memory_host;
+  ULONG32 total_allocated_bytes_of_virtual_memory_host;
+  ULONG32 total_available_bytes_of_virtual_memory_host;
+  ULONG32 total_allocated_bytes_of_virtual_memory_vcpu;
+  ULONG32 total_available_bytes_of_virtual_memory_vcpu;
+  ULONG32 total_allocated_bytes_of_virtual_memory_client;
+  ULONG32 total_available_bytes_of_virtual_memory_client;
+  ULONG32 total_locked_bytes_of_memory_client;
+  ULONG32 max_locked_bytes_of_memory_client;
+  ULONG32 highest_linear_address_available_to_client;
+  ULONG32 size_in_bytes_of_largest_free_memory_block;
+  ULONG32 size_of_minimum_allocation_unit_in_bytes;
+  ULONG32 size_of_allocation_alignment_unit_in_bytes;
+  ULONG32 reserved[19];
 } __dpmi_memory_info;
 
 typedef struct {
-  unsigned long data16[2];
-  unsigned long code16[2];
+  ULONG32 data16[2];
+  ULONG32 code16[2];
   unsigned short ip;
   unsigned short reserved;
-  unsigned long data32[2];
-  unsigned long code32[2];
-  unsigned long eip;
+  ULONG32 data32[2];
+  ULONG32 code32[2];
+  ULONG32 eip;
 } __dpmi_callback_info;
 
 typedef struct {
-  unsigned long size_requested;
-  unsigned long size;
-  unsigned long handle;
-  unsigned long address;
-  unsigned long name_offset;
+  ULONG32 size_requested;
+  ULONG32 size;
+  ULONG32 handle;
+  ULONG32 address;
+  ULONG32 name_offset;
   unsigned short name_selector;
   unsigned short reserved1;
-  unsigned long reserved2;
+  ULONG32 reserved2;
 } __dpmi_shminfo;
 
 /* Unless otherwise noted, all functions return -1 on error, setting __dpmi_error to the DPMI error code */
@@ -148,10 +152,10 @@ int	__dpmi_allocate_ldt_descriptors(int _count);						/* DPMI 0.9 AX=0000 */
 int	__dpmi_free_ldt_descriptor(int _descriptor);						/* DPMI 0.9 AX=0001 */
 int	__dpmi_segment_to_descriptor(int _segment);						/* DPMI 0.9 AX=0002 */
 int	__dpmi_get_selector_increment_value(void);						/* DPMI 0.9 AX=0003 */
-int	__dpmi_get_segment_base_address(int _selector, unsigned long *_addr);			/* DPMI 0.9 AX=0006 */
-int	__dpmi_set_segment_base_address(int _selector, unsigned long _address);			/* DPMI 0.9 AX=0007 */
-unsigned long __dpmi_get_segment_limit(int _selector);						/* LSL instruction  */
-int	__dpmi_set_segment_limit(int _selector, unsigned long _limit);				/* DPMI 0.9 AX=0008 */
+int	__dpmi_get_segment_base_address(int _selector, ULONG32 *_addr);			/* DPMI 0.9 AX=0006 */
+int	__dpmi_set_segment_base_address(int _selector, ULONG32 _address);			/* DPMI 0.9 AX=0007 */
+ULONG32 __dpmi_get_segment_limit(int _selector);						/* LSL instruction  */
+int	__dpmi_set_segment_limit(int _selector, ULONG32 _limit);				/* DPMI 0.9 AX=0008 */
 int	__dpmi_get_descriptor_access_rights(int _selector);					/* LAR instruction  */
 int	__dpmi_set_descriptor_access_rights(int _selector, int _rights);			/* DPMI 0.9 AX=0009 */
 int	__dpmi_create_alias_descriptor(int _selector);						/* DPMI 0.9 AX=000a */
@@ -195,15 +199,15 @@ int	__dpmi_get_capabilities(int *_flags, char *vendor_info);				/* DPMI 1.0 AX=0
 
 int	__dpmi_get_free_memory_information(__dpmi_free_mem_info *_info);			/* DPMI 0.9 AX=0500 */
 int	__dpmi_allocate_memory(__dpmi_meminfo *_info);						/* DPMI 0.9 AX=0501 */
-int	__dpmi_free_memory(unsigned long _handle);						/* DPMI 0.9 AX=0502 */
+int	__dpmi_free_memory(ULONG32 _handle);						/* DPMI 0.9 AX=0502 */
 int	__dpmi_resize_memory(__dpmi_meminfo *_info);						/* DPMI 0.9 AX=0503 */
 
 int	__dpmi_allocate_linear_memory(__dpmi_meminfo *_info, int _commit);			/* DPMI 1.0 AX=0504 */
 int	__dpmi_resize_linear_memory(__dpmi_meminfo *_info, int _commit);			/* DPMI 1.0 AX=0505 */
 int	__dpmi_get_page_attributes(__dpmi_meminfo *_info, short *_buffer);			/* DPMI 1.0 AX=0506 */
 int	__dpmi_set_page_attributes(__dpmi_meminfo *_info, short *_buffer);			/* DPMI 1.0 AX=0507 */
-int	__dpmi_map_device_in_memory_block(__dpmi_meminfo *_info, unsigned long _physaddr);	/* DPMI 1.0 AX=0508 */
-int	__dpmi_map_conventional_memory_in_memory_block(__dpmi_meminfo *_info, unsigned long _physaddr); /* DPMI 1.0 AX=0509 */
+int	__dpmi_map_device_in_memory_block(__dpmi_meminfo *_info, ULONG32 _physaddr);	/* DPMI 1.0 AX=0508 */
+int	__dpmi_map_conventional_memory_in_memory_block(__dpmi_meminfo *_info, ULONG32 _physaddr); /* DPMI 1.0 AX=0509 */
 int	__dpmi_get_memory_block_size_and_base(__dpmi_meminfo *_info);				/* DPMI 1.0 AX=050a */
 int	__dpmi_get_memory_information(__dpmi_memory_info *_buffer);				/* DPMI 1.0 AX=050b */
 
@@ -211,7 +215,7 @@ int	__dpmi_lock_linear_region(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0600 */
 int	__dpmi_unlock_linear_region(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0601 */
 int	__dpmi_mark_real_mode_region_as_pageable(__dpmi_meminfo *_info);			/* DPMI 0.9 AX=0602 */
 int	__dpmi_relock_real_mode_region(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0603 */
-int	__dpmi_get_page_size(unsigned long *_size);						/* DPMI 0.9 AX=0604 */
+int	__dpmi_get_page_size(ULONG32 *_size);						/* DPMI 0.9 AX=0604 */
 
 int	__dpmi_mark_page_as_demand_paging_candidate(__dpmi_meminfo *_info);			/* DPMI 0.9 AX=0702 */
 int	__dpmi_discard_page_contents(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0703 */
@@ -228,17 +232,17 @@ int	__dpmi_get_virtual_interrupt_state(void);						/* DPMI 0.9 AX=0902 */
 int	__dpmi_get_vendor_specific_api_entry_point(char *_id, __dpmi_paddr *_api);		/* DPMI 0.9 AX=0a00 */
 
 int	__dpmi_set_debug_watchpoint(__dpmi_meminfo *_info, int _type);				/* DPMI 0.9 AX=0b00 */
-int	__dpmi_clear_debug_watchpoint(unsigned long _handle);					/* DPMI 0.9 AX=0b01 */
-int	__dpmi_get_state_of_debug_watchpoint(unsigned long _handle, int *_status);		/* DPMI 0.9 AX=0b02 */
-int	__dpmi_reset_debug_watchpoint(unsigned long _handle);					/* DPMI 0.9 AX=0b03 */
+int	__dpmi_clear_debug_watchpoint(ULONG32 _handle);					/* DPMI 0.9 AX=0b01 */
+int	__dpmi_get_state_of_debug_watchpoint(ULONG32 _handle, int *_status);		/* DPMI 0.9 AX=0b02 */
+int	__dpmi_reset_debug_watchpoint(ULONG32 _handle);					/* DPMI 0.9 AX=0b03 */
 
 int	__dpmi_install_resident_service_provider_callback(__dpmi_callback_info *_info);		/* DPMI 1.0 AX=0c00 */
 int	__dpmi_terminate_and_stay_resident(int return_code, int paragraphs_to_keep);		/* DPMI 1.0 AX=0c01 */
 
 int	__dpmi_allocate_shared_memory(__dpmi_shminfo *_info);					/* DPMI 1.0 AX=0d00 */
-int	__dpmi_free_shared_memory(unsigned long _handle);					/* DPMI 1.0 AX=0d01 */
-int	__dpmi_serialize_on_shared_memory(unsigned long _handle, int _flags);			/* DPMI 1.0 AX=0d02 */
-int	__dpmi_free_serialization_on_shared_memory(unsigned long _handle, int _flags);		/* DPMI 1.0 AX=0d03 */
+int	__dpmi_free_shared_memory(ULONG32 _handle);					/* DPMI 1.0 AX=0d01 */
+int	__dpmi_serialize_on_shared_memory(ULONG32 _handle, int _flags);			/* DPMI 1.0 AX=0d02 */
+int	__dpmi_free_serialization_on_shared_memory(ULONG32 _handle, int _flags);		/* DPMI 1.0 AX=0d03 */
 
 int	__dpmi_get_coprocessor_status(void);							/* DPMI 1.0 AX=0e00 */
 int	__dpmi_set_coprocessor_emulation(int _flags);						/* DPMI 1.0 AX=0e01 */
@@ -249,16 +253,16 @@ int	__dpmi_set_coprocessor_emulation(int _flags);						/* DPMI 1.0 AX=0e01 */
 #define _go32_dpmi_registers            __dpmi_regs
 
 typedef struct {
-  unsigned long available_memory;
-  unsigned long available_pages;
-  unsigned long available_lockable_pages;
-  unsigned long linear_space;
-  unsigned long unlocked_pages;
-  unsigned long available_physical_pages;
-  unsigned long total_physical_pages;
-  unsigned long free_linear_space;
-  unsigned long max_pages_in_paging_file;
-  unsigned long reserved[3];
+  ULONG32 available_memory;
+  ULONG32 available_pages;
+  ULONG32 available_lockable_pages;
+  ULONG32 linear_space;
+  ULONG32 unlocked_pages;
+  ULONG32 available_physical_pages;
+  ULONG32 total_physical_pages;
+  ULONG32 free_linear_space;
+  ULONG32 max_pages_in_paging_file;
+  ULONG32 reserved[3];
 } _go32_dpmi_meminfo;
 
 #define _go32_dpmi_get_free_memory_information(x) __dpmi_get_free_memory_information((__dpmi_free_mem_info *)(void *)(x))
@@ -268,8 +272,8 @@ typedef struct {
 #define _go32_dpmi_simulate_fcall_iret	__dpmi_simulate_real_mode_procedure_iret
 
 typedef struct {
-  unsigned long size;
-  unsigned long pm_offset;
+  ULONG32 size;
+  ULONG32 pm_offset;
   unsigned short pm_selector;
   unsigned short rm_offset;
   unsigned short rm_segment;
@@ -292,7 +296,7 @@ int _go32_dpmi_set_real_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *in
 
 /* These do NOT wrap the function in pm_offset in an iret handler.
    You must provide an assembler interface yourself, or alloc one below.
-   You may NOT longjmp out of an interrupt handler. */
+   You may NOT LONGjmp out of an interrupt handler. */
 int _go32_dpmi_get_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
 	/* puts vector in pm_selector:pm_offset. */
 int _go32_dpmi_set_protected_mode_interrupt_vector(int vector, _go32_dpmi_seginfo *info);
@@ -326,23 +330,23 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info);
    for interrupts and rmcb wrappers to a user defined size from the default
    of 32Kbytes.  Each RMCB and chain/iret wrapper gets its own stack. */
 
-extern unsigned long _go32_interrupt_stack_size;
-extern unsigned long _go32_rmcb_stack_size;
+extern ULONG32 _go32_interrupt_stack_size;
+extern ULONG32 _go32_rmcb_stack_size;
 
 /* Convenience functions, the return value is *bytes* */
-unsigned long _go32_dpmi_remaining_physical_memory(void);
-unsigned long _go32_dpmi_remaining_virtual_memory(void);
+ULONG32 _go32_dpmi_remaining_physical_memory(void);
+ULONG32 _go32_dpmi_remaining_virtual_memory(void);
 
 /* locks memory from a specified offset within the code/data selector */
-int _go32_dpmi_lock_code( void *_lockaddr, unsigned long _locksize);
-int _go32_dpmi_lock_data( void *_lockaddr, unsigned long _locksize);
+int _go32_dpmi_lock_code( void *_lockaddr, ULONG32 _locksize);
+int _go32_dpmi_lock_data( void *_lockaddr, ULONG32 _locksize);
 
-int __djgpp_set_page_attributes(void *our_addr, unsigned long num_bytes,
+int __djgpp_set_page_attributes(void *our_addr, ULONG32 num_bytes,
 			        unsigned short attributes);
-int __djgpp_map_physical_memory(void *our_addr, unsigned long num_bytes,
-			        unsigned long phys_addr);
+int __djgpp_map_physical_memory(void *our_addr, ULONG32 num_bytes,
+			        uint64_t phys_addr);
 
-#endif /* !_POSIX_SOURCE */
+//#endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
 
@@ -352,5 +356,15 @@ int __djgpp_map_physical_memory(void *our_addr, unsigned long num_bytes,
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __LP64__
+extern char *__djgpp_mem_base;
+EXTERN int ASM(__djgpp_base_address);
+#define DATA_PTR(l) (__djgpp_mem_base + __djgpp_base_address + (l))
+#else
+#define DATA_PTR(l) ((char *)(l))
+#endif
+/* for now just type-cast */
+#define PTR_DATA(p) ((uintptr_t)(p))
 
 #endif /* !__dj_include_dpmi_h_ */

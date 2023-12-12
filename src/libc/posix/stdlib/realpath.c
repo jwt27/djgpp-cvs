@@ -30,7 +30,7 @@ realpath(const char *in, char *out)
   if (!__solve_symlinks(in, in1))
     return NULL; /* Return errno from from __solve_dir_symlinks().  */
 
-  if (!(ret = out) && !(ret = malloc(PATH_MAX)))
+  if (!(ret = out) && !(ret = (char *)malloc(PATH_MAX)))
   {
     errno = ENOMEM;
     return NULL;

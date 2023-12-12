@@ -85,7 +85,7 @@ __crt0_load_environment_file(char *app_name)
 	{
 	  if (this_prog)
 	  {
-	    char *buf = alloca(fsize);
+	    char *buf = (char *)alloca(fsize);
 	    char *tb2 = buf;
 	    char *sp=tb, *dp=tb2;
 	    while (*sp != '=' && *sp != '\n' && *sp)

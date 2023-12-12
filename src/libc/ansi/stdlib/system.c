@@ -610,10 +610,10 @@ system (const char *cmdline)
     cmd_sym_t token;
     char *prog;
 
-    tmp = alloca(L_tmpnam);
-    prog = alloca (L_tmpnam);
+    tmp = (char *)alloca(L_tmpnam);
+    prog = (char *)alloca (L_tmpnam);
 
-    s = strcpy (alloca (strlen (cmdline) + 1), cmdline);
+    s = strcpy ((char *)alloca (strlen (cmdline) + 1), cmdline);
     while (!done && result >= 0)
     {
       char **fp = &f_in;
@@ -725,7 +725,7 @@ system (const char *cmdline)
 
 	  /* tmpnam guarantees unique names */
 	  tmpnam(tmp);
-	  f_out = strcpy (alloca (L_tmpnam), tmp);
+	  f_out = strcpy ((char *)alloca (L_tmpnam), tmp);
 	  rm_out = 1;
 	  /* Fall through.  */
 	case SEMICOLON:

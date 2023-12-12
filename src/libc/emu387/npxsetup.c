@@ -40,7 +40,7 @@ int __emu387_load_hook;
    that Exception 7 be sent to our process.  If we don't have a 387, we 
    attempt to load the EMU387.DXE and call it from the signal.
  */
-
+#if 0
 static void nofpsig(int sig)
 {
   if(_emu_entry(__djgpp_exception_state))
@@ -50,6 +50,7 @@ static void nofpsig(int sig)
   }
   longjmp(__djgpp_exception_state, __djgpp_exception_state->__eax);
 }
+#endif
 
 #ifdef RESTORE_FPU
 static void restore_DPMI_fpu_state(void)
@@ -115,7 +116,7 @@ void _npxsetup(char *argv0)
         strcat(emuname,"emu387.dxe");
         cp = emuname;
       }
-      _emu_entry = _dxe_load(cp);
+      _emu_entry = (int (*)(jmp_buf))_dxe_load(cp);
       if (_emu_entry == 0)
         return;
 #endif
@@ -126,7 +127,7 @@ void _npxsetup(char *argv0)
 	  atexit(restore_DPMI_fpu_state);
 	}
 #endif
-      signal(SIGNOFP, nofpsig);
+//      signal(SIGNOFP, nofpsig);
       /* mask all exceptions for the emulation case, too */
       _control87(0x033f, 0xffff);
     }

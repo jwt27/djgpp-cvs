@@ -39,7 +39,7 @@ const unsigned char stub_bytes[] = {
 
 #define v_printf if(verbose)printf
 int verbose=0;
-
+int rmstub=0;
 char *generate=NULL;
 char *stubparams=NULL;
 
@@ -76,7 +76,7 @@ void stubedit(const char *filename)
 	fprintf(stderr, "%s: call to stubedit failed"
 		"(stubedit exit status was %d)\n", filename, i);
       }
-      
+
       free( stubedit_str );
     }
     else
@@ -197,8 +197,9 @@ void coff2exe(char *fname)
   }
   v_printf("\n");
 
-  write(ofile, stub_bytes, sizeof(stub_bytes));
-  
+  if (!rmstub)
+    write(ofile, stub_bytes, sizeof(stub_bytes));
+
 #ifdef __DJGPP__
   /* if 0 bytes are read (or an error occurs, the loop will be broken from */
   while (1) {
@@ -288,6 +289,7 @@ void print_help(void)
 	  "<program> may be COFF or stubbed .exe, and may be COFF with .exe extension.\n"
 	  "Resulting file will have .exe\n"
 	  "-v -> verbose\n"
+	  "-r -> remove stub\n"
 	  "-g -> generate a stub\n"
 	  "%sparam[,param...] -> pass param[ param...] to stubedit (commas are\n"
 	  "      converted into spaces); see stubedit documentation for what param can be\n"
@@ -307,6 +309,12 @@ int main(int argc, char **argv)
     if (strcmp(argv[1], "-v")==0)
     {
       verbose = 1;
+      argv++;
+      argc--;
+    }
+    if (strcmp(argv[1], "-r")==0)
+    {
+      rmstub = 1;
       argv++;
       argc--;
     }
@@ -350,7 +358,7 @@ int main(int argc, char **argv)
       return 1;
     }
   }
-	
+
   v_printf("stubify for djgpp V2.X executables, Copyright (C) 1995-2003 DJ Delorie\n");
   if (generate)
   {
@@ -368,7 +376,7 @@ int main(int argc, char **argv)
     if (ofext == 0)
       ofext = ofilename + strlen(ofilename);
     strcpy(ofext, ".exe");
-    
+
     ofile = open(ofilename, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0666);
     if (ofile < 0)
     {
@@ -396,4 +404,3 @@ int main(int argc, char **argv)
 
   return 0;
 }
-

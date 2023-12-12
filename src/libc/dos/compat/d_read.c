@@ -17,6 +17,7 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <errno.h>
+#include <stdint.h>
 #include <dos.h>
 
 unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned int *result)
@@ -36,7 +37,7 @@ unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned in
   }
 
   /* Reads blocks of file and transfers these into user buffer. */
-  p_buffer = buffer;
+  p_buffer = (unsigned char *)buffer;
   *result  = 0;
   while( count )
   {
@@ -54,7 +55,7 @@ unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned in
       return r.x.ax;
     }
     if ( r.x.ax )
-      movedata(dos_selector, 0, _my_ds(), (unsigned int)p_buffer, r.x.ax);
+      fmemcpy2(p_buffer, DP(dos_selector, 0), r.x.ax);
     count    -= read_size;
     p_buffer += r.x.ax;
     *result  += r.x.ax;

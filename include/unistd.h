@@ -101,12 +101,15 @@ __DJ_size_t
 __DJ_ssize_t
 #define _SSIZE_T
 #endif
+#ifndef NORETURN
+#define NORETURN
+#endif
 
 extern char *optarg;
 extern int optind, opterr, optopt;
 
-void		__exit(int _status) __attribute__((noreturn));
-void		_exit(int _status) __attribute__((noreturn));
+void		__exit(int _status) NORETURN;
+void		_exit(int _status) NORETURN;
 int		access(const char *_path, int _amode);
 unsigned int	alarm(unsigned int _seconds);
 int		chdir(const char *_path);

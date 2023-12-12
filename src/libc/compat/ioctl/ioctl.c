@@ -132,6 +132,7 @@ import djgpp 2.02
 #include <libc/stubs.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <sys/fsext.h>
 #include <libc/fsexthlp.h>
 #include <sys/ioctl.h>
@@ -184,7 +185,7 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
     */
     if(cmd & DOS_XFER){
         if(argcx <= (int)__tb_size){ /* Can we use transfer buffer ? */
-            dosmemput((void *)argdx,argcx, __tb);
+            dosmemput((void *)(uintptr_t)argdx,argcx, __tb);
             r.x.ds = (__tb>>4) &0xffff;
             r.x.dx = __tb &0xf;
         }
@@ -210,7 +211,7 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
     */
     if( cmd & DOS_BRAINDEAD  ){
         if(xarg <= (int)__tb_size){ /* Can we use transfer buffer ? */
-            dosmemput((void *)argdx,xarg, __tb);
+            dosmemput((void *)(uintptr_t)argdx,xarg, __tb);
             r.x.ds = (__tb>>4) &0xffff;
             r.x.dx = __tb &0xf;
         }
@@ -247,19 +248,19 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
     */
     if(cmd & DOS_XFER){
         if(dos_selector){
-            dosmemget(dos_segment<<4,argcx,(void*) argdx);
+            dosmemget(dos_segment<<4,argcx,(void*)(uintptr_t) argdx);
             __dpmi_free_dos_memory(dos_selector);
         }
         else
-           dosmemget(__tb,argcx,(void *) argdx);
+           dosmemget(__tb,argcx,(void *)(uintptr_t) argdx);
     }
     if(cmd & DOS_BRAINDEAD){
         if(dos_selector){
-            dosmemget(dos_segment<<4,xarg,(void*) argdx);
+            dosmemget(dos_segment<<4,xarg,(void*)(uintptr_t) argdx);
             __dpmi_free_dos_memory(dos_selector);
         }
         else
-           dosmemget(__tb,xarg,(void *) argdx);
+           dosmemget(__tb,xarg,(void *)(uintptr_t) argdx);
     }
     /*
     ** Return the requested value or 0.

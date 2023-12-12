@@ -64,3 +64,7 @@ _setjmp:
 	xorl	%eax,%eax
 	popl	%ebp
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

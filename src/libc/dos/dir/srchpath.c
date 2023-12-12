@@ -61,7 +61,7 @@ searchpath(const char *file)
  
     if (p)
     {
-      register char *s, *name_start = 0;
+      char *s, *name_start = 0;
       int preserve_case = _preserve_fncase();
  
       path[1] = ';';

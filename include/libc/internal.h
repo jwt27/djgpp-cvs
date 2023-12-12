@@ -18,6 +18,7 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #ifndef _POSIX_SOURCE
+#include "libc/asmobj.h"
 
 void __crt1_startup(void);
 void __main(void);
@@ -25,6 +26,18 @@ void _npxsetup(char *argv0);
 void __emu387_exception_handler(void);
 void __djgpp_exception_processor(void);
 void __djgpp_exception_setup(void);
+void __register_frame_info(const void *begin, const void *object);
+void __deregister_frame_info(const void *begin);
+void _crt0_init_mcount(void);	/* For profiling */
+#if 0
+typedef void (*FUNC)(void);
+extern FUNC djgpp_first_ctor;
+extern FUNC djgpp_last_ctor;
+extern FUNC djgpp_first_dtor;
+extern FUNC djgpp_last_dtor;
+#endif
+void init_sys_siglist(void);
+void init_confstr(void);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

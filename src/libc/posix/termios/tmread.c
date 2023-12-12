@@ -200,7 +200,7 @@ __libc_termios_read_cooked_tty (int handle, void *buffer, size_t count)
   unsigned char *wp;
   ssize_t n;
 
-  wp = buffer;
+  wp = (unsigned char *)buffer;
   n = count;
 
   if (__libc_tty_p->t_lflag & ICANON)
@@ -251,7 +251,7 @@ __libc_termios_read_raw_tty (int handle, void *buffer, size_t count)
   int sense;
 
   n = count;
-  wp = buffer;
+  wp = (unsigned char *)buffer;
   sense = SENSE_NO_KEY;
 
   /* block until getting inputs */

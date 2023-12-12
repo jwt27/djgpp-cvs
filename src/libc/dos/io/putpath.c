@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <io.h>
 #include <dpmi.h>
+#include <sys/exceptn.h>
 
 static const char env_delim = '~';
 
@@ -20,7 +21,6 @@ static const char env_delim = '~';
 static int __inline__
 enough_stack_p(void)
 {
-  extern unsigned __djgpp_stack_limit;
   unsigned sp;
   __asm__ __volatile__ ("movl %%esp,%k0\n" : "=r" (sp) : );
   return (int) (sp - __djgpp_stack_limit) > 4*1024;
@@ -87,7 +87,7 @@ _put_path2(const char *path, int offset)
       int c;
 
       p += 9;           /* point to the beginning of the variable name */
-      var_name = alloca(strlen (p) + 1);
+      var_name = (char *)alloca(strlen (p) + 1);
       for (d = var_name; *p && *p != '/' && *p != '\\'; *d++ = *p++)
         if (*p == env_delim)
         {

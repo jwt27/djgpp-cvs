@@ -22,6 +22,8 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
+#include "libc/asmobj.h"
+
 /*****************************************************************************\
  * crt0.h - specific to go32 v2.0 applications, controls command line
  * argument creation.
@@ -64,7 +66,7 @@ char **__crt0_glob_function(char *_arg);
  *
 \*****************************************************************************/
 
-extern int _crt0_startup_flags;
+EXTERN int ASM(_crt0_startup_flags);
 
 /* If set, argv[0] is left in whatever case it was.  If not set, all
 ** characters are mapped to lower case.  Note that if the argv0 field in
@@ -192,7 +194,7 @@ typedef struct {
   unsigned address;
   } __djgpp_sbrk_handle;
 
-extern __djgpp_sbrk_handle __djgpp_memory_handle_list[256];
+EXTERN ASM_P(__djgpp_sbrk_handle, __djgpp_memory_handle_list);
 __djgpp_sbrk_handle *__djgpp_memory_handle(unsigned address);
 extern unsigned __djgpp_memory_handle_size[256];
 

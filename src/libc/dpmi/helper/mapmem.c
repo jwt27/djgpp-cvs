@@ -3,6 +3,7 @@
 #include <crt0.h>
 #include <errno.h>
 #include <stddef.h>
+#include <stdint.h>
 
 
 /* Maps the specified number of bytes at a given address into our
@@ -11,8 +12,8 @@
  * but it shouldn't get called all that often.
  */
 int
-__djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
-			     unsigned long _phys_addr)
+__djgpp_map_physical_memory (void *_our_addr, ULONG32 _num_bytes,
+			     uint64_t _phys_addr)
 {
   unsigned long p, end;
 
@@ -71,7 +72,7 @@ __djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
 
       if (__dpmi_map_device_in_memory_block (&meminfo,
 					     (_phys_addr
-					      + (p - (unsigned) _our_addr))))
+					      + (p - (uintptr_t) _our_addr))))
 	goto fail;
 
       /* Move on to the next memory handle. */

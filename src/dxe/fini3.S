@@ -26,3 +26,7 @@ _fini:
 		call	___deregister_frame_info
 		popl	%eax
 		ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

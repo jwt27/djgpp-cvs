@@ -35,7 +35,7 @@ _write(int handle, const void* buffer, size_t count)
       return -1;
   }
 
-  return _write_int(handle, buffer, count);
+  return _write_int(handle, (const char *)buffer, count);
 }
 
 /* If the file pointer offset is beyond EOF, fill the gap between EOF and
@@ -44,7 +44,8 @@ _write(int handle, const void* buffer, size_t count)
 int
 _write_fill_seek_gap(int fd)
 {
-  offset_t eof_off, cur_off, fill_count;
+  offset_t eof_off, cur_off;
+  size_t fill_count;
   unsigned long buf_size;
   unsigned long i;
   short fd_info;

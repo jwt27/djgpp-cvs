@@ -14,7 +14,7 @@ include $(TOP)/../makefile.lib
 
 MKDOC = $(HOSTBIN)/mkdoc.exe
 
-all :: info
+#all :: info
 
 libc2.tex :
 	$(MKDOC) . libc2.tex
@@ -32,4 +32,4 @@ clean ::
 	@$(MISC) rm libc2.tex
 	@$(MAKE) -C stubs $@
 	@$(MAKE) -C crt0 $@
-		@$(MISC) rm makefile.sub
+	@$(MISC) rm makefile.sub

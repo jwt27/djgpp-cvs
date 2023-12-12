@@ -96,7 +96,7 @@ grow_table(int _fd)
     int old_fds = num_fds, i;
 
     num_fds = (_fd+chunk_sz) & ~(chunk_sz-1);
-    temp = realloc(fsext_list, num_fds * sizeof(__FSEXT_entry));
+    temp = (__FSEXT_entry*)realloc(fsext_list, num_fds * sizeof(__FSEXT_entry));
     if (temp == 0)
     {
       /* Keep the current fsext_list, so that we can tidy the FSEXTs

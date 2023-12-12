@@ -1,9 +1,9 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-SRC += clear87.S
-SRC += cntrl87.S
-SRC += fpreset.S
-SRC += stat87.S
+AS_SRC += clear87.S
+AS_SRC += cntrl87.S
+AS_SRC += fpreset.S
+AS_SRC += stat87.S
 
 include $(TOP)/../makefile.inc

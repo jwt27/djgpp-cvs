@@ -5,6 +5,7 @@
 #include <libc/stubs.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <float.h>
 #include <unistd.h>
@@ -28,23 +29,8 @@
 extern unsigned end __asm__ ("end");
 static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
-extern unsigned _stklen;
-extern unsigned __djgpp_stack_limit;
-extern unsigned __djgpp_stack_top;
 
-/* These are all defined in exceptn.S and only used here */
-extern int __djgpp_exception_table;
-extern int __djgpp_npx_hdlr;
-extern int __djgpp_kbd_hdlr;
-extern int __djgpp_kbd_hdlr_pc98;
-extern short __excep_ds_alias;
-extern int __djgpp_iret, __djgpp_i24;
-extern void __djgpp_cbrk_hdlr(void);
-extern int __djgpp_hw_lock_start, __djgpp_hw_lock_end;
-extern __dpmi_paddr __djgpp_old_kbd;
-extern unsigned djgpp_exception_stack __asm__("exception_stack");
-extern __dpmi_paddr __djgpp_old_timer;
-
+#if 0
 static void
 itox(int v, int len)
 {
@@ -119,14 +105,14 @@ show_call_frame(void)
        limit by the maximum that the stack could hold (2 int's per frame).  */
     max = _stklen / (2*sizeof(unsigned));
 
-  tos = (unsigned *)__djgpp_selector_limit;
-  vbp = (unsigned *)__djgpp_exception_state->__ebp;
+  tos = (unsigned *)(uintptr_t)__djgpp_selector_limit;
+  vbp = (unsigned *)(uintptr_t)__djgpp_exception_state->__ebp;
   err("Call frame traceback EIPs:\r\n  0x");
   itox(__djgpp_exception_state->__eip, 8);
   max--;
-  while (((unsigned)vbp >= __djgpp_exception_state->__esp) && (vbp >= &end) && (vbp < tos))
+  while (((uintptr_t)vbp >= __djgpp_exception_state->__esp) && (vbp >= &end) && (vbp < tos))
   {
-    vbp_new = (unsigned *)*vbp;
+    vbp_new = (unsigned *)(uintptr_t)*vbp;
     if (vbp_new == 0)
       break;
     veip = *(vbp + 1);
@@ -138,6 +124,7 @@ show_call_frame(void)
   } 
   err("\r\n");
 }
+#endif
 
 static const char *exception_names[] = {
   "Division by Zero",
@@ -160,14 +147,15 @@ static const char *exception_names[] = {
   "Alignment Check"
 };
 
-static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
-
 #define EXCEPTION_COUNT (sizeof(exception_names)/sizeof(exception_names[0]))
+
+#if 0
+static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
 
 static void
 dump_selector(const char *name, int sel)
 {
-  unsigned long base;
+  ULONG32 base;
   unsigned limit;
   _write(STDERR_FILENO, name, 2);
   err(": sel="); itox(sel, 4);
@@ -191,14 +179,15 @@ do_faulting_finish_message(int fake_exception)
 {
   const char *en;
   unsigned long signum = __djgpp_exception_state->__signum;
-  unsigned excpt_stack_addr = (unsigned)&djgpp_exception_stack;
+  unsigned excpt_stack_addr = (uintptr_t)&djgpp_exception_stack;
   int i;
   const char *prog_name;
-  
+#if 0
   /* check video mode for original here and reset (not if PC98) */
   if(ScreenPrimary != 0xa0000 && _farpeekb(_dos_ds, 0x449) != old_video_mode) {
     asm volatile ("pusha;movzbl _old_video_mode,%eax; int $0x10;popa;nop");
   }
+#endif
   en = (signum >= EXCEPTION_COUNT) ? 0 : 
   exception_names[signum];
   if (signum == 0x75)
@@ -229,8 +218,8 @@ do_faulting_finish_message(int fake_exception)
       && (unsigned)__djgpp_exception_state->__ebp
 		>= __djgpp_exception_state->__esp
       && (unsigned *)__djgpp_exception_state->__ebp >= &end
-      && (unsigned *)__djgpp_exception_state->__ebp
-		< (unsigned *)__djgpp_selector_limit)
+      && __djgpp_exception_state->__ebp
+		< (unsigned)__djgpp_selector_limit)
     itox(*((unsigned *)__djgpp_exception_state->__ebp + 1), 8);
   else
     itox(__djgpp_exception_state->__eip, 8);
@@ -276,10 +265,11 @@ do_faulting_finish_message(int fake_exception)
   err("]  Exceptn stack: ["); itox(excpt_stack_addr+8000, 8);
   err(".."); itox(excpt_stack_addr, 8); err("]\r\n");
   err("\r\n");
-  if (__djgpp_exception_state->__cs == _my_cs())
-    show_call_frame();
+//  if (__djgpp_exception_state->__cs == _my_cs())
+//    show_call_frame();
   _exit(-1);
 }
+#endif
 
 typedef void (*SignalHandler) (int);
 
@@ -301,6 +291,7 @@ signal(int sig, SignalHandler func)
 
 static const char signames[] = "ABRTFPE ILL SEGVTERMALRMHUP INT KILLPIPEQUITUSR1USR2NOFPTRAP";
 
+#if 0
 static void print_signal_name(int sig)
 {
   err("Exiting due to signal ");
@@ -316,24 +307,26 @@ static void print_signal_name(int sig)
   }
   err("\r\n");
 }
-    
+#endif
+
 void __djgpp_traceback_exit(int);
 
 void __djgpp_traceback_exit(int sig)
 {
+#if 0
   jmp_buf fake_exception;
 
   if (sig >= SIGABRT && sig <= SIGTRAP)
   {
-    if (!__djgpp_exception_state_ptr)
+    if (!*____djgpp_exception_state_ptr)
     {
       /* This is a software signal, like SIGABRT or SIGKILL.
 	 Fill the exception structure, so we get the traceback.  */
-      __djgpp_exception_state_ptr = &fake_exception;
+      *____djgpp_exception_state_ptr = PTR_DATA(&fake_exception);
       if (setjmp(__djgpp_exception_state))
       {
 	err("Bad longjmp to __djgpp_exception_state--aborting\r\n");
-	do_faulting_finish_message(0); /* does not return */
+//	do_faulting_finish_message(0); /* does not return */
       }
       else
 	/* Fake the exception number.  7Ah is the last one hardwired
@@ -342,9 +335,10 @@ void __djgpp_traceback_exit(int sig)
     }
   }
   print_signal_name(sig);
-  if(__djgpp_exception_state_ptr)
+#endif
+//  if(__djgpp_exception_state_ptr)
     /* This exits, does not return.  */
-    do_faulting_finish_message(__djgpp_exception_state == fake_exception);
+//    do_faulting_finish_message(__djgpp_exception_state_ptr == &fake_exception);
   _exit(-1);
 }
 
@@ -363,7 +357,7 @@ raise(int sig)
     return 0;			/* Ignore it */
   if(temp == (SignalHandler)SIG_DFL)
     __djgpp_traceback_exit(sig); /* this does not return */
-  else if((unsigned)temp < 4096)
+  else if((uintptr_t)temp < 4096)
   {
     err("Bad signal handler, ");
     __djgpp_traceback_exit(sig); /* does not return */
@@ -378,16 +372,18 @@ raise(int sig)
 void
 __djgpp_exception_processor(void)
 {
+#if 0
   int sig;
-  
+
   sig = except_to_sig(__djgpp_exception_state->__signum);
   raise(sig);
   if(__djgpp_exception_state->__signum >= EXCEPTION_COUNT) /* Not exception so continue OK */
     longjmp(__djgpp_exception_state, __djgpp_exception_state->__eax);
   /* User handler did not exit or longjmp, we must exit */
+#endif
   err("Cannot continue from exception, ");
-  print_signal_name(sig);
-  do_faulting_finish_message(0);
+//  print_signal_name(sig);
+//  do_faulting_finish_message(0);
 }
 
 static __dpmi_paddr except_ori[EXCEPTION_COUNT];
@@ -537,35 +533,35 @@ __djgpp_exception_setup(void)
     signal_list[i] = (SignalHandler)SIG_DFL;
 
   /* app_DS only used when converting HW interrupts to exceptions */
-  asm volatile ("mov %ds,___djgpp_app_DS");
-  asm volatile ("mov %ds,___djgpp_our_DS");
+  asm volatile ("mov %%ds,%0" : "=r"(__djgpp_app_DS));
+  asm volatile ("mov %%ds,%0" : "=r"(__djgpp_our_DS));
   __djgpp_dos_sel = _dos_ds;
 
   /* lock addresses which may see HW interrupts */
-  lockmem.address = __djgpp_base_address + (unsigned) &__djgpp_hw_lock_start;
-  lockmem.size = ((unsigned) &__djgpp_hw_lock_end
-		  - (unsigned) &__djgpp_hw_lock_start);
+  lockmem.address = __djgpp_base_address + (uintptr_t) &__djgpp_hw_lock_start;
+  lockmem.size = ((uintptr_t) &__djgpp_hw_lock_end
+		  - (uintptr_t) &__djgpp_hw_lock_start);
   __dpmi_lock_linear_region(&lockmem);
   
   asm volatile ("mov %%cs,%0" : "=g" (except.selector) );
-  except.offset32 = (unsigned) &__djgpp_exception_table;
+  except.offset32 = (uintptr_t) __djgpp_exception_table;
   for(i=0; i < EXCEPTION_COUNT; i++)
   {
     except_ori[i] = except;	/* New value to set */
     except.offset32 += 4;	/* This is the size of push n, jmp */
   }
   kbd_ori.selector = npx_ori.selector = except.selector;
-  npx_ori.offset32 = (unsigned) &__djgpp_npx_hdlr;
+  npx_ori.offset32 = (uintptr_t) &__djgpp_npx_hdlr;
   if(ScreenPrimary != 0xa0000)
-    kbd_ori.offset32 = (unsigned) &__djgpp_kbd_hdlr;
+    kbd_ori.offset32 = (uintptr_t) __djgpp_kbd_hdlr;
   else
   {
-    kbd_ori.offset32 = (unsigned) &__djgpp_kbd_hdlr_pc98;
+    kbd_ori.offset32 = (uintptr_t) __djgpp_kbd_hdlr_pc98;
     cbrk_vect = 0x06;
-    except.offset32 = (unsigned) &__djgpp_iret;		/* TDPMI98 bug */
+    except.offset32 = (uintptr_t) &__djgpp_iret;		/* TDPMI98 bug */
     __dpmi_set_protected_mode_interrupt_vector(0x23, &except);
   }
-  except.offset32 = (unsigned) &__djgpp_i24;
+  except.offset32 = (uintptr_t) &__djgpp_i24;
   __dpmi_set_protected_mode_interrupt_vector(0x24, &except);
 
   __dpmi_get_protected_mode_interrupt_vector(9, &__djgpp_old_kbd);
@@ -648,7 +644,7 @@ __maybe_fix_w2k_ntvdm_bug(void)
   }
 }
 
-void __attribute__((noreturn))
+void
 _exit(int status)
 {
   __maybe_fix_w2k_ntvdm_bug();
@@ -667,6 +663,9 @@ _exit(int status)
     __djgpp_exception_toggle ();
   __exit (status);
 }
+
+void __attribute__((alias("_exit")))
+_Exit(int status);
 
 #ifdef TEST
 

@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 /* Sets the DPMI page attributes for all pages in the given range.
  * See the DPMI 1.0 documentation for function 0x507 (0507H) for a
@@ -14,7 +15,7 @@
  * of the pages will have been affected.
  */
 int
-__djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
+__djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
 			     unsigned short _attributes)
 {
   unsigned long p, end;
@@ -33,7 +34,7 @@ __djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
 
   /* Set up an array of page attribute information. */
   num_pages = _num_bytes / 0x1000;
-  attr = alloca (num_pages * sizeof attr[0]);
+  attr = (short int *)alloca (num_pages * sizeof attr[0]);
   for (i = num_pages - 1; i >= 0; i--)
     attr[i] = _attributes;
 
@@ -41,7 +42,7 @@ __djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
    * that intersect the range, and map the appropriate memory
    * within each handle.
    */
-  for (p = (unsigned) _our_addr, end = p + _num_bytes; p < end; )
+  for (p = (uintptr_t) _our_addr, end = p + _num_bytes; p < end; )
     {
       const __djgpp_sbrk_handle *d;
       unsigned long handle_end_addr, num_pages2;

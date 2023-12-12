@@ -32,8 +32,8 @@ typedef signed int int_least32_t;
 typedef unsigned int uint_least32_t;
 typedef signed int int_fast32_t;
 typedef unsigned int uint_fast32_t;
-typedef signed long int int32_t;
-typedef unsigned long int uint32_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
 
 __extension__ typedef signed long long int int_least64_t;
 __extension__ typedef unsigned long long int uint_least64_t;
@@ -51,7 +51,7 @@ __extension__ typedef unsigned long long int uintmax_t;
 /* ANSI/ISO C99 says these should not be visible in C++ unless
    explicitly requested.  */
 
-#if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS)
+//#if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS)
 
 #define INT_LEAST8_MAX	 127
 #define UINT_LEAST8_MAX	 255
@@ -121,7 +121,7 @@ __extension__ typedef unsigned long long int uintmax_t;
 #define WINT_MIN	(-2147483647-1)
 #endif
 
-#endif /* !__cplusplus || __STDC_LIMIT_MACROS */
+//#endif /* !__cplusplus || __STDC_LIMIT_MACROS */
 
 
 #if !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS)

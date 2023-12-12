@@ -17,9 +17,9 @@ int uname(struct utsname *u)
 {
   __dpmi_regs r;
   unsigned short dos_version;
-  unsigned is_486_or_better;
-  unsigned cpuid_support;
-  unsigned cpuid_info;
+//  unsigned is_486_or_better;
+//  unsigned cpuid_support;
+//  unsigned cpuid_info;
 
   if (!u)
   {
@@ -39,6 +39,7 @@ int uname(struct utsname *u)
   /* Let's check for 386. Intel says that 386 is unable to set or clear */
   /* value of 18 bit in EFLAGS (AC). So we toggle this bit and see if   */
   /* we succeed */
+#if 0
   asm volatile (
        "pushf;"
        "popl   %%eax;"
@@ -107,6 +108,7 @@ int uname(struct utsname *u)
          strcpy(u->machine, "i486"); // i486 not supporting CPUID
   }
   else
+#endif
      strcpy(u->machine, "i386");
 
   r.x.ax = 0x5e00;

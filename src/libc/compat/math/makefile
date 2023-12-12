@@ -3,13 +3,13 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=../..
 
-SRC += cbrt.S
-SRC += exp2.s
-SRC += exp10.s
-SRC += expm1.S
-SRC += log1p.S
-SRC += log2.S
-SRC += powi.S
-SRC += sincos.S
+AS_SRC += cbrt.S
+AS_SRC += exp2.s
+AS_SRC += exp10.s
+AS_SRC += expm1.S
+AS_SRC += log1p.S
+AS_SRC += log2.S
+AS_SRC += powi.S
+AS_SRC += sincos.S
 
 include $(TOP)/../makefile.inc

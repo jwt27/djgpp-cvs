@@ -18,6 +18,7 @@
 
 typedef void (*SignalHandler) (int);
 
+#if 0
 /* Catch rdtsc exception if opcode not legal and always return 0LL */
 static void catch_rdtsc(int val)
 {
@@ -29,6 +30,7 @@ static void catch_rdtsc(int val)
   }
   return;
 }
+#endif
 
 static int uclock_bss = -1;
 
@@ -55,12 +57,12 @@ uclock(void)
     static unsigned long btics;
 
     if (uclock_bss != __bss_count) {
-      SignalHandler saveold;
-      saveold = signal(SIGILL, catch_rdtsc);
+//      SignalHandler saveold;
+//      saveold = signal(SIGILL, catch_rdtsc);
       tics = _farnspeekl(0x46c);
       while ( (btics = _farnspeekl(0x46c)) == tics);
       base = _rdtsc();
-      signal(SIGILL, saveold);
+//      signal(SIGILL, saveold);
       if (base == 0)
         multiplier = 0.0;
       else {

@@ -20,3 +20,5 @@ isatty(int fd)
     return 1;
   return 0;
 }
+
+int __attribute__((alias("isatty"))) __isatty(int fd);

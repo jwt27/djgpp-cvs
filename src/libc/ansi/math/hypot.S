@@ -79,3 +79,7 @@ bigarg:					/* least one arg is huge.  Proceed */
 range_error:
 	movl	$2, _errno
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

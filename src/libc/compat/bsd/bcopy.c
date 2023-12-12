@@ -9,3 +9,6 @@ bcopy(const void *a, void *b, size_t len)
 {
   memmove(b, a, len);
 }
+
+void __attribute__((alias("bcopy")))
+_bcopy(const void *a, void *b, size_t len);

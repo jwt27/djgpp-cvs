@@ -250,7 +250,7 @@ mover(const char *from, const struct ffblk *ff)
    ------------------------------------------------------- */
 
 int
-rename(const char *old, const char *new)
+rename(const char *old, const char *_new)
 {
   int status;
   char *p;
@@ -271,7 +271,7 @@ rename(const char *old, const char *new)
      to ensure NEW isn't deleted unless rename() is to succeed.  */
 
   /* Fail with EFAULT if one of OLD or NEW is a NULL ptr.  */
-  if (old == 0 || new == 0)
+  if (old == 0 || _new == 0)
     {
       errno = EFAULT;
       return -1;
@@ -279,7 +279,7 @@ rename(const char *old, const char *new)
 
   /* Handle symlinks */
   if (!__solve_dir_symlinks(old, real_old) || 
-      !__solve_dir_symlinks(new, real_new))
+      !__solve_dir_symlinks(_new, real_new))
      return -1;
 
   /* Fail with ENAMETOOLONG if either OLD or NEW are too long.  This is

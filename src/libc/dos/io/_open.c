@@ -17,10 +17,7 @@
 #include <libc/dosio.h>
 #include <sys/fsext.h>
 #include <libc/fsexthlp.h>
-
-typedef enum {
-  false = 0, true = 1
-} bool;
+#include <stdbool.h>
 
 int
 _open(const char* filename, int oflag)

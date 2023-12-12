@@ -37,21 +37,11 @@ copyrite.exe : copyrite.cc
 
 subs:
 	$(MAKE) -C djasm native
-	$(MAKE) -C stub native
 	$(MAKE) -C utils native
 	$(MAKE) -C dxe native
+	$(MAKE) -C djdev64
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
-	$(MAKE) -C debug
-	$(MAKE) -C djasm
-	$(MAKE) -C stub
-	$(MAKE) -C dxe
-	$(MAKE) -C libemu
-	$(MAKE) -C libm
-	$(MAKE) -C utils
-	$(MAKE) -C docs
-	-$(MAKE) -C ../zoneinfo/src
-	$(MAKE) -f makempty
 
 .PHONY : clean
 clean : misc.exe makemake.exe
@@ -60,13 +50,12 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C debug clean
 	$(MAKE) -C libemu clean
 	$(MAKE) -C utils clean
-	$(MAKE) -C stub clean
 	$(MAKE) -C dxe clean
+	$(MAKE) -C djdev64 clean
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs clean
 	$(MAKE) -C djasm clean
 	-$(MAKE) -C ../zoneinfo/src clean
-	$(MAKE) -f makempty clean
 	./misc.exe rm gpp.opt
 	./misc.exe rm gcc.opt gcc-l.opt
 	./misc.exe rm makemake.exe copyrite.exe misc.exe

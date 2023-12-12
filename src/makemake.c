@@ -9,14 +9,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-FILE *mf, *oi, *rf;
+FILE *mf, *oi, *rf, *rfo;
 char starting_dir[2000];
 char top_dir[2000];
 char path[2000];
 int do_oh_files = 0;
 
 void
-process_makefile(char *path_end)
+process_makefile(char *path_end, const char *mk, FILE *rf)
 {
   FILE *oh;
   int last_was_nl = 1;
@@ -33,11 +33,11 @@ process_makefile(char *path_end)
     return;
   }
 
-  strcpy(path_end, "/makefile.oh");
+  strcpy(path_end, mk);
   oh = fopen(path, "r");
   if (oh == 0)
     return;
-  
+
   *path_end = 0;
 
   while ((ch = fgetc(oh)) != EOF)
@@ -121,7 +121,8 @@ find(void)
     /* See if the current directory has a makefile */
     if (strcmp(de->d_name, "makefile") == 0)
     {
-      process_makefile(path_end);
+      process_makefile(path_end, "/makefile.oh", rf);
+      process_makefile(path_end, "/makefile.oho", rfo);
       *path_end = '/';
     }
   }
@@ -200,6 +201,7 @@ main(int argc, char **argv)
   {
     oi = fopen("makefile.oi", "w");
     rf = fopen("makefile.rf2", "w");
+    rfo = fopen("makefile.rf3", "w");
   }
 
   if (!do_oh_files)
@@ -217,6 +219,7 @@ main(int argc, char **argv)
     fclose(oi);
     fclose(rf);
     move_if_change("makefile.rf2", "makefile.rf");
+    move_if_change("makefile.rf3", "makefile.rfo");
   }
 
   return 0;

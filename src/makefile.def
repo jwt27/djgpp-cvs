@@ -1,12 +1,14 @@
 # Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
 # -*- makefile -*-
 
+SHELL := /bin/bash -o pipefail
+
 #  These define the cross-to-djgpp and native programs.
 
 ifneq ($(COMSPEC),)
 CROSS_BUILD = 0
 else
-CROSS_BUILD = 1
+CROSS_BUILD = 0
 endif
 
 # OK, pay attention: The CROSS_* programs are used to build objects
@@ -25,17 +27,21 @@ ifeq ($(CROSS_BUILD),0)
 
 # For building distributed (djgpp) libraries and programs
 CROSS_GCC = gcc
+CROSS_CPP = cpp
 CROSS_AR = ar
 CROSS_AS = as
 CROSS_LD = ld
 CROSS_STRIP = strip
 CROSS_BISON = bison
+CROSS_PREFIX = i586-pc-msdosdjgpp-
+CROSS_AS = $(CROSS_PREFIX)as
 
 # For building native programs (hostbin/*); assumes GNU versions
 GCC = gcc -g
 AR = ar
 AS = as
 LD = ld
+OBJCOPY = objcopy
 STRIP = strip
 BISON = bison
 LIBSTDCXX = -lstdcxx

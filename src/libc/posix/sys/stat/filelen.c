@@ -109,3 +109,5 @@ filelength(int fhandle)
 
   return retval;
 }
+
+long __attribute__((alias("filelength"))) __filelength(int fhandle);

@@ -122,3 +122,5 @@ findnext(struct ffblk *ffblk)
     return 0;
   }
 }
+
+int __attribute__((alias("findnext"))) __findnext(struct ffblk *ffblk);

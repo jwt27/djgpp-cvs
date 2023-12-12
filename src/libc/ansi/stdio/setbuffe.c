@@ -6,7 +6,7 @@
 void setbuffer(FILE *f, void *buf, int size)
 {
   if (buf)
-    setvbuf(f, buf, _IOFBF, size);
+    setvbuf(f, (char *)buf, _IOFBF, size);
   else
     setvbuf(f, 0, _IONBF, 0);
 }

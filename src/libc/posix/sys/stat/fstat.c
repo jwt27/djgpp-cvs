@@ -102,6 +102,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
 #include <io.h>
@@ -251,7 +252,6 @@ get_sft_entry(int fhandle)
   unsigned short sft_off;
   unsigned long  htbl_addr;
   short          sft_idx, retval;
-  unsigned short _my_ds_base = _my_ds();
 
   __dpmi_regs	 regs;
   _djstat_fail_bits = fstat_init_bits;
@@ -320,9 +320,8 @@ get_sft_entry(int fhandle)
         { /* Our target is in this sub-table.  Pull in the entire
            * SFT entry for use by fstat_assist().
            */
-	  movedata(_dos_ds,
-                   entry_addr + 6 + sft_idx * sft_size,
-		   _my_ds_base, (unsigned int)sft_buf, sft_size);
+	  fmemcpy2(sft_buf, DP(_dos_ds, entry_addr + 6 + sft_idx * sft_size),
+		   sft_size);
           return retval;
         }
       /* Our target not in this subtable.

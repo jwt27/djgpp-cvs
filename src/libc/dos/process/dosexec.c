@@ -136,7 +136,7 @@ static int check_talloc(size_t amt)
       tbuf_selector = max_avail;
 
     new_tb *= 16;  /* convert to linear address */
-    movedata(_dos_ds, tbuf_beg, _dos_ds, new_tb, tbuf_ptr - tbuf_beg);
+    fmemcpy12(DP(_dos_ds, new_tb), DP(_dos_ds, tbuf_beg), tbuf_ptr - tbuf_beg);
     tbuf_ptr = new_tb + tbuf_ptr - tbuf_beg;
     tbuf_beg = new_tb;
     tbuf_end = tbuf_beg + tbuf_len - 1;
@@ -439,9 +439,12 @@ direct_exec_tail_1(const char *program, const char *args,
     __dpmi_free_dos_memory(tbuf_selector);
   tbuf_selector = 0;
 #endif
+#if 0
   /* Work around the W2K NTVDM bug; see dpmiexcp.c for detailed
      explanations.  */
   __maybe_fix_w2k_ntvdm_bug();
+#endif
+
   if (r.x.flags & 1)
   {
     errno = __doserr_to_errno(r.x.ax);
@@ -1561,6 +1564,10 @@ int __spawnve(int mode, const char *path, char *const argv[],
 {
   return __djgpp_spawn(mode, path, argv, envp, SPAWN_EXTENSION_SRCH);
 }
+
+int __attribute__((alias("__spawnve")))
+spawnve(int mode, const char *path, char *const argv[],
+              char *const envp[]);
 
 int __djgpp_spawn(int mode, const char *path, char *const argv[],
                      char *const envp[], unsigned long flags)

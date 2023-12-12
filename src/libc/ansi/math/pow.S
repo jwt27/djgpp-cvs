@@ -185,3 +185,7 @@ CleanUp:
 range_error:
 	movl	$2, _errno
 	jmp	CleanUp
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

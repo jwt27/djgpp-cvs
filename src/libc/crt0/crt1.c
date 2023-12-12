@@ -12,12 +12,14 @@
 #include <string.h>
 #include <libc/internal.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <errno.h>
 #include <go32.h>
 #include <stubinfo.h>
 #include <dpmi.h>
 #include <libc/farptrgs.h>
 #include <pc.h>
+#include <conio.h>
 #include <libc/bss.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -37,10 +39,13 @@
    the static storage.  */
 int __bss_count = 1;
 
-extern char **_environ;
+char **_environ;
+extern char **__attribute__((alias("_environ"))) environ;
 
 int __crt0_argc;
 char **__crt0_argv;
+
+char *__djgpp_mem_base;
 
 /* Local variables */
 
@@ -132,9 +137,9 @@ setup_environment(void)
   short env_selector;
   int env_count=0;
 
-  dos_environ = alloca(_stubinfo->env_size);
-  movedata(_stubinfo->psp_selector, 0x2c, ds, (int)&env_selector, 2);
-  movedata(env_selector, 0, ds, (int)dos_environ, _stubinfo->env_size);
+  dos_environ = (char *)alloca(_stubinfo->env_size);
+  fmemcpy2(&env_selector, DP(_stubinfo->psp_selector, 0x2c), 2);
+  fmemcpy2(dos_environ, DP(env_selector, 0), _stubinfo->env_size);
   cp = dos_environ;
   while (*cp) { /* repeat until two NULs */
     env_count++;
@@ -163,7 +168,7 @@ setup_environment(void)
    * when `DJGPP' is not set in the environment.
    */
   putenv(unconst("", char *));
-  
+
   __dos_argv0 = (char *)malloc(strlen(cp + 3)+1);
   if (__dos_argv0 == 0)
     abort();
@@ -193,7 +198,6 @@ setup_pname(void)
 
 extern void __main(void);
 extern int  main(int, char **, char **);
-extern void _crt0_init_mcount(void);	/* For profiling */
 extern void __setup_file_rec_list(void);
 
 char __PROXY[] = " !proxy";
@@ -221,6 +225,8 @@ __crt1_startup(void)
   setup_screens();
   setup_go32_info_block();
   __djgpp_exception_setup();
+  init_sys_siglist();
+  init_confstr();
   setup_environment();
   __environ_changed++;
   __setup_file_rec_list();
@@ -233,8 +239,8 @@ __crt1_startup(void)
   __crt0_setup_arguments();
   _npxsetup(__crt0_argv ? __crt0_argv[0] : __dos_argv0);
   _crt0_init_mcount();
+  gppconio_init();
   __main();
   errno = 0;	/* ANSI says errno should be zero at program startup */
-  exit(main(__crt0_argc, __crt0_argv, _environ));
+//  exit(main(__crt0_argc, __crt0_argv, _environ));
 }
-

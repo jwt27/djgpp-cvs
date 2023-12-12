@@ -49,7 +49,7 @@ _filbuf(FILE *f)
   if (f->_base == NULL && !(f->_flag & _IONBF))
   {
     size = __tb_size;
-    if ((f->_base = malloc(size)) == NULL)
+    if ((f->_base = (char *)malloc(size)) == NULL)
     {
       f->_flag |= _IONBF;
       f->_flag &= ~(_IOFBF | _IOLBF);
@@ -100,7 +100,7 @@ _filbuf(FILE *f)
     if (__is_text_file(f) && f->_cnt > 0)
     {
       /* truncate text file at Ctrl-Z */
-      char *cz = memchr(f->_base, 0x1A, (size_t)f->_cnt);
+      char *cz = (char *)memchr(f->_base, 0x1A, (size_t)f->_cnt);
       if (cz)
       {
         int newcnt = cz - f->_base;

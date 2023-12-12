@@ -5,6 +5,7 @@
 /* Copyright (C) 1996 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <libc/stubs.h>
+#include <libc/internal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -24,14 +25,10 @@ void (*__FSEXT_exit_hook)(void) = NULL;
 /* A hook to close those file descriptors with properties. */
 void (*__fd_properties_cleanup_hook)(void) = NULL;
 
-typedef void (*FUNC)(void);
-extern FUNC djgpp_first_dtor[] __asm__("djgpp_first_dtor");
-extern FUNC djgpp_last_dtor[] __asm__("djgpp_last_dtor");
-
 void
 exit(int status)
 {
-  int i;
+//  int i;
   struct __atexit *a,*o;
 
   a = __atexit_ptr;
@@ -43,12 +40,12 @@ exit(int status)
     a = a->__next;
     free(o);
   }
-
+#if 0
   /* Destructors should probably be called after functions registered
      with atexit(), this is the way it happens in Linux anyway. */
   for (i=0; i<djgpp_last_dtor-djgpp_first_dtor; i++)
-    djgpp_first_dtor[i]();
-
+    _djgpp_first_dtor(i);
+#endif
   /* Do this last so that everyone else may write to files
      during shutdown */
   if (__stdio_cleanup_hook)

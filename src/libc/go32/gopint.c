@@ -5,6 +5,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/exceptn.h>
 
@@ -85,11 +86,11 @@ static unsigned char wrapper_intchain[] = {
 /* 5F */ FILL, FILL,			/*     old_segment 		*/
 };
 
-unsigned long _go32_interrupt_stack_size = 32256;
+ULONG32 _go32_interrupt_stack_size = 32256;
 
-int _go32_dpmi_lock_data( void *lockaddr, unsigned long locksize )
+int _go32_dpmi_lock_data( void *lockaddr, ULONG32 locksize )
     {
-    unsigned long baseaddr;
+    ULONG32 baseaddr;
     __dpmi_meminfo memregion;
 
     if( __dpmi_get_segment_base_address( _go32_my_ds(), &baseaddr) == -1 ) return( -1 );
@@ -104,9 +105,9 @@ int _go32_dpmi_lock_data( void *lockaddr, unsigned long locksize )
     return( 0 );
     }
 
-int _go32_dpmi_lock_code( void *lockaddr, unsigned long locksize )
+int _go32_dpmi_lock_code( void *lockaddr, ULONG32 locksize )
     {
-    unsigned long baseaddr;
+    ULONG32 baseaddr;
     __dpmi_meminfo memregion;
 
     if( __dpmi_get_segment_base_address( _go32_my_cs(), &baseaddr) == -1 ) return( -1 );
@@ -183,7 +184,7 @@ static int _go32_dpmi_chain_protected_mode_interrupt_vector_with_stack(int vecto
   *(long  *)(wrapper+0x5B) = pm_int.offset32;
   *(short *)(wrapper+0x5F) = pm_int.selector;
 
-  pm_int.offset32 = (int)wrapper;
+  pm_int.offset32 = (uintptr_t)wrapper;
   pm_int.selector = _my_cs();
   __dpmi_set_protected_mode_interrupt_vector(vector, &pm_int);
   return 0;
@@ -220,7 +221,7 @@ static int _go32_dpmi_allocate_iret_wrapper_with_stack(_go32_dpmi_seginfo *info,
 
   FILL_INT_WRAPPER();
 
-  info->pm_offset = (int)wrapper;
+  info->pm_offset = (uintptr_t)wrapper;
   info->pm_selector = _my_cs();
   return 0;
 }
@@ -234,7 +235,7 @@ int _go32_dpmi_allocate_iret_wrapper(_go32_dpmi_seginfo *info)
 int _go32_dpmi_free_iret_wrapper(_go32_dpmi_seginfo *info)
 {
   char *stack;
-  char *wrapper = (char *)info->pm_offset;
+  char *wrapper = DATA_PTR(info->pm_offset);
 
   stack = (char *)(*(long *)(wrapper+0x0F) - 8);
   if (*(long *) stack & STACK_WAS_MALLOCED)

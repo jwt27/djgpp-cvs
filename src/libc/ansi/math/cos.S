@@ -24,3 +24,7 @@ bigarg:
 finite:
 	fld1				/* cos = 1. */
 	ret
+
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+#endif

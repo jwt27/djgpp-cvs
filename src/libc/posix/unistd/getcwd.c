@@ -151,6 +151,8 @@ do_getcwd:
   return buf;
 }
 
+char * __attribute__((alias("__getcwd"))) getcwd(char *buf, size_t size);
+
 #ifdef TEST
 
 int main(int argc, char** argv)

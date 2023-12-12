@@ -7,8 +7,8 @@ void
 swab(const void *vfrom, void *vto, int n)
 {
   unsigned long temp;
-  const char *from=vfrom;
-  char *to=vto;
+  const char *from=(const char *)vfrom;
+  char *to=(char *)vto;
 
   n >>= 1; n++;
 #define	STEP	temp = *from++,*to++ = *from++,*to++ = temp

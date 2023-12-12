@@ -109,6 +109,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -328,7 +329,6 @@ get_inode_from_sda(const char *mybasename)
   int            count          = dirent_count;
   unsigned int * dirent_p       = dirent_table;
   unsigned short dos_mem_base   = _dos_ds;
-  unsigned short our_mem_base   = _my_ds();
   char  * dot                   = strchr(mybasename, '.');
   size_t  total_len             = strlen(mybasename);
   int     name_len;
@@ -384,7 +384,7 @@ get_inode_from_sda(const char *mybasename)
       /* Copy the directory entry from the SDA to local storage.
          The filename is stored there in infamous DOS format: name and
          extension blank-padded to 8/3 characters, no dot between them.  */
-      movedata(dos_mem_base, src_address, our_mem_base, (unsigned int)cmp_buf,
+      fmemcpy2(cmp_buf, DP(dos_mem_base, src_address),
                sizeof(struct full_dirent));
 
       /* If this is the filename we are looking for, return
@@ -548,8 +548,8 @@ stat_assist(const char *path, struct stat *statbuf)
       /* _truename() failed.  (This really shouldn't happen, but who knows?)
          At least uppercase all letters, convert forward slashes to backward
          ones, and pray... */
-      register const char *src = pathname;
-      register       char *dst = canon_path;
+      const char *src = pathname;
+            char *dst = canon_path;
 
       while ( (*dst = (*src > 'a' && *src < 'z'
                        ? *src++ - ('a' - 'A')
@@ -868,7 +868,7 @@ stat_assist(const char *path, struct stat *statbuf)
 	   !done;
 	   done = __findnext(&ff_blk))
 	{
-	  register char *fname = ff_blk.ff_name;
+	  char *fname = ff_blk.ff_name;
 
 	  /* Don't count "." and ".." entries.  This will show empty
 	     directories as size 0.  */

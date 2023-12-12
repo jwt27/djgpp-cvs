@@ -12,7 +12,7 @@ static int tmp_len;
 static int tmp_bss_count = -1;
 
 static void
-try(const char *var)
+_try(const char *var)
 {
   static char buf[L_tmpnam];
 
@@ -42,9 +42,9 @@ tmpnam(char *s)
   {
     tmp_bss_count = __bss_count;
 
-    if (tmp_dir == 0) try("TMPDIR");
-    if (tmp_dir == 0) try("TEMP");
-    if (tmp_dir == 0) try("TMP");
+    if (tmp_dir == 0) _try("TMPDIR");
+    if (tmp_dir == 0) _try("TEMP");
+    if (tmp_dir == 0) _try("TMP");
     if (tmp_dir == 0)
     {
       static char def[] = "c:/";

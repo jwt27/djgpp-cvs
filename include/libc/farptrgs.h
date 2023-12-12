@@ -14,7 +14,7 @@
 บ		Far Pointer Simulation Functions			บ
 ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
 
-This file attempts to make up for the lack of a "far" keyword in GCC. 
+This file attempts to make up for the lack of a "far" keyword in GCC.
 Although it doesn't provide access to far call APIs (like Windows), it
 does allow you to do far pointer data access without the overhead of
 movedata() or dosmemget/dosmemput().
@@ -23,11 +23,11 @@ You should *always* include this file when using these functions and
 compile with optimization enabled.  They don't exist as normal functions
 in any library, and they compile down to only a few opcodes when used
 this way.  They are almost as fast as native pointer operations, and
-about as fast as far pointers can get. 
+about as fast as far pointers can get.
 
 If you don't use optimization, this file becomes prototypes for
-farptr.c, which generates real functions for these when not optimizing. 
-When optimizing, farptr.c compiles to nothing. 
+farptr.c, which generates real functions for these when not optimizing.
+When optimizing, farptr.c compiles to nothing.
 
 There are two types of functions here - standalone and invariant.  The
 standalone functions take a selector and offset.  These are used when
@@ -44,12 +44,12 @@ The farpoke* and farpeek* take selectors.
 
 The farnspoke* and farnspeek* don't (note the `ns' for `no selector').
 
-Warning: These routines all use the %gs register for their accesses. 
+Warning: These routines all use the %gs register for their accesses.
 GCC normally uses only %ds and %es, and libc functions (movedata,
 dosmemget, dosmemput) use %gs.  Still, you should be careful about
 assumptions concerning whether or not the value you put in %gs will be
 preserved across calls to other functions.  If you guess wrong, your
-program will crash.  Better safe than sorry. 
+program will crash.  Better safe than sorry.
 
 */
 

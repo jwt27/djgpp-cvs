@@ -6,8 +6,15 @@
 #ifndef __dj_include_stddef_h_
 #define __dj_include_stddef_h_
 
+#include_next <stddef.h>
+#ifdef __USE_POSIX_IMPLICITLY
+#undef __USE_POSIX_IMPLICITLY
+#undef _DEFAULT_SOURCE
+#undef _POSIX_SOURCE
+#endif
+
 #ifdef __cplusplus
-namespace std {
+//namespace std {
   extern "C" {
 #endif
 
@@ -23,10 +30,12 @@ namespace std {
 #  define NULL          ((void*)0)
 #endif
 
-#ifdef __cplusplus
-#define offsetof(s_type, mbr) ((std::size_t) &((s_type *)0)->mbr)
-#else
+#ifndef offsetof
+//#ifdef __cplusplus
+//#define offsetof(s_type, mbr) ((std::size_t) &((s_type *)0)->mbr)
+//#else
 #define offsetof(s_type, mbr) ((size_t) &((s_type *)0)->mbr)
+//#endif
 #endif
 
 #ifndef _PTRDIFF_T
@@ -68,18 +77,8 @@ __DJ_wchar_t
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 
 #ifdef __cplusplus
-  }
+//  }
 }
 #endif
 
 #endif /* !__dj_include_stddef_h_ */
-
-
-#if defined(__cplusplus)
-#ifndef __dj_via_cplusplus_header_
-
-using std::ptrdiff_t;
-using std::size_t;
-
-#endif /* !__dj_via_cplusplus_header_ */
-#endif /* __cplusplus */

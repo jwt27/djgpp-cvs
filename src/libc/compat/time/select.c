@@ -172,7 +172,7 @@ select(int nfds,
     /* First, check the file handles with low-level DOS calls.  */
     for (i = 0; i < nfds; i++)
     {
-      register int ioctl_result;
+      int ioctl_result;
       __FSEXT_Function *func = __FSEXT_get_function(i);
       int fsext_ready = -1;
 
