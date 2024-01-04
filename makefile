@@ -27,6 +27,7 @@ uninstall:
 
 clean:
 	$(MAKE) -C src clean
+	$(RM) dj64.pc
 
 deb:
 	debuild -i -us -uc -b

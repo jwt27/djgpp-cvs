@@ -1,4 +1,6 @@
 Name: dj64
 Description: dj64 dev suit
 Version: @VERSION@
+prefix=@PREFIX@
+Cflags: -I${prefix}/i386-pc-dj64/include
 Libs: -ldj64
