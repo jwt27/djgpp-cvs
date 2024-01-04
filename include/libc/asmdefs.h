@@ -48,4 +48,6 @@
 #define ARG7		32(%ebp)
 #define ARG8		36(%ebp)
 
+#define _errno ___dj_errno
+
 #endif /* __dj_include_libc_asmdefs_h__ */

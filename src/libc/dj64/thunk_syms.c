@@ -2,4 +2,4 @@
 #include "sys/cdefs.h"
 #include "asm_incsn.h"
 
-extern int __attribute__((alias("___dj_errno"))) _errno;
+//extern int __attribute__((alias("___dj_errno"))) _errno;
