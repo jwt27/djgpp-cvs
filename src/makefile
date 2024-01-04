@@ -39,7 +39,6 @@ subs:
 	$(MAKE) -C djasm native
 	$(MAKE) -C utils native
 	$(MAKE) -C dxe native
-	$(MAKE) -C djdev64
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
 
@@ -51,7 +50,6 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C libemu clean
 	$(MAKE) -C utils clean
 	$(MAKE) -C dxe clean
-	$(MAKE) -C djdev64 clean
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs clean
 	$(MAKE) -C djasm clean
