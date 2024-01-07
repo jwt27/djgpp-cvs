@@ -7,7 +7,7 @@ DJLIBC = $(TOP)/lib/libc.a
 DJ64LIB = $(TOP)/lib/libdj64.so.0.1
 DJ64DEVL = $(TOP)/lib/libdj64.so
 
-all: dj64.pc
+all: dj64.pc dj64static.pc
 	$(MAKE) -C src
 
 install:
@@ -21,13 +21,14 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib/pkgconfig
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/lib/pkgconfig
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/i386-pc-dj64
 
 clean:
 	$(MAKE) -C src clean
-	$(RM) dj64.pc
+	$(RM) dj64.pc dj64static.pc
 
 deb:
 	debuild -i -us -uc -b
