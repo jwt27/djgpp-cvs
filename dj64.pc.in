@@ -3,4 +3,4 @@ Description: dj64 dev suit
 Version: @VERSION@
 prefix=@PREFIX@
 Cflags: -I${prefix}/i386-pc-dj64/include
-Libs: -ldj64
+Libs: -L${prefix}/i386-pc-dj64/lib64 -ldj64
