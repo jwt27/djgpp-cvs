@@ -1,4 +1,4 @@
 usr/i386-pc-dj64/include
 usr/i386-pc-dj64/lib/*.a
 usr/i386-pc-dj64/lib64/*.so
-usr/lib/pkgconfig/*.pc
+usr/share/pkgconfig/*.pc
