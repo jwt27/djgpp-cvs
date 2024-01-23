@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <dj64init.h>
+#include <djdev64/dj64init.h>
 #include "plt.h"
 #include "thunk_incs.h"
 
