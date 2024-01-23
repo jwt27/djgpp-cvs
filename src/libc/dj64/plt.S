@@ -185,12 +185,15 @@ plt_init:
     movl $1, %eax
     int $0x31
     /* call manager */
+    movl maddr, %ecx
+//    movl handle, %edx
+    pushal
+    movl %esp, %edx
     movl __plt_handle, %eax
     movl $AUX_CORE, %ebx
     movl $DL_SET_SYMTAB, %ecx
-    pushl maddr
     lcalll *__plt_ctrl
-    popl %eax
+    popal
     /* free mem */
     movl $0x502, %eax
     movw handle, %di

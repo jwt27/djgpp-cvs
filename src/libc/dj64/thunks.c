@@ -64,7 +64,7 @@ static UDWORD FdppThunkCall(int fn, UBYTE *sp, enum DispStat *r_stat,
     return ret;
 }
 
-static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
+static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
     dj64dispatch_t *disp)
 {
     int len;
@@ -98,13 +98,27 @@ static int _FdppCall(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
 }
 
 struct udisp {
+    const struct dj64_api *api;
     dj64dispatch_t *disp;
     dj64symtab_t *st;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
 
-static int FdppCall(int handle, int libid, int fn, uint8_t *sp)
+static void djloudprintf(int handle, const char *format, ...)
+{
+    const struct dj64_api *api = udisps[handle].api;
+    va_list vl;
+
+    va_start(vl, format);
+    api->print(DJ64_PRINT_LOG, format, vl);
+    va_end(vl);
+    va_start(vl, format);
+    api->print(DJ64_PRINT_TERMINAL, format, vl);
+    va_end(vl);
+}
+
+static int dj64_call(int handle, int libid, int fn, uint8_t *sp)
 {
     int ret;
     struct udisp *u;
@@ -113,48 +127,44 @@ static int FdppCall(int handle, int libid, int fn, uint8_t *sp)
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     recur_cnt++;
-    ret = _FdppCall(libid, fn, regs, sp, u->disp);
+    ret = _dj64_call(libid, fn, regs, sp, u->disp);
     recur_cnt--;
     return ret;
 }
 
-static int FdppCtrl(int handle, int libid, int fn, uint8_t *sp)
+static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
 {
 //    struct udisp *u;
 //    struct dj64_symtab *st;
     __dpmi_regs *regs = (__dpmi_regs *)sp;
-    sp += sizeof(*regs);
     assert(handle < MAX_HANDLES);
 //    u = &udisps[handle];
     switch (fn) {
     case DL_SET_SYMTAB:
-#if 0
-        st = (struct dj64_symtab *)DATA_PTR(regs->d.esi);
-        if (libid) {
-            u->st(st);
-            return 0;
-        }
-        if (HI_BYTE(regs->eax) != FDPP_KERNEL_VERSION) {
-            fdloudprintf("\nfdpp version mismatch: expected %i, got %i\n",
-                    FDPP_KERNEL_VERSION, HI_BYTE(regs->eax));
-            _fail();
-        }
-        FdppSetSymTab(
-                (struct fdpp_symtab *)so2lin(regs->ss, LO_WORD(regs->esi)));
-#endif
+        uint32_t addr = regs->d.ecx;
+        const char *elf;
+        djloudprintf(handle, "addr %x\n", addr);
+        elf = DATA_PTR(addr);
+        djloudprintf(handle, "data %p(%s)\n", elf, elf);
         return 0;
     }
     return -1;
 }
 
-static dj64cdispatch_t *ops[] = { FdppCall, FdppCtrl };
+static dj64cdispatch_t *ops[] = { dj64_call, dj64_ctrl };
 
-dj64cdispatch_t **DJ64_INIT_FN(int handle, dj64dispatch_t *disp,
+#define API_VER 1
+dj64cdispatch_t **DJ64_INIT_FN(int handle,
+    const struct dj64_api *api,
+    int api_ver,
+    dj64dispatch_t *disp,
     dj64symtab_t *st)
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
+    assert(api_ver == API_VER);
+    u->api = api;
     u->disp = disp;
     u->st = st;
     return ops;
