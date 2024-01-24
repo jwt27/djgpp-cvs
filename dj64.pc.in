@@ -2,5 +2,6 @@ Name: dj64
 Description: dj64 dev suit
 Version: @VERSION@
 prefix=@PREFIX@
+ccwrp=${prefix}/i386-pc-dj64/bin/ccwrp.sh
 Cflags: -I${prefix}/i386-pc-dj64/include
 Libs: -L${prefix}/i386-pc-dj64/lib64 -ldj64
