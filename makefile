@@ -29,6 +29,9 @@ install:
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/i386-pc-dj64
+	$(RM) -r $(DESTDIR)$(PREFIX)/include/djdev64
+	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64.pc
+	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64static.pc
 
 clean:
 	$(MAKE) -C src clean
