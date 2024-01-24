@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 ORIG_ARGS="$*"
 if [ $# -lt 2 ]; then
   cc ${ORIG_ARGS}
