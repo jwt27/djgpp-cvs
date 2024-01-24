@@ -140,13 +140,14 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
     assert(handle < MAX_HANDLES);
 //    u = &udisps[handle];
     switch (fn) {
-    case DL_SET_SYMTAB:
+    case DL_SET_SYMTAB: {
         uint32_t addr = regs->d.ecx;
         const char *elf;
         djloudprintf(handle, "addr %x\n", addr);
         elf = DATA_PTR(addr);
         djloudprintf(handle, "data %p(%s)\n", elf, elf);
         return 0;
+    }
     }
     return -1;
 }
