@@ -149,7 +149,7 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
         uint32_t addr = regs->d.ecx;
         const char *elf;
         djloudprintf("addr %x\n", addr);
-        elf = DATA_PTR(addr);
+        elf = (char *)djaddr2ptr(addr);
         djloudprintf("data %p(%s)\n", elf, elf);
         return 0;
     }
@@ -216,7 +216,7 @@ static UDWORD alloc_cbk_VOID(_cbk_VOID cbk)
 #define __ARG_CBK(t) _cbk_##t
 #define __ARG_CBK_A(t) UDWORD
 #define __RET(t, v) v
-#define __RET_PTR(t, v) DATA_PTR(v)
+#define __RET_PTR(t, v) djaddr2ptr(v)
 #define __RET_PTR_FAR(t, v) FP_FROM_D(t, v)
 #define __CALL(n, s, l, f) do_asm_call(n, s, l, f)
 #define __CSTK(l) clean_stk(l)

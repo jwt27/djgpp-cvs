@@ -358,9 +358,8 @@ int __djgpp_map_physical_memory(void *our_addr, ULONG32 num_bytes,
 #endif
 
 #ifdef __LP64__
-extern char *__djgpp_mem_base;
 EXTERN int ASM(__djgpp_base_address);
-#define DATA_PTR(l) (__djgpp_mem_base + __djgpp_base_address + (l))
+#define DATA_PTR(l) ((char *)djaddr2ptr(__djgpp_base_address + (l)))
 #else
 #define DATA_PTR(l) ((char *)(l))
 #endif
