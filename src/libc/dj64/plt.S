@@ -60,6 +60,8 @@ maddr: .long 0
 
 .global plt_init
 plt_init:
+    pushl %es
+
     movl $0xa00, %eax
     movl $ext_nm, %esi
     int $0x31
@@ -212,10 +214,12 @@ plt_init:
     movw handle + 2, %si
     int $0x31
     jc 2f
+    popl %es
 
 1:
     ret
 2:
+    popl %es
     // TODO: print error
     movb $0x4c, %ah
     int $0x21
