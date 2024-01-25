@@ -103,6 +103,12 @@ plt_init:
     movw %fs:STUBINFO_PAYLOAD_SIZE+2, %cx
     movl $8, %eax
     int $0x31
+    /* seek fd */
+    movl %fs:STUBINFO_SELF_FD, %ebx
+    movzwl %fs:STUBINFO_PAYLOAD_OFFS, %edx
+    movzwl %fs:STUBINFO_PAYLOAD_OFFS + 2, %ecx
+    movl $0x4200, %eax
+    int $0x21
     /* read payload */
     pushl %ds
     movw sel, %ds
@@ -170,6 +176,12 @@ plt_init:
     movw %fs:STUBINFO_SELF_SIZE+2, %cx
     movl $8, %eax
     int $0x31
+    /* seek fd */
+    movl %fs:STUBINFO_SELF_FD, %ebx
+    movzwl %fs:STUBINFO_SELF_OFFS, %edx
+    movzwl %fs:STUBINFO_SELF_OFFS + 2, %ecx
+    movl $0x4200, %eax
+    int $0x21
     /* read payload */
     pushl %ds
     movw sel, %ds
