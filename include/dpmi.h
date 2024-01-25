@@ -360,10 +360,10 @@ int __djgpp_map_physical_memory(void *our_addr, ULONG32 num_bytes,
 #ifdef __LP64__
 EXTERN int ASM(__djgpp_base_address);
 #define DATA_PTR(l) ((char *)djaddr2ptr(__djgpp_base_address + (l)))
+#define PTR_DATA(p) (djptr2addr(p) - __djgpp_base_address)
 #else
 #define DATA_PTR(l) ((char *)(l))
-#endif
-/* for now just type-cast */
 #define PTR_DATA(p) ((uintptr_t)(p))
+#endif
 
 #endif /* !__dj_include_dpmi_h_ */

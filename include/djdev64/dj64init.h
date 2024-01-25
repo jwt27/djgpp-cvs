@@ -9,6 +9,7 @@ typedef int (dj64cdispatch_t)(int handle, int libid, int fn, uint8_t *sp);
 enum { DJ64_PRINT_LOG, DJ64_PRINT_TERMINAL };
 struct dj64_api {
     uint8_t *(*addr2ptr)(uint32_t addr);
+    uint32_t (*ptr2addr)(uint8_t *ptr);
     void (*print)(int prio, const char *format, va_list ap);
 };
 #define DJ64_INIT_ONCE_FN dj64init_once
