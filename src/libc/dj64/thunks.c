@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <djdev64/dj64init.h>
+#include <libc/djthunks.h>
 #include "plt.h"
 #include "thunk_incs.h"
 
@@ -98,24 +99,28 @@ static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
 }
 
 struct udisp {
-    const struct dj64_api *api;
     dj64dispatch_t *disp;
     dj64symtab_t *st;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
+static const struct dj64_api *dj64api;
 
-static void djloudprintf(int handle, const char *format, ...)
+void djloudprintf(const char *format, ...)
 {
-    const struct dj64_api *api = udisps[handle].api;
     va_list vl;
 
     va_start(vl, format);
-    api->print(DJ64_PRINT_LOG, format, vl);
+    dj64api->print(DJ64_PRINT_LOG, format, vl);
     va_end(vl);
     va_start(vl, format);
-    api->print(DJ64_PRINT_TERMINAL, format, vl);
+    dj64api->print(DJ64_PRINT_TERMINAL, format, vl);
     va_end(vl);
+}
+
+uint8_t *djaddr2ptr(uint32_t addr)
+{
+    return dj64api->addr2ptr(addr);
 }
 
 static int dj64_call(int handle, int libid, int fn, uint8_t *sp)
@@ -143,9 +148,9 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
     case DL_SET_SYMTAB: {
         uint32_t addr = regs->d.ecx;
         const char *elf;
-        djloudprintf(handle, "addr %x\n", addr);
+        djloudprintf("addr %x\n", addr);
         elf = DATA_PTR(addr);
-        djloudprintf(handle, "data %p(%s)\n", elf, elf);
+        djloudprintf("data %p(%s)\n", elf, elf);
         return 0;
     }
     }
@@ -154,21 +159,27 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
 
 static dj64cdispatch_t *ops[] = { dj64_call, dj64_ctrl };
 
-#define API_VER 1
 dj64cdispatch_t **DJ64_INIT_FN(int handle,
-    const struct dj64_api *api,
-    int api_ver,
     dj64dispatch_t *disp,
     dj64symtab_t *st)
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    assert(api_ver == API_VER);
-    u->api = api;
     u->disp = disp;
     u->st = st;
     return ops;
+}
+
+int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
+{
+    int ret = 0;
+    if (api_ver != DJ64_API_VER)
+        return -1;
+    if (!dj64api)
+        ret++;
+    dj64api = api;
+    return ret;
 }
 
 #define _TFLG_NONE 0
