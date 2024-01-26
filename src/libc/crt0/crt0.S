@@ -129,8 +129,7 @@ _start:
 	cmpl	$0x1000, %eax
 	jl	1f
 	movw	$0x507, %ax
-	.byte 0x64 /* fs: */
-	movl	STUBINFO_MEMORY_HANDLE, %esi
+	movl	%fs:STUBINFO_MEMORY_HANDLE, %esi
 	xorl	%ebx, %ebx			/* Offset 0 in mem block */
 	movl	$1, %ecx			/* Set one page */
 	movl	$zero, %edx
@@ -243,8 +242,7 @@ dos_alloc_ok:
 /* Initialize the brk/sbrk variables */
 
 /*	movl	$end, __what_size_app_thinks_it_is */
-	.byte 0x64 /* fs: */
-	movl	STUBINFO_INITIAL_SIZE, %eax
+	movl	%fs:STUBINFO_INITIAL_SIZE, %eax
 	movl	%eax, __what_size_dpmi_thinks_we_are
 	movl	%eax, ___djgpp_memory_handle_size
 
@@ -257,20 +255,18 @@ dos_alloc_ok:
 	pushl	%eax
 	call	lock_memory
 
-	.byte 0x64 /* fs: */
-	movl	STUBINFO_MEMORY_HANDLE, %eax
+	movl	%fs:STUBINFO_MEMORY_HANDLE, %eax
 	movl	%eax, ___djgpp_memory_handle_list
 
-	.byte 0x64 /* fs: */			/* copy stubinfo into local memory */
-	movl	STUBINFO_SIZE, %eax
+	/* copy stubinfo into local memory */
+	movl	%fs:STUBINFO_SIZE, %eax
 	pushl	%eax
 	call	___sbrk
 	cmpl	$-1, %eax
 	je	no_memory
 	movl	%eax, __stubinfo
 	movl	%eax, %edi
-	.byte 0x64 /* fs: */
-	movl	STUBINFO_SIZE, %ecx
+	movl	%fs:STUBINFO_SIZE, %ecx
 	shrl	$2, %ecx
 	xorl	%esi, %esi			/* Zero */
 	pushl	%ds
@@ -282,11 +278,10 @@ dos_alloc_ok:
 	popl	%ds
 
 #if 0						/* done in crt1.c */
-	.byte 0x64 /* fs: */			/* set up _go32_info_block structure */
-	movzwl	STUBINFO_MINKEEP, %eax
+				/* set up _go32_info_block structure */
+	movzwl	%fs:STUBINFO_MINKEEP, %eax
 	movl	%eax, __go32_info_block+16	/* .size_of_transfer_buffer */
-	.byte 0x64 /* fs: */
-	movzwl	STUBINFO_DS_SEGMENT, %eax
+	movzwl	%fs:STUBINFO_DS_SEGMENT, %eax
 	shll	$4, %eax
 	movl	%eax, __go32_info_block+12	/* .linear_address_of_transfer_buffer */
 	xorl	%eax, %eax
@@ -303,8 +298,7 @@ no_selector:
 #endif
 
 	movl	__stklen, %eax		/* get program-requested stack size */
-	.byte 0x64 /* fs: */
-	movl	STUBINFO_MINSTACK, %ecx	/* get stub-requested stack size */
+	movl	%fs:STUBINFO_MINSTACK, %ecx	/* get stub-requested stack size */
 	cmpl	%ecx, %eax
 	jge	use_stubinfo_stack_size	/* use the larger of the two */
 	movl	%ecx, %eax
