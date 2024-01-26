@@ -41,7 +41,7 @@ clean:
 	$(RM) dj64.pc dj64static.pc
 
 deb:
-	debuild -i -us -uc -b
+	debuild -i -us -uc -b && $(MAKE) clean >/dev/null
 
 %.pc: %.pc.in makefile
 	sed \
