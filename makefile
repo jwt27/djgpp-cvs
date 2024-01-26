@@ -22,7 +22,8 @@ install:
 	cp -r $(TOP)/include/djdev64 $(DESTDIR)$(PREFIX)/include
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
 	$(INSTALL) -m 0755 ccwrp.sh $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
-	ln -s $(PREFIX)/i386-pc-dj64/bin/ccwrp.sh $(DESTDIR)$(PREFIX)/bin/dj64-gcc
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
+	ln -sf ../i386-pc-dj64/bin/ccwrp.sh $(DESTDIR)$(PREFIX)/bin/dj64-gcc
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
