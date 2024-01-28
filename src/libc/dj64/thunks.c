@@ -6,6 +6,7 @@
 #include "plt.h"
 #include "thunks_c.h"
 #include "thunks_p.h"
+#include "thunks_a.h"
 
 static __dpmi_regs s_regs;
 static int recur_cnt;
@@ -13,6 +14,7 @@ static int recur_cnt;
 struct udisp {
     dj64dispatch_t *disp;
     dj64symtab_t *st;
+    void *arg;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -96,11 +98,17 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
 //    u = &udisps[handle];
     switch (fn) {
     case DL_SET_SYMTAB: {
+        struct udisp *u = &udisps[handle];
         uint32_t addr = regs->d.ecx;
         const char *elf;
+        int i;
         djloudprintf("addr %x\n", addr);
         elf = (char *)djaddr2ptr(addr);
         djloudprintf("data %p(%s)\n", elf, elf);
+        for (i = 0; i < num_athunks; i++) {
+            struct athunk *t = &asm_thunks[i];
+            *t->ptr = u->st(u->arg, elf, t->name);
+        }
         return 0;
     }
     }
@@ -111,13 +119,14 @@ static dj64cdispatch_t *ops[] = { dj64_call, dj64_ctrl };
 
 dj64cdispatch_t **DJ64_INIT_FN(int handle,
     dj64dispatch_t *disp,
-    dj64symtab_t *st)
+    dj64symtab_t *st, void *arg)
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     u->disp = disp;
     u->st = st;
+    u->arg = arg;
     return ops;
 }
 
