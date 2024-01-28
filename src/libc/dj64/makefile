@@ -29,14 +29,11 @@ asm_incs.h:
 asm_incsn.h:
 	$(GA) 1 $(TOP)/../../include >$@
 
-plt_asms.h:
-	$(GA) 2 $(TOP)/../../include >$@
-
 plt_asmc.h: thunk_asms.tmp
 	$(PC) 4 $< >$@
 
 asym_incs.h:
-	$(GA) 3 $(TOP)/../../include >$@
+	$(GA) 2 $(TOP)/../../include >$@
 
 thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
     libc_tmp.a $(TG)
@@ -55,7 +52,7 @@ thunk_asms.h: thunk_asms.tmp
 	rm -f $@_ $@__
 
 thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
-thunks_a.o: asm_incs.h plt_asmc.h plt_asms.h
+thunks_a.o: asm_incs.h plt_asmc.h
 
 plt.o : plt.S plt.inc
 	$(XGCC) -m32 $< -c -o $@
