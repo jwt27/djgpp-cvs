@@ -6,8 +6,10 @@ VERSION = 0.1
 DJLIBC = $(TOP)/lib/libc.a
 DJ64LIB = $(TOP)/lib/libdj64.so.0.1
 DJ64DEVL = $(TOP)/lib/libdj64.so
+DJDEV64LIB = $(TOP)/lib/libdjdev64.so.0.1
+DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
 
-all: dj64.pc dj64static.pc
+all: dj64.pc dj64static.pc djdev64.pc
 	$(MAKE) -C src
 
 install:
@@ -28,6 +30,10 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+	$(INSTALL) -m 0644 djdev64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib
+	$(INSTALL) -m 0755 $(DJDEV64LIB) $(DESTDIR)$(PREFIX)/lib
+	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(PREFIX)/lib
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/bin/dj64-gcc
@@ -35,6 +41,9 @@ uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/include/djdev64
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64.pc
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64static.pc
+	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/djdev64.pc
+	$(RM) $(DESTDIR)$(PREFIX)/lib/$(notdir $(DJDEV64DEVL))
+	$(RM) $(DESTDIR)$(PREFIX)/lib/$(notdir $(DJDEV64LIB))
 
 clean:
 	$(MAKE) -C src clean

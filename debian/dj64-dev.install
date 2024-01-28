@@ -1,6 +1,7 @@
 usr/include/djdev64
 usr/i386-pc-dj64/include
 usr/i386-pc-dj64/lib/*.a
+usr/lib/*.so
 usr/i386-pc-dj64/lib64/*.so
 usr/i386-pc-dj64/bin/*
 usr/bin/*

@@ -1,0 +1,4 @@
+Name: djdev64
+Description: djdev64 suit
+Version: @VERSION@
+Libs: -ldjdev64
