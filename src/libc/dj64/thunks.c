@@ -4,10 +4,8 @@
 #include <dpmi.h>
 #include <stddef.h>
 #include "plt.h"
-#include "thunk_incs.h"
 #include "thunks_c.h"
-
-#define PACKED __attribute__((packed))
+#include "thunks_p.h"
 
 static __dpmi_regs s_regs;
 static int recur_cnt;
@@ -134,17 +132,12 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-#define _TFLG_NONE 0
-#define _TFLG_FAR 1
-#define _TFLG_NORET 2
-#define _TFLG_INIT 4
-
-static uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
+uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
     return 0;
 }
 
-static uint8_t *clean_stk(size_t len)
+uint8_t *clean_stk(size_t len)
 {
 //    uint8_t *ret = (uint8_t *)so2lin(s_regs.ss, LO_WORD(s_regs.esp));
 //    s_regs.esp += len;
@@ -152,38 +145,7 @@ static uint8_t *clean_stk(size_t len)
     return NULL;
 }
 
-typedef void (*_cbk_VOID)(void);
-
-static UDWORD alloc_cbk_VOID(_cbk_VOID cbk)
+uint32_t alloc_cbk_VOID(_cbk_VOID cbk)
 {
     return 0; // TODO
 }
-
-#define __ARG(t) t
-#define __ARG_PTR(t) t *
-#define __ARG_PTR_FAR(t)
-#define __ARG_A(t) t
-#define __ARG_PTR_A(t) t *
-#define __ARG_PTR_FAR_A(t)
-#define __ARG_CBK(t) _cbk_##t
-#define __ARG_CBK_A(t) UDWORD
-#define __RET(t, v) v
-#define __RET_PTR(t, v) djaddr2ptr(v)
-#define __RET_PTR_FAR(t, v) FP_FROM_D(t, v)
-#define __CALL(n, s, l, f) do_asm_call(n, s, l, f)
-#define __CSTK(l) clean_stk(l)
-
-#define __CNV_PTR_FAR(t, d, f, l, t0) // unused
-#define __CNV_PTR(t, d, f, l, t0) t d  = (f)
-#define __CNV_PTR_CCHAR(t, d, f, l, t0) t d = (f)
-#define __CNV_PTR_CHAR(t, d, f, l, t0) t d = (f)
-#define __CNV_PTR_ARR(t, d, f, l, t0) t d = (f)
-#define __CNV_PTR_VOID(t, d, f, l, t0) t d = (f)
-#define __CNV_CBK(t, d, f, l, t0) UDWORD d = alloc##t0(f)
-#define __CNV_SIMPLE(t, d, f, l, t0) t d = (f)
-
-#define _CNV(c, t, at, l, n) c(at, _a##n, a##n, l, t)
-#define _L_REF(nl) a##nl
-#define _L_IMM(n, l) (sizeof(*_L_REF(n)) * (l))
-
-#include "thunk_asms.h"

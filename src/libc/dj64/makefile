@@ -9,7 +9,7 @@ GA = $(PD)/gen_asms.sh
 PC = $(PD)/parse_decls.sh
 TFLAGS = -a 4 -p 4
 LIBN = libdj64.so.0.1
-TH_O = thunks.o thunks_a.o thunks_c.o
+TH_O = thunks.o thunks_a.o thunks_c.o thunks_p.o
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
