@@ -50,7 +50,7 @@ static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
 //    assert(fdpp);
 
     s_regs = *regs;
-    res = (libid ? disp : dj64_thunk_call)(regs->d.ecx, sp, &stat, &len);
+    res = (libid ? disp : dj64_thunk_call)(fn, sp, &stat, &len);
     *regs = s_regs;
     if (stat == DISP_NORET)
         return (res == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
