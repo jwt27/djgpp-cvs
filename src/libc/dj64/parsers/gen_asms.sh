@@ -17,9 +17,9 @@ gen_asms() {
 
 gen_asyms() {
     egrep -R --include="*.h" " ASM\(| ASM_N\(| ASM_F\(" . "$1" | grep EXTERN | \
-	sed -E 's/.+\((.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq
+	sed -E 's/.+EXTERN (.+) ASM.*\((.+)\);.*/__ASM\(\1, \2) SEMIC/' | sort | uniq
     egrep -R --include="*.h" " ASM_P\(| ASM_AP\(" . "$1" | grep EXTERN | \
-	sed -E 's/.+\(.+, (.+)\);.*/\(void \*\*\)\&__\1,/' | sort | uniq
+	sed -E 's/.+\((.+), (.+)\);.*/__ASM\(\1, \2\) SEMIC/' | sort | uniq
 }
 
 case "$1" in
