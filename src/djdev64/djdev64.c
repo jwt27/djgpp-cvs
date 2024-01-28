@@ -14,6 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#define _GNU_SOURCE
 #include <dlfcn.h>
 #include <stdio.h>
 #include "djdev64/dj64init.h"
@@ -39,7 +40,7 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver,
   dj64init_once_t *init_once;
   dj64dispatch_t *disp;
   dj64cdispatch_t **cdisp;
-  void *dlh = dlopen(path, RTLD_LOCAL | RTLD_NOW);
+  void *dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
     return -1;
