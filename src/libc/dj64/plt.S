@@ -41,13 +41,6 @@ dj64_plt_call:
     call_plt
     ret
 
-.global dj64_plt_ctrl
-dj64_plt_ctrl:
-    movl $AUX_USER, %ebx
-    movl __plt_handle, %eax
-    lcalll *__plt_ctrl
-    ret
-
 sel: .word 0
 SHM_REQ_LEN = 0
 SHM_RET_LEN = 4
