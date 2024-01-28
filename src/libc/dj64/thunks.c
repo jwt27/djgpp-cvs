@@ -1,102 +1,16 @@
 #include <assert.h>
 #include <djdev64/dj64init.h>
 #include <libc/djthunks.h>
+#include <dpmi.h>
+#include <stddef.h>
 #include "plt.h"
 #include "thunk_incs.h"
+#include "thunks_c.h"
 
 #define PACKED __attribute__((packed))
-enum { ASM_CALL_OK, ASM_CALL_ABORT };
-enum { ASM_OK, ASM_NORET, ASM_ABORT, PING_ABORT };
-#define ___assert(x)
-static int recur_cnt;
+
 static __dpmi_regs s_regs;
-#define UBYTE uint8_t
-#define UDWORD uint32_t
-#define DWORD int32_t
-#define UWORD uint16_t
-#define WORD int16_t
-#define VOID void
-
-#define _ARG(n, t, ap) (*(t *)(ap + n))
-#define _ARG_PTR(n, t, ap) ((t *)(ap + n))
-#define _ARG_R(t) t
-#define _ARG_RPTR(t) t *
-#define _RET(r) r
-#define _RET_PTR(r) PTR_DATA(r)
-
-static UDWORD FdppThunkCall(int fn, UBYTE *sp, enum DispStat *r_stat,
-        int *r_len)
-{
-    UDWORD ret;
-    UBYTE rsz = 0;
-    enum DispStat stat;
-
-#define _SP sp
-#define _DISP_CMN(f, c) { \
-    c; \
-}
-#define _DISPATCH(r, rv, rc, f, ...) _DISP_CMN(f, { \
-    rv _r; \
-    stat = DISP_OK; \
-    _r = f(__VA_ARGS__); \
-    ret = rc(_r); \
-    if (stat == DISP_OK) \
-        rsz = (r); \
-    else \
-        ___assert(ret != ASM_NORET); \
-})
-#define _DISPATCH_v(f, ...) _DISP_CMN(f, { \
-    stat = DISP_OK; \
-    ret = ASM_OK; \
-    f(__VA_ARGS__); \
-})
-
-    switch (fn) {
-        #include "thunk_calls.h"
-
-        default:
-//            fdprintf("unknown fn %i\n", fn);
-//            _fail();
-            return 0;
-    }
-
-    *r_stat = stat;
-    *r_len = rsz;
-    return ret;
-}
-
-static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
-    dj64dispatch_t *disp)
-{
-    int len;
-    UDWORD res;
-    enum DispStat stat;
-
-//    assert(fdpp);
-
-    s_regs = *regs;
-    res = (libid ? disp : FdppThunkCall)(regs->d.ecx, sp, &stat, &len);
-    *regs = s_regs;
-    if (stat == DISP_NORET)
-        return (res == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
-    switch (len) {
-    case 0:
-        break;
-    case 1:
-        regs->h.al = res;
-        break;
-    case 2:
-        regs->x.ax = res;
-        break;
-    case 4:
-        regs->d.eax = res;
-        break;
-    default:
-//        _fail();
-        break;
-    }
-    return DJ64_RET_OK;
-}
+static int recur_cnt;
 
 struct udisp {
     dj64dispatch_t *disp;
@@ -126,6 +40,39 @@ uint8_t *djaddr2ptr(uint32_t addr)
 uint32_t djptr2addr(uint8_t *ptr)
 {
     return dj64api->ptr2addr(ptr);
+}
+
+static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
+    dj64dispatch_t *disp)
+{
+    int len;
+    UDWORD res;
+    enum DispStat stat;
+
+//    assert(fdpp);
+
+    s_regs = *regs;
+    res = (libid ? disp : dj64_thunk_call)(regs->d.ecx, sp, &stat, &len);
+    *regs = s_regs;
+    if (stat == DISP_NORET)
+        return (res == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
+    switch (len) {
+    case 0:
+        break;
+    case 1:
+        regs->h.al = res;
+        break;
+    case 2:
+        regs->x.ax = res;
+        break;
+    case 4:
+        regs->d.eax = res;
+        break;
+    default:
+//        _fail();
+        break;
+    }
+    return DJ64_RET_OK;
 }
 
 static int dj64_call(int handle, int libid, int fn, uint8_t *sp)
