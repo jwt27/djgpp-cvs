@@ -48,6 +48,7 @@ SHM_HANDLE = 8
 SHM_LINEAR = 0xc
 SHM_NAME = 0x10
 shm_block: .fill 0x1b, 1, 0
+shm_block2: .fill 0x1b, 1, 0
 handle: .long 0
 maddr: .long 0
 
@@ -65,18 +66,19 @@ plt_init:
     movl %eax, __plt_open + 4
     movl %edi, __plt_open
 
-    movl %fs:STUBINFO_PAYLOAD_SIZE, %ecx
+.macro mk_shm b,offs,size,name,err
+    movl %fs:\size, %ecx
     orl %ecx, %ecx
-    jz 2f
-    addl $(4096-1), %ecx
-    andl $~(4096-1), %ecx
-    movl %ecx, shm_block + SHM_REQ_LEN
-    movw %fs, shm_block + SHM_NAME + 4
-    movl $STUBINFO_ARGV0, shm_block + SHM_NAME
+    jz \err
+//    addl $(4096-1), %ecx
+//    andl $~(4096-1), %ecx
+    movl %ecx, \b + SHM_REQ_LEN
+    movw %fs, \b + SHM_NAME + 4
+    movl $\name, \b + SHM_NAME
     /* alloc mem */
     pushw %ds
     popw %es
-    movl $shm_block, %edi
+    movl $\b, %edi
     movl $0xd00, %eax
     int $0x31
     jc 2f
@@ -87,39 +89,44 @@ plt_init:
     movw %ax, sel
     /* set base */
     movw %ax, %bx
-    movw shm_block + SHM_LINEAR + 2, %cx
-    movw shm_block + SHM_LINEAR, %dx
+    movw \b + SHM_LINEAR + 2, %cx
+    movw \b + SHM_LINEAR, %dx
     movl $7, %eax
     int $0x31
     /* set limit */
     movw sel, %bx
-    movw %fs:STUBINFO_PAYLOAD_SIZE, %dx
+    movw %fs:\size, %dx
     decw %dx
-    movw %fs:STUBINFO_PAYLOAD_SIZE+2, %cx
+    movw %fs:\size + 2, %cx
     movl $8, %eax
     int $0x31
     /* seek fd */
     movl %fs:STUBINFO_SELF_FD, %ebx
-    movzwl %fs:STUBINFO_PAYLOAD_OFFS, %edx
-    movzwl %fs:STUBINFO_PAYLOAD_OFFS + 2, %ecx
+    movzwl %fs:\offs, %edx
+    movzwl %fs:\offs + 2, %ecx
     movl $0x4200, %eax
     int $0x21
     /* read payload */
     pushl %ds
     movw sel, %ds
     movl %fs:STUBINFO_SELF_FD, %ebx
-    movl %fs:STUBINFO_PAYLOAD_SIZE, %ecx
+    movl %fs:\size, %ecx
     movl $0, %edx
     movl $0x3f00, %eax
     int $0x21
     popl %ds
     jc 2f
     /* unmap shm */
-    movw shm_block + SHM_LINEAR + 2, %bx
-    movw shm_block + SHM_LINEAR, %cx
+    movw \b + SHM_LINEAR + 2, %bx
+    movw \b + SHM_LINEAR, %cx
     movl $0x801, %eax
     int $0x31
+.endm
 
+    mk_shm shm_block,STUBINFO_PAYLOAD_OFFS,STUBINFO_PAYLOAD_SIZE,STUBINFO_ARGV0,2f
+    mk_shm shm_block2,STUBINFO_PAYLOAD2_OFFS,STUBINFO_PAYLOAD2_SIZE,STUBINFO_PAYLOAD2_NAME,5f
+
+5:
     // now open lib
     movl $0, %eax
     movl $PLT_OPEN_CMD, %ebx

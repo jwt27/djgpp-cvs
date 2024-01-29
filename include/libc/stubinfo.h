@@ -22,8 +22,12 @@
 #define STUBINFO_SELF_SIZE 0x60
 #define STUBINFO_PAYLOAD_OFFS 0x64
 #define STUBINFO_PAYLOAD_SIZE 0x68
-#define STUBINFO_END 0x6C
+#define STUBINFO_PAYLOAD2_OFFS 0x6C
+#define STUBINFO_PAYLOAD2_SIZE 0x70
+#define STUBINFO_PAYLOAD2_NAME 0x74
+#define STUBINFO_END 0x88
 #ifndef __ASSEMBLER__
+#include <stdint.h>
 typedef struct {
   char magic[16];
   unsigned long size;
@@ -41,11 +45,14 @@ typedef struct {
   char dpmi_server[16];
   /* standard djgpp stubinfo ends here */
   unsigned long stubinfo_ver;
-  long self_fd;
-  unsigned long self_offs;
-  long self_size;
-  unsigned long payload_offs;
-  long payload_size;
+  int32_t self_fd;
+  uint32_t self_offs;
+  int32_t self_size;
+  uint32_t payload_offs;
+  int32_t payload_size;
+  uint32_t payload2_offs;
+  int32_t payload2_size;
+  char payload2_name[20];
 } _GO32_StubInfo;
 #endif
 
