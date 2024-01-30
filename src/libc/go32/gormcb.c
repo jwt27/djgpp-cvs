@@ -126,7 +126,7 @@ static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
 
   info->size = (uintptr_t)wrapper;
 
-  return __dpmi_allocate_real_mode_callback((void (*)())wrapper, regs,
+  return __dpmi_allocate_real_mode_callback(PTR_DATA(wrapper), regs,
                                             (__dpmi_raddr *)&info->rm_offset);
 }
 

@@ -30,10 +30,10 @@ EXTERN unsigned short ASM(__djgpp_app_DS);	/* Data selector invalidated by HW in
 EXTERN unsigned short ASM(__djgpp_ds_alias);	/* Data selector always valid */
 EXTERN unsigned short ASM(__djgpp_dos_sel);	/* Linear mem selector copy in locked mem */
 EXTERN short ASM(__excep_ds_alias);
-EXTERN void ASM_F(__djgpp_cbrk_hdlr);
-EXTERN int ASM_F(__djgpp_exception_table);
-EXTERN int ASM_F(__djgpp_kbd_hdlr);
-EXTERN int ASM_F(__djgpp_kbd_hdlr_pc98);
+EXTERN ASM_F(__djgpp_cbrk_hdlr);
+EXTERN ASM_F(__djgpp_exception_table);
+EXTERN ASM_F(__djgpp_kbd_hdlr);
+EXTERN ASM_F(__djgpp_kbd_hdlr_pc98);
 EXTERN unsigned ASM(_stklen);
 EXTERN unsigned ASM(__djgpp_stack_limit);
 

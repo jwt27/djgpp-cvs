@@ -188,7 +188,7 @@ extern short __dpmi_int_ss, __dpmi_int_sp, __dpmi_int_flags; /* default to zero 
 int	__dpmi_simulate_real_mode_procedure_retf(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0301 */
 int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_words_to_copy, const void *stack_data); /* DPMI 0.9 AX=0301 */
 int	__dpmi_simulate_real_mode_procedure_iret(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0302 */
-int	__dpmi_allocate_real_mode_callback(void (*_handler)(void), __dpmi_regs *_regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
+int	__dpmi_allocate_real_mode_callback(ULONG32 _handler, __dpmi_regs *_regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
 int	__dpmi_free_real_mode_callback(__dpmi_raddr *_addr);					/* DPMI 0.9 AX=0304 */
 int	__dpmi_get_state_save_restore_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);		/* DPMI 0.9 AX=0305 */
 int	__dpmi_get_raw_mode_switch_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);			/* DPMI 0.9 AX=0306 */
