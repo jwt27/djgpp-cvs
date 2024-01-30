@@ -44,8 +44,6 @@ char **_environ;
 int __crt0_argc;
 char **__crt0_argv;
 
-char *__djgpp_mem_base;
-
 /* Local variables */
 
 static void
