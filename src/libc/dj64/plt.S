@@ -175,7 +175,7 @@ plt_init:
     movw sel, %bx
     movw %fs:STUBINFO_SELF_SIZE, %dx
     decw %dx
-    movw %fs:STUBINFO_SELF_SIZE+2, %cx
+    movw %fs:STUBINFO_SELF_SIZE + 2, %cx
     movl $8, %eax
     int $0x31
     /* seek fd */
@@ -200,7 +200,7 @@ plt_init:
     int $0x31
     /* call manager */
     movl maddr, %ecx
-//    movl handle, %edx
+    movl %fs:STUBINFO_MEM_BASE, %edx
     pushal
     movl %esp, %edx
     movl __plt_handle, %eax

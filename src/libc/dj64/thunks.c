@@ -100,9 +100,10 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
     case DL_SET_SYMTAB: {
         struct udisp *u = &udisps[handle];
         uint32_t addr = regs->d.ecx;
+        uint32_t mem_base = regs->d.edx;
         const char *elf;
         int i;
-        djloudprintf("addr %x\n", addr);
+        djloudprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
         djloudprintf("data %p(%s)\n", elf, elf);
         for (i = 0; i < num_athunks; i++) {

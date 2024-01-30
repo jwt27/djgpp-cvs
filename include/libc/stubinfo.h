@@ -25,7 +25,8 @@
 #define STUBINFO_PAYLOAD2_OFFS 0x6C
 #define STUBINFO_PAYLOAD2_SIZE 0x70
 #define STUBINFO_PAYLOAD2_NAME 0x74
-#define STUBINFO_END 0x88
+#define STUBINFO_MEM_BASE 0x88
+#define STUBINFO_END 0x8C
 #ifndef __ASSEMBLER__
 #include <stdint.h>
 typedef struct {
@@ -53,6 +54,7 @@ typedef struct {
   uint32_t payload2_offs;
   int32_t payload2_size;
   char payload2_name[20];
+  uint32_t mem_base;
 } _GO32_StubInfo;
 #endif
 
