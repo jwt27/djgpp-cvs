@@ -36,7 +36,7 @@ void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
 
     get_segment_base_address(dst.selector, &base);
     __djgpp_nearptr_enable();
-    ptr = (void *)(base + dst.offset32 + __djgpp_conventional_base);
+    ptr = DATA_PTR(base + dst.offset32 + __djgpp_conventional_base);
     memcpy(ptr, src, len);
     __djgpp_nearptr_disable();
 }
@@ -48,7 +48,7 @@ void fmemcpy2(void *dst, __dpmi_paddr src, unsigned len)
 
     get_segment_base_address(src.selector, &base);
     __djgpp_nearptr_enable();
-    ptr = (const void *)(base + src.offset32 + __djgpp_conventional_base);
+    ptr = DATA_PTR(base + src.offset32 + __djgpp_conventional_base);
     memcpy(dst, ptr, len);
     __djgpp_nearptr_disable();
 }
@@ -63,8 +63,8 @@ void fmemcpy12(__dpmi_paddr dst, __dpmi_paddr src, unsigned len)
     get_segment_base_address(src.selector, &sbase);
     get_segment_base_address(dst.selector, &dbase);
     __djgpp_nearptr_enable();
-    sptr = (const void *)(sbase + src.offset32 + __djgpp_conventional_base);
-    dptr = (void *)(dbase + dst.offset32 + __djgpp_conventional_base);
+    sptr = DATA_PTR(sbase + src.offset32 + __djgpp_conventional_base);
+    dptr = DATA_PTR(dbase + dst.offset32 + __djgpp_conventional_base);
     memcpy(dptr, sptr, len);
     __djgpp_nearptr_disable();
 }
