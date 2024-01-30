@@ -25,7 +25,7 @@ ext_nm: .asciz "DJ64"
     movl %esp, %ebp
     pushal
     movl %esp, %edx
-    movl \num, %ecx
+    movl $\num, %ecx
     movl $AUX_CORE, %ebx
     call_plt
     popal
@@ -47,8 +47,8 @@ SHM_RET_LEN = 4
 SHM_HANDLE = 8
 SHM_LINEAR = 0xc
 SHM_NAME = 0x10
-shm_block: .fill 0x1b, 1, 0
-shm_block2: .fill 0x1b, 1, 0
+shm_block: .fill 0x1c, 1, 0
+shm_block2: .fill 0x1c, 1, 0
 handle: .long 0
 maddr: .long 0
 
