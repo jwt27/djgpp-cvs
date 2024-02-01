@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
+#include "elf_priv.h"
 
 static int handle;
 #define HNDL_MAX 5
@@ -29,11 +30,16 @@ struct dj64handle {
 };
 static struct dj64handle dlhs[HNDL_MAX];
 
+static const struct elf_ops eops = {
+    elf_open,
+    elf_close,
+    elf_getsym,
+};
+
 #define __S(x) #x
 #define _S(x) __S(x)
 
-int djdev64_open(const char *path, const struct dj64_api *api, int api_ver,
-    dj64symtab_t *st, void *arg)
+int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
 {
   int h, rc;
   dj64init_t *init;
@@ -69,7 +75,7 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver,
     dlclose(dlh);
     return -1;
   }
-  cdisp = init(handle, disp, st, arg);
+  cdisp = init(handle, disp, &eops);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     dlclose(dlh);

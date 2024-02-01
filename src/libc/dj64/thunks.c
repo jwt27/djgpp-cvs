@@ -13,8 +13,7 @@ static int recur_cnt;
 
 struct udisp {
     dj64dispatch_t *disp;
-    dj64symtab_t *st;
-    void *arg;
+    const struct elf_ops *eops;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -99,36 +98,45 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
     switch (fn) {
     case DL_SET_SYMTAB: {
         struct udisp *u = &udisps[handle];
-        uint32_t addr = regs->d.ecx;
+        uint32_t addr = regs->d.ebx;
+        uint32_t size = regs->d.ecx;
         uint32_t mem_base = regs->d.edx;
-        const char *elf;
-        int i;
+        char *elf;
+        void *eh;
+        int i, ret = 0;
         djloudprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
         djloudprintf("data %p(%s)\n", elf, elf);
+        eh = u->eops->open(elf, size, mem_base);
         for (i = 0; i < num_athunks; i++) {
             struct athunk *t = &asm_thunks[i];
-            *t->ptr = u->st(u->arg, elf, t->name);
+            uint32_t off = u->eops->getsym(eh, t->name);
+            if (off) {
+                *t->ptr = djaddr2ptr(off);
+            } else {
+                djloudprintf("symbol %s not resolved\n", t->name);
+                ret = -1;
+                break;
+            }
         }
-        return 0;
+        u->eops->close(eh);
+        return ret;
     }
     }
     return -1;
 }
 
-static dj64cdispatch_t *ops[] = { dj64_call, dj64_ctrl };
+static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
 dj64cdispatch_t **DJ64_INIT_FN(int handle,
-    dj64dispatch_t *disp,
-    dj64symtab_t *st, void *arg)
+    dj64dispatch_t *disp, const struct elf_ops *ops)
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     u->disp = disp;
-    u->st = st;
-    u->arg = arg;
-    return ops;
+    u->eops = ops;
+    return dops;
 }
 
 int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)

@@ -199,7 +199,8 @@ plt_init:
     movl $1, %eax
     int $0x31
     /* call manager */
-    movl maddr, %ecx
+    movl maddr, %ebx
+    movl %fs:STUBINFO_SELF_SIZE, %ecx
     movl %fs:STUBINFO_MEM_BASE, %edx
     pushal
     movl %esp, %edx

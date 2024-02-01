@@ -1,5 +1,12 @@
 TOP = ../..
 GCC = gcc
+PKG_CONFIG ?= pkg-config
+SOURCES = djdev64.c elf.c
+OBJECTS = $(SOURCES:.c=.o)
+LIBELF := $(shell $(PKG_CONFIG) --libs libelf)
+ifeq ($(LIBELF),)
+$(error libelf not installed)
+endif
 
 %.o: %.c
 	$(GCC) $(CFLAGS) -iquote ../../include -fpic -ggdb3 -Wall -c -o $@ $<
@@ -16,8 +23,8 @@ clean:
 $(LIBDIR):
 	mkdir $@
 
-$(LIB): djdev64.o | $(LIBDIR)
-	$(GCC) -shared -Wl,-soname=$(LIBN) -o $@ $^
+$(LIB): $(OBJECTS) | $(LIBDIR)
+	$(GCC) -shared -Wl,-soname=$(LIBN) -o $@ $^ $(LIBELF)
 
 $(LIBDIR)/libdjdev64.so: $(LIB)
 	ln -sf $(LIBN) $@

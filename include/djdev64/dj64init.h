@@ -16,14 +16,16 @@ struct dj64_api {
 typedef int (dj64init_once_t)(const struct dj64_api *api, int api_ver);
 int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver);
 
-typedef void *(dj64symtab_t)(void *arg, const char *elf, const char *sym);
+struct elf_ops {
+    void *(*open)(char *addr, uint32_t size, uint32_t load_offs);
+    void (*close)(void *arg);
+    uint32_t (*getsym)(void *arg, const char *name);
+};
 
 #define DJ64_INIT_FN dj64init
 typedef dj64cdispatch_t **(dj64init_t)(int handle,
-    dj64dispatch_t *disp,
-    dj64symtab_t *st, void *arg);
+    dj64dispatch_t *disp, const struct elf_ops *ops);
 dj64cdispatch_t **DJ64_INIT_FN(int handle,
-    dj64dispatch_t *disp,
-    dj64symtab_t *st, void *arg);
+    dj64dispatch_t *disp, const struct elf_ops *ops);
 
 #endif
