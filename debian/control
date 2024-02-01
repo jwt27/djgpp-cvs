@@ -13,6 +13,7 @@ Build-Depends:
     binutils-x86-64-linux-gnu,
     universal-ctags,
     pkg-config,
+    libelf-dev,
     debhelper (>= 9~)
 Homepage: https://github.com/stsp/djgpp-cvs
 
