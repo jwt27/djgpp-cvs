@@ -107,12 +107,12 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
         djloudprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
         djloudprintf("data %p(%s)\n", elf, elf);
-        eh = u->eops->open(elf, size, mem_base);
+        eh = u->eops->open(elf, size);
         for (i = 0; i < num_athunks; i++) {
             struct athunk *t = &asm_thunks[i];
             uint32_t off = u->eops->getsym(eh, t->name);
             if (off) {
-                *t->ptr = djaddr2ptr(off);
+                *t->ptr = djaddr2ptr(mem_base + off);
             } else {
                 djloudprintf("symbol %s not resolved\n", t->name);
                 ret = -1;

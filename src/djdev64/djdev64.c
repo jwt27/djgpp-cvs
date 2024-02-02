@@ -33,7 +33,7 @@ static struct dj64handle dlhs[HNDL_MAX];
 static const struct elf_ops eops = {
     elf_open,
     elf_close,
-    elf_getsym,
+    elf_getsymoff,
 };
 
 #define __S(x) #x

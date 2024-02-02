@@ -17,7 +17,7 @@ typedef int (dj64init_once_t)(const struct dj64_api *api, int api_ver);
 int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver);
 
 struct elf_ops {
-    void *(*open)(char *addr, uint32_t size, uint32_t load_offs);
+    void *(*open)(char *addr, uint32_t size);
     void (*close)(void *arg);
     uint32_t (*getsym)(void *arg, const char *name);
 };

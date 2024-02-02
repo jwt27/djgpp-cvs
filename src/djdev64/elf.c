@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <libelf.h>
 #include <gelf.h>
+#include <assert.h>
 #include "elf_priv.h"
 
 struct elfstate {
@@ -28,7 +29,6 @@ struct elfstate {
     Elf *elf;
     Elf_Scn *symtab_scn;
     GElf_Shdr symtab_shdr;
-    uint32_t load_offs;
 };
 
 static int do_getsym(struct elfstate *state, const char *name, GElf_Sym *r_sym)
@@ -52,7 +52,7 @@ static int do_getsym(struct elfstate *state, const char *name, GElf_Sym *r_sym)
     return -1;
 }
 
-void *elf_open(char *addr, uint32_t size, uint32_t load_offs)
+void *elf_open(char *addr, uint32_t size)
 {
     Elf         *elf;
     Elf_Scn     *scn = NULL;
@@ -84,7 +84,6 @@ void *elf_open(char *addr, uint32_t size, uint32_t load_offs)
     ret->elf = elf;
     ret->symtab_scn = scn;
     ret->symtab_shdr = shdr;
-    ret->load_offs = load_offs;
     return ret;
 
 err:
@@ -100,23 +99,15 @@ void elf_close(void *arg)
     free(state);
 }
 
-static int do_getsymoff(struct elfstate *state, const char *name)
+static uint32_t do_getsymoff(struct elfstate *state, const char *name)
 {
     GElf_Sym sym;
     int err = do_getsym(state, name, &sym);
-    return (err ? -1 : sym.st_value);
+    assert(err || sym.st_value);  // make sure st_value!=0
+    return (err ? 0 : sym.st_value);
 }
 
-uint32_t elf_getsym(void *arg, const char *name)
-{
-    struct elfstate *state = (struct elfstate *)arg;
-    int off = do_getsymoff(state, name);
-    if (off == -1)
-        return 0;
-    return state->load_offs + off;
-}
-
-int elf_getsymoff(void *arg, const char *name)
+uint32_t elf_getsymoff(void *arg, const char *name)
 {
     struct elfstate *state = (struct elfstate *)arg;
     return do_getsymoff(state, name);
