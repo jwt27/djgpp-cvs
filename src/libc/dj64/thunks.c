@@ -1,14 +1,13 @@
 #include <assert.h>
 #include <djdev64/dj64init.h>
 #include <libc/djthunks.h>
-#include <dpmi.h>
 #include <stddef.h>
 #include "plt.h"
 #include "thunks_c.h"
 #include "thunks_p.h"
 #include "thunks_a.h"
 
-static __dpmi_regs s_regs;
+static dpmi_regs s_regs;
 static int recur_cnt;
 
 struct udisp {
@@ -41,7 +40,7 @@ uint32_t djptr2addr(uint8_t *ptr)
     return dj64api->ptr2addr(ptr);
 }
 
-static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
+static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
     dj64dispatch_t *disp)
 {
     int len;
@@ -59,13 +58,9 @@ static int _dj64_call(int libid, int fn, __dpmi_regs *regs, uint8_t *sp,
     case 0:
         break;
     case 1:
-        regs->h.al = res;
-        break;
     case 2:
-        regs->x.ax = res;
-        break;
     case 4:
-        regs->d.eax = res;
+        regs->eax = res;
         break;
     default:
 //        _fail();
@@ -78,7 +73,7 @@ static int dj64_call(int handle, int libid, int fn, uint8_t *sp)
 {
     int ret;
     struct udisp *u;
-    __dpmi_regs *regs = (__dpmi_regs *)sp;
+    dpmi_regs *regs = (dpmi_regs *)sp;
     sp += sizeof(*regs);
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
@@ -92,15 +87,15 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
 {
 //    struct udisp *u;
 //    struct dj64_symtab *st;
-    __dpmi_regs *regs = (__dpmi_regs *)sp;
+    dpmi_regs *regs = (dpmi_regs *)sp;
     assert(handle < MAX_HANDLES);
 //    u = &udisps[handle];
     switch (fn) {
     case DL_SET_SYMTAB: {
         struct udisp *u = &udisps[handle];
-        uint32_t addr = regs->d.ebx;
-        uint32_t size = regs->d.ecx;
-        uint32_t mem_base = regs->d.edx;
+        uint32_t addr = regs->ebx;
+        uint32_t size = regs->ecx;
+        uint32_t mem_base = regs->edx;
         char *elf;
         void *eh;
         int i, ret = 0;
@@ -161,18 +156,22 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
 
 uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
-    return 0;
+    int rc;
+    assert(num < num_cthunks);
+    rc = dj64api->asm_call(&s_regs, asm_tab[num], sp, len);
+    switch (rc) {
+    case ASM_CALL_OK:
+        break;
+    case ASM_CALL_ABORT:
+        djloudprintf("reboot jump, %i\n", recur_cnt);
+//        fdpp_noret(ASM_ABORT);
+        break;
+    }
+    return s_regs.eax;
 }
 
 uint8_t *clean_stk(size_t len)
 {
-//    uint8_t *ret = (uint8_t *)so2lin(s_regs.ss, LO_WORD(s_regs.esp));
-//    s_regs.esp += len;
-//    return ret;
+    s_regs.esp += len;
     return NULL;
-}
-
-uint32_t alloc_cbk_VOID(_cbk_VOID cbk)
-{
-    return 0; // TODO
 }
