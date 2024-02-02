@@ -119,6 +119,15 @@ static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
                 break;
             }
         }
+        for (i = 0; i < num_cthunks; i++) {
+            struct athunk *t = &asm_cthunks[i];
+            asm_tab[i] = u->eops->getsym(eh, t->name);
+            if (!asm_tab[i]) {
+                djloudprintf("symbol %s not resolved\n", t->name);
+                ret = -1;
+                break;
+            }
+        }
         u->eops->close(eh);
         return ret;
     }

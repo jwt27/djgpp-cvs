@@ -11,3 +11,12 @@ struct athunk asm_thunks[] = {
 };
 
 const int num_athunks = _countof(asm_thunks);
+
+struct athunk asm_cthunks[] = {
+#define ASMCSYM(s, n) [n] = { _S(_##s), NULL, 0 },
+#include "plt_asmc.h"
+};
+
+const int num_cthunks = _countof(asm_cthunks);
+
+uint32_t asm_tab[_countof(asm_cthunks)];
