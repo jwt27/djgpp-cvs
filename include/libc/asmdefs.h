@@ -37,16 +37,18 @@
 
 #define RET		jmp L_leave
 
-#define ARG1		8(%ebp)
-#define ARG1h		10(%ebp)
-#define ARG2		12(%ebp)
-#define ARG2h		14(%ebp)
-#define ARG3		16(%ebp)
-#define ARG4		20(%ebp)
-#define ARG5		24(%ebp)
-#define ARG6		28(%ebp)
-#define ARG7		32(%ebp)
-#define ARG8		36(%ebp)
+#define OFF 4
+
+#define ARG1		8+OFF(%ebp)
+#define ARG1h		10+OFF(%ebp)
+#define ARG2		12+OFF(%ebp)
+#define ARG2h		14+OFF(%ebp)
+#define ARG3		16+OFF(%ebp)
+#define ARG4		20+OFF(%ebp)
+#define ARG5		24+OFF(%ebp)
+#define ARG6		28+OFF(%ebp)
+#define ARG7		32+OFF(%ebp)
+#define ARG8		36+OFF(%ebp)
 
 #define _errno ___dj_errno
 
