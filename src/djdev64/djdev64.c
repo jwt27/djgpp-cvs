@@ -88,18 +88,20 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   return h;
 }
 
-int djdev64_call(int handle, int libid, int fn, unsigned char *sp)
+int djdev64_call(int handle, int libid, int fn, unsigned esi,
+        unsigned char *sp)
 {
     if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
         return -1;
-    return dlhs[handle].cdisp(handle, libid, fn, sp);
+    return dlhs[handle].cdisp(handle, libid, fn, esi, sp);
 }
 
-int djdev64_ctrl(int handle, int libid, int fn, unsigned char *sp)
+int djdev64_ctrl(int handle, int libid, int fn, unsigned esi,
+        unsigned char *sp)
 {
     if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
         return -1;
-    return dlhs[handle].ctrl(handle, libid, fn, sp);
+    return dlhs[handle].ctrl(handle, libid, fn, esi, sp);
 }
 
 void djdev64_close(int handle)

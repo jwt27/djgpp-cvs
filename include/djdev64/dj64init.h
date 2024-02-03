@@ -4,7 +4,8 @@
 #include <stdarg.h>
 #include "dj64thnk.h"
 
-typedef int (dj64cdispatch_t)(int handle, int libid, int fn, uint8_t *sp);
+typedef int (dj64cdispatch_t)(int handle, int libid, int fn, unsigned esi,
+        uint8_t *sp);
 #define DJ64_API_VER 1
 enum { DJ64_PRINT_LOG, DJ64_PRINT_TERMINAL };
 
@@ -20,13 +21,18 @@ typedef struct {
     uint32_t eax;
 } __attribute__((packed)) dpmi_regs;
 
+typedef struct {
+  uint32_t offset32;
+  unsigned short selector;
+} dpmi_paddr;
+
 enum { ASM_CALL_OK, ASM_CALL_ABORT };
 
 struct dj64_api {
     uint8_t *(*addr2ptr)(uint32_t addr);
     uint32_t (*ptr2addr)(uint8_t *ptr);
     void (*print)(int prio, const char *format, va_list ap);
-    int (*asm_call)(dpmi_regs *regs, uint32_t offs, uint8_t *sp, uint8_t len);
+    int (*asm_call)(dpmi_regs *regs, dpmi_paddr pma, uint8_t *sp, uint8_t len);
 };
 #define DJ64_INIT_ONCE_FN dj64init_once
 typedef int (dj64init_once_t)(const struct dj64_api *api, int api_ver);

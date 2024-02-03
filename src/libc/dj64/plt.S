@@ -25,6 +25,7 @@ ext_nm: .asciz "DJ64"
     movl %esp, %ebp
     pushal
     movl %esp, %edx
+    movl %cs, %esi
     movl $\num, %ecx
     movl $AUX_CORE, %ebx
     call_plt

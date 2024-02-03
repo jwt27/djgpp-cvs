@@ -8,6 +8,7 @@
 #include "thunks_a.h"
 
 static dpmi_regs s_regs;
+static unsigned _cs;
 static int recur_cnt;
 
 struct udisp {
@@ -41,7 +42,7 @@ uint32_t djptr2addr(uint8_t *ptr)
 }
 
 static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
-    dj64dispatch_t *disp)
+    unsigned esi, dj64dispatch_t *disp)
 {
     int len;
     UDWORD res;
@@ -50,6 +51,7 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
 //    assert(fdpp);
 
     s_regs = *regs;
+    _cs = esi;
     res = (libid ? disp : dj64_thunk_call)(fn, sp, &stat, &len);
     *regs = s_regs;
     if (stat == DISP_NORET)
@@ -69,7 +71,7 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
     return DJ64_RET_OK;
 }
 
-static int dj64_call(int handle, int libid, int fn, uint8_t *sp)
+static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
     int ret;
     struct udisp *u;
@@ -78,12 +80,12 @@ static int dj64_call(int handle, int libid, int fn, uint8_t *sp)
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     recur_cnt++;
-    ret = _dj64_call(libid, fn, regs, sp, u->disp);
+    ret = _dj64_call(libid, fn, regs, sp, esi, u->disp);
     recur_cnt--;
     return ret;
 }
 
-static int dj64_ctrl(int handle, int libid, int fn, uint8_t *sp)
+static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
 //    struct udisp *u;
 //    struct dj64_symtab *st;
@@ -157,8 +159,11 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
 uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
     int rc;
+    dpmi_paddr pma;
     assert(num < num_cthunks);
-    rc = dj64api->asm_call(&s_regs, asm_tab[num], sp, len);
+    pma.selector = _cs;
+    pma.offset32 = asm_tab[num];
+    rc = dj64api->asm_call(&s_regs, pma, sp, len);
     switch (rc) {
     case ASM_CALL_OK:
         break;
