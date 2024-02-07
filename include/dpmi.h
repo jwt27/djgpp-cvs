@@ -195,7 +195,7 @@ int	__dpmi_get_raw_mode_switch_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);			/* 
 
 int	__dpmi_get_version(__dpmi_version_ret *_ret);						/* DPMI 0.9 AX=0400 */
 
-int	__dpmi_get_capabilities(int *_flags, char *vendor_info);				/* DPMI 1.0 AX=0401 */
+int	__dpmi_get_capabilities(int *_flags, char vendor_info[128]);				/* DPMI 1.0 AX=0401 */
 
 int	__dpmi_get_free_memory_information(__dpmi_free_mem_info *_info);			/* DPMI 0.9 AX=0500 */
 int	__dpmi_allocate_memory(__dpmi_meminfo *_info);						/* DPMI 0.9 AX=0501 */
@@ -229,7 +229,7 @@ int	__dpmi_get_and_enable_virtual_interrupt_state(void);					/* DPMI 0.9 AX=0901
 int	__dpmi_get_and_set_virtual_interrupt_state(int _old_state);				/* DPMI 0.9 AH=09   */
 int	__dpmi_get_virtual_interrupt_state(void);						/* DPMI 0.9 AX=0902 */
 
-int	__dpmi_get_vendor_specific_api_entry_point(char *_id, __dpmi_paddr *_api);		/* DPMI 0.9 AX=0a00 */
+int	__dpmi_get_vendor_specific_api_entry_point(const char *_id, __dpmi_paddr *_api);		/* DPMI 0.9 AX=0a00 */
 
 int	__dpmi_set_debug_watchpoint(__dpmi_meminfo *_info, int _type);				/* DPMI 0.9 AX=0b00 */
 int	__dpmi_clear_debug_watchpoint(ULONG32 _handle);					/* DPMI 0.9 AX=0b01 */
