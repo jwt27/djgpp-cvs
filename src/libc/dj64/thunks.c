@@ -1,8 +1,10 @@
 #include <assert.h>
 #include <djdev64/dj64init.h>
 #include <libc/djthunks.h>
+#include <dpmi.h>
 #include <stddef.h>
 #include "plt.h"
+#include "dosobj.h"
 #include "thunks_c.h"
 #include "thunks_p.h"
 #include "thunks_a.h"
@@ -10,6 +12,10 @@
 static dpmi_regs s_regs;
 static unsigned _cs;
 static int recur_cnt;
+#ifndef PAGE_SIZE
+#define PAGE_SIZE 4096
+#endif
+static uint8_t dosobj_page[PAGE_SIZE];
 
 struct udisp {
     dj64dispatch_t *disp;
@@ -126,6 +132,7 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
             }
         }
         u->eops->close(eh);
+        dosobj_init(PTR_DATA(dosobj_page), sizeof(dosobj_page));
         return ret;
     }
     }

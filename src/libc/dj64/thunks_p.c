@@ -16,8 +16,6 @@
 #define __ARG_A(t) t
 #define __ARG_PTR_A(t) t *
 #define __ARG_PTR_FAR_A(t)
-#define __ARG_CBK(t) _cbk_##t
-#define __ARG_CBK_A(t) UDWORD
 #define __RET(t, v) v
 #define __RET_PTR(t, v) djaddr2ptr(v)
 #define __RET_PTR_FAR(t, v) FP_FROM_D(t, v)
@@ -30,7 +28,6 @@
 #define __CNV_PTR_CHAR(t, d, f, l, t0) t d = (f)
 #define __CNV_PTR_ARR(t, d, f, l, t0) t d = (f)
 #define __CNV_PTR_VOID(t, d, f, l, t0) t d = (f)
-#define __CNV_CBK(t, d, f, l, t0) UDWORD d = alloc##t0(f)
 #define __CNV_SIMPLE(t, d, f, l, t0) t d = (f)
 
 #define _CNV(c, t, at, l, n) c(at, _a##n, a##n, l, t)

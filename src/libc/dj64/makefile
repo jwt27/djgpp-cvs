@@ -9,7 +9,8 @@ GA = $(PD)/gen_asms.sh
 PC = $(PD)/parse_decls.sh
 TFLAGS = -a 4 -p 4
 LIBN = libdj64.so.0.1
-TH_O = thunks.o thunks_a.o thunks_c.o thunks_p.o
+SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
+OBJECTS = $(SOURCES:.c=.o)
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
@@ -52,14 +53,16 @@ thunk_asms.h: thunk_asms.tmp
 	rm -f $@_ $@__
 
 thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
-thunks_a.o: asm_incs.h plt_asmc.h
+thunks_a.o: asm_incs.h plt_asmc.h asym_incs.h
+thunks_c.o: thunk_incs.h thunk_calls.h
+thunks_p.o: thunk_incs.h thunk_asms.h
 
 plt.o : plt.S plt.inc
 	$(XGCC) -m32 $< -c -o $@
 
-$(LIB)/$(LIBN) : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h $(TH_O)
+$(LIB)/$(LIBN) : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h $(OBJECTS)
 	$(CROSS_GCC) -shared -Wl,-soname=$(LIBN) -Wl,-Bsymbolic -o $@ \
-  $(addprefix ../,$(file < $<)) $(TH_O)
+  $(addprefix ../,$(file < $<)) $(OBJECTS)
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
 $(LIB)/libc.a : libc_tmp.a plt.o
