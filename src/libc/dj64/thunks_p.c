@@ -38,13 +38,14 @@
 #define _CNV(c, t, at, l, n) c(at, _a##n, a##n, l, t)
 #define _L_REF(nl) a##nl
 #define _L_IMM(n, l) (sizeof(*_L_REF(n)) * (l))
+#define _L_SZ(n) sizeof(*_L_REF(n))
 
 static void obj_done(void *data, uint32_t fa, uint16_t len)
 {
 }
 
 #define U__CNV_PTR_FAR(f, d, l) // unused
-#define U__CNV_PTR(f, d, l) obj_done(f, d, sizeof(*f))
+#define U__CNV_PTR(f, d, l) obj_done(f, d, l)
 #define U__CNV_CPTR(f, d, l)
 #define U__CNV_PTR_CCHAR(f, d, l)
 #define U__CNV_PTR_CHAR(f, d, l)

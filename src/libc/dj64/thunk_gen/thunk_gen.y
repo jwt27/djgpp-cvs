@@ -129,10 +129,8 @@ static void do_start_arg(int anum)
 			    arg_num + 1, arr_sz);
 		    break;
 		case CVTYPE_OTHER:
-		    if (is_const)
-			strcat(abuf, "_CNV_CPTR, _L_NONE");
-		    else
-			strcat(abuf, "_CNV_PTR, _L_NONE");
+		    sprintf(abuf + strlen(abuf), "_CNV_%sPTR, _L_SZ(%i)",
+			    is_const ? "C" : "", arg_num + 1);
 		    break;
 		}
 		break;
