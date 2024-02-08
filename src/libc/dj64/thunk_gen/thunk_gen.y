@@ -160,7 +160,7 @@ static void do_start_arg(int anum)
 	    switch (cvtype) {
 	    case CVTYPE_CHAR_ARR:
 		if (is_const) {
-		    if (arr_sz == -1)  // main() template
+		    if (arr_sz == -1)
 			strcat(abuf, "_CNV_CCHAR_ARR, _L_REF(1)");
 		    else
 			sprintf(abuf + strlen(abuf), "_CNV_CCHAR_ARR, "
