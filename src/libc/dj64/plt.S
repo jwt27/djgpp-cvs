@@ -227,6 +227,11 @@ plt_init:
     int $0x21
     jmp 1b
 
+.bss
+
+.global _dosobj_page
+_dosobj_page: .space 4096
+
 #ifdef __ELF__
 .section .note.GNU-stack,"",%progbits
 #endif

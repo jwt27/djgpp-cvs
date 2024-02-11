@@ -40,15 +40,13 @@ static void err_printf(int prio, const char *fmt, ...)
     va_end(vl);
 }
 
-void dosobj_init(uint32_t fa, int size)
+void dosobj_init(void *ptr, int size)
 {
-    void *ptr = DATA_PTR(fa);
-
     if (initialized)
         smdestroy(&pool);
     sminit(&pool, ptr, size);
     smregister_error_notifier(&pool, err_printf);
-    base = fa;
+    base = PTR_DATA(ptr);
     initialized = 1;
 }
 
@@ -67,13 +65,11 @@ void dosobj_free(void)
     initialized = 0;
 }
 
-void dosobj_reinit(uint32_t fa, int size)
+void dosobj_reinit(void *ptr, int size)
 {
-    void *ptr = DATA_PTR(fa);
-
     do_free();
     sminit(&pool, ptr, size);
-    base = fa;
+    base = PTR_DATA(ptr);
 }
 
 uint32_t mk_dosobj(uint16_t len)

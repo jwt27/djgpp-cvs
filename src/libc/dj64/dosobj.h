@@ -21,8 +21,8 @@
 
 #include <stdint.h>
 
-void dosobj_init(uint32_t fa, int size);
-void dosobj_reinit(uint32_t fa, int size);
+void dosobj_init(void *ptr, int size);
+void dosobj_reinit(void *ptr, int size);
 void dosobj_free(void);
 uint32_t mk_dosobj(uint16_t len);
 void pr_dosobj(uint32_t fa, const void *data, uint16_t len);
