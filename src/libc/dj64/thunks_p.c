@@ -1,3 +1,5 @@
+#include <string.h>
+#include "dosobj.h"
 #include "thunk_incs.h"
 #include "thunks_p.h"
 
@@ -24,16 +26,20 @@
 #define __CALL(n, s, l, f) do_asm_call(n, s, l, f)
 #define __CSTK(l) clean_stk(l)
 
-#define __CNV_PTR_FAR(t, d, f, l, t0) // unused
-#define __CNV_PTR(t, d, f, l, t0) t d  = (0)
-#define __CNV_CPTR(t, d, f, l, t0) t d  = (0)
-#define __CNV_PTR_CCHAR(t, d, f, l, t0) t d = (0)
-#define __CNV_PTR_CHAR(t, d, f, l, t0) t d = (0)
-#define __CNV_PTR_ARR(t, d, f, l, t0) t d = (0)
-#define __CNV_CHAR_ARR(t, d, f, l, t0) t d = (0)
+static uint32_t obj_init(const void *data, uint16_t len)
+{
+    uint32_t ret = mk_dosobj(len);
+    pr_dosobj(ret, data, len);
+    return ret;
+}
+
+#define __CNV_PTR(t, d, f, l, t0) t d  = obj_init(f, l)
+#define __CNV_CPTR(t, d, f, l, t0) t d  = obj_init(f, l)
+#define __CNV_PTR_CCHAR(t, d, f, l, t0) t d = obj_init(f, strlen(f) + 1)
+#define __CNV_CHAR_ARR(t, d, f, l, t0) t d = obj_init(f, l)
 #define __CNV_PTR_VOID(t, d, f, l, t0) t d = (0)
 #define __CNV_PTR_CVOID(t, d, f, l, t0) t d = (0)
-#define __CNV_SIMPLE(t, d, f, l, t0) t d = (0)
+#define __CNV_SIMPLE(t, d, f, l, t0) t d = (f)
 
 #define _CNV(c, t, at, l, n) c(at, _a##n, a##n, l, t)
 #define _L_REF(nl) a##nl
@@ -42,6 +48,8 @@
 
 static void obj_done(void *data, uint32_t fa, uint16_t len)
 {
+    cp_dosobj(data, fa, len);
+    rm_dosobj(fa);
 }
 
 #define U__CNV_PTR_FAR(f, d, l) // unused

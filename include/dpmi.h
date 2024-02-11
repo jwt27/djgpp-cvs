@@ -159,8 +159,8 @@ int	__dpmi_set_segment_limit(int _selector, ULONG32 _limit);				/* DPMI 0.9 AX=0
 int	__dpmi_get_descriptor_access_rights(int _selector);					/* LAR instruction  */
 int	__dpmi_set_descriptor_access_rights(int _selector, int _rights);			/* DPMI 0.9 AX=0009 */
 int	__dpmi_create_alias_descriptor(int _selector);						/* DPMI 0.9 AX=000a */
-int	__dpmi_get_descriptor(int _selector, void *_buffer);					/* DPMI 0.9 AX=000b */
-int	__dpmi_set_descriptor(int _selector, void *_buffer);					/* DPMI 0.9 AX=000c */
+int	__dpmi_get_descriptor(int _selector, unsigned char _buffer[8]);					/* DPMI 0.9 AX=000b */
+int	__dpmi_set_descriptor(int _selector, unsigned char _buffer[8]);					/* DPMI 0.9 AX=000c */
 int	__dpmi_allocate_specific_ldt_descriptor(int _selector);					/* DPMI 0.9 AX=000d */
 
 int	__dpmi_get_multiple_descriptors(int _count, void *_buffer);				/* DPMI 1.0 AX=000e */
