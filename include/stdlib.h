@@ -60,7 +60,7 @@ __DJ_wchar_t
 #define NORETURN
 #endif
 
-void	abort(void) NORETURN;
+void	NORETURN abort(void);
 int	abs(int _i);
 int	atexit(void (*_func)(void));
 double	atof(const char *_s);
@@ -70,7 +70,7 @@ void *	bsearch(const void *_key, const void *_base, size_t _nelem,
 		size_t _size, int (*_cmp)(const void *_ck, const void *_ce));
 void *	calloc(size_t _nelem, size_t _size);
 div_t	div(int _numer, int _denom);
-void	exit(int _status) NORETURN;
+void	NORETURN exit(int _status);
 void	free(void *_ptr);
 char *	getenv(const char *_name);
 long	labs(long _i);
@@ -99,7 +99,7 @@ typedef struct {
   long long int rem;
 } lldiv_t;
 
-void		_Exit(int _status) NORETURN;
+void		NORETURN _Exit(int _status);
 long long int	atoll(const char *_s);
 long long int	llabs(long long int _i);
 lldiv_t		lldiv(long long int _numer, long long int _denom);

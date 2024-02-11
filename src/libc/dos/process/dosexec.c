@@ -515,7 +515,7 @@ static int direct_exec_tail (const char *program, const char *args,
 
       sel1 = __dpmi_allocate_ldt_descriptors(1);
       larbyte = 0xf0 & __dpmi_get_descriptor_access_rights(sel1);
-      __dpmi_get_descriptor(sel1, &desc_buf1);
+      __dpmi_get_descriptor(sel1, desc_buf1);
       __dpmi_free_ldt_descriptor(sel1);
       flags = __dpmi_get_descriptor_access_rights(sel1);	/* freed */
 
@@ -524,7 +524,7 @@ static int direct_exec_tail (const char *program, const char *args,
       else
       {				/* Win NT/2K/XP lie about lar */
         larbyte = desc_buf1[5] & 0xf0;
-        ret = __dpmi_get_descriptor(sel1, &desc_buf2);
+        ret = __dpmi_get_descriptor(sel1, desc_buf2);
         if (ret == -1 || (larbyte != (desc_buf2[5] & 0xf0)))
           workaround_descriptor_leaks = 2;
         else
@@ -567,7 +567,7 @@ static int direct_exec_tail (const char *program, const char *args,
       for (i = sel1 + 8; i <= sel2; i += 8)
         if ((__dpmi_get_descriptor_access_rights(i) & 0xf0) != larbyte)
           *map++ = 1;                /* Never touched, free it */
-        else if (__dpmi_get_descriptor(i, &desc_buf) == -1)
+        else if (__dpmi_get_descriptor(i, desc_buf) == -1)
           *map++ = 1;                /* Means free on NT */
         else
           *map++ = (desc_buf[5] & 0xf0) != larbyte;

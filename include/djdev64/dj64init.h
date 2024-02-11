@@ -30,7 +30,7 @@ enum { ASM_CALL_OK, ASM_CALL_ABORT };
 
 struct dj64_api {
     uint8_t *(*addr2ptr)(uint32_t addr);
-    uint32_t (*ptr2addr)(uint8_t *ptr);
+    uint32_t (*ptr2addr)(const uint8_t *ptr);
     void (*print)(int prio, const char *format, va_list ap);
     int (*asm_call)(dpmi_regs *regs, dpmi_paddr pma, uint8_t *sp, uint8_t len);
 };

@@ -25,7 +25,7 @@ extern "C" {
 #define NORETURN
 #endif
 
-void	__dj_assert(const char *,const char *,int,const char *) NORETURN;
+void	NORETURN __dj_assert(const char *,const char *,int,const char *);
 
 #ifdef __cplusplus
 }

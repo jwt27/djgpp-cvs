@@ -10,10 +10,10 @@ extr_proto() {
     readtags -e -t "$1" "$2" | \
 	expand | \
 	sed -E \
-	    -e 's/.*\/\^([^\(]+)\(.*signature:(.*)/\1\2;/' \
+	    -e 's/ *__attribute__\(\(__.*__\)\)//' \
+	    -e 's/ *__attribute__\(\(.*\)\)//' \
+	    -e 's/.*\/\^(.+\);).*/\1/' \
 	    -e 's/__P\((.*)\);/\1;/' \
-	    -e 's/__attribute__\(\(__(.*)__\)\)/\U\1/' \
-	    -e 's/__attribute__\(\((.*)\)\)/\U\1/' \
 	    -e "s/([^ (]+) +(\*)*([^ (]+)( *\([^(]+.*;)/\1\2 $3 \3\4/" \
 	       | \
 	tr -s '[:blank:]'
@@ -41,7 +41,7 @@ PRUNES="$PRUNES -o -name ctype.h -prune"
 # bad/temporary prunes below
 PRUNES="$PRUNES -o -name setjmp.h -prune"
 find $1 $PRUNES -o -print | \
-	ctags -L - --kinds-C=p --pattern-length-limit=0 --fields=+S -f $TF
+	ctags -L - --kinds-C=p --pattern-length-limit=0 -I _V_BW+,_V_FW+ -f $TF
 shift
 # https://stackoverflow.com/questions/11003418/calling-shell-functions-with-xargs
 export -f extr_proto

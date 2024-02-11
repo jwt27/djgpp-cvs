@@ -163,8 +163,9 @@ int	__dpmi_get_descriptor(int _selector, unsigned char _buffer[8]);					/* DPMI 
 int	__dpmi_set_descriptor(int _selector, unsigned char _buffer[8]);					/* DPMI 0.9 AX=000c */
 int	__dpmi_allocate_specific_ldt_descriptor(int _selector);					/* DPMI 0.9 AX=000d */
 
-int	__dpmi_get_multiple_descriptors(int _count, void *_buffer);				/* DPMI 1.0 AX=000e */
-int	__dpmi_set_multiple_descriptors(int _count, void *_buffer);				/* DPMI 1.0 AX=000f */
+#define _V_BW(n)
+int	__dpmi_get_multiple_descriptors(int _count, void _V_BW(8) *_buffer);				/* DPMI 1.0 AX=000e */
+int	__dpmi_set_multiple_descriptors(int _count, void _V_BW(8) *_buffer);				/* DPMI 1.0 AX=000f */
 
 int	__dpmi_allocate_dos_memory(int _paragraphs, int *_ret_selector_or_max);			/* DPMI 0.9 AX=0100 */
 int	__dpmi_free_dos_memory(int _selector);							/* DPMI 0.9 AX=0101 */
@@ -186,7 +187,7 @@ int	__dpmi_simulate_real_mode_interrupt(int _vector, __dpmi_regs *_regs);			/* D
 int	__dpmi_int(int _vector, __dpmi_regs *_regs); /* like above, but sets ss sp fl */	/* DPMI 0.9 AX=0300 */
 extern short __dpmi_int_ss, __dpmi_int_sp, __dpmi_int_flags; /* default to zero */
 int	__dpmi_simulate_real_mode_procedure_retf(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0301 */
-int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_words_to_copy, const void *stack_data); /* DPMI 0.9 AX=0301 */
+int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_words_to_copy, const void _V_BW(2) *stack_data); /* DPMI 0.9 AX=0301 */
 int	__dpmi_simulate_real_mode_procedure_iret(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0302 */
 int	__dpmi_allocate_real_mode_callback(ULONG32 _handler, __dpmi_regs *_regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
 int	__dpmi_free_real_mode_callback(__dpmi_raddr *_addr);					/* DPMI 0.9 AX=0304 */

@@ -111,8 +111,8 @@ __DJ_ssize_t
 extern char *optarg;
 extern int optind, opterr, optopt;
 
-void		__exit(int _status) NORETURN;
-void		_exit(int _status) NORETURN;
+void		NORETURN __exit(int _status);
+void		NORETURN _exit(int _status);
 int		access(const char *_path, int _amode);
 unsigned int	alarm(unsigned int _seconds);
 int		chdir(const char *_path);

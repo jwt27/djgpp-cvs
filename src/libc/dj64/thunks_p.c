@@ -37,14 +37,16 @@ static uint32_t obj_init(const void *data, uint16_t len)
 #define __CNV_CPTR(t, d, f, l, t0) t d  = obj_init(f, l)
 #define __CNV_PTR_CCHAR(t, d, f, l, t0) t d = obj_init(f, strlen(f) + 1)
 #define __CNV_CHAR_ARR(t, d, f, l, t0) t d = obj_init(f, l)
-#define __CNV_PTR_VOID(t, d, f, l, t0) t d = (0)
-#define __CNV_PTR_CVOID(t, d, f, l, t0) t d = (0)
+#define __CNV_PTR_PVOID(t, d, f, l, t0) t d = PTR_DATA(f)
+#define __CNV_PTR_CPVOID(t, d, f, l, t0) t d = PTR_DATA(f)
+#define __CNV_PTR_VOID(t, d, f, l, t0) t d = obj_init(f, l)
+#define __CNV_PTR_CVOID(t, d, f, l, t0) t d = obj_init(f, l)
 #define __CNV_SIMPLE(t, d, f, l, t0) t d = (f)
 
 #define _CNV(c, t, at, l, n) c(at, _a##n, a##n, l, t)
-#define _L_REF(nl) a##nl
-#define _L_IMM(n, l) (sizeof(*_L_REF(n)) * (l))
-#define _L_SZ(n) sizeof(*_L_REF(n))
+#define _L_REF(nl, m) (a##nl * (m))
+#define _L_IMM(n, l) (sizeof(a##n[0]) * (l))
+#define _L_SZ(n) sizeof(*a##n)
 
 static void obj_done(void *data, uint32_t fa, uint16_t len)
 {
@@ -52,15 +54,15 @@ static void obj_done(void *data, uint32_t fa, uint16_t len)
     rm_dosobj(fa);
 }
 
-#define U__CNV_PTR_FAR(f, d, l) // unused
 #define U__CNV_PTR(f, d, l) obj_done(f, d, l)
-#define U__CNV_CPTR(f, d, l)
-#define U__CNV_PTR_CCHAR(f, d, l)
-#define U__CNV_PTR_CHAR(f, d, l)
-#define U__CNV_PTR_ARR(f, d, l)
-#define U__CNV_CHAR_ARR(f, d, l)
-#define U__CNV_PTR_VOID(f, d, l)
-#define U__CNV_PTR_CVOID(f, d, l)
+#define U__CNV_CPTR(f, d, l) rm_dosobj(d)
+#define U__CNV_PTR_CCHAR(f, d, l) rm_dosobj(d)
+#define U__CNV_PTR_CHAR(f, d, l) obj_done(f, d, strlen(DATA_PTR(d)) + 1)
+#define U__CNV_CHAR_ARR(f, d, l) obj_done(f, d, l)
+#define U__CNV_PTR_PVOID(f, d, l)
+#define U__CNV_PTR_CPVOID(f, d, l)
+#define U__CNV_PTR_VOID(f, d, l) obj_done(f, d, l)
+#define U__CNV_PTR_CVOID(f, d, l) rm_dosobj(d)
 #define U__CNV_SIMPLE(f, d, l)
 
 #define _UCNV(c, l, n) U##c(a##n, _a##n, l)
