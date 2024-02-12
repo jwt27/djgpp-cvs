@@ -28,16 +28,23 @@
 #define POPL_EDI	
 #endif
 
+#define USE_FAR_CALL 1
+#if USE_FAR_CALL
+#define OFF 4
+#define RET_I retf
+#else
+#define OFF 0
+#define RET_I ret
+#endif
+
 #define FUNC(x)		.globl x; x:
 
 #define ENTER		pushl %ebp; movl %esp,%ebp; PUSHL_EBX PUSHL_ESI PUSHL_EDI
 
-#define LEAVE		L_leave: POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; ret
-#define LEAVEP(x)	L_leave: x; POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; ret
+#define LEAVE		L_leave: POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; RET_I
+#define LEAVEP(x)	L_leave: x; POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; RET_I
 
 #define RET		jmp L_leave
-
-#define OFF 4
 
 #define ARG1		8+OFF(%ebp)
 #define ARG1h		10+OFF(%ebp)
