@@ -15,6 +15,7 @@
  *   ss:sp	our stack (ss to be freed)
  *   <others>	All unspecified registers have unspecified values in them.
 \*****************************************************************************/
+#include <libc/asmdefs.h>
 
 	.file "crt0.s"
 
@@ -656,7 +657,7 @@ __crt0_init_mcount:
 #ifdef IN_GCRT0
 	jmp	__mcount_init
 #else
-	ret
+	RET_I
 #endif
 
 #ifdef __ELF__

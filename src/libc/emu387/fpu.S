@@ -1,7 +1,7 @@
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 /* Translated from tasm to GAS by C. Sandmann */
-
+#include <libc/asmdefs.h>
 
 /* This routine assumes DS == SS since [ESI] coding shorter than [EBP] coding */
 
@@ -45,7 +45,7 @@ Lno_387:
 Lexit:
 	popl	%esi			/* Fix stack first */
 	popl	%esi
-	ret
+	RET_I
 
 #ifdef __ELF__
 .section .note.GNU-stack,"",%progbits
