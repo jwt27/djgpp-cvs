@@ -129,11 +129,15 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
             }
         }
         u->eops->close(eh);
-        dosobj_init(dosobj_page, 4096);
         return ret;
     }
     }
     return -1;
+}
+
+void dj64_init(void)
+{
+    dosobj_init(dosobj_page, 4096);
 }
 
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
