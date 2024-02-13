@@ -38,14 +38,22 @@ extern int *____djgpp_base_address;
 
 #if IN_ASMOBJ == 1
 #define ASM_N(x) _##x
+#define ASM(x) extern *__##x/*
+*/DEFINE(x, (*__##x))/*
+*/
 #endif
 
 #if IN_ASMOBJ == 2
 #define ASM_N(x) *__##x
+#define ASM(x) extern *__##x/*
+*/DEFINE(x, (*__##x))/*
+*/
 #endif
 
 #if IN_ASMOBJ == 3
-#define ASM(x) *__##x
+#define ASM(x) *__##x/*
+*/DEFINE(x, (*__##x))/*
+*/
 #define ASM_F(x) unsigned char *__##x
 #define ASM_N(x) extern *__##x
 #define ASM_P(t, x) unsigned *__##x

@@ -13,7 +13,7 @@ SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
 OBJECTS = $(SOURCES:.c=.o)
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
-	$(XGCC) -m32 -c $< $(EXTRA_CFLAGS) -o $@
+	$(XCPP) -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -m32 -o $@
 	$(CROSS_STRIP) --strip-debug $@
 
 libc_tmp.a : $(TOP)/makefile.rfo thunk_syms.o
