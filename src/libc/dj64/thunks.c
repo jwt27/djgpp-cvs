@@ -34,6 +34,15 @@ void djloudprintf(const char *format, ...)
     va_end(vl);
 }
 
+void djlogprintf(const char *format, ...)
+{
+    va_list vl;
+
+    va_start(vl, format);
+    dj64api->print(DJ64_PRINT_LOG, format, vl);
+    va_end(vl);
+}
+
 uint8_t *djaddr2ptr(uint32_t addr)
 {
     return dj64api->addr2ptr(addr);
@@ -171,7 +180,11 @@ uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
     assert(num < num_cthunks);
     pma.selector = _cs;
     pma.offset32 = asm_tab[num];
+    djlogprintf("asm call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
+            pma.selector, pma.offset32);
     rc = dj64api->asm_call(&s_regs, pma, sp, len);
+    djlogprintf("asm call %s returned %i:0x%x\n", asm_cthunks[num].name,
+            rc, s_regs.eax);
     switch (rc) {
     case ASM_CALL_OK:
         break;
