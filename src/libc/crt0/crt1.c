@@ -240,5 +240,5 @@ __crt1_startup(void)
   gppconio_init();
   __main();
   errno = 0;	/* ANSI says errno should be zero at program startup */
-//  exit(main(__crt0_argc, __crt0_argv, _environ));
+  exit(main(__crt0_argc, __crt0_argv, _environ));
 }
