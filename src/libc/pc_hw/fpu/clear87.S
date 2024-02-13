@@ -8,7 +8,7 @@
 	fstsw	%ax
 	movzwl	%ax, %eax
 	fclex
-	ret
+	RET_I
 
 
 #ifdef __ELF__

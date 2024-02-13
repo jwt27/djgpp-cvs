@@ -6,7 +6,7 @@
 	FUNC(__fpreset)
 
 	fninit
-	ret
+	RET_I
 
 
 #ifdef __ELF__

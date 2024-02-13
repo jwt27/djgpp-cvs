@@ -7,7 +7,7 @@
 	xchgb	%ah, %al
 	rorl	$16, %eax
 	xchgb	%ah, %al
-	ret
+	RET_I
 
 #ifdef __ELF__
 .section .note.GNU-stack,"",%progbits

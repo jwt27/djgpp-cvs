@@ -1,4 +1,5 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+#include <libc/asmdefs.h>
 #define FUNC(x)		.globl x; x:
 
 /* The following are not needed since you must define the structures to pass
@@ -29,7 +30,7 @@ FUNC(__go32_my_ss)
 
 FUNC(__go32_conventional_mem_selector)
 	movzwl __go32_info_block+26,%eax
-	ret
+	RET_I
 
 #ifdef __ELF__
 .section .note.GNU-stack,"",%progbits

@@ -4,7 +4,7 @@
 	FUNC(__my_ss)
 	movw	%ss,%ax
 	movzwl	%ax,%eax
-	ret
+	RET_I
 
 #ifdef __ELF__
 .section .note.GNU-stack,"",%progbits

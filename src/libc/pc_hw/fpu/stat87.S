@@ -7,7 +7,7 @@
 
 	fstsw	%ax
 	movzwl	%ax, %eax
-	ret
+	RET_I
 
 
 #ifdef __ELF__
