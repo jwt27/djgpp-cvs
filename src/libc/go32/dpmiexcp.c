@@ -533,8 +533,8 @@ __djgpp_exception_setup(void)
     signal_list[i] = (SignalHandler)SIG_DFL;
 
   /* app_DS only used when converting HW interrupts to exceptions */
-  asm volatile ("mov %%ds,%0" : "=r"(__djgpp_app_DS));
-  asm volatile ("mov %%ds,%0" : "=r"(__djgpp_our_DS));
+  __djgpp_app_DS = _my_ds();
+  __djgpp_our_DS = _my_ds();
   __djgpp_dos_sel = _dos_ds;
 
   /* lock addresses which may see HW interrupts */
@@ -542,8 +542,8 @@ __djgpp_exception_setup(void)
   lockmem.size = ((uintptr_t) &__djgpp_hw_lock_end
 		  - (uintptr_t) &__djgpp_hw_lock_start);
   __dpmi_lock_linear_region(&lockmem);
-  
-  asm volatile ("mov %%cs,%0" : "=g" (except.selector) );
+
+  except.selector = _my_cs();
   except.offset32 = (uintptr_t) __djgpp_exception_table;
   for(i=0; i < EXCEPTION_COUNT; i++)
   {

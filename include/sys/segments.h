@@ -21,29 +21,9 @@ extern "C" {
 
 #ifndef _POSIX_SOURCE
 
-static __inline__ int
-_my_cs(void)
-{
-  unsigned short result;
-  __asm__("movw %%cs,%0" : "=r" (result));
-  return result;
-}
-
-static __inline__ int
-_my_ds(void)
-{
-  unsigned short result;
-  __asm__("movw %%ds,%0" : "=r" (result));
-  return result;
-}
-
-static __inline__ int
-_my_ss(void)
-{
-  unsigned short result;
-  __asm__("movw %%ss,%0" : "=r" (result));
-  return result;
-}
+int _my_cs(void);
+int _my_ds(void);
+int _my_ss(void);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
