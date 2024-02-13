@@ -8,24 +8,24 @@
 #define PUSHL_EBX	pushl %ebx;
 #define POPL_EBX	popl %ebx;
 #else
-#define PUSHL_EBX	
-#define POPL_EBX	
+#define PUSHL_EBX
+#define POPL_EBX
 #endif
 
 #ifdef USE_ESI
 #define PUSHL_ESI	pushl %esi;
 #define POPL_ESI	popl %esi;
 #else
-#define PUSHL_ESI	
-#define POPL_ESI	
+#define PUSHL_ESI
+#define POPL_ESI
 #endif
 
 #ifdef USE_EDI
 #define PUSHL_EDI	pushl %edi;
 #define POPL_EDI	popl %edi;
 #else
-#define PUSHL_EDI	
-#define POPL_EDI	
+#define PUSHL_EDI
+#define POPL_EDI
 #endif
 
 #define USE_FAR_CALL 1
