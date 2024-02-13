@@ -71,176 +71,20 @@ extern "C" {
 
 #include <sys/cdefs.h>
 
-void _farpokeb(unsigned short, unsigned long, unsigned char);
-void _farpokew(unsigned short, unsigned long, unsigned short);
-void _farpokel(unsigned short, unsigned long, unsigned long);
-unsigned char _farpeekb(unsigned short, unsigned long);
-unsigned short _farpeekw(unsigned short, unsigned long);
-unsigned long _farpeekl(unsigned short, unsigned long);
+void _farpokeb(unsigned short, ULONG32, unsigned char);
+void _farpokew(unsigned short, ULONG32, unsigned short);
+void _farpokel(unsigned short, ULONG32, ULONG32);
+unsigned char _farpeekb(unsigned short, ULONG32);
+unsigned short _farpeekw(unsigned short, ULONG32);
+ULONG32 _farpeekl(unsigned short, ULONG32);
 void _farsetsel(unsigned short);
 unsigned short _fargetsel(void);
-void _farnspokeb(unsigned long, unsigned char);
-void _farnspokew(unsigned long, unsigned short);
-void _farnspokel(unsigned long, unsigned long);
-unsigned char _farnspeekb(unsigned long);
-unsigned short _farnspeekw(unsigned long);
-unsigned long _farnspeekl(unsigned long);
-
-_EXTERN_INLINE void
-_farpokeb(unsigned short selector,
-	 unsigned long offset,
-	 unsigned char value)
-{
-  __asm__ __volatile__ ("movw %w0,%%fs\n"
-      "	.byte 0x64 \n"
-      "	movb %b1,(%k2)"
-      :
-      : "rm" (selector), "qi" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farpokew(unsigned short selector,
-	 unsigned long offset,
-	 unsigned short value)
-{
-  __asm__ __volatile__ ("movw %w0,%%fs \n"
-      "	.byte 0x64 \n"
-      "	movw %w1,(%k2)"
-      :
-      : "rm" (selector), "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farpokel(unsigned short selector,
-	 unsigned long offset,
-	 unsigned long value)
-{
-  __asm__ __volatile__ ("movw %w0,%%fs \n"
-      "	.byte 0x64 \n"
-      "	movl %k1,(%k2)"
-      :
-      : "rm" (selector), "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE unsigned char
-_farpeekb(unsigned short selector,
-	 unsigned long offset)
-{
-  unsigned char result;
-  __asm__ __volatile__ ("movw %w1,%%fs \n"
-      "	.byte 0x64 \n"
-      "	movb (%k2),%b0"
-      : "=q" (result)
-      : "rm" (selector), "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned short
-_farpeekw(unsigned short selector,
-	 unsigned long offset)
-{
-  unsigned short result;
-  __asm__ __volatile__ ("movw %w1, %%fs \n"
-      "	.byte 0x64 \n"
-      "	movw (%k2),%w0 \n"
-      : "=r" (result)
-      : "rm" (selector), "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned long
-_farpeekl(unsigned short selector,
-	 unsigned long offset)
-{
-  unsigned long result;
-  __asm__ __volatile__ ("movw %w1,%%fs\n"
-      "	.byte 0x64\n"
-      "	movl (%k2),%k0"
-      : "=r" (result)
-      : "rm" (selector), "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE void
-_farsetsel(unsigned short selector)
-{
-  __asm__ __volatile__ ("movw %w0,%%fs"
-      :
-      : "rm" (selector));
-}
-
-_EXTERN_INLINE unsigned short
-_fargetsel(void)
-{
-  unsigned short selector;
-  __asm__ __volatile__ ("movw %%fs,%w0 \n"
-      : "=r" (selector)
-      : );
-  return selector;
-}
-
-_EXTERN_INLINE void
-_farnspokeb(unsigned long offset,
-	 unsigned char value)
-{
-  __asm__ __volatile__ (".byte 0x64\n"
-      "	movb %b0,(%k1)"
-      :
-      : "qi" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farnspokew(unsigned long offset,
-	 unsigned short value)
-{
-  __asm__ __volatile__ (".byte 0x64\n"
-      "	movw %w0,(%k1)"
-      :
-      : "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farnspokel(unsigned long offset,
-	 unsigned long value)
-{
-  __asm__ __volatile__ (".byte 0x64\n"
-      "	movl %k0,(%k1)"
-      :
-      : "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE unsigned char
-_farnspeekb(unsigned long offset)
-{
-  unsigned char result;
-  __asm__ __volatile__ (".byte 0x64\n"
-      "	movb (%k1),%b0"
-      : "=q" (result)
-      : "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned short
-_farnspeekw(unsigned long offset)
-{
-  unsigned short result;
-  __asm__ __volatile__ (".byte 0x64\n"
-      "	movw (%k1),%w0"
-      : "=r" (result)
-      : "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned long
-_farnspeekl(unsigned long offset)
-{
-  unsigned long result;
-  __asm__ __volatile__ (".byte 0x64\n"
-      "	movl (%k1),%k0"
-      : "=r" (result)
-      : "r" (offset));
-  return result;
-}
+void _farnspokeb(ULONG32, unsigned char);
+void _farnspokew(ULONG32, unsigned short);
+void _farnspokel(ULONG32, ULONG32);
+unsigned char _farnspeekb(ULONG32);
+unsigned short _farnspeekw(ULONG32);
+ULONG32 _farnspeekl(ULONG32);
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

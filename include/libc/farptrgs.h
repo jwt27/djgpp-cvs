@@ -53,8 +53,8 @@ program will crash.  Better safe than sorry.
 
 */
 
-#ifndef __dj_include_sys_farptr_h_
-#define __dj_include_sys_farptr_h_
+#ifndef __dj_include_libc_farptrgs_h_
+#define __dj_include_libc_farptrgs_h_
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,176 +73,37 @@ extern "C" {
 
 #include <sys/cdefs.h>
 
-void _farpokeb(unsigned short, unsigned long, unsigned char);
-void _farpokew(unsigned short, unsigned long, unsigned short);
-void _farpokel(unsigned short, unsigned long, unsigned long);
-unsigned char _farpeekb(unsigned short, unsigned long);
-unsigned short _farpeekw(unsigned short, unsigned long);
-unsigned long _farpeekl(unsigned short, unsigned long);
-void _farsetsel(unsigned short);
-unsigned short _fargetsel(void);
-void _farnspokeb(unsigned long, unsigned char);
-void _farnspokew(unsigned long, unsigned short);
-void _farnspokel(unsigned long, unsigned long);
-unsigned char _farnspeekb(unsigned long);
-unsigned short _farnspeekw(unsigned long);
-unsigned long _farnspeekl(unsigned long);
+void _farpokeb_gs(unsigned short, ULONG32, unsigned char);
+void _farpokew_gs(unsigned short, ULONG32, unsigned short);
+void _farpokel_gs(unsigned short, ULONG32, ULONG32);
+unsigned char _farpeekb_gs(unsigned short, ULONG32);
+unsigned short _farpeekw_gs(unsigned short, ULONG32);
+ULONG32 _farpeekl_gs(unsigned short, ULONG32);
+void _farsetsel_gs(unsigned short);
+unsigned short _fargetsel_gs(void);
+void _farnspokeb_gs(ULONG32, unsigned char);
+void _farnspokew_gs(ULONG32, unsigned short);
+void _farnspokel_gs(ULONG32, ULONG32);
+unsigned char _farnspeekb_gs(ULONG32);
+unsigned short _farnspeekw_gs(ULONG32);
+ULONG32 _farnspeekl_gs(ULONG32);
 
-_EXTERN_INLINE void
-_farpokeb(unsigned short selector,
-	 unsigned long offset,
-	 unsigned char value)
-{
-  __asm__ __volatile__ ("movw %w0,%%gs\n"
-      "	.byte 0x65 \n"
-      "	movb %b1,(%k2)"
-      :
-      : "rm" (selector), "qi" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farpokew(unsigned short selector,
-	 unsigned long offset,
-	 unsigned short value)
-{
-  __asm__ __volatile__ ("movw %w0,%%gs \n"
-      "	.byte 0x65 \n"
-      "	movw %w1,(%k2)"
-      :
-      : "rm" (selector), "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farpokel(unsigned short selector,
-	 unsigned long offset,
-	 unsigned long value)
-{
-  __asm__ __volatile__ ("movw %w0,%%gs \n"
-      "	.byte 0x65 \n"
-      "	movl %k1,(%k2)"
-      :
-      : "rm" (selector), "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE unsigned char
-_farpeekb(unsigned short selector,
-	 unsigned long offset)
-{
-  unsigned char result;
-  __asm__ __volatile__ ("movw %w1,%%gs \n"
-      "	.byte 0x65 \n"
-      "	movb (%k2),%b0"
-      : "=q" (result)
-      : "rm" (selector), "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned short
-_farpeekw(unsigned short selector,
-	 unsigned long offset)
-{
-  unsigned short result;
-  __asm__ __volatile__ ("movw %w1, %%gs \n"
-      "	.byte 0x65 \n"
-      "	movw (%k2),%w0 \n"
-      : "=r" (result)
-      : "rm" (selector), "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned long
-_farpeekl(unsigned short selector,
-	 unsigned long offset)
-{
-  unsigned long result;
-  __asm__ __volatile__ ("movw %w1,%%gs\n"
-      "	.byte 0x65\n"
-      "	movl (%k2),%k0"
-      : "=r" (result)
-      : "rm" (selector), "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE void
-_farsetsel(unsigned short selector)
-{
-  __asm__ __volatile__ ("movw %w0,%%gs"
-      :
-      : "rm" (selector));
-}
-
-_EXTERN_INLINE unsigned short
-_fargetsel(void)
-{
-  unsigned short selector;
-  __asm__ __volatile__ ("movw %%gs,%w0 \n"
-      : "=r" (selector)
-      : );
-  return selector;
-}
-
-_EXTERN_INLINE void
-_farnspokeb(unsigned long offset,
-	 unsigned char value)
-{
-  __asm__ __volatile__ (".byte 0x65\n"
-      "	movb %b0,(%k1)"
-      :
-      : "qi" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farnspokew(unsigned long offset,
-	 unsigned short value)
-{
-  __asm__ __volatile__ (".byte 0x65\n"
-      "	movw %w0,(%k1)"
-      :
-      : "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE void
-_farnspokel(unsigned long offset,
-	 unsigned long value)
-{
-  __asm__ __volatile__ (".byte 0x65\n"
-      "	movl %k0,(%k1)"
-      :
-      : "ri" (value), "r" (offset));
-}
-
-_EXTERN_INLINE unsigned char
-_farnspeekb(unsigned long offset)
-{
-  unsigned char result;
-  __asm__ __volatile__ (".byte 0x65\n"
-      "	movb (%k1),%b0"
-      : "=q" (result)
-      : "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned short
-_farnspeekw(unsigned long offset)
-{
-  unsigned short result;
-  __asm__ __volatile__ (".byte 0x65\n"
-      "	movw (%k1),%w0"
-      : "=r" (result)
-      : "r" (offset));
-  return result;
-}
-
-_EXTERN_INLINE unsigned long
-_farnspeekl(unsigned long offset)
-{
-  unsigned long result;
-  __asm__ __volatile__ (".byte 0x65\n"
-      "	movl (%k1),%k0"
-      : "=r" (result)
-      : "r" (offset));
-  return result;
-}
+#ifndef THUNK_INCS
+#define _farpokeb _farpokeb_gs
+#define _farpokew _farpokew_gs
+#define _farpokel _farpokel_gs
+#define _farpeekb _farpeekb_gs
+#define _farpeekw _farpeekw_gs
+#define _farpeekl _farpeekl_gs
+#define _farsetsel _farsetsel_gs
+#define _fargetsel _fargetsel_gs
+#define _farnspokeb _farnspokeb_gs
+#define _farnspokew _farnspokew_gs
+#define _farnspokel _farnspokel_gs
+#define _farnspeekb _farnspeekb_gs
+#define _farnspeekw _farnspeekw_gs
+#define _farnspeekl _farnspeekl_gs
+#endif
 
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */

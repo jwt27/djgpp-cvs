@@ -41,7 +41,8 @@
 
 #define ENTER		pushl %ebp; movl %esp,%ebp; PUSHL_EBX PUSHL_ESI PUSHL_EDI
 
-#define LEAVE		L_leave: POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; RET_I
+#define _LEAVE		POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; RET_I
+#define LEAVE		L_leave: _LEAVE
 #define LEAVEP(x)	L_leave: x; POPL_EDI POPL_ESI POPL_EBX movl %ebp,%esp; popl %ebp; RET_I
 
 #define RET		jmp L_leave

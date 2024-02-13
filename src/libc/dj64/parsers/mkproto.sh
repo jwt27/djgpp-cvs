@@ -50,9 +50,10 @@ list_syms $TL U | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMCFUNC" | nl -n l
 list_syms $TL U | xargs readtags -t $TF | expand | \
 	cut -d " " -f 1 | nl -n ln -v 0 | expand | tr -s '[:blank:]' | \
 	sed -E 's/([^ ]+) +(.*)/asmcfunc _\2,\1/' >$3
+echo "#define THUNK_INCS 1" >$4
 list_syms2 $TL U T | xargs readtags -t $TF | expand | tr -s '[:blank:]' | \
 	cut -d " " -f 2 | sort | uniq | \
-	sed -E 's/.*(include)\/(.*)/#\1 "\2"/' >$4
+	sed -E 's/.*(include)\/(.*)/#\1 "\2"/' >>$4
 shift 3
 
 rm $TF
