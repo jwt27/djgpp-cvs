@@ -120,6 +120,8 @@ _start:
 	stosl
 #endif
 
+	call plt_init
+
 /* Enable NULL pointer protection if DPMI supports it */
 	testb	$0x1, __crt0_startup_flags+1		/* include/crt0.h */
 	jnz	1f
@@ -315,8 +317,6 @@ use_stubinfo_stack_size:
 	movl	%eax, ___djgpp_stack_top	/* Top of stack */
 	subl	___djgpp_stack_limit, %eax
 	movl	%eax, __stklen		/* store the actual stack length */
-
-	call plt_init
 
 	xorl	%ebp, %ebp
 	pushl	$_frame_struct
