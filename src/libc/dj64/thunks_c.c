@@ -20,7 +20,9 @@ UDWORD dj64_thunk_call(int fn, UBYTE *sp, enum DispStat *r_stat, int *r_len)
 
 #define _SP sp
 #define _DISP_CMN(f, c) { \
+    djlogprintf("DJ64: dispatch " #f "\n"); \
     c; \
+    djlogprintf("DJ64: dispatch " #f " done\n"); \
 }
 #define _DISPATCH(r, rv, rc, f, ...) _DISP_CMN(f, { \
     rv _r; \
