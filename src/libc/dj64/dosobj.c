@@ -22,7 +22,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <dpmi.h>
-#include "libc/djthunks.h"
+#include <dj64/util.h>
+#include <libc/djthunks.h>
 #include "smalloc.h"
 #include "dosobj.h"
 

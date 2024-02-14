@@ -1,13 +1,14 @@
 #include <assert.h>
 #include <djdev64/dj64init.h>
 #include <dj64/thunks_a.h>
+#include <dj64/thunks_c.h>
+#include <dj64/util.h>
 #include <libc/djthunks.h>
 #include <dpmi.h>
 #include <stddef.h>
 #include <crt0.h>
 #include "plt.h"
 #include "dosobj.h"
-#include "thunks_c.h"
 #include "thunks_p.h"
 
 static dpmi_regs s_regs;
