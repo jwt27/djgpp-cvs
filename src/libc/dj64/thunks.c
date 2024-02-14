@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <djdev64/dj64init.h>
+#include <dj64/thunks_a.h>
 #include <libc/djthunks.h>
 #include <dpmi.h>
 #include <stddef.h>
@@ -8,7 +9,6 @@
 #include "dosobj.h"
 #include "thunks_c.h"
 #include "thunks_p.h"
-#include "thunks_a.h"
 
 static dpmi_regs s_regs;
 static unsigned _cs;

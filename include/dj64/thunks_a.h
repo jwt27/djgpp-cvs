@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 struct athunk {
     const char *name;
     void **ptr;
