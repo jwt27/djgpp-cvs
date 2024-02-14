@@ -2,6 +2,7 @@
 #include <djdev64/dj64init.h>
 #include <dj64/thunks_a.h>
 #include <dj64/thunks_c.h>
+#include <dj64/thunks_p.h>
 #include <dj64/util.h>
 #include <libc/djthunks.h>
 #include <dpmi.h>
@@ -9,7 +10,6 @@
 #include <crt0.h>
 #include "plt.h"
 #include "dosobj.h"
-#include "thunks_p.h"
 
 static dpmi_regs s_regs;
 static unsigned _cs;
@@ -174,7 +174,7 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
+uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
     int rc;
     dpmi_paddr pma;
@@ -197,8 +197,26 @@ uint32_t do_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
     return s_regs.eax;
 }
 
-uint8_t *clean_stk(size_t len)
+uint8_t *dj64_clean_stk(size_t len)
 {
     s_regs.esp += len;
     return NULL;
+}
+
+uint32_t dj64_obj_init(const void *data, uint16_t len)
+{
+    uint32_t ret = mk_dosobj(len);
+    pr_dosobj(ret, data, len);
+    return ret;
+}
+
+void dj64_obj_done(void *data, uint32_t fa, uint16_t len)
+{
+    cp_dosobj(data, fa, len);
+    rm_dosobj(fa);
+}
+
+void dj64_rm_dosobj(uint32_t fa)
+{
+    rm_dosobj(fa);
 }
