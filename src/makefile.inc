@@ -62,11 +62,13 @@ ASFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
 ASFLAGS += -DGAS_MINOR=$(GAS_MINOR)
 ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
 
+CPPFLAGS += -DDJ64 -D_IN_DJ64
+
 # Moved setting of $(GCC{L}_OPT) to top of file
 #
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
-XCPP = $(CROSS_GCC) -I . -I $(TOP)/../../include $(CFLAGS) -E
+XCPP = $(CROSS_GCC) -I . -I $(TOP)/../../include $(CPPFLAGS) -E
 XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include -U __ELF__
 XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
