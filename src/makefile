@@ -36,9 +36,6 @@ copyrite.exe : copyrite.cc
 	gcc -O2 -Wall copyrite.cc -o copyrite.exe
 
 subs:
-	$(MAKE) -C djasm native
-	$(MAKE) -C utils native
-	$(MAKE) -C dxe native
 	$(MAKE) -C djdev64
 	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
