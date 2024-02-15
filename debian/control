@@ -28,6 +28,6 @@ Package: dj64-dev
 Architecture: amd64
 Section: libdevel
 Priority: optional
-Depends: dj64 (= ${binary:Version}), ${misc:Depends}
+Depends: dj64 (= ${binary:Version}), ${misc:Depends}, gcc, binutils
 Description: dj64 development headers
  This package contains headers for dj64 usage.
