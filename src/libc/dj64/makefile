@@ -3,10 +3,16 @@ TOP = ..
 include $(TOP)/../makefile.inc
 
 PD = parsers
-TG = thunk_gen/thunk_gen
 MP = $(PD)/mkproto.sh
 GA = $(PD)/gen_asms.sh
 PC = $(PD)/parse_decls.sh
+TGD = $(shell pkg-config --variable=bindir thunk_gen)
+ifeq ($(TGD),)
+$(error thunk_gen not installed)
+endif
+TGS = $(TGD)/tg_m4
+TG = $(TGD)/thunk_gen
+TGM4 = $(shell pkg-config --variable=m4script thunk_gen)
 TFLAGS = -a 4 -p 4
 LIBN = libdj64.so.0.1
 SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
@@ -21,9 +27,6 @@ libc_tmp.a : $(TOP)/makefile.rfo thunk_syms.o
 	$(CROSS_AR) q $@ $(addprefix ../,$(file < $<)) thunk_syms.o
 	$(CROSS_AR) s $@
 
-$(TG):
-	$(MAKE) -C $(PD)
-
 asm_incs.h:
 	$(GA) 0 $(TOP)/../../include >$@
 
@@ -37,7 +40,7 @@ asym_incs.h:
 	$(GA) 2 $(TOP)/../../include >$@
 
 thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
-    libc_tmp.a $(TG)
+    libc_tmp.a
 	$(MP) $< $(TOP)/../../include thunk_asms.tmp \
 		thunk_calls.tmp plt.inc thunk_incs.h
 
@@ -45,7 +48,7 @@ thunk_calls.h: thunk_calls.tmp
 	$(TG) $(TFLAGS) <$< >$@
 
 thunk_asms.h: thunk_asms.tmp
-	$(TG) $(TFLAGS) 1 <$< | sort | uniq | autom4te -l m4sugar $(PD)/thunks.m4 - >$@_ \
+	$(TG) $(TFLAGS) 1 <$< | $(TGS) $(TGM4) >$@_ \
 		|| ($(RM) $@_ ; false)
 	$(TG) $(TFLAGS) 2 <$< >$@__ \
 		|| ($(RM) $@__ ; false)
@@ -76,7 +79,6 @@ $(LIB)/libdj64.so: $(LIB)/$(LIBN)
 
 final: $(LIB)/libc.a $(LIB)/libdj64.so
 
-clean ::
-	$(MAKE) -C thunk_gen clean
+clean::
 	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h
 	$(RM) $(LIB)/libc.a $(LIB)/libdj64.so*
