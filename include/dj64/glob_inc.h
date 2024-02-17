@@ -1,6 +1,7 @@
-#define _E extern
+#ifdef THUNKS_A
+#define IN_ASMOBJ 3
+#endif
 #include "glob_tmpl.h"
-#undef _E
 #ifndef THUNKS_A
 #include <glob_asmdefs.h>
 #endif

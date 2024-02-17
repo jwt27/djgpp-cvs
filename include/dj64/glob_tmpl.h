@@ -1,6 +1,7 @@
-#define __ASM(t, v) _E __ASMSYM(t) __##v
-#define __ASM_ARR(t, v, l) _E __ASMARSYM(t, l) __##v
-#define __ASM_FUNC(v) _E __ASMFSYM(void) __##v
+#include <libc/asmobj.h>
+#define __ASM(t, v) EXTERN t ASM(v)
+#define __ASM_ARR(t, v, l) EXTERN t ASM_ARR(v)
+#define __ASM_FUNC(v) EXTERN ASM_F(v)
 #define SEMIC ;
 #include <glob_asm.h>
 #undef __ASM

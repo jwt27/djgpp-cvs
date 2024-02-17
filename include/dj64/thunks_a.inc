@@ -1,11 +1,5 @@
 #include <dj64/thunks_a.h>
 
-#ifndef NO_GLOB_TMPL
-#define _E
-#include "glob_tmpl.h"
-#undef _E
-#endif
-
 #define __S(x) #x
 #define _S(x) __S(x)
 #define __ASM(t, v) { _S(_##v), (void **)&__##v, 0 }
