@@ -31,10 +31,10 @@
 #include <stdint.h>
 typedef struct {
   char magic[16];
-  unsigned long size;
-  unsigned long minstack;
-  unsigned long memory_handle;
-  unsigned long initial_size;
+  uint32_t size;
+  uint32_t minstack;
+  uint32_t memory_handle;
+  uint32_t initial_size;
   unsigned short minkeep;
   unsigned short ds_selector;
   unsigned short ds_segment;
@@ -45,7 +45,7 @@ typedef struct {
   char argv0[16];
   char dpmi_server[16];
   /* standard djgpp stubinfo ends here */
-  unsigned long stubinfo_ver;
+  uint32_t stubinfo_ver;
   int32_t self_fd;
   uint32_t self_offs;
   int32_t self_size;
