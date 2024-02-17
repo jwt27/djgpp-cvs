@@ -135,9 +135,9 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         char *elf;
         void *eh;
         int i, ret = 0;
-        djloudprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
+        djlogprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
-        djloudprintf("data %p(%s)\n", elf, elf);
+        djlogprintf("data %p(%s)\n", elf, elf);
         eh = u->eops->open(elf, size);
         ret = process_athunks(asm_thunks, num_athunks, mem_base, u->eops, eh);
         if (ret)
