@@ -18,6 +18,8 @@ static int recur_cnt;
 struct udisp {
     dj64dispatch_t *disp;
     const struct elf_ops *eops;
+    struct athunk *athunks;
+    int num_athunks;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -98,6 +100,25 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     return ret;
 }
 
+static int process_athunks(struct athunk *at, int nat, uint32_t mem_base,
+	const struct elf_ops *eops, void *eh)
+{
+    int i, ret = 0;
+
+    for (i = 0; i < nat; i++) {
+        struct athunk *t = &at[i];
+        uint32_t off = eops->getsym(eh, t->name);
+        if (off) {
+            *t->ptr = djaddr2ptr(mem_base + off);
+        } else {
+            djloudprintf("symbol %s not resolved\n", t->name);
+            ret = -1;
+            break;
+        }
+    }
+    return ret;
+}
+
 static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
 //    struct udisp *u;
@@ -118,17 +139,12 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         elf = (char *)djaddr2ptr(addr);
         djloudprintf("data %p(%s)\n", elf, elf);
         eh = u->eops->open(elf, size);
-        for (i = 0; i < num_athunks; i++) {
-            struct athunk *t = &asm_thunks[i];
-            uint32_t off = u->eops->getsym(eh, t->name);
-            if (off) {
-                *t->ptr = djaddr2ptr(mem_base + off);
-            } else {
-                djloudprintf("symbol %s not resolved\n", t->name);
-                ret = -1;
-                break;
-            }
-        }
+        ret = process_athunks(asm_thunks, num_athunks, mem_base, u->eops, eh);
+        if (ret)
+            return ret;
+        ret = process_athunks(u->athunks, u->num_athunks, mem_base, u->eops, eh);
+        if (ret)
+            return ret;
         for (i = 0; i < num_cthunks; i++) {
             struct athunk *t = &asm_cthunks[i];
             asm_tab[i] = u->eops->getsym(eh, t->name);
@@ -153,13 +169,16 @@ void dj64_init(void)
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
 dj64cdispatch_t **DJ64_INIT_FN(int handle,
-    dj64dispatch_t *disp, const struct elf_ops *ops)
+    dj64dispatch_t *disp, const struct elf_ops *ops,
+    void *athunks, int num_athunks)
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     u->disp = disp;
     u->eops = ops;
+    u->athunks = athunks;
+    u->num_athunks = num_athunks;
     return dops;
 }
 

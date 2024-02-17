@@ -46,6 +46,8 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   dj64init_once_t *init_once;
   dj64dispatch_t *disp;
   dj64cdispatch_t **cdisp;
+  void *th;
+  int *nth;
   void *dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
@@ -69,13 +71,25 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
     dlclose(dlh);
     return -1;
   }
+  th = dlsym(dlh, "asm_thunks_user");
+  if (!th) {
+    fprintf(stderr, "cannot find asm_thunks_user\n");
+    dlclose(dlh);
+    return -1;
+  }
+  nth = dlsym(dlh, "num_athunks_user");
+  if (!nth) {
+    fprintf(stderr, "cannot find num_athunks_user\n");
+    dlclose(dlh);
+    return -1;
+  }
   rc = init_once(api, api_ver);
   if (rc == -1) {
     fprintf(stderr, _S(DJ64_INIT_ONCE_FN) " failed\n");
     dlclose(dlh);
     return -1;
   }
-  cdisp = init(handle, disp, &eops);
+  cdisp = init(handle, disp, &eops, th, *nth);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     dlclose(dlh);
