@@ -33,6 +33,8 @@ struct dj64_api {
     uint32_t (*ptr2addr)(const uint8_t *ptr);
     void (*print)(int prio, const char *format, va_list ap);
     int (*asm_call)(dpmi_regs *regs, dpmi_paddr pma, uint8_t *sp, uint8_t len);
+    void (*asm_noret)(dpmi_regs *regs, dpmi_paddr pma, uint8_t *sp,
+            uint8_t len);
     uint8_t *(*inc_esp)(uint32_t len);
 };
 #define DJ64_INIT_ONCE_FN dj64init_once

@@ -11,11 +11,10 @@
 #define _RET(r) r
 #define _RET_PTR(r) PTR_DATA(r)
 
-UDWORD DJ64_DISPATCH_FN(int fn, UBYTE *sp, enum DispStat *r_stat, int *r_len)
+UDWORD DJ64_DISPATCH_FN(int fn, UBYTE *sp, int *r_len)
 {
     UDWORD ret;
     UBYTE rsz = 0;
-    enum DispStat stat;
 
 #define _SP sp
 #define _DISP_CMN(f, c) { \
@@ -25,16 +24,11 @@ UDWORD DJ64_DISPATCH_FN(int fn, UBYTE *sp, enum DispStat *r_stat, int *r_len)
 }
 #define _DISPATCH(r, rv, rc, f, ...) _DISP_CMN(f, { \
     rv _r; \
-    stat = DISP_OK; \
     _r = f(__VA_ARGS__); \
     ret = rc(_r); \
-    if (stat == DISP_OK) \
-        rsz = (r); \
-    else \
-        ___assert(ret != ASM_NORET); \
+    rsz = (r); \
 })
 #define _DISPATCH_v(f, ...) _DISP_CMN(f, { \
-    stat = DISP_OK; \
     ret = ASM_OK; \
     f(__VA_ARGS__); \
 })
@@ -48,7 +42,6 @@ UDWORD DJ64_DISPATCH_FN(int fn, UBYTE *sp, enum DispStat *r_stat, int *r_len)
             return 0;
     }
 
-    *r_stat = stat;
     *r_len = rsz;
     return ret;
 }

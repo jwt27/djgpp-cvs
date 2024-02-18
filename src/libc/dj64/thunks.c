@@ -1,3 +1,4 @@
+#include <setjmp.h>
 #include <assert.h>
 #include <djdev64/dj64init.h>
 #include <dj64/thunks_a.h>
@@ -14,6 +15,7 @@
 static dpmi_regs s_regs;
 static unsigned _cs;
 static int recur_cnt;
+static jmp_buf noret_jmp;
 
 struct udisp {
     dj64dispatch_t *disp;
@@ -61,16 +63,14 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
 {
     int len;
     UDWORD res;
-    enum DispStat stat;
-
-//    assert(fdpp);
+    int rc;
 
     s_regs = *regs;
     _cs = esi;
-    res = (libid ? disp : dj64_thunk_call)(fn, sp, &stat, &len);
+    if ((rc = setjmp(noret_jmp)))
+        return (rc == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
+    res = (libid ? disp : dj64_thunk_call)(fn, sp, &len);
     *regs = s_regs;
-    if (stat == DISP_NORET)
-        return (res == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
     switch (len) {
     case 0:
         break;
@@ -200,6 +200,12 @@ uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
     assert(num < num_cthunks);
     pma.selector = _cs;
     pma.offset32 = asm_tab[num];
+    if (flags & _TFLG_NORET) {
+        djlogprintf("NORET call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
+            pma.selector, pma.offset32);
+        dj64api->asm_noret(&s_regs, pma, sp, len);
+        longjmp(noret_jmp, ASM_NORET);
+    }
     djlogprintf("asm call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
             pma.selector, pma.offset32);
     rc = dj64api->asm_call(&s_regs, pma, sp, len);
