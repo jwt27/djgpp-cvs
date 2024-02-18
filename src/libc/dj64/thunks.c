@@ -66,7 +66,6 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
     int rc;
 
     s_regs = *regs;
-    _cs = esi;
     if ((rc = setjmp(noret_jmp)))
         return (rc == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
     res = (libid ? disp : dj64_thunk_call)(fn, sp, &len);
@@ -132,6 +131,8 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         char *elf;
         void *eh;
         int i, ret = 0;
+
+        _cs = esi;
         djlogprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
         djlogprintf("data %p(%s)\n", elf, elf);

@@ -401,7 +401,7 @@ __djgpp_exception_toggle(void)
 {
   __dpmi_paddr except;
   size_t i;
-  
+
   for(i=0; i < EXCEPTION_COUNT; i++)
   {
     __dpmi_get_processor_exception_handler_vector(i, &except);

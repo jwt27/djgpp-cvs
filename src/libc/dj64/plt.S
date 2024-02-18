@@ -15,6 +15,7 @@ ext_nm: .asciz "DJ64"
 
 .macro call_plt
     movl __plt_handle, %eax
+    movl $0, %esi  // reserved
     lcalll *__plt_call
 .endm
 
@@ -25,7 +26,6 @@ ext_nm: .asciz "DJ64"
     movl %esp, %ebp
     pushal
     movl %esp, %edx
-    movl %cs, %esi
     movl $\num, %ecx
     movl $AUX_CORE, %ebx
     call_plt
@@ -201,6 +201,7 @@ plt_init:
     movl __plt_handle, %eax
     movl $AUX_CORE, %ebx
     movl $DL_SET_SYMTAB, %ecx
+    movl %cs, %esi
     lcalll *__plt_ctrl
     popal
     /* free mem */
