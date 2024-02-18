@@ -91,7 +91,7 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     int ret;
     struct udisp *u;
     dpmi_regs *regs = (dpmi_regs *)sp;
-    sp += sizeof(*regs);
+    sp += sizeof(*regs) + 8;  // skip regs, ebp, eip to get stack args
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     recur_cnt++;
@@ -121,11 +121,8 @@ static int process_athunks(struct athunk *at, int nat, uint32_t mem_base,
 
 static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
-//    struct udisp *u;
-//    struct dj64_symtab *st;
     dpmi_regs *regs = (dpmi_regs *)sp;
     assert(handle < MAX_HANDLES);
-//    u = &udisps[handle];
     switch (fn) {
     case DL_SET_SYMTAB: {
         struct udisp *u = &udisps[handle];
