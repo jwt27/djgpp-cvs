@@ -143,13 +143,6 @@ plt_init:
     movl %eax, __plt_ctrl + 4
     movl %esi, __plt_ctrl
 
-    /* free mem */
-    movl $0xd01, %eax
-    movw shm_block + SHM_HANDLE, %di
-    movw shm_block + SHM_HANDLE + 2, %si
-    int $0x31
-    jc 2f
-
     movl %fs:STUBINFO_SELF_SIZE, %ecx
     orl %ecx, %ecx
     jz 2f
@@ -226,6 +219,21 @@ plt_init:
     movb $0x4c, %ah
     int $0x21
     jmp 1b
+
+
+.global plt_done
+plt_done:
+    /* free mem */
+    movl $0xd01, %eax
+    movw shm_block + SHM_HANDLE, %di
+    movw shm_block + SHM_HANDLE + 2, %si
+    int $0x31
+    /* free mem */
+    movl $0xd01, %eax
+    movw shm_block2 + SHM_HANDLE, %di
+    movw shm_block2 + SHM_HANDLE + 2, %si
+    int $0x31
+    ret
 
 .bss
 

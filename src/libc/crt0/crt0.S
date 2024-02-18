@@ -338,8 +338,11 @@ no_memory:
 	.global	___exit
 	.balign	16,,7
 ___exit:
-	movb	4(%esp), %al
+	movb	4+OFF(%esp), %al
 exit:
+	pushl	%eax
+	call	plt_done
+	popl	%eax
 	movb	%al, %cl
 	xorl	%eax,%eax
 	movw	%ax,%fs
