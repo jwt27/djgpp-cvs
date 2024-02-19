@@ -224,6 +224,12 @@ plt_init:
 
 .global plt_done
 plt_done:
+    // close lib
+    movl __plt_handle, %eax
+    movl $PLT_CLOSE_CMD, %ebx
+    movw shm_block + SHM_HANDLE, %di
+    movw shm_block + SHM_HANDLE + 2, %si
+    lcalll *__plt_open
     /* free mem */
     movl $0xd01, %eax
     movw shm_block + SHM_HANDLE, %di
