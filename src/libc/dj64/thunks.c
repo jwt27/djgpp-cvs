@@ -28,6 +28,9 @@ struct udisp {
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
 static const struct dj64_api *dj64api;
+#define MAX_OBJS 50
+#define MAX_RECUR 10
+static uint32_t objs[MAX_RECUR][MAX_OBJS];
 
 void djloudprintf(const char *format, ...)
 {
@@ -69,8 +72,15 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
     jmp_buf noret;
 
     s_regs = *regs;
-    if ((rc = setjmp(noret)))
+    if ((rc = setjmp(noret))) {
+        int i;
+        /* gc lost objects, esp in ABORT case */
+        for (i = 0; i < MAX_OBJS; i++) {
+            if (objs[recur_cnt - 1][i])
+                dj64_rm_dosobj(objs[recur_cnt - 1][i]);
+        }
         return (rc == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
+    }
     noret_jmp = &noret;
     res = (libid ? disp : dj64_thunk_call)(fn, sp, &len);
     *regs = s_regs;
@@ -91,7 +101,8 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
 
 static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
-    int ret, last_objcnt;
+    int ret;
+    int last_objcnt;
     struct udisp *u;
     jmp_buf *saved_noret;
     dpmi_regs *regs = (dpmi_regs *)sp;
@@ -99,6 +110,7 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     sp += sizeof(*regs) + 8;  // skip regs, ebp, eip to get stack args
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
+    assert(recur_cnt < MAX_RECUR);
     recur_cnt++;
     saved_noret = noret_jmp;
     last_objcnt = objcnt;
@@ -224,8 +236,8 @@ uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
     case ASM_CALL_OK:
         break;
     case ASM_CALL_ABORT:
-        djloudprintf("reboot jump, %i\n", recur_cnt);
-//        fdpp_noret(ASM_ABORT);
+        djlogprintf("reboot jump, %i\n", recur_cnt);
+        longjmp(*noret_jmp, ASM_ABORT);
         break;
     }
     return s_regs.eax;
@@ -236,11 +248,23 @@ uint8_t *dj64_clean_stk(size_t len)
     return dj64api->inc_esp(len);
 }
 
+static uint32_t *find_oh(uint32_t addr)
+{
+    int i;
+
+    for (i = 0; i < MAX_OBJS; i++) {
+        if (objs[recur_cnt - 1][i] == addr)
+            return &objs[recur_cnt - 1][i];
+    }
+    return NULL;  // should not happen
+}
+
 uint32_t dj64_obj_init(const void *data, uint16_t len)
 {
     uint32_t ret = mk_dosobj(len);
     pr_dosobj(ret, data, len);
     objcnt++;
+    *find_oh(0) = ret;
     return ret;
 }
 
@@ -248,11 +272,13 @@ void dj64_obj_done(void *data, uint32_t fa, uint16_t len)
 {
     cp_dosobj(data, fa, len);
     rm_dosobj(fa);
+    *find_oh(fa) = 0;
     objcnt--;
 }
 
 void dj64_rm_dosobj(uint32_t fa)
 {
     rm_dosobj(fa);
+    *find_oh(fa) = 0;
     objcnt--;
 }
