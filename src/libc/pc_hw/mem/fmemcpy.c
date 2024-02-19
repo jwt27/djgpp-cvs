@@ -18,6 +18,7 @@
 #include <dpmi.h>
 #include <string.h>
 #include <assert.h>
+#include <crt0.h>
 #include <sys/fmemcpy.h>
 
 static inline int get_segment_base_address(int selector, unsigned *addr)
@@ -33,24 +34,30 @@ void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
 {
     unsigned base;
     void *ptr;
+    int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
 
     get_segment_base_address(dst.selector, &base);
-    __djgpp_nearptr_enable();
+    if (en_dis)
+      __djgpp_nearptr_enable();
     ptr = DATA_PTR(base + dst.offset32 + __djgpp_conventional_base);
     memcpy(ptr, src, len);
-    __djgpp_nearptr_disable();
+    if (en_dis)
+      __djgpp_nearptr_disable();
 }
 
 void fmemcpy2(void *dst, __dpmi_paddr src, unsigned len)
 {
     unsigned base;
     const void *ptr;
+    int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
 
     get_segment_base_address(src.selector, &base);
-    __djgpp_nearptr_enable();
+    if (en_dis)
+      __djgpp_nearptr_enable();
     ptr = DATA_PTR(base + src.offset32 + __djgpp_conventional_base);
     memcpy(dst, ptr, len);
-    __djgpp_nearptr_disable();
+    if (en_dis)
+      __djgpp_nearptr_disable();
 }
 
 /* similar to sys/movedata.h's movedata(), but the src/dst swapped! */
@@ -59,12 +66,15 @@ void fmemcpy12(__dpmi_paddr dst, __dpmi_paddr src, unsigned len)
     unsigned sbase, dbase;
     const void *sptr;
     void *dptr;
+    int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
 
     get_segment_base_address(src.selector, &sbase);
     get_segment_base_address(dst.selector, &dbase);
-    __djgpp_nearptr_enable();
+    if (en_dis)
+      __djgpp_nearptr_enable();
     sptr = DATA_PTR(sbase + src.offset32 + __djgpp_conventional_base);
     dptr = DATA_PTR(dbase + dst.offset32 + __djgpp_conventional_base);
     memcpy(dptr, sptr, len);
-    __djgpp_nearptr_disable();
+    if (en_dis)
+      __djgpp_nearptr_disable();
 }

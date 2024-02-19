@@ -7,6 +7,7 @@
 #include <dj64/util.h>
 #include <libc/djthunks.h>
 #include <dpmi.h>
+#include <sys/nearptr.h>
 #include <stddef.h>
 #include <crt0.h>
 #include "plt.h"
@@ -164,6 +165,7 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 
 void dj64_init(void)
 {
+    __djgpp_nearptr_enable();  // speeds up things considerably
     dosobj_init(dosobj_page, 4096);
 }
 
