@@ -15,6 +15,7 @@
 static dpmi_regs s_regs;
 static unsigned _cs;
 static int recur_cnt;
+static int objcnt;
 static jmp_buf noret_jmp;
 
 struct udisp {
@@ -87,14 +88,16 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
 
 static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
-    int ret;
+    int ret, last_objcnt;
     struct udisp *u;
     dpmi_regs *regs = (dpmi_regs *)sp;
     sp += sizeof(*regs) + 8;  // skip regs, ebp, eip to get stack args
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     recur_cnt++;
+    last_objcnt = objcnt;
     ret = _dj64_call(libid, fn, regs, sp, esi, u->disp);
+    assert(objcnt == last_objcnt);  // make sure no leaks, esp on NORETURN
     recur_cnt--;
     return ret;
 }
@@ -229,6 +232,7 @@ uint32_t dj64_obj_init(const void *data, uint16_t len)
 {
     uint32_t ret = mk_dosobj(len);
     pr_dosobj(ret, data, len);
+    objcnt++;
     return ret;
 }
 
@@ -236,9 +240,11 @@ void dj64_obj_done(void *data, uint32_t fa, uint16_t len)
 {
     cp_dosobj(data, fa, len);
     rm_dosobj(fa);
+    objcnt--;
 }
 
 void dj64_rm_dosobj(uint32_t fa)
 {
     rm_dosobj(fa);
+    objcnt--;
 }
