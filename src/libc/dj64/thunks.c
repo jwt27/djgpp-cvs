@@ -17,7 +17,7 @@ static dpmi_regs s_regs;
 static unsigned _cs;
 static int recur_cnt;
 static int objcnt;
-static jmp_buf noret_jmp;
+static jmp_buf *noret_jmp;
 
 struct udisp {
     dj64dispatch_t *disp;
@@ -66,10 +66,12 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
     int len;
     UDWORD res;
     int rc;
+    jmp_buf noret;
 
     s_regs = *regs;
-    if ((rc = setjmp(noret_jmp)))
+    if ((rc = setjmp(noret)))
         return (rc == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
+    noret_jmp = &noret;
     res = (libid ? disp : dj64_thunk_call)(fn, sp, &len);
     *regs = s_regs;
     switch (len) {
@@ -91,14 +93,18 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
     int ret, last_objcnt;
     struct udisp *u;
+    jmp_buf *saved_noret;
     dpmi_regs *regs = (dpmi_regs *)sp;
+
     sp += sizeof(*regs) + 8;  // skip regs, ebp, eip to get stack args
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     recur_cnt++;
+    saved_noret = noret_jmp;
     last_objcnt = objcnt;
     ret = _dj64_call(libid, fn, regs, sp, esi, u->disp);
     assert(objcnt == last_objcnt);  // make sure no leaks, esp on NORETURN
+    noret_jmp = saved_noret;
     recur_cnt--;
     return ret;
 }
@@ -207,7 +213,7 @@ uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
         djlogprintf("NORET call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
             pma.selector, pma.offset32);
         dj64api->asm_noret(&s_regs, pma, sp, len);
-        longjmp(noret_jmp, ASM_NORET);
+        longjmp(*noret_jmp, ASM_NORET);
     }
     djlogprintf("asm call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
             pma.selector, pma.offset32);
