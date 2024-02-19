@@ -21,7 +21,7 @@
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
 
-static int handle;
+static int handles;
 #define HNDL_MAX 5
 struct dj64handle {
     void *dlobj;
@@ -48,7 +48,13 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   dj64cdispatch_t **cdisp;
   void *th;
   int *nth;
-  void *dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
+  void *dlh;
+
+  if (handles >= HNDL_MAX) {
+    fprintf(stderr, "out of handles\n");
+    return -1;
+  }
+  dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
     return -1;
@@ -89,13 +95,13 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
     dlclose(dlh);
     return -1;
   }
-  cdisp = init(handle, disp, &eops, th, *nth);
+  cdisp = init(handles, disp, &eops, th, *nth);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     dlclose(dlh);
     return -1;
   }
-  h = handle++;
+  h = handles++;
   dlhs[h].dlobj = dlh;
   dlhs[h].cdisp = cdisp[0];
   dlhs[h].ctrl = cdisp[1];
@@ -105,7 +111,7 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
 int djdev64_call(int handle, int libid, int fn, unsigned esi,
         unsigned char *sp)
 {
-    if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
+    if (handle >= handles || !dlhs[handle].dlobj)
         return -1;
     return dlhs[handle].cdisp(handle, libid, fn, esi, sp);
 }
@@ -113,15 +119,17 @@ int djdev64_call(int handle, int libid, int fn, unsigned esi,
 int djdev64_ctrl(int handle, int libid, int fn, unsigned esi,
         unsigned char *sp)
 {
-    if (handle >= HNDL_MAX || !dlhs[handle].dlobj)
+    if (handle >= handles || !dlhs[handle].dlobj)
         return -1;
     return dlhs[handle].ctrl(handle, libid, fn, esi, sp);
 }
 
 void djdev64_close(int handle)
 {
-    if (handle >= HNDL_MAX)
+    if (handle >= handles)
         return;
     dlclose(dlhs[handle].dlobj);
     dlhs[handle].dlobj = NULL;
+    while (handles > 0 && !dlhs[handles - 1].dlobj)
+        handles--;
 }
