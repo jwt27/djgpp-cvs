@@ -70,8 +70,8 @@ $(LIB)/$(LIBN) : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h $(OBJECTS)
 
 $(LIB)/libc.a : libc_tmp.a plt.o
 	cp -f $< libctmp.a
-	$(CROSS_AR) q libctmp.a plt.o
-	$(CROSS_AR) s libctmp.a
+	$(CROSS_ASAR) q libctmp.a plt.o
+	$(CROSS_ASAR) s libctmp.a
 	mv -f libctmp.a $@
 
 $(LIB)/libdj64.so: $(LIB)/$(LIBN)
