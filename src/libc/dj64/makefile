@@ -20,7 +20,7 @@ SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
 OBJECTS = $(SOURCES:.c=.o)
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
-	$(XCPP) -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -m32 -o $@
+	$(XCPP) -CC -g0 $< | $(XASGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 	$(CROSS_STRIP) --strip-debug $@
 
 libc_tmp.a : $(TOP)/makefile.rfo thunk_syms.o
@@ -62,7 +62,6 @@ thunks_c.o: thunk_incs.h thunk_calls.h
 thunks_p.o: thunk_incs.h thunk_asms.h
 
 plt.o : plt.S plt.inc
-	$(XGCC) -m32 $< -c -o $@
 
 $(LIB)/$(LIBN) : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h $(OBJECTS)
 	$(CROSS_GCC) -shared -Wl,-soname=$(LIBN) -Wl,-Bsymbolic -o $@ \

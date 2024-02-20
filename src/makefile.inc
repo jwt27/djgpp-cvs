@@ -69,7 +69,7 @@ CPPFLAGS += -DDJ64 -D_IN_DJ64
 ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
 XCPP = $(CROSS_GCC) -I . -I $(TOP)/../../include $(CPPFLAGS) -E
-XASGCC = $(CROSS_CPP) -E -P -I $(TOP)/../../include -U __ELF__
+XASGCC = $(CROSS_ASGCC) -I $(TOP)/../../include -m32
 XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
 XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
 else
@@ -97,10 +97,10 @@ MISC = $(TOP)/../misc.exe
 	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 %.o : %.S
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	$(XGCC) -m32 -o $@ -c $<
+	$(XASGCC) -o $@ -c $<
 %.o : %.s
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	$(XGCC) -m32 -x assembler-with-cpp -o $@ -c $<
+	$(XASGCC) -x assembler-with-cpp -o $@ -c $<
 
 %.i : %.c
 	$(XGCC) -c $< -E > $@

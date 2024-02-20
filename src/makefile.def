@@ -30,11 +30,10 @@ CROSS_GCC = gcc
 CROSS_CPP = cpp
 CROSS_AR = ar
 CROSS_AS = as
+CROSS_ASGCC = i686-linux-gnu-gcc
 CROSS_LD = ld
 CROSS_STRIP = strip
 CROSS_BISON = bison
-CROSS_PREFIX = i586-pc-msdosdjgpp-
-CROSS_AS = $(CROSS_PREFIX)as
 
 # For building native programs (hostbin/*); assumes GNU versions
 GCC = gcc -g

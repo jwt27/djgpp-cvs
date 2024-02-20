@@ -10,6 +10,8 @@ Build-Depends:
     bash,
     binutils,
     binutils-x86-64-linux-gnu,
+    gcc-i686-linux-gnu,
+    gcc,
     universal-ctags,
     pkg-config,
     libelf-dev,
