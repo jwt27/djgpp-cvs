@@ -76,7 +76,7 @@ void	ScreenVisualBell(void);
 
 #ifndef __dj_ENFORCE_FUNCTION_CALLS
 
-#include <inlines/pc.h>
+//#include <inlines/pc.h>
 
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 
