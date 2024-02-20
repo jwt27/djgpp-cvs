@@ -33,7 +33,7 @@ TF=/tmp/tagsxx
 TL=/tmp/a.so
 set -e
 
-ld -melf_i386 -shared -Bsymbolic -o $TL --whole-archive "$1" 2>/dev/null
+i686-linux-gnu-ld -melf_i386 -shared -Bsymbolic -o $TL --whole-archive "$1" 2>/dev/null
 shift
 PRUNES="-name libm -prune -o -name machine -prune"
 PRUNES="$PRUNES -o -name string.h -prune -o -name in.h -prune"
