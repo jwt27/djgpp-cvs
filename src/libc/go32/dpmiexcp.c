@@ -618,8 +618,8 @@ __djgpp_set_ctrl_c(int enable_sigs)
 
    Note that we invoke here a PM Int 21, which sets the PM selector of
    our PSP.  This is _not_ a call to __dpmi_int ! */
-
-void
+#ifndef DJ64
+static void
 __maybe_fix_w2k_ntvdm_bug(void)
 {
   if (_os_trueversion == 0x532) /* Windows NT, 2000 or XP? */
@@ -643,11 +643,14 @@ __maybe_fix_w2k_ntvdm_bug(void)
                   : "ax", "bx" );                 /* regs */
   }
 }
+#endif
 
 void
 _exit(int status)
 {
+#ifndef DJ64
   __maybe_fix_w2k_ntvdm_bug();
+#endif
   /* If we are exiting due to an FP exception, the next program run in the
      same DOS box on Windows crashes during startup.  Clearing the 80x87
      seems to prevent this, at least in some cases.  We only do that if a
