@@ -8,8 +8,6 @@ Build-Depends:
     thunk-gen,
     sed,
     bash,
-    binutils,
-    binutils-x86-64-linux-gnu,
     gcc-i686-linux-gnu,
     gcc,
     universal-ctags,
