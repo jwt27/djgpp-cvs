@@ -21,9 +21,13 @@ static const char env_delim = '~';
 static int __inline__
 enough_stack_p(void)
 {
+#ifdef DJ64
+  return 1;
+#else
   unsigned sp;
   __asm__ __volatile__ ("movl %%esp,%k0\n" : "=r" (sp) : );
   return (int) (sp - __djgpp_stack_limit) > 4*1024;
+#endif
 }
 
 int
