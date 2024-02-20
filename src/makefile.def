@@ -33,6 +33,7 @@ CROSS_AS = as
 CROSS_ASGCC = i686-linux-gnu-gcc
 CROSS_LD = ld
 CROSS_STRIP = strip
+CROSS_ASSTRIP = i686-linux-gnu-strip
 CROSS_BISON = bison
 
 # For building native programs (hostbin/*); assumes GNU versions

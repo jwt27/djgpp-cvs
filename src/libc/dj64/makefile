@@ -21,7 +21,7 @@ OBJECTS = $(SOURCES:.c=.o)
 
 thunk_syms.o: thunk_syms.c asm_incsn.h
 	$(XCPP) -CC -g0 $< | $(XASGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
-	$(CROSS_STRIP) --strip-debug $@
+	$(CROSS_ASSTRIP) --strip-debug $@
 
 libc_tmp.a : $(TOP)/makefile.rfo thunk_syms.o
 	@-$(MISC) rm $@
