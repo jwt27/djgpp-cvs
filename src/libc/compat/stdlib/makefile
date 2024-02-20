@@ -13,7 +13,6 @@ SRC += getpass.c
 SRC += itoa.c
 SRC += putenv.c
 SRC += random.c
-SRC += stkavail.c
 SRC += swab.c
 SRC += xfree.c
 SRC += xmalloc.c

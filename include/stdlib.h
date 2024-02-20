@@ -144,7 +144,6 @@ long            mrand48(void);
 unsigned long   nrand48(unsigned short _state[3]);
 unsigned short *seed48(unsigned short _state_seed[3]);
 void            srand48(long _seedval);
-int		stackavail(void);
 long double	_strtold(const char *_s, char **_endptr);
 void		swab(const void *_from, void *_to, int _nbytes);
 void *		valloc (size_t _amt);
