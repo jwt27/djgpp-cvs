@@ -5,6 +5,6 @@ TOP=../..
 
 SRC += clock.c
 SRC += uclock.c
-SRC += rdtsc.c
+AS_SRC += rdtsc.S
 
 include $(TOP)/../makefile.inc

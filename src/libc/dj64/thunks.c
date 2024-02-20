@@ -232,7 +232,7 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
+uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
     int rc;
     dpmi_paddr pma;
@@ -258,7 +258,7 @@ uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
         longjmp(*noret_jmp, ASM_ABORT);
         break;
     }
-    return s_regs.eax;
+    return s_regs.eax | ((uint64_t)s_regs.edx << 32);
 }
 
 uint8_t *dj64_clean_stk(size_t len)

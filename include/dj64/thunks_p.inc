@@ -24,6 +24,8 @@
 #define UBYTE uint8_t
 #define UDWORD uint32_t
 #define DWORD int32_t
+#define UQWORD uint64_t
+#define QWORD int64_t
 #define UWORD uint16_t
 #define WORD int16_t
 #define VOID void

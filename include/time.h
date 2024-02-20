@@ -123,18 +123,6 @@ uclock_t	uclock(void);
 
 unsigned long long _rdtsc(void);
 
-_EXTERN_INLINE unsigned long long
-_rdtsc(void)
-{
-#if ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (__GNUC__ > 4))
-  return __builtin_ia32_rdtsc();
-#else
-  unsigned long long result;
-  __asm__ __volatile__ ("rdtsc" : "=A"(result) );
-  return result;
-#endif
-}
-
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */

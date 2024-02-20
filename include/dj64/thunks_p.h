@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-uint32_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags);
+uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags);
 uint8_t *dj64_clean_stk(size_t len);
 uint32_t dj64_obj_init(const void *data, uint16_t len);
 void dj64_obj_done(void *data, uint32_t fa, uint16_t len);
