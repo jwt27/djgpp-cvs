@@ -29,6 +29,7 @@ ifeq ($(CROSS_BUILD),0)
 CROSS_GCC = gcc
 CROSS_CPP = cpp
 CROSS_AR = ar
+CROSS_ASAR = i686-linux-gnu-ar
 CROSS_AS = as
 CROSS_ASGCC = i686-linux-gnu-gcc
 CROSS_LD = ld

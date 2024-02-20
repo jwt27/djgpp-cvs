@@ -25,8 +25,8 @@ thunk_syms.o: thunk_syms.c asm_incsn.h
 
 libc_tmp.a : $(TOP)/makefile.rfo thunk_syms.o
 	@-$(MISC) rm $@
-	$(CROSS_AR) q $@ $(addprefix ../,$(file < $<)) thunk_syms.o
-	$(CROSS_AR) s $@
+	$(CROSS_ASAR) q $@ $(addprefix ../,$(file < $<)) thunk_syms.o
+	$(CROSS_ASAR) s $@
 
 asm_incs.h:
 	$(GA) 0 $(TOP)/../../include >$@
