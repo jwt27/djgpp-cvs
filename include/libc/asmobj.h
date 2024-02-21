@@ -35,7 +35,7 @@
 */
 
 extern unsigned ____djgpp_base_address;
-#define _DP(l) djaddr2ptr(*(int *)djaddr2ptr(____djgpp_base_address) + (l))
+#define _DP(l) djaddr2ptr(*(unsigned *)djaddr2ptr(____djgpp_base_address) + (l))
 #define ASM_P(t, x) unsigned __##x;/*
 */DEFINE(x, ((t *)_DP(*(unsigned *)djaddr2ptr(__##x))))/*
 */
@@ -45,7 +45,7 @@ extern unsigned ____djgpp_base_address;
 */
 
 #define ASM_F(x) unsigned __##x;/*
-*/DEFINE(x, (__##x - *(int *)djaddr2ptr(____djgpp_base_address)))/*
+*/DEFINE(x, (__##x - *(unsigned *)djaddr2ptr(____djgpp_base_address)))/*
 */
 
 #define EXTERN extern
