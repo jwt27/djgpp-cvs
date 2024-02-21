@@ -26,7 +26,7 @@
 
 #ifndef IN_ASMOBJ
 
-#define ASM(x) *__##x;/*
+#define ASM(t, x) t *__##x;/*
 */DEFINE(x, (*__##x))/*
 */
 
@@ -64,7 +64,7 @@ extern int *____djgpp_base_address;
 #if IN_ASMOBJ == 3
 
 #undef ASM
-#define ASM(x) *__##x
+#define ASM(t, x) t *__##x
 
 #undef ASM_F
 #define ASM_F(x) unsigned char *__##x

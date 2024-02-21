@@ -9,7 +9,7 @@ gen_incsn() {
 }
 
 gen_asyms() {
-    egrep -R --include="*.h" " ASM\(| ASM_ARR\(" . "$1" | grep :EXTERN | \
+    egrep -R --include="*.h" " ASM_ARR\(" . "$1" | grep :EXTERN | \
 	sed -E 's/.+EXTERN (.+) ASM.*\((.+)\);.*/__ASM\(\1, \2) SEMIC/' | sort | uniq
     egrep -R --include="*.h" " ASM_F\(" . "$1" | grep :EXTERN | \
 	sed -E 's/.+EXTERN ASM.*\((.+)\);.*/__ASM_FUNC\(\1) SEMIC/' | sort | uniq
@@ -17,6 +17,8 @@ gen_asyms() {
 	sed -E 's/.+\((.+), (.+)\);.*/__ASM_PTR\(\1, \2\) SEMIC/' | sort | uniq
     egrep -R --include="*.h" " ASM_N\(" . "$1" | grep :EXTERN | \
 	sed -E 's/.+EXTERN (.+) ASM.*\((.+)\);.*/__ASM_N\(\1, \2) SEMIC/' | sort | uniq
+    egrep -R --include="*.h" " ASM\(" . "$1" | grep :EXTERN | \
+	sed -E 's/.+\((.+), (.+)\);.*/__ASM\(\1, \2\) SEMIC/' | sort | uniq
 }
 
 case "$1" in

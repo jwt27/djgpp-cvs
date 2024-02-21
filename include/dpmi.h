@@ -24,7 +24,7 @@ extern "C" {
 
 //#ifndef _POSIX_SOURCE
 
-EXTERN unsigned short ASM(__dpmi_error);
+EXTERN ASM(unsigned short, __dpmi_error);
 
 typedef struct {
   unsigned short offset16;
@@ -359,7 +359,7 @@ int __djgpp_map_physical_memory(void *our_addr, ULONG32 num_bytes,
 #endif
 
 #ifdef __LP64__
-EXTERN int ASM(__djgpp_base_address);
+EXTERN ASM(int, __djgpp_base_address);
 #define DATA_PTR(l) ((char *)djaddr2ptr(__djgpp_base_address + (l)))
 #define PTR_DATA(p) (djptr2addr(p) - __djgpp_base_address)
 #else

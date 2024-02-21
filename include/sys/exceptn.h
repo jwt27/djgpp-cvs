@@ -25,41 +25,41 @@ extern "C" {
 #include <setjmp.h>
 #include <dpmi.h>
 
-EXTERN unsigned short ASM(__djgpp_our_DS);
-EXTERN unsigned short ASM(__djgpp_app_DS);	/* Data selector invalidated by HW ints */
-EXTERN unsigned short ASM(__djgpp_ds_alias);	/* Data selector always valid */
-EXTERN unsigned short ASM(__djgpp_dos_sel);	/* Linear mem selector copy in locked mem */
-EXTERN short ASM(__excep_ds_alias);
+EXTERN ASM(unsigned short, __djgpp_our_DS);
+EXTERN ASM(unsigned short, __djgpp_app_DS);	/* Data selector invalidated by HW ints */
+EXTERN ASM(unsigned short, __djgpp_ds_alias);	/* Data selector always valid */
+EXTERN ASM(unsigned short, __djgpp_dos_sel);	/* Linear mem selector copy in locked mem */
+EXTERN ASM(short, __excep_ds_alias);
 EXTERN ASM_F(__djgpp_cbrk_hdlr);
 EXTERN ASM_F(__djgpp_exception_table);
 EXTERN ASM_F(__djgpp_kbd_hdlr);
 EXTERN ASM_F(__djgpp_kbd_hdlr_pc98);
-EXTERN unsigned ASM(_stklen);
-EXTERN unsigned ASM(__djgpp_stack_limit);
+EXTERN ASM(unsigned, _stklen);
+EXTERN ASM(unsigned, __djgpp_stack_limit);
 
 /* These are all defined in exceptn.S and only used here */
-EXTERN __dpmi_paddr ASM(__djgpp_old_kbd);
-EXTERN __dpmi_paddr ASM(__djgpp_old_timer);
+EXTERN ASM(__dpmi_paddr, __djgpp_old_kbd);
+EXTERN ASM(__dpmi_paddr, __djgpp_old_timer);
 
 /* Hardware Interrupt Flags:
 
    1 = Disable INTR and QUIT keys (Ctrl-C and Ctrl-\);
    2 = Count Ctrl-Break (don't kill);
    4 = IRET from our timer interrupt handler, don't chain */
-EXTERN unsigned short ASM(__djgpp_hwint_flags);
-EXTERN unsigned ASM(__djgpp_cbrk_count);	/* Count of CTRL-BREAK hits */
+EXTERN ASM(unsigned short, __djgpp_hwint_flags);
+EXTERN ASM(unsigned, __djgpp_cbrk_count);	/* Count of CTRL-BREAK hits */
 extern int __djgpp_exception_inprog;	/* Nested exception count */
-EXTERN int ASM(__djgpp_hw_lock_start);
-EXTERN int ASM(__djgpp_hw_lock_end);
-EXTERN int ASM(__djgpp_iret);
-EXTERN int ASM(__djgpp_i24);
-EXTERN unsigned ASM(__djgpp_stack_top);
-EXTERN int ASM(__djgpp_npx_hdlr);
-EXTERN unsigned short ASM(__djgpp_sigint_key);  /* key that raises SIGINT */
-EXTERN unsigned short ASM(__djgpp_sigquit_key); /* key that raises SIGQUIT */
-EXTERN unsigned short ASM(__djgpp_sigint_mask); /* kb mask for SIGINT key */
-EXTERN unsigned short ASM(__djgpp_sigquit_mask);/* kb mask for SIGQUIT key */
-EXTERN unsigned ASM(exception_stack);
+EXTERN ASM(int, __djgpp_hw_lock_start);
+EXTERN ASM(int, __djgpp_hw_lock_end);
+EXTERN ASM(int, __djgpp_iret);
+EXTERN ASM(int, __djgpp_i24);
+EXTERN ASM(unsigned, __djgpp_stack_top);
+EXTERN ASM(int, __djgpp_npx_hdlr);
+EXTERN ASM(unsigned short, __djgpp_sigint_key);  /* key that raises SIGINT */
+EXTERN ASM(unsigned short, __djgpp_sigquit_key); /* key that raises SIGQUIT */
+EXTERN ASM(unsigned short, __djgpp_sigint_mask); /* kb mask for SIGINT key */
+EXTERN ASM(unsigned short, __djgpp_sigquit_mask);/* kb mask for SIGQUIT key */
+EXTERN ASM(unsigned, exception_stack);
 #define djgpp_exception_stack exception_stack
 
 void __djgpp_exception_toggle(void);

@@ -27,8 +27,8 @@ extern "C" {
 
 int __djgpp_nearptr_enable(void);	/* Returns 0 if feature not avail */
 void __djgpp_nearptr_disable(void);	/* Enables protection */
-EXTERN int ASM(__djgpp_selector_limit);	/* Limit on CS and on DS if prot */
-EXTERN int ASM(__djgpp_base_address);	/* Used in calculation below */
+EXTERN ASM(int, __djgpp_selector_limit);	/* Limit on CS and on DS if prot */
+EXTERN ASM(int, __djgpp_base_address);	/* Used in calculation below */
 
 #define __djgpp_conventional_base (-__djgpp_base_address)
 

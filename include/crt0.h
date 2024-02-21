@@ -66,7 +66,7 @@ char **__crt0_glob_function(char *_arg);
  *
 \*****************************************************************************/
 
-EXTERN int ASM(_crt0_startup_flags);
+EXTERN ASM(int, _crt0_startup_flags);
 EXTERN unsigned char ASM_ARR(dosobj_page);
 
 /* If set, argv[0] is left in whatever case it was.  If not set, all

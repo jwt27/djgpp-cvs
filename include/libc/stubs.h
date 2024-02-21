@@ -98,9 +98,9 @@ int __brk(void *_heaptop);
 void *__sbrk(int delta);
 long double __modfl(long double _x, long double *_pint);
 
-EXTERN unsigned ASM(__djgpp_timer_countdown);
-EXTERN __dpmi_paddr ASM(__djgpp_old_timer);
-EXTERN int ASM(__djgpp_timer_hdlr);
+EXTERN ASM(unsigned, __djgpp_timer_countdown);
+EXTERN ASM(__dpmi_paddr, __djgpp_old_timer);
+EXTERN ASM(int, __djgpp_timer_hdlr);
 
 #endif
 #endif /* !_POSIX_SOURCE */
