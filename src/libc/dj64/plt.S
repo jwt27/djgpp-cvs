@@ -19,7 +19,7 @@
 #include "stubinfo.h"
 #include "plt.h"
 
-.text
+.bss
 
 __plt_open: .quad 0
 PLT_OPEN_CMD = 0
@@ -29,7 +29,23 @@ __plt_ctrl: .quad 0
 __plt_handle: .long 0
 AUX_CORE = 0
 AUX_USER = 1
+
+sel: .word 0
+SHM_REQ_LEN = 0
+SHM_RET_LEN = 4
+SHM_HANDLE = 8
+SHM_LINEAR = 0xc
+SHM_NAME = 0x10
+shm_block: .fill 0x1c, 1, 0
+shm_block2: .fill 0x1c, 1, 0
+handle: .long 0
+maddr: .long 0
+
+.data
+
 ext_nm: .asciz "DJ64"
+
+.text
 
 .macro call_plt
     movl __plt_handle, %eax
@@ -59,17 +75,6 @@ dj64_plt_call:
     movl $AUX_USER, %ebx
     call_plt
     ret
-
-sel: .word 0
-SHM_REQ_LEN = 0
-SHM_RET_LEN = 4
-SHM_HANDLE = 8
-SHM_LINEAR = 0xc
-SHM_NAME = 0x10
-shm_block: .fill 0x1c, 1, 0
-shm_block2: .fill 0x1c, 1, 0
-handle: .long 0
-maddr: .long 0
 
 .global plt_init
 plt_init:
