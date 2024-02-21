@@ -148,7 +148,7 @@ static int process_athunks(struct athunk *at, int nat, uint32_t mem_base,
         struct athunk *t = &at[i];
         uint32_t off = eops->getsym(eh, t->name);
         if (off) {
-            *t->ptr = djaddr2ptr(mem_base + off);
+            *t->ptr = mem_base + off;
         } else {
             djloudprintf("symbol %s not resolved\n", t->name);
             ret = -1;

@@ -2,7 +2,7 @@
 
 struct athunk {
     const char *name;
-    void **ptr;
+    unsigned *ptr;
     unsigned flags;
 };
 

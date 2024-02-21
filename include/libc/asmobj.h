@@ -26,27 +26,26 @@
 
 #ifndef IN_ASMOBJ
 
-#define ASM(t, x) t *__##x;/*
-*/DEFINE(x, (*__##x))/*
+#define ASM(t, x) unsigned __##x;/*
+*/DEFINE(x, (*(t *)djaddr2ptr(__##x)))/*
 */
 
-#define ASM_N(t, x) t *__##x;/*
-*/DEFINE(x, (*__##x))/*
+#define ASM_N(t, x) unsigned __##x;/*
+*/DEFINE(x, (*(t *)djaddr2ptr(__##x)))/*
 */
 
-extern int *____djgpp_base_address;
-#define _DP(l) djaddr2ptr(*____djgpp_base_address + (l))
-#define ASM_P(t, x) unsigned *__##x;/*
-*/DEFINE(x, ((t *)_DP(*__##x)))/*
+extern unsigned ____djgpp_base_address;
+#define _DP(l) djaddr2ptr(*(int *)djaddr2ptr(____djgpp_base_address) + (l))
+#define ASM_P(t, x) unsigned __##x;/*
+*/DEFINE(x, ((t *)_DP(*(unsigned *)djaddr2ptr(__##x))))/*
 */
 
-#define ASM_ARR(t, x) t *__##x;/*
-*/DEFINE(x, __##x)/*
+#define ASM_ARR(t, x) unsigned __##x;/*
+*/DEFINE(x, (t *)djaddr2ptr(__##x))/*
 */
 
-#define _PD(p) (djptr2addr(p) - *____djgpp_base_address)
-#define ASM_F(x) unsigned char *__##x;/*
-*/DEFINE(x, _PD(__##x))/*
+#define ASM_F(x) unsigned __##x;/*
+*/DEFINE(x, (__##x - *(int *)djaddr2ptr(____djgpp_base_address)))/*
 */
 
 #define EXTERN extern
@@ -58,25 +57,25 @@ extern int *____djgpp_base_address;
 #endif
 
 #if IN_ASMOBJ == 2
-#define ASM_N(t, x) t *__##x
+#define ASM_N(t, x) unsigned __##x
 #endif
 
 #if IN_ASMOBJ == 3
 
 #undef ASM
-#define ASM(t, x) t *__##x
+#define ASM(t, x) unsigned __##x
 
 #undef ASM_F
-#define ASM_F(x) unsigned char *__##x
+#define ASM_F(x) unsigned __##x
 
 #undef ASM_N
-#define ASM_N(t, x) extern t *__##x
+#define ASM_N(t, x) extern unsigned __##x
 
 #undef ASM_P
-#define ASM_P(t, x) unsigned *__##x
+#define ASM_P(t, x) unsigned __##x
 
 #undef ASM_ARR
-#define ASM_ARR(t, x) t *__##x
+#define ASM_ARR(t, x) unsigned __##x
 
 #endif
 

@@ -26,7 +26,7 @@
 
 #define __S(x) #x
 #define _S(x) __S(x)
-#define _ASM(v) { _S(_##v), (void **)&__##v, 0 }
+#define _ASM(v) { _S(_##v), &__##v, 0 }
 #define __ASM(t, v) _ASM(v)
 #define __ASM_PTR(t, v) _ASM(v)
 #define __ASM_ARR(t, v) _ASM(v)
