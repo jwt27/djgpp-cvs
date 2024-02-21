@@ -118,11 +118,11 @@ into another language, under the above conditions for modified versions.
 @cindex reentrancy
 @cindex @code{matherr} and reentrancy
 When a libm function detects an exceptional case, @code{errno} may be
-set, the @code{matherr} function may be called, and a error message 
+set, the @code{matherr} function may be called, and a error message
 may be written to the standard error stream.  This behavior may not
 be reentrant.
 
-@c The exact behavior depends on the currently selected error handling 
+@c The exact behavior depends on the currently selected error handling
 @c mode (IEEE, POSIX, X/Open, or SVID).
 
 With reentrant C libraries like the Cygnus C library, @code{errno} is

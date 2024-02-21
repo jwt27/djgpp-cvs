@@ -11,7 +11,7 @@ unsigned short _my_ss();
 @subheading Description
 
 Returns the current @code{SS}.  This is useful for setting up interrupt
-vectors and such. 
+vectors and such.
 
 @subheading Return Value
 

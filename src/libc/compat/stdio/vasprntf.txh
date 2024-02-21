@@ -14,7 +14,7 @@ int vasprintf(char **bufferp, const char *format, va_list ap);
 Sends formatted output from the arguments in (@var{ap}) including
 the terminating null byte to the allocated buffer and returns
 a pointer to it via the first parameter *@var{bufferp}.  This
-memory must be returned to the heap with @code{free} (@pxref{free}). 
+memory must be returned to the heap with @code{free} (@pxref{free}).
 This function is analog of @code{vsprintf()} (@pxref{vsprintf}).
 
 @subheading Return Value

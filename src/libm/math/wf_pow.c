@@ -8,12 +8,12 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
-/* 
+/*
  * wrapper powf(x,y) return x**y
  */
 #include <float.h>
@@ -42,13 +42,13 @@
 	uz.f = z;
 	if(_LIB_VERSION == _IEEE_|| isnanf(uy.l)) return z;
 	if(isnanf(ux.l)) {
-	    if(y==(float)0.0) 
+	    if(y==(float)0.0)
 	        /* powf(NaN,0.0) */
 	        return (float)__kernel_standard((double)x,(double)y,142);
-	    else 
+	    else
 		return z;
 	}
-	if(x==(float)0.0){ 
+	if(x==(float)0.0){
 	    if(y==(float)0.0)
 	        /* powf(0.0,0.0) */
 	        return (float)__kernel_standard((double)x,(double)y,120);
@@ -62,11 +62,11 @@
 	        if(isnanf(uz.l))
 		    /* powf neg**non-int */
 	            return (float)__kernel_standard((double)x,(double)y,124);
-	        else 
+	        else
 		    /* powf overflow */
 	            return (float)__kernel_standard((double)x,(double)y,121);
 	    }
-	} 
+	}
 	if(z < FLT_MIN &&finitef(ux.l)&&finitef(uy.l))
 	    /* powf underflow */
 	    return (float)__kernel_standard((double)x,(double)y,122);

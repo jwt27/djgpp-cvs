@@ -17,7 +17,7 @@ This function is almost like @code{_strtold(string, NULL)} (@pxref{_strtold}).
 
 @subheading Return Value
 
-The equivalent value, or zero if the string does not represent a number. 
+The equivalent value, or zero if the string does not represent a number.
 
 @subheading Portability
 

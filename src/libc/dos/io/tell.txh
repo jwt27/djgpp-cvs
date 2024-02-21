@@ -10,7 +10,7 @@ off_t tell(int file);
 
 @subheading Description
 
-This function returns the location of the file pointer for @var{file}. 
+This function returns the location of the file pointer for @var{file}.
 
 @subheading Return Value
 

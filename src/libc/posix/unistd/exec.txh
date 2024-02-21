@@ -29,12 +29,12 @@ int execvpe(const char *path, char *const argv[], char *const envp[]);
 
 These functions operate by calling @code{spawn*} with a type of
 @code{P_OVERLAY}.  Refer to @code{spawn*} (@pxref{spawn*})
-for a full description. 
+for a full description.
 
 @subheading Return Value
 
 If successful, these functions do not return.  If there is an error,
-these functions return -1 and set @code{errno} to indicate the error. 
+these functions return -1 and set @code{errno} to indicate the error.
 
 @subheading Portability
 

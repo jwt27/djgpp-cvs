@@ -44,7 +44,7 @@
  * zeroeth element of the array is the type of R.N.G. being used (small
  * integer); the remainder of the array is the state information for the
  * R.N.G.  Thus, 32 bytes of state information will give 7 longs worth of
- * state information, which will allow a degree seven polynomial.  (Note: the 
+ * state information, which will allow a degree seven polynomial.  (Note: the
  * zeroeth word of state information also has some other information stored
  * in it -- see setstate() for details).
  * The random number generation technique is a linear feedback shift register
@@ -120,13 +120,13 @@ static int seps[MAX_TYPES] = { SEP_0, SEP_1, SEP_2, SEP_3, SEP_4 };
  */
 
 static unsigned long randtbl[DEG_3 + 1] = { TYPE_3,
-			    0x9a319039U, 0x32d9c024U, 0x9b663182U, 0x5da1f342U, 
-			    0xde3b81e0U, 0xdf0a6fb5U, 0xf103bc02U, 0x48f340fbU, 
-			    0x7449e56bU, 0xbeb1dbb0U, 0xab5c5918U, 0x946554fdU, 
-			    0x8c2e680fU, 0xeb3d799fU, 0xb11ee0b7U, 0x2d436b86U, 
-			    0xda672e2aU, 0x1588ca88U, 0xe369735dU, 0x904f35f7U, 
-			    0xd7158fd6U, 0x6fa6f051U, 0x616e6b96U, 0xac94efdcU, 
-			    0x36413f93U, 0xc622c298U, 0xf5a42ab8U, 0x8a88d77bU, 
+			    0x9a319039U, 0x32d9c024U, 0x9b663182U, 0x5da1f342U,
+			    0xde3b81e0U, 0xdf0a6fb5U, 0xf103bc02U, 0x48f340fbU,
+			    0x7449e56bU, 0xbeb1dbb0U, 0xab5c5918U, 0x946554fdU,
+			    0x8c2e680fU, 0xeb3d799fU, 0xb11ee0b7U, 0x2d436b86U,
+			    0xda672e2aU, 0x1588ca88U, 0xe369735dU, 0x904f35f7U,
+			    0xd7158fd6U, 0x6fa6f051U, 0x616e6b96U, 0xac94efdcU,
+			    0x36413f93U, 0xc622c298U, 0xf5a42ab8U, 0x8a88d77bU,
 					 0xf5ad9d0eU, 0x8999220bU, 0x27fb47b9U };
 
 /*

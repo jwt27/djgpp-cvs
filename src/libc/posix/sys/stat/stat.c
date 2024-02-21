@@ -25,10 +25,10 @@ int
 stat(const char *path, struct stat *statbuf)
 {
    char name_copy[FILENAME_MAX];
-   
+
    if (!__solve_symlinks(path, name_copy))
       return -1;
-   
+
    return lstat(name_copy, statbuf); /* Real file */
 }
 

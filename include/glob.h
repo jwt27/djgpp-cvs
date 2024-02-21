@@ -24,7 +24,7 @@ extern "C" {
 __DJ_size_t
 #define _SIZE_T
 #endif
-  
+
 typedef struct {
   size_t gl_pathc;
   char **gl_pathv;

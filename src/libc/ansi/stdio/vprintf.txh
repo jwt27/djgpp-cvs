@@ -11,7 +11,7 @@ int vprintf(const char *format, va_list arguments);
 
 @subheading Description
 
-Sends formatted output from the @var{arguments} to @code{stdout}. 
+Sends formatted output from the @var{arguments} to @code{stdout}.
 @xref{printf}. @xref{vfprintf}.
 
 @subheading Return Value

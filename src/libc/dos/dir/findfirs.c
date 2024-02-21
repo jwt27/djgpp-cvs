@@ -91,7 +91,7 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
         __dpmi_int(0x21, &r);
         r.x.ax = 0;
       }
-        
+
       ffblk->lfn_handle = r.x.ax;
       t1 = _Win32_to_DOS(ffblk32.fd_ctime);
       ffblk->lfn_ctime = t1;
@@ -108,8 +108,8 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
   {
 
     #define _sizeof_dos_ffblk 44
-    /* There will be a _sizeof_dos_ffblk character return value from findfirst 
-       in the DTA.  Put the file name before this.  First set the DTA to be 
+    /* There will be a _sizeof_dos_ffblk character return value from findfirst
+       in the DTA.  Put the file name before this.  First set the DTA to be
        transfer buffer. */
 
     r.x.dx = __tb_offset + pathlen;

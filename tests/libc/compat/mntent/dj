@@ -6,7 +6,7 @@
         /* The pointer to DPB is in DS:DX.  The number of FAT copies is at
            offset 8 in the DPB.  */
 !       char fat_copies = _farpeekb(dos_mem_base, MK_FOFF(r.x.ds, r.x.bx) + 8);
-  
+
         return fat_copies == 1;
       }
 --- 321,327 ----
@@ -14,17 +14,17 @@
         /* The pointer to DPB is in DS:DX.  The number of FAT copies is at
            offset 8 in the DPB.  */
 !       char fat_copies = _farpeekb(dos_mem_base, MK_FOFF(r.x.ds, r.x.dx) + 8);
-  
+
         return fat_copies == 1;
       }
 ***************
 *** 357,368 ****
     /* Need TRUE DOS version. */
     unsigned short true_dos_version = _get_dos_version(1);
-  
+
     drive_number = 0;
     skip_drive_b = 0;
-  
+
     /* Get and save the pointer to the CDS array and the size of
        the array element.  This is version-dependent.  */
 !   if (true_dos_version < 0x0300) /* CDS not supported for v2.x */
@@ -34,13 +34,13 @@
 --- 357,372 ----
     /* Need TRUE DOS version. */
     unsigned short true_dos_version = _get_dos_version(1);
-  
+
 +   dos_mem_base = _go32_info_block.selector_for_linear_memory;
 +   our_mem_base = _my_ds();
-+ 
++
     drive_number = 0;
     skip_drive_b = 0;
-  
+
     /* Get and save the pointer to the CDS array and the size of
        the array element.  This is version-dependent.  */
 !   if (true_dos_version < 0x0300 /* CDS not supported for v2.x */
@@ -53,10 +53,10 @@
     if (cds_elsize > 0)
       {
         unsigned long cds_address_ptr;
-- 
+-
 -       dos_mem_base = _go32_info_block.selector_for_linear_memory;
 -       our_mem_base = _my_ds();
-        
+
         r.h.ah = 0x52;    /* DOS Get List of Lists call */
         __dpmi_int(0x21, &r);
 --- 386,391 ----

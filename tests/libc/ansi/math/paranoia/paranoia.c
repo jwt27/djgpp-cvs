@@ -78,7 +78,7 @@ little mnemonic significance), the Pascal version uses meaningful
 identifiers as follows [Note: A few changes have been made for C]:
 
 
-BASIC   C               BASIC   C               BASIC   C               
+BASIC   C               BASIC   C               BASIC   C
 
    A                       J                       S    StickyBit
    A1   AInverse           J0   NoErrors           T
@@ -128,7 +128,7 @@ correspondence is as follows:
 
 
 BASIC       Pascal
-lines 
+lines
 
   90- 140   Pause
  170- 250   Instructions
@@ -324,7 +324,7 @@ int NoTrials = 20; /*Number of tests for commutativity. */
 #define False 0
 #define True 1
 
-/* Definitions for declared types 
+/* Definitions for declared types
 	Guard == (Yes, No);
 	Rounding == (Chopped, Rounded, Other);
 	Message == packed array [1..40] of char;
@@ -611,7 +611,7 @@ void part2(VOID){
 		printf("Precision cannot be characterized by an Integer number\n");
 		printf("of significant digits but, by itself, this is a minor flaw.\n");
 		}
-	if (Radix == One) 
+	if (Radix == One)
 		printf("logarithmic encoding has precision characterized solely by U1.\n");
 	else printf("The number of significant digits of the Radix is %f .\n",
 			Precision);
@@ -1137,7 +1137,7 @@ void part5(VOID){
 		if (SqEr < MinSqEr) MinSqEr = SqEr;
 		SqEr = (Y - Half) + Z;
 		if (SqEr > MaxSqEr) MaxSqEr = SqEr;
-		if (((Indx == 1) || (Indx == 3))) 
+		if (((Indx == 1) || (Indx == 3)))
 			X = OneUlp * Sign (X) * FLOOR(Eight / (Nine * SQRT(OneUlp)));
 		else {
 			OneUlp = U1;
@@ -1194,7 +1194,7 @@ void part5(VOID){
 				do  {
 					X = Z1 * Z;
 					X = X - FLOOR(X / Radix) * Radix;
-					if (X == One) 
+					if (X == One)
 						Break = True;
 					else
 						Z1 = Z1 - One;
@@ -1446,7 +1446,7 @@ void part6(VOID){
 		if (E1 < E0) {
 			printf("Products underflow at a higher");
 			printf(" threshold than differences.\n");
-			if (PseudoZero == Zero) 
+			if (PseudoZero == Zero)
 			E0 = E1;
 			}
 		else {
@@ -1890,7 +1890,7 @@ int part8(VOID){
 	else {
 		printf("No failures, defects nor flaws have been discovered.\n");
 		if (! ((RMult == Rounded) && (RDiv == Rounded)
-			&& (RAddSub == Rounded) && (RSqrt == Rounded))) 
+			&& (RAddSub == Rounded) && (RSqrt == Rounded)))
 			printf("The arithmetic diagnosed seems Satisfactory.\n");
 		else {
 			if (StickyBit >= One &&
@@ -1900,7 +1900,7 @@ int part8(VOID){
 				if ((Radix == Two) &&
 					 ((Precision - Four * Three * Two) *
 					  ( Precision - TwentySeven -
-					   TwentySeven + One) == Zero)) 
+					   TwentySeven + One) == Zero))
 					printf("754");
 				else printf("854");
 				if (IEEE) printf(".\n");

@@ -15,7 +15,7 @@ This function finds the last occurrence of @code{c} in @code{s1}.
 @subheading Return Value
 
 A pointer to the last match, or @code{NULL} if the character isn't in
-the string. 
+the string.
 
 @subheading Portability
 

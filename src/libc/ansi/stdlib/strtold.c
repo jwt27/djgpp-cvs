@@ -96,12 +96,12 @@ strtold(const char *s, char **sret)
 
     if (sign < 0)
       t.ldt.sign = 1;
-    
+
     if (s[3] == '(')
     {
       unsigned long long mantissa_bits = 0;
       char *endptr = unconst((&s[4]), char *);
-      
+
       mantissa_bits = strtoull(&s[4], &endptr, 0);
       if (*endptr == ')')
       {
@@ -187,7 +187,7 @@ strtold(const char *s, char **sret)
         flags = 1;
         digits++;  /*  Counts hex digits.  */
         mantissa <<= HEX_DIGIT_SIZE;
-        mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' : 
+        mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' :
                     ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
         if (mantissa == 0)
           fraction_zeros++;  /*  Counts hex zeros.  16**(-fraction_zeros + 1).  */

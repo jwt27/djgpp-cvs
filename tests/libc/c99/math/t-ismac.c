@@ -27,7 +27,7 @@ typedef union
   double d;
 } test_double_union_t;
 
-typedef struct { 
+typedef struct {
   const char *class;
   const char *type;
   test_double_union_t number;
@@ -40,7 +40,7 @@ typedef union
   float f;
 } test_float_union_t;
 
-typedef struct { 
+typedef struct {
   const char *class;
   const char *type;
   test_float_union_t number;

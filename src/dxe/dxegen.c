@@ -119,7 +119,7 @@ int main(int argc, char **argv)
       strcat(command, " ");
     }
     strcat(command, " -T dxe.ld ");
-      
+
     printf("%s\n", command);
     i = system(command);
     if (i)

@@ -5,7 +5,7 @@
 @smallexample
 #include <dpmi.h>
 
-int __dpmi_free_serialization_on_shared_memory(unsigned long handle, 
+int __dpmi_free_serialization_on_shared_memory(unsigned long handle,
                                                int flags);
 @end smallexample
 

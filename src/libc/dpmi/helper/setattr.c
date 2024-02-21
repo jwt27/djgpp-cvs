@@ -21,7 +21,7 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
   unsigned long p, end;
   int i, num_pages;
   short *attr;
-  
+
   /* Make sure all arguments are page aligned, and attribute is legal. */
   if (((unsigned long) _our_addr & 0xfff )
       || (_num_bytes & 0xfff)

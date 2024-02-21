@@ -8,14 +8,14 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
 /*
  * wrapper scalbf(float x, float fn) is provide for
- * passing various standard test suite. One 
+ * passing various standard test suite. One
  * should use scalbn() instead.
  */
 
@@ -59,12 +59,12 @@
 	if(z==(float)0.0&&z!=x) {
 	    /* scalbf underflow */
 	    return (float)__kernel_standard((double)x,(double)fn,133);
-	} 
+	}
 #ifndef _SCALB_INT
 	if(!finitef(ufn.l)) errno = ERANGE;
 #endif
 	return z;
-#endif 
+#endif
 }
 
 #ifdef _DOUBLE_IS_32BITS
@@ -72,7 +72,7 @@
 #ifdef __STDC__
 #ifdef _SCALB_INT
 	double scalb(double x, int fn)
-#else 
+#else
 	double scalb(double x, double fn)
 #endif
 #else

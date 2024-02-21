@@ -12,7 +12,7 @@ ssize_t read(int fd, void *buffer, size_t length);
 
 This function reads at most @var{length} bytes from file @var{fd} into
 @var{buffer}.  Note that in some cases, such as end-of-file conditions
-and text files, it may read less than the requested number of bytes. 
+and text files, it may read less than the requested number of bytes.
 At end-of-file, @code{read} will read exactly zero bytes.
 
 Directories cannot be read using @code{read} --- use @code{readdir}
@@ -20,7 +20,7 @@ instead.
 
 @subheading Return Value
 
-The number of bytes read, zero meaning end-of-file, or -1 for an error. 
+The number of bytes read, zero meaning end-of-file, or -1 for an error.
 
 @subheading Portability
 

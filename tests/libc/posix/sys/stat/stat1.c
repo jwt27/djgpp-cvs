@@ -7,7 +7,7 @@ int
 main (int argc, char *argv[])
 {
   int i, n, last_fd;
-  
+
   if (argc != 2)
     {
       fprintf (stderr, "Usage: %s #files\n", argv[0]);

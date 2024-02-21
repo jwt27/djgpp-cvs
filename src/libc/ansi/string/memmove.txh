@@ -10,10 +10,10 @@ void *memmove(void *dest, const void *source, int num);
 
 @subheading Description
 
-This function copies @var{num} bytes from @var{source} to @var{dest}. 
+This function copies @var{num} bytes from @var{source} to @var{dest}.
 The copy is done in such a way that if the two regions overlap, the
 source is always read before that byte is changed by writing to the
-destination. 
+destination.
 
 @subheading Return Value
 

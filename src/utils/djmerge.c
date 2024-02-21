@@ -55,7 +55,7 @@ main(int argc, char **argv)
   int outf, f;
   struct stat stbuf;
   int preserve_file_time = 1;
-  
+
   if (argc != 3 && argc != 4)
     usage();
 
@@ -105,7 +105,7 @@ main(int argc, char **argv)
         exit(0);
       }
     }
-    
+
     write(outf, buf, r);
   }
 }

@@ -656,7 +656,7 @@ dvm100l         MOVE.L     A4,-(A7)
          ADDQ.W     #8,A7
          MOVEM.L    (A7)+,A2/A3/A4/A5/D1/D2/D5/D6/D7
          UNLK       A6
-         RTS        
+         RTS
 
 
 	GLOBAL mdnorm
@@ -734,13 +734,13 @@ mdnb6l         TST.W      4(A4)
 mdnd2l         CLR.W      NQ+NQ(A4)
          MOVEM.L    (A7)+,A2/A3/A4/A5/D7
          UNLK       A6
-         RTS        
+         RTS
 
 
 
 qfltc	LINK       A6,#0
          UNLK       A6
-         RTS        
+         RTS
 
 ; for 24 word format
 rndbit	DATA.W 0,0,0,0,0,0,0,0

@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -14,7 +14,7 @@
 
 /*
 FUNCTION
-<<acosh>>, <<acoshf>>---inverse hyperbolic cosine 
+<<acosh>>, <<acoshf>>---inverse hyperbolic cosine
 
 INDEX
 acosh
@@ -36,7 +36,7 @@ TRAD_SYNOPSIS
 
 DESCRIPTION
 <<acosh>> calculates the inverse hyperbolic cosine of <[x]>.
-<<acosh>> is defined as 
+<<acosh>> is defined as
 @ifinfo
 . log(<[x]> + sqrt(<[x]>*<[x]>-1))
 @end ifinfo
@@ -49,7 +49,7 @@ $$ln\Bigl(x + \sqrt{x^2-1}\Bigr)$$
 <<acoshf>> is identical, other than taking and returning floats.
 
 RETURNS
-<<acosh>> and <<acoshf>> return the calculated value.  If <[x]> 
+<<acosh>> and <<acoshf>> return the calculated value.  If <[x]>
 less than 1, the return value is NaN and <<errno>> is set to <<EDOM>>.
 
 You can change the error-handling behavior with the non-ANSI
@@ -64,7 +64,7 @@ QUICKREF ANSI SVID POSIX RENTRANT
  acos	 n,n,n,m
  acosf   n,n,n,m
 
-MATHREF  
+MATHREF
  acosh, NAN,   arg,DOMAIN,EDOM
  acosh, < 1.0, NAN,DOMAIN,EDOM
  acosh, >=1.0, acosh(arg),,,
@@ -76,7 +76,7 @@ MATHREF
 
 */
 
-/* 
+/*
  * wrapper acosh(x)
  */
 

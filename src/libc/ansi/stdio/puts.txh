@@ -11,7 +11,7 @@ int puts(const char *string);
 @subheading Description
 
 This function writes @var{string} to @code{stdout}, and then writes a
-newline character. 
+newline character.
 
 @subheading Return Value
 

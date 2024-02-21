@@ -11,7 +11,7 @@ extern char *sys_errlist[];
 @subheading Description
 
 This array contains error messages, indexed by @code{errno}, that
-describe the errors. 
+describe the errors.
 
 @subheading Portability
 
@@ -37,7 +37,7 @@ extern int sys_nerr;
 @subheading Description
 
 This variable gives the number of error messages in @code{sys_errlist}
-(@pxref{sys_errlist}). 
+(@pxref{sys_errlist}).
 
 @subheading Portability
 

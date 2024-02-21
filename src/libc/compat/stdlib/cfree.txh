@@ -11,10 +11,10 @@ void cfree(void *pointer);
 @subheading Description
 
 This function returns the memory allocated by calloc (@pxref{calloc}) to
-the heap. 
+the heap.
 
 @subheading Return Value
-  
+
 None.
 
 @subheading Portability

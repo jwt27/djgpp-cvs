@@ -12,22 +12,22 @@ int mprotect(void *addr, size_t len, int prot);
 @subheading Description
 
 This function modifies the access protection of a memory region.  Protection
-occurs in 4Kbyte regions (pages) aligned on 4Kbyte boundaries.  All pages 
-in the region will be changed, so @var{addr} and @var{len} should be multiples 
+occurs in 4Kbyte regions (pages) aligned on 4Kbyte boundaries.  All pages
+in the region will be changed, so @var{addr} and @var{len} should be multiples
 of 4096.
 
 The protection @var{prot} for each page is specified with the values:
   PROT_NONE  Region can not be touched (if or'ed is ignored).
   PROT_READ  Region can be read (can be or'ed with PROT_WRITE).
   PROT_WRITE Region can be written (implies read access).
-  
+
 This function is only supported on DPMI hosts which provide some V1.0 extensions
 on V0.9 memory blocks.
 
 @subheading Return Value
 
-The function returns 0 if successful and the value -1 if all the pages 
-could not be set.  
+The function returns 0 if successful and the value -1 if all the pages
+could not be set.
 
 @subheading Portability
 

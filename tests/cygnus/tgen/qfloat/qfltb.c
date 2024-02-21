@@ -1,4 +1,4 @@
-/* 
+/*
  * Utilities for extended precision arithmetic, called by qflt.c.
  * These should all be written in machine language for speed.
  *
@@ -563,7 +563,7 @@ for( i=0; i<3; i++ )
 		*p += 1;
 	else
 		{
-		*p = MAXEXP; 
+		*p = MAXEXP;
 		mtherr("mdnorm", OVERFLOW);
 		}
 	}
@@ -597,7 +597,7 @@ if( x[2] )
 		*p += 1;
 	else
 		{
-		*p = MAXEXP; 
+		*p = MAXEXP;
 		mtherr("mdnorm", OVERFLOW);
 		}
 	}

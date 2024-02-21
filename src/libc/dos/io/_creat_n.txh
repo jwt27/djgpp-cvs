@@ -73,7 +73,7 @@ supported, 6C00h otherwise.  (On DOS version 3.x, function 5B00h is
 called which ignores the value of @var{flags}, since function 6C00h is
 only supported by DOS 4.0 and later.)
 
-The file handle returned by @code{_creatnew} is set to binary mode. 
+The file handle returned by @code{_creatnew} is set to binary mode.
 
 This function can be hooked by the Filesystem Extensions handlers, as
 described in @ref{File System Extensions}.  If you don't want this, you

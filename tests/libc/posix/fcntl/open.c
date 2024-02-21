@@ -1,4 +1,4 @@
-/* Testsuite for open() 
+/* Testsuite for open()
  * TODO: only symlink handling aspect is checked. Other things should be
  * checked too.
  * Currently there are following tests:
@@ -8,14 +8,14 @@
  *   3. Open simple file in a symlink subdir with O_NOFOLLOW flag. Check if
  *        we really have opened a referred file.
  *   4. Open symlink in a symlink subdir with O_NOFOLLOW flag. Should fail with
- *        ELOOP. 
+ *        ELOOP.
  *   5. Open an existing symlink with O_CREAT|O_EXCL. Should fail
  *        with EEXIST.
  *   6. Open an existing symlink with O_CREAT|O_EXCL|O_NOLINK. Should fail
  *        with EEXIST.
  *   7. Open a symlink with O_NOLINK but with symlinks in leading dirs.
  *   8. Open a symlink file in a simple subdir. Check if we really have opened
- *        the referred file. 
+ *        the referred file.
  *   9. Open and close a file with O_TEMPORARY. Verify the file is deleted.
  *   10. Open a file with O_TEMPORARY. Duplicate the file handle. Close both
  *       handles. Verify the file is deleted at the correct time.
@@ -50,7 +50,7 @@ int main(void)
 {
    int fd;
 
-   if (!__file_exists("file1") || !__file_exists("test1") || 
+   if (!__file_exists("file1") || !__file_exists("test1") ||
        !__file_exists("test2") || !__file_exists("dir/file1"))
    {
       fprintf(stderr, "Required data file is missing\n");
@@ -78,7 +78,7 @@ int main(void)
       exit(EXIT_FAILURE);
    }
    if (errno != ELOOP)
-   { 
+   {
       fprintf(stderr, "Test %d failed - wrong errno returned: %s\n",
 	      testnum, strerror(errno));
       exit(EXIT_FAILURE);
@@ -94,7 +94,7 @@ int main(void)
       exit(EXIT_FAILURE);
    }
    if (errno != EEXIST)
-   { 
+   {
       fprintf(stderr, "Test %d failed - wrong errno returned: %s\n",
 	      testnum, strerror(errno));
       exit(EXIT_FAILURE);
@@ -110,7 +110,7 @@ int main(void)
       exit(EXIT_FAILURE);
    }
    if (errno != EEXIST)
-   { 
+   {
       fprintf(stderr, "Test %d failed - wrong errno returned: %s\n",
 	      testnum, strerror(errno));
       exit(EXIT_FAILURE);
@@ -122,7 +122,7 @@ int main(void)
    test_o_temporary();
    puts("PASS");
    return EXIT_SUCCESS;
-} 
+}
 
 static void test_success(const char * fn, int flags,
                          const char * data)
@@ -135,7 +135,7 @@ static void test_success(const char * fn, int flags,
 
    ++testnum;
    if (fd == -1)
-   {            
+   {
       sprintf(err_buf, "Test %d failed - unexpected open() failure ", testnum);
       perror(err_buf);
       exit(EXIT_FAILURE);
@@ -150,7 +150,7 @@ static void test_success(const char * fn, int flags,
    }
    if (bytes_read != data_size)
    {
-      fprintf(stderr, 
+      fprintf(stderr,
       "Test %d failed - read() returned less bytes than expected.\n", testnum);
       buffer[bytes_read] = '\0';
       printf("buffer = %s\n", buffer);
@@ -159,7 +159,7 @@ static void test_success(const char * fn, int flags,
    }
    if (strncmp(buffer, data, data_size))
    {
-      fprintf(stderr, "Test %d failed - read() returned wrong file data.\n", 
+      fprintf(stderr, "Test %d failed - read() returned wrong file data.\n",
               testnum);
       close(fd);
       exit(EXIT_FAILURE);
@@ -215,7 +215,7 @@ void close_temp_test_file(int fd, int should_exist)
 void test_o_temporary(void)
 {
   int fd1, fd2;
-  
+
   start_temp_test();
   fd1 = open_temp_test_file(O_RDONLY | O_TEMPORARY);
   close_temp_test_file(fd1, FILE_SHOULD_NOT_EXIST);

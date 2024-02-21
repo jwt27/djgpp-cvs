@@ -12,7 +12,7 @@
    bzip2/libbzip2 version 1.0.8 of 13 July 2019
    Copyright (C) 1996-2019 Julian Seward <jseward@acm.org>
 
-   Please read the WARNING, DISCLAIMER and PATENTS sections in the 
+   Please read the WARNING, DISCLAIMER and PATENTS sections in the
    README file.
 
    This program is released under the terms of the license contained
@@ -57,7 +57,7 @@ extern "C" {
 #define BZ_OUTBUFF_FULL      (-8)
 #define BZ_CONFIG_ERROR      (-9)
 
-typedef 
+typedef
    struct {
       char *next_in;
       unsigned int avail_in;
@@ -74,7 +74,7 @@ typedef
       void *(*bzalloc)(void *, int, int);
       void (*bzfree)(void *, void *);
       void *opaque;
-   } 
+   }
    bz_stream;
 
 
@@ -84,18 +84,18 @@ typedef
 
 /*-- Core (low-level) library functions --*/
 
-BZ_EXTERN int BZ_API(BZ2_bzDecompressInit) ( 
-      bz_stream *strm, 
-      int       verbosity, 
+BZ_EXTERN int BZ_API(BZ2_bzDecompressInit) (
+      bz_stream *strm,
+      int       verbosity,
       int       small
    );
 
-BZ_EXTERN int BZ_API(BZ2_bzDecompress) ( 
-      bz_stream* strm 
+BZ_EXTERN int BZ_API(BZ2_bzDecompress) (
+      bz_stream* strm
    );
 
-BZ_EXTERN int BZ_API(BZ2_bzDecompressEnd) ( 
-      bz_stream *strm 
+BZ_EXTERN int BZ_API(BZ2_bzDecompressEnd) (
+      bz_stream *strm
    );
 
 BZ_EXTERN const char * BZ_API(BZ2_bzlibVersion) (

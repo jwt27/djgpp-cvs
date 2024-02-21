@@ -11,12 +11,12 @@ int strcoll(const char *s1, const char *s2);
 @subheading Description
 
 This function compares @var{s1} and @var{s2}, using the collating
-sequences from the current locale. 
+sequences from the current locale.
 
 @subheading Return Value
 
 Zero if the strings are equal, a positive number if @var{s1} comes after
-@var{s2} in the collating sequence, else a negative number. 
+@var{s2} in the collating sequence, else a negative number.
 
 @subheading Portability
 

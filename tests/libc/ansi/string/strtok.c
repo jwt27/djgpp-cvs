@@ -9,6 +9,6 @@ int main(void)
        tok;
        tok=strtok(0, " ,"))
     printf("tok = `%s'\n", tok);
-  
+
   return 0;
 }

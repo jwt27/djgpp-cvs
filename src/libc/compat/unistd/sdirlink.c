@@ -21,7 +21,7 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
       errno = EINVAL;
       return 0;
    }
-                                  
+
    /* ...and empty strings */
    if (__symlink_path[0] == '\0')
    {
@@ -50,16 +50,16 @@ int __solve_dir_symlinks(const char * __symlink_path, char * __real_path)
    last_part = basename(path_copy);
    if (*last_part == '\0')
    {
-      /* If basename() returned pointer to the end of string, cut the last 
+      /* If basename() returned pointer to the end of string, cut the last
        * dir separator and try again. Exception: for paths like 'C:', just
        * copy it to the result and return.
-       */ 
+       */
       if (*(last_part - 1) == ':')
       {
          strcpy(__real_path, path_copy);
          return 1;
       }
-      *(last_part - 1) = '\0'; 
+      *(last_part - 1) = '\0';
       last_part = basename(path_copy);
    }
    if (last_part == path_copy)

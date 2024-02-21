@@ -17,19 +17,19 @@ BuildRequires: djcross-gcc >= 4.1.0
 
 BuildArch: i686 x86_64
 
-%description 
+%description
 DJGPP C library and some tools (stubify, stubedit, dxe3gen and dxe3res)
 for Linux to i586-pc-msdosdjgpp cross-compiler
 
 %define debug_package %{nil}
 %define __os_install_post %{nil}
 
-%prep 
+%prep
 rm -rf djgpp
 %setup -q -n djgpp
 pwd
 
-%build 
+%build
 cd src
 rm -f gcc.opt
 make
@@ -57,7 +57,7 @@ cp -p dxe3gen ../../../../hostbin/dxe3gen
 cp -p dxe3res ../../../../hostbin/dxe3res
 cd ../../../../
 
-%install 
+%install
 export STRIP=/bin/true
 pwd
 rm -fr %{buildroot}
@@ -77,12 +77,12 @@ cp -p hostbin/dtou hostbin/utod %{buildroot}%{_prefix}/bin
 mkdir -p %{buildroot}/tmp/djgpp-dist
 cp -p zips/copying* zips/*.zip zips/readme* %{buildroot}/tmp/djgpp-dist/
 
-%clean 
+%clean
 rm -fr %{buildroot}
 
-%files 
-%defattr(-,root,root) 
-%doc copying copying.dj copying.lib readme.1st 
+%files
+%defattr(-,root,root)
+%doc copying copying.dj copying.lib readme.1st
 %{_prefix}/bin/*
 %{_prefix}/i586-pc-msdosdjgpp/*
 %{_prefix}/share/doc/*
@@ -164,7 +164,7 @@ with copying* and readme files.
 - Build from CVS source archive (with patches from Markus F.X.J. Oberhumer <markus@oberhumer.com>)
 - Fix bug (incorrect test for NULL in chdir.c).
 - Build also dtou and utod for host.
-- Put all host utility executables in %{prefix}/bin instead of 
+- Put all host utility executables in %{prefix}/bin instead of
   %{prefix}/i586-pc-msdosdjgpp/bin.
 - Put DJGPP binary packets into separate RPM package (not really for installation,
   but to have them). Currently files are put into directory /tmp/djgpp-dist.
@@ -173,7 +173,7 @@ with copying* and readme files.
 - Updated to use RPM's prefix macros
 
 * Mon Nov 21 2005 Andris Pavenis <pavenis@latnet.lv>
-- Some small updates 
+- Some small updates
 
 * Tue Nov 15 2005 Andris Pavenis <pavenis@latnet.lv>
 - Initial version of rpm spec file for DJGPP libc and some included tools (based on djcrx204 beta)

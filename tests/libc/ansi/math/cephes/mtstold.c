@@ -52,7 +52,7 @@ double          tanh(), atanh(), sinh(), asinh(), cosh(), acosh();
 double          jn(), yn(), iv(), kn();
 
 /* Provide inverses for square root and cube root: */
-double 
+double
 square(x)
     double          x;
 {

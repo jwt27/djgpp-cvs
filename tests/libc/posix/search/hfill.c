@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
       && ( ( argv[1][0] == '-' && argv[1][1] == 'h' )
        || 1 != sscanf(argv[1], "%i%c", &size, &ch) ) ) )
   {
-    fprintf(stderr, "Run like this: '%s [hash size]' (hash size defaults to 1).\n", 
+    fprintf(stderr, "Run like this: '%s [hash size]' (hash size defaults to 1).\n",
 	    argv[0]);
     return 1;
   }
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
   }
 
   printf("Managed to insert %lu elements.\n", l-2);
-  
+
   return 0;
 
 }

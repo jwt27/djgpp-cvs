@@ -47,7 +47,7 @@ putenv(char *val)
      works that way, and `env' from GNU Sh-utils counts on this behavior.  */
   int nlen = epos ? epos - val + 1 : vlen;
   int eindex;
-  
+
   /* Force recomputation of the static counters.
 
      The second condition of the next if clause covers the case that

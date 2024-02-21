@@ -205,7 +205,7 @@ void cm_appendixsec(int se, char *arg) { big_font(se, arg, 6); }
 void cm_appendixsubsec(int se, char *arg) { big_font(se, arg, 4); }
 void cm_appendixsubsubsec(int se, char *arg) { big_font(se, arg, 2); }
 void cm_asis(){}
-     
+
 void
 cm_asterisk()
 {
@@ -229,7 +229,7 @@ cm_author(int se, char *args)
     psf_pop();
   }
 }
-     
+
 void
 cm_bold(int se)
 {
@@ -472,7 +472,7 @@ cm_exdent(int se)
   if (se == START)
     para_set_indent(-prevailing_indent);
 }
-     
+
 void
 cm_expansion(int se)
 {
@@ -1223,7 +1223,7 @@ static COMMAND CommandTable[] = {
   { "footnote", cm_footnote, BRACE_ARGS},
   { "footnotestyle", cm_footnotestyle, WORD_ARGS },
   { "paragraphindent", cm_paragraphindent, WORD_ARGS },
-    
+
   {(char *) NULL, (FUNCTION *) NULL, NO_BRACE_ARGS}
   };
 

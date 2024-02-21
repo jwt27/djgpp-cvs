@@ -26,7 +26,7 @@ main(int argc, char **argv)
   char buf1[512];
   char buf2[512];
   int len1, len2;
-  
+
   if (argc < 3)
   {
     fprintf(stderr, "Usage: update <srcfile> <destfile>\n");

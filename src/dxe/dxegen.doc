@@ -3,12 +3,12 @@ Limitations:  you cannot do I/O (and some other functions) directly from a
 DXE loaded image.  There is a single entry point (subroutine or data block
 returned).
 
-There are two parts to DXE - the generator and the loader.  
+There are two parts to DXE - the generator and the loader.
 
 The DXE generator is a program with the usage:
 
   C:\> dxegen output.dxe symbol input.o [input2.o ... -lgcc -lc]
- 
+
 output.dxe is the name you want to contain your dynamic load code.
 symbol is the procedure name (or data structure) you want a pointer to,
 remember to add the initial underscore for most symbols.
@@ -16,7 +16,7 @@ The input.o is created with GCC from your source.  Additional arguments
 on the command line (.o and .a files; or other ld options) are passed to
 ld to resolve references to build your code.
 
-The loader only adds around 300 bytes to your image, and the prototype 
+The loader only adds around 300 bytes to your image, and the prototype
 is found in <sys/dxe.h>:
 
   void *_dxe_load(char *filename);

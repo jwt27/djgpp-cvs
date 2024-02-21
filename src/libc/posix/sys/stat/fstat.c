@@ -218,7 +218,7 @@ fstat_init(void)
 
   /* Linear addres of pointer to SFT list.  */
   sft_ptr_addr = MK_FOFF(regs.x.es, regs.x.bx + 4);
-  
+
   /* SFT entry size depends on DOS version.
      We need exact knowledge about DOS internals, so we need the
      TRUE DOS version (not the simulated one by SETVER), if that's
@@ -427,7 +427,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
 	is_remote = 1;
       else
 	is_remote = 0;
-      
+
       if(!have_trusted_values && dev_info == 0 && _os_trueversion == 0x532)
         is_dev = 1;   /* Device under NT or Win2K with pre-open/lfn handle. */
     }
@@ -571,7 +571,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
            * Each file under MS-DOS is always readable by everyone.
            */
           stat_buf->st_mode |= (S_IFREG | READ_ACCESS);
-          
+
           /* We will be extra careful in trusting SFT data: it must be
            * consistent with date, time and size of the file as known
            * from conventional DOS calls.
@@ -616,7 +616,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
                   *dst-- = *src--;
 
               /* Build Unix-style file permission bits. */
-              /* Check for symlink at first.  This test will fail if we 
+              /* Check for symlink at first.  This test will fail if we
                * don't have read access to file.
                */
               if (sft_fsize == 510)

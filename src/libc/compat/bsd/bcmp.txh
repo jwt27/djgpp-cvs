@@ -11,12 +11,12 @@ int bcmp(const void *ptr1, const void *ptr2, int length);
 @subheading Description
 
 Compare memory pointed to by @var{ptr1} and @var{ptr2} for at most
-@var{length} bytes. 
+@var{length} bytes.
 
 @subheading Return Value
 
 The number of bytes remaining when the first mismatch occurred, or zero
-if all bytes were equal. 
+if all bytes were equal.
 
 @subheading Portability
 

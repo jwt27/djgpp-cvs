@@ -12,13 +12,13 @@ int brk(void *ptr);
 
 This function changes the @emph{break} for the program.  This is the
 first address that, if referenced, will cause a fault to occur.  The
-program asks for more memory by specifying larger values for @var{ptr}. 
-Normally, this is done transparently through the @code{malloc} function. 
+program asks for more memory by specifying larger values for @var{ptr}.
+Normally, this is done transparently through the @code{malloc} function.
 
 @subheading Return Value
 
 Zero if the break was changed, -1 if not.  @code{errno} is set to the
-error. 
+error.
 
 @subheading Portability
 
@@ -48,7 +48,7 @@ This function changes the "break" of the program by adding @var{delta}
 to it.  This is the highest address that your program can access without
 causing a violation.  Since the heap is the region under the break, you
 can expand the heap (where @code{malloc} gets memory from) by increasing
-the break. 
+the break.
 
 This function is normally accessed only by @code{malloc} (@pxref{malloc}).
 
@@ -81,9 +81,9 @@ extern int _stklen;
 
 @subheading Description
 
-This variable sets the minimum stack length that the program requires. 
+This variable sets the minimum stack length that the program requires.
 Note that the stack may be much larger than this.  This value should be
-set statically, as it is only used at startup. 
+set statically, as it is only used at startup.
 
 @subheading Portability
 
@@ -109,8 +109,8 @@ extern __djgpp_sbrk_handle __djgpp_memory_handle_list[256];
 @subheading Description
 
 This array contains a list of memory handles and program relative offsets
-allocated by sbrk() in addition to the handle allocated by the stub.  These 
-values are normally not needed unless you are doing low-level DPMI page 
+allocated by sbrk() in addition to the handle allocated by the stub.  These
+values are normally not needed unless you are doing low-level DPMI page
 protection or memory mapping.
 
 @subheading Portability
@@ -126,7 +126,7 @@ protection or memory mapping.
     int h, a, s;
     h = __djgpp_memory_handle_list[i].handle;
     a = __djgpp_memory_handle_list[i].address;
-    s = __djgpp_memory_handle_size[i];    
+    s = __djgpp_memory_handle_size[i];
     if(a == 0 && i != 0) break;
     printf("handle[%d]=0x%x base=0x%x size=0x%x\n",i,h,a,s);
   @}
@@ -145,8 +145,8 @@ extern unsigned __djgpp_memory_handle_size[256];
 
 @subheading Description
 
-This array contains a list of the sizes of the memory regions allocated 
-by sbrk() in addition to the memory region allocated by the stub.  These 
+This array contains a list of the sizes of the memory regions allocated
+by sbrk() in addition to the memory region allocated by the stub.  These
 values are normally not needed unless you are dumping the memory blocks.
 
 @subheading Portability
@@ -162,7 +162,7 @@ values are normally not needed unless you are dumping the memory blocks.
     int h, a, s;
     h = __djgpp_memory_handle_list[i].handle;
     a = __djgpp_memory_handle_list[i].address;
-    s = __djgpp_memory_handle_size[i];    
+    s = __djgpp_memory_handle_size[i];
     if(a == 0 && i != 0) break;
     printf("handle[%d]=0x%x base=0x%x size=0x%x\n",i,h,a,s);
   @}

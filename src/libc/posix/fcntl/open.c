@@ -143,16 +143,16 @@ open(const char* filename, int oflag, ...)
   if (oflag & O_NOFOLLOW)
   {
     /* O_NOFOLLOW, as defined in glibc, requires open() to fail if the
-     * last path component is a symlink.  However, it still requires to 
+     * last path component is a symlink.  However, it still requires to
      * resolve all other path components.
      * We check if there were any symlinks by comparing __solve_symlinks()
-     * input and output.  That function does not perform any path 
+     * input and output.  That function does not perform any path
      * canonicalization so it should be safe.  */
     if (strcmp(filename, real_name))
     {
       /* Yes, there were symlinks in the path.  Now take all but the last
        * path component from `real_name', add last path component from
-       * `filename', and try to resolve that mess. 
+       * `filename', and try to resolve that mess.
        */
       char  temp[FILENAME_MAX + 1];
       char  resolved[2];

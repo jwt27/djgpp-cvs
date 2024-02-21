@@ -10,7 +10,7 @@ unsigned long rawclock(void);
 
 @subheading Description
 
-Returns the number of clock tics (18.2 per second) since midnight. 
+Returns the number of clock tics (18.2 per second) since midnight.
 
 @subheading Return Value
 

@@ -19,7 +19,7 @@ Writes a single 32-bit binary word @var{x} in native format to
 
 The value written, or @code{EOF} for end-of-file or error.  Since
 @code{EOF} is a valid integer, you should use @code{feof} or
-@code{ferror} to detect this situation. 
+@code{ferror} to detect this situation.
 
 @subheading Portability
 

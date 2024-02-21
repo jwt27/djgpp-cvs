@@ -109,19 +109,19 @@ int main(int argc, char *argv[])
         const char *spec = optarg;
         const int num_specs = SIZEOF_ARRAY(conf_specs);
         int i;
-        
+
         /* Verify the specification is valid.  */
         for (i = 0; i < num_specs; ++i)
         {
           if (strcmp (spec, conf_specs[i]) == 0)
             break;
         }
-        
+
         if (i == num_specs)
         {
           fprintf(stderr, "undefined specification: %s\n", spec);
         }
-        
+
         /* Since only one specification is supported,
            there's nothing more to do.  */
       }
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
    }
 
   }
-  
+
   return 0;
 }
 
@@ -237,6 +237,6 @@ help(void)
       fprintf(stderr, "%s\n", var_list[i].name);
     else
       fprintf(stderr, "%s <path>\n", var_list[i].name);
-  } 
+  }
   exit(1);
 }

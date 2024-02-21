@@ -21,7 +21,7 @@ For each valid switch, this function sets @code{optarg} to the argument
 that it is using, sets @code{optopt} to the option letter found, and
 returns the option letter found.
 
-If an unexpected option is found, a question mark (@samp{?}) is returned.  
+If an unexpected option is found, a question mark (@samp{?}) is returned.
 If an option argument is missing, a colon (@samp{:}) is returned if the
 first character in @var{options} is a colon, otherwise a question mark is
 returned.  In both cases, if @code{opterr} is nonzero and the first character

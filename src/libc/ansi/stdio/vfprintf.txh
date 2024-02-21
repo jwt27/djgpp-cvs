@@ -11,7 +11,7 @@ int vfprintf(FILE *file, const char *format, va_list arguments);
 
 @subheading Description
 
-Sends formatted output from the @var{arguments} to the @var{file}. 
+Sends formatted output from the @var{arguments} to the @var{file}.
 @xref{printf}.
 
 @subheading Return Value

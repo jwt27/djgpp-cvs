@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -32,7 +32,7 @@ TRAD_SYNOPSIS
 DESCRIPTION
 
 	<<cosh>> computes the hyperbolic cosine of the argument <[x]>.
-	<<cosh(<[x]>)>> is defined as 
+	<<cosh(<[x]>)>> is defined as
 	@ifinfo
 	. (exp(x) + exp(-x))/2
 	@end ifinfo
@@ -40,7 +40,7 @@ DESCRIPTION
 	$${(e^x + e^{-x})} \over 2$$
 	@end tex
 
-	Angles are specified in radians.  
+	Angles are specified in radians.
 		
 	<<coshf>> is identical, save that it takes and returns <<float>>.
 
@@ -53,7 +53,7 @@ RETURNS
 	function <<matherr>>.
 
 PORTABILITY
-	<<cosh>> is ANSI.  
+	<<cosh>> is ANSI.
 	<<coshf>> is an extension.
 
 QUICKREF
@@ -61,7 +61,7 @@ QUICKREF
 	coshf - pure
 */
 
-/* 
+/*
  * wrapper cosh(x)
  */
 

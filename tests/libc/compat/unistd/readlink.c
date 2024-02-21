@@ -8,7 +8,7 @@
  *   6. Check with wrong size, OK contents symlink file
  *   7. Check with OK size, wrong contents symlink file
  */
- 
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +32,7 @@ int main(void)
       fprintf(stderr, "Cannot run testsuite - required files missing");
       exit(1);
    }
-   
+
    /* Test 1 - simple case with symlink OK */
    bytes_read = readlink("test1", buffer, FILENAME_MAX);
    if (bytes_read == -1)
@@ -83,7 +83,7 @@ int main(void)
                                  "readlink returns wrong errno for NULL arg");
    failure_test(4, "doesntmatter", NULL, EINVAL, "readlink accepts NULL arg",
                                  "readlink returns wrong errno for NULL arg");
-                                 
+
    /* Test 5 - file not found */
    failure_test(5, "/Pink/Floyd/Animals/Dogs/Shouldnt/Exist", buffer, ENOENT,
                 "readlink found non-existing file",

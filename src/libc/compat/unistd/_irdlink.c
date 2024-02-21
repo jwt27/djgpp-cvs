@@ -20,7 +20,7 @@
 
 #include "xsymlink.h"
 
-int __internal_readlink(const char * __path, int __fhandle, char * __buf, 
+int __internal_readlink(const char * __path, int __fhandle, char * __buf,
                         size_t __max)
 {
    ssize_t       bytes_read         = 0;
@@ -97,7 +97,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
          fd = _open(__path, O_RDONLY | SH_DENYNO);
          if (fd < 0)
             return -1; /* errno from _open() call */
-      } 
+      }
    }
 
    bytes_read = _read(fd, &buf, _SYMLINK_FILE_LEN);
@@ -109,7 +109,7 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
 
    if (bytes_read == -1)
       return -1; /* Return errno set by _read() (_close() in worse case) */
-      
+
    /* Check for symlink file header */
    if (strncmp(buf, _SYMLINK_PREFIX, _SYMLINK_PREFIX_LEN))
    {
@@ -118,10 +118,10 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
       errno = EINVAL;
       return -1;
    }
-   
+
    data_buf = buf + _SYMLINK_PREFIX_LEN;
    bytes_read = strpbrk(data_buf, "\r\n") - data_buf;
-   if( (unsigned)bytes_read > __max ) 
+   if( (unsigned)bytes_read > __max )
      bytes_read = __max;
    memcpy(__buf, data_buf, bytes_read);
    return bytes_read;

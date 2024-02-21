@@ -50,8 +50,8 @@ remove(const char *fn)
   }
 
   directory_p = attr & 0x10;
- 
-  /* Now, make the file writable.  We must reset Vol, Dir, Sys and Hidden bits 
+
+  /* Now, make the file writable.  We must reset Vol, Dir, Sys and Hidden bits
      in addition to the Read-Only bit, or else 214301 will fail.  */
   _chmod(real_name, 1, attr & 0xffe0);
 
@@ -85,7 +85,7 @@ remove(const char *fn)
        return EACCES instead.  */
     if (e == ENOENT)
       e = EACCES;
- 
+
     _chmod(real_name, 1, attr & 0xffe7);
     errno = e;
     return -1;

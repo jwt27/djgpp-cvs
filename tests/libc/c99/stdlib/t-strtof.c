@@ -185,7 +185,7 @@ main (int argc, char *argv[])
       }
     }
   }
-  
+
   puts("Infinity tests:");
   for (i = 0; i < n_tests4; i++) {
     char *endptr;
@@ -193,7 +193,7 @@ main (int argc, char *argv[])
     _float_union_t float_union;
 
     f_res = strtof(tests4[i].str, &endptr);
-      
+
     printf("strtof(\"%s\", &endptr) -> %f, %td - ", tests4[i].str,
 	   f_res, endptr - tests4[i].str);
 
@@ -206,7 +206,7 @@ main (int argc, char *argv[])
     } else if (float_bits.mantissa != 0) {
       puts("mantissa != 0 - FAIL");
       ok = 0;
-    } else if ( (float_bits.sign && 0 < f_res ) || 
+    } else if ( (float_bits.sign && 0 < f_res ) ||
 		(!float_bits.sign && f_res < 0) ) {
       puts("Wrong sign - FAIL");
       ok = 0;
@@ -218,7 +218,7 @@ main (int argc, char *argv[])
       puts("OK");
     }
   }
-  
+
   puts("Nan tests:");
   for (i = 0; i < n_tests5; i++) {
     char *endptr;
@@ -247,8 +247,8 @@ main (int argc, char *argv[])
       printf("endptr-(start_of_string) == %td != %td - FAIL\n",
 	     endptr - tests5[i].str, tests5[i].diff);
       ok = 0;
-    } else if (tests5[i].mantissa && 
-	       tests5[i].mantissa != float_bits.mantissa) { 
+    } else if (tests5[i].mantissa &&
+	       tests5[i].mantissa != float_bits.mantissa) {
       printf("(note: mantissa == 0x%x != 0x%x) - OK\n",
 	     float_bits.mantissa, tests5[i].mantissa);
     } else {

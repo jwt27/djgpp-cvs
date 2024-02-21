@@ -294,7 +294,7 @@ during subsequent calls to @code{malloc}, @code{free},
 @code{realloc}, and all functions which call them internally.
 The argument @var{level} is interpreted as follows:
 
-@table @asis 
+@table @asis
 @item Level 0
 The memory allocation functions behave as they do if
 @code{malloc_debug} was never called.  Only passive checks are
@@ -434,25 +434,25 @@ The actual hook to be set is described by the following
 constants, enumerated in @file{stdlib.h}:
 
 @table @code
-@item malloc_HK = 0    
+@item malloc_HK = 0
 on entry to malloc
 
-@item malloc_fail_HK   
+@item malloc_fail_HK
 when malloc or realloc fails
 
-@item free_HK          
+@item free_HK
 on entry to free
 
-@item free_null_HK     
+@item free_null_HK
 when free is called with a NULL pointer
 
-@item realloc_HK       
+@item realloc_HK
 on entry to realloc
 
-@item realloc_exit_HK  
+@item realloc_exit_HK
 when realloc exits.
 
-@item HKCOUNT          
+@item HKCOUNT
 The first invalid value for a hook descriptor.
 @end table
 
@@ -549,7 +549,7 @@ These hooks and the function are specific to DJGPP.
  mallsethook(malloc_fail_HK, mallocfailalert);
  ...
  /* any malloc failure will result in a message */
- 
+
 @end example
 
 @c -------------------------------------------------------------
@@ -602,7 +602,7 @@ struct _sysquery _sysmalloc(void);
 @subheading Description
 
 This function exports the internal structure of the malloc arena
-and thus allows construction of such packages as malldbg.  It 
+and thus allows construction of such packages as malldbg.  It
 avoids accidental exposure of system critical values, and also
 permits such values to be changed and reflected in external
 packages.

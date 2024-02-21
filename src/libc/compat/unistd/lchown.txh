@@ -15,7 +15,7 @@ This function does nothing under MS-DOS.
 @subheading Return Value
 
 This function always returns zero if the file exists (it does not
-follow symbolic links), else it returns -1 and sets @code{errno} 
+follow symbolic links), else it returns -1 and sets @code{errno}
 to @code{ENOENT}.
 
 

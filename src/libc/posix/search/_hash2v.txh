@@ -21,7 +21,7 @@ unsigned long _hash2v(unsigned char *s, unsigned long *v2)
 @subheading Description
 
 This function generate two hash values from the string @var{s}.  It
-returns the first and sets *@var{v2} to the second.  
+returns the first and sets *@var{v2} to the second.
 
 @subheading Return Value
 

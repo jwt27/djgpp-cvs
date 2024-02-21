@@ -22,7 +22,7 @@ On FAT32 file systems file sizes up to 2^32-2 are supported. Note
 that WINDOWS 98 has a bug which only lets you create these big files
 if LFN is enabled. In plain DOS mode it plainly works.
 
-The file is set to binary mode.  
+The file is set to binary mode.
 
 This function can be hooked by File System Extensions
 (@pxref{File System Extensions}).  If you don't want this, you should use

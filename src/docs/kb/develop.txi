@@ -212,7 +212,7 @@ When you prepare a patch use @samp{diff -upr djgpp.old djgpp.new} or
 @samp{diff -cpr djgpp.old djgpp.new}.  The directory names
 @samp{djgpp.old} and @samp{djgpp.new} are just examples, but you should
 preferably use a descriptive name.  If you have added any new files the
-option @samp{-N} comes in handy.  
+option @samp{-N} comes in handy.
 
 Similarly if you use cvs diff use @samp{cvs -z3 diff -up djgpp} or
 @samp{cvs -z3 diff -cp djgpp}.  To get cvs diff to notice any new files

@@ -12,7 +12,7 @@ long telldir(DIR *dir);
 
 This function returns a value which indicates the position of the
 pointer in the given directory.  This value is only useful as an
-argument to @code{seekdir} (@pxref{seekdir}). 
+argument to @code{seekdir} (@pxref{seekdir}).
 
 @subheading Return Value
 

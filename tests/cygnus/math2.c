@@ -15,22 +15,22 @@ _DEFUN_VOID(randi)
 static double _DEFUN_VOID(randx)
 {
   double res;
-  
-  do 
+
+  do
   {
     union {
 	short parts[4];
 	double res;
       } u;
-    
+
     u.parts[0] = randi();
     u.parts[1] = randi();
     u.parts[2] = randi();
     u.parts[3] = randi();
     res = u.res;
-    
+
   } while (!finite(res));
-  
+
   return res ;
 }
 
@@ -49,29 +49,29 @@ _DEFUN_VOID(test_frexp)
   int i;
   double r;
   int t;
-  
-  float xf;  
+
+  float xf;
   double gives;
 
   int pow;
 
-  
+
   /* Frexp of x return a and n, where a * 2**n == x, so test this with a
      set of random numbers */
-  for (t = 0; t < 2; t++)   
+  for (t = 0; t < 2; t++)
   {
-    for (i = 0; i < 1000; i++)  
+    for (i = 0; i < 1000; i++)
     {
-      
-      double x = randx();   
-      line(i);   
-      switch (t) 
+
+      double x = randx();
+      line(i);
+      switch (t)
       {
       case 0:
 	newfunc("frexp/ldexp");
 	r = frexp(x, &pow);
-	if (r > 1.0 || r < -1.0) 
-	{ 
+	if (r > 1.0 || r < -1.0)
+	{
 	  /* Answer can never be > 1 or < 1 */
 	  test_iok(0,1);
 	}
@@ -88,35 +88,35 @@ _DEFUN_VOID(test_frexp)
 	     represent to make sure that doesn't happen too */
 	  xf = x;
 	  r = frexpf(xf, &pow);
-	  if (r > 1.0 || r < -1.0) 
-	  { 
+	  if (r > 1.0 || r < -1.0)
+	  {
 	    /* Answer can never be > 1 or < -1 */
 	    test_iok(0,1);
 	  }
 
 	  gives = ldexpf(r ,pow);
 	  test_mok(gives,x, 32);
-	  
+	
 	}
       }
 
     }
-    
+
   }
-  
+
   /* test a few numbers manually to make sure frexp/ldexp are not
      testing as ok because both are broken */
 
   r = frexp(64.0, &i);
-  
+
   test_mok(r, 0.5,64);
   test_iok(i, 7);
 
   r = frexp(96.0, &i);
-  
+
   test_mok(r, 0.75, 64);
   test_iok(i, 7);
-  
+
 }
 # endif
 
@@ -137,11 +137,11 @@ void
 _DEFUN_VOID(test_mod)
 {
   int i;
-  
+
   newfunc("modf");
 
-  
-  for (i = 0; i < 1000; i++) 
+
+  for (i = 0; i < 1000; i++)
   {
     double intpart;
     double n;
@@ -153,11 +153,11 @@ _DEFUN_VOID(test_mod)
       line(i);
       test_mok(intpart + r, n, 63);
     }
-    
+
   }
   newfunc("modff");
-  
-  for (i = 0; i < 1000; i++) 
+
+  for (i = 0; i < 1000; i++)
   {
     float intpart;
     double nd;
@@ -178,22 +178,22 @@ _DEFUN_VOID(test_mod)
 
 # if 0
 /*
-Test pow by multiplying logs  
+Test pow by multiplying logs
 */
 void
 _DEFUN_VOID(test_pow)
 {
-  unsigned int i;  
+  unsigned int i;
   newfunc("pow");
 
-  for (i = 0; i < 1000; i++) 
+  for (i = 0; i < 1000; i++)
   {
     double n1;
     double n2;
     double res;
     double shouldbe;
 
-    line(i);  
+    line(i);
     n1 = fabs(randy());
     n2 = fabs(randy()/100.0);
     res = pow(n1, n2);
@@ -202,8 +202,8 @@ _DEFUN_VOID(test_pow)
   }
 
   newfunc("powf");
-  
-  for (i = 0; i < 1000; i++) 
+
+  for (i = 0; i < 1000; i++)
   {
     double n1;
     double n2;
@@ -211,8 +211,8 @@ _DEFUN_VOID(test_pow)
     double shouldbe;
 
     errno = 0;
-    
-    line(i);  
+
+    line(i);
     n1 = fabs(randy());
     n2 = fabs(randy()/100.0);
     res = powf(n1, n2);

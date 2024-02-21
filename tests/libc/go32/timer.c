@@ -17,7 +17,7 @@ int main()
 
   printf("grabbing timer interrupt\n");
   _go32_dpmi_get_protected_mode_interrupt_vector(8, &old_handler);
-  
+
   new_handler.pm_offset = (int)tic_handler;
   new_handler.pm_selector = _go32_my_cs();
   _go32_dpmi_chain_protected_mode_interrupt_vector(8, &new_handler);

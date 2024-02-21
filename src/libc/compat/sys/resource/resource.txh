@@ -42,7 +42,7 @@ computed as the total elapsed time used by the calling program.  The
 remainder of the fields are set to zero.
 
 The @var{who} parameter must be @code{RUSAGE_SELF} or
-@code{RUSAGE_CHILDREN}. 
+@code{RUSAGE_CHILDREN}.
 
 @subheading Return Value
 

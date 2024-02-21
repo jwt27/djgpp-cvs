@@ -9,10 +9,10 @@ int symlink(const char *exists, const char *new);
 @end example
 
 @subheading Description
-DOS does not support symbolic links.  However, DJGPP emulates them---this 
-function creates a file with special size and format, so other DJGPP 
+DOS does not support symbolic links.  However, DJGPP emulates them---this
+function creates a file with special size and format, so other DJGPP
 library functions transparently work with file which is pointed to
-by the symlink.  Of course, it does not work outside DJGPP programs.  
+by the symlink.  Of course, it does not work outside DJGPP programs.
 Those library functions which are simple wrappers about DOS calls do not
 use symlinks neither.
 

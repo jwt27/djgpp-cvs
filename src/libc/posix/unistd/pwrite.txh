@@ -17,7 +17,7 @@ actually written.  It will return zero or a number less than
 even under valid conditions.
 
 Note that if @var{file} is a text file, @code{pwrite} may write more
-bytes than it reports. 
+bytes than it reports.
 
 If @var{count} is zero, the function does nothing and returns zero.
 Use @code{_write} if you want to actually ask DOS to write zero bytes.

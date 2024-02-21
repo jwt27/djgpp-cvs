@@ -40,12 +40,12 @@ utod(char *fname)
   tim1.modtime = st.st_mtime;
 
   strcpy (tfname, fname);
-  for (bn=w=tfname; *w; w++) 
-    if (*w=='/' || *w=='\\' || *w==':') 
-      bn = w+1;  
+  for (bn=w=tfname; *w; w++)
+    if (*w=='/' || *w=='\\' || *w==':')
+      bn = w+1;
   if (bn) *bn=0;
   strcat (tfname,"utod.tm$");
-  
+
   df = open(tfname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0644);
   if (df < 0)
   {
@@ -82,7 +82,7 @@ utod(char *fname)
     chown(fname, st.st_uid, st.st_gid);
     chmod(fname, st.st_mode);
   }
-  else 
+  else
   {
     remove(tfname);
   }

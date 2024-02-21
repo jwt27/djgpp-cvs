@@ -627,7 +627,7 @@ manually (this is the function called by a static constructor).
 @example
 #include <conio.h>
 
-int movetext(int _left, int _top, int _right, int _bottom, 
+int movetext(int _left, int _top, int _right, int _bottom,
              int _destleft, int _desttop);
 @end example
 

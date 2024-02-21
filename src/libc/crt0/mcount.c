@@ -141,7 +141,7 @@ static void
 mcount_tick(int _x)
 {
   unsigned bin;
-  
+
   if(!mcount_skip) {
     bin = __djgpp_exception_state->__eip;
     if(bin >= h.low && bin < h.high) {
@@ -178,7 +178,7 @@ moncontrol(int mode)
     profiling_p = 0;
 
     /* disable timer */
-    new_values.it_value.tv_usec = new_values.it_interval.tv_usec = 0;   
+    new_values.it_value.tv_usec = new_values.it_interval.tv_usec = 0;
     new_values.it_value.tv_sec = new_values.it_interval.tv_sec = 0;
     setitimer(ITIMER_PROF, &new_values, NULL);
   }

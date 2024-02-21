@@ -182,7 +182,7 @@ direct_exec_tail_1(const char *program, const char *args,
   unsigned long env_la, env_e_la;
 #ifdef __ENABLE_TB_REALLOC
   unsigned long proxy_off = 0;
-  int initial_tbuf_selector = tbuf_selector; 
+  int initial_tbuf_selector = tbuf_selector;
 #endif
   size_t proxy_len = proxy ? strlen(proxy) + 1 : 0;
   int seen_proxy = 0, seen_cmdline = 0;
@@ -414,7 +414,7 @@ direct_exec_tail_1(const char *program, const char *args,
     s = strchr(temp, '\r');
     if (s) *s = 0;
     dosmemput(t2, 4, tbuf_beg + proxy_off + 13);
-    if (strlen(temp) > 23) 
+    if (strlen(temp) > 23)
       dosmemput(t2, 4, tbuf_beg + proxy_off + 23);
   }
 #endif
@@ -822,7 +822,7 @@ static int direct_exec(const char *program, char **argv, char **envp)
 
   if (argp - args > CMDLEN_LIMIT)
     errno = E2BIG;
-  
+
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
@@ -938,7 +938,7 @@ static int direct_pe_exec(const char *program, char **argv, char **envp)
 
   if (argp - varp > CMDLINE_MAX)
     errno = E2BIG;
-  
+
   tbuf_beg = tbuf_ptr = __tb;
   tbuf_len = __tb_size;
   tbuf_end = tbuf_beg + tbuf_len - 1;
@@ -1021,7 +1021,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
     }
 
     if (found_si)
-    {  
+    {
       sip = (char *)type->stubinfo;
     }
   }
@@ -1036,7 +1036,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
      into the environment).  Sigh...  */
   save_argv0 = argv[0];
   /* Since that's where we really found it */
-  argv[0] = unconst(program, char *); 
+  argv[0] = unconst(program, char *);
   /* Construct the DOS command tail */
   for (argc = 0; argv[argc]; argc++);
 
@@ -1117,7 +1117,7 @@ static int go32_exec(const char *program, char **argv, char **envp)
 
   argv[0] = save_argv0;
   proxy_cmdline = (char *)alloca (34);
-  
+
   sprintf(proxy_cmdline, "%s=%04x %04x %04x %04x %04x",
     __PROXY, (unsigned short)argc,
     (unsigned short)(tbuf_beg >> 4), (unsigned short)(rm_off & 0xffff),
@@ -1498,7 +1498,7 @@ __dosexec_find_on_path(const char *program, char *envp[], char *buf)
     for (ptr = program; *ptr; ptr++)
       *rp++ = *ptr;
     *rp = 0;
-    
+
     if (!has_dot || _use_lfn(buf))
       for (i = 0; interpreters[i].extension; i++)
       {

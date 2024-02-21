@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -38,7 +38,7 @@ TRAD_SYNOPSIS
 DESCRIPTION
 
 	<<acos>> computes the inverse cosine (arc cosine) of the input value.
-	Arguments to <<acos>> must be in the range @minus{}1 to 1. 
+	Arguments to <<acos>> must be in the range @minus{}1 to 1.
 
 	<<acosf>> is identical to <<acos>>, except that it performs
 	its calculations on <<floats>>.
@@ -62,14 +62,14 @@ QUICKREF ANSI SVID POSIX RENTRANT
  acos	 y,y,y,m
  acosf   n,n,n,m
 
-MATHREF  
+MATHREF
  acos, [-1,1], acos(arg),,,
  acos, NAN,    arg,DOMAIN,EDOM
 
 MATHREF
  acosf, [-1,1], acosf(arg),,,
  acosf, NAN,    argf,DOMAIN,EDOM
- 
+
 */
 
 /*

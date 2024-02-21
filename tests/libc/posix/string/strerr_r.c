@@ -29,14 +29,14 @@ int main(void)
     {
       char buf2[1024];
       int error_again2;
-      
+
       error_again2 = strerror_r(error_again, buf2, 1024 );
       if( error_again2 )
       {
 	printf("Error while trying to decode error from calling strerror_r(). I give up!\n"
 	       "Calling strerror: '%s'\n", strerror(error_again2));
       }
-      printf("Error while trying to decode error from calling fopen(): '%s'\n", 
+      printf("Error while trying to decode error from calling fopen(): '%s'\n",
 	     buf2);
     }
     else

@@ -35,6 +35,6 @@ there's not enough free memory, or @var{fname} is a NULL pointer.
 @subheading Example
 
 @example
- printf ("The parent of current directory is %s\n", 
+ printf ("The parent of current directory is %s\n",
          dirname (getcwd (0, PATH_MAX)));
 @end example

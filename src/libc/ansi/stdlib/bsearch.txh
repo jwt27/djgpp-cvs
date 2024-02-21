@@ -5,7 +5,7 @@
 @example
 #include <stdlib.h>
 
-void *bsearch (const void *key, const void *base, size_t num, 
+void *bsearch (const void *key, const void *base, size_t num,
   size_t size, int (*ptf)(const void *ckey, const void *celem));
 @end example
 
@@ -20,7 +20,7 @@ closer than the element to the beginning of the array, positive if
 it is closer to the end, and zero if the element matches the key.
 
 The array begins at address @var{base} and contains @var{num} elements,
-each of size @var{size}. 
+each of size @var{size}.
 
 @subheading Return Value
 

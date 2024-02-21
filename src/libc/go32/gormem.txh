@@ -16,13 +16,13 @@ Allocate a part of the conventional memory area (the first 640K).  Set
 the @code{size} field of @var{info} to the number of paragraphs
 requested (this is (size in bytes + 15)/16), then call.  The
 @code{rm_segment} field of @var{info} contains the segment of the
-allocated memory. 
+allocated memory.
 
 The memory may be resized with @code{_go32_dpmi_resize_dos_memory} and
-must be freed with @code{_go32_dpmi_free_dos_memory}. 
+must be freed with @code{_go32_dpmi_free_dos_memory}.
 
 If there isn't enough memory in the system, the @code{size} field of
-@var{info} has the largest available size, and an error is returned. 
+@var{info} has the largest available size, and an error is returned.
 
 See also @ref{dosmemput}, and @ref{dosmemget}.
 
@@ -61,7 +61,7 @@ int _go32_dpmi_free_dos_memory(_go32_dpmi_seginfo *info);
 
 This function frees the conventional memory allocated by
 @code{_go32_dpmi_allocate_real_mode_memory}.  You should pass it the
-same structure as was used to allocate it. 
+same structure as was used to allocate it.
 
 @subheading Return Value
 
@@ -95,11 +95,11 @@ int _go32_dpmi_resize_dos_memory(_go32_dpmi_seginfo *info);
 
 @xref{DPMI Overview}.
 
-The @var{info} structure is the same one used to allocate the memory. 
+The @var{info} structure is the same one used to allocate the memory.
 Fill in a new value for @code{size} and call this function.  If there is
 not enough memory to satisfy the request, the largest size is filled in
 to the @code{size} field, the memory is not resized, and this function
-fails. 
+fails.
 
 @subheading Return Value
 

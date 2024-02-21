@@ -21,8 +21,8 @@
 
 #include "xsymlink.h"
 
-/* How many levels of symbolic links process before thinking 
- * that we've found a link loop. 
+/* How many levels of symbolic links process before thinking
+ * that we've found a link loop.
  */
 #define MAX_SYMLINK 8
 
@@ -55,7 +55,7 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    }
 
    strcpy(__real_path, __symlink_path);
-   
+
    /* Take a shortcut by checking if source path is a simple file or
       directory. ``Simple'' in the sense of DOS, i.e. no /dev/env etc. */
    old_errno = errno;
@@ -68,11 +68,11 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
    	return 1;
    }
    errno = old_errno;   	
-   
-   /* Begin by start pointing at the first character and end pointing 
-      at the first path separator.  In the cases like "/foo" end will 
+
+   /* Begin by start pointing at the first character and end pointing
+      at the first path separator.  In the cases like "/foo" end will
       point to the next path separator.  In all cases, if there are no
-      path separators left, end will point to the end of string. 
+      path separators left, end will point to the end of string.
     */
    start = __real_path;
    end = strpbrk(__real_path, "/\\");
@@ -107,13 +107,13 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
             fn_buf[bytes_copied] = '\0';
             /* We can get /dev/env/SOMEVARIABLE as a symlink target. Do not
                restart processing in this case, but substitute /dev/env/SOMEVARIABLE
-               with expanded SOMEVARIABLE.  Note that SOMEVARIABLE may expand to 
+               with expanded SOMEVARIABLE.  Note that SOMEVARIABLE may expand to
                either relative or absolute path. */
             if (strncmp(fn_buf, "/dev/env/", strlen("/dev/env/")))
             	strcpy(resolved, fn_buf);
             else
             {
-            	/* Fill `resolved' with expanded env variable. Do this by 
+            	/* Fill `resolved' with expanded env variable. Do this by
             	   calling _put_path(). TODO: It could be nice to factor
             	   out some code from _put_path2() to separate function to expand
             	   /dev/env/FOO once, i.e. do not recurse as _put_path2() does.
@@ -121,8 +121,8 @@ int __solve_symlinks(const char * __symlink_path, char * __real_path)
             	   takes a performance hit there. */
             	_put_path(fn_buf);
             	dosmemget(__tb, FILENAME_MAX, resolved);
-            }               
-            
+            }
+
             /* FIXME: does absolute path check below work with chroot()? */
             if (((bytes_copied > 2) &&  (resolved[1] == ':')) ||
                 ((bytes_copied > 0) && ((resolved[0] == '/') ||

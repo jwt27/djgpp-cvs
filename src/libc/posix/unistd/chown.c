@@ -8,11 +8,11 @@
 #include <stdio.h>
 #include <sys/fsext.h>
 #include <libc/fsexthlp.h>
- 
+
 /* MS-DOS couldn't care less about file ownerships, so we could
    always succeed.  At least fail for non-existent files
    and for devices.  Let FSEXTs handle it, if they want. */
- 
+
 int
 chown(const char *path, uid_t owner, gid_t group)
 {

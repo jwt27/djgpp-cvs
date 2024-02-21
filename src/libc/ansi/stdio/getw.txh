@@ -21,7 +21,7 @@ environments, so it reads a 32-bit @code{int}, not a 16-bit
 
 The value read, or @code{EOF} for end-of-file or error.  Since
 @code{EOF} is a valid integer, you should use @code{feof} or
-@code{ferror} to detect this situation. 
+@code{ferror} to detect this situation.
 
 @subheading Portability
 

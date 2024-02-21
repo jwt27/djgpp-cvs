@@ -39,7 +39,7 @@ struct passwd {
   char *	pw_gecos;		/* Real name.  */
   char *	pw_passwd;		/* Password.  */
 };
-  
+
 struct passwd *	getpwuid(uid_t _uid);
 struct passwd *	getpwnam(const char *_name);
 

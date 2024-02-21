@@ -61,7 +61,7 @@ findnext(struct ffblk *ffblk)
           so check that AX != 0x7100.  E.G.: MSDOS 6.22 and DOSLFN 0.40.
           If not supported fall back on SFN API 0x4F.  */
 
-      unsigned long t1; 
+      unsigned long t1;
       /* Recover results */
       dosmemget(__tb, sizeof(struct ffblklfn), &ffblk32);
 

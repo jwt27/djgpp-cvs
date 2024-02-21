@@ -64,7 +64,7 @@ static __inline__ int __has_fd_properties(int _fd)
 
 static __inline__ void __set_fd_flags(int _fd, unsigned long _flags)
 {
-  __fd_properties[_fd]->flags |= _flags;  
+  __fd_properties[_fd]->flags |= _flags;
 }
 
 static __inline__ void __clear_fd_flags(int _fd, unsigned long _flags)

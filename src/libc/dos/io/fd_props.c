@@ -145,7 +145,7 @@ fd_properties *
 find_eq_filename(const fd_properties *fd)
 {
   fd_properties *ptr = active_fds;
-  
+
   while (ptr)
   {
     if ((ptr != fd) && (stricmp(fd->filename, ptr->filename) == 0))
@@ -175,8 +175,8 @@ alloc_fd_properties(void)
   ptr->prev = NULL;
   ptr->next = NULL;
   ptr->ref_count = 1;
-  
-  return ptr;   
+
+  return ptr;
 }
 
 /* Remove the object from the active list, and insert it into the cache.  */
@@ -204,7 +204,7 @@ static void
 remove_list(fd_properties **head_ptr, fd_properties *item)
 {
   fd_properties *head = *head_ptr;
-  
+
   if (item->prev)
   {
     (item->prev)->next = item->next;

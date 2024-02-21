@@ -40,7 +40,7 @@ static const char *to_be_printed[30][2] = {
    *  Radix is 2.
    *  Mantissa of 64 bits with explicit integer bit.  Makes possible exact hex representation of mantissa.
    *  Shifting binary point by 3 places to the right allows to represent the integer part of the mantissa
-   *  with one single hex digit. 
+   *  with one single hex digit.
    */
   {"0x7.fffffffffffffffp-(16382 + 3)",  "-0X7.FFFFFFFFFFFFFFFP-(16382 + 3)"},  /* 14: No precision given. Exact mantissa representation requested.  */
   {"0x0.123456789abcdefp-(16382 + 3)",  "-0X0.123456789ABCDEFP-(16382 + 3)"},  /* 15: No precision given. Exact mantissa representation requested.  */

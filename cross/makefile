@@ -20,7 +20,7 @@ PREFIX=/usr/home/cgjks1/test
 # Step 3: Tell me where to find the source code for gcc and binutils.
 #
 # This package has been tested with GCC 2.7.2 and BINTUILS 2.7.
-# It make not work with later or earlier versions. 
+# It make not work with later or earlier versions.
 #
 # If you untar both gcc-2.7.2.tar.gz and binutils-2.7.tar.gz in the
 # current directory then use the following paths.

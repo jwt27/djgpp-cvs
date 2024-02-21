@@ -14,11 +14,11 @@ int creat(const char *filename, mode_t mode);
 This function creates the given file and opens it for writing.  If the
 file exists, it is truncated to zero size, unless it is read-only, in
 which case the function fails.  If the file does not exist, it will be
-created read-only if @var{mode} does not have @code{S_IWUSR} set. 
+created read-only if @var{mode} does not have @code{S_IWUSR} set.
 
 @subheading Return Value
 
-A file descriptor >= 0, or a negative number on error. 
+A file descriptor >= 0, or a negative number on error.
 
 @subheading Portability
 

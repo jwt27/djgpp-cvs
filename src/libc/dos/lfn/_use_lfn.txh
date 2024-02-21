@@ -2,15 +2,15 @@
 @findex _use_lfn
 @vindex LFN@r{ environment variable}
 @subheading Syntax
- 
+
 @example
 #include <fcntl.h>
- 
+
 char _use_lfn(const char *path);
 @end example
- 
+
 @subheading Description
- 
+
 The @code{_use_lfn} function returns a nonzero value if the low level
 libc routines will use the @dfn{Long File Name} (LFN) functions provided
 with Windows 9x (and other advanced filesystems), when accessing files
@@ -53,7 +53,7 @@ DOS, and working with the short names under DOS will damage the long
 names when returning to Windows 95.
 
 @subheading Return Value
- 
+
 If LFN APIs are supported and should be used, it returns 1, else 0.
 
 Note that if the @code{_CRT0_FLAG_NO_LFN} bit is set, or @code{LFN} is
@@ -83,15 +83,15 @@ filesystem to be queried.
 @node _get_volume_info, file system
 @findex _get_volume_info
 @subheading Syntax
- 
+
 @example
 #include <fcntl.h>
- 
-unsigned _get_volume_info (const char *path, 
-                           int *max_file_len, int *max_path_len, 
+
+unsigned _get_volume_info (const char *path,
+                           int *max_file_len, int *max_path_len,
                            char *fsystype);
 @end example
- 
+
 @subheading Description
 
 This function returns filesystem information about the volume where
@@ -151,7 +151,7 @@ either @code{ENODEV} or @code{ENXIO}.
 @vindex FNCASE@r{ environment variable}
 @vindex LFN@r{ environment variable, and file-name case}
 @subheading Syntax
- 
+
 @example
 #include <fcntl.h>
 
@@ -193,7 +193,7 @@ otherwise.
 @node _lfn_gen_short_fname, file system
 @findex _lfn_gen_short_fname
 @subheading Syntax
- 
+
 @example
 #include <fcntl.h>
 
@@ -270,7 +270,7 @@ int dos_check (char *fname)
 @node _lfn_get_ftime, file system
 @findex _lfn_get_ftime
 @subheading Syntax
- 
+
 @example
 #include <fcntl.h>
 
@@ -350,7 +350,7 @@ If the underlying system calls fail, the function will return 0 and set
 @node _is_DOS83, file system
 @findex _is_DOS83
 @subheading Syntax
- 
+
 @example
 #include <fcntl.h>
 
@@ -359,25 +359,25 @@ int _is_DOS83 (const char *fname);
 
 @subheading Description
 
-This function checks the filename pointed to by @var{fname} to 
-determine if it is a standard short (8+3) form file name.  The 
+This function checks the filename pointed to by @var{fname} to
+determine if it is a standard short (8+3) form file name.  The
 filename should only include the name part of the file.  It is
 expected the filename will contain a valid long or short file
-name (no validation is done to exclude path characters or 
+name (no validation is done to exclude path characters or
 characters always illegal in any file name).  Note: If the filename
 contains lower case characters the name is considered to be a
 long name and not a standard short name (and the function will
 return 0).
 
-The function will return 0 (failure) if there are more than 8 
-characters before a period, more than 3 characters after a period, 
-more than one period, starts with a period, any lower case characters, 
-or any of the special characters @samp{+} @samp{,} @samp{;} @samp{=} @samp{[} @samp{]}, or a space.  The 
+The function will return 0 (failure) if there are more than 8
+characters before a period, more than 3 characters after a period,
+more than one period, starts with a period, any lower case characters,
+or any of the special characters @samp{+} @samp{,} @samp{;} @samp{=} @samp{[} @samp{]}, or a space.  The
 special names @file{.} and @file{..} are exceptions and will return success.
 
-This function could be called to determine if a filename is valid on 
-DOS before long file name support.  If this function returns 1 the 
-filename probably does not have a long name entry on a FAT file 
+This function could be called to determine if a filename is valid on
+DOS before long file name support.  If this function returns 1 the
+filename probably does not have a long name entry on a FAT file
 system.  The library internally calls this function to determine
 if a file should have its name lower cased when @pxref{_preserve_fncase} is
 false.

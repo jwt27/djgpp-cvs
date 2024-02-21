@@ -11,7 +11,7 @@ int memcmp(const void *s1, const void *s2, size_t num);
 @subheading Description
 
 This function compares two regions of memory, at @var{s1} and @var{s2},
-for @var{num} bytes. 
+for @var{num} bytes.
 
 @subheading Return Value
 

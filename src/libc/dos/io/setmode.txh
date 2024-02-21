@@ -14,7 +14,7 @@ int setmode(int file, int mode);
 This function sets the mode of the given @var{file} to @var{mode}, which
 is either @code{O_TEXT} or @code{O_BINARY}.  It will also set the file
 into either cooked or raw mode accordingly, and set any @code{FILE*}
-objects that use this file into text or binary mode. 
+objects that use this file into text or binary mode.
 
 When called to put @var{file} that refers to the console into binary
 mode, @code{setmode} will disable the generation of the signals

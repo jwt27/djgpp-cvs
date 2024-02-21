@@ -339,7 +339,7 @@ glob2(const char *pattern, char *epathbuf,  /* both point *after* the slash */
       }
     }
     done = findnext(&ff);
-  } 
+  }
 
   return 0;
 }
@@ -367,7 +367,7 @@ glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _
   preserve_case = _preserve_fncase();
   slash = '/';
 
-  if (!(_flags & GLOB_APPEND)) 
+  if (!(_flags & GLOB_APPEND))
     {
       _pglob->gl_pathc = 0;
       _pglob->gl_pathv = NULL;

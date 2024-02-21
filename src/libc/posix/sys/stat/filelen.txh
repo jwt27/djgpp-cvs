@@ -29,7 +29,7 @@ file's length is larger than a 32-bit @code{unsigned int} can hold,
 @subheading Example
 
 @example
-  printf("Size of file to which STDIN is redirected is %ld\n", 
+  printf("Size of file to which STDIN is redirected is %ld\n",
           filelength(0));
 @end example
 

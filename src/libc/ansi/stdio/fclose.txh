@@ -14,7 +14,7 @@ This function closes the given @var{file}.
 
 @subheading Return Value
 
-Zero on success, else @code{EOF}. 
+Zero on success, else @code{EOF}.
 
 @subheading Portability
 

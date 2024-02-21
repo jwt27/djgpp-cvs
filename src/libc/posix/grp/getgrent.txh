@@ -66,7 +66,7 @@ struct group *fgetgrent(FILE *file);
 @subheading Description
 
 This function, in MS-DOS, is exactly the same as @code{getgrent}
-(@pxref{getgrent}). 
+(@pxref{getgrent}).
 
 @subheading Portability
 
@@ -111,7 +111,7 @@ void endgrent(void);
 @subheading Description
 
 This function should be called after all calls to @code{getgrent},
-@code{getgrgid}, or @code{getgrnam}. 
+@code{getgrgid}, or @code{getgrnam}.
 
 @subheading Return Value
 
@@ -138,7 +138,7 @@ extern struct group *getgrgid(int gid);
 
 @subheading Description
 
-This function returns the group entry that matches @var{gid}. 
+This function returns the group entry that matches @var{gid}.
 @xref{getgrent}, for the description of @code{struct group}.
 
 @subheading Return Value
@@ -162,7 +162,7 @@ struct group *getgrnam(char *name);
 
 @subheading Description
 
-This function returns the group entry for the group named @var{name}. 
+This function returns the group entry for the group named @var{name}.
 @xref{getgrent}, for the description of @code{struct group}.
 
 @subheading Return Value

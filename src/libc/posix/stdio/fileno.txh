@@ -11,7 +11,7 @@ int fileno(FILE *file);
 @subheading Description
 
 This function returns the raw file descriptor number that @var{file}
-uses for I/O. 
+uses for I/O.
 
 @subheading Return Value
 

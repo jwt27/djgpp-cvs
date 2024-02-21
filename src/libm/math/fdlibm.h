@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -35,7 +35,7 @@
 
 #define	HUGE	((float)3.40282346638528860e+38)
 
-/* 
+/*
  * set X_TLOSS = pi*2**52, which is possibly defined in <values.h>
  * (one may replace the following line by "#include <values.h>")
  */
@@ -160,9 +160,9 @@ extern int   __kernel_rem_pio2f __P((float*,float*,int,int,int,const __int32_t*)
 
 #ifdef __IEEE_BIG_ENDIAN
 
-typedef union 
+typedef union
 {
-  struct 
+  struct
   {
     __uint32_t msw;
     __uint32_t lsw;
@@ -174,9 +174,9 @@ typedef union
 
 #ifdef __IEEE_LITTLE_ENDIAN
 
-typedef union 
+typedef union
 {
-  struct 
+  struct
   {
     __uint32_t lsw;
     __uint32_t msw;

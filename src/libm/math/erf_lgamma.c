@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -17,9 +17,9 @@
 #include "fdlibm.h"
 
 #ifdef __STDC__
-static const float 
+static const float
 #else
-static float 
+static float
 #endif
 two23=  8.3886080000e+06, /* 0x4b000000 */
 half=  5.0000000000e-01, /* 0x3f000000 */
@@ -132,9 +132,9 @@ static float zero=  0.0000000000e+00;
         }
 	switch (n) {
 	    case 0:   y =  __kernel_sinf(pi*y,zero,0); break;
-	    case 1:   
+	    case 1:
 	    case 2:   y =  __kernel_cosf(pi*((float)0.5-y),zero); break;
-	    case 3:  
+	    case 3:
 	    case 4:   y =  __kernel_sinf(pi*(one-y),zero,0); break;
 	    case 5:
 	    case 6:   y = -__kernel_cosf(pi*(y-(float)1.5),zero); break;
@@ -236,7 +236,7 @@ static float zero=  0.0000000000e+00;
 	    y = z*z;
 	    w = w0+z*(w1+y*(w2+y*(w3+y*(w4+y*(w5+y*w6)))));
 	    r = (x-half)*(t-one)+w;
-	} else 
+	} else
     /* 2**58 <= x <= inf */
 	    r =  x*(__ieee754_logf(x)-one);
 	if(hx<0) r = nadj - r;

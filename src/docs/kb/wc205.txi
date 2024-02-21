@@ -81,7 +81,7 @@ environment variables: @env{LC_CTYPE}, @env{LC_COLLATE},
 @env{LC_NUMERIC}, @env{LC_MONETARY}, @env{LC_TIME}, as well as
 @env{LC_ALL} and also @env{LANG}, which provide defaults for all
 categories not explicitly given.  @acronym{POSIX} @env{LC_MESSAGES} are not
-supported.  
+supported.
 Due to limitations of the @file{country.sys} driver only
 the current user locale @code{""} or its name in the @acronym{POSIX} form
 @code{"@var{LL}_@var{TT}@var{ECU}.@var{CP}"}.

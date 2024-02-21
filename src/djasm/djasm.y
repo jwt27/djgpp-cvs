@@ -9,7 +9,7 @@
 %{
 
 #define YYDEBUG 1
-  
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -728,7 +728,7 @@ line
 	| ARITH2 REG8 ',' const		{ if ($2)
 					      {emitb(0x80), modrm(3, $1, $2);}
 					  else
-					      modrm (0,$1,4); 
+					      modrm (0,$1,4);
 					  emitb	($4);
 					}
 	| ARITH2 REG8 ',' REG8		{ emitb($1*8); modrm(3, $4, $2); }
@@ -943,8 +943,8 @@ line
 	| MOV regmem ',' REG8		{ if ($4==0 && _modrm.regs==0)
 					      movacc=0xa2;
 					  else
-					      emitb(0x88); 
-					  reg($4); 
+					      emitb(0x88);
+					  reg($4);
 					}
 	| MOV REG8 ',' regmem		{ if ($2==0 && _modrm.regs==0)
 					      movacc=0xa0;
@@ -959,7 +959,7 @@ line
 					      movacc=0xa3;
 					  else
 					      emitb(0x89);
-					  reg($4); 
+					  reg($4);
 					}
 	| MOV REG16 ','	regmem		{ if ($2==0 && _modrm.regs==0)
 					      movacc=0xa1;
@@ -1119,7 +1119,7 @@ line
 					      emitb(0x90+$2+$4);
 					  else
 					      {emitb(0x87); modrm(3, $2, $4); }
-					}      
+					}
 	| XCHG REG16 ',' regmem		{ emitb(0x87); reg($2); }
 	| XCHG regmem ',' REG16		{ emitb(0x87); reg($4); }
 	| XCHG REG32 ',' REG32		{ emitb(0x66);
@@ -1196,7 +1196,7 @@ struct_db
 					  }
 					}
 	;
- 
+
 
 dbitem
 	: const				{ emitb($1); }
@@ -1450,7 +1450,7 @@ int main(int argc, char **argv)
   exe[22] = 0;			/* relative CS */
   exe[23] = 0;
 
-  /* These must be zero, otherwise they are interpreted as an offset to 
+  /* These must be zero, otherwise they are interpreted as an offset to
      a "new executable" header. */
   exe[60] = 0;
   exe[61] = 0;
@@ -1613,7 +1613,7 @@ int main(int argc, char **argv)
       break;
   }
   fclose(outfile);
-  
+
   if (argc > 3)
   {
     FILE *mapfile = fopen(argv[3], "w");
@@ -2378,7 +2378,7 @@ int yylex1(void)
         return PC;
       op.name = strbuf;
       opp = bsearch (&op,
-		     opcodes, 
+		     opcodes,
 		     sizeof (opcodes) / sizeof (opcodes[0]),
 		     sizeof (opcodes[0]),
 		     opcode_compare);
@@ -2728,7 +2728,7 @@ void do_include(char *fname)
 {
   FILE *f;
   FileStack *fs;
-  
+
   f = fopen(fname, "r");
   if (!f)
   {
@@ -2900,7 +2900,7 @@ void do_linkcoff (char *filename)
 		  rp->r_vaddr + textbase,
 		  rp->r_type,
 		  symbol[rp->r_symndx].e_scnum,
-		  s ? s->value : 0, 
+		  s ? s->value : 0,
 		  vaddr,
 		  p);
 #endif
@@ -3025,7 +3025,7 @@ void write_LNAMES(FILE *outfile, ...)
 
   va_start(names,outfile);
   name=va_arg(names,char*);
-  
+
   while (name)
     {
       int len=strlen(name);

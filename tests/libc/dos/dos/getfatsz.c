@@ -14,12 +14,12 @@
 int main(int argc, char *argv[])
 {
   int ret;
-  
+
   if( argc == 2
-   && 'A' <= argv[1][0] 
+   && 'A' <= argv[1][0]
    && argv[1][0] <= 'Z' )
   {
-    
+
     ret = _get_fat_size(argv[1][0] - 'A' + 1);
     fprintf(stderr, "_get_fat_size returned %d.\n", ret);
 
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   else
   {
     fprintf(stderr, "%s: run like this '%s C'.\n", argv[0], argv[0]);
-    
+
     return(1);
   }
 

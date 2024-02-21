@@ -114,10 +114,10 @@ of the xfer buffer in CX. Aaaaargh
 #define _IOWR(x,y,t)    (int)(IOC_INOUT|((sizeof(t)&IOCPARM_MASK)<<16)|(x<<8)|y)
 #endif /* _IO */
 
-/* 
- * window size structure used with TXSETWIN and TXGETWIN.  This is 
- * exactly the same as the Berkeley structure and can be used with 
- * TIOCSWINSZ and TIOCGWINSZ -- in fact they are defined to be the 
+/*
+ * window size structure used with TXSETWIN and TXGETWIN.  This is
+ * exactly the same as the Berkeley structure and can be used with
+ * TIOCSWINSZ and TIOCGWINSZ -- in fact they are defined to be the
  * same.
  */
 struct winsize {

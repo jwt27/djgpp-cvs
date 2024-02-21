@@ -5,7 +5,7 @@
 @smallexample
 #include <dpmi.h>
 
-int __dpmi_map_device_in_memory_block(__dpmi_meminfo *info, 
+int __dpmi_map_device_in_memory_block(__dpmi_meminfo *info,
                                       unsigned long *physaddr);
 @end smallexample
 

@@ -20,7 +20,7 @@ extern "C" {
 
 #include <sys/version.h>
 #include <sys/djtypes.h>
-  
+
 #define _IOFBF    	00001  /*  File is full buffered.  */
 #define _IONBF    	00002  /*  File is not buffered.  */
 #define _IOLBF    	00004  /*  File is line buffered.  */
@@ -64,7 +64,7 @@ __DJ_ssize_t
 /* Note that the definitions of these fields are NOT guaranteed!  They
    may change with any release without notice!  The fact that they
    are here at all is to comply with ANSI specifictions. */
-   
+
 typedef struct {
   ssize_t  _cnt;
   char    *_ptr;

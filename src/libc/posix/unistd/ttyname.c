@@ -12,4 +12,4 @@ ttyname(int fildes)
     return dev_con;
   else
     return 0;
-}    
+}

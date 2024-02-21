@@ -72,7 +72,7 @@ do_get_current_directory:
     {
       *out = '/';
       return out + strlen(out);
-    } 
+    }
     else if (_os_trueversion != 0x532 || !use_lfn)
       /* Root path, don't insert "/", it'll be added later */
       return out;
@@ -89,7 +89,7 @@ do_get_current_directory:
   r.x.cx = 0x8002;	/* Get Long Path Name, using subst drive basis */
   r.x.es = __tb_segment;
   r.x.di = __tb_offset + FILENAME_MAX;
-  
+
   tmpbuf[0] = drive_number + 'A';
   tmpbuf[1] = ':';
   tmpbuf[2] = '.';
@@ -114,7 +114,7 @@ do_get_current_directory:
         return out + strlen(out);
       }
     }
-  } 
+  }
 #ifdef TEST
   else
   {
@@ -163,7 +163,7 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
   int		mbsize;
   char		*op_limit;
   int		previous_errno;
- 
+
   previous_errno = errno;
   use_lfn = _use_lfn(in);
   errno = previous_errno;  /*  Do not signal that LFN API is not available (ENOSYS).  */
@@ -234,7 +234,7 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
     if (*ip == '.' && *(ip + 1) == '.' && is_term(*(ip + 2)))
     {
       ip += 2;
-      if(out[2] == '.' && *(op - 1) == '.') 
+      if(out[2] == '.' && *(op - 1) == '.')
       { 				/* relative path not skipped */
         *op++ = '/';
         *op++ = '.';

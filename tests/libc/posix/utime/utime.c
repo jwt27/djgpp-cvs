@@ -43,6 +43,6 @@ main(void)
   printf("utime'd file %d seconds old\n", s_after.st_mtime - now);
 
   remove("utime.dat");
-  
+
   return 0;
 }

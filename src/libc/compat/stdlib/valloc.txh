@@ -15,7 +15,7 @@ pointer is a multiple of the CPU page size which is 4096 bytes.
 
 @subheading Return Value
 
-A pointer to a newly allocated block of memory. 
+A pointer to a newly allocated block of memory.
 
 @subheading Portability
 

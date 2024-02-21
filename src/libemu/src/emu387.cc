@@ -313,7 +313,7 @@ static void exception(int n)
     else
       eprintf("80387 Exception: 0x%04x!\r\n", n);
     emu_printall();
-    
+
     longjmp(jumpbuf,1);
   }
 }
@@ -1422,7 +1422,7 @@ static void emu_02()
           break;
       }
     setcc(f);
-    
+
   }
   else
   {
@@ -1494,7 +1494,7 @@ static void emu_03()
           break;
       }
     setcc(f);
-    
+
   }
   else
   {
@@ -1936,7 +1936,7 @@ static void fyl2x()
     st().tag = TW_E;
     top++;
     return;
-  }  
+  }
   exponent = (long)(z.exp - EXP_BIAS);
   z.exp=EXP_BIAS;
   if (compare(z, CONST_SQRT2) == COMP_A_GT_B)
@@ -1961,7 +1961,7 @@ static void fyl2x()
   pow = x;
   sum = x;
   r_mul(x, x, xsquare);
-  
+
   for (long i=3; i<25; i+=2)
   {
     r_mul(pow, xsquare, temp);
@@ -2964,7 +2964,7 @@ static void emu_42()
     return;
   if (modrm > 0277)
   {
-    // 
+    //
     emu_bad();
   }
   else
@@ -3234,7 +3234,7 @@ static void emu_54()
           break;
       }
     setcc(f);
-    
+
   }
   else
   {
@@ -3292,7 +3292,7 @@ static void emu_55()
           break;
       }
     setcc(f);
-    
+
   }
   else
   {
@@ -3472,7 +3472,7 @@ static void emu_63()
           break;
       }
     setcc(f);
-    
+
   }
   else
   {

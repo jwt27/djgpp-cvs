@@ -15,7 +15,7 @@ This function sorts the given array in place.  @var{base} is the address
 of the first of @var{numelem} array entries, each of size @var{size}
 bytes.  @code{qsort} uses the supplied function @var{cmp} to determine
 the sort order for any two elements by passing the address of the two
-elements and using the function's return address. 
+elements and using the function's return address.
 
 The return address of the function indicates the sort order:
 
@@ -24,16 +24,16 @@ The return address of the function indicates the sort order:
 @item Negative
 
 Element @var{e1} should come before element @var{e2} in the resulting
-array. 
+array.
 
 @item Positive
 
 Element @var{e1} should come after element @var{e2} in the resulting
-array. 
+array.
 
 @item Zero
 
-It doesn't matter which element comes first in the resulting array. 
+It doesn't matter which element comes first in the resulting array.
 
 @end table
 

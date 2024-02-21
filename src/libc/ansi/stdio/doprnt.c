@@ -1282,7 +1282,7 @@ __grouping_format(char *string_start, char *string_end, char *buffer_end, int fl
   /*
    *  Format the string representing the integer portion of a decimal
    *  conversion using non-mometary thousands' grouping characters.
-   *  It is assumed that STRING_START points at the beginning and 
+   *  It is assumed that STRING_START points at the beginning and
    *  STRING_END points to the end of the string to be formatted.
    *  BUFFER_END points to the end of the buffer that will store
    *  the formated string.

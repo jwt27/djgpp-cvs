@@ -2682,7 +2682,7 @@ mkdirs(char *argname)
 				*/
 				if (mkdir(name, MKDIR_UMASK) != 0) {
 					const char *e = strerror(errno);
-  
+
 					if (errno != EEXIST || !itsdir(name)) {
 						(void) fprintf(stderr,
   _("%s: Can't create directory %s: %s\n"),

@@ -17,7 +17,7 @@ like this [+|-]0xH.HHHp[+|-]DDD.  It also recognises (case-insensitively)
 ``Inf'', ``Infinity'', ``NaN'', ``NaN(@var{optional decimal-number})'',
 ``NaN(@var{optional octal-number})'' and ``NaN(@var{optional hex-number})''.
 If @var{endp} is not a null pointer, a pointer to the first unconverted
-character will be stored in the location pointed to by @var{endp}.  
+character will be stored in the location pointed to by @var{endp}.
 
 @subheading Return Value
 

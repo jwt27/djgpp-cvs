@@ -18,7 +18,7 @@ synchronized with the disk image.  Works by calling DOS function 0x68.
 
 @subheading Return Value
 
-Zero on success, nonzero on failure. 
+Zero on success, nonzero on failure.
 
 @subheading Portability
 

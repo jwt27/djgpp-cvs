@@ -662,7 +662,7 @@ static int iscommand(string_type *s, unsigned int idx)
 
 static int copy_past_newline(string_type *s, unsigned int idx, string_type *dst)
 {
-    while (at(s,idx) && at(s,idx) != '\n') 
+    while (at(s,idx) && at(s,idx) != '\n')
     {
 	catchar(dst, at(s,idx));
 	idx++;
@@ -761,7 +761,7 @@ static void indent(void)
     int ol =0;
     init_string(&out);
     while (at(tos,idx)) {
-	switch (at(tos,idx)) 
+	switch (at(tos,idx))
 	{
 	case '\n':
 	    cattext(&out,"\n");
@@ -1016,7 +1016,7 @@ static dict_type *newentry(char *word)
 
 static unsigned int add_to_definition(dict_type *entry, stinst_type word)
 {
-    if (entry->code_end == entry->code_length) 
+    if (entry->code_end == entry->code_length)
     {
 	entry->code_length += 2;
 	entry->code =
@@ -1050,7 +1050,7 @@ static void compile(char *string)
     string = nextword(string, &word);
     while (string && *string && word[0])
     {
-	if (strcmp(word,"var")==0) 
+	if (strcmp(word,"var")==0)
 	{
 	  string=nextword(string, &word);
 	  add_var(word);
@@ -1065,7 +1065,7 @@ static void compile(char *string)
 
 	    d = newentry(word);
 	    string = nextword(string, &word);
-	    while (word[0] != ';' ) 
+	    while (word[0] != ';' )
 	    {
 		switch (word[0])
 		{
@@ -1166,7 +1166,7 @@ int main(int ac, char *av[])
     add_intrinsic("push_text", push_text);
     add_intrinsic("!", bang);
     add_intrinsic("@", atsign);
-    add_intrinsic("hello",hello);    
+    add_intrinsic("hello",hello);
     add_intrinsic("skip_past_newline", skip_past_newline );
     add_intrinsic("catstr", icatstr );
     add_intrinsic("copy_past_newline", icopy_past_newline );
@@ -1223,7 +1223,7 @@ int main(int ac, char *av[])
 
 		init_string(&b);
 		f  = fopen(av[i],"r");
-		if (!f) 
+		if (!f)
 		{
 		  fprintf(stderr,"Can't open the input file %s\n",av[i]);
 		  return 33;

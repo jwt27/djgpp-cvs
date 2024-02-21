@@ -17,7 +17,7 @@ do_headers(void)
 {
   printf(" ftell   tell  flags  cnt     ptr     base    bufsiz   remarks  \n");
   printf("------- ------ ----- ----- -------- -------- -------- --------- \n");
-   
+
 }
 
 void

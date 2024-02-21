@@ -66,7 +66,7 @@ int access(const char *fn, int flags)
     errno = ENOENT;
     return -1;
   }
- 
+
   if (attr & 0x10)		/* directory? */
       return 0;			/* directories always OK */
   if (flags & D_OK)

@@ -108,7 +108,7 @@ startup environment to a particular program.
 If set, @code{argv[0]} is left in whatever case it was.  If not set, all
 characters are mapped to lower case.  Note that if the @code{argv0}
 field in the @dfn{stubinfo} structure is present, the case of that part
-of @code{argv[0]} is not affected. 
+of @code{argv[0]} is not affected.
 
 @item _CRT0_FLAG_USE_DOS_SLASHES
 
@@ -118,7 +118,7 @@ not set, all reverse slashes are replaced with unix-style slashes.
 @item _CRT0_FLAG_DROP_EXE_SUFFIX
 
 If set, the @file{.exe} suffix is removed from the file name component
-of @code{argv[0]}.  If not set, the suffix remains. 
+of @code{argv[0]}.  If not set, the suffix remains.
 
 @item _CRT0_FLAG_DROP_DRIVE_SPECIFIER
 
@@ -130,7 +130,7 @@ specifier remains.
 
 If set, response files (e.g. @file{@@gcc.rf}) are not expanded.  If not
 set, the contents of the response files are used to create arguments.
-Note that if the file does not exist, that argument remains unexpanded. 
+Note that if the file does not exist, that argument remains unexpanded.
 
 @item _CRT0_FLAG_KEEP_QUOTES
 
@@ -167,7 +167,7 @@ all).
 @item _CRT0_FLAG_NMI_SIGNAL
 
 If set, enabled capture of NMI in exception code.  This may cause problems
-with laptops and "green" boxes which use it to wake up.  Default is to 
+with laptops and "green" boxes which use it to wake up.  Default is to
 leave NMIs alone and pass through to real mode code.  You decide.
 
 @item _CRT0_FLAG_NO_LFN
@@ -204,7 +204,7 @@ change in different libc releases.
 If set, non-move @code{sbrk} should discard (ignore) memory blocks which are
 returned by DPMI which would require address wrap to access (at addresses
 below the CS/DS base address).  This bit is automatically set on Windows NT
-systems which require it.  It may be manually set on other systems which 
+systems which require it.  It may be manually set on other systems which
 don't require it to retain a more normal memory space layout and better
 memory protection.  This bit can be set but should never be cleared.
 

@@ -14,11 +14,11 @@ This function closes @var{file} if it was open, then opens a new
 file like @code{fopen(filename, mode)} (@pxref{fopen})
 but it reuses @var{file}.
 
-This is useful to, for example, associate @code{stdout} with a new file. 
+This is useful to, for example, associate @code{stdout} with a new file.
 
 @subheading Return Value
 
-The new file, or @code{NULL} on error. 
+The new file, or @code{NULL} on error.
 
 @subheading Portability
 

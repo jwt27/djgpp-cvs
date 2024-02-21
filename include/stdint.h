@@ -58,7 +58,7 @@ __extension__ typedef unsigned long long int uintmax_t;
 #define INT_FAST8_MAX	 127
 #define UINT_FAST8_MAX	 255
 #define INT8_MAX	 127
-#define UINT8_MAX	 255 
+#define UINT8_MAX	 255
 #define INT_LEAST8_MIN	 (-128)
 #define INT_FAST8_MIN	 (-128)
 #define INT8_MIN	 (-128)

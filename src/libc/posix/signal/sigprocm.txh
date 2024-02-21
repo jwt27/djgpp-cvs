@@ -46,7 +46,7 @@ signal, so when the signal is unblocked, its handler will be called at
 most once.
 
 It is not possible to block CPU exceptions such as Page Fault, General
-Protection Fault etc. (mapped to @code{SIGSEGV} signal); for these, 
+Protection Fault etc. (mapped to @code{SIGSEGV} signal); for these,
 @code{sigprocmask} will behave as if the call succeeded, but when an
 exception happens, the signal handler will be called anyway (the default
 handler will abort the program).

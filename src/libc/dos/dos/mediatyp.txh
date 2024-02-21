@@ -11,15 +11,15 @@ int _media_type( const int drive );
 @subheading Description
 
 This function checks if drive number @var{drive} (1 == A:, 2 == B:,
-etc., 0 == default drive) is fixed or removable.  
+etc., 0 == default drive) is fixed or removable.
 
 @code{_media_type} should only be called after you are sure the drive
 isn't a CD-ROM or a RAM disk, since these might fool you with this
-call.  
+call.
 
 @subheading Return Value
 
-1 if the drive is a fixed disk, 0 if it is removable. -1 on error.  
+1 if the drive is a fixed disk, 0 if it is removable. -1 on error.
 
 @subheading Portability
 

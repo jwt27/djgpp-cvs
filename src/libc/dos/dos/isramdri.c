@@ -17,13 +17,13 @@ Description:
 
 This function checks if drive number @var{drive} (1 == A:, 2 == B:,
 etc.) is a RAM disk.  It is done by checking if the number of FAT
-copies (in the Device Parameter Block) is 1, which is typical of 
+copies (in the Device Parameter Block) is 1, which is typical of
 RAM disks.  This doesn't @emph{have} to be so, but if it's good
 enough for Andrew Schulman et al (@cite{Undocumented DOS, 2nd
-edition}), we can use this as well.  
+edition}), we can use this as well.
 
-Return Value: 
-1 if the drive is a RAM drive, otherwise 0.  
+Return Value:
+1 if the drive is a RAM drive, otherwise 0.
 */
 int
 _is_ram_drive(int drive_num)

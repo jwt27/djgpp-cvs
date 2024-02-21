@@ -95,7 +95,7 @@ do_getcwd:
     r.x.es = __tb_segment;
     r.x.si = __tb_offset + FILENAME_MAX;
     r.x.di = __tb_offset;
-  
+
     _farnspokew(__tb + FILENAME_MAX, '.');	/* Null terminated */
     __dpmi_int(0x21, &r);
 

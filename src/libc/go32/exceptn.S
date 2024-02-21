@@ -117,7 +117,7 @@ not_forced:
 	movl	___djgpp_exception_state_ptr, %eax
 	movl	%eax, PREVEXC(%ebx)
 
-/* Stack clean at this point, DS:[EBX] points to exception_state, all 
+/* Stack clean at this point, DS:[EBX] points to exception_state, all
    register information saved.  Now get the info on stack. */
 
 	pushl	%ebp
@@ -450,7 +450,7 @@ ___djgpp_i24:
 ___djgpp_iret:
 	iret
 
-/* Code to stop execution ASAP, EAX destroyed.  Make DS/ES/SS invalid. 
+/* Code to stop execution ASAP, EAX destroyed.  Make DS/ES/SS invalid.
    Fake exception value is passed in AL and moved into the "forced" variable.
    This is used to convert a HW interrupt into something we can transfer
    control away from via longjmp or exit(), common with SIGINT, SIGFPE, or

@@ -8,12 +8,12 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
-/* 
+/*
  * wrapper sinhf(x)
  */
 
@@ -32,7 +32,7 @@
 #else
 	_float_long_union ux;
 	_float_long_union uz;
-	float z; 
+	float z;
 
 	ux.f = x;
 

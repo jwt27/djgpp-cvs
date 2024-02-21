@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -34,9 +34,9 @@ TRAD_SYNOPSIS
 	float <[x]>;
 
 DESCRIPTION
-<<log1p>> calculates 
+<<log1p>> calculates
 @tex
-$ln(1+x)$, 
+$ln(1+x)$,
 @end tex
 the natural logarithm of <<1+<[x]>>>.  You can use <<log1p>> rather
 than `<<log(1+<[x]>)>>' for greater precision when <[x]> is very
@@ -57,9 +57,9 @@ Interface Definition (Issue 2).
 
 /* double log1p(double x)
  *
- * Method :                  
- *   1. Argument Reduction: find k and f such that 
- *			1+x = 2^k * (1+f), 
+ * Method :
+ *   1. Argument Reduction: find k and f such that
+ *			1+x = 2^k * (1+f),
  *	   where  sqrt(2)/2 < 1+f < sqrt(2) .
  *
  *      Note. If k=0, then f=x is exact. However, if k!=0, then f
@@ -73,8 +73,8 @@ Interface Definition (Issue 2).
  *	Let s = f/(2+f) ; based on log(1+f) = log(1+s) - log(1-s)
  *		 = 2s + 2/3 s**3 + 2/5 s**5 + .....,
  *	     	 = 2s + s*R
- *      We use a special Reme algorithm on [0,0.1716] to generate 
- * 	a polynomial of degree 14 to approximate R The maximum error 
+ *      We use a special Reme algorithm on [0,0.1716] to generate
+ * 	a polynomial of degree 14 to approximate R The maximum error
  *	of this polynomial approximation is bounded by 2**-58.45. In
  *	other words,
  *		        2      4      6      8      10      12      14
@@ -82,21 +82,21 @@ Interface Definition (Issue 2).
  *  	(the values of Lp1 to Lp7 are listed in the program)
  *	and
  *	    |      2          14          |     -58.45
- *	    | Lp1*s +...+Lp7*s    -  R(z) | <= 2 
+ *	    | Lp1*s +...+Lp7*s    -  R(z) | <= 2
  *	    |                             |
  *	Note that 2s = f - s*f = f - hfsq + s*hfsq, where hfsq = f*f/2.
  *	In order to guarantee error in log below 1ulp, we compute log
  *	by
  *		log1p(f) = f - (hfsq - s*(hfsq+R)).
  *	
- *	3. Finally, log1p(x) = k*ln2 + log1p(f).  
+ *	3. Finally, log1p(x) = k*ln2 + log1p(f).
  *		 	     = k*ln2_hi+(f-(hfsq-(s*(hfsq+R)+k*ln2_lo)))
- *	   Here ln2 is split into two floating point number: 
+ *	   Here ln2 is split into two floating point number:
  *			ln2_hi + ln2_lo,
  *	   where n*ln2_hi is always exact for |n| < 2000.
  *
  * Special cases:
- *	log1p(x) is NaN with signal if x < -1 (including -INF) ; 
+ *	log1p(x) is NaN with signal if x < -1 (including -INF) ;
  *	log1p(+INF) is +INF; log1p(-1) is -INF with signal;
  *	log1p(NaN) is that NaN with no signal.
  *
@@ -105,9 +105,9 @@ Interface Definition (Issue 2).
  *	1 ulp (unit in the last place).
  *
  * Constants:
- * The hexadecimal values are the intended ones for the following 
- * constants. The decimal values may be used, provided that the 
- * compiler will convert from decimal to binary accurately enough 
+ * The hexadecimal values are the intended ones for the following
+ * constants. The decimal values may be used, provided that the
+ * compiler will convert from decimal to binary accurately enough
  * to produce the hexadecimal values shown.
  *
  * Note: Assuming log() return accurate answer, the following
@@ -173,11 +173,11 @@ static double zero = 0.0;
 	    }
 	    if(hx>0||hx<=((__int32_t)0xbfd2bec3U)) {
 		k=0;f=x;hu=1;}	/* -0.2929<x<0.41422 */
-	} 
+	}
 	if (hx >= 0x7ff00000) return x+x;
 	if(k!=0) {
 	    if(hx<0x43400000) {
-		u  = 1.0+x; 
+		u  = 1.0+x;
 		GET_HIGH_WORD(hu,u);
 	        k  = (hu>>20)-1023;
 	        c  = (k>0)? 1.0-(u-x):x-(u-1.0);/* correction term */
@@ -192,7 +192,7 @@ static double zero = 0.0;
 	    if(hu<0x6a09e) {
 	        SET_HIGH_WORD(u,hu|0x3ff00000);	/* normalize u */
 	    } else {
-	        k += 1; 
+	        k += 1;
 		SET_HIGH_WORD(u,hu|0x3fe00000);	/* normalize u/2 */
 	        hu = (0x00100000-hu)>>2;
 	    }
@@ -200,14 +200,14 @@ static double zero = 0.0;
 	}
 	hfsq=0.5*f*f;
 	if(hu==0) {	/* |f| < 2**-20 */
-	    if(f==zero) { if(k==0) return zero;  
+	    if(f==zero) { if(k==0) return zero;
 			  else {c += k*ln2_lo; return k*ln2_hi+c;}
 			}
 	    R = hfsq*(1.0-0.66666666666666666*f);
 	    if(k==0) return f-R; else
 	    	     return k*ln2_hi-((R-(k*ln2_lo+c))-f);
 	}
- 	s = f/(2.0+f); 
+ 	s = f/(2.0+f);
 	z = s*s;
 	R = z*(Lp1+z*(Lp2+z*(Lp3+z*(Lp4+z*(Lp5+z*(Lp6+z*Lp7))))));
 	if(k==0) return f-(hfsq-s*(hfsq+R)); else

@@ -256,7 +256,7 @@ void _set_break_DPMI(void)
   unsigned char brtype;
   ULONG vbase;
   __dpmi_meminfo bpinfo;
-  
+
   if(__dpmi_get_segment_base_address(app_ds, &vbase) == -1)
     return;
   extract = edi.dr[7] >> 16;
@@ -510,7 +510,7 @@ _app_exception_not_set:                                                 \n\
         .byte 0x2e                                                      \n\
         " LJMP(_old_i31) "                                              \n\
         ret                                                             \n"
-); 
+);
 
 /* Change a handle in the list: EAX is the old handle, EDX is the new */
 /* for changing a value, we need our ds, because cs has no write access */
@@ -647,12 +647,12 @@ CL7:									\n\
   0x0008   : __dpmi_set_selector_limit
              hooked for djgpp_hw_exception tracing
   0x000A   : __dpmi_create_alias_descriptor
-  
+
   0x0100   : __dpmi_allocate_dos_memory
   0x0101   : __dpmi_free_dos_memory
-  
+
   0x0201   : __dpmi_set_real_mode_interrupt
-	     (There are problems with Ctrl-Break in debugger. Therefore 
+	     (There are problems with Ctrl-Break in debugger. Therefore
              let's not allow to redefine it)
 
   0x0202   : __dpmi_get_processor_exception_handler_vector
@@ -666,12 +666,12 @@ CL7:									\n\
               interruption in all levels !!)
   0x0210   : __dpmi_get_extended_exception_handler_vector_pm
   0x0212   : __dpmi_set_extended_exception_handler_vector_pm
-  
+
   0x0501   : __dpmi_allocate_memory
   0x0501   : __dpmi_free_memory
   0x0503   : __dpmi_resize_memory
 
-*/ 
+*/
 asm(									"\n\
 	.text								\n\
 	.balign  16,,7							\n\
@@ -1014,7 +1014,7 @@ _dbgcom_exception_return_to_here:       /* remove errorcode from stack */\n\
 	pushl	$_here						        \n\
 	call	_longjmp						\n\
         ");
-        
+
 /*	movw	%cs:__go32_info_block+26, %fs				\n\
 	.byte	0x64							\n\
 	movw	$0x7021,0xb0f00						\n\ */
@@ -1334,7 +1334,7 @@ int invalid_sel_addr(short sel, unsigned a, unsigned len, char for_write)
   unsigned limit;
   char read_allowed = 0;
   char write_allowed = 0;
-  
+
   asm volatile
     ("										\n\
       movw  %2,%%ax								\n\
@@ -1451,7 +1451,7 @@ void edi_init(jmp_buf start_state)
   descriptors[0] = si.cs_selector;
   descriptors[1] = si.ds_selector;
   descriptors[2] = app_ds;
-  descriptors[3] = app_cs; 
+  descriptors[3] = app_cs;
   app_exit_cs=si.cs_selector;
   memset(dos_descriptors, 0, sizeof(dos_descriptors));
   dos_descriptors[0] = _farpeekw(si.psp_selector, 0x2C);

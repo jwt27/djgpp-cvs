@@ -42,7 +42,7 @@ extern "C" {
 /* Apply or remove an advisory lock, according to OPERATION,
    on the file FD refers to.  */
 int	flock (int _fildes, int _op);
-  
+
 #ifndef __dj_ENFORCE_FUNCTION_CALLS
 #endif /* !__dj_ENFORCE_FUNCTION_CALLS */
 

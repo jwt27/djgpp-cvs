@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <libc/dosio.h>
 #include <libc/symlink.h>
- 
+
 int
 mkdir(const char *mydirname, mode_t mode)
 {
@@ -29,9 +29,9 @@ mkdir(const char *mydirname, mode_t mode)
 
   if (!__solve_symlinks(mydirname, dir_name))
      return -1;
-  
+
   _put_path(dir_name);
- 
+
   if (use_lfn)
   {
     r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
@@ -58,7 +58,7 @@ do_mkdir:
   r.x.ds = __tb_segment;
   r.x.dx = __tb_offset;
   __dpmi_int(0x21, &r);
- 
+
   if (r.x.ax == 0x7100)
   {
     /*  Never assume that the complete LFN API is implemented,

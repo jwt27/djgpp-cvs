@@ -59,7 +59,7 @@ For handles less than 18, the call will try to set or unset the
 @code{O_NOINHERIT} flag for that file and will return 0 if the flag is
 changed.  If the @code{O_NOINHERIT} flag cannot be changed, the call
 will return -1, setting @code{errno} to @code{ENOSYS}.
-  
+
 @item F_GETFL
 Get the open mode and status flags associated with the handle @var{fd}.
 The flags are those supported by @code{open} and @code{creat} functions,

@@ -10,7 +10,7 @@ int getdtablesize(void);
 
 @subheading Description
 
-Get the maximum number of open file descriptors the system supports. 
+Get the maximum number of open file descriptors the system supports.
 
 @subheading Return Value
 

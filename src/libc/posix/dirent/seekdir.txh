@@ -14,7 +14,7 @@ This function sets the location pointer in @var{dir} to the specified
 @var{loc}.  Note that the value used for @var{loc} should be either zero
 or a value returned by @code{telldir} (@pxref{telldir}).  The next call
 to @code{readdir} (@pxref{readdir}) will read whatever entry follows that
-point in the directory. 
+point in the directory.
 
 @subheading Return Value
 

@@ -75,15 +75,15 @@ two ways of passing arguments.  The @code{l} functions (like
 @code{spawnl}) take a list of arguments, with a @code{NULL} at the end of the
 list.  This is useful when you know how many argument there will be
 ahead of time.  The @code{v} functions (like @code{spawnv}) take a
-pointer to a list of arguments, which also must be @code{NULL}-terminated.  
-This is useful when you need to compute the number of arguments at runtime. 
+pointer to a list of arguments, which also must be @code{NULL}-terminated.
+This is useful when you need to compute the number of arguments at runtime.
 
 In either case, you may also specify @code{e} to indicate that you will
-be giving an explicit environment, else the current environment is used. 
+be giving an explicit environment, else the current environment is used.
 You may also specify @code{p} to indicate that you would like
 @code{spawn*} to search the @code{PATH} (in either the environment you
 pass or the current environment) for the executable, else it will only
-check the explicit path given. 
+check the explicit path given.
 
 Note that these function understand about other DJGPP programs, and will
 call them directly, so that you can pass command lines longer than 126
@@ -111,7 +111,7 @@ returned.  @file{COMMAND.COM} is notorious for returning 0 even if it
 couldn't run the command.
 
 If successful and @var{mode} is @code{P_OVERLAY}, these functions will
-not return. 
+not return.
 
 If there is an error (e.g., the program specified as @code{argv[0]}
 cannot be run, or the command line is too long), these functions return

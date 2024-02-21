@@ -12,7 +12,7 @@ int putenv(char *env);
 
 This function adds an entry to the program's environment.  The string
 passed must be of the form @code{NAME}=@code{VALUE}.  Any existing value
-for the environment variable is gone. 
+for the environment variable is gone.
 
 @code{putenv} will copy the string passed to it, and will
 automatically free any existing string already in the environment.

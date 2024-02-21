@@ -63,7 +63,7 @@ static void prunelist(testnode *root_)
       this = root_->next;
       if ((root_ = this)) {
          this = root_->next;
-         free(root_);         
+         free(root_);
          if ((root_ = this)) {
             this = root_->next;
             free(root_);

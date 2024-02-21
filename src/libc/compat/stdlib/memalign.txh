@@ -16,7 +16,7 @@ pointer is a multiple of @var{alignment}. @var{alignment} must be a power of
 
 @subheading Return Value
 
-A pointer to a newly allocated block of memory. 
+A pointer to a newly allocated block of memory.
 
 @subheading Portability
 

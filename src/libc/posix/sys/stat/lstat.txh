@@ -98,7 +98,7 @@ in a way which guarantees that no two different files will get the same
 inode number (thus it is unique).  This invented inode will also be
 different from any real cluster number of any local file.  However, only
 on plain DOS, and only for local, non-empty files/directories the inode
-is guaranteed to be consistent between @code{stat}, @code{fstat} and 
+is guaranteed to be consistent between @code{stat}, @code{fstat} and
 @code{lstat} function calls.  (Note that two files whose names are
 identical but for the drive letter, will get the same invented inode,
 since each filesystem has its own independent inode numbering, and

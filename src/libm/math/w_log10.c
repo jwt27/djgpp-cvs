@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -40,7 +40,7 @@ It is implemented as <<log(<[x]>) / log(10)>>.
 <<log10f>> is identical, save that it takes and returns <<float>> values.
 
 RETURNS
-<<log10>> and <<log10f>> return the calculated value. 
+<<log10>> and <<log10f>> return the calculated value.
 
 See the description of <<log>> for information on errors.
 
@@ -49,7 +49,7 @@ PORTABILITY
 
  */
 
-/* 
+/*
  * wrapper log10(X)
  */
 
@@ -73,7 +73,7 @@ PORTABILITY
 	if(x<=0.0) {
 	    if(x==0.0)
 	        return __kernel_standard(x,x,18); /* log10(0) */
-	    else 
+	    else
 	        return __kernel_standard(x,x,19); /* log10(x<0) */
 	} else
 	    return z;

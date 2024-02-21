@@ -20,7 +20,7 @@ such).  The argument @var{radix} should specify the base, between 2 and
 36, in which the string representation of @var{value} is requested.
 
 @subheading Return Value
-  
+
 A pointer to @var{string}.
 
 @subheading Portability

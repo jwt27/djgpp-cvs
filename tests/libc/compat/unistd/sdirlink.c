@@ -48,7 +48,7 @@ int main(void)
    test_success("c:test1", "c:test1");
    symlink("c:/file", "c:/linkfile");
    test_success("c:/linkfile", "c:/linkfile");
-   test_success("c:/djgpp/tests/libc/compat/unistd/file1", 
+   test_success("c:/djgpp/tests/libc/compat/unistd/file1",
                 "c:/djgpp/tests/libc/compat/unistd/file1");
    test_success("/dev/env/DJDIR/bin/gcc.exe", "/dev/env/DJDIR/bin/gcc.exe");
    test_success("/dev/c/linkfile", "/dev/c/linkfile");

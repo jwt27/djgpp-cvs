@@ -21,69 +21,69 @@ _main:
 /NO_APP
 	movl -4(%ebp),%edx
 /APP
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movb %bl,(%ebx)
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movb %dl,(%ebx)
 /NO_APP
 	movl -8(%ebp),%ecx
 /APP
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movb %cl,(%ebx)
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movb $18,(%ebx)
 	
 ;------------ farpokew
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movw %bx,(%ebx)
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movw %dx,(%ebx)
 /NO_APP
 	movsbw %cl,%ax
 /APP
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movw %ax,(%ebx)
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movw $4660,(%ebx)
 	
 ;------------ farpokel
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movl %ebx,(%ebx)
 /NO_APP
 	movswl %dx,%eax
 /APP
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movl %eax,(%ebx)
 /NO_APP
 	movsbl %cl,%eax
 /APP
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movl %eax,(%ebx)
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movl $305419896,(%ebx)
 	
 ;------------ farpeek*
-	movw %dx,%fs 
-	.byte 0x64 
+	movw %dx,%fs
+	.byte 0x64
 	movb (%ebx),%al
 /NO_APP
 	movzbw %al,%dx
 /APP
-	movw %dx, %fs 
-	.byte 0x64 
-	movw (%ebx), %ax 
+	movw %dx, %fs
+	.byte 0x64
+	movw (%ebx), %ax
 
 /NO_APP
 	movb %al,%cl

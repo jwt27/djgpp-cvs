@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <sys/fsext.h>
 #include <libc/fsexthlp.h>
- 
+
 int
 chmod(const char *filename, int pmode)
 {
@@ -24,17 +24,17 @@ chmod(const char *filename, int pmode)
   if (__FSEXT_call_open_handlers_wrapper(__FSEXT_chmod, &rv,
 					 real_name, pmode))
     return rv;
-  
+
   attr = _chmod(real_name, 0, 0);
 
   if (attr == -1)
     return -1;
- 
+
   if(pmode & S_IWUSR)           /* Only implemented toggle is write/nowrite */
     dmode = 0;                  /* Normal file */
   else
     dmode = 1;                  /* Readonly file */
- 
+
   /* Must clear the directory and volume bits, otherwise 214301 fails.
      Unused bits left alone (some network redirectors use them).  */
   if (_chmod(real_name, 1, (attr & 0xffe6) | dmode) == -1)

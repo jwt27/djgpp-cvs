@@ -45,13 +45,13 @@ the @code{open} call will fail.
 
 @item O_APPEND
 
-The file pointer is positioned at the end of the file before each write. 
+The file pointer is positioned at the end of the file before each write.
 
 @item O_TEXT
 
 The file is opened in text mode, meaning that Ctrl-M characters are
 stripped on reading and added on writing as needed.  The default mode is
-specified by the @code{_fmode} variable @ref{_fmode}. 
+specified by the @code{_fmode} variable @ref{_fmode}.
 
 @item O_BINARY
 
@@ -73,12 +73,12 @@ Windows-specific; portable programs should use @code{fcntl} instead.
 
 @item O_NOFOLLOW
 
-@code{open} will fail with @code{errno} set to @code{ELOOP}, if the last path 
+@code{open} will fail with @code{errno} set to @code{ELOOP}, if the last path
 component in @var{file} is symlink.
 
 @item O_NOLINK
 
-If @var{file} is a symlink, @code{open} will open symlink file itself instead 
+If @var{file} is a symlink, @code{open} will open symlink file itself instead
 of referred file.
 
 @item O_TEMPORARY
@@ -126,7 +126,7 @@ for directories are not inherited by child programs.
 @subheading Return Value
 
 If successful, the file descriptor is returned.  On error, a negative
-number is returned and @code{errno} is set to indicate the error. 
+number is returned and @code{errno} is set to indicate the error.
 
 @subheading Portability
 

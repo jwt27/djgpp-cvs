@@ -55,7 +55,7 @@ Since @code{findfirst} calls DOS function 4eh, it is not possible to
 exclude read-only files or archive files from the results.  Even if
 the FA_ARCH and FA_RDONLY bits are not specified in the attrib
 parameter, the results will include any read-only and archive files in
-the directory searched.   
+the directory searched.
 
 This function supports long file names.
 

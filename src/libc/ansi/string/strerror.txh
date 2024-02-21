@@ -10,11 +10,11 @@ char *strerror(int error);
 
 @subheading Description
 
-This function returns a string that describes the @var{error}. 
+This function returns a string that describes the @var{error}.
 
 @subheading Return Value
 
-A pointer to a static string that should not be modified or free'd. 
+A pointer to a static string that should not be modified or free'd.
 
 @subheading Portability
 

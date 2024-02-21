@@ -13,7 +13,7 @@ int asprintf(char **bufferp, const char *format, @dots{});
 Sends formatted output from the arguments (@dots{}) including
 the terminating null byte to the allocated buffer and returns
 a pointer to it via the first parameter *@var{bufferp}.  This
-memory must be returned to the heap with @code{free} (@pxref{free}). 
+memory must be returned to the heap with @code{free} (@pxref{free}).
 This function is analog of @code{sprintf()} (@pxref{sprintf}).
 
 @subheading Return Value

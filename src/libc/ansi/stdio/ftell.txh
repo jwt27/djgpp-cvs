@@ -11,11 +11,11 @@ long ftell(FILE *file);
 @subheading Description
 
 Returns the current file position for @code{file}.  This is suitable for
-a future call to @code{fseek}. 
+a future call to @code{fseek}.
 
 @subheading Return Value
 
-The file position, or -1 on error. 
+The file position, or -1 on error.
 
 @subheading Portability
 

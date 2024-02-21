@@ -164,7 +164,7 @@ int unzip(void *in)
 
     orig_crc = LG(buf);
     orig_len = LG(buf+4);
-  } 
+  }
   else if (ext_header)
   {
     /* If extended header, check it */
@@ -182,7 +182,7 @@ int unzip(void *in)
   }
 
   /* Validate decompression */
-  if (orig_crc != updcrc((uch *)outbuf, 0)) 
+  if (orig_crc != updcrc((uch *)outbuf, 0))
     error("invalid compressed data--crc error");
 
   if (orig_len != (ulg)bytes_out)

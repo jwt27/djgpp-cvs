@@ -17,7 +17,7 @@
 #include <go32.h>
 #include <dpmi.h>
 #include <libc/dosio.h>
- 
+
 int _rename(const char *old, const char *_new)
 {
   __dpmi_regs r;

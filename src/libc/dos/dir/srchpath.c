@@ -20,14 +20,14 @@
 
 static unsigned env_changed = 0;
 static int srchpath_bss_count = -1;
- 
+
 /* Search PATH for FILE.
    If successful, store the full pathname in static buffer and return a
    pointer to it.
    If not sucessful, return NULL.
    This is what the Borland searchpath() library function does.
 */
- 
+
 char *
 searchpath(const char *file)
 {
@@ -41,7 +41,7 @@ searchpath(const char *file)
     }
 
   memset(found, 0, sizeof(found));
- 
+
   /* Get $PATH and store it for reuse.  */
   if (path == 0
       || srchpath_bss_count != __bss_count
@@ -54,16 +54,16 @@ searchpath(const char *file)
     path = (char *)calloc(p ? strlen(p) + 3 : 2, sizeof(char));
     if (path == (char *)0)
       return (char *)0;
- 
+
     /* Prepend `.' to the PATH, so current directory
        is always searched first.  */
     path[0] = '.';
- 
+
     if (p)
     {
       char *s, *name_start = 0;
       int preserve_case = _preserve_fncase();
- 
+
       path[1] = ';';
       strcpy(path+2, p);
 
@@ -130,14 +130,14 @@ searchpath(const char *file)
   else
   {
     char *test_dir = path;
- 
+
     do {
       char *dp;
- 
+
       dp = strchr(test_dir, ';');
       if (dp == (char *)0)
 	dp = test_dir + strlen(test_dir);
- 
+
       if (dp == test_dir)
 	strcpy(found, file);
       else

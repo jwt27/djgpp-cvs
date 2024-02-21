@@ -17,7 +17,7 @@
 #include <libc/farptrgs.h>
 
 /* Returns: -1 == error; 0 == result_str filled in. */
-int 
+int
 _get_fs_type( const int drive /* drive number (1=A:). */
 	    , char *const result_str  /* String to put result in. At least 9 chars long. */
 	     )
@@ -34,7 +34,7 @@ _get_fs_type( const int drive /* drive number (1=A:). */
 
   /* Call INT21, ax==0x6900 i.e. Get Disk Serial Number (sic!). */
   r.x.ax = 0x6900;
-  r.h.bl = drive; 
+  r.h.bl = drive;
   r.h.bh = 0;
   r.x.ds = __tb >> 4;
   r.x.dx = __tb & 0x0f;

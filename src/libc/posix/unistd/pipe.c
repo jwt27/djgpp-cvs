@@ -19,12 +19,12 @@ pipe(int fildes[2])
   tname = tmpnam(temp_name);
   if (tname == NULL)
     return -1;
-    
+
   ofd = open(tname, O_WRONLY | O_CREAT | O_TRUNC | O_TEMPORARY,
              S_IWUSR);
   if (ofd < 0)
     return -1;
-    
+
   ifd = open(tname, O_RDONLY | O_TEMPORARY);
   if (ifd < 0)
   {
@@ -39,6 +39,6 @@ pipe(int fildes[2])
 
   fildes[0] = ifd;
   fildes[1] = ofd;
-    
+
   return 0;
 }

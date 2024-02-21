@@ -14,7 +14,7 @@ Other subroutines required:
 
 	ran(k) - A function program returning random real
 		numbers uniformly distributed over (0,1).  The
-		argument k is a dummy.   
+		argument k is a dummy.
 
 ***********************************************************************/
 

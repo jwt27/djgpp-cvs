@@ -106,7 +106,7 @@ _conio_gettext(int c, int r, int c2, int r2, void *buf)
   }
   return 1;
 }
-        
+
 void
 gotoxy(int col, int row)
 {
@@ -119,19 +119,19 @@ int
 wherex(void)
 {
   int row, col;
-  
+
   ScreenGetCursor(&row, &col);
-  
+
   return col - txinfo.winleft + 2;
 }
-    
+
 int
 wherey(void)
 {
   int row, col;
-  
+
   ScreenGetCursor(&row, &col);
-  
+
   return row - txinfo.wintop + 2;
 }
 
@@ -147,12 +147,12 @@ textmode(int mode)
      put an ``else'' clause before next line.  */
   last_mode = txinfo.currmode;
   if (mode == C4350)
-    /* 
-     * just set mode 3 and load 8x8 font, idea taken 
+    /*
+     * just set mode 3 and load 8x8 font, idea taken
      * (and code translated from Assembler to C)
      * from Csaba Biegels stdvga.asm
      */
-    mode_to_set = 0x03;  
+    mode_to_set = 0x03;
   regs.h.ah = 0x00;		/* set mode */
   regs.h.al = mode_to_set;
   __dpmi_int(0x10, &regs);
@@ -160,7 +160,7 @@ textmode(int mode)
   {
     if (isEGA())
     {
-      /* 
+      /*
        * enable cursor size emulation, see Ralf Browns
        * interrupt list
        */
@@ -175,7 +175,7 @@ textmode(int mode)
     if (!isEGA())
       return;
     /* load 8x8 font */
-    regs.x.ax = 0x1112;         
+    regs.x.ax = 0x1112;
     regs.x.bx = 0;
     __dpmi_int(0x10, &regs);
   }
@@ -189,8 +189,8 @@ textmode(int mode)
    */
   clrscr();
 #endif
-}    
-    
+}
+
 void
 textattr(int attr)
 {
@@ -254,7 +254,7 @@ _setcursortype(int type)
     break;
   }
   setcursor(cursor_shape);
-}        
+}
 
 static void
 setcursor(unsigned int cursor_shape)
@@ -279,13 +279,13 @@ clreol(void)
   short   image[ 256 ];
   short   val = ' ' | (ScreenAttrib << 8);
   int     c, row, col, ncols;
-  
+
   getwincursor(&row, &col);
   ncols = txinfo.winright - col;
-  
+
   for (c = 0; c < ncols; c++)
     image[ c ] = val;
-  
+
   puttext(col + 1, row + 1, txinfo.winright, row + 1, image);
 }
 
@@ -294,7 +294,7 @@ fillrow(int row, int left, int right, int fill)
 {
   int col;
   short filler[right-left+1];
-  
+
   for (col = left; col <= right; col++)
     filler[col-left] = fill;
   dosmemput(filler, (right-left+1)*2, VIDADDR(row, left));
@@ -323,9 +323,9 @@ int
 putch(int c)
 {
   int     row, col;
-  
+
   ScreenGetCursor(&row, &col);
-  
+
   /*  first, handle the character */
   if (c == '\n')
   {
@@ -338,16 +338,16 @@ putch(int c)
   else if (c == '\b')
   {
     if (col > txinfo.winleft - 1)
-      col--;  
+      col--;
     else if (row > txinfo.wintop -1)
     {
-      /* 
+      /*
        * Turbo-C ignores this case; we are smarter.
        */
       row--;
       col = txinfo.winright-1;
-    }  
-  }      
+    }
+  }
   else if (c == 0x07)
     bell();
   else {
@@ -356,15 +356,15 @@ putch(int c)
       refreshvirtualscreen(col, row, 1);
     col++;
   }
-  
+
   /* now, readjust the window     */
-  
+
   if (col >= txinfo.winright)
   {
     col = txinfo.winleft - 1;
     row++;
   }
-  
+
   if (row >= txinfo.winbottom)
   {
     /* scrollwin(0, txinfo.winbottom - txinfo.wintop, 1); */
@@ -375,7 +375,7 @@ putch(int c)
     }
     row--;
   }
-  
+
   ScreenSetCursor(row, col);
   txinfo.cury = row - txinfo.wintop + 2;
   txinfo.curx = col - txinfo.winleft + 2;
@@ -394,7 +394,7 @@ getche(void)
      * ungetch could have been called with a character that
      * hasn't been got by a conio function.
      * We don't echo again.
-     */ 
+     */
     return(getch());
   return (putch(getch()));
 }
@@ -438,7 +438,7 @@ ungetch(int c)
   return(c);
 }
 
-/* 
+/*
  * kbhit from libc in libsrc/c/dos/kbhit.s doesn't check
  * for ungotten chars, so we have to provide a new one
  * Don't call it kbhit, rather use a new name (_conio_kbhit)
@@ -463,7 +463,7 @@ _conio_kbhit(void)
     return(1);
   else
     return(kbhit());
-}    
+}
 
 /*
  * The next two functions are needed by cscanf
@@ -535,7 +535,7 @@ window(int left, int top, int right, int bottom)
   if (top < 1 || left < 1 || right > txinfo.screenwidth ||
       bottom > txinfo.screenheight)
     return;
-  
+
   txinfo.wintop = top;
   txinfo.winleft = left;
   txinfo.winright = right;
@@ -560,11 +560,11 @@ cputs(const char *s)
   srow = row;
   scol = ecol = col;
 
-  /* 
+  /*
    * Instead of just calling putch; we do everything by hand here,
    * This is much faster. We don't move the cursor after each character,
    * only after the whole string is written, because ScreenSetCursor
-   * needs to long because of switching to real mode needed with djgpp. 
+   * needs to long because of switching to real mode needed with djgpp.
    * You won't recognize the difference.
    */
   while ((c = *ss++))
@@ -586,14 +586,14 @@ cputs(const char *s)
     }
     else if (c == '\b')
     {
-      if (col > txinfo.winleft-1) 
+      if (col > txinfo.winleft-1)
       {
 	col--;
 	viaddr--;
       }
       else if (row > txinfo.wintop -1)
       {
-	/* 
+	/*
 	 * Turbo-C ignores this case. We want to be able to
 	 * edit strings with backspace in gets after
 	 * a linefeed, so we are smarter
@@ -614,9 +614,9 @@ cputs(const char *s)
       col++;
       ecol++;
     }
-      
+
     /* now, readjust the window     */
-      
+
     if (col >= txinfo.winright) {
       col = txinfo.winleft - 1;
       row++;
@@ -624,7 +624,7 @@ cputs(const char *s)
       if (ScreenVirtualSegment != 0)
 	mayrefreshline(col, row, &srow, &scol, &ecol);
     }
-      
+
     if (row >= txinfo.winbottom) {
       /* refresh before scroll */
       if (ScreenVirtualSegment != 0)
@@ -639,7 +639,7 @@ cputs(const char *s)
       viaddr -= txinfo.screenwidth;
     }
   }
-  
+
   /* refresh the rest of cols */
   if (ScreenVirtualSegment != 0)
     mayrefreshline(col, row, &srow, &scol, &ecol);
@@ -656,11 +656,11 @@ cprintf(const char *fmt, ...)
   int     cnt;
   char    buf[ 2048 ];		/* this is buggy, because buffer might be too small. */
   va_list ap;
-  
+
   va_start(ap, fmt);
   cnt = vsprintf(buf, fmt, ap);
   va_end(ap);
-  
+
   cputs(buf);
   return cnt;
 }
@@ -680,7 +680,7 @@ cgets(char *string)
     return(NULL);
   maxlen_wanted = (unsigned int)((unsigned char)string[0]);
   sp = &(string[2]);
-  /* 
+  /*
    * Should the string be shorter maxlen_wanted including or excluding
    * the trailing '\0' ? We don't take any risk.
    */
@@ -722,8 +722,8 @@ cgets(char *string)
   }
   sp[maxlen_wanted-1] = '\0';
   string[1] = (char)((unsigned char)len);
-  return(sp);   
-}    
+  return(sp);
+}
 
 int
 cscanf(const char *fmt, ...)
@@ -752,7 +752,7 @@ static void
 _gettextinfo(struct text_info *t)
 {
   int row, col;
-  
+
   t->winleft = t->wintop = 1;
   t->winright = t->screenwidth = ScreenCols();
   t->winbottom = t->screenheight = ScreenRows();
@@ -774,7 +774,7 @@ _gettextinfo(struct text_info *t)
 void
 gettextinfo(struct text_info *t)
 {
-  *t = txinfo; 
+  *t = txinfo;
 #if DBGGTINFO
   printf("left=%2d,right=%2d,top=%2d,bottom=%2d\n",t->winleft,
 	 t->winright,t->wintop,t->winbottom);
@@ -788,7 +788,7 @@ static int
 getvideomode(void)
 {
   int mode = ScreenMode();
-  /* 
+  /*
    * in mode C80 we might have loaded a different font
    */
   if (mode == C80)
@@ -796,7 +796,7 @@ getvideomode(void)
       mode = C4350;
   return(mode);
 }
-    
+
 
 static void
 bell(void)
@@ -807,7 +807,7 @@ bell(void)
   __dpmi_int(0x10, &regs);
 }
 
-static int 
+static int
 get_screenattrib(void)
 {
   __dpmi_regs regs;
@@ -900,7 +900,7 @@ maybe_create_8x10_font(void)
     {
       __dpmi_regs regs;
       int buf_pm_sel;
-      
+
       /* Allocate buffer in conventional memory. */
       font_seg = __dpmi_allocate_dos_memory(160, &buf_pm_sel);
 

@@ -19,7 +19,7 @@ extern "C" {
 #ifndef __STRICT_ANSI__
 
 #define _POSIX2_RE_DUP_MAX 256
-  
+
 
 typedef off_t regoff_t;
 typedef struct {

@@ -37,7 +37,7 @@ long pathconf(const char *filename, int name);
 
 @subheading Description
 
-This function returns various system-dependent configuration values. 
+This function returns various system-dependent configuration values.
 The @var{name} is one of the following:
 
 @table @code
@@ -84,7 +84,7 @@ away.
 
 @item _PC_NO_TRUNC
 
-If zero is returned, filenames longer than what 
+If zero is returned, filenames longer than what
 @w{@code{pathconf (filename, _PC_NAME_MAX)}} returns are truncated,
 otherwise an error occurs if you use longer names.  In DJGPP, this
 returns 0, since DOS always silently truncates long names.

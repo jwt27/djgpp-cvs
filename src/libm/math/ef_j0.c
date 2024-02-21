@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -22,9 +22,9 @@ static float pzerof(), qzerof();
 #endif
 
 #ifdef __STDC__
-static const float 
+static const float
 #else
-static float 
+static float
 #endif
 huge 	= 1e30,
 one	= 1.0,
@@ -47,9 +47,9 @@ static float zero = 0.0;
 #endif
 
 #ifdef __STDC__
-	float __ieee754_j0f(float x) 
+	float __ieee754_j0f(float x)
 #else
-	float __ieee754_j0f(x) 
+	float __ieee754_j0f(x)
 	float x;
 #endif
 {
@@ -113,9 +113,9 @@ v03  =  2.5915085189e-07, /* 0x348b216c */
 v04  =  4.4111031494e-10; /* 0x2ff280c2 */
 
 #ifdef __STDC__
-	float __ieee754_y0f(float x) 
+	float __ieee754_y0f(float x)
 #else
-	float __ieee754_y0f(x) 
+	float __ieee754_y0f(x)
 	float x;
 #endif
 {
@@ -125,7 +125,7 @@ v04  =  4.4111031494e-10; /* 0x2ff280c2 */
 	GET_FLOAT_WORD(hx,x);
         ix = 0x7fffffff&hx;
     /* Y0(NaN) is NaN, y0(-inf) is Nan, y0(inf) is 0  */
-	if(ix>=0x7f800000) return  one/(x+x*x); 
+	if(ix>=0x7f800000) return  one/(x+x*x);
         if(ix==0) return -one/zero;
         if(hx<0) return zero/zero;
         if(ix >= 0x40000000) {  /* |x| >= 2.0 */

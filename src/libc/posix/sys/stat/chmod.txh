@@ -59,7 +59,7 @@ This function can be hooked by File System Extensions
 
 @subheading Return Value
 
-Zero if the file exists and the mode was changed, else nonzero. 
+Zero if the file exists and the mode was changed, else nonzero.
 
 @subheading Portability
 

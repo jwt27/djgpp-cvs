@@ -35,7 +35,7 @@ group is defined as a list of characters between the brackets,
 e.g. @code{[dkl_]}, or by two characters separated by @code{-} to
 indicate all characters between and including these two.  For example,
 @code{[a-d]} matches @code{a}, @code{b}, @code{c}, or @code{d}, and
-@code{[!a-zA-Z0-9]} matches any character that is not alphanumeric. 
+@code{[!a-zA-Z0-9]} matches any character that is not alphanumeric.
 
 @item ...
 
@@ -47,7 +47,7 @@ rejoice!).
 Causes the next character to not be treated as special.  For example,
 @code{\[} matches a literal @samp{[}.  If @var{flags} includes
 @code{GLOB_NOESCAPE}, this quoting is disabled and @samp{\} is handled
-as a simple character. 
+as a simple character.
 
 @end table
 

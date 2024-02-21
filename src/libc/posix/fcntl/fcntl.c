@@ -542,7 +542,7 @@ fcntl(int fd, int cmd, ...)
 
       return ret;
     }
- 
+
 
     case F_GETOWN:
     case F_SETOWN:

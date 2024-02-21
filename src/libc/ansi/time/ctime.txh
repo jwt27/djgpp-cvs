@@ -93,7 +93,7 @@ Sun Jan 01 12:34:56 1993\n\0
 
 The string pointed to is in a static buffer and will be overwritten with
 each call to @code{asctime}.  The string should be copied if it needs to be
-preserved. 
+preserved.
 @xref{asctime_r}, for an alternate interface that allows the caller
 to provide a buffer to store the string.
 
@@ -204,7 +204,7 @@ corrected for the local time zone instead of GMT.
 
 @subheading Return Value
 
-A pointer to a static structure which is overwritten with each call. 
+A pointer to a static structure which is overwritten with each call.
 
 @subheading Portability
 
@@ -285,7 +285,7 @@ to provide the structure to be filled.
 
 @subheading Return Value
 
-A pointer to a static structure which is overwritten with each call. 
+A pointer to a static structure which is overwritten with each call.
 
 @subheading Portability
 
@@ -364,7 +364,7 @@ geographical area.
 @subheading Return Value
 
 The resulting time, or -1 if the time in @var{tptr} cannot be described
-in that format. 
+in that format.
 
 @subheading Portability
 

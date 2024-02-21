@@ -922,7 +922,7 @@ print(struct match *m, char *caption, states st, int ch, FILE *d)
 	fprintf(d, "\n");
 }
 
-/* 
+/*
  - at - print current situation
  == #ifdef REDEBUG
  == static void at(struct match *m, char *title, char *start, char *stop, \

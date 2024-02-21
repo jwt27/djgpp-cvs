@@ -23,7 +23,7 @@ should be a global, and will be passed to your function.  Any changes in
 @var{regs} will be reflected back into real mode.  A wrapper will be
 added to your function to simulate the effects of an @code{iret}
 instruction, so this function is useful for trapping real-mode software
-interrupts (like 0x1b - @kbd{Ctrl-@key{Break}} hit). 
+interrupts (like 0x1b - @kbd{Ctrl-@key{Break}} hit).
 
 @subheading Return Value
 
@@ -114,7 +114,7 @@ int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info);
 
 This function frees the real-mode callbacks and wrappers allocated by
 @code{_go32_dpmi_allocate_real_mode_callback_iret} and
-@code{_go32_dpmi_allocate_real_mode_callback_retf}. 
+@code{_go32_dpmi_allocate_real_mode_callback_retf}.
 
 @subheading Return Value
 

@@ -1,6 +1,6 @@
 #include "test.h"
 
-sprint_int_type sprint_ints[] = 
+sprint_int_type sprint_ints[] =
 {
 {__LINE__, 0x000838d2,	"838d2", "%.4x"},
 {__LINE__, 0x0063be46,	"63BE46", "%-6X"},

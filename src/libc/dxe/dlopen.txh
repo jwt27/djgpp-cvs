@@ -11,9 +11,9 @@ void *dlopen (const char *filename, int mode);
 @subheading Description
 
 This function loads a dynamic executable image, whose file name is
-pointed to by @var{filename}, into memory and returns a handle 
+pointed to by @var{filename}, into memory and returns a handle
 associated with the image for use with the @code{dlsym} (@pxref{dlsym})
-and @code{dlclose} (@pxref{dlclose}) functions.  
+and @code{dlclose} (@pxref{dlclose}) functions.
 
 @vindex LD_LIBRARY_PATH
 
@@ -27,7 +27,7 @@ and these dynamic loadable images are created using
 
 The @var{mode} field is a combination of @code{RTLD_xxx} flags, of which
 only @code{RTLD_GLOBAL} works (others are defined in @file{dlfcn.h} for
-Unix compatibility).  The @code{RDLD_GLOBAL} flag means all symbols in 
+Unix compatibility).  The @code{RDLD_GLOBAL} flag means all symbols in
 this module are made public and subsequently loaded modules
 with unresolved symbols will `see' them and will try to find the unresolved
 references through them.
@@ -52,8 +52,8 @@ int dlclose (void *handle);
 
 @subheading Description
 
-This function closes a dynamic module loaded with @code{dlopen} 
-(@pxref{dlopen}).  The memory is freed and all pointers into that 
+This function closes a dynamic module loaded with @code{dlopen}
+(@pxref{dlopen}).  The memory is freed and all pointers into that
 image become invalid.
 
 @subheading Return Value
@@ -78,13 +78,13 @@ void *dlsym (void *handle, const char *symbol_name);
 @subheading Description
 
 This function get the address of a symbol defined in a shared loadable
-image.  
+image.
 
 The @var{handle} argument is the value returned from a call to
 @code{dlopen}, or the special value @code{RTLD_DEFAULT} which will
 search all symbols in the global scope.
 
-The @var{symbol_name} is the assembler name, not the C name.  For 
+The @var{symbol_name} is the assembler name, not the C name.  For
 DJGPP/COFF prepend an underscore in front.
 
 @subheading Return Value

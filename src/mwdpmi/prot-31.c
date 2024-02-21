@@ -491,7 +491,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		      eprintf ("Protected-mode exception 0x%02x handler "
 			       "set to %04x:%08x.\r\n",
 			       BL, CX, edx);
-		    else 
+		    else
 		      eprintf ("Protected-mode exception 0x%02x handler "
 			       "set to %04x:%04x.\r\n",
 			       BL, CX, DX);
@@ -523,7 +523,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		if (current_client->is_32bit)
 		  eprintf ("Protected-mode int 0x%02x set to %04x:%08x.\r\n",
 			   BL, CX, edx);
-		else 
+		else
 		  eprintf ("Protected-mode int 0x%02x set to %04x:%04x.\r\n",
 			   BL, CX, DX);
 #endif
@@ -561,7 +561,7 @@ prot_31 (word32 edi, word32 esi, word32 ebp, word32 dummy,
 		      eprintf ("Real-mode exception 0x%02x handler "
 			       "set to %04x:%08x.\r\n",
 			       BL, CX, edx);
-		    else 
+		    else
 		      eprintf ("Real-mode exception 0x%02x handler "
 			       "set to %04x:%04x.\r\n",
 			       BL, CX, DX);

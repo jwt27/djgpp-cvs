@@ -278,7 +278,7 @@ rename(const char *old, const char *_new)
     }
 
   /* Handle symlinks */
-  if (!__solve_dir_symlinks(old, real_old) || 
+  if (!__solve_dir_symlinks(old, real_old) ||
       !__solve_dir_symlinks(_new, real_new))
      return -1;
 
@@ -311,8 +311,8 @@ rename(const char *old, const char *_new)
     }
 
   /* Refuse to rename `.' or `..' or `d:.' or `d:..'  */
-  if ((real_old[0] == '.' && (real_old[1] == '\0' || (real_old[1] == '.' && 
-       real_old[2] == '\0'))) || (real_old[1] == ':' && real_old[2] == '.' && 
+  if ((real_old[0] == '.' && (real_old[1] == '\0' || (real_old[1] == '.' &&
+       real_old[2] == '\0'))) || (real_old[1] == ':' && real_old[2] == '.' &&
       (real_old[3] == '\0' || (real_old[3] == '.' && real_old[4] == '\0'))))
     {
       errno = EINVAL;
@@ -347,7 +347,7 @@ rename(const char *old, const char *_new)
           /* Fail if both OLD and NEW are directories and
              OLD is parent of NEW.  */
           errno = 0;
-          if (is_parent(_truename_sfn(real_old, old_true), 
+          if (is_parent(_truename_sfn(real_old, old_true),
                         _truename_sfn(real_new, new_true)))
             {
               errno = EINVAL;
@@ -380,7 +380,7 @@ rename(const char *old, const char *_new)
       char new_true[FILENAME_MAX], old_true[FILENAME_MAX];
 
       errno = 0;
-      if (is_parent(_truename_sfn(real_old, old_true), 
+      if (is_parent(_truename_sfn(real_old, old_true),
                     _truename_sfn(real_new, new_true)))
 	{
 	  errno = EINVAL;

@@ -1,4 +1,4 @@
- 
+
 /* qfloor - largest integer not greater than x
  * qround - nearest integer to x
  */

@@ -11,7 +11,7 @@ int getppid(void);
 @subheading Description
 
 Get the parent process ID.  Currently this is always 1, indicating that
-the parent process is no longer running. 
+the parent process is no longer running.
 
 @subheading Return Value
 

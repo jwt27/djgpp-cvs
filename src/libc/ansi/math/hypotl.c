@@ -15,7 +15,7 @@
  * inflicting too much of a performance hit.
  *
  */
- 
+
 #include <float.h>
 #include <math.h>
 #include <errno.h>
@@ -31,26 +31,26 @@ hypotl(long double x, long double y)
 {
   long double abig = x < 0 ? -x : x, asmall = y < 0 ? -y : y;
   long double ratio;
- 
+
   /* Make abig = max(|x|, |y|), asmall = min(|x|, |y|).  */
   if (abig < asmall)
     {
       long double temp = abig;
- 
+
       abig = asmall;
       asmall = temp;
     }
- 
+
   /* Trivial case.  */
   if (asmall == 0.L)
     return abig;
- 
+
   /* Scale the numbers as much as possible by using its ratio.
      For example, if both ABIG and ASMALL are VERY small, then
      X^2 + Y^2 might be VERY inaccurate due to loss of
      significant digits.  Dividing ASMALL by ABIG scales them
      to a certain degree, so that accuracy is better.  */
- 
+
   if ((ratio = asmall / abig) > __SQRT_LDBL_MIN)
     return abig * sqrt(1.0L + ratio*ratio);
   else
@@ -59,9 +59,9 @@ hypotl(long double x, long double y)
          produces any intermediate result greater than roughly the
          larger of X and Y.  Should converge to machine-precision
          accuracy in 3 iterations.  */
- 
+
       long double r = ratio*ratio, t, s, p = abig, q = asmall;
- 
+
       do {
         t = 4.0L + r;
         if (t == 4.0L)
@@ -71,15 +71,15 @@ hypotl(long double x, long double y)
         q *= s;
         r = (q / p) * (q / p);
       } while (1);
- 
+
       return p;
     }
 }
- 
+
 #ifdef  TEST
- 
+
 #include <stdio.h>
- 
+
 int
 main(void)
 {
@@ -108,8 +108,8 @@ main(void)
   printf("hypotl(LDBL_MAX, 1.0) =\t\t %30.21Lg\n", hypotl(LDBL_MAX, 1.0L));
   printf("hypotl(1.0, LDBL_MAX) =\t\t %30.21Lg\n", hypotl(1.0L, LDBL_MAX));
   printf("hypotl(0.0, LDBL_MAX) =\t\t %30.21Lg\n", hypotl(0.0L, LDBL_MAX));
- 
+
   return 0;
 }
- 
+
 #endif

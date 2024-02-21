@@ -13,7 +13,7 @@ mknod(const char *path, mode_t mode, dev_t dev)
   {
     int e  = errno;
     int fd = open(path, O_CREAT | O_EXCL, S_IWUSR);
- 
+
     if (fd == -1)
       return fd;
     close(fd);
@@ -23,7 +23,7 @@ mknod(const char *path, mode_t mode, dev_t dev)
   else if (S_ISCHR(mode))
   {
     struct stat statbuf;
- 
+
     if (stat(path, &statbuf) == 0 &&
         S_ISCHR(statbuf.st_mode)  &&
         statbuf.st_dev == dev)
@@ -32,7 +32,7 @@ mknod(const char *path, mode_t mode, dev_t dev)
       return -1;
     }
   }
- 
+
   errno = EACCES;
   return -1;
 }

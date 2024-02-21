@@ -18,7 +18,7 @@ path prefix (otherwise, @code{errno} will be set to @code{EINVAL}).  If
 @var{newname} exists, both @var{oldname} and @var{newname} must be of the
 same type (both directories or both regular files) (or else @code{errno}
 will be set to @code{ENOTDIR} or @code{EISDIR}), and must reside on the
-same logical device (otherwise, @code{errno} will be set to @code{EXDEV}). 
+same logical device (otherwise, @code{errno} will be set to @code{EXDEV}).
 Wildcards are not allowed in either @var{oldname} or @var{newname}.  DOS
 won't allow renaming a current directory even on a non-default drive (you
 will get the @code{EBUSY} or @code{EINVAL} in @code{errno}).

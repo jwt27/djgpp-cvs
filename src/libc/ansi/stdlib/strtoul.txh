@@ -11,7 +11,7 @@ unsigned long strtoul(const char *s, char **endp, int base);
 @subheading Description
 
 This is just like @code{strtol} (@pxref{strtol}) except that the result
-is unsigned. 
+is unsigned.
 
 @subheading Return Value
 

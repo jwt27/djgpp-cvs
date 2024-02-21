@@ -11,7 +11,7 @@ unsigned short _my_ds();
 @subheading Description
 
 Returns the current @code{DS}.  This is useful for setting up interrupt
-vectors and such. 
+vectors and such.
 
 @subheading Return Value
 

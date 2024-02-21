@@ -21,7 +21,7 @@ extern "C" {
 #define CLOCKS_PER_SEC	91
 
 #include <sys/djtypes.h>
-  
+
 /* Some programs think they know better... */
 #undef NULL
 #if (__GNUC__ >= 4) && defined(__cplusplus)

@@ -73,8 +73,8 @@ Passed internally to the linker, like 'gcc -T dxe.ld'
 @command{dxe3gen} is a utility which allows you to create files which contain
 dynamically loadable code (@acronym{DXE}).  @acronym{DXE} is used as a synonym
 for `dynamically loadable executable module', also called sometimes `dynamic
-modules' or simply `modules' in this document.  File names provided as 
-arguments should not contain special characters that require quoting 
+modules' or simply `modules' in this document.  File names provided as
+arguments should not contain special characters that require quoting
 or they may not be passed properly to @command{ld}.
 
 There are several ways to use @acronym{DXE} modules.  You may either
@@ -370,15 +370,15 @@ as well as
 	dxe3gen -Y libmy.a my.dxe
 @end example
 
-Both above sequences are equivalent.  The @kbd{-I} switch does the same 
+Both above sequences are equivalent.  The @kbd{-I} switch does the same
 thing as the @kbd{-Y} option and is used if you do not want to have symbols
-automatically resolved (when they are provided by another @acronym{DXE}, 
-for example).  
+automatically resolved (when they are provided by another @acronym{DXE},
+for example).
 
 @section Contacts
 
 This library was designed specifically for the Crystal Space project
-(see @uref{http://crystal.sourceforge.net}), but it is very general and 
+(see @uref{http://crystal.sourceforge.net}), but it is very general and
 useful in other environments as well.
 
 Daniel Borca, <dborca@@yahoo.com>

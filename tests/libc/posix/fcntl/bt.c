@@ -10,7 +10,7 @@
 
 int
 mk(const char *s, int m)
-{ 
+{
   int fd = open(TMP, O_WRONLY | O_CREAT | O_TRUNC | m, 0600);
   int i;
   char buf[4000];
@@ -126,7 +126,7 @@ main(int argc, char **argv)
   const char *ptr = "xxxrnrnnrxnxnrnxrnrrrnxnnxrnrnrnxrnrxnxnr";
   if (argc > 1)
     ptr = argv[1];
-    
+
   printf("Request Size = %d\n", BS);
 
   printf("Binary write...\n");

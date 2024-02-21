@@ -25,25 +25,25 @@ does this by calling INT21, AX=0x6900, Get Disk Serial Number (sic!),
 which returns, among other things, an eight character field which is
 set while formatting the drive. Now, this field can be set to whatever
 the formatting program wishes, but so far every FAT formatted drive
-has returned a string starting with "FAT".  
+has returned a string starting with "FAT".
 
-If successful the result is put in @var{result_str} which must be at 
-least 9 characters long.  If unsuccessful @code{errno} is set.  
+If successful the result is put in @var{result_str} which must be at
+least 9 characters long.  If unsuccessful @code{errno} is set.
 
 This function will not succeed on DOS version < 4, setting
 @code{errno} to @code{ENOSYS}.  It is also known to have trouble
 detecting the file system type of disks formatted with a later version
 of DOS than the version it is run on.  E. g. floppies with LFN
 entries can cause this function to fail or detect the floppy as
-FAT16 if used in plain DOS.  
+FAT16 if used in plain DOS.
 
 If you are interested in which kind of FAT file system that is in use
 try the function @code{_get_fat_size} (@pxref{_get_fat_size}) which
-will reliably detect the right kind of FAT file system.  
+will reliably detect the right kind of FAT file system.
 
 @subheading Return Value
 
-0 if the file system type was extracted successfully; otherwise -1.  
+0 if the file system type was extracted successfully; otherwise -1.
 
 @subheading Portability
 

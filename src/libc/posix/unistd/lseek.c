@@ -34,14 +34,14 @@ lseek(int handle, off_t offset, int whence)
     return -1; /* llseek sets errno. */
   }
 
-  /* Here we rely on that llseek()'s return range is [-1, 2^32-2]. 
+  /* Here we rely on that llseek()'s return range is [-1, 2^32-2].
    * All this removal of the bits 31-63 (of which only bit 31
    * potentially could be set) in the long long (offset_t) and then
    * merging it into the long (off_t) is because if a value is
    * (de)promoted and it doesn't fit in the target variable
    * implementation defined behaviour is invoked. So we make sure it
    * temporarily fits. After that it's ok to or in the sign bit
-   * again. 
+   * again.
    */
   if (llseek_offset & 0x80000000)
   {

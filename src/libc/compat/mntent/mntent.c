@@ -406,7 +406,7 @@ cdrom_drive_ready(int drive_num)
 
   union
   {
-    struct 
+    struct
     {
       unsigned int size   :16;
       unsigned int command:16;
@@ -492,7 +492,7 @@ setmntent(const char *filename, const char *type)
   if (cds_elsize > 0)
     {
       unsigned long cds_address_ptr;
-      
+
       r.h.ah = 0x52;    /* DOS Get List of Lists call */
       __dpmi_int(0x21, &r);
 
@@ -587,7 +587,7 @@ getmntent(FILE *filep)
 
           /* Int 13h/AH=02h returns 6 for disk changed, even if the
              disk isn't readable (e.g., unformatted).  Retry the
-             operation after disk change, each time resetting the 
+             operation after disk change, each time resetting the
              drive, until something other than 6 is returned or we
              run out of our patience.  */
           while (++count < 10 && (bios_status =
@@ -615,7 +615,7 @@ getmntent(FILE *filep)
          * X:\DBLSPACE.NNN or X:\STACVOL.NNN for drives compressed with
 	   DblSpace or Stacker, where X: is the host drive of the
 	   compressed volume and NNN is the volume sequence number;
-         * The full filename of the compressed volume file for 
+         * The full filename of the compressed volume file for
            a drive that is compressed with Jam;
          * What _truename() returns for the root directory, in case
            it isn't the usual ``X:\'';
@@ -859,7 +859,7 @@ getmntent(FILE *filep)
 
       /* Go try next drive, if any left.  */
     }
-  
+
   return NULL;
 }
 

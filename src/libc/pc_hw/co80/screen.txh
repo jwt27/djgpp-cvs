@@ -128,7 +128,7 @@ int ScreenCols(void);
 @subheading Description
 
 This function returns the number of columns of the screen.  It does so by
-looking at the byte at the absolute address 40:4Ah in the BIOS area. 
+looking at the byte at the absolute address 40:4Ah in the BIOS area.
 In text modes, the meaning of number of columns is obvious; in graphics
 modes, this value is the number of columns of text available when using
 the video BIOS functions to write text.
@@ -201,7 +201,7 @@ primary screen at row given by @var{row} and column given by @var{col}
 (these are zero-based) into the integers whose address is specified by
 @var{ch} and @var{attr}.  It does so by directly accessing the video memory,
 so it will only work when the screen is in text mode.  You can pass the value
-@code{NULL} in each of the pointers if you do not want to retrieve the 
+@code{NULL} in each of the pointers if you do not want to retrieve the
 the corresponding information.
 
 @emph{Warning:} note that both the variables @var{ch} and @var{attr} are

@@ -33,7 +33,7 @@ QELT num[NQ], den[NQ], x2[NQ];
 long i;
 
 /* range reduction theory: x = i + f, 0<=f<1;
- * e^x = e^i * e^f 
+ * e^x = e^i * e^f
  * e^i = 2^(i/log 2).
  * Let i/log2 = i1 + f1, 0 <= f1 < 1.
  * Then e^i = 2^i1 * 2^f1, so

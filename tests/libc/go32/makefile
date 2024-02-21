@@ -9,7 +9,7 @@ SRC += raise.c
 SRC += signals.c
 
 signals.exe:  signals.o
-	$(filter-out -c,$(GCC)) -pg -o $@  
+	$(filter-out -c,$(GCC)) -pg -o $@
 
 signals.o: CFLAGS += -pg
 

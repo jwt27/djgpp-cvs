@@ -4,7 +4,7 @@
 /* Copyright (C) 2003 Borca Daniel <dborca@yahoo.com>
    Copyright (C) 2000 Andrew Zabolotny <bit@eltech.ru>
    Copyright (C) 1995 Charles Sandmann (sandmann@clio.rice.edu)
-   
+
    Usage of this library is not restricted in any way.  Standard public
    symbols are in dlfcn.h.  Contributed to the DJGPP project. */
 

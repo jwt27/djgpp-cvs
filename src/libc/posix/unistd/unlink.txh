@@ -10,11 +10,11 @@ int unlink(const char *file);
 
 @subheading Description
 
-This function removes a file from the file system. 
+This function removes a file from the file system.
 
 @subheading Return Value
 
-Zero on success, nonzero on failure. 
+Zero on success, nonzero on failure.
 
 @subheading Portability
 

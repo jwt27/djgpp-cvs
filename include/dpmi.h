@@ -315,7 +315,7 @@ int _go32_dpmi_allocate_iret_wrapper(_go32_dpmi_seginfo *info);
 int _go32_dpmi_free_iret_wrapper(_go32_dpmi_seginfo *info);
 	/* assumes pm_offset points to wrapper, frees it */
 
-/* RMCB functions, automatically restructure the real-mode stack for the 
+/* RMCB functions, automatically restructure the real-mode stack for the
    proper return type and set up correct PM stack.  The callback
    (info->pm_offset) is called as (*pmcb)(_go32_dpmi_registers *regs); */
 int _go32_dpmi_allocate_real_mode_callback_retf(_go32_dpmi_seginfo *info, _go32_dpmi_registers *regs);

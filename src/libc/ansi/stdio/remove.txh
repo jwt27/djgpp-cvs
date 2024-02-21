@@ -12,7 +12,7 @@ int remove(const char *file);
 
 This function removes the named @var{file} from the file system.  Unless
 you have an un-erase program, the file and its contents are gone for
-good. 
+good.
 
 @subheading Return Value
 

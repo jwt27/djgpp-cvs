@@ -26,7 +26,7 @@ The file pointer is moved relative to its current position.
 @item SEEK_END
 
 The file pointer is moved to a position @var{offset} bytes from the end
-of the file.  The offset is usually nonpositive in this case. 
+of the file.  The offset is usually nonpositive in this case.
 
 @end table
 
@@ -49,7 +49,7 @@ cases either.
 
 @subheading Return Value
 
-Zero if successful, nonzero if not. 
+Zero if successful, nonzero if not.
 
 @subheading Portability
 

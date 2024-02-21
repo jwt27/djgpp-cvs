@@ -70,7 +70,7 @@ write(int handle, const void* buffer, size_t count)
     if (_write_fill_seek_gap(handle) < 0)
       return -1;
   }
-  
+
   while (offset_into_buf < count)
   {
     _farsetsel(_dos_ds);
@@ -98,7 +98,7 @@ write(int handle, const void* buffer, size_t count)
       errno = ENOSPC;
       return count - offset_into_buf;
     }
-    
+
     bytes_in_tb = 0;
   }
 

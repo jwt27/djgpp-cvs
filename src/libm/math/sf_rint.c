@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -18,7 +18,7 @@
 #ifdef __STDC__
 static const float
 #else
-static float 
+static float
 #endif
 TWO23[2]={
   8.3886080000e+06, /* 0x4b000000 */

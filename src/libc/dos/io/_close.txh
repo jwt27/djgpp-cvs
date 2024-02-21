@@ -17,7 +17,7 @@ use @xref{_dos_close}.
 
 @subheading Return Value
 
-Zero if the file was closed, else nonzero. 
+Zero if the file was closed, else nonzero.
 
 @subheading Portability
 

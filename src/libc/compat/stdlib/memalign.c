@@ -25,19 +25,19 @@ split_small_alloc(char *ptr, size_t split_pos)
 {
   BLOCK *b1, *b2;
   size_t b1_size;
-  
+
   b1 = (BLOCK *)(ptr - 4);
   b1_size = b1->size;
-  
+
   b2 = BEFORE(b1);
   b2->size += split_pos;
-  
+
   b1 = (BLOCK *)((char *)b1 + split_pos);
   b1->size = b1_size - split_pos;
   ENDSZ(b1) = b1->size;
-  
+
   ENDSZ(b2) = b2->size;
-  
+
   return DATA(b1);
 }
 
@@ -48,7 +48,7 @@ split_alloc(char *ptr, size_t split_pos)
 {
   BLOCK *b1, *b2;
   char *split_ptr;
-  
+
   b1 = (BLOCK *)(ptr - 4);
 
   /* Set location of second pointer and its block info.  */
@@ -58,11 +58,11 @@ split_alloc(char *ptr, size_t split_pos)
   /* Set up the two blocks.  */
   b2->size = (b1->size - split_pos) | 1;
   b1->size = (split_pos - 8) | 1;
-  
+
   ENDSZ(b1) = b1->size;
   ENDSZ(b2) = b2->size;
 
-  return DATA(b2);  
+  return DATA(b2);
 }
 
 /* Return a block of memory AMT bytes long whose address is a multiple
@@ -81,10 +81,10 @@ memalign(size_t align, size_t amt)
 
   if (align == ALIGN)
     return malloc(amt);
-    
+
   amt = align_val(amt, ALIGN);
   alloc_size = amt + align;
-  
+
   ptr = malloc(alloc_size);
   if (ptr == NULL)
     return ptr;

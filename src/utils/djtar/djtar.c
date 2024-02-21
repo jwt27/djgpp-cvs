@@ -102,7 +102,7 @@ get_entry(char *from)
 static void
 do_name_changes(char *fname)
 {
-  struct skip_dir_list * new_entry; 
+  struct skip_dir_list * new_entry;
   FILE *f = fopen(fname, "r");
   char from[PATH_MAX], to[PATH_MAX];
   char line[PATH_MAX * 2 + 10];
@@ -205,7 +205,7 @@ change(char *fname, const char *problem, int isadir)
       return 1;
     }
   }
-  
+
   if (a_switch)
   {
     fprintf(log_out, "  %s %s\n", problem, fname);
@@ -359,7 +359,7 @@ get_new_name(char *name_to_change, int *should_be_written)
     skip_dir_entry = skip_dirs;
     while (skip_dir_entry)
     {
-      if (!strncmp(skip_dir_entry->skip_dir, name_to_change, 
+      if (!strncmp(skip_dir_entry->skip_dir, name_to_change,
                    strlen(skip_dir_entry->skip_dir)))
       {
         char *following_char = name_to_change + strlen(name_to_change);

@@ -6,7 +6,7 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_findfirst(char *name, unsigned int attr, 
+unsigned int _dos_findfirst(char *name, unsigned int attr,
                             struct find_t *result);
 @end example
 

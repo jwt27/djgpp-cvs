@@ -17,7 +17,7 @@ characters typed by the user.  Pressing Ctrl-C or Ctrl-Break will cause
 the calling program to @code{exit(1)}.
 
 @subheading Return Value
-  
+
 A pointer to a static buffer which holds the user's response.  The buffer
 will be overwritten by each new call.  In case of any error in the lower
 I/O routines, a NULL pointer will be returned.

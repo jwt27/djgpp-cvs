@@ -47,7 +47,7 @@ enum text_modes { LASTMODE=-1, BW40=0, C40, BW80, C80, MONO=7, C4350=64 };
 
 enum COLORS {
     /*  dark colors     */
-    BLACK,          
+    BLACK,
     BLUE,
     GREEN,
     CYAN,
@@ -69,7 +69,7 @@ enum COLORS {
 #define BLINK   0x80    /*  blink bit   */
 
 void    blinkvideo(void);
-char *  cgets(char *_str); 
+char *  cgets(char *_str);
 void    clreol(void);
 void    clrscr(void);
 int     _conio_kbhit(void); /* checks for ungetch char */
@@ -97,7 +97,7 @@ void    textattr(int _attr);
 void    textbackground(int _color);
 void    textcolor(int _color);
 void    textmode(int _mode);
-int     ungetch(int); 
+int     ungetch(int);
 int     wherex(void);
 int     wherey(void);
 void    window(int _left, int _top, int _right, int _bottom);

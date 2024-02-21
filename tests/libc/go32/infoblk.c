@@ -58,7 +58,7 @@ main(void)
   printf("  linear_address_of_original_psp = 0x%08lx (%ld)\n",
     _go32_info_block.linear_address_of_original_psp,
     _go32_info_block.linear_address_of_original_psp);
-    
+
   printf("  run mode is %s (info is 0x%04x (%d.%d))\n",
     mname(_go32_info_block.run_mode),
     _go32_info_block.run_mode_info,

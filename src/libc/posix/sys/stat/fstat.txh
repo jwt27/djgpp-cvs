@@ -30,7 +30,7 @@ described in @ref{_djstat_flags}.
 
 @subheading Return Value
 
-Zero on success, nonzero on failure (and @code{errno} set). 
+Zero on success, nonzero on failure (and @code{errno} set).
 
 @subheading Portability
 
@@ -49,10 +49,10 @@ else if (S_ISCHR(s.st_mode))
 
 @subheading Bugs
 
-If a file was open in write-only mode, its execute and symlink mode 
+If a file was open in write-only mode, its execute and symlink mode
 bits might be incorrectly reported as if the file were non-executable
-or non-symlink.  This is because executables and symlinks are only 
-recognized by reading their first few bytes, which cannot be done for 
+or non-symlink.  This is because executables and symlinks are only
+recognized by reading their first few bytes, which cannot be done for
 files open in write-only mode.
 
 For @code{fstat} to return correct info, you should make sure that all

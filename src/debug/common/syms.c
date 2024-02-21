@@ -18,7 +18,7 @@
 ** warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* Modified by Charles Sandmann 1995 for DJGPP V2 (bug fixes) 
+/* Modified by Charles Sandmann 1995 for DJGPP V2 (bug fixes)
    incorporate changes by Morten Welinder, terra@diku.dk */
 
 #include <errno.h>
@@ -145,7 +145,7 @@ static int valid_symbol(int i)
 {
   char *sn;
   if (f_symtab[i].e.e.e_zeroes)
-    sn = f_symtab[i].e.e_name; 
+    sn = f_symtab[i].e.e_name;
   else
     sn = f_string_table + f_symtab[i].e.e.e_offset;
   if (sn[0] != '_')
@@ -459,7 +459,7 @@ static void process_aout(FILE *fd, long ofs)
         break;
     }
   }
-  
+
   syms = (SymNode *)xmalloc(num_syms * sizeof(SymNode));
   memset(syms, 0, num_syms * sizeof(SymNode));
   files = (FileNode *)xmalloc(num_files * sizeof(FileNode));
@@ -533,7 +533,7 @@ static void process_aout(FILE *fd, long ofs)
         break;
     }
   }
-  
+
   l = f = 0;
   for (i=0; i<nsyms; i++)
   {
@@ -554,7 +554,7 @@ static void process_aout(FILE *fd, long ofs)
         break;
     }
   }
-  
+
 }
 
 static void process_file(FILE *fd, long ofs)
@@ -604,7 +604,7 @@ void syms_init(char *fname)
 static int lookup_sym_byname(const char *name, int idx, int ofs)
 {
   int below, above;
-  
+
   below = -1;
   above = num_syms;
   while (above - below > 1)
@@ -739,7 +739,7 @@ char *syms_val2name(unsigned long val, unsigned long *delta)
     *delta = 0;
 
   if (num_syms <= 0)
-    goto noname;  
+    goto noname;
   above = num_syms;
   below = -1;
   mid = 0;			/* Or complains about maybe uninit */

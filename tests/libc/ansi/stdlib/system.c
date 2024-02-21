@@ -31,7 +31,7 @@ main(int argc, char **argv)
     printf(", using %05x bytes", nbase-base);
   printf(", transfer buffer at 0x%05lx",
 	 _go32_info_block.linear_address_of_transfer_buffer);
-    
+
   putchar('\n');
   show("before");
 

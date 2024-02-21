@@ -11,7 +11,7 @@ size_t fread(void *buffer, size_t size, size_t number, FILE *file);
 @subheading Description
 
 This function reads @var{size}*@var{number} characters from @var{file}
-to @var{buffer}. 
+to @var{buffer}.
 
 @subheading Return Value
 

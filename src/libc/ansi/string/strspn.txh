@@ -13,7 +13,7 @@ size_t strspn(const char *s1, const char *set);
 This function finds the first character in @var{s1} that does not match
 any character in @var{set}.  Note that the @code{NULL} bytes at the end
 of @var{s1} counts, so you'll at least get a pointer to the end of the
-string if nothing else. 
+string if nothing else.
 
 @subheading Return Value
 

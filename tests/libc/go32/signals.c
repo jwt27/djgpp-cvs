@@ -74,7 +74,7 @@ fired every 55ms.\n\
   t.it_interval.tv_sec = 0;
   t.it_interval.tv_usec =100;
   t.it_value.tv_sec = 0;
-  t.it_value.tv_usec = 100; 
+  t.it_value.tv_usec = 100;
   signal(SIGALRM, sig_handler);
   setitimer(ITIMER_REAL, &t, NULL);
   signal (SIGINT, int_handler);

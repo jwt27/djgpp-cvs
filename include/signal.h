@@ -41,7 +41,7 @@ void	(*signal(int _sig, void (*_func)(int)))(int);
   || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
-  
+
 #ifndef __STRICT_ANSI__
 
 #define SA_NOCLDSTOP	1

@@ -10,7 +10,7 @@ void setbuffer(FILE *file, char *buffer, int length);
 
 @subheading Description
 
-This function modifies the buffering characteristics of @var{file}. 
+This function modifies the buffering characteristics of @var{file}.
 First, if the file already has a buffer, it is freed.  If there was any
 pending data in it, it is lost, so this function should only be used
 immediately after a call to @code{fopen}.

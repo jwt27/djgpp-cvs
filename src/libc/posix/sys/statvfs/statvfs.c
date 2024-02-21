@@ -22,7 +22,7 @@ statvfs (const char *path, struct statvfs *outbuf)
     }
 
   /* Fill outbuf from sbuf. */
-  outbuf->f_bsize  = sbuf.f_bsize;  
+  outbuf->f_bsize  = sbuf.f_bsize;
   outbuf->f_blocks = sbuf.f_blocks;
   outbuf->f_bfree  = sbuf.f_bfree;
   outbuf->f_bavail = sbuf.f_bavail;
@@ -68,7 +68,7 @@ int
 main (int argc, char *argv[])
 {
   const char NOSUID[] = "nosuid";
-  const char RDONLY[] = "rdonly";  
+  const char RDONLY[] = "rdonly";
   struct statvfs svbuf;
   char buf[64];
   int i;

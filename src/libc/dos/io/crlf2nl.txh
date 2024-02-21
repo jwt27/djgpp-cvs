@@ -10,7 +10,7 @@ size_t crlf2nl(char *buf, ssize_t len);
 
 @subheading Description
 
-This function removes Ctrl-M characters from the given @var{buf}. 
+This function removes Ctrl-M characters from the given @var{buf}.
 
 @subheading Return Value
 

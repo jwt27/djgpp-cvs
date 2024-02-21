@@ -37,7 +37,7 @@
    see debugger's output (it will go to the same file where the debuggee
    has its output); and if the debuggee closes its standard input, you
    will lose the ability to talk to debugger!
-   
+
    The code below attempts to solve all these problems by creating an
    illusion of two separate sets of standard handles.  Each time the
    debuggee is about to be run or resumed, the functions provided below

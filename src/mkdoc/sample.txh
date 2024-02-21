@@ -12,7 +12,7 @@ void volatile abort(void);
 @subheading Description
 
 When you call @code{abort}, the message "Abort!" is printed on stdout
-and the program exits with an exit code of one. 
+and the program exits with an exit code of one.
 
 @subheading Return Value
 

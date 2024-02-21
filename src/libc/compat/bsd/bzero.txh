@@ -10,7 +10,7 @@ void bzero(void *pointer, int length);
 
 @subheading Description
 
-The data at @var{pointer} is filled with @var{length} zeros. 
+The data at @var{pointer} is filled with @var{length} zeros.
 
 @subheading Return Value
 

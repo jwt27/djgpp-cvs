@@ -8,7 +8,7 @@
 /*
    This is popen() and pclose() for MSDOS.  They were developed using
    Microsoft C, but should port easily to DOS C any compiler.
-   
+
    Original author: pacetti@fl-ngnet.army.mil
 
    These routines are hacks, that is they SIMULATE their UNIX

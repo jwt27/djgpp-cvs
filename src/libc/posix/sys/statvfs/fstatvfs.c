@@ -38,7 +38,7 @@ int
 main (int argc, char *argv[])
 {
   const char NOSUID[] = "nosuid";
-  const char RDONLY[] = "rdonly";  
+  const char RDONLY[] = "rdonly";
   struct statvfs svbuf;
   char buf[64];
   int fd, i;

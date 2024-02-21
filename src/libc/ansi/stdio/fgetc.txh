@@ -10,7 +10,7 @@ int fgetc(FILE *file);
 
 @subheading Description
 
-Returns the next character in the given @var{file} as an unsigned char. 
+Returns the next character in the given @var{file} as an unsigned char.
 
 @subheading Return Value
 

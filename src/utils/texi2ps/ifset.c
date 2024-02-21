@@ -90,7 +90,7 @@ alloc_flag(size_t need_bytes)
   if (min_req_size > flag_table_size)
     {
       int need_realloc = 0;
-      
+
       /* Not enough free space up front.  Before we reallocate, find
          unused slots and reuse them by unfragmenting the table.
          Unused slots look like this: "\0?????????\0" (the number of
@@ -141,7 +141,7 @@ alloc_flag(size_t need_bytes)
 }
 
 /* --------------------------------------------------------------------- */
-    
+
 
 /* Insert a flag and its value into the table.  */
 void

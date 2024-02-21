@@ -49,13 +49,13 @@ _write_fill_seek_gap(int fd)
   unsigned long buf_size;
   unsigned long i;
   short fd_info;
-  
+
   __clear_fd_flags(fd, FILE_DESC_ZERO_FILL_EOF_GAP);
 
   /* Quit when there can't be an EOF gap or its existance doesn't matter.  */
   if (__fd_properties[fd]->flags & FILE_DESC_DONT_FILL_EOF_GAP)
     return 0;
-    
+
   /* Quit when not working with a file.  */
   fd_info = _get_dev_info(fd);
   if (fd_info & _DEV_CDEV)
@@ -64,12 +64,12 @@ _write_fill_seek_gap(int fd)
     __set_fd_flags(fd, FILE_DESC_DONT_FILL_EOF_GAP);
     return 0;
   }
-  
-  /* Quit when unable to get the file length.  */    
+
+  /* Quit when unable to get the file length.  */
   eof_off = lfilelength (fd);
   if (eof_off < 0)
     return 0;
-  
+
   /* Quit when unable to get the current file offset.  */
   cur_off = llseek (fd, 0, SEEK_CUR);
   if (cur_off < 0)
@@ -78,7 +78,7 @@ _write_fill_seek_gap(int fd)
   /* Quit if the current offset is not past EOF.  */
   if (cur_off <= eof_off)
     return 0;
-    
+
   /* Quit when unable to seek to EOF.  */
   if (llseek (fd, eof_off, SEEK_SET) == -1)
     return 0;
@@ -86,7 +86,7 @@ _write_fill_seek_gap(int fd)
   /* Clear once again because the llseek call above will
      set the fill test flag.  */
   __clear_fd_flags(fd, FILE_DESC_ZERO_FILL_EOF_GAP);
-  
+
   /* Fill the transfer buffer with zeros.  */
   fill_count = cur_off - eof_off;
 
@@ -122,7 +122,7 @@ _write_int(int fd, const char *buffer, unsigned long long write_count)
   __dpmi_regs r;
 
   buf_size = (write_count <= __tb_size) ? write_count : __tb_size;
-  
+
   total_written = 0;
   do
   {

@@ -297,7 +297,7 @@ take priority over their lower-level component subexpressions.
 
 Match lengths are measured in characters, not collating elements.  A
 null string is considered longer than no match at all.  For example,
-@samp{bb*} matches the three middle characters of ``abbbc'', 
+@samp{bb*} matches the three middle characters of ``abbbc'',
 @samp{(wee|week)(knights|nights)} matches all ten characters of
 ``weeknights'', when @samp{(.*).*} is matched against ``abc'' the
 parenthesized subexpression matches all three characters, and when

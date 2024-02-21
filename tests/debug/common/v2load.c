@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
   strcpy(env_str, "FOO=from-v2load");
   putenv(env_str);
-  
+
   cmdline[1] = 0;
   for(i=2; argv[i]; i++) {
   	strcat(cmdline+1, " ");

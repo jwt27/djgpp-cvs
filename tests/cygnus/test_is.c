@@ -1908,7 +1908,7 @@ _DEFUN(test_is_single,(i),
       break;
     default:
       abort();
-      
+
     }
 
 }
@@ -1947,7 +1947,7 @@ _DEFUN(test_is_set,(func, name, p),
     int r = func(i) != 0;
     line(i);
     test_is_single(i);
-    if (*p  != r) 
+    if (*p  != r)
       {
 	printf("%s:%d wrong result, is %d shouldbe %d\n", name, i, r,*p);
 	inacc++;
@@ -1968,7 +1968,7 @@ _DEFUN(test_to_set,(func, name, p, low, high),
     int r = func(i) ;
     line(i);
     test_is_single(i);
-    if (*p  != r) 
+    if (*p  != r)
       {
 	printf("%s:%d wrong result, is %d shouldbe %d\n", name, i, r,*p);
 	inacc++;

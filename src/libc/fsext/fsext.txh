@@ -514,7 +514,7 @@ int my_fsext(__FSEXT_Fnumber Op, int* RV, va_list Args)
 
        *RV = Size;
        return 1;
-       
+
        ...
     @}
 @}

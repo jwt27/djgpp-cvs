@@ -65,13 +65,13 @@ fnmatch(const char *pattern, const char *string, int flags)
     {
     case 0:
       return *string == 0 ? 0 : FNM_NOMATCH;
-      
+
     case '?':
       if ((test = *string++) == 0 ||
 	  (isslash(test) && (flags & FNM_PATHNAME)))
 	return(FNM_NOMATCH);
       break;
-      
+
     case '*':
       c = *pattern;
       /* collapse multiple stars */
@@ -103,7 +103,7 @@ fnmatch(const char *pattern, const char *string, int flags)
 	++string;
       }
       return FNM_NOMATCH;
-      
+
     case '[':
       if ((test = *string++) == 0 ||
 	  (isslash(test) && flags & FNM_PATHNAME))
@@ -111,7 +111,7 @@ fnmatch(const char *pattern, const char *string, int flags)
       if ((pattern = rangematch(pattern, test, flags & FNM_NOCASE)) == NULL)
 	return FNM_NOMATCH;
       break;
-      
+
     case '\\':
       if (!(flags & FNM_NOESCAPE) && pattern[1] && strchr("*?[\\", pattern[1]))
       {
@@ -125,7 +125,7 @@ fnmatch(const char *pattern, const char *string, int flags)
 	break;
       }
       /* FALLTHROUGH */
-      
+
     default:
       if (isslash(c) && isslash(*string))
       {

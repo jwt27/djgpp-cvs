@@ -129,10 +129,10 @@ _DEFUN_VOID(test_getround)
   line(2);
   fpsetround(FP_RM);
   test_iok(fpgetround(), FP_RM);
-  line(3);  
+  line(3);
   fpsetround(FP_RP);
   test_iok(fpgetround(), FP_RP);
-  line(4);  
+  line(4);
   fpsetround(FP_RZ);
   test_iok(fpgetround(), FP_RZ);
 }
@@ -151,10 +151,10 @@ _DEFUN_VOID(test_getmask)
   line(3);
   fpsetmask(FP_X_OFL );
   test_iok(fpgetmask(),FP_X_OFL);
-  line(4);  
+  line(4);
   fpsetmask(FP_X_UFL);
   test_iok(fpgetmask(),FP_X_UFL);
-  line(5);  
+  line(5);
   fpsetmask(FP_X_IMP);
   test_iok(fpgetmask(),FP_X_IMP);
 }
@@ -172,10 +172,10 @@ _DEFUN_VOID(test_getsticky)
   line(3);
   fpsetsticky(FP_X_OFL );
   test_iok(fpgetsticky(),FP_X_OFL);
-  line(4);  
+  line(4);
   fpsetsticky(FP_X_UFL);
   test_iok(fpgetsticky(),FP_X_UFL);
-  line(5);  
+  line(5);
   fpsetsticky(FP_X_IMP);
   test_iok(fpgetsticky(),FP_X_IMP);
 }
@@ -199,7 +199,7 @@ double
 	int msw _AND
 	int lsw)
 {
-  
+
   __ieee_double_shape_type v;
   v.parts.lsw = lsw;
   v.parts.msw = msw;
@@ -222,14 +222,14 @@ _DEFUN_VOID(test_round)
 {
   n =                dnumber(0x40000000, 0x00000008); /* near 2 */
   m =                dnumber(0x40400000, 0x00000003); /* near 3.4 */
-  
+
   add_rounded_up   = dnumber(0x40410000, 0x00000004); /* For RN, RP */
   add_rounded_down = dnumber(0x40410000, 0x00000003); /* For RM, RZ */
   sub_rounded_down = dnumber(0xc0410000, 0x00000004); /* for RN, RM */
   sub_rounded_up   = dnumber(0xc0410000, 0x00000003); /* for RP, RZ */
 
   newfunc("fpsetround");
-  
+
   line(1);
 
 #ifdef __DJGPP__
@@ -237,21 +237,21 @@ _DEFUN_VOID(test_round)
   _fpreset ();
   _control87 (0x033f, 0xffff);	/* mask all numeric exceptions */
 #endif
-  
+
   fpsetround(FP_RN);
   r1 = n + m;
   test_mok(r1, add_rounded_up, 64);
-  
+
   line(2);
   fpsetround(FP_RM);
   r2 = n + m;
   test_mok(r2, add_rounded_down, 64);
-  
+
   fpsetround(FP_RP);
   line(3);
   r3 = n + m;
   test_mok(r3,add_rounded_up, 64);
-  
+
   fpsetround(FP_RZ);
   line(4);
   r4 = n + m;
@@ -262,7 +262,7 @@ _DEFUN_VOID(test_round)
   r1 = - n - m;
   line(5);
   test_mok(r1,sub_rounded_down,64);
-  
+
   fpsetround(FP_RM);
   r2 = - n - m;
   line(6);
@@ -293,7 +293,7 @@ _DEFUN_VOID(test_ieee)
   test_round();
   fpsetround(old);
 
-  
+
 }
 
 

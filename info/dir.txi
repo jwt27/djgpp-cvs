@@ -293,7 +293,7 @@ GNU Gettext Utilities
 
 
 Localization
-* idn: (libidn)Invoking idn.    Internationalized Domain Name (IDN) string 
+* idn: (libidn)Invoking idn.    Internationalized Domain Name (IDN) string
                                   conversion.
 
 

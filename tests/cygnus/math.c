@@ -1,4 +1,4 @@
-/* 
+/*
   Test the library maths functions using trusted precomputed test
   vectors.
 
@@ -40,7 +40,7 @@ int
 _DEFUN(matherr,(e),
        struct exception *e)
 {
-  if (traperror) 
+  if (traperror)
   {
     merror = e->type + 12;
     mname = e->name;
@@ -61,7 +61,7 @@ void _DEFUN(translate_to,(file,r),
   fprintf(file, "0x%08lx, 0x%08lx", bits.parts.msw, bits.parts.lsw);
 }
 
-int 
+int
 _DEFUN(ffcheck,( is, p, name, serrno, merror),
        double is _AND
        one_line_type *p _AND
@@ -71,18 +71,18 @@ _DEFUN(ffcheck,( is, p, name, serrno, merror),
 {
   /* Make sure the answer isn't to far wrong from the correct value */
   __ieee_double_shape_type correct, isbits;
-  int mag;  
+  int mag;
   isbits.value = is;
-  
+
   correct.parts.msw = p->qs[0].msw;
   correct.parts.lsw = p->qs[0].lsw;
-  
+
   mag = mag_of_error(correct.value, is);
-  
+
   if (mag < p->error_bit)
   {
     inacc ++;
-    
+
     printf("%s:%d, inaccurate answer: bit %d (%08lx%08lx %08lx%08lx) (%g %g)\n",
 	   name,  p->line, mag,
 	   correct.parts.msw,
@@ -90,10 +90,10 @@ _DEFUN(ffcheck,( is, p, name, serrno, merror),
 	   isbits.parts.msw,
 	   isbits.parts.lsw,
 	   correct.value, is);
-  }      
-  
+  }
+
 #if 0
-  if (p->qs[0].merror != merror) 
+  if (p->qs[0].merror != merror)
   {
     printf("In %s() using %s_vec.c:%d, matherr wrong: %d %d\n",
 	   name, name, p->line, merror, p->qs[0].merror);
@@ -106,7 +106,7 @@ _DEFUN(ffcheck,( is, p, name, serrno, merror),
   {
     printf("In %s() using %s_vec.c:%d, errno wrong: %2d %2d\n",
 	   name, name, p->line, p->errno_val, errno);
-    
+
   }
 
   return mag;
@@ -192,7 +192,7 @@ _DEFUN(thedouble, (msw, lsw),
        long lsw)
 {
   __ieee_double_shape_type x;
-  
+
   x.parts.msw = msw;
   x.parts.lsw = lsw;
   return x.value;
@@ -212,11 +212,11 @@ _DEFUN(frontline,(f, mag, p, result, merror, errno, args, name),
        char *args _AND
        char *name)
 {
-  if (reduce && p->error_bit < mag) 
+  if (reduce && p->error_bit < mag)
   {
     fprintf(f, "{%2d,", p->error_bit);
   }
-  else 
+  else
   {
     fprintf(f, "{%2d,",mag);
   }
@@ -225,23 +225,23 @@ _DEFUN(frontline,(f, mag, p, result, merror, errno, args, name),
   fprintf(f,"%2d,%3d,", merror,errno);
   fprintf(f, "__LINE__, ");
 
-  if (calc) 
+  if (calc)
   {
     translate_to(f, result);
   }
-  else 
+  else
   {
     translate_to(f, thedouble(p->qs[0].msw, p->qs[0].lsw));
   }
-  
-  fprintf(f, ", ");      
+
+  fprintf(f, ", ");
 
   fprintf(f,"0x%08lx, 0x%08lx", p->qs[1].msw, p->qs[1].lsw);
-  
 
-  if (args[2]) 
+
+  if (args[2])
   {
-    fprintf(f, ", ");      
+    fprintf(f, ", ");
     fprintf(f,"0x%08lx, 0x%08lx", p->qs[2].msw, p->qs[2].lsw);
   }
 	
@@ -252,7 +252,7 @@ _DEFUN(frontline,(f, mag, p, result, merror, errno, args, name),
   {
     fprintf(f,", %g", thedouble(p->qs[2].msw,p->qs[2].lsw));
   }
-  fprintf(f, ")*/\n");      
+  fprintf(f, ")*/\n");
 }
 
 void
@@ -266,12 +266,12 @@ _DEFUN(finish,(f, vector,  result , p, args, name),
 {
   int mag;
 
-  mag = ffcheck(result, p,name,  merror, errno);    
-  if (vector) 
-  {    
+  mag = ffcheck(result, p,name,  merror, errno);
+  if (vector)
+  {
     frontline(f, mag, p, result, merror, errno, args , name);
   }
-} 
+}
 
 void
 _DEFUN(finish2,(f, vector,  r_result , i_result, p, args, name),
@@ -299,10 +299,10 @@ _DEFUN(finish2,(f, vector,  r_result , i_result, p, args, name),
   }
 }
 
-typedef union 
+typedef union
 {
   double value;
-  struct 
+  struct
   {
     unsigned long lsw;
     unsigned long msw;
@@ -328,8 +328,8 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
        char *args)
 {
   FILE *f = NULL;
-  double result;  
-  
+  double result;
+
   if (vector)
   {
 
@@ -345,7 +345,7 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
 	 the story with k+4?  The test program doesn't really
          need this (REDO is always 0), but I've fixed this
          code anyhow, to shut up GCC if nothing else.  */
-      for (k = -.2; k < .2; k+= 0.00132) 
+      for (k = -.2; k < .2; k+= 0.00132)
       {
 
 	EXTRACT_WORDS(high0, low0, k);
@@ -355,7 +355,7 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
 
       }
 
-      for (k = -1.2; k < 1.2; k+= 0.01) 
+      for (k = -1.2; k < 1.2; k+= 0.01)
       {
 
 	EXTRACT_WORDS(high0, low0, k);
@@ -364,7 +364,7 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
 		high0,low0,high4,low4);
 
       }
-      for (k = -M_PI *2; k < M_PI *2; k+= M_PI/2) 
+      for (k = -M_PI *2; k < M_PI *2; k+= M_PI/2)
       {
 
 	EXTRACT_WORDS(high0, low0, k);
@@ -374,7 +374,7 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
 
       }
 
-      for (k = -30; k < 30; k+= 1.7) 
+      for (k = -30; k < 30; k+= 1.7)
       {
 
 	EXTRACT_WORDS(high0, low0, k);
@@ -387,19 +387,19 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
       return;
     }
   }
- 
+
   newfunc(name);
-  while (p->line) 
+  while (p->line)
   {
     double arg1 = thedouble(p->qs[1].msw, p->qs[1].lsw);
     double arg2 = thedouble(p->qs[2].msw, p->qs[2].lsw);
-    
+
     errno = 0;
     merror = 0;
     mname = 0;
 
-    
-    line(p->line);          
+
+    line(p->line);
 
     merror = 0;
 #if 0
@@ -409,79 +409,79 @@ _DEFUN(run_vector_1,(vector, p, func, name, args),
     if (strcmp(args,"dd")==0)
     {
       typedef double _EXFUN((*pdblfunc),(double));
-      
+
       /* Double function returning a double */
-      
+
       result = ((pdblfunc)(func))(arg1);
-      finish(f,vector, result, p, args, name);       
-    }  
+      finish(f,vector, result, p, args, name);
+    }
     else  if (strcmp(args,"ff")==0)
     {
       volatile float arga, result;
-      
+
       typedef float _EXFUN((*pdblfunc),(float));
-      
+
       /* Float function returning a float */
 #if 0
       if (arg1 < FLT_MAX )
 #endif
       {
-	arga = arg1;      
+	arga = arg1;
 	result = ((pdblfunc)(func))(arga);
-	finish(f, vector, result, p,args, name);       
+	finish(f, vector, result, p,args, name);
       }
-    }      
+    }
     else if (strcmp(args,"ddd")==0)
      {
        typedef double _EXFUN((*pdblfunc),(double,double));
-      
+
        result = ((pdblfunc)(func))(arg1,arg2);
-       finish(f, vector, result, p,args, name);       
-     }  
+       finish(f, vector, result, p,args, name);
+     }
      else  if (strcmp(args,"fff")==0)
      {
        volatile float result;
-       
+
        float arga;
        float argb;
-      
+
        typedef float _EXFUN((*pdblfunc),(float,float));
-      
+
 #if 0
        if (arg1 < FLT_MAX && arg2 < FLT_MAX)
 #endif
        {
-	 arga = arg1;      
+	 arga = arg1;
 	 argb = arg2;
 	 result = ((pdblfunc)(func))(arga, argb);
-	 finish(f, vector, result, p,args, name);       
+	 finish(f, vector, result, p,args, name);
        }
-     }      
+     }
      else if (strcmp(args,"did")==0)
      {
        typedef double _EXFUN((*pdblfunc),(int,double));
-      
+
        result = ((pdblfunc)(func))((int)arg1,arg2);
-       finish(f, vector, result, p,args, name);       
-     }  
+       finish(f, vector, result, p,args, name);
+     }
      else  if (strcmp(args,"fif")==0)
      {
        volatile float result;
        float arga;
        float argb;
-      
+
        typedef float _EXFUN((*pdblfunc),(int,float));
-      
+
 #if 0
        if (arg1 < FLT_MAX && arg2 < FLT_MAX)
 #endif
        {
-	 arga = arg1;      
+	 arga = arg1;
 	 argb = arg2;
 	 result = ((pdblfunc)(func))((int)arga, argb);
-	 finish(f, vector, result, p,args, name);       
+	 finish(f, vector, result, p,args, name);
        }
-     }      
+     }
     else if (strcmp(args,"ddi")==0)
     {
       typedef double _EXFUN((*pdblfunc),(double,int));
@@ -662,7 +662,7 @@ float _DEFUN(floorf,(a), float a) { return floor(a); }
 
 float fmodf(a,b) float a,b; { return fmod(a,b); }
 float hypotf(a,b) float a,b; { return hypot(a,b); }
-  
+
 float acosf(a) float a; { return acos(a); }
 float acoshf(a) float a; { return acosh(a); }
 float asinf(a) float a; { return asin(a); }

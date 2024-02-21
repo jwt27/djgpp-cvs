@@ -53,7 +53,7 @@ int hcreate( size_t nel )
   {
     i++;
   }
-  
+
   buckets = 1U<<i;
   mask = buckets-1;
 
@@ -96,7 +96,7 @@ ENTRY *hsearch(ENTRY item, ACTION action)
       {
 	return &hash[hash_value];
       }
-    
+
       hash_value += increment;
       hash_value &= mask;
     }

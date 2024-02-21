@@ -495,7 +495,7 @@ if( subflg )
 	ac1[SIGNWORD] = ~ac1[SIGNWORD];
 
 /* compare exponents */
-lt = (long) ac1[E] - (long) ac2[E]; 
+lt = (long) ac1[E] - (long) ac2[E];
 if( lt > 0 )
 	{	/* put the larger number in ac2 */
 	qmovz( ac2, ac3 );
@@ -1123,7 +1123,7 @@ if( r == 0x7f80 )
 	}
 r >>= 7;
 /* If zero exponent, then the significand is denormalized.
- * So take back the understood high significand bit. */ 
+ * So take back the understood high significand bit. */
 if( r == 0 )
 	{
 	denorm = 1;
@@ -1335,7 +1335,7 @@ yy[M] = (r & 0x0f) | 0x10;
 r &= ~0x800f;	/* strip sign and 4 mantissa bits */
 r >>= 4;
 /* If zero exponent, then the mantissa is denormalized.
- * So take back the understood high mantissa bit. */ 
+ * So take back the understood high mantissa bit. */
 if( r == 0 )
 	{
 	denorm = 1;
@@ -1917,7 +1917,7 @@ if( r & 0x8000 )
 r &= 0x7fff;
 yy[M] = 1;
 /* If zero exponent, then the mantissa is denormalized.
- * So take back the understood high mantissa bit. */ 
+ * So take back the understood high mantissa bit. */
 if( r == 0 )
 	{
 	denorm = 1;
@@ -2442,7 +2442,7 @@ else
 ;	Convert ASCII string to quadruple precision floating point
 ;
 ;		Numeric input is free field decimal number
-;		with max of 15 digits with or without 
+;		with max of 15 digits with or without
 ;		decimal point entered as ASCII from teletype.
 ;	Entering E after the number followed by a second
 ;	number causes the second number to be interpreted
@@ -2541,7 +2541,7 @@ for( exp = 0; exp < NQ + 1; exp++ )
 		goto read_expnt;
 	}
 goto zero;
-  
+
 read_expnt:
 exp = 0;
 ++s;

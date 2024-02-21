@@ -16,7 +16,7 @@ for @var{num} bytes, disregarding case.
 @subheading Return Value
 
 Zero if they're the same, nonzero if different, the sign indicates
-"order". 
+"order".
 
 @subheading Portability
 

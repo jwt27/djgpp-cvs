@@ -31,7 +31,7 @@ do {                           \
 } while (0)
 #define BUF_SIZE      16384
 
-/* Control characters. */    
+/* Control characters. */
 #define LF            0x0A
 #define CR            0x0D
 #define CntlZ         0x1A
@@ -70,7 +70,7 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
     perror (fname);
     return IO_ERROR;
   }
-  
+
   tim1.actime = st.st_atime;
   tim1.modtime = st.st_mtime;
   nbufs = st.st_size / BUF_SIZE;
@@ -91,7 +91,7 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
         }
     strcat (bfname,".d2u");
   }
-  
+
   df = open (tfname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0644);
   if (df < 1)
   {
@@ -112,8 +112,8 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
     whence = SEEK_CUR;
   }
   while ((l = read (sf, buf, BUF_SIZE)) > 0)
-  { 
-    for (i = k = 0; i < l; i++) 
+  {
+    for (i = k = 0; i < l; i++)
     {
       if (strip_mode)
       {
@@ -212,13 +212,13 @@ dtou(char *fname, int make_backup, int repair_mode, int strip_mode, int verbose,
     if (vverbose)
       printf ("File: %s\n",fname);
 
-    if (CR_flag && vverbose) 
+    if (CR_flag && vverbose)
       printf ("At least one CR/LF to LF transformation occurred.\n");
-    if (nCR_flag && vverbose) 
+    if (nCR_flag && vverbose)
       printf ("Warning: At least one CR sequence stripped from a LF.\n");
-    if (CntlZ_flag && vverbose) 
+    if (CntlZ_flag && vverbose)
       printf ("Warning: At least one Cntl-Z has been found. File truncated at line %i.\n", LF_counter);
-    if (LF_flag && vverbose) 
+    if (LF_flag && vverbose)
       printf ("Warning: At least one LF without a preceeding CR has been found.\n");
 
     if (vverbose && !file_has_changed)
@@ -288,7 +288,7 @@ main(int argc, char **argv)
     exit(NO_ERROR);
   }
 
-  /* Default for backward compatibility. */ 
+  /* Default for backward compatibility. */
   make_backup = repair_mode = strip_mode = verbose = vverbose = 0;
   preserve_timestamp = 1;
 

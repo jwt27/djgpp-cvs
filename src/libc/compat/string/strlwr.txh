@@ -11,7 +11,7 @@ char *strlwr(char *string);
 @subheading Description
 
 This function replaces all upper case letters in @var{string} with lower
-case letters. 
+case letters.
 
 @subheading Return Value
 

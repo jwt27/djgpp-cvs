@@ -25,13 +25,13 @@ void delay(unsigned msec)
       /* INT 15 FAILED, so fall back to the Time Of Day Tick */
       unsigned long start_tick;
       unsigned long end_tick;
- 
+
       r.h.ah = 0x00;
       __dpmi_int(0x1A, &r);
- 
+
       start_tick = (r.x.cx << 16) + (r.x.dx & 0xffff);
       end_tick = (msec*182)/10000 + start_tick;
- 
+
       if ((msec%10000/182) > (5000/182)) /* Manual round ticks */
       {
 	end_tick++;
@@ -47,7 +47,7 @@ void delay(unsigned msec)
 	}
 	end_tick = end_tick - TICK_PER_DAY;
       }
- 
+
       while (((r.x.cx << 16) + (r.x.dx & 0xffffUL)) <= end_tick)
       {
 	r.h.ah = 0x00;

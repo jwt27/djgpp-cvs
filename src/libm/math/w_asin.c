@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -43,7 +43,7 @@ Arguments to <<asin>> must be in the range @minus{}1 to 1.
 <<asinf>> is identical to <<asin>>, other than taking and
 returning floats.
 
-You can modify error handling for these routines using <<matherr>>. 
+You can modify error handling for these routines using <<matherr>>.
 
 RETURNS
 @ifinfo
@@ -63,18 +63,18 @@ QUICKREF ANSI SVID POSIX RENTRANT
  asin	 y,y,y,m
  asinf   n,n,n,m
 
-MATHREF  
+MATHREF
  asin,  -1<=arg<=1, asin(arg),,,
  asin,  NAN,  arg,EDOM, DOMAIN
 
-MATHREF  
+MATHREF
  asinf,  -1<=arg<=1, asin(arg),,,
- asinf,  NAN,  arg,EDOM, DOMAIN 
+ asinf,  NAN,  arg,EDOM, DOMAIN
 
 
 */
 
-/* 
+/*
  * wrapper asin(x)
  */
 

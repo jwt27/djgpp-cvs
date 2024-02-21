@@ -6,7 +6,7 @@
 @example
 #include <dos.h>
 
-unsigned int _dos_getdiskfree(unsigned int drive, 
+unsigned int _dos_getdiskfree(unsigned int drive,
                               struct diskfree_t *diskspace);
 @end example
 

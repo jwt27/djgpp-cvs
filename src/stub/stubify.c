@@ -81,7 +81,7 @@ void stubedit(const char *filename)
     }
     else
     {
-      fprintf(stderr, "%s: failed using %s (out of memory)\n", filename, 
+      fprintf(stderr, "%s: failed using %s (out of memory)\n", filename,
 	      STUB_OPTIONS);
     }
   }

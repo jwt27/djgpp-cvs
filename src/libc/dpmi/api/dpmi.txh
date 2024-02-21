@@ -102,7 +102,7 @@ typedef union @{
 This structure is used by functions that pass register information,
 such as simulating real-mode calls.
 
-@example  
+@example
 typedef struct @{
   unsigned char  major;
   unsigned char  minor;

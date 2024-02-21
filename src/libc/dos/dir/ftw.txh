@@ -5,7 +5,7 @@
 @example
 #include <ftw.h>
 
-int ftw(const char *dir, 
+int ftw(const char *dir,
         int (*func)(const char *path, struct stat *stbuf, int flag),
         int depth);
 @end example

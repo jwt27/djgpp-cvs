@@ -28,7 +28,7 @@ position.
 
 The file pointer is moved to a position @var{offset} bytes from the end
 of the file.  The value of @var{offset} is usually nonpositive in this
-case. 
+case.
 
 @end table
 

@@ -2,7 +2,7 @@
 /* Copyright (C) 2003 Borca Daniel <dborca@yahoo.com>
  * Copyright (C) 2000 Andrew Zabolotny <bit@eltech.ru>
  * Partly based on work by Charles Sandmann and DJ Delorie.
- * Usage of this library is not restricted in any way.  
+ * Usage of this library is not restricted in any way.
  * ABSOLUTELY no warranties.  Contributed to the DJGPP project.
  */
 

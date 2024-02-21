@@ -32,21 +32,21 @@ int main(void)
   entry = lsearch("Alpha", arr, &n_arr, ELEM_SIZE, COMPARE_FUN);
   if( !entry || n_arr != 1 )
   {
-    printf("Error: failed to insert 'Alpha': entry = %p, n_arr = %ld.\n", 
+    printf("Error: failed to insert 'Alpha': entry = %p, n_arr = %ld.\n",
 	   entry, n_arr);
     exit(1);
   }
   entry = lsearch("Bravo", arr, &n_arr, ELEM_SIZE, COMPARE_FUN);
   if( !entry || n_arr != 2 )
   {
-    printf("Error: failed to insert 'Bravo': entry = %p, n_arr = %ld.\n", 
+    printf("Error: failed to insert 'Bravo': entry = %p, n_arr = %ld.\n",
 	   entry, n_arr);
     exit(1);
   }
   entry = lsearch("Charlie", arr, &n_arr, ELEM_SIZE, COMPARE_FUN);
   if( !entry || n_arr != 3 )
   {
-    printf("Error: failed to insert 'Charlie': entry = %p, n_arr = %ld.\n", 
+    printf("Error: failed to insert 'Charlie': entry = %p, n_arr = %ld.\n",
 	   entry, n_arr);
     exit(1);
   }
@@ -67,7 +67,7 @@ int main(void)
   }
   if( !entry || strcmp("Bravo", entry) )
   {
-    printf("Error: failed to find 'Bravo': entry = %p->'%s', n_arr = %ld.\n", 
+    printf("Error: failed to find 'Bravo': entry = %p->'%s', n_arr = %ld.\n",
 	   entry, entry?entry:"NULL pointer!", n_arr);
     exit(1);
   }
@@ -79,7 +79,7 @@ int main(void)
   }
   if( !entry || strcmp("Charlie", entry) )
   {
-    printf("Error: failed to find 'Charlie': entry = %p->'%s', n_arr = %ld.\n", 
+    printf("Error: failed to find 'Charlie': entry = %p->'%s', n_arr = %ld.\n",
 	   entry, entry?entry:"NULL pointer!", n_arr);
     exit(1);
   }
@@ -91,7 +91,7 @@ int main(void)
   }
   if( !entry || strcmp("Alpha", entry) )
   {
-    printf("Error: failed to find 'Alpha': entry = %p->'%s', n_arr = %ld.\n", 
+    printf("Error: failed to find 'Alpha': entry = %p->'%s', n_arr = %ld.\n",
 	   entry, entry?entry:"NULL pointer!", n_arr);
     exit(1);
   }
@@ -105,7 +105,7 @@ int main(void)
   }
   if( entry )
   {
-    printf("Error: found 'Zebra': entry = %p->'%s', n_arr = %ld.\n", 
+    printf("Error: found 'Zebra': entry = %p->'%s', n_arr = %ld.\n",
 	   entry, entry, n_arr);
     exit(1);
   }
@@ -114,7 +114,7 @@ int main(void)
   entry = lsearch("Bravo", arr, &n_arr, ELEM_SIZE, COMPARE_FUN);
   if( !entry || n_arr != 3 )
   {
-    printf("Error: failed to NOT insert 'Bravo': entry = %p, n_arr = %ld.\n", 
+    printf("Error: failed to NOT insert 'Bravo': entry = %p, n_arr = %ld.\n",
 	   entry, n_arr);
     exit(1);
   }

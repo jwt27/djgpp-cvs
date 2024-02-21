@@ -19,7 +19,7 @@ is detected, or @code{EOF} or an error is detected.  It then stores a
 
 The address of the buffer is returned on success, if @code{EOF} is
 encountered before any characters are stored, or if an error is
-detected, @code{NULL} is returned instead. 
+detected, @code{NULL} is returned instead.
 
 @subheading Portability
 

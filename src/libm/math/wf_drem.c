@@ -2,7 +2,7 @@
 /* Copyright (C) 1997 DJ Delorie, see COPYING.DJ for details */
 /*
  * dremf() wrapper for remainderf().
- * 
+ *
  * Written by J.T. Conklin, <jtc@wimsey.com>
  * Placed into the Public Domain, 1994.
  */

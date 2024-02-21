@@ -15,7 +15,7 @@ This function compares the two strings, disregarding case.
 @subheading Return Value
 
 Zero if they're the same, nonzero if different, the sign indicates
-"order". 
+"order".
 
 @subheading Portability
 

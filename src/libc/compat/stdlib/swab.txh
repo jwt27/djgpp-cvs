@@ -17,7 +17,7 @@ little-endian and big-endian machines.  The argument @var{nbytes} should
 be even, and the buffers @var{from} and @var{to} should not overlap.
 
 @subheading Return Value
-  
+
 None.
 
 

@@ -13,7 +13,7 @@ int chown(const char *file, int owner, int group);
 This function changes the ownership of the open file specified by @var{file}
 to the user ID @var{owner} and group ID @var{group}.
 
-This function does nothing under MS-DOS.  This function can 
+This function does nothing under MS-DOS.  This function can
 be hooked by File System Extensions (@pxref{File System Extensions}).
 
 @subheading Return Value

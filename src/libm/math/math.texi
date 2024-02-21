@@ -27,7 +27,7 @@ specific machine capabilities to operate faster---but generally have
 less error checking and may reflect additional limitations---are
 available when you include @file{math.h} instead of @file{libm/math.h}.
 
-@menu 
+@menu
 * version::	Version of library
 * acos::	Arccosine
 * acosh::	Inverse hyperbolic cosine

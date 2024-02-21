@@ -9,7 +9,7 @@ enum fdversion @{fdlibm_ieee = -1, fdlibm_svid, fdlibm_xopen,
                 fdlibm_posix@};
 
 #define _LIB_VERSION_TYPE enum fdversion
-#define _LIB_VERSION _fdlib_version  
+#define _LIB_VERSION _fdlib_version
 
 extern  _LIB_VERSION_TYPE  _LIB_VERSION;
 

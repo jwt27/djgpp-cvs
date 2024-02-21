@@ -11,7 +11,7 @@ int uname(struct utsname *u);
 
 @subheading Description
 
-Fills in the structure with information about the system.  
+Fills in the structure with information about the system.
 
 @example
 struct utsname @{
@@ -38,7 +38,7 @@ The major version number of DOS.  For example, DOS 1.23 would return
 @code{"1"} here.
 
 @item sysname
-The flavor of the OS.  
+The flavor of the OS.
 
 @item version
 The minor version number of DOS.  For example, DOS 1.23 would return
@@ -47,7 +47,7 @@ The minor version number of DOS.  For example, DOS 1.23 would return
 
 @subheading Return Value
 
-Zero on success, else nonzero.  
+Zero on success, else nonzero.
 
 @subheading Portability
 

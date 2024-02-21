@@ -39,7 +39,7 @@ static void print_help_and_exit(int exit_value)
 }
 
 
-/* 
+/*
  * Makes sure that s is in list.
  * Returns:
  * 0 if s already was in list
@@ -52,7 +52,7 @@ static int list_add(char **p)
   if( size_list <= n_list+1 )
   {
     char **new_list;
-    
+
     new_list = realloc(list, 2*size_list*sizeof(*list));
     if( ! new_list )
     {
@@ -67,7 +67,7 @@ static int list_add(char **p)
 
   old_n_list = n_list;
   lsearch(p, list, &n_list, sizeof(char *), COMPARE_FUN);
-  
+
   return old_n_list != n_list;
 }
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
   {
     print_help_and_exit(1);
   }
-  
+
   ret = sscanf(argv[1], "%i%c", &buckets, &ch);
   if( ret != 1 )
   {
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
   in = fopen(argv[2], "r");
   if( ! in )
   {
-    fprintf(stderr, "Failed to open input file '%s', errno = %d.\n", 
+    fprintf(stderr, "Failed to open input file '%s', errno = %d.\n",
 	    argv[2], errno);
     print_help_and_exit(3);
   }
@@ -196,6 +196,6 @@ int main(int argc, char *argv[])
 
   printf("Test done. Inserted %lu elements from %lu lines.\n",
 	 n_list, lines);
-  
+
   return 0;
 }

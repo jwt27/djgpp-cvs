@@ -83,7 +83,7 @@ alloca(size_t size)
 {
   char probe;			/* Probes stack depth: */
   char *depth = &probe;
-  
+
   /* Reclaim garbage, defined as all alloca storage that
      was allocated from deeper in the stack than currently. */
   {

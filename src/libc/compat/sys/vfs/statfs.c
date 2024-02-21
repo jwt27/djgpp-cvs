@@ -19,21 +19,21 @@
 #include <sys/vfs.h>
 #include <libc/dosio.h>
 
-/* Returns: 1 == OK, successful setting of variables. 
+/* Returns: 1 == OK, successful setting of variables.
             0 == no cdrom found, variables unchanged. */
-static int 
+static int
 use_AX0x1510( int drive_number, long *blocks, long *free, long *bsize )
 {
   __dpmi_regs regs;
 
   /* For a CD-ROM drive, Int 21h/AX=3600h gives incorrect info.
      Use CD-ROM-specific calls if they are available.
-     
+
      Int 2Fh/AX=1510h gives us a way of doing IOCTL with the
      CD-ROM device driver without knowing the name of the
      device (which is defined by the CONFIG.SYS line that
      installs the driver and can therefore be arbitrary).  */
-  
+
   regs.x.ax = 0x150b; /* is this drive supported by CD-ROM driver? */
   regs.x.cx = drive_number;
   __dpmi_int(0x2f, &regs);
@@ -116,7 +116,7 @@ use_AH0x36( int drive_number, long *blocks, long *free, long *bsize )
   regs.h.ah = 0x36;  /* DOS Get Free Disk Space call */
   regs.h.dl = drive_number + 1;
   __dpmi_int(0x21, &regs);
-  
+
   /* Check for errors */
   if ((regs.x.ax & 0xffff) == 0xffff)
   {
@@ -155,14 +155,14 @@ statfs(const char *path, struct statfs *buf)
   /* Try cdrom call first. */
   cdrom_calls_used = use_AX0x1510( drive_number, &blocks, &free, &bsize );
 
-  if( 7 <= _osmajor && _osmajor < 10 ) /* Are INT21 AX=7303 and/or 
+  if( 7 <= _osmajor && _osmajor < 10 ) /* Are INT21 AX=7303 and/or
 					  INT21 AX=7302 supported? */
   {
     /* INT21 AX=7303 - Win9x - Get Extended Free Drive Space:
-       INT21 AX=7302, Extended Drive Paramenter Block, seems to 
-       report the largest block of free clusters when running under 
-       Windows (this info is not confirmed), so I'm using this 
-       service here. It expects a path on DS:DX and it should not 
+       INT21 AX=7302, Extended Drive Paramenter Block, seems to
+       report the largest block of free clusters when running under
+       Windows (this info is not confirmed), so I'm using this
+       service here. It expects a path on DS:DX and it should not
        be an empty string or the service call will fail */
     if( path && !*path )
     {

@@ -19,14 +19,14 @@ int _is_fat32( const int drive );
 @subheading Description
 
 This function checks if drive number @var{drive} (1 == A:, 2 == B:,
-etc.) is formatted with FAT32.  
+etc.) is formatted with FAT32.
 
 For performance reasons the result is cached, hence if a drive is
-reformatted either from or to FAT32 a DJGPP program must be restarted.  
+reformatted either from or to FAT32 a DJGPP program must be restarted.
 
 @subheading Return Value
 
-1 if the drive is formatted with FAT32, otherwise 0.  
+1 if the drive is formatted with FAT32, otherwise 0.
 
 @subheading Portability
 

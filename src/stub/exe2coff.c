@@ -57,7 +57,7 @@ exe2aout(char *fname)
     fprintf(stderr, "`%s' is not an .EXE file\n", fname);
     return;
   }
-  
+
   *dot = 0;
   ofile = open(fname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0666);
   if (ofile < 0)
@@ -65,7 +65,7 @@ exe2aout(char *fname)
     perror(fname);
     return;
   }
-  
+
   while ((rbytes=read(ifile, buf, 4096)) > 0)
   {
     int wb = write(ofile, buf, rbytes);

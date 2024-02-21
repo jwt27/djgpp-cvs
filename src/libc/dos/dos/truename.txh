@@ -56,7 +56,7 @@ a NULL pointer is returned, and @code{errno} is set.
 @subheading Example
 
 @example
-  fprintf(stderr, 
+  fprintf(stderr,
           "True name of %s is %s\n", path, _truename(path, (char *)0));
 @end example
 
@@ -88,7 +88,7 @@ a NULL pointer is returned, and @code{errno} is set.
 @subheading Example
 
 @example
-  fprintf(stderr, 
+  fprintf(stderr,
           "True short name of %s is %s\n", path,
 	  _truename_sfn(path, (char *)0));
 @end example

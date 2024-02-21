@@ -54,13 +54,13 @@ Force a @code{+} sign on positive numbers.
 
 @item space
 
-To leave a blank space where a plus or minus sign would have been. 
+To leave a blank space where a plus or minus sign would have been.
 
 @item #
 
 Alternate conversion - prefix octal numbers with @code{0}, hexadecimal
 numbers with @code{0x} or @code{0X}, or force a trailing decimal point
-if a floating point conversion would have omitted it. 
+if a floating point conversion would have omitted it.
 
 @item 0
 
@@ -70,10 +70,10 @@ To pad numbers with leading zeros.
 
 @item
 
-A field width specifier, which specifies the minimum width of the field. 
+A field width specifier, which specifies the minimum width of the field.
 This may also be an asterisk (@code{*}), which means that the actual
 width will be obtained from the next argument.  If the argument is
-negative, it supplies a @code{-} flag and a positive width. 
+negative, it supplies a @code{-} flag and a positive width.
 In format strings containing the @code{%@var{n}$} form of a conversion
 specifier, a field width can be indicated by the sequence @code{*@var{m}$},
 where @var{m} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
@@ -83,11 +83,11 @@ an integer argument containing the field width.
 @item
 
 An optional decimal point and a precision.  This may also be an
-asterisk, but a negative argument for it indicates a precision of zero. 
+asterisk, but a negative argument for it indicates a precision of zero.
 The precision specifies the minimum number of digits to print for an
 integer, the number of fraction digits for a floating point number (max
 for @code{g} or @code{G}, actual for others), or the maximum number of
-characters for a string. 
+characters for a string.
 In format strings containing the @code{%@var{n}$} form of a conversion
 specifier, a precision can be indicated by the sequence @code{*@var{m}$},
 where @var{m} is a decimal integer in the range [@code{1}, @code{number of the last argument}],
@@ -182,7 +182,7 @@ A signed integer.
 @item n
 
 The next argument is a pointer to an integer, and the number of
-characters generated so far is stored in that integer. 
+characters generated so far is stored in that integer.
 
 @item o
 
@@ -214,7 +214,7 @@ Please use @code{lu} instead.
 @itemx X
 
 An unsigned integer, printed in base 16 instead of base 10.  The case of
-the letters used matches the specifier case. 
+the letters used matches the specifier case.
 
 @item %
 

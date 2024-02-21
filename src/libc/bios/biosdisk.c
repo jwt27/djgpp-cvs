@@ -120,7 +120,7 @@ biosdisk(int cmd, int drive, int head, int track,
   return r.h.ah;
 }
 
-unsigned 
+unsigned
 _bios_disk(unsigned _cmd, struct diskinfo_t *_di)
 {
   int seg=0, ofs=0, before=0;

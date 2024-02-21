@@ -11,7 +11,7 @@ int dup(int old_handle);
 @subheading Description
 
 This function duplicates the given file handle.  Both handles refer to
-the same file and file pointer. 
+the same file and file pointer.
 
 @subheading Return Value
 

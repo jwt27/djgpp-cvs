@@ -12,7 +12,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -80,13 +80,13 @@ enum __fdlibm_version
 #define _LIB_VERSION_TYPE enum __fdlibm_version
 #define _LIB_VERSION __fdlib_version
 
-/* if global variable _LIB_VERSION is not desirable, one may 
- * change the following to be a constant by: 
+/* if global variable _LIB_VERSION is not desirable, one may
+ * change the following to be a constant by:
  *	#define _LIB_VERSION_TYPE const enum version
  * In that case, after one initializes the value _LIB_VERSION (see
  * s_lib_version.c) during compile time, it cannot be modified
  * in the middle of a program
- */ 
+ */
 extern  _LIB_VERSION_TYPE  _LIB_VERSION;
 
 #define _IEEE_  __fdlibm_ieee
@@ -108,12 +108,12 @@ struct exception
 };
 #endif
 
-/* 
+/*
  * set X_TLOSS = pi*2**52, which is possibly defined in <values.h>
  * (one may replace the following line by "#include <values.h>")
  */
 
-#define X_TLOSS		1.41484755040568800000e+16 
+#define X_TLOSS		1.41484755040568800000e+16
 
 #define	DOMAIN		1
 #define	SING		2

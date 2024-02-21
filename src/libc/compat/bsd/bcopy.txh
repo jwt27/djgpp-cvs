@@ -11,7 +11,7 @@ void bcopy(const void *source, void *dest, int length);
 @subheading Description
 
 Copy @var{length} bytes from @var{source} to @var{dest}.  Overlapping
-regions are handled properly, although this behavior is not portable. 
+regions are handled properly, although this behavior is not portable.
 
 @subheading Return Value
 

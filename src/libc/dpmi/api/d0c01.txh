@@ -5,7 +5,7 @@
 @smallexample
 #include <dpmi.h>
 
-int __dpmi_terminate_and_stay_resident(int return_code, 
+int __dpmi_terminate_and_stay_resident(int return_code,
                                        int paragraphs_to_keep);
 @end smallexample
 

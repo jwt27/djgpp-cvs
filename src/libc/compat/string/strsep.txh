@@ -14,7 +14,7 @@ This function retrieves the next token from the given string, where
 @var{stringp} points to a variable holding, initially, the start of the
 string.  Tokens are delimited by a character from @var{delim}.  Each
 time the function is called, it returns a pointer to the next token, and
-sets *@var{stringp} to the next spot to check, or @code{NULL}. 
+sets *@var{stringp} to the next spot to check, or @code{NULL}.
 
 @subheading Return Value
 

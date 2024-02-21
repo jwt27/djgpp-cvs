@@ -239,7 +239,7 @@ extern int finitel(long double);
 /* End libm.a. */
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
-  
+
 #ifndef __STRICT_ANSI__
 
 #ifndef _POSIX_SOURCE

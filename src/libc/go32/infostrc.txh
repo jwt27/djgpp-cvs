@@ -14,7 +14,7 @@ extern __Go32_Info_Block _go32_info_block;
 The go32 information block is a mechanism for @file{go32} to pass
 information to the application.  Some of this information is generally
 useful, such as the pid or the transfer buffer, while some is used
-internally to @file{libc.a} only. 
+internally to @file{libc.a} only.
 
 The structure has this format:
 
@@ -70,23 +70,23 @@ in.  The following modes are defined:
 This indicates that the extender did not (or could not) determine or
 provide the mode information.  The most probable reason is that it's an
 older extender that does not support this field.  The program should not
-assume anything about the run mode if it is this value. 
+assume anything about the run mode if it is this value.
 
 @item _GO32_RUN_MODE_RAW
 
 This indicates that no CPU manager is being used, and no XMS manager is
 present.  The CPU is being managed directly from the extender, and
-memory was allocated from the extended memory pool. 
+memory was allocated from the extended memory pool.
 
 @item _GO32_RUN_MODE_XMS
 
 This indicates that the extender is managing the CPU, but an XMS driver
-is managing the memory pool. 
+is managing the memory pool.
 
 @item _GO32_RUN_MODE_VCPI
 
 This indicates that a VCPI server (like @code{emm386} or @code{qemm}) is
-managing both the CPU and the memory. 
+managing both the CPU and the memory.
 
 @item _GO32_RUN_MODE_DPMI
 
@@ -96,14 +96,14 @@ to determine if it is safe to use DPMI 0.9 functions.
 
 If this value is set, the @code{run_mode_info} field has the DPMI
 specification version, in hex, shifted eight bits.  For example, DPMI
-0.9 has 0x005A in the @code{run_mode_info} field. 
+0.9 has 0x005A in the @code{run_mode_info} field.
 
 @end table
 
 Note that the program should not assume that the value will be one of
 the listed values.  If the program is running with an extender that
 provides some other mode (say, a newly released extender) then the
-program should be able to handle that case gracefully. 
+program should be able to handle that case gracefully.
 
 @subheading Portability
 

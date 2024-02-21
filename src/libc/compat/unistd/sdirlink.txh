@@ -10,9 +10,9 @@ int __solve_dir_symlinks(const char *symlink_path, char *real_path);
 
 @subheading Description
 
-This function resolves given symlink in @var{symlink_path}---all path 
-components @strong{except} the last one and all symlink levels are 
-resolved.  If @var{symlink_path} does not contain symlinks at all, it is 
+This function resolves given symlink in @var{symlink_path}---all path
+components @strong{except} the last one and all symlink levels are
+resolved.  If @var{symlink_path} does not contain symlinks at all, it is
 simply copied to @var{real_path}.
 
 @var{real_path} should be of size @code{FILENAME_MAX}, to contain

@@ -6,14 +6,14 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
 /*
 FUNCTION
-<<jN>>,<<jNf>>,<<yN>>,<<yNf>>---Bessel functions 
+<<jN>>,<<jNf>>,<<yN>>,<<yNf>>---Bessel functions
 
 INDEX
 j0
@@ -90,7 +90,7 @@ float <[x]>;
 
 DESCRIPTION
 The Bessel functions are a family of functions that solve the
-differential equation 
+differential equation
 @ifinfo
 .  2               2    2
 . x  y'' + xy' + (x  - p )y  = 0

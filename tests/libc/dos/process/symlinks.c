@@ -1,6 +1,6 @@
-/* Testsuite for symlink handling aspect in launching program. 
- * This is by no means a regression testsuite, you have to decide 
- * if bad stuff happens from output. 
+/* Testsuite for symlink handling aspect in launching program.
+ * This is by no means a regression testsuite, you have to decide
+ * if bad stuff happens from output.
  *
  * Shell script handling will be checked only if you have bash installed.
  */

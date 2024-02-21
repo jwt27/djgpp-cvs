@@ -21,17 +21,17 @@ int hcreate(size_t nel)
 @subheading Description
 
 This function creates a hash table that has room for @var{nel}
-elements.  
+elements.
 
-There can only be at most one hash table in use at any time.  
+There can only be at most one hash table in use at any time.
 
 See also @code{hdestroy} (@pxref{hdestroy}) and @code{hsearch}
-(@pxref{hsearch}).  
+(@pxref{hsearch}).
 
 @subheading Return Value
 
 Non-zero if successful, or zero if the hash table couldn't be
-created.  
+created.
 
 @subheading Portability
 
@@ -76,9 +76,9 @@ void hdestroy(void)
 @subheading Description
 
 This function destroys the hash table previously created by
-a call to @code{hcreate} (@pxref{hcreate}).  
+a call to @code{hcreate} (@pxref{hcreate}).
 
-See also @code{hsearch} (@pxref{hsearch}).  
+See also @code{hsearch} (@pxref{hsearch}).
 
 @subheading Return Value
 
@@ -139,9 +139,9 @@ This function searches the hash table previously created by a call to
 key is found a pointer to that entry is returned.  If the key is not
 found and action is ENTER, @var{item} is added to the hash table and a
 pointer to the newly added entry is returned.  If the key is not found
-and action is FIND, @code{NULL} is returned.  
+and action is FIND, @code{NULL} is returned.
 
-The comparison function used is @code{strcmp}.  
+The comparison function used is @code{strcmp}.
 
 The types ACTION and ENTRY are defined as:
 
@@ -157,14 +157,14 @@ typedef struct entry @{
 @} ENTRY;
 @end example
 
-See also @code{hdestroy} (@pxref{hdestroy}).  
+See also @code{hdestroy} (@pxref{hdestroy}).
 
 @subheading Return Value
 
-@code{NULL} if action is ENTER but hash table is full.  
-A pointer to the found or inserted item, if action is ENTER.  
+@code{NULL} if action is ENTER but hash table is full.
+A pointer to the found or inserted item, if action is ENTER.
 
-A pointer to the found item or @code{NULL}, if action is FIND.  
+A pointer to the found item or @code{NULL}, if action is FIND.
 
 @subheading Portability
 
@@ -190,7 +190,7 @@ int main(void)
   /* Fill hash. */
   while( /* element to insert */ )
   @{
-    item.key = /* allocate space for key and setting it */ 
+    item.key = /* allocate space for key and setting it */
     item.data = /* allocate space for data and setting it */
     item_p = hsearch(item, ENTER);
     if( ! item_p )

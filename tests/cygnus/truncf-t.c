@@ -82,7 +82,7 @@ int truncf_test(void)
       if (should_be.ft.sign == result.ft.sign &&
           should_be.ft.exponent == result.ft.exponent &&
           should_be.ft.mantissa == result.ft.mantissa)
-        counter++;     
+        counter++;
       else
         printf("truncf test failed:  value to truncate = %.12f  result = %.12f  should be = %.12f\n", value.f, result.f, should_be.f);
     }

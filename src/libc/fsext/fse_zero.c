@@ -60,7 +60,7 @@ static int dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args);
 static int
 internal_dup (const int fd)
 {
-  DEV_DATA *data   = NULL;  
+  DEV_DATA *data   = NULL;
   int       new_fd = 0;
 
   /* Allocate a new file descriptor. */
@@ -249,7 +249,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
       *rv   = -1;
       break;
     }
-    
+
     /* Set up the context. */
     memset(data, 0, sizeof(*data));
 
@@ -373,15 +373,15 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     /* Update access & modification times - it must be zero device here. */
     time(&dev_zero_atime);
     time(&dev_zero_mtime);
-    
-    *rv = (int) buflen;    
+
+    *rv = (int) buflen;
     break;
 
   case __FSEXT_ready:
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
 
-    *rv  = __FSEXT_ready_read | __FSEXT_ready_write;    
+    *rv  = __FSEXT_ready_read | __FSEXT_ready_write;
     break;
 
   case __FSEXT_close:
@@ -398,7 +398,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
       break;
     }
 
-    __FSEXT_set_data(fd, NULL);    
+    __FSEXT_set_data(fd, NULL);
     __FSEXT_set_function(fd, NULL);
 
     /* Cope with dup()'d zero devices. */
@@ -406,7 +406,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 
     if (data->dup_count <= 0) {
       /* No longer referenced */
-      free(data);      
+      free(data);
     }
 
     _close(fd);
@@ -460,7 +460,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 	*rv   = -1;
 	break;
       }
-      
+
       /* Handle mutable fields */
       if (iparam & O_NONBLOCK)
 	data->flags |= O_NONBLOCK;
@@ -483,7 +483,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
     cmd = va_arg(args, int);
 
     /* This must be emulated, since the FSEXT has been called. */
-    emul = 1;    
+    emul = 1;
 
     /* Get context */
     data = (DEV_DATA *) __FSEXT_get_data(fd);
@@ -506,12 +506,12 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
       *rv = 0;
       break;
 #endif /* DJGPP_SUPPORTS_FIONBIO_NOW */
-      
+
     default:
       errno = ENOTTY;
       *rv = 1;
       break;
-    }    
+    }
     break;
 
   case __FSEXT_lseek:
@@ -537,7 +537,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
   case __FSEXT_llseek:
     fd       = va_arg(args, int);
     lloffset = va_arg(args, offset_t);
-    whence   = va_arg(args, int);    
+    whence   = va_arg(args, int);
 
     /* This must be emulated, since the FSEXT has been called. */
     emul = 1;
@@ -741,7 +741,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 
     if (match_dev_path(filename, DEV_FULL_PATH) && !dev_full_installed)
       break;
-    
+
     /* It's for us. */
     emul = 1;
 
@@ -781,7 +781,7 @@ dev_fsext (__FSEXT_Fnumber n, int *rv, va_list args)
 
     *rv = 0;
     break;
-  }  
+  }
 
   return(emul);
 }

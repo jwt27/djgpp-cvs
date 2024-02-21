@@ -58,7 +58,7 @@ __DJ_va_list
   || !defined(__STRICT_ANSI__) || defined(__cplusplus)
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
-  
+
 #ifndef __STRICT_ANSI__
 
 #ifndef _POSIX_SOURCE

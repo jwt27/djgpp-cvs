@@ -11,7 +11,7 @@ void rewind(FILE *file);
 @subheading Description
 
 This function repositions the file pointer to the beginning of the file
-and clears the error indicator. 
+and clears the error indicator.
 
 @subheading Return Value
 

@@ -2,15 +2,15 @@
 @findex searchpath
 @vindex PATH@r{ environment variable, and finding files with }searchpath
 @subheading Syntax
- 
+
 @example
 #include <dir.h>
- 
+
 char * searchpath(const char *file);
 @end example
- 
+
 @subheading Description
- 
+
 Given a name of a file in @var{file}, searches for that file in a list
 of directories, including the current working directory and directories
 listed in the @code{PATH} environment variable, and if found, returns
@@ -24,13 +24,13 @@ directory.  If that fails, it tries every directory in @code{PATH} in
 turn.  Note that this will find e.g. @file{c:/foo/bar/baz.exe} if you
 pass @samp{bar/baz.exe} to @code{searchpath} and if @file{c:/foo} is
 mentioned in @code{PATH}.
- 
+
 @subheading Return Value
- 
+
 When successfull, the function returns a pointer to a static buffer
 where the full pathname of the found file is stored.  Otherwise, it
 returns @code{NULL}.  (The static buffer is overwritten on each call.)
- 
+
 @subheading Portability
 
 @portability !ansi, !posix
@@ -44,10 +44,10 @@ somewhere on your @code{PATH}.  We think this is a bug, so DJGPP's
 implementation doesn't behave like that.
 
 @subheading Example
- 
+
 @example
   printf("%s was found as %s\n", argv[1], searchpath(argv[1]));
- 
+
 @end example
 
 

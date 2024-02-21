@@ -34,9 +34,9 @@ _DEFUN(main,(ac, av),
   _LIB_VERSION = _POSIX_;
 #endif
   bt();
-  for (i = 1; i < ac; i++) 
+  for (i = 1; i < ac; i++)
   {
-    if (strcmp(av[i],"-v")==0) 
+    if (strcmp(av[i],"-v")==0)
      verbose ++;
     if (strcmp(av[i],"-nomath2") == 0)
      math2 = 0;
@@ -53,7 +53,7 @@ _DEFUN(main,(ac, av),
   }
   if (cvt)
    test_cvt();
-  
+
   if (math2)
    test_math2();
   if (string)
@@ -77,17 +77,17 @@ _DEFUN(main,(ac, av),
 
 
 static _CONST char *iname = "foo";
-void 
+void
 _DEFUN(newfunc,(string),
        _CONST char *string)
 {
-  if (strcmp(iname, string)) 
+  if (strcmp(iname, string))
   {
     printf("testing %s\n", string);
     fflush(stdout);
     iname = string;
   }
-  
+
 }
 
 
@@ -96,12 +96,12 @@ static int theline;
 void line(li)
 int li;
 {
-  if (verbose)  
+  if (verbose)
   {
     printf("  %d\n", li);
   }
   theline = li;
-  
+
   count++;
 }
 
@@ -112,20 +112,20 @@ int reduce = 0;
 
 int strtod_vector = 0;
 
-int 
+int
 _DEFUN(bigger,(a,b),
 	   __ieee_double_shape_type *a  _AND
 	   __ieee_double_shape_type *b)
 {
 
-  if (a->parts.msw > b->parts.msw) 
+  if (a->parts.msw > b->parts.msw)
     {
 
       return 1;
-    } 
-  else if (a->parts.msw == b->parts.msw) 
+    }
+  else if (a->parts.msw == b->parts.msw)
     {
-      if (a->parts.lsw > b->parts.lsw) 
+      if (a->parts.lsw > b->parts.lsw)
 	{
 	  return 1;
 	}
@@ -136,7 +136,7 @@ _DEFUN(bigger,(a,b),
 
 
 /* Return the first bit different between two double numbers */
-int 
+int
 _DEFUN(mag_of_error,(is, shouldbe),
        double is _AND
        double shouldbe)
@@ -146,12 +146,12 @@ _DEFUN(mag_of_error,(is, shouldbe),
   int a_big;
   unsigned  int mask;
   unsigned long int __x;
-  unsigned long int msw, lsw;						  
+  unsigned long int msw, lsw;						
   a.value = is;
-  
+
   b.value = shouldbe;
-  
-  if (a.parts.msw == b.parts.msw 
+
+  if (a.parts.msw == b.parts.msw
       && a.parts.lsw== b.parts.lsw) return 64;
 
 
@@ -176,7 +176,7 @@ _DEFUN(mag_of_error,(is, shouldbe),
   msw = (a.parts.msw) - (b.parts.msw) - (__x > (a.parts.lsw));
   lsw = __x;								
 
-  
+
 
 
   /* Find out which bit the difference is in */
@@ -186,21 +186,21 @@ _DEFUN(mag_of_error,(is, shouldbe),
     if (((msw) & mask)!=0) return i;
     mask >>=1;
   }
-  
+
   mask = 0x80000000UL;
   for (i = 0; i < 32; i++)
   {
-    
+
     if (((lsw) & mask)!=0) return i+32;
     mask >>=1;
   }
-  
+
   return 64;
-  
+
 }
 
 
-int 
+int
 _DEFUN(biggerf,(a,b),
 	   __ieee_float_shape_type *a  _AND
 	   __ieee_float_shape_type *b)
@@ -211,7 +211,7 @@ _DEFUN(biggerf,(a,b),
 
 
 /* Return the first bit different between two float numbers */
-int 
+int
 _DEFUN(mag_of_errorf,(is, shouldbe),
        float is _AND
        float shouldbe)
@@ -220,11 +220,11 @@ _DEFUN(mag_of_errorf,(is, shouldbe),
   int i;
   int a_big;
   unsigned  int mask;
-  unsigned long int part;						  
+  unsigned long int part;						
   a.value = is;
-  
+
   b.value = shouldbe;
-  
+
   if (a.p1 == b.p1) return 32;
 
 
@@ -243,7 +243,7 @@ _DEFUN(mag_of_errorf,(is, shouldbe),
 
   part = (a.p1) - (b.p1);							
 
-  
+
 
 
   /* Find out which bit the difference is in */
@@ -269,7 +269,7 @@ _DEFUN(test_sok,(is, shouldbe),
   if (strcmp(is,shouldbe))
     {
     printf("%s:%d, inacurate answer: (%s should be %s)\n",
-	   iname, 
+	   iname,
 	   theline,
 	   is, shouldbe);
     inacc++;
@@ -282,7 +282,7 @@ _DEFUN(test_iok,(is, shouldbe),
 {
   if (is != shouldbe){
     printf("%s:%d, inacurate answer: (%08x should be %08x)\n",
-	   iname, 
+	   iname,
 	   theline,
 	   is, shouldbe);
     inacc++;
@@ -293,7 +293,7 @@ _DEFUN(test_iok,(is, shouldbe),
 /* Compare counted strings upto a certain length - useful to test single
    prec float conversions against double results
 */
-void 
+void
 _DEFUN(test_scok,(is, shouldbe, len),
        char *is _AND
        char *shouldbe _AND
@@ -302,7 +302,7 @@ _DEFUN(test_scok,(is, shouldbe, len),
   if (strncmp(is,shouldbe, len))
     {
     printf("%s:%d, inacurate answer: (%s should be %s)\n",
-	   iname, 
+	   iname,
 	   theline,
 	   is, shouldbe);
     inacc++;
@@ -316,7 +316,7 @@ _DEFUN(test_eok,(is, shouldbe),
 {
   if (is != shouldbe){
     printf("%s:%d, bad errno answer: (%d should be %d)\n",
-	   iname, 
+	   iname,
 	   theline,
 	   is, shouldbe);
     inacc++;
@@ -331,20 +331,20 @@ _DEFUN(test_mok,(value, shouldbe, okmag),
 {
   __ieee_double_shape_type a,b;
   int mag = mag_of_error(value, shouldbe);
-  if (mag == 0) 
+  if (mag == 0)
   {
     /* error in the first bit is ok if the numbers are both 0 */
     if (value == 0.0 && shouldbe == 0.0)
      return;
-    
+
   }
   a.value = shouldbe;
   b.value = value;
-  
-  if (mag < okmag) 
+
+  if (mag < okmag)
   {
     printf("%s:%d, wrong answer: bit %d ",
-	   iname, 
+	   iname,
 	   theline,
 	   mag);
     printf("%08lx%08lx %08lx%08lx) ",
@@ -363,20 +363,20 @@ _DEFUN(test_mokf,(value, shouldbe, okmag),
 {
   __ieee_float_shape_type a,b;
   int mag = mag_of_errorf(value, shouldbe);
-  if (mag == 0) 
+  if (mag == 0)
   {
     /* error in the first bit is ok if the numbers are both 0 */
     if (value == 0.0 && shouldbe == 0.0)
      return;
-    
+
   }
   a.value = shouldbe;
   b.value = value;
-  
-  if (mag < okmag) 
+
+  if (mag < okmag)
   {
     printf("%s:%d, wrong answer: bit %d ",
-	   iname, 
+	   iname,
 	   theline,
 	   mag);
     printf("%08lx %08lx) ",

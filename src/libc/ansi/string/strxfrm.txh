@@ -14,12 +14,12 @@ This copies characters from @var{s2} to @var{s1}, which must be able to
 hold @var{max} characters.  Each character is transformed according to
 the locale such that @code{strcmp(s1b, s2b)} is just like
 @code{strcoll(s1, s2)} where @code{s1b} and @code{s2b} are the
-transforms of @code{s1} and @code{s2}. 
+transforms of @code{s1} and @code{s2}.
 
 @subheading Return Value
 
 The actual number of bytes required to transform @var{s2}, including the
-@code{NULL}. 
+@code{NULL}.
 
 @subheading Portability
 

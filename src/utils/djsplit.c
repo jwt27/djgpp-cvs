@@ -58,7 +58,7 @@ main(int argc, char **argv)
   char *endp;
   struct stat stbuf;
   int preserve_file_time = 1;
-  
+
   if (argc != 4 && argc != 5)
     usage();
 
@@ -128,10 +128,10 @@ main(int argc, char **argv)
 	p_set_modes(argv[3], partnum, &stbuf);
       exit(0);
     }
-    
+
     write(f, buf, r);
     left -= r;
-    
+
     if (left == 0)
     {
       close(f);

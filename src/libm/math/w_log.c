@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -39,7 +39,7 @@ Return the natural logarithm of <[x]>, that is, its logarithm base e
 <<log>> and <<logf>> are identical save for the return and argument types.
 
 You can use the (non-ANSI) function <<matherr>> to specify error
-handling for these functions. 
+handling for these functions.
 
 RETURNS
 Normally, returns the calculated value.  When <[x]> is zero, the
@@ -75,7 +75,7 @@ PORTABILITY
 	if(_LIB_VERSION == _IEEE_ || isnan(x) || x > 0.0) return z;
 	if(x==0.0)
 	    return __kernel_standard(x,x,16); /* log(0) */
-	else 
+	else
 	    return __kernel_standard(x,x,17); /* log(x<0) */
 #endif
 }

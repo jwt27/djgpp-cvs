@@ -9,7 +9,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -78,7 +78,7 @@ DESCRIPTION
 	These functions provide information on the floating point
 	argument supplied.
 
-	There are five major number formats - 
+	There are five major number formats -
 	o+
 	o zero
 	 a number which contains all zero bits.

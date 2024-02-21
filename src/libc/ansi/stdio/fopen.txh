@@ -22,12 +22,12 @@ Open an existing file for reading.
 @item w
 
 Create a new file (or truncate an existing file) and open it for
-writing. 
+writing.
 
 @item a
 
 Open an existing file (or create a new one) for writing.  The file
-pointer is positioned to the end of the file before every write. 
+pointer is positioned to the end of the file before every write.
 
 @end table
 
@@ -60,14 +60,14 @@ can be done to the same file.
 
 If the file is open for both reading and writing, you must call
 @code{fflush}, @code{fseek}, or @code{rewind} before switching from read
-to write or from write to read. 
+to write or from write to read.
 
 The open file is set to line buffered if the underlying object is a
 device (stdin, stdout, etc), or is fully buffered if the underlying
 object is a disk file (data.c, etc).
 
 If @code{b} or @code{t} is not specified in @var{mode}, the file type is
-chosen by the value of @code{fmode} (@pxref{_fmode}). 
+chosen by the value of @code{fmode} (@pxref{_fmode}).
 
 You can open directories using @code{fopen}, but there is limited
 support for stream file operations on directories.  In particular,
@@ -79,7 +79,7 @@ If you need to specify the DOS share flags use the @code{__djgpp_share_flags}.
 @subheading Return Value
 
 A pointer to the @code{FILE} object, or @code{NULL} if there was an
-error. 
+error.
 
 @subheading Portability
 

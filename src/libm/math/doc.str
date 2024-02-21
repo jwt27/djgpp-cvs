@@ -23,30 +23,30 @@
 	;
 
 
-: ITEM 
+: ITEM
 	"@item " catstr ;
 
 : EXAMPLE
 	skip_past_newline	
 
-	get_stuff_in_command nokill_bogus_lines translatecomments 
+	get_stuff_in_command nokill_bogus_lines translatecomments
 	courierize catstr
 
 	;
 
-: INODE 
-	"@node " catstr skip_past_newline copy_past_newline catstr 
+: INODE
+	"@node " catstr skip_past_newline copy_past_newline catstr
 	;
 
 : CODE_FRAGMENT
-	EXAMPLE 
+	EXAMPLE
 	;
 
 : SYNOPSIS
 	skip_past_newline
 	"@subheading Syntax\n" catstr
 	"@example\n" catstr
-	get_stuff_in_command  
+	get_stuff_in_command
 	do_fancy_stuff
 	nokill_bogus_lines
 	indent
@@ -60,7 +60,7 @@
 	skip_past_newline
 	"@subheading Syntax\n" catstr
 	"@example\n" catstr
-	get_stuff_in_command  
+	get_stuff_in_command
 	do_fancy_stuff
 	nokill_bogus_lines
 	indent
@@ -73,7 +73,7 @@
 	skip_past_newline
 	"@strong{Traditional Synopsis}\n" catstr
 	"@example\n" catstr
-	get_stuff_in_command  
+	get_stuff_in_command
 	do_fancy_stuff
 	nokill_bogus_lines
 	indent
@@ -87,28 +87,28 @@
 
 	;
 
-: INDEX 
-	"@findex " skip_past_newline copy_past_newline catstr catstr 
+: INDEX
+	"@findex " skip_past_newline copy_past_newline catstr catstr
 	;
 
 : FUNCTION
 	"@node "	- a
 	skip_past_newline
 	copy_past_newline
-	dup		- a x x 
+	dup		- a x x
 	get_stuff_in_angle -a x y
 	"\n" catstr
 	swap
 	do_fancy_stuff
-	"@section " - a x x b 
+	"@section " - a x x b
 	swap
 	remchar
 	"\n" - a x b x c
-	catstr  catstr 	catstr 	catstr 	catstr 
+	catstr  catstr 	catstr 	catstr 	catstr
 	;
 
 : bodytext
-	get_stuff_in_command 
+	get_stuff_in_command
 	bulletize
 	courierize
 	do_fancy_stuff
@@ -124,7 +124,7 @@
 	bodytext	
 	;
 
-: SECTION 
+: SECTION
 	"@section " asection  ;
 
 : SUBSECTION
@@ -140,7 +140,7 @@
 
 
 	
-: DESCRIPTION 
+: DESCRIPTION
 	"@subheading Description@*\n" catstr subhead ;
 
 : RETURNS
@@ -165,7 +165,7 @@
 	;
 
 
-: INTERNAL_DEFINITION 
+: INTERNAL_DEFINITION
 	skip_past_newline
 
 	;

@@ -625,7 +625,7 @@ stat_assist(const char *path, struct stat *statbuf)
           !ff_blk.lfn_atime && (ff_blk.lfn_adate == 33) &&
           !strcmp(ff_blk.lfn_magic,"LFN32") &&
           /* strlen(ff_blk.ff_name) == 3 && */ ff_blk.ff_attrib == 0x20)
-        ff_blk.ff_attrib = 0x40;  
+        ff_blk.ff_attrib = 0x40;
 
       /* Sometimes `_truename' doesn't return X:/FOO for character
 	 devices.  However, FindFirst returns attribute 40h for them.  */

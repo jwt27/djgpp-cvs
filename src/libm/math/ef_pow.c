@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -16,7 +16,7 @@
 #include "fdlibm.h"
 
 #ifdef __v810__
-#define const 
+#define const
 #endif
 
 #ifdef __STDC__
@@ -94,7 +94,7 @@ ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 		j = iy>>(23-k);
 		if((j<<(23-k))==iy) yisint = 2-(j&1);
 	    }		
-	} 
+	}
 
     /* special value of y */
 	if (iy==0x7f800000) {	/* y is +-inf */
@@ -104,7 +104,7 @@ ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 	        return (hy>=0)? y: zero;
 	    else			/* (|x|<1)**-,+inf = inf,0 */
 	        return (hy<0)?-y: zero;
-	} 
+	}
 	if(iy==0x3f800000) {	/* y is  +-1 */
 	    if(hy<0) return one/x; else return x;
 	}
@@ -122,12 +122,12 @@ ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 	    if(hx<0) {
 		if(((ix-0x3f800000)|yisint)==0) {
 		    z = (z-z)/(z-z); /* (-1)**non-int is NaN */
-		} else if(yisint==1) 
+		} else if(yisint==1)
 		    z = -z;		/* (x<0)**odd = -(|x|**odd) */
 	    }
 	    return z;
 	}
-    
+
     /* (x<0)**(non-int) is NaN */
 	if(((((__uint32_t)hx>>31)-1)|yisint)==0) return (x-x)/(x-x);
 
@@ -136,7 +136,7 @@ ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 	/* over/underflow if x is not close to one */
 	    if(ix<0x3f7ffff8) return (hy<0)? huge*huge:tiny*tiny;
 	    if(ix>0x3f800007) return (hy>0)? huge*huge:tiny*tiny;
-	/* now |1-x| is tiny <= 2**-20, suffice to compute 
+	/* now |1-x| is tiny <= 2**-20, suffice to compute
 	   log(x) by x-x^2/2+x^3/3-x^4/4 */
 	    t = x-1;		/* t has 20 trailing zeros */
 	    w = (t*t)*((float)0.5-t*((float)0.333333333333-t*(float)0.25));
@@ -233,7 +233,7 @@ ivln2_l  =  7.0526075433e-06; /* 0x36eca570 =1/ln2 tail*/
 	    n = ((n&0x007fffff)|0x00800000)>>(23-k);
 	    if(j<0) n = -n;
 	    p_h -= t;
-	} 
+	}
 	t = p_l+p_h;
 	GET_FLOAT_WORD(is,t);
 	SET_FLOAT_WORD(t,is&0xfffff000U);

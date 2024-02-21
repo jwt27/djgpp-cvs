@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -38,21 +38,21 @@ TRAD_SYNOPSIS
 
 DESCRIPTION
 
-<<atan2>> computes the inverse tangent (arc tangent) of <[y]>/<[x]>. 
-<<atan2>> produces the correct result even for angles near 
+<<atan2>> computes the inverse tangent (arc tangent) of <[y]>/<[x]>.
+<<atan2>> produces the correct result even for angles near
 @ifinfo
-pi/2 or -pi/2 
+pi/2 or -pi/2
 @end ifinfo
 @tex
 $\pi/2$ or $-\pi/2$
 @end tex
-(that is, when <[x]> is near 0). 
+(that is, when <[x]> is near 0).
 
 <<atan2f>> is identical to <<atan2>>, save that it takes and returns
-<<float>>. 
+<<float>>.
 
 RETURNS
-<<atan2>> and <<atan2f>> return a value in radians, in the range of 
+<<atan2>> and <<atan2f>> return a value in radians, in the range of
 @ifinfo
 -pi to pi.
 @end ifinfo
@@ -70,7 +70,7 @@ PORTABILITY
 
 */
 
-/* 
+/*
  * wrapper atan2(y,x)
  */
 

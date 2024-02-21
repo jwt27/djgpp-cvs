@@ -11,7 +11,7 @@ char *dlerror (void);
 @subheading Description
 
 This function returns a character string with more information on the
-last error that occurred during dynamic linking processing.  
+last error that occurred during dynamic linking processing.
 
 @subheading Return Value
 

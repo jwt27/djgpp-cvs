@@ -253,7 +253,7 @@ plainsystem(const char *prog, char *args)
 
       return _dos_exec (found_at, args, _environ, 0);
     }
-  
+
     /* Pass 1: how many arguments do we have?  */
     while (*pcmd)
     {
@@ -265,7 +265,7 @@ plainsystem(const char *prog, char *args)
 	errno = EINVAL;
 	return emiterror ("Syntax error.", 0);
       }
-      
+
       pcmd = e2;
     }
 
@@ -466,7 +466,7 @@ get_sym (char *s, char **beg, char **end)
     s++;
 
   *beg = s;
-  
+
   do {
     *end = s + 1;
 

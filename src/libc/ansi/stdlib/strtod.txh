@@ -17,7 +17,7 @@ like this [+|-]0xH.HHHp[+|-]DDD.  It also recognises (case-insensitively)
 ``Inf'', ``Infinity'', ``NaN'', ``NaN(@var{optional decimal-number})'',
 ``NaN(@var{optional octal-number})'' and ``NaN(@var{optional hex-number})''.
 If @var{endp} is not a null pointer, a pointer to the first unconverted
-character will be stored in the location pointed to by @var{endp}.  
+character will be stored in the location pointed to by @var{endp}.
 
 @subheading Return Value
 
@@ -45,7 +45,7 @@ set.  If the bit pattern given is 0 (which won't work as a
 representation of a NaN) @code{(double)NAN} will be returned.  If the
 prefix is ``-'' the sign bit in the NaN will be set to 1.  Testing
 shows that SNaNs might be converted into QNaNs (most significant bit
-will be set in the mantissa).  
+will be set in the mantissa).
 
 If a number represented by @var{s} doesn't fit into the range of values
 representable by the type @code{double}, the function returns either

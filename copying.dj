@@ -20,7 +20,7 @@ GNU General Public Licence, with the following exceptions:
 
 * Any existing copyright or authorship information in any given source
   file must remain intact.  If you modify a source file, a notice to that
-  effect must be added to the authorship information in the source file. 
+  effect must be added to the authorship information in the source file.
 
 * Runtime binaries, as provided by DJ in DJGPP, may be distributed
   without sources ONLY if the recipient is given sufficient information

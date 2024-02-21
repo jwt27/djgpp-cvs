@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -20,9 +20,9 @@
  * Return cube root of x
  */
 #ifdef __STDC__
-static const __uint32_t 
+static const __uint32_t
 #else
-static __uint32_t 
+static __uint32_t
 #endif
 	B1 = 709958130, /* B1 = (84+2/3-0.03306235651)*2**23 */
 	B2 = 642849266; /* B2 = (76+2/3-0.03306235651)*2**23 */
@@ -39,9 +39,9 @@ F =  1.6071428061e+00, /* 45/28     = 0x3fcdb6db */
 G =  3.5714286566e-01; /* 5/14      = 0x3eb6db6e */
 
 #ifdef __STDC__
-	float cbrtf(float x) 
+	float cbrtf(float x)
 #else
-	float cbrtf(x) 
+	float cbrtf(x)
 	float x;
 #endif
 {
@@ -54,7 +54,7 @@ G =  3.5714286566e-01; /* 5/14      = 0x3eb6db6e */
 	sign=hx&0x80000000U; 		/* sign= sign(x) */
 	hx  ^=sign;
 	if(hx>=0x7f800000) return(x+x); /* cbrt(NaN,INF) is itself */
-	if(hx==0) 
+	if(hx==0)
 	    return(x);		/* cbrt(0) is itself */
 
 	SET_FLOAT_WORD(x,hx);	/* x <- |x| */

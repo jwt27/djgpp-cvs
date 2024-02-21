@@ -14,7 +14,7 @@
 
 /* Local helper function that does the real work. */
 static void *
-l_general(const void *key, void *base, size_t *nelp, size_t width, 
+l_general(const void *key, void *base, size_t *nelp, size_t width,
 	  int(*compar)(const void *, const void *), int add)
 {
   size_t i = 0;
@@ -42,7 +42,7 @@ l_general(const void *key, void *base, size_t *nelp, size_t width,
 
 
 void *
-lfind(const void *key, void *base, size_t *nelp, size_t width, 
+lfind(const void *key, void *base, size_t *nelp, size_t width,
       int(*compar)(const void *, const void *))
 {
   return l_general(key, base, nelp, width, compar, 0);
@@ -50,7 +50,7 @@ lfind(const void *key, void *base, size_t *nelp, size_t width,
 
 
 void *
-lsearch(const void *key, void *base, size_t *nelp, size_t width, 
+lsearch(const void *key, void *base, size_t *nelp, size_t width,
 	int(*compar)(const void *, const void *))
 {
   return l_general(key, base, nelp, width, compar, 1);

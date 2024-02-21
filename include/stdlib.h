@@ -18,7 +18,7 @@ extern "C" {
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #include <sys/djtypes.h>
-  
+
 /* Some programs think they know better... */
 #undef NULL
 #if (__GNUC__ >= 4) && defined(__cplusplus)

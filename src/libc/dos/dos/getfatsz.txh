@@ -20,24 +20,24 @@ int _get_fat_size( const int drive );
 
 This function tries to determine the number of bits used to enumerate
 the clusters by the FAT on drive number @var{drive}. 1 == A:, 2 == B:,
-etc., 0 == default drive.  
+etc., 0 == default drive.
 
 This function will not succeed on DOS version < 4, setting
 @code{errno} to @code{ENOSYS}.  It is also known to have trouble
 detecting the file system type of disks formatted with a later version
 of DOS than the version it is run on.  E. g. floppies with LFN
 entries can cause this function to fail or detect the fat size as 16
-if used in plain DOS.  
+if used in plain DOS.
 
 If you are looking for a function that is able to detect other file
 systems, perhaps the function @code{_get_fs_type}
-(@pxref{_get_fs_type}) can be of use.  
+(@pxref{_get_fs_type}) can be of use.
 
 @subheading Return Value
 
 The number of bits used by the FAT (12, 16 or 32).  0 if the drive was
-formatted with FAT but of unknown size (NT reports that on FAT16).  
--1 on error. 
+formatted with FAT but of unknown size (NT reports that on FAT16).
+-1 on error.
 
 
 @subheading Portability

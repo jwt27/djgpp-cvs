@@ -12,7 +12,7 @@ void exit(int exit_code);
 
 This function exits the program, returning @var{exit_code} to the
 calling process.  Before exiting, all open files are closed and all
-@code{atexit} and @code{on_exit} requests are processed. 
+@code{atexit} and @code{on_exit} requests are processed.
 
 @subheading Return Value
 

@@ -101,7 +101,7 @@ blksize_t
 _get_cached_blksize (const char *path)
 {
   struct statfs sbuf;
-  int           d; /* index into drive cache = drive_num - 1 */  
+  int           d; /* index into drive cache = drive_num - 1 */
   static int    overmax_d = sizeof(cache_blksize) / sizeof(cache_blksize[0]);
 
   /* Force initialization in restarted programs (emacs).  */
@@ -200,7 +200,7 @@ _invent_inode(const char *name, unsigned time_stamp, unsigned long fsize)
 
   /* We count upwards from 2^28+1, which can't yield two files with
    * identical inode numbers: FAT16 uses maximum ~2^16 and FAT32 uses
-   * maximum ~2^28. 
+   * maximum ~2^28.
    */
 #define INVENTED_INODE_START ( (1 << 28) + 1 )
 

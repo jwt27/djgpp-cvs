@@ -1,7 +1,7 @@
-/* Testsuite for fstat()                                                
- * TODO: only symlink handlink aspect is tested. Other things should be 
- * tested too.                                                          
- * Currently there are following tests:         
+/* Testsuite for fstat()
+ * TODO: only symlink handlink aspect is tested. Other things should be
+ * tested too.
+ * Currently there are following tests:
  *   1. Opens simple file, positions somewhere, checks for symlinks, checks
  * file position.
  *   2. The same as above with symlinks

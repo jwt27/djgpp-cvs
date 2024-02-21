@@ -44,7 +44,7 @@ fnmerge(buf, "d:", "/foo/", "data", ".txt");
 @example
 #include <dir.h>
 
-int fnsplit (const char *path, char *drive, char *dir, 
+int fnsplit (const char *path, char *drive, char *dir,
 		char *name, char *ext);
 @end example
 

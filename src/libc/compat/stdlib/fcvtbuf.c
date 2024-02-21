@@ -34,7 +34,7 @@ fcvtbuf (double value, int ndigits, int *decpt, int *sign, char *buf)
     *decpt = dot - s;
   else
     *decpt = strlen (s);
-  
+
   /* SunOS docs says if NDIGITS is 8 or more, produce "Infinity"
      instead of "Inf".  */
   if (strncmp (s, "Inf", 3) == 0)

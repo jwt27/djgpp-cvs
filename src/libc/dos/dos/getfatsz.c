@@ -6,8 +6,8 @@
  * This software may be used freely so long as this copyright notice is
  * left intact. There is no warranty on this software.
  *
- * FAT size algorithm according to "Hardware White Paper, FAT: General 
- * Overwiew of On-Disk Format" version 1.02, May 5, 1999, Microsoft 
+ * FAT size algorithm according to "Hardware White Paper, FAT: General
+ * Overwiew of On-Disk Format" version 1.02, May 5, 1999, Microsoft
  * Corporation. Downloadable from <http://www.microsoft.com/hwdev/>.
  *
  */
@@ -19,7 +19,7 @@
 #include <libc/farptrgs.h>
 
 /* Returns number of bits in FAT; -1 == error. */
-int 
+int
 _get_fat_size( const int drive /* drive number (1=A:). */
 	      )
 {
@@ -31,10 +31,10 @@ _get_fat_size( const int drive /* drive number (1=A:). */
   unsigned long root_sectors, fat_size, total_sectors, data_sectors;
   unsigned long number_of_clusters;
   char file_system_string[9];
-  
+
   /* First check that we have a FAT file system. */
-  if( _get_fs_type( drive, file_system_string ) 
-   || file_system_string[0] != 'F' 
+  if( _get_fs_type( drive, file_system_string )
+   || file_system_string[0] != 'F'
    || file_system_string[1] != 'A'
    || file_system_string[2] != 'T' )
   {
@@ -55,7 +55,7 @@ _get_fat_size( const int drive /* drive number (1=A:). */
     /* Hmmpf! That didn't work; fall back to disk drive. */
     r.x.ax = 0x440d;
     r.h.bl = drive;
-    r.h.ch = 0x08; /* Disk drive. */ 
+    r.h.ch = 0x08; /* Disk drive. */
     r.h.cl = 0x60;
     r.x.ds = r.x.si = __tb >>4;
     r.x.dx = r.x.di = __tb & 0x0f;
@@ -68,9 +68,9 @@ _get_fat_size( const int drive /* drive number (1=A:). */
     }
   }
 
-  /* +7 is offset in RBIL, the changing number is offset according to 
-     Microsnoft's document and -11 is a corrective offset (the Microsnoft 
-     document starts its offset counting 11 to early, freely mixing in the 
+  /* +7 is offset in RBIL, the changing number is offset according to
+     Microsnoft's document and -11 is a corrective offset (the Microsnoft
+     document starts its offset counting 11 to early, freely mixing in the
      boot sector). */
   bytes_per_sector = _farpeekw(_dos_ds, __tb+7+11-11);
   sectors_per_cluster = _farpeekb(_dos_ds, __tb+7+13-11);
@@ -81,7 +81,7 @@ _get_fat_size( const int drive /* drive number (1=A:). */
   fat32_size = _farpeekl(_dos_ds, __tb+7+36-11);
   total16_sectors = _farpeekw(_dos_ds, __tb+7+19-11);
   total32_sectors = _farpeekl(_dos_ds, __tb+7+32-11);
-  
+
   /* Check sectors_per_cluster, which might be zero. */
   if( sectors_per_cluster == 0 )
   {
@@ -90,7 +90,7 @@ _get_fat_size( const int drive /* drive number (1=A:). */
   }
 
   /* Do the calculations. */
-  root_sectors = ( (root_entries * 32) 
+  root_sectors = ( (root_entries * 32)
 		 + (bytes_per_sector - 1)
 		   ) / bytes_per_sector;
   fat_size = fat16_size ? fat16_size : fat32_size;
@@ -128,6 +128,6 @@ _get_fat_size( const int drive /* drive number (1=A:). */
 #endif
 
   return( size );
-  
+
 }
 

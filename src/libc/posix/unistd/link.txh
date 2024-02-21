@@ -12,7 +12,7 @@ int link(const char *exists, const char *new);
 
 Because of limitations of MS-DOS, this function doesn't really link two
 files together.  However, it simulates a real @code{link} by copying the
-file at @var{exists} to @var{new}. 
+file at @var{exists} to @var{new}.
 
 @subheading Return Value
 

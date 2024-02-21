@@ -42,7 +42,7 @@ __DJ_va_list
 #define va_start(ap, last_arg)  __builtin_stdarg_start((ap), (last_arg))
 
 #else /* #if ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96)) || (__GNUC__ >= 3) */
-  
+
 #define __dj_va_rounded_size(T)  \
   (((sizeof (T) + sizeof (int) - 1) / sizeof (int)) * sizeof (int))
 

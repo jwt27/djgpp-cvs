@@ -23,7 +23,7 @@ buffer is allocated and returned by the function on success.  If dynamic
 allocation occurs, the preallocated buffer is left alone (with possibly
 modified contents).  The length of the newly allocated string buffer is
 returned by the function via the @var{np} pointer.  The allocated memory
-must be returned to the heap with @code{free} (@pxref{free}). 
+must be returned to the heap with @code{free} (@pxref{free}).
 
 @subheading Return Value
 

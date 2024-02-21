@@ -13,8 +13,8 @@ unsigned long long _rdtsc(void);
 This function invokes the hardware instruction @code{rdtsc} which is
 only supported on some processors.  It is incremented once per clock
 cycle on the main processor.  It is a high precision timer which is
-useful for timing code for optimization.  You should not use this 
-function in distributed programs without protecting for processors 
+useful for timing code for optimization.  You should not use this
+function in distributed programs without protecting for processors
 which do not support the instruction.  For a general purpose high
 precision timer see @code{uclock} (@pxref{uclock}).
 
@@ -50,11 +50,11 @@ void catch_rdtsc(int val)
 int main(void)
 @{
   unsigned long long t;
-  
+
   signal(SIGILL, catch_rdtsc);
   t = _rdtsc();
   printf("Timer value: %llu\n",t);
-  
+
   return 0;
 @}
 @end example

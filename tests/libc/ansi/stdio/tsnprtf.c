@@ -13,7 +13,7 @@ main (void)
   char BIG[] = "Hello this is a too big string for the buffer";
   char holder[24];
   size_t i, j;
- 
+
   i = snprintf(holder, sizeof(holder), "%s\n", BIG);
   printf("%s\n", BIG);
   printf("%s\n", holder);

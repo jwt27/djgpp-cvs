@@ -121,7 +121,7 @@ show_call_frame(void)
     vbp = vbp_new;
     if (--max <= 0)
       break;
-  } 
+  }
   err("\r\n");
 }
 #endif
@@ -188,7 +188,7 @@ do_faulting_finish_message(int fake_exception)
     asm volatile ("pusha;movzbl _old_video_mode,%eax; int $0x10;popa;nop");
   }
 #endif
-  en = (signum >= EXCEPTION_COUNT) ? 0 : 
+  en = (signum >= EXCEPTION_COUNT) ? 0 :
   exception_names[signum];
   if (signum == 0x75)
     en = "Floating Point exception";
@@ -608,9 +608,9 @@ __djgpp_set_ctrl_c(int enable_sigs)
    To work around that, we ask NTVDM to record a valid PSP before we
    exit.  We do that by invoking a PM Int 21h, function 50h, which sets
    the PM selector for the PSP (which triggers NTVDM to record the
-   correct internal value).  We do that just before exiting, to make 
-   sure that even an application which crashes (e.g., due to SIGSEGV 
-   or Ctrl-BREAK) immediately after its child returns will always leave 
+   correct internal value).  We do that just before exiting, to make
+   sure that even an application which crashes (e.g., due to SIGSEGV
+   or Ctrl-BREAK) immediately after its child returns will always leave
    its valid PSP recorded by NTVDM before it exits.
 
    (To play it safe in the face of non-DJGPP DPMI programs and old

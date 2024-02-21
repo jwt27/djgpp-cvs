@@ -146,7 +146,7 @@ check_image_version(char *image, int is_go32)
   /* Read the COFF header */
   errno = 0;
   lseek(pf, coff_offset, 0);
-  i = read(pf, coffhdr, 0x0a8);    
+  i = read(pf, coffhdr, 0x0a8);
   if (i != 0x0a8)
   {
     close(pf);
@@ -270,7 +270,7 @@ run_v1_coff(int argc, char **argv)
 	arglist = (char **)alloca (proxy_argc * sizeof (char *));
 	movedata(_dos_ds, proxy_seg * 16 + proxy_ofs,
 		 _my_ds(), PTR_DATA(rm_argv), proxy_argc*sizeof(unsigned short));
-    
+
 	for (i = 0; i < proxy_argc; i++)
 	{
 	  int al = far_strlen(_dos_ds, proxy_seg*16 + rm_argv[i]);
@@ -484,7 +484,7 @@ main(int argc, char **argv)
     printf("Rename this to go32.exe only if you need a go32 that can run v2 binaries as\n"
 	   " well as v1 binaries (old makefiles).  Put ahead of the old go32 in your PATH\n"
 	   " but do not delete your old go32 - leave it in the PATH after this one.\n");
-    
+
     printf("Set GO32_V2_DEBUG=y in the environment to get verbose output.\n\n");
     /* Add the memory that we use for ourselves to the free amount.  */
     i = (_go32_dpmi_remaining_physical_memory() + PTR_DATA(sbrk(0)))/1024;

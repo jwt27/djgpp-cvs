@@ -107,7 +107,7 @@ _flsbuf(int c, FILE *f)
       int fd = fileno(f);
       if (__get_fd_flags(fd) & FILE_DESC_APPEND)
       {
-        int save_errno = errno; /* We don't want llseek()'s setting 
+        int save_errno = errno; /* We don't want llseek()'s setting
                                    errno to remain. */
         if (llseek(fd, 0, SEEK_END) == -1)
         {

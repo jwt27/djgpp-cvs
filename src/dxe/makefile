@@ -21,7 +21,7 @@ native :: $(HOSTBIN)/dxegen.exe \
 	$(CROSS_STRIP) --strip-unneeded $<
 	$(HOSTBIN)/bin2h.exe $< $(basename $<) $@
 
-$(BIN)/dxe3gen.exe : $(C) dxe3gen.o $(L) 
+$(BIN)/dxe3gen.exe : $(C) dxe3gen.o $(L)
 	$(LINK)
 	$(EXE)
 

@@ -11,7 +11,7 @@ int getpid(void);
 @subheading Description
 
 Get the process ID, which uniquely identifies each program running on
-the system. 
+the system.
 
 @subheading Return Value
 

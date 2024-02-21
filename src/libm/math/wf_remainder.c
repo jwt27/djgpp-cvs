@@ -8,12 +8,12 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
-/* 
+/*
  * wrapper remainderf(x,p)
  */
 
@@ -37,7 +37,7 @@
 
 	z = __ieee754_remainderf(x,y);
 	if(_LIB_VERSION == _IEEE_ || isnanf(uy.l)) return z;
-	if(y==(float)0.0) 
+	if(y==(float)0.0)
 	    /* remainder(x,0) */
 	    return (float)__kernel_standard((double)x,(double)y,128);
 	else

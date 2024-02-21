@@ -39,11 +39,11 @@ Each conversion specifier contains the following fields:
 @itemize @bullet
 
 @item An asterisk (@samp{*}) which indicates that the input should be
-converted according to the conversion spec, but not stored anywhere. 
+converted according to the conversion spec, but not stored anywhere.
 This allows to describe an input field that is to be skipped.
 
 @item A width specifier, which specifies the maximum number of input
-characters to use in the conversion. 
+characters to use in the conversion.
 
 @item A @samp{m} character.  This is used with string conversions, and
 relieves the caller of the need to allocate a corresponding buffer to hold
@@ -297,13 +297,13 @@ Convert the input to a @code{size_t}, using base 8.
 
 @item p
 
-Convert the input to a pointer.  This is like using the @code{x} format. 
+Convert the input to a pointer.  This is like using the @code{x} format.
 
 @item s
 
 Copy the input to the given string, skipping leading whitespace and
 copying non-whitespace characters up to the next whitespace.  The string
-stored is then terminated with a null character. 
+stored is then terminated with a null character.
 
 @item u
 
@@ -401,7 +401,7 @@ a literal dash (@samp{-}), write it either immediately after @samp{[} or
 
 @item %
 
-This must match a percent character in the input. 
+This must match a percent character in the input.
 
 @end table
 

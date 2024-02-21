@@ -66,7 +66,7 @@ lfilelength(int fhandle)
       return retval;
     }
   }
-  
+
   /* Remember the current file position, so we can return there
      later.  */
   regs.x.ax = 0x4201;      /* set pointer from current position */

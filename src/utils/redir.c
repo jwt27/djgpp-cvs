@@ -19,7 +19,7 @@
    General Public License for more details.
 
 */
-   
+
 #include <ctype.h>
 #include <float.h>
 #include <stdio.h>

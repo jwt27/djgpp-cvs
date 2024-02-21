@@ -12,7 +12,7 @@ int isxdigit(int c);
 @subheading Description
 
 Tells if @var{c} is a valid hexadecimal digit or not.  This includes
-@code{[0-9a-fA-F]}. 
+@code{[0-9a-fA-F]}.
 
 @subheading Return Value
 

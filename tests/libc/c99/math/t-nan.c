@@ -59,7 +59,7 @@ main(int argc, char *argv[])
     _control87(control_bits, 0x3f);
     printf("FPU control word set to: 0x%08x\n", _control87(0, 0));
   }
-    
+
   fu.f = NAN;
   if (fu.ft.exponent == 0xff && fu.ft.mantissa != 0)
   {
@@ -82,7 +82,7 @@ main(int argc, char *argv[])
   }
 
   ldu.ld = NAN;
-  if (ldu.ldt.exponent == 0x7fff 
+  if (ldu.ldt.exponent == 0x7fff
    && (ldu.ldt.mantissah != 0 || ldu.ldt.mantissal != 0))
   {
     puts("long double = NAN: Ok.");

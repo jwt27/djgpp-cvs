@@ -12,7 +12,7 @@ double asinh(double x);
 @subheading Description
 
 This function returns the inverse hyperbolic sine of the argument
-@var{x}. 
+@var{x}.
 
 @subheading Return Value
 

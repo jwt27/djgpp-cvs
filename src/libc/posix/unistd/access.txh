@@ -10,7 +10,7 @@ int access(const char *filename, int flags);
 
 @subheading Description
 
-This function determines what kind of access modes a given file allows. 
+This function determines what kind of access modes a given file allows.
 The parameter @var{flags} is the logical @code{or} of one or more of the
 following flags:
 
@@ -19,7 +19,7 @@ following flags:
 @item R_OK
 
 Request if the file is readable.  Since all files are readable under
-MS-DOS, this access mode always exists. 
+MS-DOS, this access mode always exists.
 
 @item W_OK
 
@@ -41,7 +41,7 @@ Request if the file is really a directory.
 
 @subheading Return Value
 
-Zero if the requested access mode is allowed, nonzero if not. 
+Zero if the requested access mode is allowed, nonzero if not.
 
 @subheading Portability
 

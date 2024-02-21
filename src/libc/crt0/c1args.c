@@ -397,7 +397,7 @@ __crt0_setup_arguments(void)
         *sp = 0;
     }
   }
-  
+
   /*
   ** Next, scan dos's command line.
   */
@@ -501,7 +501,7 @@ __crt0_setup_arguments(void)
     movedata(argv_sel, argv_ofs, ds, (int)pm_argv, __crt0_argc*sizeof(unsigned long));
 
     arglist = new_arglist(__crt0_argc);
-    
+
     for (i=0; i<__crt0_argc; i++)
     {
       int al = far_strlen(argv_sel, pm_argv[i]);

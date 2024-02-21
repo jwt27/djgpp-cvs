@@ -12,7 +12,7 @@ int kbhit(void);
 
 If the user has hit a key, this function will detect it.  This function
 is very fast when there is no key waiting, so it may be used inside
-loops as needed. 
+loops as needed.
 
 If you test shift/alt/ctrl status with bios calls (e.g., using
 @code{bioskey (2)} or @code{bioskey (0x12)}) then you should also use

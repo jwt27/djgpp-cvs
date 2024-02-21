@@ -15,24 +15,24 @@
 @example
 #include <search.h>
 
-void * lfind(const void *key, void *base, size_t *nelp, size_t width, 
-             int (*compar)(const void *, const void *));  
+void * lfind(const void *key, void *base, size_t *nelp, size_t width,
+             int (*compar)(const void *, const void *));
 @end example
 
 @subheading Description
 
 This function searches the array @var{base} of elements of size
 @var{width}, currently containing @var{nelp} elements, for the element
-identified by @var{key} using the comparison function @var{compar}.  
+identified by @var{key} using the comparison function @var{compar}.
 
 The function @var{compar} should return 0 when its inputs are equal
-and not 0 otherwise.  
+and not 0 otherwise.
 
-See also @code{lsearch} (@pxref{lsearch}).  
+See also @code{lsearch} (@pxref{lsearch}).
 
 @subheading Return Value
 
-A pointer to the found element or @code{NULL} if not present.  
+A pointer to the found element or @code{NULL} if not present.
 
 @subheading Portability
 
@@ -79,7 +79,7 @@ int main(void)
 @example
 #include <search.h>
 
-void * lsearch(const void *key, void *base, size_t *nelp, size_t width, 
+void * lsearch(const void *key, void *base, size_t *nelp, size_t width,
                int (*compar)(const void *, const void *));
 @end example
 
@@ -87,22 +87,22 @@ void * lsearch(const void *key, void *base, size_t *nelp, size_t width,
 
 This function searches the array @var{base} of elements of size
 @var{width}, currently containing @var{nelp} elements, for the element
-identified by @var{key} using the comparison function @var{compar}.  
+identified by @var{key} using the comparison function @var{compar}.
 
 If the @var{key} isn't found it is added to the array @var{base} and
-@var{*nelp} is incremented.  
+@var{*nelp} is incremented.
 
 The function @var{compar} should return 0 when its inputs are equal
-and not 0 otherwise.  
+and not 0 otherwise.
 
 It is the caller's responsibility that the array has enough room for
-an additional element.  
+an additional element.
 
-See also @code{lfind} (@pxref{lfind}).  
+See also @code{lfind} (@pxref{lfind}).
 
 @subheading Return Value
 
-A pointer to the found or inserted element.  
+A pointer to the found or inserted element.
 
 @subheading Portability
 

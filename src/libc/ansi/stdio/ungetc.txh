@@ -11,7 +11,7 @@ int ungetc(int c, FILE *file);
 @subheading Description
 
 This function pushes @var{c} back into the @var{file}.  You can only
-push back one character at a time. 
+push back one character at a time.
 
 @subheading Return Value
 

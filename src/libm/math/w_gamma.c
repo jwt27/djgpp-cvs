@@ -6,7 +6,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
@@ -69,13 +69,13 @@ float <[x]>;
 int <[signgamp]>;
 
 DESCRIPTION
-<<gamma>> calculates 
+<<gamma>> calculates
 @tex
-$\mit ln\bigl(\Gamma(x)\bigr)$, 
+$\mit ln\bigl(\Gamma(x)\bigr)$,
 @end tex
 the natural logarithm of the gamma function of <[x]>.  The gamma function
 (<<exp(gamma(<[x]>))>>) is a generalization of factorial, and retains
-the property that  
+the property that
 @ifinfo
 <<exp(gamma(N))>> is equivalent to <<N*exp(gamma(N-1))>>.
 @end ifinfo
@@ -83,13 +83,13 @@ the property that
 $\mit \Gamma(N)\equiv N\times\Gamma(N-1)$.
 @end tex
 Accordingly, the results of the gamma function itself grow very
-quickly.  <<gamma>> is defined as 
+quickly.  <<gamma>> is defined as
 @tex
 $\mit ln\bigl(\Gamma(x)\bigr)$ rather than simply $\mit \Gamma(x)$
 @end tex
 @ifinfo
 the natural log of the gamma function, rather than the gamma function
-itself, 
+itself,
 @end ifinfo
 to extend the useful range of results representable.
 
@@ -114,7 +114,7 @@ reentrant calls (but they will still set the global variable <<errno>>
 if an error occurs).
 
 RETURNS
-Normally, the computed result is returned.  
+Normally, the computed result is returned.
 
 When <[x]> is a nonpositive integer, <<gamma>> returns <<HUGE_VAL>>
 and <<errno>> is set to <<EDOM>>.  If the result overflows, <<gamma>>
@@ -156,6 +156,6 @@ Neither <<gamma>> nor <<gammaf>> is ANSI C.  */
         } else
             return y;
 #endif
-}             
+}
 
 #endif /* defined(_DOUBLE_IS_32BITS) */

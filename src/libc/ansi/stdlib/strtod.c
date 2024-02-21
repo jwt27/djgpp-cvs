@@ -144,7 +144,7 @@ strtod(const char *s, char **sret)
     {
       flags = 1;
       mantissa <<= HEX_DIGIT_SIZE;
-      mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' : 
+      mantissa |= IS_DEC_DIGIT(*s) ? *s - '0' :
                   ((*s >= 'A') && (*s <= 'F')) ? *s - 'A' + 10 : *s - 'a' + 10;
       if (mantissa)        /*  Discarts leading zeros.  */
         integer_digits++;  /*  Counts hex digits.  16**integer_digits.  */

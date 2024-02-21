@@ -525,7 +525,7 @@ if( att & OPR )
 	if( (att == RPAREN) || (att == EOL) || (att == EOE))
 		{
 		i = lastok->attrib & 0xffff; /* attrib=short, i=int */
-		if( (i & OPR) 
+		if( (i & OPR)
 			&& (i != (OPR | RPAREN))
 			&& (i != (OPR | LPAREN))
 			&& (i != (OPR | FUNC))
@@ -543,7 +543,7 @@ if( att & OPR )
 		{
  	case EOE:
 		lhsflg = 0;
-		break; 
+		break;
 	case LPAREN:
 		/* ( must be preceded by an operator of some sort. */
 		if( ((lastok->attrib & OPR) == 0) )
@@ -869,7 +869,7 @@ if( pline == line )
  *	gtlin(line);
  */
 
- 
+
 #if USE_READLINE
 	if (takptr < 0)
 	  {
@@ -1043,7 +1043,7 @@ if( *pline == '"' )
 	{
 	/* find an empty slot for the string */
 	pstr = strtbl;	/* string table	*/
-	for( i=0; i<NSTRNG-1; i++ ) 
+	for( i=0; i<NSTRNG-1; i++ )
 		{
 		if( (pstr->attrib & BUSY) == 0 )
 			goto fndstr;

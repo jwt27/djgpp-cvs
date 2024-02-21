@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -40,7 +40,7 @@
 	if(x==(float)0.0)
 	    /* logf(0) */
 	    return (float)__kernel_standard((double)x,(double)x,116);
-	else 
+	else
 	    /* logf(x<0) */
 	    return (float)__kernel_standard((double)x,(double)x,117);
 #endif

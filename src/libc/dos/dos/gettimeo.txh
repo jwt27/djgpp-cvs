@@ -27,7 +27,7 @@ struct timezone @{
 @end example
 
 If either @var{tp} or @var{tzp} are @code{NULL}, that information is not
-provided. 
+provided.
 
 Note that although this function returns microseconds for compatibility
 reasons, the values are precise to less than 1/20 of a second only.

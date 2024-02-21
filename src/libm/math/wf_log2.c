@@ -8,12 +8,12 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
-/* 
+/*
  * wrapper log2f(X)
  */
 
@@ -41,7 +41,7 @@
 	    if(x==(float)0.0)
 	        /* log2(0) */
 	        return (float)__kernel_standard((double)x,(double)x,127);
-	    else 
+	    else
 	        /* log2(x<0) */
 	        return (float)__kernel_standard((double)x,(double)x,128);
 	} else

@@ -13,8 +13,8 @@ main(void)
   printf("fpu status = %x\n", _status87());
 
   _clear87();
-  
+
   printf("fpu status = %x\n", _status87());
-  
+
   return 0;
 }

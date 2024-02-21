@@ -32,9 +32,9 @@ address of the application's data segment.  You can subtract this
 value from other linear addresses that DPMI functions might return
 in order to obtain a near pointer to those linear regions as well.
 
-If using the Unix-like sbrk algorithm, near pointers are only valid 
-until the next @code{malloc}, @code{system}, @code{spawn*}, or 
-@code{exec*} function call, since the linear base address of the 
+If using the Unix-like sbrk algorithm, near pointers are only valid
+until the next @code{malloc}, @code{system}, @code{spawn*}, or
+@code{exec*} function call, since the linear base address of the
 application may be changed by these calls.
 
 WARNING: When you enable near pointers, you disable all the protection

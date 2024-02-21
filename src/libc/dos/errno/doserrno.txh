@@ -1,13 +1,13 @@
 @node _doserrno, dos
 @vindex _doserrno
 @subheading Syntax
- 
+
 @example
 #include <errno.h>
- 
+
 extern int _doserrno;
 @end example
- 
+
 @subheading Description
 
 Whenever a DOS call returns a failure indication, this variable is

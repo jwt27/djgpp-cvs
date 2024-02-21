@@ -12,7 +12,7 @@ long strtol(const char *s, char **endp, int base);
 
 This function converts as much of @var{s} as looks like an appropriate
 number into the value of that number.  If @var{endp} is not a null
-pointer, @var{*endp} is set to point to the first unused character. 
+pointer, @var{*endp} is set to point to the first unused character.
 
 The @var{base} argument indicates what base the digits (or letters)
 should be treated as.  If @var{base} is zero, the base is determined by

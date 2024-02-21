@@ -18,7 +18,7 @@ int mprotect(void *addr, size_t len, int prot)
   start = ~0xfff & (uintptr_t)addr;
   end = ((uintptr_t)addr + len + 0xfff) & ~0xfff;
   npage = (end - start) / 0x1000;
-  
+
   if(prot & PROT_WRITE)
     newprot = 9;		/* committed, writeable */
   else if(prot & PROT_READ)

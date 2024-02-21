@@ -281,7 +281,7 @@ main (int argc, char *argv[])
 
   assert(((size_t) n) == sizeof(buf));
 
-  /* Check that reading fails. */  
+  /* Check that reading fails. */
   n = read(fd, buf, sizeof(buf));
   if (n >= 0) {
     fprintf(stderr,
@@ -592,7 +592,7 @@ main (int argc, char *argv[])
   } else {
     n = fcntl(fd, F_SETFL, n | O_NONBLOCK);
   }
- 
+
   if (n < 0) {
     fprintf(stderr, "Failed to flip O_NONBLOCK using F_SETFL fcntl: %s\n",
 	    strerror(errno));

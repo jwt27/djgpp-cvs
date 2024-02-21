@@ -31,7 +31,7 @@ The return value is of type @code{long long} which allows file sizes of
 @subheading Example
 
 @example
-  printf("Size of file to which STDIN is redirected is %ld\n", 
+  printf("Size of file to which STDIN is redirected is %ld\n",
           lfilelength(0));
 @end example
 

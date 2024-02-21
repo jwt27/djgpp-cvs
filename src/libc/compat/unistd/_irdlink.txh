@@ -10,7 +10,7 @@ int __internal_readlink(const char * path, int fhandle,
 @end example
 
 @subheading Description
-In general applications shouldn't call this function; use @code{readlink} 
+In general applications shouldn't call this function; use @code{readlink}
 instead (@pxref{readlink}).  However, there is one exception: if you have
 a @code{FSEXT} @code{fstat} file handler, and do not want do anything special
 about symlinks.  In this case you should call this function from your handler
@@ -21,8 +21,8 @@ should be set to @code{NULL} or 0.
 @subheading Return Value
 
 Number of copied characters; value -1 is returned in case of
-error and @code{errno} is set.  When value returned is equal to 
-@var{size}, you cannot determine if there was enough room to 
+error and @code{errno} is set.  When value returned is equal to
+@var{size}, you cannot determine if there was enough room to
 copy whole name.  So increase @var{size} and try again.
 
 @subheading Portability

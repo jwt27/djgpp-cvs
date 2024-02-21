@@ -35,7 +35,7 @@ callback_handler_part2 (int no, __dpmi_regs *data)
 	     current_client_handle,
 	     CALLBACK_OFS (no));
 #endif
-	     
+	
   while (1);
 }
 /* ---------------------------------------------------------------------- */

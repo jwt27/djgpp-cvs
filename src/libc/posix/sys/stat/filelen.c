@@ -28,11 +28,11 @@ filelength(int fhandle)
   unsigned short fpos_high, fpos_low;
   long           retval;
 
-  /* Use the LFN API when available to get the file length.  Under NT/Win2K/XP 
+  /* Use the LFN API when available to get the file length.  Under NT/Win2K/XP
      we don't do this optimization to avoid a bug on pre-opened handles.  The
-     seeks below this section (as always used in 2.03) makes later lseek/read 
-     combos work properly.  This assumes this routine is called from fstat() 
-     before we get the magic number or other things that do both seeks and 
+     seeks below this section (as always used in 2.03) makes later lseek/read
+     combos work properly.  This assumes this routine is called from fstat()
+     before we get the magic number or other things that do both seeks and
      reads. */
   if (_USE_LFN && (fhandle != 0 || _os_trueversion != 0x532))
   {
@@ -69,7 +69,7 @@ filelength(int fhandle)
       return retval;
     }
   }
-  
+
   /* Remember the current file position, so we can return there
      later.  */
   regs.x.ax = 0x4201;      /* set pointer from current position */

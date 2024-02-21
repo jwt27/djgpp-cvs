@@ -10,20 +10,20 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
 
 /*
- * for non-zero x 
+ * for non-zero x
  *	x = frexp(arg,&exp);
  * return a long double fp quantity x such that 0.5 <= |x| <1.0
  * and the corresponding binary exponent "exp". That is
  *	arg = x*2^exp.
- * If arg is inf, 0.0, or NaN, then frexp(arg,&exp) returns arg 
- * with *exp=0. 
+ * If arg is inf, 0.0, or NaN, then frexp(arg,&exp) returns arg
+ * with *exp=0.
  */
 
 #define IS_DENORMAL(v)         (((v).ldt.exponent == 0x0000) && (((v).ldt.mantissah & 0x80000000) == 0x00000000))

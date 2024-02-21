@@ -11,7 +11,7 @@ int rmdir(const char *dirname);
 @subheading Description
 
 This function removes directory @var{dirname}.  The directory must be
-empty. 
+empty.
 
 @subheading Return Value
 

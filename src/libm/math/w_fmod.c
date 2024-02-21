@@ -6,13 +6,13 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
-/* 
-FUNCTION 
+/*
+FUNCTION
 <<fmod>>, <<fmodf>>---floating-point remainder (modulo)
 
 INDEX
@@ -38,16 +38,16 @@ The <<fmod>> and <<fmodf>> functions compute the floating-point
 remainder of <[x]>/<[y]> (<[x]> modulo <[y]>).
 
 RETURNS
-The <<fmod>> function returns the value 
+The <<fmod>> function returns the value
 @ifinfo
-<[x]>-<[i]>*<[y]>, 
+<[x]>-<[i]>*<[y]>,
 @end ifinfo
 @tex
 $x-i\times y$,
 @end tex
 for the largest integer <[i]> such that, if <[y]> is nonzero, the
 result has the same sign as <[x]> and magnitude less than the
-magnitude of <[y]>. 
+magnitude of <[y]>.
 
 <<fmod(<[x]>,0)>> returns NaN, and sets <<errno>> to <<EDOM>>.
 
@@ -57,7 +57,7 @@ PORTABILITY
 <<fmod>> is ANSI C. <<fmodf>> is an extension.
 */
 
-/* 
+/*
  * wrapper fmod(x,y)
  */
 

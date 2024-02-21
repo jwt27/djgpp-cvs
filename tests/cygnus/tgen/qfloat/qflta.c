@@ -394,7 +394,7 @@ for( i=0; i<3; i++ )
 	if( *p < MAXEXP )
 		*p += 1;
 	else
-		*p = MAXEXP; 
+		*p = MAXEXP;
 	}
 for( i=0; i<3; i++ )
 	{
@@ -420,7 +420,7 @@ if( x[2] )
 	if( *p < MAXEXP )
 		*p += 1;
 	else
-		*p = MAXEXP; 
+		*p = MAXEXP;
 	}
 nornd:
 x[NQ] = 0;

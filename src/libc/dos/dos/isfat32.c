@@ -12,7 +12,7 @@
 #include <libc/bss.h>
 
 /* Returns 1 if the drive is formatted with FAT32; 0 otherwise. */
-int 
+int
 _is_fat32( const int drive /* drive number (1=A:). */
 	  )
 {

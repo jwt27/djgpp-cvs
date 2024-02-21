@@ -44,6 +44,6 @@ _chmod(const char *filename, int func, ...)
     errno = __doserr_to_errno(r.x.ax);
     return -1;
   }
- 
+
   return r.x.cx;
 }

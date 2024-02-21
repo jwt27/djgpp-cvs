@@ -17,7 +17,7 @@ _DEFUN(checkit,(ok,l),
 {
   newfunc(it);
   line(l);
-  
+
   if (!ok)
   {
     printf("string.c:%d %s\n", l, it);
@@ -37,11 +37,11 @@ _DEFUN(funcqual,(a,b,l),
        int l)
 {
   newfunc(it);
-  
+
   line(l);
   if (a == NULL && b == NULL) return;
   if (strcmp(a,b)) {
-      printf("string.c:%d (%s)\n", l, it);  
+      printf("string.c:%d (%s)\n", l, it);
     }
 }
 
@@ -377,8 +377,8 @@ void test_string()
   one[0] = 0xfe;
   two[0] = 0x03;
   check(memcmp(one, two,1) > 0);
-  
-  
+
+
   /* memchr.  */
   it = "memchr";
   check(memchr("abcd", 'z', 4) == NULL); /* Not found. */

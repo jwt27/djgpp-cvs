@@ -11,7 +11,7 @@ char *strupr(char *string);
 @subheading Description
 
 This function converts all lower case characters in @var{string} to
-upper case. 
+upper case.
 
 @subheading Return Value
 

@@ -64,7 +64,7 @@ You may not @code{longjmp} out of an interrupt handler.
 @item
 
 You may not make any function calls that require system calls, such
-as @code{printf}. 
+as @code{printf}.
 
 @item
 
@@ -76,7 +76,7 @@ wrap your function if you want.
 @item
 
 You must set the pm_selector field of @var{info}.  Use
-@code{_go32_my_cs} to get a selector valid for your functions. 
+@code{_go32_my_cs} to get a selector valid for your functions.
 
 @end itemize
 
@@ -104,7 +104,7 @@ int main()
 
   printf("grabbing timer interrupt\n");
   _go32_dpmi_get_protected_mode_interrupt_vector(8, &old_handler);
-  
+
   new_handler.pm_offset = (int)tic_handler;
   new_handler.pm_selector = _go32_my_cs();
   _go32_dpmi_chain_protected_mode_interrupt_vector(8, &new_handler);

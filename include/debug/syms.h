@@ -44,7 +44,7 @@ char *syms_val2name(unsigned long val, unsigned long *delta);
 char *syms_val2line(unsigned long val, int *lineret, int exact);
 char *syms_module(int no);
 unsigned long syms_line2val(char *filename, int lnum);
-void syms_listwild(char *pattern, 
+void syms_listwild(char *pattern,
   void (*handler)(unsigned long addr, char type_c, char *name, char *name2, int lnum));
 
 extern int undefined_symbol;

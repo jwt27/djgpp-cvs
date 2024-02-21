@@ -9,6 +9,6 @@
 int execle(const char *path, const char *argv0, ... /*, const char **envp */)
 {
   scan_ptr();
-  return spawnve(P_OVERLAY, path, unconst(&argv0,char *const *), 
+  return spawnve(P_OVERLAY, path, unconst(&argv0,char *const *),
                                   unconst(ptr,char *const *));
 }

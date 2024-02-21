@@ -63,7 +63,7 @@ __set_need_fake_dot_dotdot(DIR *dir)
 
   dir->need_fake_dot_dotdot = 0;
   if (IS_ROOT_DIR(dir->name))
-  {    
+  {
     /* see if findfirst finds "." anyway */
     char dir_name[FILENAME_MAX + 1];
 
@@ -97,7 +97,7 @@ opendir(const char *name)
 
   if (!__solve_symlinks(name, name_copy))
      return NULL;
-  
+
   dir = (DIR *)malloc(sizeof(DIR));
   if (dir == 0)
     return 0;

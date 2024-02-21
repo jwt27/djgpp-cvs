@@ -890,7 +890,7 @@ are referencing this value in a hardware interrupt handler, you should
 lock the memory area or copy it to your handler's locked memory.
 
 @findex _rdtsc@r{, new timer function}
-Added @code{_rdtsc} as a direct call to the hardware instruction.  It 
+Added @code{_rdtsc} as a direct call to the hardware instruction.  It
 will inline to a single instruction when compiled with optimization.
 
 @cindex File System Extensions, and @code{chmod}
@@ -971,8 +971,8 @@ and call code from the main image.  Converting libraries to standalone
 DXEs which can be linked via library is as simple as a single command.
 
 @findex uclock@r{, uses rdtsc on Windows NT, 2000, XP}
-@code{uclock} now uses rdtsc under Windows NT, 2000 and XP (if it is 
-available) to work around the bug with the interval timer not being 
+@code{uclock} now uses rdtsc under Windows NT, 2000 and XP (if it is
+available) to work around the bug with the interval timer not being
 syncronized with the timer tick.
 
 @vindex __tb_size@r{ added}

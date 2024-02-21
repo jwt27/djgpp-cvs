@@ -11,7 +11,7 @@ char *getwd(char *buffer);
 @subheading Description
 
 Get the current directory and put it in @var{buffer}.  The return value
-includes the drive specifier. 
+includes the drive specifier.
 
 @subheading Return Value
 

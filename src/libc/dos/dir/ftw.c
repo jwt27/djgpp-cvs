@@ -145,10 +145,10 @@ ftw(const char *dir, int (*func)(const char *, struct stat *, int),
      /* The errno is set by __solve_symlinks() */
      return -1;
   }
-  /* Note that symlink-clean name is not used further: 
+  /* Note that symlink-clean name is not used further:
    * functions that are called from here understand symlinks anyway.
    */
-  
+
   dirattr = _chmod(real_path, 0, 0);
   if (errno == ENOENT)
     return -1;
@@ -169,7 +169,7 @@ ftw(const char *dir, int (*func)(const char *, struct stat *, int),
       errno = e;
       if ((func_result = (*func)(pathbuf, &stbuf, flag)) != 0)
         return func_result;
-      
+
       return walk_dir(pathbuf, func);
     }
 }

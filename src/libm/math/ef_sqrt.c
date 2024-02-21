@@ -8,7 +8,7 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
@@ -29,7 +29,7 @@ static	float	one	= 1.0, tiny=1.0e-30;
 #endif
 {
 	volatile float z;	/* to prevent GCC from optimizing it away */
-	__int32_t 	sign = (int)0x80000000U; 
+	__int32_t 	sign = (int)0x80000000U;
 	__uint32_t r;
 	__int32_t ix,s,q,m,t,i;
 
@@ -39,7 +39,7 @@ static	float	one	= 1.0, tiny=1.0e-30;
 	if((ix&0x7f800000)==0x7f800000) {			
 	    return x*x+x;		/* sqrt(NaN)=NaN, sqrt(+inf)=+inf
 					   sqrt(-inf)=sNaN */
-	} 
+	}
     /* take care of zero */
 	if(ix<=0) {
 	    if((ix&(~sign))==0) return x;/* sqrt(+-0) = +-0 */
@@ -64,12 +64,12 @@ static	float	one	= 1.0, tiny=1.0e-30;
 	r = 0x01000000;		/* r = moving bit from right to left */
 
 	while(r!=0) {
-	    t = s+r; 
-	    if(t<=ix) { 
-		s    = t+r; 
-		ix  -= t; 
-		q   += r; 
-	    } 
+	    t = s+r;
+	    if(t<=ix) {
+		s    = t+r;
+		ix  -= t;
+		q   += r;
+	    }
 	    ix += ix;
 	    r>>=1;
 	}

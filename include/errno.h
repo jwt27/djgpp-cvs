@@ -28,7 +28,7 @@ EXTERN int ASM_N(__dj_errno);
 #define EILSEQ		41
 
 #endif /* (__STDC_VERSION__ >= 199901L) || !__STRICT_ANSI__ */
-  
+
 #if !defined(__STRICT_ANSI__) || (defined(__cplusplus) && ( \
    (__GNUC__ == 4 && (__GNUC_MINOR__ > 2 && __GNUC_MINOR < 7) && \
    defined(__GXX_EXPERIMENTAL_CXX0X__)) || (__cplusplus >= 201103L)))

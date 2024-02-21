@@ -11,7 +11,7 @@ char *getenv(const char *name);
 @subheading Description
 
 Get the setting of the environment variable @var{name}.  Do not alter or
-free the returned value. 
+free the returned value.
 
 @subheading Return Value
 

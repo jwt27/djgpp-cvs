@@ -54,7 +54,7 @@ cases either.
 
 @subheading Return Value
 
-Zero if successful, nonzero if not. 
+Zero if successful, nonzero if not.
 
 @subheading Portability
 

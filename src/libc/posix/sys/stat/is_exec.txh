@@ -37,7 +37,7 @@ alone isn't enough to determine whether the file is executable, then this
 function returns 0, because it cannot look at the @cite{magic number}.
 
 This function is used internally by @code{f?stat}; you are not supposed
-to call it directly.  However, if you call it, and pass file through 
+to call it directly.  However, if you call it, and pass file through
 @var{path}, it's up to you to resolve symlinks there.
 
 @subheading Return Value

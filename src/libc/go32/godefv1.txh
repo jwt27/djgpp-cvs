@@ -29,7 +29,7 @@ typedef struct @{
 @end example
 
 The only field that is guaranteed to have useful data is
-@code{available_memory}.  Any unavailable field has -1 in it. 
+@code{available_memory}.  Any unavailable field has -1 in it.
 
 @subheading Return Value
 
@@ -116,7 +116,7 @@ This function simulates a real-mode far call to a function that returns
 with an @code{iret} instruction.  The registers are set up from
 @var{regs}, including @code{CS} and @code{IP}, which indicate the
 address of the call.  Any registers the function modifies are reflected
-in @var{regs} on return. 
+in @var{regs} on return.
 
 If @code{SS} and @code{SP} are both zero, a small temporary stack is
 used when in real mode.  If not, they are used @emph{as is}.  It's a good
@@ -161,7 +161,7 @@ int _go32_dpmi_simulate_int(int vector, _go32_dpmi_registers *regs);
 This function simulates a real-mode interrup.  The registers are set up from
 @var{regs}, including @code{CS} and @code{IP}, which indicate the
 address of the call.  Any registers the function modifies are reflected
-in @var{regs} on return. 
+in @var{regs} on return.
 
 If @code{SS} and @code{SP} are both zero, a small temporary stack is
 used when in real mode.  If not, they are used @emph{as is}.  It's a good
@@ -203,7 +203,7 @@ u_short _go32_my_cs();
 @subheading Description
 
 Returns the current @code{CS}.  This is useful for setting up interrupt
-vectors and such. 
+vectors and such.
 
 @subheading Return Value
 
@@ -227,7 +227,7 @@ u_short _go32_my_ds();
 @subheading Description
 
 Returns the current @code{DS}.  This is useful for moving memory
-and such. 
+and such.
 
 @subheading Return Value
 
@@ -251,7 +251,7 @@ u_short _go32_my_ss();
 @subheading Description
 
 Returns the current @code{SS}.  This is useful for moving memory
-and such. 
+and such.
 
 @subheading Return Value
 
@@ -277,7 +277,7 @@ u_short _go32_conventional_mem_selector();
 This function returns a selector which has a physical base address
 corresponding to the beginning of conventional memory.  This selector
 can be used as a parameter to @code{movedata} (@pxref{movedata}) to
-manipulate memory in the conventional address space. 
+manipulate memory in the conventional address space.
 
 @subheading Return Value
 

@@ -29,8 +29,8 @@ dxetest.exe: dxetest.c add.dxe
 add.dxe: add.o
 	dxegen add.dxe _add add.o
 
-dlsimp.exe: dlsimp.o 
-dldemo.exe: dldemo.o 
+dlsimp.exe: dlsimp.o
+dldemo.exe: dldemo.o
 statsimp.exe: statsimp.o libtst1.a
 statlink.exe: statlink.o libtst2.a
 statfull.exe: export.o statfull.o libtst2x.a libtst3p.a

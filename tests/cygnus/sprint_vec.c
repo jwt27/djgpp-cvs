@@ -1,6 +1,6 @@
 #include "test.h"
 
-sprint_double_type sprint_doubles[] = 
+sprint_double_type sprint_doubles[] =
 {
 {__LINE__, -1.002121970718271e+29,	"-1.0E+29", "%.1E"},
 {__LINE__, -1.002126048612756e-02,	"-1.002126E-02", "%+#E"},

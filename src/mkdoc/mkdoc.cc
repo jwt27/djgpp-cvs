@@ -378,7 +378,7 @@ Node::read_portability(const char *str)
 
       strcat(multitable, "@multitable {");
       strcat(multitable, largest_target);
-      strcat(multitable, "} {");  
+      strcat(multitable, "} {");
       strcat(multitable, rightpad);
       strcat(multitable, "}\n");
     }
@@ -420,7 +420,7 @@ Node::read_portability(const char *str)
     /* Add an entry to the table. */
     lines.Add("@item ");
     lines.Add(pti.prefix_name);
-    lines.Add("\n@tab ");    
+    lines.Add("\n@tab ");
 
     int qualifier_number = 0;
 
@@ -434,7 +434,7 @@ Node::read_portability(const char *str)
       qualifier_number++;
       if (qualifier_number > 1)
 	lines.Add("; ");
-      
+
       lines.Add(pti.pq[j].suffix_name);
       if (port_type[i][j] == PORT_PARTIAL)
 	lines.Add(" (partial)");
@@ -551,7 +551,7 @@ Node::process(const char *line)
       return;
     }
   }
-  
+
   if (in_port_note)
   {
     if (last_port_note)
@@ -851,7 +851,7 @@ static void list_portability (void)
 
   puts("Built-in portability targets:\n");
 
-  for (i = 0; i < NUM_PORT_TARGETS; i++) {    
+  for (i = 0; i < NUM_PORT_TARGETS; i++) {
     const PortInfo &pti = port_target[i];
     if (pti.port_qualifiers == 0) {
       printf("%-32s = %-32s\n",
@@ -893,7 +893,7 @@ static void usage (void)
 
 int main (int argc, char **argv)
 {
-  int i;  
+  int i;
 
   // Scan for help options
   for (i = 1; i < argc; i++) {

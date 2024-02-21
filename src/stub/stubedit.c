@@ -27,7 +27,7 @@ static unsigned long exe_start = 0;
 static unsigned char buf[4];
 
 void find_info(char *filename)
-{  
+{
   FILE *f;
   unsigned char header[4];
   unsigned char test_magic[16];

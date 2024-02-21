@@ -14,7 +14,7 @@ struct passwd *getpwent(void);
 
 @subheading Description
 
-This function retrieves the next available password file entry. 
+This function retrieves the next available password file entry.
 For MS-DOS, this is simulated by providing exactly one entry:
 
 @example

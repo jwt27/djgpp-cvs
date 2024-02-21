@@ -15,7 +15,7 @@ max_ptr(char *p1, char *p2)
 }
 
 int
-fnsplit (const char *path, char *drive, char *dir, 
+fnsplit (const char *path, char *drive, char *dir,
 	 char *name, char *ext)
 {
   int flags = 0, len;
@@ -45,8 +45,8 @@ fnsplit (const char *path, char *drive, char *dir,
   }
 
   pe = max_ptr(strrchr(pp, '\\'), strrchr(pp, '/'));
-  if (pe) 
-  { 
+  if (pe)
+  {
     flags |= DIRECTORY;
     pe++;
     len = pe - pp;
@@ -83,10 +83,10 @@ fnsplit (const char *path, char *drive, char *dir,
   if (pe)
   {
     flags |= EXTENSION;
-    if (ext) 
+    if (ext)
       strcpy(ext, pe);
   }
-  else 
+  else
     pe = strchr( pp, '\0');
 
   if (pp != pe)

@@ -11,7 +11,7 @@ double difftime(time_t t1, time_t t0);
 @subheading Description
 
 This function returns the difference in time, in seconds, from @var{t0}
-to @var{t1}. 
+to @var{t1}.
 
 @subheading Return Value
 

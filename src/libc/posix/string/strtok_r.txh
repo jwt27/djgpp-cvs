@@ -12,10 +12,10 @@ char *strtok_r(char *s1, const char *s2, char **s3);
 
 This function retrieves tokens from @var{s1} which are delimited by
 characters from @var{s2}.  It uses @var{s3} to track how far in
-@var{s1} the search has progressed.  
+@var{s1} the search has progressed.
 
 To initiate the search, pass the string to be searched as @var{s1}.  For
-the remaining tokens, pass @code{NULL} instead.  
+the remaining tokens, pass @code{NULL} instead.
 
 @subheading Return Value
 

@@ -21,7 +21,7 @@ offset = segment * 16 + offset;
 
 The @var{length} is the number of bytes to transfer, and @var{buffer} is
 a pointer to somewhere in your virtual address space (such as memory
-obtained from @code{malloc}) where the data will come from. 
+obtained from @code{malloc}) where the data will come from.
 
 @subheading Return Value
 

@@ -27,7 +27,7 @@ Matches exactly one character.
 @item [...]
 
 Matches one character if it's in a range of characters.  If the first
-character is @samp{!}, matches if the character is not in the range. 
+character is @samp{!}, matches if the character is not in the range.
 Between the brackets, the range is specified by listing the characters
 that are in the range, or two characters separated by @samp{-} to
 indicate all characters in that range.  For example, @samp{[a-d]}

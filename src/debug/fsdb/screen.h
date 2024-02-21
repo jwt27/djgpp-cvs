@@ -12,7 +12,7 @@ typedef struct MENU_ITEM {
 } MENU_ITEM;
 
 typedef struct EDIT_ITEM {
-  char *txt; 
+  char *txt;
   char *data;
 } EDIT_ITEM;
 /* ------------------------------------------------------------------------- */

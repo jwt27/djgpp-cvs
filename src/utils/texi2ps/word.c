@@ -297,7 +297,7 @@ static void w(const char *s)
   strcpy(we->word, s);
   we->x = x+MARGIN + halfpage;
   we->y = y+MARGIN + baseline_offset;
-  
+
 #if 0
   {
     char psbuf[100];

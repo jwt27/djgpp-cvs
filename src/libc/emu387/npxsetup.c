@@ -2,8 +2,8 @@
  * FPU setup and emulation hooks for DJGPP V2.0
  * This file maybe freely distributed, no warranty. */
 
-/* Note:  If this file is built with IMBED_EMU387 defined, the application 
-   should be linked with -lemu to imbed the code in the image.  This 
+/* Note:  If this file is built with IMBED_EMU387 defined, the application
+   should be linked with -lemu to imbed the code in the image.  This
    makes it easier to distribute an application with a single file.
    The alternate behavior is to dynamically load the image. */
 
@@ -33,11 +33,11 @@ int _8087;
 int __emu387_load_hook;
 
 /* The environment variable 387 can be used to disable a 387 which is present
-   (for testing) by setting it to "n".  The presence can be reported to 
+   (for testing) by setting it to "n".  The presence can be reported to
    stderr by setting 387 to "q" (query).  If 387 is set to "y", we assume the
    coprocessor is present without checking.
-   If a 387 is not present under DPMI, we call a V1.0 DPMI extension to ask 
-   that Exception 7 be sent to our process.  If we don't have a 387, we 
+   If a 387 is not present under DPMI, we call a V1.0 DPMI extension to ask
+   that Exception 7 be sent to our process.  If we don't have a 387, we
    attempt to load the EMU387.DXE and call it from the signal.
  */
 #if 0

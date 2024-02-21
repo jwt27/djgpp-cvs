@@ -11,11 +11,11 @@ int strerror_r(int error, char *strerrbuf, size_t buflen);
 @subheading Description
 
 This function fills the @var{strerrbuf} of length @var{buflen} with a
-string that describes the @var{error}.  
+string that describes the @var{error}.
 
 @subheading Return Value
 
-0 if successful or @code{ERANGE} if @var{buflen} is too small.  
+0 if successful or @code{ERANGE} if @var{buflen} is too small.
 
 @subheading Portability
 
@@ -42,7 +42,7 @@ if( f == NULL )
       printf("Error while trying to decode error from calling strerror_r(). I give up!\n"
       "Calling strerror: '%s'\n", strerror(error_again2));
     @}
-    printf("Error while trying to decode error from calling fopen(): '%s'\n", 
+    printf("Error while trying to decode error from calling fopen(): '%s'\n",
 	buf2);
   @}
   else

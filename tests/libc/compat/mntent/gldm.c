@@ -30,7 +30,7 @@ main(void)
         printf("%c: unshared", i+'@');
     }
 
- 
+
     r.x.ax = 0x4408;
     r.h.bl = i;
     __dpmi_int(0x21, &r);

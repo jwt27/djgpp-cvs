@@ -22,7 +22,7 @@ static unsigned short multiplier1 = RAND48_MULT1;
 static unsigned short multiplier2 = RAND48_MULT2;
 static unsigned short additiver = RAND48_ADD;
 
-static void next( 
+static void next(
 		 unsigned short state[]
 		 )
 {
@@ -32,9 +32,9 @@ static void next(
   tmp = state[0] * multiplier0 + additiver;
   new_state[0] = (unsigned short)(tmp  & 0xffff);
 
-  tmp = (tmp >> 8*sizeof(unsigned short)) 
-      + state[0] * multiplier1 
-      + state[1] * multiplier0; 
+  tmp = (tmp >> 8*sizeof(unsigned short))
+      + state[0] * multiplier1
+      + state[1] * multiplier0;
   new_state[1] = (unsigned short)(tmp & 0xffff);
 
   tmp = (tmp >> 8*sizeof(unsigned short))
@@ -60,8 +60,8 @@ double erand48(
 
   next(state);
 
-  ll = (signed long long)( state[0] 
-		       | ( (unsigned long)state[1] ) << 16 
+  ll = (signed long long)( state[0]
+		       | ( (unsigned long)state[1] ) << 16
 		       | ( (unsigned long long)state[2] ) << 32 );
 
   return(ll * ( 1.0 / ( 1LL << 48 ) ) );
@@ -81,7 +81,7 @@ unsigned long nrand48(
 {
 
   next(state);
-  return( ((unsigned long)state[2]) * 0x8000 
+  return( ((unsigned long)state[2]) * 0x8000
 	+ ( ((unsigned long)state[1]) >> 1 )
 	  );
 
@@ -154,7 +154,7 @@ void lcong48(
 	     unsigned short param[7]
 	     )
 {
-  
+
   /* Set the state. */
   internal_state[0] = param[0];
   internal_state[1] = param[1];

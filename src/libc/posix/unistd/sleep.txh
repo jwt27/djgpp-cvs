@@ -10,7 +10,7 @@ unsigned sleep(unsigned seconds);
 
 @subheading Description
 
-This function causes the program to pause for @var{seconds} seconds. 
+This function causes the program to pause for @var{seconds} seconds.
 
 @subheading Return Value
 

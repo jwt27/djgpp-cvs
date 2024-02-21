@@ -15,10 +15,10 @@ from the standard input, without an echo, after prompting with a
 null-terminated string @var{prompt}.  It puts a null-terminated string of
 at most @var{max_length - 1} first characters typed by the user into a
 buffer pointed to by @var{password}.  Pressing Ctrl-C or Ctrl-Break will
-cause the calling program to @code{exit(1)}. 
+cause the calling program to @code{exit(1)}.
 
 @subheading Return Value
-  
+
 Zero if successful, -1 on error (and @code{errno} is set to an
 appropriate value).
 

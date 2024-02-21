@@ -41,7 +41,7 @@ readv (int fd, const struct iovec *iov, int iovcnt)
     if (ret < 0) {
       if (!i) {
 	/* Fail of the first one. Fail and pass through errno. */
-	return(-1); 
+	return(-1);
       } else {
 	/* Hide the error and return what we've got so far. */
 	errno = old_errno;

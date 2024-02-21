@@ -237,7 +237,7 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
     return -1;				/* Not V2 image, show failure */
   }
   lseek(pf, coff_offset, 0);
-  i = read(pf, coffhdr, 0x0a8);    
+  i = read(pf, coffhdr, 0x0a8);
   if (i != 0x0a8) {
     close(pf);
     return -1;				/* Not V2 image, show failure */
@@ -360,7 +360,7 @@ int v2loadimage(const char *program, const char *cmdline, jmp_buf load_state)
   if(__dpmi_allocate_memory(&memblock) == -1)
     return -1;
   si.memory_handle = memblock.handle;
-  
+
   if(__dpmi_set_segment_base_address(client_cs, memblock.address) == -1)
     return -1;
 
@@ -455,7 +455,7 @@ void main(int argc, char **argv)
   }
 
   putenv("FOO=from-v2load");
-  
+
   cmdline[1] = 0;
   for(i=2; argv[i]; i++) {
   	strcat(cmdline+1, " ");

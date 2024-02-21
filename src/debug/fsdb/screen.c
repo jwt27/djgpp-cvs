@@ -624,7 +624,7 @@ edit (char *title, EDIT_ITEM *fields, int focus)
 static void
 attr2text (char *buf, unsigned char attr)
 {
-  sprintf (buf, "%s on %s%s", 
+  sprintf (buf, "%s on %s%s",
 	   colours[attr & 15], colours[(attr >> 4) & 7], \
 	   (attr & 128) ? ", blinking" : "");
   buf[0] = toupper (buf[0]);
@@ -701,7 +701,7 @@ edit_colours (int dummy)
 	  break;
       if (form[focus].txt == 0)
 	{
-	  screen_attr_normal    = text2attr (form[ 0].data);	  
+	  screen_attr_normal    = text2attr (form[ 0].data);	
 	  screen_attr_source    = text2attr (form[ 1].data);
 	  screen_attr_focus     = text2attr (form[ 2].data);
 	  screen_attr_break     = text2attr (form[ 3].data);

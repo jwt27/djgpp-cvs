@@ -221,7 +221,7 @@ local void read_pt_len(int nn, int nbit, int i_special)
   unsigned mask;
 
   n = getbits(nbit);
-  if (n == 0) 
+  if (n == 0)
   {
     c = getbits(nbit);
     for (i = 0; i < nn; i++) pt_len[i] = 0;

@@ -6,14 +6,14 @@
  *
  * Developed at SunPro, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  */
 
 /*
 FUNCTION
-	<<atanh>>, <<atanhf>>---inverse hyperbolic tangent 
+	<<atanh>>, <<atanhf>>---inverse hyperbolic tangent
 
 INDEX
 	atanh
@@ -42,7 +42,7 @@ DESCRIPTION
 RETURNS
 	<<atanh>> and <<atanhf>> return the calculated value.
 
-	If 
+	If
 	@ifinfo
 	@w{|<[x]>|}
 	@end ifinfo
@@ -52,14 +52,14 @@ RETURNS
 	is greater than 1, the global <<errno>> is set to <<EDOM>> and
 	the result is a NaN.  A <<DOMAIN error>> is reported.
 
-	If 
+	If
 	@ifinfo
 	@w{|<[x]>|}
 	@end ifinfo
 	@tex
 	$|x|$
 	@end tex
-	is 1, the global <<errno>> is set to <<EDOM>>; and the result is 
+	is 1, the global <<errno>> is set to <<EDOM>>; and the result is
 	infinity with the same sign as <<x>>.  A <<SING error>> is reported.
 
 	You can modify the error handling for these routines using
@@ -75,7 +75,7 @@ QUICKREF
 
 */
 
-/* 
+/*
  * wrapper atanh(x)
  */
 
@@ -100,7 +100,7 @@ QUICKREF
 	if(y>=1.0) {
 	    if(y>1.0)
 	        return __kernel_standard(x,x,30); /* atanh(|x|>1) */
-	    else 
+	    else
 	        return __kernel_standard(x,x,31); /* atanh(|x|==1) */
 	} else
 	    return z;

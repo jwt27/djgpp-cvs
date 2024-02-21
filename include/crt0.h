@@ -59,9 +59,9 @@ char **__crt0_glob_function(char *_arg);
  *
  *  To set any of these startup flags, add the following declaration to
  *  *your* source code:
- *   
+ *
  *	int _crt0_startup_flags = _CRT0_FLAG_* | _CRT0_FLAG_*;
- *  
+ *
  *  The default is all flags off.
  *
 \*****************************************************************************/
@@ -72,7 +72,7 @@ EXTERN unsigned char ASM_ARR(dosobj_page);
 /* If set, argv[0] is left in whatever case it was.  If not set, all
 ** characters are mapped to lower case.  Note that if the argv0 field in
 ** the stubinfo structure is present, the case of that part of argv0 is not
-** affected. 
+** affected.
 */
 #define _CRT0_FLAG_PRESERVE_UPPER_CASE		0x0001
 
@@ -82,18 +82,18 @@ EXTERN unsigned char ASM_ARR(dosobj_page);
 #define _CRT0_FLAG_USE_DOS_SLASHES		0x0002
 
 /* If set, the .EXE suffix is removed from the file name component of
-** argv[0].  If not set, the suffix remains. 
+** argv[0].  If not set, the suffix remains.
 */
 #define _CRT0_FLAG_DROP_EXE_SUFFIX		0x0004
 
 /* If set, the drive specifier (ex: `C:') is removed from the beginning of
-** argv[0] (if present).  If not set, the drive specifier remains. 
+** argv[0] (if present).  If not set, the drive specifier remains.
 */
 #define _CRT0_FLAG_DROP_DRIVE_SPECIFIER	0x0008
 
 /* If set, response files (ex: @gcc.rf) are not expanded.  If not set, the
 ** contents of the response files are used to create arguments.  Note that
-** if the file does not exist, that argument remains unexpanded. 
+** if the file does not exist, that argument remains unexpanded.
 */
 #define _CRT0_FLAG_DISALLOW_RESPONSE_FILES	0x0010
 
@@ -119,7 +119,7 @@ EXTERN unsigned char ASM_ARR(dosobj_page);
 #define _CRT0_FLAG_NULLOK			0x0100
 
 /* If set, enabled capture of NMI in exception code.  This may cause problems
-** with laptops and "green" boxes which use it to wake up.  Default is to 
+** with laptops and "green" boxes which use it to wake up.  Default is to
 ** leave NMIs alone and pass through to real mode code.  You decide.
 */
 #define _CRT0_FLAG_NMI_SIGNAL			0x0200
@@ -133,7 +133,7 @@ EXTERN unsigned char ASM_ARR(dosobj_page);
 
 /* If set, chooses an sbrk() algorithm.  If your code requires one type
 ** or the other, set the value (since the default may change).  The non-move
-** sbrk makes sure the base of CS/DS/SS does not change.  Each new sbrk() 
+** sbrk makes sure the base of CS/DS/SS does not change.  Each new sbrk()
 ** allocation is put in a different DPMI memory block.  This works best with
 ** DOS programs which would like to use near pointers or hardware interrupts.
 ** The unix sbrk resizes a single memory block, so programs making assumptions
@@ -176,8 +176,8 @@ EXTERN unsigned char ASM_ARR(dosobj_page);
 
 /* If set, non-move sbrk() should discard (ignore) memory blocks which are
 ** returned by DPMI which would require address wrap to access (at addresses
-** below the CS/DS base address).  This bit is automatically set on Win NT 
-** systems which require it.  It may be manually set on other systems which 
+** below the CS/DS base address).  This bit is automatically set on Win NT
+** systems which require it.  It may be manually set on other systems which
 ** don't require it to retain a more normal memory space layout and better
 ** memory protection.  This bit can be set but should never be cleared.
 */
@@ -185,8 +185,8 @@ EXTERN unsigned char ASM_ARR(dosobj_page);
 #define _CRT0_DISABLE_SBRK_ADDRESS_WRAP		0x8000
 
 /*****************************************************************************\
- *  Access to the memory handles used by the non-move sbrk algorithm.  
- *  The handle is the SI:DI DPMI handle; the address is the offset relative 
+ *  Access to the memory handles used by the non-move sbrk algorithm.
+ *  The handle is the SI:DI DPMI handle; the address is the offset relative
  *  to the application's address space.  Address will be zero unused slots > 1.
 \*****************************************************************************/
 

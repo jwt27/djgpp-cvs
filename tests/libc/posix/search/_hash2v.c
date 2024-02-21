@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
   corr /= lines-1;
 
   printf("Correlation coefficient = %Lf.\n", corr/sqrt(s2_h)/sqrt(s2_h2));
-  
+
 
   return 0;
 }

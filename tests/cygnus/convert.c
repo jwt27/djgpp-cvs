@@ -70,7 +70,7 @@ _DEFUN_VOID(test_atoff)
 
 
 static
-void 
+void
 _DEFUN(iterate,(func, name),
        void _EXFUN((*func),(void)) _AND
        char *name)
@@ -194,10 +194,10 @@ _DEFUN_VOID(test_fcvtbuf)
 void
 _DEFUN_VOID(test_gcvt)
 {
-  char *s = gcvt(pdd->value, pdd->g1, buffer);  
+  char *s = gcvt(pdd->value, pdd->g1, buffer);
   test_scok(s, pdd->gstring, 9);
-  
-  s = gcvtf(pdd->value, pdd->g1, buffer);  
+
+  s = gcvtf(pdd->value, pdd->g1, buffer);
   test_scok(s, pdd->gstring, 9);
 
 }
@@ -263,13 +263,13 @@ _DEFUN_VOID(deltest)
   line(5);
   sprintf(buffer,"%.0e",1e1);
   test_sok(buffer,"1e+01");
-  line(6);  
+  line(6);
   sprintf(buffer, "%f", 12.3456789);
   test_sok(buffer, "12.345679");
-  line(7);  
+  line(7);
   sprintf(buffer, "%6.3f", 12.3456789);
   test_sok(buffer, "12.346");
-  line(8);  
+  line(8);
   sprintf(buffer,"%.0f", 12.3456789);
   test_sok(buffer,"12");
 }
@@ -440,10 +440,10 @@ _DEFUN_VOID(test_sprint)
   sprint_int_type *si = sprint_ints;
 
 
-  newfunc( "sprintf");  
+  newfunc( "sprintf");
 
 
-  while (s->line) 
+  while (s->line)
   {
     line( s->line);
     sprintf(buffer, s->format_string, s->value);
@@ -451,13 +451,13 @@ _DEFUN_VOID(test_sprint)
     s++;
   }
 
-  while (si->line) 
+  while (si->line)
   {
     line( si->line);
     sprintf(buffer, si->format_string, si->value);
     test_sok(buffer, si->result);
     si++;
-  }  
+  }
 }
 
 /* Scanf calls strtod etc tested elsewhere, but also has some pattern matching skills */
@@ -470,12 +470,12 @@ _DEFUN_VOID(test_scan)
   extern sprint_int_type sprint_ints[];
   sprint_int_type *si = sprint_ints;
 
-  newfunc( "scanf");  
-  
+  newfunc( "scanf");
+
   /* Test scanf by converting all the numbers in the sprint vectors
      to and from their source and making sure nothing breaks */
 
-  while (s->line) 
+  while (s->line)
   {
 
     double d0,d1;
@@ -488,11 +488,11 @@ _DEFUN_VOID(test_scan)
   }
 
   /* And integers too */
-  while (si->line) 
+  while (si->line)
   {
 
     long d0,d1;
-    
+
     line(si->line);
     sscanf(si->result, "%ld", &d0);
     sprintf(buffer, "%ld", d0);
@@ -508,7 +508,7 @@ _DEFUN_VOID(test_scan)
   sscanf("foo bar 123 zap 456","foo bar %d zap %d", &i, &j);
   test_iok(i, 123);
   test_iok(j, 456);
-  
+
   sscanf("magicXYZZYfoobar","magic%[XYZ]", buffer);
   test_sok("XYZZY", buffer);
   sscanf("magicXYZZYfoobar","%[^XYZ]", buffer);
@@ -526,14 +526,14 @@ _DEFUN_VOID(test_cvt)
   diterate(test_gcvt,"gcvt/gcvtf");
   diterate(test_ecvtbuf,"ecvtbuf");
   diterate(test_ecvt,"ecvt/ecvtf");
-  
+
   iterate(test_strtod, "strtod");
   iterate(test_strtof, "strtof");
 
   test_nan_inf();
 
   test_scan();
-  test_sprint();  
+  test_sprint();
   iterate(test_atof, "atof");
   iterate(test_atoff, "atoff");
 

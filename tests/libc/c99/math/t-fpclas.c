@@ -16,13 +16,13 @@
 #include "fp-union.h"
 
 
-typedef struct { 
+typedef struct {
   float_t number; 	/* Number to test. */
   int class; 		/* Which class. */
 } test_float_t;
 
-static const test_float_t tests_float[] = 
-{ 
+static const test_float_t tests_float[] =
+{
   /* Zeros. */
   { { 0, 0, 0 }, FP_ZERO }, /* 0.0 */
   { { 0, 0, 1 }, FP_ZERO }, /* -0.0 */
@@ -50,13 +50,13 @@ static const test_float_t tests_float[] =
 
 static const size_t n_tests_float = sizeof(tests_float) / sizeof(tests_float[0]);
 
-typedef struct { 
+typedef struct {
   double_t number; 	/* Number to test. */
   int class; 		/* Which class. */
 } test_double_t;
 
 static const test_double_t tests_double[] =
-{ 
+{
   /* Zeros. */
   { { 0, 0, 0, 0 }, FP_ZERO }, /* 0.0 */
   { { 0, 0, 0, 1 }, FP_ZERO }, /* -0.0 */
@@ -84,13 +84,13 @@ static const test_double_t tests_double[] =
 
 static const size_t n_tests_double = sizeof(tests_double) / sizeof(tests_double[0]);
 
-typedef struct { 
+typedef struct {
   long_double_t number; /* Number to test. */
   int class; 		/* Which class. */
 } test_long_double_t;
 
 static const test_long_double_t tests_long_double[] =
-{ 
+{
   /* Zeros. */
   { { 0, 0, 0, 0 }, FP_ZERO }, /* 0.0. */
   { { 0, 0, 0, 1 }, FP_ZERO }, /* -0.0. */
@@ -143,8 +143,8 @@ main(void)
   size_t i;
 
   printf("FP_ZERO=0x%x, FP_SUBNORMAL=0x%x, FP_NORMAL=0x%x, FP_INFINITE=0x%d,\n"
-	 "FP_NAN=0x%x, FP_UNNORMAL=0x%x\n\n", 
-	 FP_ZERO, FP_SUBNORMAL, FP_NORMAL, FP_INFINITE, 
+	 "FP_NAN=0x%x, FP_UNNORMAL=0x%x\n\n",
+	 FP_ZERO, FP_SUBNORMAL, FP_NORMAL, FP_INFINITE,
 	 FP_NAN, FP_UNNORMAL);
 
   puts("Float tests:");

@@ -380,7 +380,7 @@ float *eps,
     }
 
 #ifdef IEEE
-    /* On a host with IEEE arithmetic, the above code computes 
+    /* On a host with IEEE arithmetic, the above code computes
        *minexp = -1074 (sp: -149) (with gradual underflow; else
        -1023 (sp: -126)), which is acceptable, but it finds
        *maxexp = 3021 (sp: 362?) (with gradual underflow),
@@ -396,7 +396,7 @@ float *eps,
        following code simply compares z with (z*beta)/beta, with
        z = beta**k, until it finds a mismatch, at which point we
        have found the real *maxexp. */
-       
+
     z = beta;
     *maxexp = 1;
     for (;;)

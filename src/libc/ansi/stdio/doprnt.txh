@@ -12,9 +12,9 @@ int _doprnt(const char *format, void *params, FILE *file);
 
 This is an internal function that is used by all the @code{printf} style
 functions, which simply pass their format, arguments, and stream to this
-function. 
+function.
 
-@xref{printf}, for a discussion of the allowed formats and arguments. 
+@xref{printf}, for a discussion of the allowed formats and arguments.
 
 @subheading Return Value
 
