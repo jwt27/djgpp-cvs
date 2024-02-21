@@ -24,7 +24,7 @@
 
 typedef int (dj64cdispatch_t)(int handle, int libid, int fn, unsigned esi,
         uint8_t *sp);
-#define DJ64_API_VER 1
+#define DJ64_API_VER 2
 enum { DJ64_PRINT_LOG, DJ64_PRINT_TERMINAL };
 
 /* pushal */
@@ -48,6 +48,7 @@ enum { ASM_CALL_OK, ASM_CALL_ABORT };
 
 struct dj64_api {
     uint8_t *(*addr2ptr)(uint32_t addr);
+    uint8_t *(*addr2ptr2)(uint32_t addr, uint32_t len);
     uint32_t (*ptr2addr)(const uint8_t *ptr);
     void (*print)(int prio, const char *format, va_list ap);
     int (*asm_call)(dpmi_regs *regs, dpmi_paddr pma, uint8_t *sp, uint8_t len);

@@ -24,6 +24,7 @@
 void dj64_init(void);
 
 uint8_t *djaddr2ptr(uint32_t addr);
+uint8_t *djaddr2ptr2(uint32_t addr, uint32_t len);
 uint32_t djptr2addr(const uint8_t *ptr);
 
 #endif

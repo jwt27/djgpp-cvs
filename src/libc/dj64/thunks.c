@@ -76,6 +76,11 @@ uint8_t *djaddr2ptr(uint32_t addr)
     return dj64api->addr2ptr(addr);
 }
 
+uint8_t *djaddr2ptr2(uint32_t addr, uint32_t len)
+{
+    return dj64api->addr2ptr2(addr, len);
+}
+
 uint32_t djptr2addr(const uint8_t *ptr)
 {
     return dj64api->ptr2addr(ptr);

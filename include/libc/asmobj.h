@@ -27,19 +27,21 @@
 #ifndef IN_ASMOBJ
 
 #define ASM(t, x) unsigned __##x;/*
-*/DEFINE(x, (*(t *)djaddr2ptr(__##x)))/*
+*/DEFINE(x, (*(t *)djaddr2ptr2(__##x, sizeof(t))))/*
 */
 
 #define ASM_N(t, x) unsigned __##x;/*
-*/DEFINE(x, (*(t *)djaddr2ptr(__##x)))/*
+*/DEFINE(x, (*(t *)djaddr2ptr2(__##x, sizeof(t))))/*
 */
 
 extern unsigned ____djgpp_base_address;
-#define _DP(l) djaddr2ptr(*(unsigned *)djaddr2ptr(____djgpp_base_address) + (l))
+#define _DP(l, s) djaddr2ptr2(*(unsigned *)djaddr2ptr(____djgpp_base_address) \
+  + (l), s)
 #define ASM_P(t, x) unsigned __##x;/*
-*/DEFINE(x, ((t *)_DP(*(unsigned *)djaddr2ptr(__##x))))/*
+*/DEFINE(x, ((t *)_DP(*(unsigned *)djaddr2ptr(__##x), sizeof(t))))/*
 */
 
+/* FIXME: only used for dosobj_page, so leave unconfined for now */
 #define ASM_ARR(t, x) unsigned __##x;/*
 */DEFINE(x, (t *)djaddr2ptr(__##x))/*
 */
