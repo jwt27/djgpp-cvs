@@ -47,7 +47,7 @@ typedef struct {
   unsigned short run_mode_info;
 } __Go32_Info_Block;
 
-EXTERN __Go32_Info_Block ASM_N(_go32_info_block);
+EXTERN ASM_N(__Go32_Info_Block, _go32_info_block);
 
 #define _GO32_RUN_MODE_UNDEF	0
 #define _GO32_RUN_MODE_RAW	1

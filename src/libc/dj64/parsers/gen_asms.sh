@@ -16,7 +16,7 @@ gen_asyms() {
     egrep -R --include="*.h" " ASM_P\(" . "$1" | grep :EXTERN | \
 	sed -E 's/.+\((.+), (.+)\);.*/__ASM_PTR\(\1, \2\) SEMIC/' | sort | uniq
     egrep -R --include="*.h" " ASM_N\(" . "$1" | grep :EXTERN | \
-	sed -E 's/.+EXTERN (.+) ASM.*\((.+)\);.*/__ASM_N\(\1, \2) SEMIC/' | sort | uniq
+	sed -E 's/.+\((.+), (.+)\);.*/__ASM_N\(\1, \2\) SEMIC/' | sort | uniq
     egrep -R --include="*.h" " ASM\(" . "$1" | grep :EXTERN | \
 	sed -E 's/.+\((.+), (.+)\);.*/__ASM\(\1, \2\) SEMIC/' | sort | uniq
 }

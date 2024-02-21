@@ -30,7 +30,7 @@
 */DEFINE(x, (*__##x))/*
 */
 
-#define ASM_N(x) *__##x;/*
+#define ASM_N(t, x) t *__##x;/*
 */DEFINE(x, (*__##x))/*
 */
 
@@ -54,11 +54,11 @@ extern int *____djgpp_base_address;
 #else
 
 #if IN_ASMOBJ == 1
-#define ASM_N(x) _##x
+#define ASM_N(t, x) t _##x
 #endif
 
 #if IN_ASMOBJ == 2
-#define ASM_N(x) *__##x
+#define ASM_N(t, x) t *__##x
 #endif
 
 #if IN_ASMOBJ == 3
@@ -70,7 +70,7 @@ extern int *____djgpp_base_address;
 #define ASM_F(x) unsigned char *__##x
 
 #undef ASM_N
-#define ASM_N(x) extern *__##x
+#define ASM_N(t, x) extern t *__##x
 
 #undef ASM_P
 #define ASM_P(t, x) unsigned *__##x

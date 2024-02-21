@@ -20,7 +20,7 @@ extern "C" {
 #define ERANGE		2
 
 #define errno __dj_errno
-EXTERN int ASM_N(__dj_errno);
+EXTERN ASM_N(int, __dj_errno);
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) \
   || !defined(__STRICT_ANSI__) || defined(__cplusplus)
