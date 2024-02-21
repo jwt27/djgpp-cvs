@@ -40,7 +40,7 @@ extern int *____djgpp_base_address;
 */DEFINE(x, ((t *)_DP(*__##x)))/*
 */
 
-#define ASM_ARR(x) *__##x;/*
+#define ASM_ARR(t, x) t *__##x;/*
 */DEFINE(x, __##x)/*
 */
 
@@ -76,7 +76,7 @@ extern int *____djgpp_base_address;
 #define ASM_P(t, x) unsigned *__##x
 
 #undef ASM_ARR
-#define ASM_ARR(x) *__##x
+#define ASM_ARR(t, x) t *__##x
 
 #endif
 
