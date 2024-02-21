@@ -41,9 +41,8 @@ extern unsigned ____djgpp_base_address;
 */DEFINE(x, ((t *)_DP(*(unsigned *)djaddr2ptr(__##x), sizeof(t))))/*
 */
 
-/* FIXME: only used for dosobj_page, so leave unconfined for now */
-#define ASM_ARR(t, x) unsigned __##x;/*
-*/DEFINE(x, (t *)djaddr2ptr(__##x))/*
+#define ASM_ARR(t, x, l) unsigned __##x;/*
+*/DEFINE(x, (t *)djaddr2ptr2(__##x, sizeof(t) * (l)))/*
 */
 
 #define ASM_F(x) unsigned __##x;/*
@@ -77,7 +76,7 @@ extern unsigned ____djgpp_base_address;
 #define ASM_P(t, x) unsigned __##x
 
 #undef ASM_ARR
-#define ASM_ARR(t, x) unsigned __##x
+#define ASM_ARR(t, x, l) unsigned __##x
 
 #endif
 
