@@ -24,7 +24,7 @@
 
 typedef int (dj64cdispatch_t)(int handle, int libid, int fn, unsigned esi,
         uint8_t *sp);
-#define DJ64_API_VER 2
+#define DJ64_API_VER 3
 enum { DJ64_PRINT_LOG, DJ64_PRINT_TERMINAL };
 
 /* pushal */
@@ -55,6 +55,7 @@ struct dj64_api {
     void (*asm_noret)(dpmi_regs *regs, dpmi_paddr pma, uint8_t *sp,
             uint8_t len);
     uint8_t *(*inc_esp)(uint32_t len);
+    int (*is_dos_ptr)(const uint8_t *ptr);
 };
 #define DJ64_INIT_ONCE_FN dj64init_once
 typedef int (dj64init_once_t)(const struct dj64_api *api, int api_ver);

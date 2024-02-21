@@ -50,6 +50,8 @@ static const struct dj64_api *dj64api;
 #define MAX_RECUR 10
 static uint32_t objs[MAX_RECUR][MAX_OBJS];
 
+static void do_rm_dosobj(uint32_t fa);
+
 void djloudprintf(const char *format, ...)
 {
     va_list vl;
@@ -100,7 +102,7 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
         /* gc lost objects, esp in ABORT case */
         for (i = 0; i < MAX_OBJS; i++) {
             if (objs[recur_cnt - 1][i])
-                dj64_rm_dosobj(objs[recur_cnt - 1][i]);
+                do_rm_dosobj(objs[recur_cnt - 1][i]);
         }
         return (rc == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
     }
@@ -284,7 +286,10 @@ static uint32_t *find_oh(uint32_t addr)
 
 uint32_t dj64_obj_init(const void *data, uint16_t len)
 {
-    uint32_t ret = mk_dosobj(len);
+    uint32_t ret;
+    if (dj64api->is_dos_ptr(data))
+        return PTR_DATA(data);
+    ret = mk_dosobj(len);
     pr_dosobj(ret, data, len);
     objcnt++;
     *find_oh(0) = ret;
@@ -293,15 +298,24 @@ uint32_t dj64_obj_init(const void *data, uint16_t len)
 
 void dj64_obj_done(void *data, uint32_t fa, uint16_t len)
 {
+    if (dj64api->is_dos_ptr(data))
+        return;
     cp_dosobj(data, fa, len);
     rm_dosobj(fa);
     *find_oh(fa) = 0;
     objcnt--;
 }
 
-void dj64_rm_dosobj(uint32_t fa)
+static void do_rm_dosobj(uint32_t fa)
 {
     rm_dosobj(fa);
     *find_oh(fa) = 0;
     objcnt--;
+}
+
+void dj64_rm_dosobj(const void *data, uint32_t fa)
+{
+    if (dj64api->is_dos_ptr(data))
+        return;
+    do_rm_dosobj(fa);
 }

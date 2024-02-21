@@ -59,14 +59,14 @@
 #define _L_SZ(n) sizeof(*a##n)
 
 #define U__CNV_PTR(f, d, l) dj64_obj_done(f, d, l)
-#define U__CNV_CPTR(f, d, l) dj64_rm_dosobj(d)
-#define U__CNV_PTR_CCHAR(f, d, l) dj64_rm_dosobj(d)
+#define U__CNV_CPTR(f, d, l) dj64_rm_dosobj(f, d)
+#define U__CNV_PTR_CCHAR(f, d, l) dj64_rm_dosobj(f, d)
 #define U__CNV_PTR_CHAR(f, d, l) dj64_obj_done(f, d, strlen(DATA_PTR(d)) + 1)
 #define U__CNV_CHAR_ARR(f, d, l) dj64_obj_done(f, d, l)
 #define U__CNV_PTR_PVOID(f, d, l)
 #define U__CNV_PTR_CPVOID(f, d, l)
 #define U__CNV_PTR_VOID(f, d, l) dj64_obj_done(f, d, l)
-#define U__CNV_PTR_CVOID(f, d, l) dj64_rm_dosobj(d)
+#define U__CNV_PTR_CVOID(f, d, l) dj64_rm_dosobj(f, d)
 #define U__CNV_SIMPLE(f, d, l)
 
 #define _UCNV(c, l, n) U##c(a##n, _a##n, l)
