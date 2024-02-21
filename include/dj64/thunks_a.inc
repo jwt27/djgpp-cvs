@@ -29,6 +29,7 @@
 #define _ASM(v) { _S(_##v), (void **)&__##v, 0 }
 #define __ASM(t, v) _ASM(v)
 #define __ASM_PTR(t, v) _ASM(v)
+#define __ASM_ARR(t, v) _ASM(v)
 #define __ASM_FUNC(v) _ASM(v)
 #define __ASM_N(t, v) _ASM(v)
 #define SEMIC ,

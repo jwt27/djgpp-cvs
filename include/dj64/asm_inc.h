@@ -2,7 +2,7 @@
 
 #define __ASM(t, v) EXTERN ASM(t, v)
 #define __ASM_PTR(t, v) EXTERN ASM_P(t, v)
-#define __ASM_ARR(t, v, l) EXTERN t ASM_ARR(v)
+#define __ASM_ARR(t, v) EXTERN t ASM_ARR(v)
 #define __ASM_FUNC(v) EXTERN ASM_F(v)
 #define __ASM_N(t, v) extern ASM(t, v)
 #define SEMIC ;
