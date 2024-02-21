@@ -18,10 +18,19 @@
 
 #include <dj64/thunks_a.h>
 
+#ifndef IN_ASMOBJ
+#include <dj64/asm_inc.h>
+#define IN_ASMOBJ 3
+#include <dj64/asm_inc.h>
+#endif
+
 #define __S(x) #x
 #define _S(x) __S(x)
-#define __ASM(t, v) { _S(_##v), (void **)&__##v, 0 }
-#define __ASM_FUNC(v) __ASM(t, v)
+#define _ASM(v) { _S(_##v), (void **)&__##v, 0 }
+#define __ASM(t, v) _ASM(v)
+#define __ASM_PTR(t, v) _ASM(v)
+#define __ASM_FUNC(v) _ASM(v)
+#define __ASM_N(t, v) _ASM(v)
 #define SEMIC ,
 struct athunk _U(asm_thunks)[] = {
     #include "glob_asm.h"

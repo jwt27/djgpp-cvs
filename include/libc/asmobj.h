@@ -16,14 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ASMOBJ_H
-#define ASMOBJ_H
-
 #include <libc/djthunks.h>
 
+#ifndef _f
 #define _h #
 #define _f(x) x
 #define DEFINE(x, y) _f(_h)define x y
+#endif
 
 #ifndef IN_ASMOBJ
 
@@ -56,30 +55,32 @@ extern int *____djgpp_base_address;
 
 #if IN_ASMOBJ == 1
 #define ASM_N(x) _##x
-#define ASM(x) extern *__##x/*
-*/DEFINE(x, (*__##x))/*
-*/
 #endif
 
 #if IN_ASMOBJ == 2
 #define ASM_N(x) *__##x
-#define ASM(x) extern *__##x/*
-*/DEFINE(x, (*__##x))/*
-*/
 #endif
 
 #if IN_ASMOBJ == 3
-#define ASM(x) *__##x/*
-*/DEFINE(x, (*__##x))/*
-*/
+
+#undef ASM
+#define ASM(x) *__##x
+
+#undef ASM_F
 #define ASM_F(x) unsigned char *__##x
+
+#undef ASM_N
 #define ASM_N(x) extern *__##x
+
+#undef ASM_P
 #define ASM_P(t, x) unsigned *__##x
+
+#undef ASM_ARR
 #define ASM_ARR(x) *__##x
+
 #endif
 
+#undef EXTERN
 #define EXTERN
-
-#endif
 
 #endif
