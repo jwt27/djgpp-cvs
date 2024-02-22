@@ -48,7 +48,11 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} LIBDIR=%{_libdir}
 
 %package devel
 Summary: dj64 development headers
+
 Requires: dj64
+Requires: gcc
+Requires: binutils
+
 %description devel
 This package contains headers for dj64 usage.
 
