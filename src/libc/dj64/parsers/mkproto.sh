@@ -25,7 +25,7 @@ list_syms() {
 }
 
 list_syms2() {
-    nm -A "$1" | egrep " $2 "\|" $3 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
+    nm -A "$1" | grep -E " $2 "\|" $3 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
 	sed 's/^_//'
 }
 
