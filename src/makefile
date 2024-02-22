@@ -37,7 +37,6 @@ copyrite.exe : copyrite.cc
 
 subs:
 	$(MAKE) -C djdev64
-	$(MAKE) -C mkdoc
 	$(MAKE) -C libc
 
 .PHONY : clean
