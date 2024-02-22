@@ -2,7 +2,7 @@
 # spec file for package dj64
 #
 
-Name: {{{ git_dir_name }}}
+Name: dj64
 Version: {{{ git_dir_version }}}
 Release: 1%{?dist}
 Summary: 64-bit djgpp-compatible dev suite
