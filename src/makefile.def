@@ -3,38 +3,16 @@
 
 SHELL := /bin/bash -o pipefail
 
-#  These define the cross-to-djgpp and native programs.
-
-ifneq ($(COMSPEC),)
-CROSS_BUILD = 0
-else
-CROSS_BUILD = 0
-endif
-
-# OK, pay attention: The CROSS_* programs are used to build objects
-# and executables that become part of djgpp itself (like libc.a and
-# stubedit.exe) and the not-CROSS_* programs are used to build
-# programs that are used as part of the build.  When you're building
-# *with* djgpp, they should be the same program, but when you're
-# building under unix (IRIX, Linux, etc), it makes a difference
-# because we often have to build programs twice - once for our use
-# (runs under unix) and once for the distribution (runs under dos).
-
-ifeq ($(CROSS_BUILD),0)
-
-# These programs shouldn't need to be changed; they're used
-# when building djgpp *with* djgpp.
-
-# For building distributed (djgpp) libraries and programs
+CROSS_PREFIX ?= i686-linux-gnu-
 CROSS_GCC = gcc
 CROSS_CPP = cpp
 CROSS_AR = ar
-CROSS_ASAR = i686-linux-gnu-ar
+CROSS_ASAR = $(CROSS_PREFIX)ar
 CROSS_AS = as
-CROSS_ASGCC = i686-linux-gnu-gcc
+CROSS_ASGCC = $(CROSS_PREFIX)gcc
 CROSS_LD = ld
 CROSS_STRIP = strip
-CROSS_ASSTRIP = i686-linux-gnu-strip
+CROSS_ASSTRIP = $(CROSS_PREFIX)strip
 CROSS_BISON = bison
 
 # For building native programs (hostbin/*); assumes GNU versions
@@ -46,34 +24,3 @@ OBJCOPY = objcopy
 STRIP = strip
 BISON = bison
 LIBSTDCXX = -lstdcxx
-
-else
-
-# These may need to be changed based on where/how you installed
-# your native gcc and your cross compiler.
-
-# For building distributed (djgpp) libraries and programs
-
-CROSS_PREFIX = i586-pc-msdosdjgpp-
-CROSS_GCC = $(CROSS_PREFIX)gcc -pipe
-CROSS_AR = $(CROSS_PREFIX)ar
-CROSS_AS = $(CROSS_PREFIX)as
-CROSS_LD = $(CROSS_PREFIX)ld
-CROSS_STRIP = $(CROSS_PREFIX)strip
-CROSS_BISON = bison
-
-# For building programs that *run* during the build (hostbin/*);
-# assumes GNU versions
-
-GCC = gcc -g -O2
-AR = ar
-AS = as
-LD = ld
-STRIP = strip
-BISON = bison
-LIBSTDCXX = -lstdc++
-
-# You may need to replace coff-go32 with coff-i386 in lib/djgpp.djl or
-# edit your cross_ld to replace coff-i386 with coff-go32 (as I did)
-
-endif
