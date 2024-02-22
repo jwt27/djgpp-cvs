@@ -20,7 +20,7 @@ not by Windows.
 This function retrieves the attributes of a number of pages.  Pass the
 handle in @code{@var{info}->handle}, offset of first page (relative to
 start of block) in @code{@var{info}->address}, and number of pages in
-@code{@var{info}->count}.  The buffer @var{buffer} gets filled in with
+@code{@var{info}->size}.  The buffer @var{buffer} gets filled in with
 the attributes.  For each page, a 16-bit attribute word in @var{buffer}
 defines the attributes of that page as follows:
 
