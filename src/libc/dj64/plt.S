@@ -36,10 +36,12 @@ SHM_RET_LEN = 4
 SHM_HANDLE = 8
 SHM_LINEAR = 0xc
 SHM_NAME = 0x10
+SHM_FLAGS = 0x18
 shm_block: .fill 0x1c, 1, 0
 shm_block2: .fill 0x1c, 1, 0
 handle: .long 0
 maddr: .long 0
+SHM_NOEXEC = 1
 
 .data
 
@@ -99,6 +101,7 @@ plt_init:
     movl %ecx, \b + SHM_REQ_LEN
     movw %fs, \b + SHM_NAME + 4
     movl $\name, \b + SHM_NAME
+    movl $SHM_NOEXEC, \b + SHM_FLAGS
     /* alloc mem */
     pushw %ds
     popw %es
