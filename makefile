@@ -53,6 +53,10 @@ clean:
 deb:
 	debuild -i -us -uc -b && $(MAKE) clean >/dev/null
 
+rpm:
+	make clean
+	rpkg local && $(MAKE) clean >/dev/null
+
 %.pc: %.pc.in makefile
 	sed \
 		-e 's!@PREFIX[@]!$(PREFIX)!g' \
