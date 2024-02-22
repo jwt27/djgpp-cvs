@@ -1,5 +1,6 @@
 TOP ?= .
 PREFIX ?= /usr/local
+LIBDIR ?= $(PREFIX)/lib
 INSTALL ?= install
 
 VERSION = 0.1
@@ -31,9 +32,9 @@ install:
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 djdev64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
-	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib
-	$(INSTALL) -m 0755 $(DJDEV64LIB) $(DESTDIR)$(PREFIX)/lib
-	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(PREFIX)/lib
+	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
+	$(INSTALL) -m 0755 $(DJDEV64LIB) $(DESTDIR)$(LIBDIR)
+	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(LIBDIR)
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/bin/dj64-gcc
@@ -42,8 +43,8 @@ uninstall:
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64.pc
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64static.pc
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/djdev64.pc
-	$(RM) $(DESTDIR)$(PREFIX)/lib/$(notdir $(DJDEV64DEVL))
-	$(RM) $(DESTDIR)$(PREFIX)/lib/$(notdir $(DJDEV64LIB))
+	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJDEV64DEVL))
+	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJDEV64LIB))
 
 clean:
 	$(MAKE) -C src clean
