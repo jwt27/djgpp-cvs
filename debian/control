@@ -20,7 +20,7 @@ Package: dj64
 Architecture: any
 Section: devel
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: 64-bit djgpp-alike dev suite
+Description: 64-bit djgpp-compatible dev suite
  dj64 is a 64-bit djgpp-compatible dev suite.
 
 Package: dj64-dev
