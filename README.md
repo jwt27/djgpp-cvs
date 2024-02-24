@@ -99,5 +99,7 @@ of dosemu2. But I'd like to be wrong on that. :)
 
 ## license
 dj64 code is derived from djgpp libc sources, so most files are covered
-by GPLv2+, see `copying.dj` for details. dj64-specific files are covered
-by GPLv3+, see `LICENSE`.
+by GPLv2+, see
+[copying.dj](https://github.com/stsp/dj64dev/blob/master/copying.dj)
+for details. dj64-specific files are covered by GPLv3+, see
+[LICENSE](https://github.com/stsp/dj64dev/blob/master/LICENSE).
