@@ -71,6 +71,19 @@ run under dosemu2. dj64 is a very young project, so don't expect your
 code to work from the first attempt. :) Perhaps you'll need to submit
 a bug report or two (or twenty) before you can get it running.
 
+## debugging
+Debugging with host gdb is supported. The djstub package provides a
+`djstrip` binary to strip the debug info from an executable.<br/>
+You need to attach gdb to the running instance of dosemu2, or just
+run `dosemu -gdb`. Once the dj64-built program is loaded, gdb will
+be able to access its symbols.
+
+## so x86-only?
+Of course not! This tool-chain is cross-platform. But the resulting
+binaries are unfortunately not. If you want to run your program on
+x86_64 and aarch64, you need to produce 2 separate executables.
+aarch64-built executable will work on aarch64-built dosemu2.
+
 ## why would I need that?
 Well, maybe you don't. :) If you don't have any djgpp-built project of
 yours or you don't want to move it to 64bits, then you don't need to care
@@ -78,9 +91,11 @@ about dj64 project. It was written for dosemu2, and while I'd be happy
 if someone uses it on its own, this wasn't an initial intention.<br/>
 Also if your djgpp-buildable project is well-written and uses some
 portable libraries like allegro, then most likely you already have the
-64bit ports for modern platforms, rather than for DOS. In that case
-you also don't need dj64. Summing it up, dj64 is a niche project that
-may not be useful outside of dosemu2. But I'd like to be wrong on that. :)
+native 64bit ports for modern platforms, rather than for DOS. In that
+case you also don't need dj64. But maybe you are interested in a host-gdb
+debugging and aarch64 support?<br/>
+Summing it up, dj64 is a niche project that may not be useful outside
+of dosemu2. But I'd like to be wrong on that. :)
 
 ## license
 dj64 code is derived from djgpp libc sources, so most files are covered
