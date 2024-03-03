@@ -20,7 +20,7 @@ not by Windows.
 This function sets attributes of a number of pages.  Pass handle in
 @code{@var{info}->handle}, offset within block in
 @code{@var{info}->address}, and number of pages in
-@code{@var{info}->count}.  @var{buffer} points to an array of 16-bit
+@code{@var{info}->size}.  @var{buffer} points to an array of 16-bit
 words which specify the new attributes.
 @xref{__dpmi_get_page_attributes}, for the definition of the page
 attribute word.
