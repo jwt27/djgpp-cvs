@@ -203,7 +203,7 @@ int	__dpmi_resize_linear_memory(__dpmi_meminfo *_info, int _commit);			/* DPMI 1
 int	__dpmi_get_page_attributes(__dpmi_meminfo *_info, short *_buffer);			/* DPMI 1.0 AX=0506 */
 int	__dpmi_set_page_attributes(__dpmi_meminfo *_info, short *_buffer);			/* DPMI 1.0 AX=0507 */
 int	__dpmi_map_device_in_memory_block(__dpmi_meminfo *_info, unsigned long _physaddr);	/* DPMI 1.0 AX=0508 */
-int	__dpmi_map_conventional_memory_in_memory_block(__dpmi_meminfo *_info, unsigned long _physaddr); /* DPMI 1.0 AX=0509 */
+int	__dpmi_map_conventional_memory_in_memory_block(__dpmi_meminfo *_info, unsigned long _linaddr); /* DPMI 1.0 AX=0509 */
 int	__dpmi_get_memory_block_size_and_base(__dpmi_meminfo *_info);				/* DPMI 1.0 AX=050a */
 int	__dpmi_get_memory_information(__dpmi_memory_info *_buffer);				/* DPMI 1.0 AX=050b */
 
