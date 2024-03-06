@@ -2,10 +2,9 @@ TOP = ..
 
 include $(TOP)/../makefile.inc
 
-PD = parsers
-MP = $(PD)/mkproto.sh
-GA = $(PD)/gen_asms.sh
-PC = $(PD)/parse_decls.sh
+P = parsers
+MP = $(P)/mkproto.sh
+GA = $(P)/gen_asms.sh
 TG = $(shell pkg-config --variable=binary thunk_gen)
 ifeq ($(TG),)
 ifeq ($(filter clean,$(MAKECMDGOALS)),)
@@ -13,6 +12,7 @@ $(error thunk_gen not installed)
 endif
 endif
 TGS = $(shell pkg-config --variable=tgscript thunk_gen)
+PDS = $(shell pkg-config --variable=pdscript thunk_gen)
 TGM4 = $(shell pkg-config --variable=m4script thunk_gen)
 TFLAGS = -a 4 -p 4
 LIBN = libdj64.so.0.1
@@ -35,7 +35,7 @@ asm_incsn.h:
 	$(GA) 1 $(TOP)/../../include >$@
 
 plt_asmc.h: thunk_asms.tmp
-	$(PC) 4 $< >$@
+	$(PDS) 4 $< >$@
 
 asym_incs.h:
 	$(GA) 2 $(TOP)/../../include >$@
