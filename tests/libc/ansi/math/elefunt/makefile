@@ -118,7 +118,7 @@ all ::    $(TARGETS)
 # name and accuracy loss.  Detailed examination of the output is
 # required for a proper evaluation of the results.
 summary:
-	egrep "^1|ESTIMATED LOSS" *$(LOG)
+	grep -E "^1|ESTIMATED LOSS" *$(LOG)
 
 clean:
 	$(RM) *.o *.obj *.bak *.exe
