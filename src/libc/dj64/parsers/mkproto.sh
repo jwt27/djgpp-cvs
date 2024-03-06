@@ -33,7 +33,6 @@ TF=/tmp/tagsxx
 TL=/tmp/a.so
 set -e
 
-[ -n "${CROSS_PREFIX}" ] || CROSS_PREFIX=i686-linux-gnu-
 ${CROSS_PREFIX}ld -melf_i386 -shared -Bsymbolic -o $TL --whole-archive "$1" 2>/dev/null
 shift
 PRUNES="-name libm -prune -o -name machine -prune"

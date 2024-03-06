@@ -10,8 +10,21 @@ DJ64DEVL = $(TOP)/lib/libdj64.so
 DJDEV64LIB = $(TOP)/lib/libdjdev64.so.0.1
 DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
 
+AS = $(CROSS_PREFIX)as
+CROSS_PREFIX := i686-linux-gnu-
+ifeq ($(shell $(AS) --version 2>/dev/null),)
+CROSS_PREFIX := x86_64-linux-gnu-
+endif
+ifeq ($(shell $(AS) --version 2>/dev/null),)
+ifeq ($(shell uname -m),x86_64)
+CROSS_PREFIX :=
+else
+$(error cross-binutils not installed)
+endif
+endif
+
 all: dj64.pc dj64static.pc djdev64.pc
-	$(MAKE) -C src
+	$(MAKE) -C src CROSS_PREFIX=$(CROSS_PREFIX)
 
 install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
