@@ -6,7 +6,7 @@
 #include <dpmi.h>
 
 int __dpmi_map_conventional_memory_in_memory_block(
-        __dpmi_meminfo *info, unsigned long physaddr
+        __dpmi_meminfo *info, unsigned long linaddr
 );
 @end smallexample
 
@@ -19,8 +19,11 @@ the DPMI Overview (@pxref{DPMI Overview}) for general information.
 DPMI function AX = 0x0509 (DPMI 1.0 only).  Supported by CWSDPMI, but
 not by Windows.
 
-This function maps conventional memory (even when virtualized) to
-virtual memory.  Pass the handle, offset, and number of pages.
+This function maps/aliases conventional memory specified by the linear
+address @var{linaddr} (even when virtualized) to virtual memory
+specified by the handle and offset fields in @var{info}.  Pass the
+handle, offset relative to the start of the block, and number of
+pages to map.
 
 @subheading Return Value
 
