@@ -392,7 +392,7 @@ static __dpmi_paddr npx_ori;
 static __dpmi_paddr timer_ori;
 static __dpmi_raddr cbrk_ori,cbrk_rmcb;
 static char cbrk_hooked = 0;
-static __dpmi_regs cbrk_regs;
+static ULONG32 cbrk_regs;
 
 /* Routine toggles ALL the exceptions.  Used around system calls, at exit. */
 
@@ -421,7 +421,7 @@ __djgpp_exception_toggle(void)
     cbrk_hooked = 0;
   } else {
     __dpmi_get_real_mode_interrupt_vector(cbrk_vect, &cbrk_ori);
-    __dpmi_allocate_real_mode_callback(__djgpp_cbrk_hdlr, &cbrk_regs, &cbrk_rmcb);
+    __dpmi_allocate_real_mode_callback(__djgpp_cbrk_hdlr, cbrk_regs, &cbrk_rmcb);
     __dpmi_set_real_mode_interrupt_vector(cbrk_vect, &cbrk_rmcb);
     cbrk_hooked = 1;
   }
@@ -514,7 +514,7 @@ void
 __djgpp_exception_setup(void)
 {
   __dpmi_paddr except;
-  __dpmi_meminfo lockmem;
+  __dpmi_meminfo lockmem, regmem;
   size_t i;
 
   __excep_ds_alias = __djgpp_ds_alias;
@@ -536,6 +536,10 @@ __djgpp_exception_setup(void)
   __djgpp_app_DS = _my_ds();
   __djgpp_our_DS = _my_ds();
   __djgpp_dos_sel = _dos_ds;
+
+  regmem.size = sizeof(__dpmi_regs);
+  __dpmi_allocate_memory(&regmem);
+  cbrk_regs = regmem.address - __djgpp_base_address;
 
   /* lock addresses which may see HW interrupts */
   lockmem.address = __djgpp_base_address + (uintptr_t) &__djgpp_hw_lock_start;

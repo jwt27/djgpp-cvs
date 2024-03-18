@@ -88,7 +88,7 @@ static unsigned char wrapper_intchain[] = {
 
 ULONG32 _go32_interrupt_stack_size = 32256;
 
-int _go32_dpmi_lock_data( void *lockaddr, ULONG32 locksize )
+int _go32_dpmi_lock_data( ULONG32 lockaddr, ULONG32 locksize )
     {
     ULONG32 baseaddr;
     __dpmi_meminfo memregion;
@@ -105,7 +105,7 @@ int _go32_dpmi_lock_data( void *lockaddr, ULONG32 locksize )
     return( 0 );
     }
 
-int _go32_dpmi_lock_code( void *lockaddr, ULONG32 locksize )
+int _go32_dpmi_lock_code( ULONG32 lockaddr, ULONG32 locksize )
     {
     ULONG32 baseaddr;
     __dpmi_meminfo memregion;
@@ -123,9 +123,10 @@ int _go32_dpmi_lock_code( void *lockaddr, ULONG32 locksize )
     }
 
 static int _go32_dpmi_chain_protected_mode_interrupt_vector_with_stack(int vector,
-    _go32_dpmi_seginfo *info, unsigned char *stack, unsigned long stack_length)
+    _go32_dpmi_seginfo *info, ULONG32 stack, ULONG32 stack_length)
 {
   unsigned char *wrapper;
+  __dpmi_meminfo wrp;
   __dpmi_paddr pm_int;
 
 #define	CHECK_STACK()							\
@@ -135,30 +136,34 @@ static int _go32_dpmi_chain_protected_mode_interrupt_vector_with_stack(int vecto
 
   CHECK_STACK();
 
-  wrapper = (unsigned char *)malloc(sizeof(wrapper_intcommon) +
-						     sizeof(wrapper_intchain));
+  wrp.size = sizeof(wrapper_intcommon) + sizeof(wrapper_intchain);
+  __dpmi_allocate_memory(&wrp);
+  wrapper = (unsigned char *)djaddr2ptr(wrp.address);
   if (wrapper == 0)
     return 0x8015;
 
-  if( _go32_dpmi_lock_data( wrapper,
+  if( _go32_dpmi_lock_data( wrp.address - __djgpp_base_address,
     sizeof(wrapper_intcommon) + sizeof(wrapper_intchain)) ) return 0x8015;
 
 #define	MALLOC_STACK()					\
   do {							\
+      __dpmi_meminfo stk;				\
       if (!stack_length) {				\
 	  stack_length = _go32_interrupt_stack_size;	\
-	  stack = (unsigned char *)malloc(stack_length);\
+	  stk.size = stack_length;			\
+	  __dpmi_allocate_memory(&stk);			\
+	  stack = stk.address - __djgpp_base_address;	\
 	  if (stack == 0) {				\
-	    free(wrapper);				\
+	    __dpmi_free_memory(wrp.handle);		\
 	    return 0x8015;				\
 	  }						\
           if( _go32_dpmi_lock_data( stack,              \
             stack_length) ) return 0x8015;              \
-	  ((long *)stack)[0] = STACK_WAS_MALLOCED;	\
+	  ((long *)DATA_PTR(stack))[0] = STACK_WAS_MALLOCED;\
       } else						\
-	  ((long *)stack)[0] = 0;			\
-      ((long *)stack)[1] = 0;				\
-      ((long *)stack)[2] = 0;				\
+	  ((long *)DATA_PTR(stack))[0] = 0;		\
+      ((long *)DATA_PTR(stack))[1] = 0;			\
+      ((long *)DATA_PTR(stack))[2] = 0;			\
   } while (0)
 
   MALLOC_STACK();
@@ -194,23 +199,25 @@ int _go32_dpmi_chain_protected_mode_interrupt_vector(int vector,
 						      _go32_dpmi_seginfo *info)
 {
     return _go32_dpmi_chain_protected_mode_interrupt_vector_with_stack(vector,
-						 info, (unsigned char *) 0, 0);
+						 info, 0, 0);
 }
 
 static int _go32_dpmi_allocate_iret_wrapper_with_stack(_go32_dpmi_seginfo *info,
-			      unsigned char *stack, unsigned long stack_length)
+			      ULONG32 stack, ULONG32 stack_length)
 {
   unsigned char *wrapper;
+  __dpmi_meminfo wrp;
 
   CHECK_STACK();
 
-  wrapper = (unsigned char *)malloc(sizeof(wrapper_intcommon) +
-						     sizeof(wrapper_intiret));
+  wrp.size = sizeof(wrapper_intcommon) + sizeof(wrapper_intiret);
+  __dpmi_allocate_memory(&wrp);
+  wrapper = (unsigned char *)djaddr2ptr(wrp.address);
 
   if (wrapper == 0)
     return 0x8015;
 
-  if( _go32_dpmi_lock_data( wrapper,
+  if( _go32_dpmi_lock_data( wrp.address - __djgpp_base_address,
     sizeof(wrapper_intcommon) + sizeof(wrapper_intiret)) ) return 0x8015;
 
   MALLOC_STACK();
@@ -229,7 +236,7 @@ static int _go32_dpmi_allocate_iret_wrapper_with_stack(_go32_dpmi_seginfo *info,
 int _go32_dpmi_allocate_iret_wrapper(_go32_dpmi_seginfo *info)
 {
     return _go32_dpmi_allocate_iret_wrapper_with_stack(info,
-							(unsigned char *)0, 0);
+							0, 0);
 }
 
 int _go32_dpmi_free_iret_wrapper(_go32_dpmi_seginfo *info)

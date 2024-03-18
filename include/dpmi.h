@@ -190,7 +190,7 @@ extern short __dpmi_int_ss, __dpmi_int_sp, __dpmi_int_flags; /* default to zero 
 int	__dpmi_simulate_real_mode_procedure_retf(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0301 */
 int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack_words_to_copy, const void _V_BW(2) *stack_data); /* DPMI 0.9 AX=0301 */
 int	__dpmi_simulate_real_mode_procedure_iret(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0302 */
-int	__dpmi_allocate_real_mode_callback(ULONG32 _handler, __dpmi_regs *_regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
+int	__dpmi_allocate_real_mode_callback(ULONG32 _handler, ULONG32 _regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
 int	__dpmi_free_real_mode_callback(__dpmi_raddr *_addr);					/* DPMI 0.9 AX=0304 */
 int	__dpmi_get_state_save_restore_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);		/* DPMI 0.9 AX=0305 */
 int	__dpmi_get_raw_mode_switch_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);			/* DPMI 0.9 AX=0306 */
@@ -319,11 +319,11 @@ int _go32_dpmi_free_iret_wrapper(_go32_dpmi_seginfo *info);
 /* RMCB functions, automatically restructure the real-mode stack for the
    proper return type and set up correct PM stack.  The callback
    (info->pm_offset) is called as (*pmcb)(_go32_dpmi_registers *regs); */
-int _go32_dpmi_allocate_real_mode_callback_retf(_go32_dpmi_seginfo *info, _go32_dpmi_registers *regs);
+int _go32_dpmi_allocate_real_mode_callback_retf(_go32_dpmi_seginfo *info, ULONG32 regs);
 	/* points callback at pm_offset, returns seg:ofs of callback addr
 	   in rm_segment:rm_offset.  Do not change any fields until freed.
 	   Interface is added to simulate far return */
-int _go32_dpmi_allocate_real_mode_callback_iret(_go32_dpmi_seginfo *info, _go32_dpmi_registers *regs);
+int _go32_dpmi_allocate_real_mode_callback_iret(_go32_dpmi_seginfo *info, ULONG32 regs);
 	/* same, but simulates iret */
 int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info);
 	/* frees callback */
@@ -340,8 +340,8 @@ ULONG32 _go32_dpmi_remaining_physical_memory(void);
 ULONG32 _go32_dpmi_remaining_virtual_memory(void);
 
 /* locks memory from a specified offset within the code/data selector */
-int _go32_dpmi_lock_code( void *_lockaddr, ULONG32 _locksize);
-int _go32_dpmi_lock_data( void *_lockaddr, ULONG32 _locksize);
+int _go32_dpmi_lock_code( ULONG32 _lockaddr, ULONG32 _locksize);
+int _go32_dpmi_lock_data( ULONG32 _lockaddr, ULONG32 _locksize);
 
 int __djgpp_set_page_attributes(void *our_addr, ULONG32 num_bytes,
 			        unsigned short attributes);

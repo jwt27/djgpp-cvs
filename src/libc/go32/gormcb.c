@@ -92,24 +92,27 @@ static unsigned char wrapper_iret[] = {
 ULONG32 _go32_rmcb_stack_size = 32256;
 
 static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
-  __dpmi_regs *regs, unsigned char *stack, unsigned long stack_length)
+  ULONG32 regs, ULONG32 stack, ULONG32 stack_length)
 {
 #define	MALLOC_STACK()					\
   do {							\
       if (!stack_length) {				\
+	  __dpmi_meminfo stk;				\
 	  stack_length = _go32_rmcb_stack_size;		\
-	  stack = (unsigned char *)malloc(stack_length);\
+	  stk.size = stack_length;			\
+	  __dpmi_allocate_memory(&stk);			\
+	  stack = stk.address - __djgpp_base_address;	\
 	  if (stack == 0) {				\
 	    free(wrapper);				\
 	    return 0x8015;				\
 	  }						\
           if( _go32_dpmi_lock_data( stack,              \
             stack_length) ) return 0x8015;              \
-	  ((long *)stack)[0] = STACK_WAS_MALLOCED;	\
+	  ((long *)DATA_PTR(stack))[0] = STACK_WAS_MALLOCED;	\
       } else						\
-	  ((long *)stack)[0] = 0;			\
-      ((long *)stack)[1] = 0;				\
-      ((long *)stack)[2] = 0;				\
+	  ((long *)DATA_PTR(stack))[0] = 0;			\
+      ((long *)DATA_PTR(stack))[1] = 0;				\
+      ((long *)DATA_PTR(stack))[2] = 0;				\
   } while (0)
 
   MALLOC_STACK();
@@ -132,10 +135,11 @@ static int setup_rmcb(unsigned char *wrapper, _go32_dpmi_seginfo *info,
 
 
 static int _go32_dpmi_allocate_real_mode_callback_retf_with_stack(
-    _go32_dpmi_seginfo *info, __dpmi_regs *regs, unsigned char *stack,
-						    unsigned long stack_length)
+    _go32_dpmi_seginfo *info, ULONG32 regs, ULONG32 stack,
+						    ULONG32 stack_length)
 {
   unsigned char *wrapper;
+  __dpmi_meminfo wrp;
 
 #define	CHECK_STACK()							\
   if ((stack_length && stack_length < 512) ||				\
@@ -144,12 +148,13 @@ static int _go32_dpmi_allocate_real_mode_callback_retf_with_stack(
 
   CHECK_STACK();
 
-  wrapper = (unsigned char *)malloc(sizeof(wrapper_common) +
-						         sizeof(wrapper_retf));
+  wrp.size = sizeof(wrapper_common) + sizeof(wrapper_retf);
+  __dpmi_allocate_memory(&wrp);
+  wrapper = (unsigned char *)djaddr2ptr(wrp.address);
   if (wrapper == 0)
     return 0x8015;
 
-  if( _go32_dpmi_lock_data( wrapper,
+  if( _go32_dpmi_lock_data( wrp.address - __djgpp_base_address,
     sizeof(wrapper_common) + sizeof(wrapper_retf)) ) return 0x8015;
 
   memcpy(wrapper, wrapper_common, sizeof(wrapper_common));
@@ -159,26 +164,28 @@ static int _go32_dpmi_allocate_real_mode_callback_retf_with_stack(
 }
 
 int _go32_dpmi_allocate_real_mode_callback_retf(_go32_dpmi_seginfo *info,
-						__dpmi_regs *regs)
+						ULONG32 regs)
 {
     return _go32_dpmi_allocate_real_mode_callback_retf_with_stack
-      (info, regs, (unsigned char *) 0, 0);
+      (info, regs, 0, 0);
 }
 
 static int _go32_dpmi_allocate_real_mode_callback_iret_with_stack(
-                              _go32_dpmi_seginfo *info, __dpmi_regs *regs,
-                              unsigned char *stack, unsigned long stack_length)
+                              _go32_dpmi_seginfo *info, ULONG32 regs,
+                              ULONG32 stack, ULONG32 stack_length)
 {
   unsigned char *wrapper;
+  __dpmi_meminfo wrp;
 
   CHECK_STACK();
 
-  wrapper = (unsigned char *)malloc(sizeof(wrapper_common) +
-						         sizeof(wrapper_iret));
+  wrp.size = sizeof(wrapper_common) + sizeof(wrapper_iret);
+  __dpmi_allocate_memory(&wrp);
+  wrapper = (unsigned char *)djaddr2ptr(wrp.address);
   if (wrapper == 0)
     return 0x8015;
 
-  if( _go32_dpmi_lock_data( wrapper,
+  if( _go32_dpmi_lock_data( wrp.address - __djgpp_base_address,
     sizeof(wrapper_common) + sizeof(wrapper_iret)) ) return 0x8015;
 
   memcpy(wrapper, wrapper_common, sizeof(wrapper_common));
@@ -188,10 +195,10 @@ static int _go32_dpmi_allocate_real_mode_callback_iret_with_stack(
 }
 
 int _go32_dpmi_allocate_real_mode_callback_iret(_go32_dpmi_seginfo *info,
-						    __dpmi_regs *regs)
+						    ULONG32 regs)
 {
     return _go32_dpmi_allocate_real_mode_callback_iret_with_stack(info, regs,
-						       (unsigned char *) 0, 0);
+						       0, 0);
 }
 
 int _go32_dpmi_free_real_mode_callback(_go32_dpmi_seginfo *info)
