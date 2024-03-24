@@ -22,6 +22,9 @@ extern "C" {
 #ifndef _POSIX_SOURCE
 
 int _dos_exec(const char *program, const char *args, char *const _envp[], const char *_lcmd);
+int _dos_exec5(const char *program, const char *args, char *const _envp[], const char *_lcmd,
+    unsigned char flags);
+#define HAVE_DOS_EXEC5 1
 
 int execl(const char *_path, const char *_argv0, ...);
 int execle(const char *_path, const char *_argv0, ... /*, char *const _envp[] */);
