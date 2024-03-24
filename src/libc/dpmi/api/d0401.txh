@@ -14,8 +14,8 @@ Please refer to the DPMI Specification (@pxref{DPMI Specification})
 for details on DPMI function call operation.  Also see
 the DPMI Overview (@pxref{DPMI Overview}) for general information.
 
-DPMI function AX = 0x0401 (DPMI 1.0 only).  Not supported by CWSDPMI and
-Windows.
+DPMI function AX = 0x0401 (DPMI 1.0 only).  Supported by CWSDPMI v5
+and later, but not by Windows.
 
 Gets the capabilities of the server.  @var{flags} are as follows:
 
