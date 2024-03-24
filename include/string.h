@@ -28,13 +28,15 @@ int	strncasecmp(const char *_s1, const char *_s2, size_t _n);
 int	strnicmp(const char *_s1, const char *_s2, size_t _n);
 char *	strupr(char *_s);
 
+#define _GNU_SOURCE
 #define __USE_GNU
 #include_next <string.h>
 #undef __USE_GNU
+#undef _GNU_SOURCE
 #ifdef __USE_POSIX_IMPLICITLY
 #undef __USE_POSIX_IMPLICITLY
 #undef _DEFAULT_SOURCE
-#undef _POSIX_SOURCE
 #endif
+#undef _POSIX_SOURCE
 
 #endif /* !__dj_include_string_h_ */
