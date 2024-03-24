@@ -17,6 +17,7 @@ size_t	strxfrm(char *  _s1, const char *  _s2, size_t _n);
 //int	strerror_r(int _errnum, char *_strerrbuf, size_t _buflen);
 
 int	memicmp(const void *_s1, const void *_s2, size_t _n);
+void *	memmem(const void *l, size_t l_len, const void *s, size_t s_len);
 char *	strdup(const char *_s);
 char *	strndup(const char *_s, size_t _n);
 size_t	strlcat(char *_dest, const char *_src, size_t _size);
@@ -28,11 +29,7 @@ int	strncasecmp(const char *_s1, const char *_s2, size_t _n);
 int	strnicmp(const char *_s1, const char *_s2, size_t _n);
 char *	strupr(char *_s);
 
-#define _GNU_SOURCE
-#define __USE_GNU
 #include_next <string.h>
-#undef __USE_GNU
-#undef _GNU_SOURCE
 #ifdef __USE_POSIX_IMPLICITLY
 #undef __USE_POSIX_IMPLICITLY
 #undef _DEFAULT_SOURCE

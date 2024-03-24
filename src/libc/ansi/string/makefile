@@ -9,6 +9,7 @@ TOP=../..
 #SRC += strcat.c
 #SRC += strchr.c
 #SRC += strcmp.c
+SRC += memmem.c
 SRC += strcoll.c
 #SRC += strcpy.c
 #SRC += strcspn.c
