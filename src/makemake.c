@@ -218,6 +218,7 @@ main(int argc, char **argv)
   {
     fclose(oi);
     fclose(rf);
+    fclose(rfo);
     move_if_change("makefile.rf2", "makefile.rf");
     move_if_change("makefile.rf3", "makefile.rfo");
   }
