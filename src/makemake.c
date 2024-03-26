@@ -42,6 +42,8 @@ process_makefile(char *path_end, const char *mk, FILE *rf)
 
   while ((ch = fgetc(oh)) != EOF)
   {
+    if (ch == '\n' && last_was_nl)
+      continue;
     if (ch != '\n' && last_was_nl)
       fprintf(oi, "OBJS += ");
     last_was_nl = (ch == '\n');
