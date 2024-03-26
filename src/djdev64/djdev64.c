@@ -19,6 +19,7 @@
 #define _GNU_SOURCE
 #include <dlfcn.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
@@ -41,6 +42,15 @@ static const struct elf_ops eops = {
 #define __S(x) #x
 #define _S(x) __S(x)
 
+static void loudprintf(const struct dj64_api *api, const char *str)
+{
+  va_list dummy;
+
+  api->print(DJ64_PRINT_LOG, str, dummy);
+  api->print(DJ64_PRINT_TERMINAL, str, dummy);
+  api->print(DJ64_PRINT_SCREEN, str, dummy);
+}
+
 int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
 {
   int h, rc;
@@ -59,6 +69,13 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
+    if (system("mount -t tmpfs | grep /dev/shm | grep noexec") == 0) {
+      loudprintf(api, "\nDJ64 ERROR: Your /dev/shm is mounted with noexec option.\n"
+                      "Please execute:\n"
+                      "\tsudo mount -o remount,exec /dev/shm\n"
+                      "and try running the program again.\n"
+      );
+    }
     return -1;
   }
   init_once = dlsym(dlh, _S(DJ64_INIT_ONCE_FN));
