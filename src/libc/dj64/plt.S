@@ -36,7 +36,7 @@ SHM_RET_LEN = 4
 SHM_HANDLE = 8
 SHM_LINEAR = 0xc
 SHM_NAME = 0x10
-SHM_FLAGS = 0x18
+SHM_FLAGS = 0x16
 shm_block: .fill 0x1c, 1, 0
 shm_block2: .fill 0x1c, 1, 0
 handle: .long 0
