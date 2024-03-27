@@ -20,6 +20,8 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <libgen.h>
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
@@ -41,14 +43,22 @@ static const struct elf_ops eops = {
 
 #define __S(x) #x
 #define _S(x) __S(x)
+#define FORMAT(T,A,B) __attribute__((format(T,A,B)))
 
-static void loudprintf(const struct dj64_api *api, const char *str)
+FORMAT(printf, 2, 3)
+static void loudprintf(const struct dj64_api *api, const char *str, ...)
 {
-  va_list dummy;
+  va_list args;
 
-  api->print(DJ64_PRINT_LOG, str, dummy);
-  api->print(DJ64_PRINT_TERMINAL, str, dummy);
-  api->print(DJ64_PRINT_SCREEN, str, dummy);
+  va_start(args, str);
+  api->print(DJ64_PRINT_LOG, str, args);
+  va_end(args);
+  va_start(args, str);
+  api->print(DJ64_PRINT_TERMINAL, str, args);
+  va_end(args);
+  va_start(args, str);
+  api->print(DJ64_PRINT_SCREEN, str, args);
+  va_end(args);
 }
 
 int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
@@ -68,14 +78,20 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   }
   dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
+    char cmd[1024];
+    char *p = strdup(path);
+    char *d = dirname(p);
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
-    if (system("mount -t tmpfs | grep /dev/shm | grep noexec") == 0) {
-      loudprintf(api, "\nDJ64 ERROR: Your /dev/shm is mounted with noexec option.\n"
+    snprintf(cmd, sizeof(cmd), "mount -t tmpfs | grep %s | grep noexec", d);
+    if (system(cmd) == 0) {
+      loudprintf(api, "\nDJ64 ERROR: Your %s is mounted with noexec option.\n"
                       "Please execute:\n"
-                      "\tsudo mount -o remount,exec /dev/shm\n"
-                      "and try running the program again.\n"
+                      "\tsudo mount -o remount,exec %s\n"
+                      "and try running the program again.\n",
+                      d, d
       );
     }
+    free(p);
     return -1;
   }
   init_once = dlsym(dlh, _S(DJ64_INIT_ONCE_FN));
