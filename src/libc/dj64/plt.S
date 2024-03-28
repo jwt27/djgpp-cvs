@@ -37,11 +37,15 @@ SHM_HANDLE = 8
 SHM_LINEAR = 0xc
 SHM_NAME = 0x10
 SHM_FLAGS = 0x16
+SHM_HANDLE2 = 0x18
 shm_block: .fill 0x1c, 1, 0
 shm_block2: .fill 0x1c, 1, 0
 handle: .long 0
 maddr: .long 0
 SHM_NOEXEC = 1
+SHM_EXCL = 2
+SHM_NEW_NS = 4
+SHM_NS = 8
 
 .data
 
@@ -92,7 +96,7 @@ plt_init:
     movl %eax, __plt_open + 4
     movl %edi, __plt_open
 
-.macro mk_shm b,offs,size,name,err
+.macro mk_shm b,offs,size,name,err,flg,h2
     movl %fs:\size, %ecx
     orl %ecx, %ecx
     jz \err
@@ -101,7 +105,9 @@ plt_init:
     movl %ecx, \b + SHM_REQ_LEN
     movw %fs, \b + SHM_NAME + 4
     movl $\name, \b + SHM_NAME
-    movl $SHM_NOEXEC, \b + SHM_FLAGS
+    movl \flg, \b + SHM_FLAGS
+    movl \h2, %eax
+    movl %eax, \b + SHM_HANDLE2
     /* alloc mem */
     pushw %ds
     popw %es
@@ -150,8 +156,8 @@ plt_init:
     int $0x31
 .endm
 
-    mk_shm shm_block,STUBINFO_PAYLOAD_OFFS,STUBINFO_PAYLOAD_SIZE,STUBINFO_ARGV0,2f
-    mk_shm shm_block2,STUBINFO_PAYLOAD2_OFFS,STUBINFO_PAYLOAD2_SIZE,STUBINFO_PAYLOAD2_NAME,5f
+    mk_shm shm_block,STUBINFO_PAYLOAD_OFFS,STUBINFO_PAYLOAD_SIZE,STUBINFO_ARGV0,2f,$SHM_NOEXEC|SHM_EXCL|SHM_NEW_NS,$0
+    mk_shm shm_block2,STUBINFO_PAYLOAD2_OFFS,STUBINFO_PAYLOAD2_SIZE,STUBINFO_PAYLOAD2_NAME,5f,$SHM_NOEXEC|SHM_EXCL|SHM_NS,shm_block+SHM_HANDLE
 
 5:
     // now open lib
