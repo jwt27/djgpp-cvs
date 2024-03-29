@@ -20,8 +20,6 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <libgen.h>
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
@@ -61,6 +59,31 @@ static void loudprintf(const struct dj64_api *api, const char *str, ...)
   va_end(args);
 }
 
+static char *findmnt(const char *path)
+{
+  const char *tmpl = "findmnt -n -o target --target %s";
+  static char buf[1024];
+  FILE *f;
+  int rd;
+
+  snprintf(buf, sizeof(buf), tmpl, path);
+  f = popen(buf, "r");
+  if (!f)
+    return NULL;
+  rd = fread(buf, 1, sizeof(buf), f);
+  if (rd <= 0)
+    goto err;
+  if (buf[rd - 1] == '\n')
+    rd--;
+  buf[rd] = '\0';
+  pclose(f);
+  return buf;
+
+err:
+  pclose(f);
+  return NULL;
+}
+
 int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
 {
   int h, rc;
@@ -79,10 +102,9 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
   if (!dlh) {
     char cmd[1024];
-    char *p = strdup(path);
-    char *d = dirname(p);
+    const char *d = findmnt(path);
     fprintf(stderr, "cannot dlopen %s: %s\n", path, dlerror());
-    snprintf(cmd, sizeof(cmd), "mount -t tmpfs | grep %s | grep noexec", d);
+    snprintf(cmd, sizeof(cmd), "grep %s /proc/mounts | grep noexec", d);
     if (system(cmd) == 0) {
       loudprintf(api, "\nDJ64 ERROR: Your %s is mounted with noexec option.\n"
                       "Please execute:\n"
@@ -91,7 +113,6 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
                       d, d
       );
     }
-    free(p);
     return -1;
   }
   init_once = dlsym(dlh, _S(DJ64_INIT_ONCE_FN));
