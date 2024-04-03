@@ -46,7 +46,8 @@ int __internal_readlink(const char * __path, int __fhandle, char * __buf,
 					     __path, __buf, __max))
          return ret;
       /* We will check if file exists by the way */
-      if (findfirst(__path, &file_info, FA_RDONLY|FA_ARCH))
+      if (strchr(__path, '*') || strchr(__path, '?') ||
+          findfirst(__path, &file_info, FA_RDONLY|FA_ARCH))
       {
          errno = ENOENT;
          return -1;
