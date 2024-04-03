@@ -81,6 +81,7 @@ typedef int _DJCHK_FFBLK1[(sizeof(struct ffblklfn)==318)*3 - 1];
 int	__file_tree_walk(const char *_dir, int (*_fn)(const char *_path, const struct ffblk *_ff));
 int	findfirst(const char *_pathname, struct ffblk *_ffblk, int _attrib);
 int	findnext(struct ffblk *_ffblk);
+#define HAVE_FINDCLOSE 1
 int	findclose(int handle);
 void	fnmerge (char *_path, const char *_drive, const char *_dir, const char *_name, const char *_ext);
 int	fnsplit (const char *_path, char *_drive, char *_dir, char *_name, char *_ext);
