@@ -52,6 +52,12 @@ int access(const char *fn, int flags)
         }
       }
 
+    /* findfirst() below may be tricked by wildcards so disallow. */
+    if (strchr(file_name, '*') || strchr(file_name, '?'))
+    {
+      errno = ENOENT;
+      return -1;
+    }
     /* Devices also fail `_chmod'; some programs won't write to
        a device unless `access' tells them they are writeable.  */
     if (findfirst(file_name, &ff, FA_RDONLY | FA_ARCH) == 0
