@@ -3,6 +3,7 @@ TOP=../..
 
 SRC += findfirs.c
 SRC += findnext.c
+SRC += findclos.c
 SRC += fnmerge.c
 SRC += fnsplit.c
 SRC += ftreewlk.c
