@@ -83,7 +83,8 @@ findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
       strcpy(ffblk->lfn_magic, "LFN32");
 
       /* If no wildcards, close the handle */
-      if (!strchr(pathname, '*') && !strchr(pathname, '?'))
+      if (attrib == FA_LABEL ||
+          (!strchr(pathname, '*') && !strchr(pathname, '?')))
       {
         r.x.flags |= 1;  /* Always set CF before calling a 0x71NN function. */
         r.x.bx = r.x.ax;
