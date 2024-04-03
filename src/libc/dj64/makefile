@@ -63,9 +63,11 @@ thunks_p.o: thunk_incs.h thunk_asms.h
 
 plt.o : plt.S plt.inc
 
-$(LIB)/$(LIBN) : $(TOP)/makefile.rf thunk_calls.h thunk_asms.h $(OBJECTS)
+ALL_OBJS = $(addprefix ../,$(file < $(TOP)/makefile.rf))
+$(LIB)/$(LIBN) : $(TOP)/makefile.rf $(ALL_OBJS) \
+  thunk_calls.h thunk_asms.h $(OBJECTS)
 	$(CROSS_GCC) -shared -Wl,-soname=$(LIBN) -Wl,-Bsymbolic -o $@ \
-  $(addprefix ../,$(file < $<)) $(OBJECTS)
+  $(ALL_OBJS) $(OBJECTS)
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
 $(LIB)/libc.a : libc_tmp.a plt.o
