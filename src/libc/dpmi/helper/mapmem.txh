@@ -60,28 +60,28 @@ DPMI server rejected the mapping request.
 @example
 void *my_page_aligned_memory = valloc (16384);
 if (!my_page_aligned_memory)
-{
+@{
   printf ("Failed to allocate page-aligned memory!\n");
   return;
-}
+@}
 
 if (__djgpp_map_physical_memory (my_page_aligned_memory, 16384,
                                  0x40000000))
-{
+@{
   printf ("Failed to map physical addresses!\n");
-}
+@}
 else
-{
+@{
   /* code which access mapped my_page_aligned_memory */
-}
+@}
 
 if (__djgpp_set_page_attributes (my_page_aligned_memory, 16384,
                                  (0<<4) | (1<<3) | 1))
-{
+@{
   printf ("Failed to unmap physical addresses!\n");
-}
+@}
 else
-{
+@{
   free (my_page_aligned_memory);
-}
+@}
 @end example
