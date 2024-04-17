@@ -58,9 +58,9 @@ made to the source code to make it more portable:
 - Update your makefile to involve thunk_gen into a build process.
   This procedure is currently not properly documented, so you need to look
   into
-  [this makefile](https://github.com/stsp/comcom64/blob/master/src/Makefile)
+  [this makefile](https://github.com/dosemu2/comcom64/blob/master/src/Makefile)
   of comcom64. Note that the source tree contains the
-  [32](https://github.com/stsp/comcom64/tree/master/32)
+  [32](https://github.com/dosemu2/comcom64/tree/master/32)
   directory with djgpp-compatible makefile. You can compare them to figure
   out what needs to be changed, or ask me for help on github. :)
   This example shows that the same sources can be built by both dj64 and
