@@ -66,8 +66,12 @@ char **__crt0_glob_function(char *_arg);
  *
 \*****************************************************************************/
 
+#ifdef _IN_DJ64
 EXTERN ASM(int, _crt0_startup_flags);
 EXTERN ASM_ARR(unsigned char, dosobj_page, 4096);
+#else
+extern int _crt0_startup_flags;
+#endif
 
 /* If set, argv[0] is left in whatever case it was.  If not set, all
 ** characters are mapped to lower case.  Note that if the argv0 field in

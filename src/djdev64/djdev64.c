@@ -84,6 +84,8 @@ err:
   return NULL;
 }
 
+static const char *var_list[] = { "_crt0_startup_flags", NULL };
+
 int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
 {
   int h, rc;
@@ -94,6 +96,7 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   void *th;
   int *nth;
   void *dlh;
+  const char **v;
 
   if (handles >= HNDL_MAX) {
     fprintf(stderr, "out of handles\n");
@@ -157,6 +160,18 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
     dlclose(dlh);
     return -1;
   }
+
+  for (v = var_list; *v; v++) {
+    char buf[256];
+    int *vh1, *vh2;
+
+    snprintf(buf, sizeof(buf), "_%s", *v);
+    vh1 = dlsym(dlh, *v);
+    vh2 = dlsym(dlh, buf);
+    if (vh1 && vh2)
+      *vh2 = *vh1;
+  }
+
   h = handles++;
   dlhs[h].dlobj = dlh;
   dlhs[h].cdisp = cdisp[0];

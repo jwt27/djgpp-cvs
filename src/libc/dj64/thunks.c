@@ -31,6 +31,8 @@
 #include "plt.h"
 #include "dosobj.h"
 
+int __crt0_startup_flags;
+
 static dpmi_regs s_regs;
 static unsigned _cs;
 static int recur_cnt;
@@ -165,6 +167,11 @@ static int process_athunks(struct athunk *at, int nat, uint32_t mem_base,
     return ret;
 }
 
+static void do_early_init(void)
+{
+    _crt0_startup_flags = __crt0_startup_flags;
+}
+
 static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
     dpmi_regs *regs = (dpmi_regs *)sp;
@@ -200,6 +207,8 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
             }
         }
         u->eops->close(eh);
+
+        do_early_init();
         return ret;
     }
     }
