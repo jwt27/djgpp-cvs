@@ -38,7 +38,7 @@ or from
 or build it from
 [sources](https://github.com/dosemu2/dosemu2).
 dosemu2 uses the dj64-built command.com called
-[comcom64](https://github.com/stsp/comcom64/).
+[comcom64](https://github.com/dosemu2/comcom64/).
 You can type `ver` to make sure its the right one, in which case you
 are already observing the first dj64-built program in the run. :)
 
