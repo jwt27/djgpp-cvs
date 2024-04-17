@@ -71,6 +71,14 @@ run under dosemu2. dj64 is a very young project, so don't expect your
 code to work from the first attempt. :) Perhaps you'll need to submit
 a bug report or two (or twenty) before you can get it running.
 
+## what's unimplemented
+- direct calls from C to assembler code (calls from asm to C supported)
+- some crt0 overrides (only `_crt0_startup_flags` override is supported)
+
+This functionality is unsupported not because its difficult to implement,
+but rather because I am not using it myself. Once it is needed, it can
+be trivially added.
+
 ## debugging
 Debugging with host gdb is supported. The djstub package provides a
 `djstrip` binary to strip the debug info from an executable.<br/>
