@@ -16,6 +16,12 @@ of memory.  @var{our_addr} and @var{num_bytes} must be page-aligned.
 If they are not page-aligned, @code{errno} will be set to @code{EINVAL}
 and the routine will fail.
 
+Every page in the specified address range that begins at @var{out_addr}
+must belong to some DPMI handle in @code{__djgpp_memory_handle_list} which
+is managed by @code{sbrk} allocator (memory pointer can be obtained by
+e.g.@: @code{valloc}).  If some page does not belong to some DJGPP DPMI
+handle, @code{errno} will be set to @code{EFAULT} and the routine will fail.
+
 Consult DPMI documentation on function 0507H for the meaning of the
 @var{attributes} argument.  Note: since 0507H is a DPMI service new
 with DPMI 1.0, this call will fail on most DPMI 0.9 servers.  For your
@@ -27,8 +33,7 @@ Even on failure, this routine may affect a subset of the pages specified.
 @subheading Return Value
 
 0 on success, -1 on failure.  On failure, @code{errno} will be set to
-@code{EINVAL} for illegal input parameters, or @code{EACCES} if the
-DPMI server rejected the attribute setting.
+appropriate errno code and @code{__dpmi_error} to DPMI error code.
 
 @subheading Portability
 
