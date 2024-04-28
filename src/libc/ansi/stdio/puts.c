@@ -8,5 +8,6 @@ puts(const char *s)
 
   while ((c = *s++))
     putchar(c);
+  putchar('\r');
   return putchar('\n');
 }
