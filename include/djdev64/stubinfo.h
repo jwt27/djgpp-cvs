@@ -58,8 +58,8 @@ typedef struct {
   uint32_t mem_base;
   uint32_t flags;
 } _GO32_StubInfo;
-#endif
 
-//static_assert(sizeof(_GO32_StubInfo) == STUBINFO_END, "size mismatch");
+_Static_assert(sizeof(_GO32_StubInfo) == STUBINFO_END, "size mismatch");
+#endif
 
 #endif /* __dj_include_stub_h__ */
