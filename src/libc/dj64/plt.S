@@ -221,6 +221,10 @@ plt_init:
     int $0x21
     popl %ds
     jc 2f
+    /* close file */
+    movl %fs:STUBINFO_SELF_FD, %ebx
+    movl $0x3e00, %eax
+    int $0x21
     /* free desc */
     movw sel, %bx
     movl $1, %eax
