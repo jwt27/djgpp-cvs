@@ -254,7 +254,7 @@ plt_init:
 2:
     popl %es
     // TODO: print error
-    movb $0x4c, %ah
+    movl $0x4c01, %eax
     int $0x21
     jmp 1b
 
