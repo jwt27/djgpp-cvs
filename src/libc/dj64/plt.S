@@ -50,6 +50,7 @@ SHM_NS = 8
 .data
 
 ext_nm: .asciz "DJ64"
+err_str: .asciz "dj64: load failure\r\n$"
 
 .text
 
@@ -253,7 +254,9 @@ plt_init:
     ret
 2:
     popl %es
-    // TODO: print error
+    movl $err_str, %edx
+    movl $0x900, %eax
+    int $0x21
     movl $0x4c01, %eax
     int $0x21
     jmp 1b
