@@ -105,7 +105,8 @@ plt_init:
     movl %ecx, \b + SHM_REQ_LEN
     movw %fs, \b + SHM_NAME + 4
     movl $\name, \b + SHM_NAME
-    movl \flg, \b + SHM_FLAGS
+    movzbl %fs:\flg, %eax
+    movl %eax, \b + SHM_FLAGS
     movl \h2, %eax
     movl %eax, \b + SHM_HANDLE2
     /* alloc mem */
@@ -156,8 +157,8 @@ plt_init:
     int $0x31
 .endm
 
-    mk_shm shm_block,STUBINFO_PAYLOAD_OFFS,STUBINFO_PAYLOAD_SIZE,STUBINFO_ARGV0,2f,$SHM_NOEXEC|SHM_EXCL|SHM_NEW_NS,$0
-    mk_shm shm_block2,STUBINFO_PAYLOAD2_OFFS,STUBINFO_PAYLOAD2_SIZE,STUBINFO_PAYLOAD2_NAME,5f,$SHM_NOEXEC|SHM_EXCL|SHM_NS,shm_block+SHM_HANDLE
+    mk_shm shm_block,STUBINFO_PAYLOAD_OFFS,STUBINFO_PAYLOAD_SIZE,STUBINFO_ARGV0,2f,STUBINFO_FLAGS,$0
+    mk_shm shm_block2,STUBINFO_PAYLOAD2_OFFS,STUBINFO_PAYLOAD2_SIZE,STUBINFO_PAYLOAD2_NAME,5f,STUBINFO_FLAGS+1,shm_block+SHM_HANDLE
 
 5:
     // now open lib
