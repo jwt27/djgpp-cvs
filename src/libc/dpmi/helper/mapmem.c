@@ -22,7 +22,7 @@ __djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
       || (_num_bytes & 0xfff))
     {
       errno = EINVAL;
-      return -1;
+      goto fail;
     }
 
   /* Loop through the memory range, identify individual handles
@@ -38,7 +38,17 @@ __djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
       /* Find the memory handle corresponding to the first byte. */
       d = __djgpp_memory_handle (p);
       if (d == NULL)
-	goto fail;
+        {
+          errno = EINVAL;
+          goto fail;
+        }
+
+      /* Base address of the memory handle must be page aligned too. */
+      if (d->address & 0xfff)
+        {
+          errno = EINVAL;
+          goto fail;
+        }
 
       /* Find the last byte in the range that's also in the same
        * memory handle as our current starting byte.  We start with
@@ -56,7 +66,10 @@ __djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
 	  /* Find the memory handle corresponding to this test byte. */
 	  d2 = __djgpp_memory_handle (handle_end_addr);
 	  if (d2 == NULL)
-	    goto fail;
+            {
+              errno = EINVAL;
+              goto fail;
+            }
 
 	  /* Is this test byte in the same handle as the first byte? */
 	  if (d2->handle == d->handle)
@@ -72,7 +85,29 @@ __djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
       if (__dpmi_map_device_in_memory_block (&meminfo,
 					     (_phys_addr
 					      + (p - (unsigned) _our_addr))))
-	goto fail;
+        {
+          switch (__dpmi_error)
+            {
+              case 0x0508: /* Unsupported function (returned by DPMI 0.9 host, error number is same as DPMI function number) */
+              case 0x8001: /* Unsupported function (returned by DPMI 1.0 host) */
+                errno = ENOSYS;
+                break;
+              case 0x8003: /* System integrity (invalid device address) */
+                errno = ENXIO;
+                break;
+              case 0x8010: /* Resource unavailable (DPMI host cannot allocate internal resources to complete an operation) */
+                errno = ENOMEM;
+                break;
+              case 0x8023: /* Invalid handle (in ESI) */
+              case 0x8025: /* Invalid linear address (specified range is not within specified block or EBX/EDX is not page-aligned) */
+                errno = EINVAL;
+                break;
+              default: /* Other unspecified error */
+                errno = EACCES;
+                break;
+            }
+          goto fail;
+        }
 
       /* Move on to the next memory handle. */
       p = handle_end_addr;
@@ -82,6 +117,5 @@ __djgpp_map_physical_memory (void *_our_addr, unsigned long _num_bytes,
   return 0;
 
  fail:
-  errno = EACCES;
   return -1;
 }
