@@ -20,7 +20,7 @@ Every page in the specified address range that begins at @var{out_addr}
 must belong to some DPMI handle in @code{__djgpp_memory_handle_list} which
 is managed by @code{sbrk} allocator (memory pointer can be obtained by
 e.g.@: @code{valloc}).  If some page does not belong to some DJGPP DPMI
-handle, @code{errno} will be set to @code{EFAULT} and the routine will fail.
+handle, @code{errno} will be set to @code{EINVAL} and the routine will fail.
 
 Consult DPMI documentation on function 0507H for the meaning of the
 @var{attributes} argument.  Note: since 0507H is a DPMI service new

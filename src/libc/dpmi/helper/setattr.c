@@ -51,14 +51,14 @@ __djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
       d = __djgpp_memory_handle (p);
       if (d == NULL)
         {
-          errno = EFAULT;
+          errno = EINVAL;
           goto fail;
         }
 
       /* Base address of the memory handle must be page aligned too. */
       if (d->address & 0xfff)
         {
-          errno = EFAULT;
+          errno = EINVAL;
           goto fail;
         }
 
@@ -79,7 +79,7 @@ __djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
 	  d2 = __djgpp_memory_handle (handle_end_addr);
 	  if (d2 == NULL)
             {
-              errno = EFAULT;
+              errno = EINVAL;
               goto fail;
             }
 
@@ -107,13 +107,11 @@ __djgpp_set_page_attributes (void *_our_addr, unsigned long _num_bytes,
               case 0x8014: /* Backing store unavailable */
                 errno = ENOMEM;
                 break;
-              case 0x8021: /* Invalid value (illegal request in bits 0-2 of one or more page attribute words) */
-                errno = EINVAL;
-                break;
               case 0x8002: /* Invalid state (page in wrong state for request) */
+              case 0x8021: /* Invalid value (illegal request in bits 0-2 of one or more page attribute words) */
               case 0x8023: /* Invalid handle (in ESI) */
               case 0x8025: /* Invalid linear address (specified range is not within specified block) */
-                errno = EFAULT;
+                errno = EINVAL;
                 break;
               default: /* Other unspecified error */
                 errno = EACCES;

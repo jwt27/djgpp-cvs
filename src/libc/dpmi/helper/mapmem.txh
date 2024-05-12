@@ -48,8 +48,7 @@ Even on failure, this routine may affect a subset of the pages specified.
 @subheading Return Value
 
 0 on success, -1 on failure.  On failure, @code{errno} will be set to
-@code{EINVAL} for illegal input parameters, or @code{EACCES} if the
-DPMI server rejected the mapping request.
+appropriate errno code and @code{__dpmi_error} to DPMI error code.
 
 @subheading Portability
 
