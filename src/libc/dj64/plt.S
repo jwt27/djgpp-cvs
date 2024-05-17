@@ -46,6 +46,7 @@ SHM_NOEXEC = 1
 SHM_EXCL = 2
 SHM_NEW_NS = 4
 SHM_NS = 8
+SHM_FLG_MASK = (SHM_NOEXEC | SHM_EXCL | SHM_NEW_NS | SHM_NS)
 
 .data
 
@@ -101,13 +102,12 @@ plt_init:
     movl %fs:\size, %ecx
     orl %ecx, %ecx
     jz \err
-//    addl $(4096-1), %ecx
-//    andl $~(4096-1), %ecx
     movl %ecx, \b + SHM_REQ_LEN
     movw %fs, \b + SHM_NAME + 4
     movl $\name, \b + SHM_NAME
-    movzbl %fs:\flg, %eax
-    movl %eax, \b + SHM_FLAGS
+    movzbw %fs:\flg, %ax
+    andb $SHM_FLG_MASK, %al
+    movw %ax, \b + SHM_FLAGS
     movl \h2, %eax
     movl %eax, \b + SHM_HANDLE2
     /* alloc mem */
