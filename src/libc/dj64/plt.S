@@ -116,7 +116,7 @@ plt_init:
     movl $\b, %edi
     movl $0xd00, %eax
     int $0x31
-    jc 2f
+    jc \err
     /* alloc desc */
     movl $0, %eax
     movl $1, %ecx
