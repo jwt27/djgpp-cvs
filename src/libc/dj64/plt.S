@@ -102,6 +102,9 @@ plt_init:
     movl %fs:\size, %ecx
     orl %ecx, %ecx
     jz \err
+    xorb %al, %al
+    cmpb %fs:\name, %al
+    je \err
     movl %ecx, \b + SHM_REQ_LEN
     movw %fs, \b + SHM_NAME + 4
     movl $\name, \b + SHM_NAME
