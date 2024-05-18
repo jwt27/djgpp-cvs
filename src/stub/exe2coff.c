@@ -5,10 +5,12 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
-#include <io.h>
 #include <unistd.h>
 #include <ctype.h>
 
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 static void
 exe2aout(char *fname)

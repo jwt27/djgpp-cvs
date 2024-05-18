@@ -22,6 +22,7 @@ all :: native \
 native :: \
 	$(HOSTBIN)/stubedit.exe \
 	$(HOSTBIN)/stubify.exe \
+	$(HOSTBIN)/exe2coff.exe \
 	$(INC)/stubinfo.h \
 	$E
 	$(NOP)
@@ -67,6 +68,9 @@ $(HOSTBIN)/stubify.exe : stubify.c stub.h
 
 $(HOSTBIN)/stubedit.exe : stubedit.c $(INC)/stubinfo.h
 	$(GCC) stubedit.c -o $@
+
+$(HOSTBIN)/exe2coff.exe : exe2coff.c
+	$(GCC) exe2coff.c -o $@
 
 ./stub2inc.exe : stub2inc.c
 	$(GCC) stub2inc.c -o $@
