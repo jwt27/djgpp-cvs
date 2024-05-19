@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#if !defined(O_BINARY)
+#ifndef O_BINARY
 #define O_BINARY 0
 #endif
 

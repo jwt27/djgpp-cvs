@@ -70,7 +70,7 @@ $(HOSTBIN)/stubedit.exe : stubedit.c $(INC)/stubinfo.h
 	$(GCC) -O2 stubedit.c -o $@
 
 $(HOSTBIN)/exe2coff.exe : exe2coff.c
-	$(GCC) -O2 $< -o $@
+	$(GCC) -O2 exe2coff.c -o $@
 
 ./stub2inc.exe : stub2inc.c
 	$(GCC) stub2inc.c -o $@
