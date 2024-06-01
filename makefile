@@ -9,6 +9,8 @@ DJ64LIB = $(TOP)/lib/libdj64.so.0.1
 DJ64DEVL = $(TOP)/lib/libdj64.so
 DJDEV64LIB = $(TOP)/lib/libdjdev64.so.0.1
 DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
+DJSTUB64LIB = $(TOP)/lib/libdjstub64.so.0.1
+DJSTUB64DEVL = $(TOP)/lib/libdjstub64.so
 
 AS = $(CROSS_PREFIX)as
 CROSS_PREFIX := i686-linux-gnu-
@@ -23,7 +25,11 @@ $(error cross-binutils not installed)
 endif
 endif
 
-all: dj64.pc dj64static.pc djdev64.pc
+.PHONY: subs
+
+all: dj64.pc dj64static.pc djdev64.pc djstub64.pc subs
+
+subs:
 	$(MAKE) -C src CROSS_PREFIX=$(CROSS_PREFIX)
 
 install:
@@ -45,9 +51,12 @@ install:
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 djdev64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+	$(INSTALL) -m 0644 djstub64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
 	$(INSTALL) -m 0755 $(DJDEV64LIB) $(DESTDIR)$(LIBDIR)
 	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(LIBDIR)
+	$(INSTALL) -m 0755 $(DJSTUB64LIB) $(DESTDIR)$(LIBDIR)
+	cp -fP $(DJSTUB64DEVL) $(DESTDIR)$(LIBDIR)
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/bin/dj64-gcc
@@ -61,7 +70,7 @@ uninstall:
 
 clean:
 	$(MAKE) -C src clean
-	$(RM) dj64.pc dj64static.pc
+	$(RM) *.pc
 
 deb:
 	debuild -i -us -uc -b && $(MAKE) clean >/dev/null
