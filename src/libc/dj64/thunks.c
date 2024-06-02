@@ -51,7 +51,7 @@ static const struct dj64_api *dj64api;
 #define MAX_OBJS 50
 #define MAX_RECUR 10
 static uint32_t objs[MAX_RECUR][MAX_OBJS];
-
+static dj64dispatch_t *disp_fn;
 static void do_rm_dosobj(uint32_t fa);
 
 void djloudprintf(const char *format, ...)
@@ -223,14 +223,15 @@ void dj64_init(void)
 
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
-dj64cdispatch_t **DJ64_INIT_FN(int handle,
-    dj64dispatch_t *disp, const struct elf_ops *ops,
+dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     void *athunks, int num_athunks)
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    u->disp = disp;
+    assert(disp_fn);
+    u->disp = disp_fn;
+    disp_fn = NULL;
     u->eops = ops;
     u->athunks = athunks;
     u->num_athunks = num_athunks;
@@ -327,4 +328,10 @@ void dj64_rm_dosobj(const void *data, uint32_t fa)
     if (dj64api->is_dos_ptr(data))
         return;
     do_rm_dosobj(fa);
+}
+
+void register_dispatch_fn(dj64dispatch_t *fn)
+{
+    assert(!disp_fn);
+    disp_fn = fn;
 }

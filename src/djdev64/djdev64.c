@@ -20,6 +20,7 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
@@ -32,6 +33,8 @@ struct dj64handle {
     dj64cdispatch_t *ctrl;
 };
 static struct dj64handle dlhs[HNDL_MAX];
+
+static pthread_mutex_t init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 static const struct elf_ops eops = {
     elf_open,
@@ -86,12 +89,12 @@ err:
 
 static const char *var_list[] = { "_crt0_startup_flags", NULL };
 
-int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
+static int _djdev64_open(const char *path, const struct dj64_api *api,
+    int api_ver)
 {
   int h, rc;
   dj64init_t *init;
   dj64init_once_t *init_once;
-  dj64dispatch_t *disp;
   dj64cdispatch_t **cdisp;
   void *th;
   int *nth;
@@ -130,12 +133,6 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
     dlclose(dlh);
     return -1;
   }
-  disp = dlsym(dlh, _S(DJ64_DISPATCH_FN));
-  if (!disp) {
-    fprintf(stderr, "cannot find " _S(DJ64_DISPATCH_FN) "\n");
-    dlclose(dlh);
-    return -1;
-  }
   th = dlsym(dlh, "asm_thunks_user");
   if (!th) {
     fprintf(stderr, "cannot find asm_thunks_user\n");
@@ -154,7 +151,7 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
     dlclose(dlh);
     return -1;
   }
-  cdisp = init(handles, disp, &eops, th, *nth);
+  cdisp = init(handles, &eops, th, *nth);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     dlclose(dlh);
@@ -177,6 +174,19 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
   dlhs[h].cdisp = cdisp[0];
   dlhs[h].ctrl = cdisp[1];
   return h;
+}
+
+int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
+{
+  int ret;
+
+  /* Init sequence is inherently thread-unsafe: at dlmopen() the ctors
+   * register the dispatch fn, which is stored in a global pointer until
+   * init() is called. Also we increment handles non-atomically. */
+  pthread_mutex_lock(&init_mtx);
+  ret = _djdev64_open(path, api, api_ver);
+  pthread_mutex_unlock(&init_mtx);
+  return ret;
 }
 
 int djdev64_call(int handle, int libid, int fn, unsigned esi,

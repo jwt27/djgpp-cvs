@@ -20,7 +20,7 @@
 #define DJ64INIT_H
 
 #include <stdarg.h>
-#include "dj64thnk.h"
+#include <stdint.h>
 
 typedef int (dj64cdispatch_t)(int handle, int libid, int fn, unsigned esi,
         uint8_t *sp);
@@ -45,6 +45,7 @@ typedef struct {
 } dpmi_paddr;
 
 enum { ASM_CALL_OK, ASM_CALL_ABORT };
+enum { DJ64_RET_ABORT = -1, DJ64_RET_OK, DJ64_RET_NORET };
 
 struct dj64_api {
     uint8_t *(*addr2ptr)(uint32_t addr);
@@ -68,11 +69,9 @@ struct elf_ops {
 };
 
 #define DJ64_INIT_FN dj64init
-typedef dj64cdispatch_t **(dj64init_t)(int handle,
-    dj64dispatch_t *disp, const struct elf_ops *ops,
+typedef dj64cdispatch_t **(dj64init_t)(int handle, const struct elf_ops *ops,
     void *athunks, int num_athunks);
-dj64cdispatch_t **DJ64_INIT_FN(int handle,
-    dj64dispatch_t *disp, const struct elf_ops *ops,
+dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     void *athunks, int num_athunks);
 
 #endif

@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <djdev64/dj64thnk.h>
 #include <dj64/util.h>
 #include <dj64/thunks_c.h>
 
@@ -29,7 +28,20 @@
 #define _RET(r) r
 #define _RET_PTR(r) PTR_DATA(r)
 
-UDWORD DJ64_DISPATCH_FN(int fn, UBYTE *sp, int *r_len)
+#ifdef _IN_DJ64
+#define DJ64_DISPATCH_FN dj64_thunk_call
+#define STATIC
+#else
+#define STATIC static
+static dj64dispatch_t DJ64_DISPATCH_FN;
+__attribute__((constructor))
+static void init(void)
+{
+    register_dispatch_fn(DJ64_DISPATCH_FN);
+}
+#endif
+
+STATIC UDWORD DJ64_DISPATCH_FN(int fn, UBYTE *sp, int *r_len)
 {
     UDWORD ret;
     UBYTE rsz = 0;
