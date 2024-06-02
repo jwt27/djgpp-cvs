@@ -25,14 +25,19 @@ $(error cross-binutils not installed)
 endif
 endif
 
-.PHONY: subs
+.PHONY: subs dj64 djdev64
 
-all: dj64.pc dj64static.pc djdev64.pc djstub64.pc subs
+all: dj64 djdev64
 
 subs:
 	$(MAKE) -C src CROSS_PREFIX=$(CROSS_PREFIX)
 
-install:
+djdev64: djdev64.pc djstub64.pc
+	$(MAKE) -C src/djdev64
+
+dj64: dj64.pc dj64static.pc subs
+
+install_dj64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
 	$(INSTALL) -m 0644 $(DJLIBC) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
@@ -40,8 +45,6 @@ install:
 	cp -fP $(DJ64DEVL) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/include
 	cp -r $(TOP)/include $(DESTDIR)$(PREFIX)/i386-pc-dj64
-	$(INSTALL) -d $(DESTDIR)$(PREFIX)/include/djdev64
-	cp -rL $(TOP)/src/djdev64/include/djdev64 $(DESTDIR)$(PREFIX)/include
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
 	$(INSTALL) -m 0755 ccwrp.sh $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
@@ -50,13 +53,21 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+
+install_djdev64:
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 djdev64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 djstub64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/include/djdev64
+	cp -rL $(TOP)/src/djdev64/include/djdev64 $(DESTDIR)$(PREFIX)/include
 	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
 	$(INSTALL) -m 0755 $(DJDEV64LIB) $(DESTDIR)$(LIBDIR)
 	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(LIBDIR)
 	$(INSTALL) -m 0755 $(DJSTUB64LIB) $(DESTDIR)$(LIBDIR)
 	cp -fP $(DJSTUB64DEVL) $(DESTDIR)$(LIBDIR)
+
+install: install_dj64 install_djdev64
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/bin/dj64-gcc
@@ -65,11 +76,15 @@ uninstall:
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64.pc
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/dj64static.pc
 	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/djdev64.pc
+	$(RM) $(DESTDIR)$(PREFIX)/share/pkgconfig/djstub64.pc
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJDEV64DEVL))
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJDEV64LIB))
+	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64DEVL))
+	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64LIB))
 
 clean:
 	$(MAKE) -C src clean
+	$(MAKE) -C src/djdev64 clean
 	$(RM) *.pc
 
 deb:

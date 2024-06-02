@@ -36,7 +36,6 @@ copyrite.exe : copyrite.cc
 	gcc -O2 -Wall copyrite.cc -o copyrite.exe
 
 subs:
-	$(MAKE) -C djdev64
 	$(MAKE) -C libc
 
 .PHONY : clean
@@ -47,7 +46,6 @@ clean : misc.exe makemake.exe
 	$(MAKE) -C libemu clean
 	$(MAKE) -C utils clean
 	$(MAKE) -C dxe clean
-	$(MAKE) -C djdev64 clean
 	$(MAKE) -C mkdoc clean
 	$(MAKE) -C docs clean
 	$(MAKE) -C djasm clean
