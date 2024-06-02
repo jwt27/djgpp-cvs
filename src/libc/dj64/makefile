@@ -1,6 +1,7 @@
 TOP = ..
 
 include $(TOP)/../makefile.inc
+CPPFLAGS += -I ../../djdev64/include
 
 P = parsers
 MP = $(P)/mkproto.sh

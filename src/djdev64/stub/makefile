@@ -4,7 +4,7 @@ SOURCES = coff.c elf.c util.c stub.c dpmiwrp.c dos.c
 OBJECTS = $(SOURCES:.c=.o)
 
 %.o: %.c
-	$(GCC) $(CFLAGS) -iquote $(TOP)/include -fpic -ggdb3 -Wall -c -o $@ $<
+	$(GCC) $(CFLAGS) -iquote ../include -fpic -ggdb3 -Wall -c -o $@ $<
 
 LIBDIR = $(TOP)/lib
 LIBN = libdjstub64.so.0.1

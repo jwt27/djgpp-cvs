@@ -9,7 +9,7 @@ $(error libelf not installed)
 endif
 
 %.o: %.c
-	$(GCC) $(CFLAGS) -iquote $(TOP)/include -fpic -ggdb3 -Wall -c -o $@ $<
+	$(GCC) $(CFLAGS) -iquote include -fpic -ggdb3 -Wall -c -o $@ $<
 
 LIBDIR = $(TOP)/lib
 LIBN = libdjdev64.so.0.1

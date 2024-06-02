@@ -1,7 +1,7 @@
 #ifndef __dj_include_stubinfo_h__
 #define __dj_include_stubinfo_h__
 
-#include "djdev64/stubinfo.h"
+#include "libc/stubinfo.h"
 
 #ifndef __ASSEMBLER__
 #include "libc/asmobj.h"
