@@ -1,0 +1,4 @@
+DJSTUB {
+  global: djstub_main;
+  local: *;
+};

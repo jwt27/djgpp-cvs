@@ -19,7 +19,8 @@ $(LIBDIR):
 	mkdir $@
 
 $(LIB): $(OBJECTS) | $(LIBDIR)
-	$(GCC) -shared -Wl,-Bsymbolic -Wl,-soname=$(LIBN) -o $@ $^
+	$(GCC) -shared -Wl,-Bsymbolic -Wl,-soname=$(LIBN) \
+		-Wl,--version-script=libdjstub.version -o $@ $^
 
 $(LIBDIR)/libdjstub64.so: $(LIB)
 	ln -sf $(LIBN) $@
