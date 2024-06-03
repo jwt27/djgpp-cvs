@@ -1,6 +1,10 @@
-# dj64 tool-chain
+# dj64dev development suite
 
 ## what is that?
+dj64dev is a development suite that allows to cross-build 64bit programs
+for DOS. It consists of 2 parts: dj64 tool-chain and djdev64 suite.
+
+### dj64 tool-chain
 dj64 is a djgpp-compatible tool-chain that compiles the djgpp-buildable
 sources for DOS. But unlike djgpp that produces 32bit code, dj64
 produces 64bit code.<br/>
@@ -8,6 +12,23 @@ The resulting programs run on the emulated DOS environment, with eg
 [dosemu2](https://github.com/dosemu2/dosemu2) emulator. In theory the 64bit
 DOS extender can be written to run such programs under the bare-metal
 DOS, but the future of DOS is probably in the emulated environments anyway.
+
+### djdev64 suite
+djdev64 suite is a set of libraries and headers that are needed to
+implement the "DJ64" and "DJ64STUB" DPMI extensions on a DPMI host.<br/>
+"DJ64" is an extension that allows the dj64-built programs to access
+the 64bit world.<br/>
+"DJ64STUB" is an optional DPMI extension that implements a loader for
+dj64-built programs. If "DJ64STUB" extension is missing, you need to have
+the full loader inside the program's stub.<br/>
+[djstub](https://github.com/stsp/djstub/) project provides both loader-less
+and loader-enabled stubs, but the default is the loader-less ministub that
+relies on a "DJ64STUB" loader inside DPMI host.
+
+If you have the asm-written DPMI server without an ability to talk to
+C-written code, then you likely can't have dj64 support in it, as writing
+the "DJ64" DPMI extension by hands, without using djdev64 suite, is too
+difficult or impossible.
 
 ## building and installing
 First, you need to install [thunk_gen](https://github.com/stsp/thunk_gen/).
