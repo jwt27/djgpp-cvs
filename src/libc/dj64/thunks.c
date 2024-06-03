@@ -228,8 +228,9 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
 {
     struct udisp *u;
     assert(handle < MAX_HANDLES);
+    if (!disp_fn)
+        return NULL;
     u = &udisps[handle];
-    assert(disp_fn);
     u->disp = disp_fn;
     disp_fn = NULL;
     u->eops = ops;
