@@ -16,7 +16,7 @@ TGS = $(shell pkg-config --variable=tgscript thunk_gen)
 PDS = $(shell pkg-config --variable=pdscript thunk_gen)
 TGM4 = $(shell pkg-config --variable=m4script thunk_gen)
 TFLAGS = -a 4 -p 4
-LIBN = libdj64.so.0.1
+LIBN = libdj64.so.0.2
 SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
 OBJECTS = $(SOURCES:.c=.o)
 
