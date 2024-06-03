@@ -25,10 +25,16 @@ the full loader inside the program's stub.<br/>
 and loader-enabled stubs, but the default is the loader-less ministub that
 relies on a "DJ64STUB" loader inside DPMI host.
 
+"DJ64" extension requires 2 things from DPMI host:
+- put the 64bit djdev64 runtime into its address space and forward the
+  calls from the DOS programs to that runtime
+- make the 32bit calls on 64bit runtime's requests.
+
+While the second task is rather simple, the first one is not.
 If you have an asm-written DPMI server without an ability to talk to
 C-written code, then you likely can't have dj64 support in it, as writing
-the "DJ64" DPMI extension by hands, without using djdev64 suite, is too
-difficult or impossible.
+the "DJ64" DPMI extension by hands, without using djdev64-provided
+runtime, is too difficult or impossible.
 
 In addition to that, dj64-built programs rely on a few DPMI-1.0 functions.
 Namely, shared memory functions
