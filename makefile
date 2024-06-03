@@ -5,11 +5,11 @@ INSTALL ?= install
 
 VERSION = 0.1
 DJLIBC = $(TOP)/lib/libc.a
-DJ64LIB = $(TOP)/lib/libdj64.so.0.1
+DJ64LIB = $(TOP)/lib/libdj64.so.*.*
 DJ64DEVL = $(TOP)/lib/libdj64.so
-DJDEV64LIB = $(TOP)/lib/libdjdev64.so.0.1
+DJDEV64LIB = $(TOP)/lib/libdjdev64.so.*.*
 DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
-DJSTUB64LIB = $(TOP)/lib/libdjstub64.so.0.1
+DJSTUB64LIB = $(TOP)/lib/libdjstub64.so.*.*
 DJSTUB64DEVL = $(TOP)/lib/libdjstub64.so
 
 AS = $(CROSS_PREFIX)as

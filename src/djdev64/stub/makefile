@@ -7,7 +7,7 @@ OBJECTS = $(SOURCES:.c=.o)
 	$(GCC) $(CFLAGS) -iquote ../include -fpic -ggdb3 -Wall -c -o $@ $<
 
 LIBDIR = $(TOP)/lib
-LIBN = libdjstub64.so.0.1
+LIBN = libdjstub64.so.0.2
 LIB = $(LIBDIR)/$(LIBN)
 
 all: $(LIBDIR)/libdjstub64.so

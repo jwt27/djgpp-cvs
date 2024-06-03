@@ -12,7 +12,7 @@ endif
 	$(GCC) $(CFLAGS) -iquote include -fpic -ggdb3 -Wall -c -o $@ $<
 
 LIBDIR = $(TOP)/lib
-LIBN = libdjdev64.so.0.1
+LIBN = libdjdev64.so.0.2
 LIB = $(LIBDIR)/$(LIBN)
 
 .PHONY: subs
