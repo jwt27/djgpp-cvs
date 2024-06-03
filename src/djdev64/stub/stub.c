@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include <fcntl.h>
 #include <assert.h>
-#include "djdev64/stubinfo.h"
+#include "stubinfo.h"
 #include "dpmiwrp.h"
 #include "dos.h"
 #include "dpmiwrp.h"
