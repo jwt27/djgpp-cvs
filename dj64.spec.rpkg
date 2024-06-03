@@ -2,7 +2,7 @@
 # spec file for package dj64
 #
 
-Name: dj64
+Name: dj64dev
 Version: {{{ git_dir_version }}}
 Release: 1%{?dist}
 Summary: 64-bit djgpp-compatible dev suite
@@ -41,31 +41,57 @@ make PREFIX=%{_prefix}
 %install
 make install DESTDIR=%{buildroot} PREFIX=%{_prefix} LIBDIR=%{_libdir}
 
-%files
+
+%package dj64
+Summary: dj64 runtime libraries
+%description dj64
+This package contains runtime libraries for dj64-built programs.
+
+%files dj64
 %defattr(-,root,root)
-%{_libdir}/*.so.*
 %{_prefix}/i386-pc-dj64/lib64/*.so.*
 
-%package devel
-Summary: dj64 development headers
+%package dj64-devel
+Summary: dj64 development tools and headers
+%description dj64-devel
+This package contains tools and headers for building dj64-enabled programs.
 
-Requires: dj64
+Requires: dj64dev-dj64
 Requires: gcc
 Requires: binutils
 
-%description devel
-This package contains headers for dj64 usage.
-
-%files devel
+%files dj64-devel
 %defattr(-,root,root)
-%{_includedir}/djdev64
 %{_prefix}/i386-pc-dj64/include
 %{_prefix}/i386-pc-dj64/lib/*.a
-%{_libdir}/*.so
 %{_prefix}/i386-pc-dj64/lib64/*.so
 %{_prefix}/i386-pc-dj64/bin/*
 %{_bindir}/*
-%{_datadir}/pkgconfig/*.pc
+%{_datadir}/pkgconfig/dj64*.pc
+
+%package djdev64
+Summary: djdev64 runtime libraries
+%description djdev64
+This package contains runtime libraries for djdev64-enabled DPMI host.
+
+%files djdev64
+%defattr(-,root,root)
+%{_libdir}/*.so.*
+
+%package djdev64-devel
+Summary: djdev64 development libraries and headers
+%description djdev64-devel
+This package contains development libraries and headers for
+djdev64-enabled DPMI host.
+
+Requires: dj64dev-djdev64
+
+%files djdev64-devel
+%defattr(-,root,root)
+%{_includedir}/djdev64
+%{_libdir}/*.so
+%{_datadir}/pkgconfig/djdev64.pc
+%{_datadir}/pkgconfig/djstub64.pc
 
 %changelog
 {{{ git_dir_changelog }}}
