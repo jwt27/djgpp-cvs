@@ -68,6 +68,7 @@ static const char *_basename(const char *name)
     return p;
 }
 
+#if 0
 static char *_fname(char *name)
 {
     char *p, *p1;
@@ -81,6 +82,7 @@ static char *_fname(char *name)
         p1[0] = '\0';
     return p;
 }
+#endif
 
 #define exit(x) return x
 #define error(...) fprintf(stderr, __VA_ARGS__)
@@ -203,7 +205,8 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     stubinfo.minkeep = 0x4000;
     strncpy(stubinfo.argv0, _basename(argv0), sizeof(stubinfo.argv0));
     stubinfo.argv0[sizeof(stubinfo.argv0) - 1] = '\0';
-    strncpy(stubinfo.basename, _fname(argv0), sizeof(stubinfo.basename));
+    /* basename seems unused and produces warning about missing 0-terminator */
+//    strncpy(stubinfo.basename, _fname(argv0), sizeof(stubinfo.basename));
 //    stubinfo.basename[sizeof(stubinfo.basename) - 1] = '\0';
     strncpy(stubinfo.dpmi_server, "CWSDPMI.EXE", sizeof(stubinfo.dpmi_server));
 #define max(a, b) ((a) > (b) ? (a) : (b))

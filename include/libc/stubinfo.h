@@ -13,7 +13,7 @@
 #define STUBINFO_PSP_SELECTOR 0x26
 #define STUBINFO_CS_SELECTOR 0x28
 #define STUBINFO_ENV_SIZE 0x2a
-#define STUBINFO_BASENAME 0x2c
+#define STUBINFO_RESERVED 0x2c
 #define STUBINFO_ARGV0 0x34
 #define STUBINFO_DPMI_SERVER 0x44
 #define STUBINFO_STUBINFO_VER 0x54
@@ -42,7 +42,7 @@ typedef struct {
   unsigned short psp_selector;
   unsigned short cs_selector;
   unsigned short env_size;
-  char basename[8];
+  char reserved[8];
   char argv0[16];
   char dpmi_server[16];
   /* standard djgpp stubinfo ends here */
