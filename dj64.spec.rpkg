@@ -29,27 +29,34 @@ BuildRequires: ctags
 
 %description
 dj64 is a 64-bit djgpp-compatible dev suite.
+%end
 
 %prep
 {{{ git_dir_setup_macro }}}
+%end
 
 %build
 make PREFIX=%{_prefix}
+%end
 
 %check
+%end
 
 %install
 make install DESTDIR=%{buildroot} PREFIX=%{_prefix} LIBDIR=%{_libdir}
+%end
 
 
 %package dj64
 Summary: dj64 runtime libraries
 %description dj64
 This package contains runtime libraries for dj64-built programs.
+%end
 
 %files dj64
 %defattr(-,root,root)
 %{_prefix}/i386-pc-dj64/lib64/*.so.*
+%end
 
 %package dj64-devel
 Summary: dj64 development tools and headers
@@ -59,6 +66,7 @@ Requires: binutils
 
 %description dj64-devel
 This package contains tools and headers for building dj64-enabled programs.
+%end
 
 %files dj64-devel
 %defattr(-,root,root)
@@ -68,16 +76,19 @@ This package contains tools and headers for building dj64-enabled programs.
 %{_prefix}/i386-pc-dj64/bin/*
 %{_bindir}/*
 %{_datadir}/pkgconfig/dj64*.pc
+%end
 
 %package djdev64
 Summary: djdev64 runtime libraries
 
 %description djdev64
 This package contains runtime libraries for djdev64-enabled DPMI host.
+%end
 
 %files djdev64
 %defattr(-,root,root)
 %{_libdir}/*.so.*
+%end
 
 %package djdev64-devel
 Summary: djdev64 development libraries and headers
@@ -86,6 +97,7 @@ Requires: dj64dev-djdev64 = {{{ git_dir_version }}}
 %description djdev64-devel
 This package contains development libraries and headers for
 djdev64-enabled DPMI host.
+%end
 
 %files djdev64-devel
 %defattr(-,root,root)
@@ -93,6 +105,8 @@ djdev64-enabled DPMI host.
 %{_libdir}/*.so
 %{_datadir}/pkgconfig/djdev64.pc
 %{_datadir}/pkgconfig/djstub64.pc
+%end
 
 %changelog
 {{{ git_dir_changelog }}}
+%end
