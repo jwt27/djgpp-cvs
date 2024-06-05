@@ -157,7 +157,7 @@ to generate thunks from.
 
 Next comes the building stage with `dj64-gcc`. It accepts similar options
 to gcc. Use `-c` to produce the object files. You should link the object
-files with host gcc this way:
+files with host `gcc` this way:
 ```
 LDFLAGS = $(shell pkg-config --libs dj64) \
   -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
@@ -187,11 +187,33 @@ are linked with the GNU linker for i686 or x86_64 with these flags:
 `-melf_i386 -static`.
 
 Next comes the linking stage with `djlink`.
-This procedure is currently not properly documented, so you need to look into
-[this makefile](https://github.com/dosemu2/comcom64/blob/master/src/Makefile)
-and
-[this script](https://github.com/dosemu2/comcom64/blob/master/src/link.sh)
-of comcom64.
+Lets consider this command line:
+```
+djlink -d dosemu_comcom64.exe.dbg libcomcom64.so -n comcom64.exe \
+-f 0x0b07 -o comcom64.exe comcom64.elf
+```
+`-d` option sets the debuglink name. It always has the form of
+`dosemu-<exe_file>.dbg` if you want to debug your program under dosemu2.<br/>
+Next arg is a shared library that we linked with host `gcc`.<br/>
+`-n` specifies the exe file name. It should match the `<exe_file>`
+part passed to `-d` if you want to be able to use debugger.<br/>
+`-f` specifies the so called stub flags word. It is suggested to
+leave that to 0x0b07. Or you can omit `-f`, in which case the flags
+word is zero, which should also work properly in most cases.<br/>
+`-o` specifies the output file.<br/>
+Last arg is an ELF file that we linked from an asm files.<br/>
+
+Please note that you can't freely rearrange the `djlink` arguments.
+They should be provided in exactly that order, or omitted.
+For example if you don't need to use debugger, then you can just do:
+```
+$ strip libcomcom64.so
+$ djlink libcomcom64.so -f 0x0b07 -o comcom64.exe comcom64.elf
+```
+to get an executable without debug info. You can as well do
+`djstrip <exe_file>` to remove the debug info after linking.
+Note that even though some `djlink` args were omitted in a non-debug
+case, the order of the present ones didn't change.
 
 Once you managed to build the code, you get an executable that you can
 run under dosemu2.
