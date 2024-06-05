@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 if [ $# -lt 6 ]; then
     echo "generate thunk prototypes compatible with fdpp's thunk_gen & plt"
     echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out> <plti_out> <incs_out>"
