@@ -86,6 +86,7 @@ clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C src/djdev64 clean
 	$(RM) *.pc
+	$(RM) -r lib
 
 deb:
 	debuild -i -us -uc -b && $(MAKE) clean >/dev/null

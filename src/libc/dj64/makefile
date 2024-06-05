@@ -71,16 +71,16 @@ $(LIB)/$(LIBN) : $(TOP)/makefile.rf $(ALL_OBJS) \
   $(ALL_OBJS) $(OBJECTS)
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
-$(LIB)/libc.a : libc_tmp.a plt.o
+$(LIB)/libc.a : libc_tmp.a plt.o | $(LIB)
 	cp -f $< libctmp.a
 	$(CROSS_ASAR) q libctmp.a plt.o
 	$(CROSS_ASAR) s libctmp.a
 	mv -f libctmp.a $@
 
-$(LIB)/libdj64.so: $(LIB)/$(LIBN)
+$(LIB)/libdj64.so: $(LIB)/$(LIBN) | $(LIB)
 	ln -sf $(LIBN) $@
 
-final: $(LIB)/libc.a $(LIB)/libdj64.so
+final: $(LIB)/libc.a $(LIB)/libdj64.so | $(LIB)
 
 clean::
 	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h

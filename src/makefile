@@ -1,33 +1,9 @@
-# Copyright (C) 2015 DJ Delorie, see COPYING.DJ for details
-# Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details
-# Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details
-# Copyright (C) 1998 DJ Delorie, see COPYING.DJ for details
-# Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
-
-# Note: you may have to stubedit make to have a transfer buffer of at
-# least 32k to pass the long lists of object files around.
-
-# You don't have to build the stuff in ../zoneinfo/src, but if you do
-# unzip djtzsNNN.zip, you will need a Unixy shell to build it.
-# If you don't have ../zoneinfo/src, Make will report (and ignore) an
-# error when it tries to build files there; disregard it.
-
 MAKEFLAGS := --no-print-directory
 
-DIRS = \
-	../hostbin	\
-	../bin		\
-	../include	\
-	../info		\
-	../lib
-
-all : misc.exe config $(DIRS) makemake.exe subs
+all : misc.exe config makemake.exe subs
 
 misc.exe : misc.c
 	gcc -O2 -Wall misc.c -o misc.exe
-
-$(DIRS) :
-	./misc.exe mkdir $@
 
 makemake.exe : makemake.c
 	gcc -O2 -Wall makemake.c -o makemake.exe
@@ -41,11 +17,8 @@ subs:
 .PHONY : clean
 clean : misc.exe makemake.exe
 	$(MAKE) -C libc clean
-	./misc.exe rm gcc.opt gcc-l.opt
+	./misc.exe rm gcc.opt gcc-l.opt makefile.sub
 	./misc.exe rm makemake.exe copyrite.exe misc.exe
 
 config: misc.exe
 	$(MAKE) -f makefile.cfg
-
-rmake.exe: rmake.c
-	gcc -O2 -Wall rmake.c -o rmake.exe

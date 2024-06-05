@@ -12,8 +12,6 @@ include $(TOP)/../makefile.lib
 
 .PHONY: all info tex texinfo doc libc2.tex
 
-MKDOC = $(HOSTBIN)/mkdoc.exe
-
 #all :: info
 
 libc2.tex :

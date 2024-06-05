@@ -120,11 +120,6 @@ MISC = $(TOP)/../misc.exe
 LIB=$(TOP)/../../lib
 BIN=$(TOP)/../../bin
 INC=$(TOP)/../../include
-INFO=$(TOP)/../../info
-
-# Where programs we *run* to build djgpp are
-HOSTBIN = $(TOP)/../../hostbin
-
 C = $(LIB)/crt0.o
 L = $(LIB)/libc.a
 
@@ -140,7 +135,6 @@ DJGPP_DJL = $(LIB)/djgpp.djl
 endif
 
 LINK = $(CROSS_LD) -s $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ $(LIBGCCA) -T $(DJGPP_DJL)
-EXE = $(HOSTBIN)/stubify.exe $@
 
 OBJS := $(addsuffix .o, $(basename $(SRC)))
 AS_OBJS := $(addsuffix .o, $(basename $(AS_SRC)))
@@ -150,21 +144,11 @@ NOP = @$(MISC)
 
 .PRECIOUS: %.exe %.out %.err
 
-$(INFO)/%.info : %.tex
-	makeinfo --no-split $<
-
-$(INFO)/%.info : %.txi
-	makeinfo --no-split $<
-
-$(BIN)/%.exe : $C %.o $L
-	$(LINK)
-	$(EXE)
-
-$(HOSTBIN)/%.exe : %
-	$(GCC) -o $@ $^
-
 all :: $(OBJS) $(EXTRA_OBJS) $(EXTRA_FILES) $(AS_OBJS)
 	$(NOP)
+
+$(LIB) :
+	mkdir $@
 
 ifneq ($(MAKEFILE_LIB),1)
 all :: makefile.oh makefile.oho
