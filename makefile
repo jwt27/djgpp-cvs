@@ -28,6 +28,9 @@ endif
 .PHONY: subs dj64 djdev64
 
 all: dj64 djdev64
+	@echo
+	@echo "Done building. You may need to run \"sudo make install\" now."
+	@echo "You can first run \"sudo make uninstall\" to purge the prev install."
 
 subs:
 	$(MAKE) -C src CROSS_PREFIX=$(CROSS_PREFIX)
@@ -66,6 +69,8 @@ install_djdev64:
 	cp -fP $(DJDEV64DEVL) $(DESTDIR)$(LIBDIR)
 	$(INSTALL) -m 0755 $(DJSTUB64LIB) $(DESTDIR)$(LIBDIR)
 	cp -fP $(DJSTUB64DEVL) $(DESTDIR)$(LIBDIR)
+	@echo
+	@echo "Done installing. You may need to run \"ldconfig\" now."
 
 install: install_dj64 install_djdev64
 
