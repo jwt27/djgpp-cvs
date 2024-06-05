@@ -1,2 +1,0 @@
-all :
-	@-rem do nothing

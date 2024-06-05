@@ -1,9 +1,0 @@
- *	qexp( x, y )		y = exp( x )
- *	qfloor( x, y )		y = largest integer not greater than x
- *      qlog( x, y )		y = log( x ) [natural logarithm]
- *	qpow( x, y, z )         z = x^y [x raised to the y power]
- *	qrand( q )              q = pseudorandom number in [1,2)
- *	qremain( a, b, c )	c = remainder after dividing b by a.
- *	qround( x, y )		y = nearest integer to x
- *	qsqrt( x, y )           y = sqrt( x )
- *	qtanh( x, y )		y = tanh( x ) [hyperbolic tangent]
