@@ -135,21 +135,66 @@ made to the source code to make it more portable:
 - Use macros like DATA_PTR() and PTR_DATA() to convert between the DOS
   offsets and 64bit pointers. Plain type-casts should now be avoided for
   that purpose.
-- Update your makefile to involve thunk_gen into a build process.
-  This procedure is currently not properly documented, so you need to look
-  into
-  [this makefile](https://github.com/dosemu2/comcom64/blob/master/src/Makefile)
-  of comcom64. Note that the source tree contains the
-  [32](https://github.com/dosemu2/comcom64/tree/master/32)
-  directory with djgpp-compatible makefile. You can compare them to figure
-  out what needs to be changed, or ask me for help on github. :)
-  This example shows that the same sources can be built by both dj64 and
-  djgpp, meaning a rather good compatibility level.
+
+Next, add this to your makefile, verbatim:
+```
+TGMK = $(shell pkg-config --variable=makeinc thunk_gen)
+ifeq ($(TGMK),)
+ifeq ($(filter clean,$(MAKECMDGOALS)),)
+$(error thunk_gen not installed)
+endif
+endif
+TFLAGS = -a 4 -p 4
+PDHDR = $(SRC)/asm.h
+include $(TGMK)
+```
+to involve thunk_gen into a build process. `TFLAGS` variable sets the
+alignment of arguments on stack, and a pointer size. For 32bit
+djgpp-compatible sources, both should be set to 4, as in the above snip.
+`PDHDR` specifies the
+[header file](https://github.com/dosemu2/comcom64/blob/master/src/asm.h)
+to generate thunks from.
+
+Next comes the building stage with `dj64-gcc`. It accepts similar options
+to gcc. Use `-c` to produce the object files. You should link the object
+files with host gcc this way:
+```
+LDFLAGS = $(shell pkg-config --libs dj64) \
+  -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
+  -Wl,-rpath=/usr/i386-pc-dj64/lib64
+$(LIB): $(OBJS)
+	gcc $(LDFLAGS) $^ -o $@
+```
+which gives you a shared library, because `$(shell pkg-config --libs dj64)`
+adds the shared library flags.
+
+Please note that you need to add a certain thunk files to your project, like
+[thunks_a.c](https://github.com/dosemu2/comcom64/blob/master/src/thunks_a.c)
+and
+[thunks_c.c](https://github.com/dosemu2/comcom64/blob/master/src/thunks_c.c)
+. As you can see, you don't need to put too many things there, as these
+files include the auto-generated stuff. `thunks_a.c` is needed if you
+refrence global asm symbols, and `thunks_c.c` is needed if you call C
+functions from asm. If you call asm from C, then you also need `thunks_p.c`,
+which is currently not documented.
+
+Please note that the asm files are excluded from the C build. They are
+built separately, together with
+[plt.S](https://github.com/dosemu2/comcom64/blob/master/src/plt.S),
+from which `plt.asm` is produced. Asm files are compiled with the i686 GNU
+assembler, or with x86_64 one with `--32` flag. The resulting binaries
+are linked with the GNU linker for i686 or x86_64 with these flags:
+`-melf_i386 -static`.
+
+Next comes the linking stage with `djlink`.
+This procedure is currently not properly documented, so you need to look into
+[this makefile](https://github.com/dosemu2/comcom64/blob/master/src/Makefile)
+and
+[this script](https://github.com/dosemu2/comcom64/blob/master/src/link.sh)
+of comcom64.
 
 Once you managed to build the code, you get an executable that you can
-run under dosemu2. dj64 is a very young project, so don't expect your
-code to work from the first attempt. :) Perhaps you'll need to submit
-a bug report or two (or twenty) before you can get it running.
+run under dosemu2.
 
 ## what's unimplemented
 - direct calls from C to assembler code (calls from asm to C supported)
