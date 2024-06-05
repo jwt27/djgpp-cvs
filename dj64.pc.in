@@ -2,5 +2,6 @@ Name: dj64
 Description: dj64 dev suit
 Version: @VERSION@
 prefix=@PREFIX@
-Cflags: -I${prefix}/i386-pc-dj64/include -DDJ64
-Libs: -L${prefix}/i386-pc-dj64/lib64 -ldj64
+cppflags=-I${prefix}/i386-pc-dj64/include -DDJ64
+Cflags: -fpic
+Libs: -L${prefix}/i386-pc-dj64/lib64 -ldj64 -shared -Wl,-Bsymbolic

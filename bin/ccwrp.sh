@@ -35,8 +35,8 @@ do
     esac
 done
 if [ -n "$*" ]; then
-  echo "cc -E -CC -g0 `pkg-config --cflags dj64` ${INCS} ${LAST_ARG} | cc -xc - $*"
-  cc -E -CC -g0 `pkg-config --cflags dj64` ${INCS} ${LAST_ARG} | cc -xc - $*
+  cc -E -CC -g0 `pkg-config --variable=cppflags dj64` \
+    ${INCS} ${LAST_ARG} | cc -xc `pkg-config --cflags dj64` $* -
 else
   cc ${LAST_ARG}
 fi
