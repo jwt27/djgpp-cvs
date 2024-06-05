@@ -46,7 +46,7 @@ install_dj64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/include
 	cp -r $(TOP)/include $(DESTDIR)$(PREFIX)/i386-pc-dj64
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
-	$(INSTALL) -m 0755 ccwrp.sh $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
+	$(INSTALL) -m 0755 bin/ccwrp.sh $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
 	ln -sf ../i386-pc-dj64/bin/ccwrp.sh $(DESTDIR)$(PREFIX)/bin/dj64-gcc
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share
