@@ -6,16 +6,6 @@ CPPFLAGS += -I ../../djdev64/include
 P = parsers
 MP = $(P)/mkproto.sh
 GA = $(P)/gen_asms.sh
-TG = $(shell pkg-config --variable=binary thunk_gen)
-ifeq ($(TG),)
-ifeq ($(filter clean,$(MAKECMDGOALS)),)
-$(error thunk_gen not installed)
-endif
-endif
-TGS = $(shell pkg-config --variable=tgscript thunk_gen)
-PDS = $(shell pkg-config --variable=pdscript thunk_gen)
-TGM4 = $(shell pkg-config --variable=m4script thunk_gen)
-TFLAGS = -a 4 -p 4
 LIBN = libdj64.so.0.2
 SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
 OBJECTS = $(SOURCES:.c=.o)
@@ -35,9 +25,6 @@ asm_incs.h:
 asm_incsn.h:
 	$(GA) 1 $(TOP)/../../include >$@
 
-plt_asmc.h: thunk_asms.tmp
-	$(PDS) 4 $< >$@
-
 asym_incs.h:
 	$(GA) 2 $(TOP)/../../include >$@
 
@@ -46,16 +33,14 @@ thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
 	$(MP) $< $(TOP)/../../include thunk_asms.tmp \
 		thunk_calls.tmp plt.inc thunk_incs.h
 
-thunk_calls.h: thunk_calls.tmp
-	$(TG) $(TFLAGS) <$< >$@
-
-thunk_asms.h: thunk_asms.tmp
-	$(TG) $(TFLAGS) 1 <$< | $(TGS) $(TGM4) >$@_ \
-		|| ($(RM) $@_ ; false)
-	$(TG) $(TFLAGS) 2 <$< >$@__ \
-		|| ($(RM) $@__ ; false)
-	cat $@_ $@__ >$@
-	rm -f $@_ $@__
+TGMK = $(shell pkg-config --variable=makeinc thunk_gen)
+ifeq ($(TGMK),)
+ifeq ($(filter clean,$(MAKECMDGOALS)),)
+$(error thunk_gen not installed)
+endif
+endif
+TFLAGS = -a 4 -p 4
+include $(TGMK)
 
 thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
 thunks_a.o: asm_incs.h plt_asmc.h asym_incs.h
