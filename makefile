@@ -86,6 +86,7 @@ uninstall:
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJDEV64LIB))
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64DEVL))
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64LIB))
+	ldconfig
 
 clean:
 	$(MAKE) -C src clean
