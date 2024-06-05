@@ -41,16 +41,6 @@ subs:
 .PHONY : clean
 clean : misc.exe makemake.exe
 	$(MAKE) -C libc clean
-	$(MAKE) -C libm clean
-	$(MAKE) -C debug clean
-	$(MAKE) -C libemu clean
-	$(MAKE) -C utils clean
-	$(MAKE) -C dxe clean
-	$(MAKE) -C mkdoc clean
-	$(MAKE) -C docs clean
-	$(MAKE) -C djasm clean
-	-$(MAKE) -C ../zoneinfo/src clean
-	./misc.exe rm gpp.opt
 	./misc.exe rm gcc.opt gcc-l.opt
 	./misc.exe rm makemake.exe copyrite.exe misc.exe
 
