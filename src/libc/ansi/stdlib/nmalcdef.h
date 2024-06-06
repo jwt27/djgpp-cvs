@@ -18,13 +18,13 @@
 #define MEMALIGN
 
 #ifndef NEWMALLDBG
-#  undef  NDEBUG
-#  define NDEBUG
+#  undef  _NDEBUG
+#  define _NDEBUG
 #else
-#  undef  NDEBUG
+#  undef  _NDEBUG
 #endif
 
-#ifndef NDEBUG
+#ifndef _NDEBUG
    /* diddle these to control areas debugged */
 #  define DEBUGM 1     /* malloc */
 #  define DEBUGF 1     /* free */
@@ -36,6 +36,7 @@
    /* the HOOKABLE variant is only for development   */
    /* It allows some other package to define malloc, */
    /* free, realloc, and to call this package.       */
+#if 0
 #  ifndef HOOKABLE
 #     define nmalloc  malloc
 #     define nfree    free
@@ -49,6 +50,7 @@
 #     define nmemalign _memalign
 #     define ncalloc   calloc  /* can't hook this */
 #  endif
+#endif
 #  define fakesbrk sbrk
 #endif
 
@@ -76,10 +78,10 @@ enum {STDIN = 0, STDOUT, STDERR, STDAUX, STDPRN}; /* handles */
    DEBUGx values above to 0 in place of 1.  Later many
    routines will be made inline.  For debugging compilations
    are done with "/Dinline= " switch.  For production use
-   the "/DNDEBUG=1" switch, which does all the above except
+   the "/D_NDEBUG=1" switch, which does all the above except
    the inlining. But see NEWMALLDBG above.
 */
-#ifndef NDEBUG
+#ifndef _NDEBUG
 #  include "nmalloc.h" /* while testing before name changes */
 #else
 #  ifdef HOOKABLE

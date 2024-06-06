@@ -69,13 +69,16 @@ long	atol(const char *_s);
 void *	bsearch(const void *_key, const void *_base, size_t _nelem,
 		size_t _size, int (*_cmp)(const void *_ck, const void *_ce));
 void *	calloc(size_t _nelem, size_t _size);
+unsigned int calloc32(size_t _nelem, size_t _size);
 div_t	div(int _numer, int _denom);
 void	NORETURN exit(int _status);
 void	free(void *_ptr);
+void	free32(unsigned int _addr);
 char *	getenv(const char *_name);
 long	labs(long _i);
 ldiv_t	ldiv(long _numer, long _denom);
 void *	malloc(size_t _size);
+unsigned int malloc32(size_t _size);
 int	mblen(const char *_s, size_t _n);
 size_t	mbstowcs(wchar_t *_wcs, const char *_s, size_t _n);
 int	mbtowc(wchar_t *_pwc, const char *_s, size_t _n);
@@ -83,6 +86,7 @@ void	qsort(void *_base, size_t _nelem, size_t _size,
 	      int (*_cmp)(const void *_e1, const void *_e2));
 int	rand(void);
 void *	realloc(void *_ptr, size_t _size);
+unsigned int realloc32(unsigned int _addr, size_t _size);
 void	srand(unsigned _seed);
 double	strtod(const char *_s, char **_endptr);
 long	strtol(const char *_s, char **_endptr, int _base);

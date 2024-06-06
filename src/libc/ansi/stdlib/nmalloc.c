@@ -34,6 +34,7 @@
 */
 
 #include <stdint.h>
+#include <dpmi.h>
 #include "nmalcdef.h"
 
 /* ============== Globals ============= */
@@ -539,7 +540,7 @@ static memblockp extendsbrk(ulong szxtra)
    did a previous sbrk.  I am not sure if this affects anything. I
    believe it does not.
 */
-void *nmalloc(size_t size)
+static void *nmalloc(size_t size)
 {
    memblockp m = NULL, m1;
    ulong     szneed;
@@ -606,6 +607,14 @@ void *nmalloc(size_t size)
    return p;
 } /* nmalloc */
 
+unsigned int malloc32(size_t size)
+{
+    void *ptr = nmalloc(size);
+    if (!ptr)
+        return 0;
+    return PTR_DATA(ptr);
+}
+
 /* 1------------------1 */
 
 static void dofree(memblockp m)
@@ -624,7 +633,7 @@ static void dofree(memblockp m)
 
 /* 1------------------1 */
 
-void nfree(void *ptr)
+static void nfree(void *ptr)
 {
    memblockp m;
 
@@ -647,6 +656,11 @@ void nfree(void *ptr)
       hookptr[free_null_HK](0, NULL);
 } /* nfree */
 
+void free32(unsigned int addr)
+{
+    nfree(DATA_PTR(addr));
+}
+
 /* 1------------------1 */
 
 static memblockp mv2lastsbrk(memblockp m, ulong szneed)
@@ -665,7 +679,7 @@ static memblockp mv2lastsbrk(memblockp m, ulong szneed)
 
 /* 1------------------1 */
 
-void *nrealloc(void *ptr, size_t size)
+static void *nrealloc(void *ptr, size_t size)
 {
    memblockp m, m1, m2;
    void     *p;
@@ -811,6 +825,15 @@ exeunt:       /* label used on realloc of free block */
    return p;
 } /* nrealloc */
 
+unsigned int realloc32(unsigned int addr, size_t size)
+{
+    void *ptr = (addr ? DATA_PTR(addr) : NULL);
+    void *ret = nrealloc(ptr, size);
+    if (!ret)
+        return 0;
+    return PTR_DATA(ret);
+}
+
 /* 1------------------1 */
 
 /* calloc included here to ensure that it handles the
@@ -818,7 +841,7 @@ exeunt:       /* label used on realloc of free block */
    multiplication n*s can wrap, yielding a too small
    value, so we must ensure calloc rejects this.
 */
-void *ncalloc(size_t n, size_t s)
+static void *ncalloc(size_t n, size_t s)
 {
    void   *result;
    size_t  sz;
@@ -830,3 +853,11 @@ void *ncalloc(size_t n, size_t s)
       }
    return result;
 } /* ncalloc */
+
+unsigned int calloc32(size_t n, size_t s)
+{
+    void *ptr = ncalloc(n, s);
+    if (!ptr)
+        return 0;
+    return PTR_DATA(ptr);
+}
