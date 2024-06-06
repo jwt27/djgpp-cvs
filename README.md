@@ -141,26 +141,27 @@ made to the source code to make it more portable:
 static unsigned int mouse_regs;
 #else
 static __dpmi_regs *mouse_regs;
-#define addr2ptr(a) ((unsigned char *)((a) - __djgpp_base_address))
 #endif
-static __dpmi_meminfo mregs = {.size = sizeof(__dpmi_regs) };
 ...
-    __dpmi_allocate_memory(&mregs);
 #ifdef DJ64
-    mouse_regs = mregs.address - __djgpp_base_address;
+    mouse_regs = malloc32(sizeof(__dpmi_regs));
 #else
-    mouse_regs = (__dpmi_regs *) addr2ptr(mregs.address);
+    mouse_regs = (__dpmi_regs *) malloc(sizeof(__dpmi_regs));
 #endif
-    __dpmi_allocate_real_mode_callback(my_mouse_handler, mouse_regs,
-                                       &newm);
+    __dpmi_allocate_real_mode_callback(my_mouse_handler, mouse_regs, &newm);
+...
+    __dpmi_free_real_mode_callback(&newm);
+#ifdef DJ64
+    free32(mouse_regs);
+#else
+    free(mouse_regs);
+#endif
 ```
   In this example we see that the second argument of
   `__dpmi_allocate_real_mode_callback()` was changed from the pointer to
-  `unsigned int`. Also the memory is allocated here by the direct DPMI call
-  instead of using `malloc()`. Compiled with djgpp, such code will need the
-  call to `__djgpp_nearptr_enable()` before accessing the registers. Perhaps
-  in the future this should be simplified (see
-  [#2](https://github.com/stsp/dj64dev/issues/2)).
+  `unsigned int`. The memory is allocated with `malloc32()` call and freed
+  with `free32()` call. This requires a few ifdefs if you want that code to
+  be also buildable with djgpp.
 - The file named
   [glob_asm.h](https://github.com/dosemu2/comcom64/blob/master/src/glob_asm.h)
   should be created, which lists all the global asm symbols.
