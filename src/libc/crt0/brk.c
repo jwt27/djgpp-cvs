@@ -1,8 +1,9 @@
 /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
 #include <unistd.h>
+#include <libc/stubs.h>
+#include <dpmi.h>
 
 extern int __brk(void *);
-extern void *__sbrk(int delta);
 
 int
 brk(void *_heaptop)
@@ -14,5 +15,5 @@ brk(void *_heaptop)
 
 void *sbrk(int delta)
 {
-  return __sbrk(delta);
+  return DATA_PTR(__sbrk(delta));
 }

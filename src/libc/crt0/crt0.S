@@ -262,7 +262,7 @@ dos_alloc_ok:
 	/* copy stubinfo into local memory */
 	movl	%fs:STUBINFO_SIZE, %eax
 	pushl	%eax
-	call	___sbrk
+	call	____sbrk
 	cmpl	$-1, %eax
 	je	no_memory
 	movl	%eax, __stubinfo
@@ -306,7 +306,7 @@ no_selector:
 	movl	%eax, __stklen		/* store the actual stack length */
 use_stubinfo_stack_size:
 	pushl	%eax
-	call	___sbrk			/* allocate the memory */
+	call	____sbrk			/* allocate the memory */
 	cmpl	$-1, %eax
 	je	no_memory
 	movl	%eax, ___djgpp_stack_limit	/* Bottom of stack */
@@ -433,9 +433,7 @@ ___sbrk_brk_hook:
 	.long	brk_hook_ret
 #endif
 
-	.global	___sbrk
-	.balign	16,,7
-___sbrk:
+____sbrk:
 	movl	__what_size_app_thinks_it_is, %eax
 	movl	4(%esp), %ecx			/* Increment size */
 	addl	%ecx, %eax
@@ -654,6 +652,14 @@ brk_return:
 	popl	%edi
 	popl	%esi
 	ret
+
+	.global	___sbrk
+	.balign	16,,7
+___sbrk:
+	pushl	8(%esp)
+	call ____sbrk
+	popl	%ecx
+	RET_I
 
 	.globl	__crt0_init_mcount
 __crt0_init_mcount:

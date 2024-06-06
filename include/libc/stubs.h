@@ -73,7 +73,6 @@ extern "C" {
 #define pow10 __pow10
 #define pow2 __pow2
 #define readlink __readlink
-#define sbrk __sbrk
 #define setitimer __setitimer
 #define setmode __setmode
 #define spawnve __spawnve
@@ -95,7 +94,8 @@ int __spawnve(int mode, const char *path, char *const argv[],
 int __chdir (const char *mydirname);
 char * __getcwd(char *buf, size_t size);
 int __brk(void *_heaptop);
-void *__sbrk(int delta);
+unsigned int __sbrk(int delta);
+void *sbrk(int delta);
 long double __modfl(long double _x, long double *_pint);
 
 EXTERN ASM(unsigned, __djgpp_timer_countdown);
