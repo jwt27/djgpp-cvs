@@ -653,12 +653,13 @@ brk_return:
 	popl	%esi
 	ret
 
-	.global	___sbrk
 	.balign	16,,7
-___sbrk:
-	pushl	8(%esp)
+	FUNC(___sbrk)
+	ENTER
+	pushl	ARG1
 	call ____sbrk
 	popl	%ecx
+	_LEAVE
 	RET_I
 
 	.globl	__crt0_init_mcount
