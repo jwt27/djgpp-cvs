@@ -135,6 +135,42 @@ made to the source code to make it more portable:
 - Use macros like DATA_PTR() and PTR_DATA() to convert between the DOS
   offsets and 64bit pointers. Plain type-casts should now be avoided for
   that purpose.
+- You need to slightly re-arrange the registration of realmode callbacks:
+```
+#ifdef DJ64
+static unsigned int mouse_regs;
+#else
+static __dpmi_regs *mouse_regs;
+#define addr2ptr(a) ((unsigned char *)((a) - __djgpp_base_address))
+#endif
+static __dpmi_meminfo mregs = {.size = sizeof(__dpmi_regs) };
+...
+    __dpmi_allocate_memory(&mregs);
+#ifdef DJ64
+    mouse_regs = mregs.address - __djgpp_base_address;
+#else
+    mouse_regs = (__dpmi_regs *) addr2ptr(mregs.address);
+#endif
+    __dpmi_allocate_real_mode_callback(my_mouse_handler, mouse_regs,
+                                       &newm);
+```
+  In this example we see that the second argument of
+  `__dpmi_allocate_real_mode_callback()` was changed from the pointer to
+  `unsigned int`. Also the memory is allocated here by the direct DPMI call
+  instead of using `malloc()`. Compiled with djgpp, such code will need the
+  call to `__djgpp_nearptr_enable()` before accessing the registers. Perhaps
+  in the future this should be simplified (see
+  [#2](https://github.com/stsp/dj64dev/issues/2)).
+- The file named
+  [glob_asm.h](https://github.com/dosemu2/comcom64/blob/master/src/glob_asm.h)
+  should be created, which lists all the global asm symbols.
+- C functions that are called from asm, as well as the asm functions that
+  are called from C, should be put to the separate header file, for example
+  [asm.h](https://github.com/dosemu2/comcom64/blob/master/src/asm.h).
+  In that file you need to define the empty macros with names `ASMCFUNC`
+  and `ASMFUNC`, and mark the needed functions with them. `ASMCFUNC` denotes
+  the C function called from asm, and `ASMFUNC` denotes the asm function
+  called from C.
 
 Next, add this to your makefile, verbatim:
 ```
