@@ -197,8 +197,8 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         ret = process_athunks(u->athunks, u->num_athunks, mem_base, u->eops, eh);
         if (ret)
             return ret;
-        for (i = 0; i < num_cthunks; i++) {
-            struct athunk *t = &asm_cthunks[i];
+        for (i = 0; i < num_pthunks; i++) {
+            struct athunk *t = &asm_pthunks[i];
             asm_tab[i] = u->eops->getsym(eh, t->name);
             if (!asm_tab[i]) {
                 djloudprintf("symbol %s not resolved\n", t->name);
@@ -254,19 +254,19 @@ uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
     int rc;
     dpmi_paddr pma;
-    assert(num < num_cthunks);
+    assert(num < num_pthunks);
     pma.selector = _cs;
     pma.offset32 = asm_tab[num];
     if (flags & _TFLG_NORET) {
-        djlogprintf("NORET call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
+        djlogprintf("NORET call %s: 0x%x:0x%x\n", asm_pthunks[num].name,
             pma.selector, pma.offset32);
         dj64api->asm_noret(&s_regs, pma, sp, len);
         longjmp(*noret_jmp, ASM_NORET);
     }
-    djlogprintf("asm call %s: 0x%x:0x%x\n", asm_cthunks[num].name,
+    djlogprintf("asm call %s: 0x%x:0x%x\n", asm_pthunks[num].name,
             pma.selector, pma.offset32);
     rc = dj64api->asm_call(&s_regs, pma, sp, len);
-    djlogprintf("asm call %s returned %i:0x%x\n", asm_cthunks[num].name,
+    djlogprintf("asm call %s returned %i:0x%x\n", asm_pthunks[num].name,
             rc, s_regs.eax);
     switch (rc) {
     case ASM_CALL_OK:

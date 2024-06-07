@@ -24,8 +24,6 @@
 #include <dj64/asm_inc.h>
 #endif
 
-#define __S(x) #x
-#define _S(x) __S(x)
 #define _ASM(v) { _S(_##v), &__##v, 0 }
 #define __ASM(t, v) _ASM(v)
 #define __ASM_PTR(t, v) _ASM(v)
@@ -38,14 +36,3 @@ struct athunk _U(asm_thunks)[] = {
 };
 
 const int _U(num_athunks) = _countof(_U(asm_thunks));
-
-#ifndef NO_ASMC_THUNKS
-struct athunk _U(asm_cthunks)[] = {
-#define ASMCSYM(s, n) [n] = { _S(_##s), NULL, 0 },
-#include "plt_asmc.h"
-};
-
-const int _U(num_cthunks) = _countof(_U(asm_cthunks));
-
-uint32_t _U(asm_tab)[_countof(_U(asm_cthunks))];
-#endif

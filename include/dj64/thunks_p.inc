@@ -72,3 +72,12 @@
 #define _UCNV(c, l, n) U##c(a##n, _a##n, l)
 
 #include "thunk_asms.h"
+
+struct athunk _U(asm_pthunks)[] = {
+#define ASMCSYM(s, n) [n] = { _S(_##s), NULL, 0 },
+#include "plt_asmc.h"
+};
+
+const int _U(num_pthunks) = _countof(_U(asm_pthunks));
+
+uint32_t _U(asm_tab)[_countof(_U(asm_pthunks))];

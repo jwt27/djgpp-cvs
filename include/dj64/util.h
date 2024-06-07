@@ -26,4 +26,21 @@ void djlogprintf(const char *format, ...) PRINTF(1);
 typedef uint32_t (dj64dispatch_t)(int fn, uint8_t *sp, int *r_len);
 void register_dispatch_fn(dj64dispatch_t *fn);
 
+struct athunk {
+    const char *name;
+    unsigned *ptr;
+    unsigned flags;
+};
+
+#ifdef _IN_DJ64
+#define _U(x) x
+#else
+#define _U(x) x##_user
+#endif
+
+#define __S(x) #x
+#define _S(x) __S(x)
+
+#define _countof(array) (sizeof(array) / sizeof(array[0]))
+
 #endif
