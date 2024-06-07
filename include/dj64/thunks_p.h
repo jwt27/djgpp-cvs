@@ -13,6 +13,10 @@ void dj64_rm_dosobj(const void *data, uint32_t fa);
 #define _TFLG_NORET 2
 #define _TFLG_INIT 4
 
-extern struct athunk _U(asm_pthunks)[];
-extern const int _U(num_pthunks);
-extern uint32_t _U(asm_tab)[];
+struct pthunks {
+    struct athunk *pt;
+    int num;
+    uint32_t *tab;
+};
+
+extern struct pthunks pthunks;
