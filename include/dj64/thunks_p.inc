@@ -40,7 +40,11 @@
 #define __ARG_PTR_FAR_A(t)
 #define __RET(t, v) v
 #define __RET_PTR(t, v) djaddr2ptr(v)
+#ifdef _IN_DJ64
 #define __CALL(n, s, l, f) dj64_asm_call(n, s, l, f)
+#else
+#define __CALL(n, s, l, f) dj64_asm_call_u(_handle, n, s, l, f)
+#endif
 #define __CSTK(l) dj64_clean_stk(l)
 
 #define __CNV_PTR(t, d, f, l, t0) t d  = dj64_obj_init(f, l)
@@ -71,6 +75,13 @@
 
 #define _UCNV(c, l, n) U##c(a##n, _a##n, l)
 
+#ifndef _IN_DJ64
+static int _handle;
+#define STATIC static
+#else
+#define STATIC
+#endif
+
 #include "thunk_asms.h"
 
 static struct athunk _U(asm_pthunks)[] = {
@@ -80,8 +91,16 @@ static struct athunk _U(asm_pthunks)[] = {
 static const int _U(num_pthunks) = _countof(_U(asm_pthunks));
 static uint32_t _U(asm_tab)[_countof(_U(asm_pthunks))];
 
-struct pthunks pthunks = {
+STATIC struct pthunks pthunks = {
     _U(asm_pthunks),
     _U(num_pthunks),
     _U(asm_tab),
 };
+
+#ifndef _IN_DJ64
+__attribute__((constructor))
+static void init(void)
+{
+    register_pthunks(&pthunks, &_handle);
+}
+#endif

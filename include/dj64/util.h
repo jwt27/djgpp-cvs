@@ -25,6 +25,8 @@ void djlogprintf(const char *format, ...) PRINTF(1);
 
 typedef uint32_t (dj64dispatch_t)(int fn, uint8_t *sp, int *r_len);
 void register_dispatch_fn(dj64dispatch_t *fn);
+struct pthunks;
+void register_pthunks(struct pthunks *pt, int *handle_p);
 
 struct athunk {
     const char *name;

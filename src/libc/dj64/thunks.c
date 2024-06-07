@@ -44,6 +44,7 @@ struct udisp {
     const struct elf_ops *eops;
     struct athunk *athunks;
     int num_athunks;
+    struct pthunks *pt;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -52,6 +53,9 @@ static const struct dj64_api *dj64api;
 #define MAX_RECUR 10
 static uint32_t objs[MAX_RECUR][MAX_OBJS];
 static dj64dispatch_t *disp_fn;
+static struct pthunks *u_pthunks;
+static int *u_handle_p;
+
 static void do_rm_dosobj(uint32_t fa);
 
 void djloudprintf(const char *format, ...)
@@ -167,6 +171,23 @@ static int process_athunks(struct athunk *at, int nat, uint32_t mem_base,
     return ret;
 }
 
+static int process_pthunks(struct pthunks *pt,
+	const struct elf_ops *eops, void *eh)
+{
+    int i, ret = 0;
+
+    for (i = 0; i < pt->num; i++) {
+        struct athunk *t = &pt->pt[i];
+        pt->tab[i] = eops->getsym(eh, t->name);
+        if (!pt->tab[i]) {
+            djloudprintf("symbol %s not resolved\n", t->name);
+            ret = -1;
+            break;
+        }
+    }
+    return ret;
+}
+
 static void do_early_init(void)
 {
     _crt0_startup_flags = __crt0_startup_flags;
@@ -184,31 +205,35 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         uint32_t mem_base = regs->edx;
         char *elf;
         void *eh;
-        int i, ret = 0;
+        int ret;
 
         _cs = esi;
         djlogprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
         djlogprintf("data %p(%s)\n", elf, elf);
         eh = u->eops->open(elf, size);
+        if (!eh)
+            return -1;
         ret = process_athunks(asm_thunks, num_athunks, mem_base, u->eops, eh);
         if (ret)
-            return ret;
+            goto err;
         ret = process_athunks(u->athunks, u->num_athunks, mem_base, u->eops, eh);
         if (ret)
-            return ret;
-        for (i = 0; i < pthunks.num; i++) {
-            struct athunk *t = &pthunks.pt[i];
-            pthunks.tab[i] = u->eops->getsym(eh, t->name);
-            if (!pthunks.tab[i]) {
-                djloudprintf("symbol %s not resolved\n", t->name);
-                ret = -1;
-                break;
-            }
+            goto err;
+        ret = process_pthunks(&pthunks, u->eops, eh);
+        if (ret)
+            goto err;
+        if (u->pt) {
+            ret = process_pthunks(u->pt, u->eops, eh);
+            if (ret)
+                goto err;
         }
         u->eops->close(eh);
 
         do_early_init();
+        return ret;
+    err:
+        u->eops->close(eh);
         return ret;
     }
     }
@@ -236,6 +261,12 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     u->eops = ops;
     u->athunks = athunks;
     u->num_athunks = num_athunks;
+    if (u_pthunks) {
+        u->pt = u_pthunks;
+        *u_handle_p = handle;
+        u_pthunks = NULL;
+        u_handle_p = NULL;
+    }
     return dops;
 }
 
@@ -250,23 +281,24 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
+static uint64_t do_asm_call(struct pthunks *pt, int num, uint8_t *sp,
+        uint8_t len, int flags)
 {
     int rc;
     dpmi_paddr pma;
-    assert(num < pthunks.num);
+    assert(num < pt->num);
     pma.selector = _cs;
-    pma.offset32 = pthunks.tab[num];
+    pma.offset32 = pt->tab[num];
     if (flags & _TFLG_NORET) {
-        djlogprintf("NORET call %s: 0x%x:0x%x\n", pthunks.pt[num].name,
+        djlogprintf("NORET call %s: 0x%x:0x%x\n", pt->pt[num].name,
             pma.selector, pma.offset32);
         dj64api->asm_noret(&s_regs, pma, sp, len);
         longjmp(*noret_jmp, ASM_NORET);
     }
-    djlogprintf("asm call %s: 0x%x:0x%x\n", pthunks.pt[num].name,
+    djlogprintf("asm call %s: 0x%x:0x%x\n", pt->pt[num].name,
             pma.selector, pma.offset32);
     rc = dj64api->asm_call(&s_regs, pma, sp, len);
-    djlogprintf("asm call %s returned %i:0x%x\n", pthunks.pt[num].name,
+    djlogprintf("asm call %s returned %i:0x%x\n", pt->pt[num].name,
             rc, s_regs.eax);
     switch (rc) {
     case ASM_CALL_OK:
@@ -277,6 +309,18 @@ uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
         break;
     }
     return s_regs.eax | ((uint64_t)s_regs.edx << 32);
+}
+
+uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
+{
+    return do_asm_call(&pthunks, num, sp, len, flags);
+}
+
+uint64_t dj64_asm_call_u(int handle, int num, uint8_t *sp, uint8_t len,
+        int flags)
+{
+    assert(handle < MAX_HANDLES);
+    return do_asm_call(udisps[handle].pt, num, sp, len, flags);
 }
 
 uint8_t *dj64_clean_stk(size_t len)
@@ -335,4 +379,11 @@ void register_dispatch_fn(dj64dispatch_t *fn)
 {
     assert(!disp_fn);
     disp_fn = fn;
+}
+
+void register_pthunks(struct pthunks *pt, int *handle_p)
+{
+    assert(!u_pthunks);
+    u_pthunks = pt;
+    u_handle_p = handle_p;
 }
