@@ -167,101 +167,86 @@ static __dpmi_regs *mouse_regs;
   should be created, which lists all the global asm symbols.
 - C functions that are called from asm, as well as the asm functions that
   are called from C, should be put to the separate header file, for example
-  [asm.h](https://github.com/dosemu2/comcom64/blob/master/src/asm.h).
+  [asm.h](https://github.com/stsp/dj64dev/blob/master/demos/hello/asm.h).
   In that file you need to define the empty macros with names `ASMCFUNC`
   and `ASMFUNC`, and mark the needed functions with them. `ASMCFUNC` denotes
   the C function called from asm, and `ASMFUNC` denotes the asm function
-  called from C.
+  called from C. In your `Makefile` you need to write `PDHDR = asm.h`.
+
+Now you need to add a certain thunk files to your project, like
+[thunks_a.c](https://github.com/stsp/dj64dev/blob/master/demos/hello/thunks_a.c)
+,
+[thunks_c.c](https://github.com/stsp/dj64dev/blob/master/demos/hello/thunks_c.c)
+and
+[thunks_p.c](https://github.com/stsp/dj64dev/blob/master/demos/hello/thunks_p.c)
+. As you can see, you don't need to put too many things there, as these
+files include the auto-generated stuff. `thunks_a.c` is needed if you
+refrence global asm symbols from C. `thunks_c.c` is needed if you call C
+functions from asm. `thunks_p.c` is needed if you call to asm from C.
 
 Next, add this to your makefile, verbatim:
 ```
-TGMK = $(shell pkg-config --variable=makeinc thunk_gen)
-ifeq ($(TGMK),)
+DJMK = $(shell pkg-config --variable=makeinc dj64)
+ifeq ($(DJMK),)
 ifeq ($(filter clean,$(MAKECMDGOALS)),)
-$(error thunk_gen not installed)
+$(error dj64 not installed)
 endif
+else
+include $(DJMK)
 endif
-TFLAGS = -a 4 -p 4
-PDHDR = $(SRC)/asm.h
-include $(TGMK)
 ```
-to involve thunk_gen into a build process. `TFLAGS` variable sets the
-alignment of arguments on stack, and a pointer size. For 32bit
-djgpp-compatible sources, both should be set to 4, as in the above snip.
-`PDHDR` specifies the
-[header file](https://github.com/dosemu2/comcom64/blob/master/src/asm.h)
-to generate thunks from.
-
-Next comes the building stage with `dj64-gcc`. It accepts similar options
-to gcc. Use `-c` to produce the object files. You should link the object
-files with host `gcc` this way:
+to involve dj64 into a build process. Please see
+[this makefile](https://github.com/stsp/dj64dev/blob/master/demos/hello/makefile)
+for an example. Some variables must be exacly of the same name as in an
+example file. Those are: `CFLAGS`, `OBJECTS`, `AS_OBJECTS` and `PHDR`.
+Make your `clean` target to depend on `clean_dj64`:
 ```
-LDFLAGS = $(shell pkg-config --libs dj64) \
-  -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
-  -Wl,-rpath=/usr/i386-pc-dj64/lib64
-$(LIB): $(OBJS)
-	gcc $(LDFLAGS) $^ -o $@
+clean: clean_dj64
+	$(RM) $(TGT)
 ```
-which gives you a shared library, because `$(shell pkg-config --libs dj64)`
-adds the shared library flags.
+As soon as the dj64's makefile is hooked in, it takes care of compiling
+the object files and sets the following variables as the result:
+`DJ64_XOBJS`, `DJ64_XLIB` and `DJ64_XELF`.
+You only need to pass those to `djlink` as described below.
 
-Please note that you need to add a certain thunk files to your project, like
-[thunks_a.c](https://github.com/dosemu2/comcom64/blob/master/src/thunks_a.c)
-and
-[thunks_c.c](https://github.com/dosemu2/comcom64/blob/master/src/thunks_c.c)
-. As you can see, you don't need to put too many things there, as these
-files include the auto-generated stuff. `thunks_a.c` is needed if you
-refrence global asm symbols, and `thunks_c.c` is needed if you call C
-functions from asm. If you call asm from C, then you also need `thunks_p.c`,
-which is currently not documented.
-
-Please note that the asm files are excluded from the C build. They are
-built separately, together with
-[plt.S](https://github.com/dosemu2/comcom64/blob/master/src/plt.S),
-from which `plt.asm` is produced. Asm files are compiled with the i686 GNU
-assembler, or with x86_64 one with `--32` flag. The resulting binaries
-are linked with the GNU linker for i686 or x86_64 with these flags:
-`-melf_i386 -static`.
-
-Next comes the linking stage with `djlink`.
-Lets consider this command line:
+Next comes the linking stage where we need to link the dj64-compiled
+`DJ64_XOBJS` objects with `djlink`:
 ```
-djlink -d dosemu_comcom64.exe.dbg libcomcom64.so -n comcom64.exe \
--f 0x0b07 -o comcom64.exe comcom64.elf
+$(TGT): $(DJ64_XOBJS)
+	$(LINK) -d dosemu_$@.dbg $(DJ64_XLIB) -n $@ -o $@ $(DJ64_XELF)
+	$(STRIP) $@
+```
+Lets consider this command line, which we get from the above recipe:
+```
+djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe tmp.elf
 ```
 `-d` option sets the debuglink name. It always has the form of
 `dosemu-<exe_file>.dbg` if you want to debug your program under dosemu2.<br/>
-Next arg is a shared library that we linked with host `gcc`.<br/>
+`libtmp.so` arg is an expansion of `DJ64_XLIB` variable set by dj64 for us.<br/>
 `-n` specifies the exe file name. It should match the `<exe_file>`
 part passed to `-d` if you want to be able to use debugger.<br/>
-`-f` specifies the so called stub flags word. It is suggested to
-leave that to 0x0b07. Or you can omit `-f`, in which case the flags
-word is zero, which should also work properly in most cases.<br/>
 `-o` specifies the output file.<br/>
-Last arg is an ELF file that we linked from an asm files.<br/>
+`tmp.elf` arg is an expansion of `DJ64_XELF` variable set by dj64.<br/>
 
 Please note that you can't freely rearrange the `djlink` arguments.
 They should be provided in exactly that order, or omitted.
 For example if you don't need to use debugger, then you can just do:
 ```
-$ strip libcomcom64.so
-$ djlink libcomcom64.so -f 0x0b07 -o comcom64.exe comcom64.elf
+$(TGT): $(DJ64_XOBJS)
+	strip $(DJ64_XLIB)
+	$(LINK) $(DJ64_XLIB) -o $@ $(DJ64_XELF)
 ```
-to get an executable without debug info. You can as well do
-`djstrip <exe_file>` to remove the debug info after linking.
-Note that even though some `djlink` args were omitted in a non-debug
-case, the order of the present ones didn't change.
+to get an executable without debug info. But the recommended way is
+to use `djstrip <exe_file>` to remove the debug info after linking.
+For `djstrip` to work, you need to link with `-d`.
+Note that even though some `djlink` args were omitted in the last
+example, the order of the present ones didn't change.
 
-Once you managed to build the code, you get an executable that you can
+Once you managed to link the objects, you get an executable that you can
 run under dosemu2.
 
-## what's unimplemented
-- direct calls from C to assembler code (calls from asm to C supported)
+## what's unsupported
 - some crt0 overrides (only `_crt0_startup_flags` override is supported)
-
-This functionality is unsupported not because its difficult to implement,
-but rather because I am not using it myself. Once it is needed, it can
-be trivially added.
 
 ## debugging
 Debugging with host gdb is supported. The djstub package provides a
