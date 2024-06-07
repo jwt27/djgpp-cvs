@@ -2,5 +2,6 @@ usr/i386-pc-dj64/include
 usr/i386-pc-dj64/lib/*.a
 usr/i386-pc-dj64/lib64/*.so
 usr/i386-pc-dj64/bin/*
+usr/i386-pc-dj64/share/*
 usr/bin/*
 usr/share/pkgconfig/dj64*.pc
