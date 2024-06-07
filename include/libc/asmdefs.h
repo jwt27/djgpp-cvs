@@ -31,7 +31,7 @@
 #define USE_FAR_CALL 1
 #if USE_FAR_CALL
 #define OFF 4
-#define RET_I retf
+#define RET_I retfl
 #else
 #define OFF 0
 #define RET_I ret
