@@ -25,7 +25,7 @@ $(error cross-binutils not installed)
 endif
 endif
 
-.PHONY: subs dj64 djdev64
+.PHONY: subs dj64 djdev64 demos
 
 all: dj64 djdev64
 	@echo
@@ -90,7 +90,7 @@ uninstall:
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64LIB))
 	ldconfig
 
-clean:
+clean: demos_clean
 	$(MAKE) -C src clean
 	$(MAKE) -C src/djdev64 clean
 	$(RM) *.pc
@@ -110,3 +110,12 @@ rpm:
 		-e 's!@LIBDIR[@]!$(LIBDIR)!g' \
 		-e 's!@VERSION[@]!$(VERSION)!g' \
 		$< >$@
+
+demos:
+	$(MAKE) -C demos
+
+demos_djgpp:
+	$(MAKE) -C demos djgpp
+
+demos_clean:
+	$(MAKE) -C demos clean
