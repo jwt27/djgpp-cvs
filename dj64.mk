@@ -11,7 +11,8 @@ else
 $(error cross-binutils not installed)
 endif
 endif
-XAS = $(CPP) $(XCPPFLAGS) -x assembler-with-cpp $(1) | $(GAS) --32
+XASFLAGS = --32 --defsym _DJ64=1
+XAS = $(CPP) $(XCPPFLAGS) -x assembler-with-cpp $(1) | $(GAS) $(XASFLAGS)
 XCPPFLAGS = -I. $(shell pkg-config --variable=cppflags dj64)
 XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
