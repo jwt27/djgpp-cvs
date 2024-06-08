@@ -72,7 +72,7 @@ install_djdev64:
 	$(INSTALL) -m 0755 $(DJSTUB64LIB) $(DESTDIR)$(LIBDIR)
 	cp -fP $(DJSTUB64DEVL) $(DESTDIR)$(LIBDIR)
 	@echo
-	@echo "Done installing. You may need to run \"ldconfig\" now."
+	@echo "Done installing. You may need to run \"sudo ldconfig\" now."
 
 install: install_dj64 install_djdev64
 
