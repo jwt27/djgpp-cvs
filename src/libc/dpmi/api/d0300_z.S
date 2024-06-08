@@ -15,10 +15,8 @@
 	ENTER
 
 	pushl	%es
-	pushl	%ss
 	movw	___djgpp_ds_alias, %ax
 	movw	%ax, %es
-	movw	%ax, %ss
 
 	movl	ARG1, %ebx
 	movl	$0, %ecx
@@ -45,7 +43,7 @@ L_not_busy:
 	DPMI(0x0300)
 	xorl	%eax,%eax
 
-	LEAVEP(decb dpmi_busy; popl %ss; popl %es)
+	LEAVEP(decb dpmi_busy; popl %es)
 
 #ifdef __ELF__
 .section .note.GNU-stack,"",%progbits
