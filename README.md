@@ -1,15 +1,18 @@
 # dj64dev development suite
 
 ## what is that?
-dj64dev is a development suite that allows to cross-build 64bit programs
+dj64dev is a development suite that allows to cross-build 64-bit programs
 for DOS. It consists of 2 parts: dj64 tool-chain and djdev64 suite.
 
 ### dj64 tool-chain
-dj64 is a djgpp-compatible tool-chain that compiles the djgpp-buildable
-sources for DOS. But unlike djgpp that produces 32bit code, dj64
-produces 64bit code.<br/>
+dj64 is a 64-bit tool-chain that compiles the djgpp-buildable
+sources for DOS. There are the following differences with djgpp:
+- dj64 produces 64-bit code, djgpp produces 32-bit
+- dj64 uses ELF file format, djgpp uses COFF
+- dj64 allows to use host's gdb, djgpp uses some old DOS port of gdb
+
 The resulting programs run on the emulated DOS environment, with eg
-[dosemu2](https://github.com/dosemu2/dosemu2) emulator. In theory the 64bit
+[dosemu2](https://github.com/dosemu2/dosemu2) emulator. In theory the 64-bit
 DOS extender can be written to run such programs under the bare-metal
 DOS, but the future of DOS is probably in the emulated environments anyway.
 
@@ -17,7 +20,7 @@ DOS, but the future of DOS is probably in the emulated environments anyway.
 djdev64 suite is a set of libraries and headers that are needed to
 implement the "DJ64" and "DJ64STUB" DPMI extensions on a DPMI host.<br/>
 "DJ64" is an extension that allows the dj64-built programs to access
-the 64bit world.<br/>
+the 64-bit world.<br/>
 "DJ64STUB" is an optional DPMI extension that implements a loader for
 dj64-built programs. If "DJ64STUB" extension is missing, you need to have
 the full loader inside the program's stub.<br/>
@@ -26,9 +29,9 @@ and loader-enabled stubs, but the default is the loader-less ministub that
 relies on a "DJ64STUB" loader inside DPMI host.
 
 "DJ64" extension requires 2 things from DPMI host:
-- put the 64bit djdev64 runtime into its address space and forward the
+- put the 64-bit djdev64 runtime into its address space and forward the
   calls from the DOS programs to that runtime
-- make the 32bit calls on 64bit runtime's requests.
+- make the 32-bit calls on 64-bit runtime's requests.
 
 While the second task is rather simple, the first one is not.
 If you have an asm-written DPMI server without an ability to talk to
@@ -133,7 +136,7 @@ made to the source code to make it more portable:
   set of functions that are provided by dj64. Their use is very similar to
   that of `movedata()`, except that pointers are used instead of selectors.
 - Use macros like DATA_PTR() and PTR_DATA() to convert between the DOS
-  offsets and 64bit pointers. Plain type-casts should now be avoided for
+  offsets and 64-bit pointers. Plain type-casts should now be avoided for
   that purpose.
 - You need to slightly re-arrange the registration of realmode callbacks:
 ```
@@ -264,12 +267,12 @@ aarch64-built executable will work on aarch64-built dosemu2.
 
 ## why would I need that?
 Well, maybe you don't. :) If you don't have any djgpp-built project of
-yours or you don't want to move it to 64bits, then you don't need to care
+yours or you don't want to move it to 64-bits, then you don't need to care
 about dj64 project. It was written for dosemu2, and while I'd be happy
 if someone uses it on its own, this wasn't an initial intention.<br/>
 Also if your djgpp-buildable project is well-written and uses some
 portable libraries like allegro, then most likely you already have the
-native 64bit ports for modern platforms, rather than for DOS. In that
+native 64-bit ports for modern platforms, rather than for DOS. In that
 case you also don't need dj64. But maybe you are interested in a host-gdb
 debugging and aarch64 support?<br/>
 Summing it up, dj64 is a niche project that may not be useful outside
