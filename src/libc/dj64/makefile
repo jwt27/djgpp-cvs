@@ -39,9 +39,10 @@ ifeq ($(TGMK),)
 ifeq ($(filter clean,$(MAKECMDGOALS)),)
 $(error thunk_gen not installed)
 endif
-endif
+else
 TFLAGS = -a 4 -p 4
 include $(TGMK)
+endif
 
 thunks.o: thunk_calls.h thunk_asms.h thunk_incs.h asym_incs.h
 thunks_a.o: asm_incs.h plt_asmc.h asym_incs.h
