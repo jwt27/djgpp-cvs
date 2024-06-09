@@ -27,7 +27,13 @@ DJ64_XOBJS = $(DJ64_XLIB) $(DJ64_XELF)
 
 .INTERMEDIATE: $(DJ64_XOBJS)
 
-$(DJ64_XELF): $(AS_OBJECTS) plt.o
+ifneq ($(PDHDR),)
+PLT_O = plt.o
+else
+PLT_O =
+endif
+
+$(DJ64_XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@
 	$(XSTRIP) $@
 
@@ -43,6 +49,7 @@ plt.o: plt.inc glob_asm.h
 thunks_c.o: thunk_calls.h
 thunks_p.o: thunk_asms.h plt_asmc.h
 
+ifneq ($(PDHDR),)
 # hook in thunk-gen - make sure to not do that before defining `all:` target
 TGMK = $(shell pkg-config --variable=makeinc thunk_gen)
 ifeq ($(TGMK),)
@@ -52,6 +59,7 @@ endif
 else
 TFLAGS = -a 4 -p 4
 include $(TGMK)
+endif
 endif
 
 clean_dj64:
