@@ -1,6 +1,6 @@
-# Hello World demo
+# Hello ASM demo
 
-This demo shows the basic concepts of dj64 tool-chain.
+This demo shows the use of an asm code in dj64-enabled projects.
 Namely, the calls between C and asm code in both directions,
 touching asm variables from C, and so on.
 

@@ -170,18 +170,18 @@ static __dpmi_regs *mouse_regs;
   should be created, which lists all the global asm symbols.
 - C functions that are called from asm, as well as the asm functions that
   are called from C, should be put to the separate header file, for example
-  [asm.h](https://github.com/stsp/dj64dev/blob/master/demos/hello/asm.h).
+  [asm.h](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/asm.h).
   In that file you need to define the empty macros with names `ASMCFUNC`
   and `ASMFUNC`, and mark the needed functions with them. `ASMCFUNC` denotes
   the C function called from asm, and `ASMFUNC` denotes the asm function
   called from C. In your `Makefile` you need to write `PDHDR = asm.h`.
 
 Now you need to add a certain thunk files to your project, like
-[thunks_a.c](https://github.com/stsp/dj64dev/blob/master/demos/hello/thunks_a.c)
+[thunks_a.c](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/thunks_a.c)
 ,
-[thunks_c.c](https://github.com/stsp/dj64dev/blob/master/demos/hello/thunks_c.c)
+[thunks_c.c](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/thunks_c.c)
 and
-[thunks_p.c](https://github.com/stsp/dj64dev/blob/master/demos/hello/thunks_p.c)
+[thunks_p.c](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/thunks_p.c)
 . As you can see, you don't need to put too many things there, as these
 files include the auto-generated stuff. `thunks_a.c` is needed if you
 refrence global asm symbols from C. `thunks_c.c` is needed if you call C
@@ -200,7 +200,7 @@ include $(DJMK)
 endif
 ```
 to involve dj64 into a build process. Please see
-[this makefile](https://github.com/stsp/dj64dev/blob/master/demos/hello/makefile)
+[this makefile](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/makefile)
 for an example. Some variables must be exacly of the same name as in an
 example file. Those are: `CFLAGS`, `OBJECTS`, `AS_OBJECTS` and `PHDR`.
 Make your `clean` target to depend on `clean_dj64`:
