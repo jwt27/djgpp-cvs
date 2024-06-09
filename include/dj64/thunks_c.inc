@@ -17,7 +17,9 @@
  */
 
 #include <dj64/util.h>
-#include <dj64/thunks_c.h>
+#ifdef _IN_DJ64
+#include "thunks_c.h"
+#endif
 
 #define ___assert(x)
 

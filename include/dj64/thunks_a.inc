@@ -16,7 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <dj64/thunks_a.h>
+#include <dj64/util.h>
+#ifdef _IN_DJ64
+#include "thunks_a.h"
+#endif
 
 #ifndef IN_ASMOBJ
 #include <dj64/asm_inc.h>
@@ -31,8 +34,23 @@
 #define __ASM_FUNC(v) _ASM(v)
 #define __ASM_N(t, v) _ASM(v)
 #define SEMIC ,
-struct athunk _U(asm_thunks)[] = {
+
+#ifndef _IN_DJ64
+#define STATIC static
+#else
+#define STATIC
+#endif
+
+STATIC struct athunk _U(asm_thunks)[] = {
     #include "glob_asm.h"
 };
 
-const int _U(num_athunks) = _countof(_U(asm_thunks));
+STATIC const int _U(num_athunks) = _countof(_U(asm_thunks));
+
+#ifndef _IN_DJ64
+__attribute__((constructor))
+static void init(void)
+{
+    register_athunks(_U(asm_thunks), _U(num_athunks));
+}
+#endif

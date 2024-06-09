@@ -19,8 +19,6 @@
 #include <setjmp.h>
 #include <assert.h>
 #include <djdev64/dj64init.h>
-#include <dj64/thunks_a.h>
-#include <dj64/thunks_c.h>
 #include <dj64/thunks_p.h>
 #include <dj64/util.h>
 #include <libc/djthunks.h>
@@ -28,6 +26,8 @@
 #include <sys/nearptr.h>
 #include <stddef.h>
 #include <crt0.h>
+#include "thunks_a.h"
+#include "thunks_c.h"
 #include "plt.h"
 #include "dosobj.h"
 
@@ -53,6 +53,8 @@ static const struct dj64_api *dj64api;
 #define MAX_RECUR 10
 static uint32_t objs[MAX_RECUR][MAX_OBJS];
 static dj64dispatch_t *disp_fn;
+static struct athunk *u_athunks;
+static int u_num_athunks;
 static struct pthunks *u_pthunks;
 static int *u_handle_p;
 
@@ -248,25 +250,26 @@ void dj64_init(void)
 
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
-dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
-    void *athunks, int num_athunks)
+dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops)
 {
     struct udisp *u;
+
     assert(handle < MAX_HANDLES);
-    if (!disp_fn)
-        return NULL;
     u = &udisps[handle];
     u->disp = disp_fn;
     disp_fn = NULL;
     u->eops = ops;
-    u->athunks = athunks;
-    u->num_athunks = num_athunks;
-    if (u_pthunks) {
-        u->pt = u_pthunks;
+
+    u->athunks = u_athunks;
+    u->num_athunks = u_num_athunks;
+    u_athunks = NULL;
+
+    u->pt = u_pthunks;
+    if (u_handle_p)
         *u_handle_p = handle;
-        u_pthunks = NULL;
-        u_handle_p = NULL;
-    }
+    u_pthunks = NULL;
+    u_handle_p = NULL;
+
     return dops;
 }
 
@@ -379,6 +382,13 @@ void register_dispatch_fn(dj64dispatch_t *fn)
 {
     assert(!disp_fn);
     disp_fn = fn;
+}
+
+void register_athunks(struct athunk *at, int num)
+{
+    assert(!u_athunks);
+    u_athunks = at;
+    u_num_athunks = num;
 }
 
 void register_pthunks(struct pthunks *pt, int *handle_p)

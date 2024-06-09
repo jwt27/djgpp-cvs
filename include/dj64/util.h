@@ -19,6 +19,8 @@
 #ifndef DJ64UTIL_H
 #define DJ64UTIL_H
 
+#include <stdint.h>
+
 #define PRINTF(n) __attribute__((format(printf, n, n + 1)))
 void djloudprintf(const char *format, ...) PRINTF(1);
 void djlogprintf(const char *format, ...) PRINTF(1);
@@ -33,6 +35,7 @@ struct athunk {
     unsigned *ptr;
     unsigned flags;
 };
+void register_athunks(struct athunk *at, int num);
 
 #ifdef _IN_DJ64
 #define _U(x) x
@@ -44,5 +47,14 @@ struct athunk {
 #define _S(x) __S(x)
 
 #define _countof(array) (sizeof(array) / sizeof(array[0]))
+
+#define UBYTE uint8_t
+#define UDWORD uint32_t
+#define DWORD int32_t
+#define UWORD uint16_t
+#define WORD int16_t
+#define VOID void
+
+enum { ASM_OK, ASM_NORET, ASM_ABORT, PING_ABORT };
 
 #endif

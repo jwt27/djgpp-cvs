@@ -96,8 +96,6 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
   dj64init_t *init;
   dj64init_once_t *init_once;
   dj64cdispatch_t **cdisp;
-  void *th;
-  int *nth;
   void *dlh;
   const char **v;
 
@@ -133,25 +131,13 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
     dlclose(dlh);
     return -1;
   }
-  th = dlsym(dlh, "asm_thunks_user");
-  if (!th) {
-    fprintf(stderr, "cannot find asm_thunks_user\n");
-    dlclose(dlh);
-    return -1;
-  }
-  nth = dlsym(dlh, "num_athunks_user");
-  if (!nth) {
-    fprintf(stderr, "cannot find num_athunks_user\n");
-    dlclose(dlh);
-    return -1;
-  }
   rc = init_once(api, api_ver);
   if (rc == -1) {
     fprintf(stderr, _S(DJ64_INIT_ONCE_FN) " failed\n");
     dlclose(dlh);
     return -1;
   }
-  cdisp = init(handles, &eops, th, *nth);
+  cdisp = init(handles, &eops);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     dlclose(dlh);
