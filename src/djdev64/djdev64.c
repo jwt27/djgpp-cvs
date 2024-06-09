@@ -104,7 +104,8 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
     fprintf(stderr, "out of handles\n");
     return -1;
   }
-  dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
+  /* RTLD_DEEPBIND has similar effect to -Wl,-Bsymbolic */
+  dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND);
   if (!dlh) {
     char cmd[1024];
     const char *d = findmnt(path);
