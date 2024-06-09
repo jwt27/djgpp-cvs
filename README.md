@@ -126,8 +126,14 @@ COFF and ELF formats, so dj64/COFF combination is also functional,
 albeit never produced by the dj64 tool-chain itself.
 
 ## building your own program
-Well, this is the most tricky part. First, a few preparations should be
-made to the source code to make it more portable:
+First of all, you should take a look into the provided
+[demos](https://github.com/stsp/dj64dev/blob/master/demos)
+and probably just choose one as a base for your project.
+This is a simplest start.
+
+If OTOH you have an existing project that you wish to port to dj64, then
+a few preparations should be made to the source code to make it more
+portable:
 
 - Inline asm should be moved to the separate assembler files and called
   as a functions.
@@ -165,12 +171,21 @@ static __dpmi_regs *mouse_regs;
   `unsigned int`. The memory is allocated with `malloc32()` call and freed
   with `free32()` call. This requires a few ifdefs if you want that code to
   be also buildable with djgpp.
-- The file named
-  [glob_asm.h](https://github.com/dosemu2/comcom64/blob/master/src/glob_asm.h)
+- The file named `glob_asm.h`, like
+  [this](https://github.com/dosemu2/comcom64/blob/master/src/glob_asm.h)
+  or
+  [this](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/glob_asm.h)
+  or
+  [this](https://github.com/stsp/dj64dev/blob/master/demos/rmcb/glob_asm.h)
   should be created, which lists all the global asm symbols.
 - C functions that are called from asm, as well as the asm functions that
   are called from C, should be put to the separate header file, for example
-  [asm.h](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/asm.h).
+  [this](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/asm.h)
+  or
+  [this](https://github.com/stsp/dj64dev/blob/master/demos/rmcb/asm.h)
+  or
+  [this](https://github.com/dosemu2/comcom64/blob/master/src/asm.h)
+  .
   In that file you need to define the empty macros with names `ASMCFUNC`
   and `ASMFUNC`, and mark the needed functions with them. `ASMCFUNC` denotes
   the C function called from asm, and `ASMFUNC` denotes the asm function
@@ -202,7 +217,7 @@ endif
 to involve dj64 into a build process. Please see
 [this makefile](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/makefile)
 for an example. Some variables must be exacly of the same name as in an
-example file. Those are: `CFLAGS`, `OBJECTS`, `AS_OBJECTS` and `PHDR`.
+example file. Those are: `CFLAGS`, `OBJECTS`, `AS_OBJECTS` and `PDHDR`.
 Make your `clean` target to depend on `clean_dj64`:
 ```
 clean: clean_dj64
