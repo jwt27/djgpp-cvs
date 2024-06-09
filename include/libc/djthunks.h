@@ -22,6 +22,7 @@
 #include <stdint.h>
 
 void dj64_init(void);
+void crt1_startup(int handle);
 
 uint8_t *djaddr2ptr(uint32_t addr);
 uint8_t *djaddr2ptr2(uint32_t addr, uint32_t len);

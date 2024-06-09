@@ -26,6 +26,7 @@ PLT_OPEN_CMD = 0
 PLT_CLOSE_CMD = 1
 __plt_call: .quad 0
 __plt_ctrl: .quad 0
+.global __plt_handle
 __plt_handle: .long 0
 AUX_CORE = 0
 AUX_USER = 1

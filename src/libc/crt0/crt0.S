@@ -324,7 +324,9 @@ use_stubinfo_stack_size:
 	pushl	$_CRT0_EH_FRAME_BEGIN_
 	call	___register_frame_info
 	addl	$8, %esp
-	call	___crt1_startup		/* run program */
+	pushl	__plt_handle
+	call	_crt1_startup		/* run program */
+	addl	$4, %esp
 	jmp	exit
 
 no_memory:

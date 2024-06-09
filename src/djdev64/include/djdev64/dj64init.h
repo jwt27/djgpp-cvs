@@ -69,7 +69,9 @@ struct elf_ops {
 };
 
 #define DJ64_INIT_FN dj64init
-typedef dj64cdispatch_t **(dj64init_t)(int handle, const struct elf_ops *ops);
-dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops);
+typedef dj64cdispatch_t **(dj64init_t)(int handle, const struct elf_ops *ops,
+        void *main);
+dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
+        void *main);
 
 #endif

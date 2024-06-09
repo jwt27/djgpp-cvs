@@ -22,6 +22,7 @@
 #include <dj64/thunks_p.h>
 #include <dj64/util.h>
 #include <libc/djthunks.h>
+#include <libc/internal.h>
 #include <dpmi.h>
 #include <sys/nearptr.h>
 #include <stddef.h>
@@ -45,6 +46,7 @@ struct udisp {
     struct athunk *athunks;
     int num_athunks;
     struct pthunks *pt;
+    main_t *main;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -250,7 +252,8 @@ void dj64_init(void)
 
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
-dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops)
+dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
+        void *main)
 {
     struct udisp *u;
 
@@ -259,6 +262,7 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops)
     u->disp = disp_fn;
     disp_fn = NULL;
     u->eops = ops;
+    u->main = main;
 
     u->athunks = u_athunks;
     u->num_athunks = u_num_athunks;
@@ -396,4 +400,10 @@ void register_pthunks(struct pthunks *pt, int *handle_p)
     assert(!u_pthunks);
     u_pthunks = pt;
     u_handle_p = handle_p;
+}
+
+void crt1_startup(int handle)
+{
+    assert(handle < MAX_HANDLES);
+    __crt1_startup(udisps[handle].main);
 }

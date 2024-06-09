@@ -194,7 +194,6 @@ setup_pname(void)
 }
 
 extern void __main(void);
-extern int  main(int, char **, char **);
 extern void __setup_file_rec_list(void);
 
 char __PROXY[] = " !proxy";
@@ -213,7 +212,7 @@ setup_os_version(void)
 
 
 void
-__crt1_startup(void)
+__crt1_startup(main_t *main)
 {
   __bss_count ++;
   __crt0_argv = 0;
