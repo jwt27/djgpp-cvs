@@ -20,6 +20,8 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <pthread.h>
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
@@ -31,6 +33,7 @@ struct dj64handle {
     void *dlobj;
     dj64cdispatch_t *cdisp;
     dj64cdispatch_t *ctrl;
+    char *path;
 };
 static struct dj64handle dlhs[HNDL_MAX];
 
@@ -89,23 +92,71 @@ err:
 
 static const char *var_list[] = { "_crt0_startup_flags", NULL };
 
-static int _djdev64_open(const char *path, const struct dj64_api *api,
-    int api_ver)
+static void *emu_dlmopen(int handle, const char *filename, int flags,
+    char **r_path)
 {
-  int h, rc;
+  int err;
+  int len = strlen(filename) + 1 + 16;
+  char *path = malloc(len);
+  const char *p;
+  void *ret;
+
+  /* fake soname to cheat same-lib detection */
+  snprintf(path, len, "%.*s.%i", (int)strlen(filename), filename, handle);
+  p = strrchr(filename, '/');
+  if (!p)
+    p = filename;
+  else
+    p++;
+  unlink(path);
+  err = symlink(filename, path);
+  if (err) {
+    perror("symlink()");
+    goto err_free;
+  }
+  ret = dlopen(path, flags);
+  if (!ret)
+    goto err_free;
+
+  *r_path = path;
+  return ret;
+
+err_free:
+  free(path);
+  return NULL;
+}
+
+#define FLG_NODLM 1
+
+static int _djdev64_open(const char *path, const struct dj64_api *api,
+    int api_ver, unsigned flags)
+{
+  int rc;
   dj64init_t *init;
   dj64init_once_t *init_once;
   dj64cdispatch_t **cdisp;
   void *main;
   void *dlh;
   const char **v;
+  char *path2 = NULL;
+  struct dj64handle *h;
 
   if (handles >= HNDL_MAX) {
     fprintf(stderr, "out of handles\n");
     return -1;
   }
   /* RTLD_DEEPBIND has similar effect to -Wl,-Bsymbolic */
-  dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND);
+  if (flags & FLG_NODLM) {
+    dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
+        &path2);
+  } else {
+#ifdef __GLIBC__
+    dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND);
+#else
+    fprintf(stderr, "dlmopen() not supported, use static linking\n");
+    return -1;
+#endif
+  }
   if (!dlh) {
     char cmd[1024];
     const char *d = findmnt(path);
@@ -163,14 +214,16 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
       *vh2 = *vh1;
   }
 
-  h = handles++;
-  dlhs[h].dlobj = dlh;
-  dlhs[h].cdisp = cdisp[0];
-  dlhs[h].ctrl = cdisp[1];
-  return h;
+  h = &dlhs[handles];
+  h->dlobj = dlh;
+  h->cdisp = cdisp[0];
+  h->ctrl = cdisp[1];
+  h->path = path2;
+  return handles++;
 }
 
-int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
+int djdev64_open(const char *path, const struct dj64_api *api, int api_ver,
+    unsigned flags)
 {
   int ret;
 
@@ -178,7 +231,7 @@ int djdev64_open(const char *path, const struct dj64_api *api, int api_ver)
    * register the dispatch fn, which is stored in a global pointer until
    * init() is called. Also we increment handles non-atomically. */
   pthread_mutex_lock(&init_mtx);
-  ret = _djdev64_open(path, api, api_ver);
+  ret = _djdev64_open(path, api, api_ver, flags);
   pthread_mutex_unlock(&init_mtx);
   return ret;
 }
@@ -201,10 +254,20 @@ int djdev64_ctrl(int handle, int libid, int fn, unsigned esi,
 
 void djdev64_close(int handle)
 {
+    struct dj64handle *h;
+    int err;
+
     if (handle >= handles)
         return;
-    dlclose(dlhs[handle].dlobj);
-    dlhs[handle].dlobj = NULL;
+    h = &dlhs[handle];
+    dlclose(h->dlobj);
+    h->dlobj = NULL;
+    if (h->path) {
+        err = unlink(h->path);
+        if (err)
+            perror("unlink()");
+        free(h->path);
+    }
     while (handles > 0 && !dlhs[handles - 1].dlobj)
         handles--;
 }

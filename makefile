@@ -7,6 +7,7 @@ VERSION = 0.1
 DJLIBC = $(TOP)/lib/libc.a
 DJ64LIB = $(TOP)/lib/libdj64.so.*.*
 DJ64DEVL = $(TOP)/lib/libdj64.so
+DJ64LIBS = $(TOP)/lib/libdj64_s.a
 DJDEV64LIB = $(TOP)/lib/libdjdev64.so.*.*
 DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
 DJSTUB64LIB = $(TOP)/lib/libdjstub64.so.*.*
@@ -38,7 +39,7 @@ subs:
 djdev64: djdev64.pc djstub64.pc
 	$(MAKE) -C src/djdev64
 
-dj64: dj64.pc dj64static.pc subs
+dj64: dj64.pc dj64_s.pc dj64static.pc subs
 
 install_dj64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
@@ -46,6 +47,7 @@ install_dj64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	$(INSTALL) $(DJ64LIB) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	cp -fP $(DJ64DEVL) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
+	$(INSTALL) -m 0644 $(DJ64LIBS) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/include
 	cp -r $(TOP)/include $(DESTDIR)$(PREFIX)/i386-pc-dj64
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
@@ -57,6 +59,7 @@ install_dj64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+	$(INSTALL) -m 0644 dj64_s.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 
 install_djdev64:

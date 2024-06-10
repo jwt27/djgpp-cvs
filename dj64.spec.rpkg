@@ -76,7 +76,23 @@ This package contains tools and headers for building dj64-enabled programs.
 %{_prefix}/i386-pc-dj64/bin/*
 %{_prefix}/i386-pc-dj64/share/*
 %{_bindir}/*
-%{_datadir}/pkgconfig/dj64*.pc
+%{_datadir}/pkgconfig/dj64.pc
+%{_datadir}/pkgconfig/dj64static.pc
+%end
+
+%package dj64-devel-static
+Summary: dj64 static libraries
+Requires: dj64dev-dj64-devel = {{{ git_dir_version }}}
+
+%description dj64-devel-static
+This package contains static libraries for dj64.
+May be needed on non-glibc systems.
+%end
+
+%files dj64-devel-static
+%defattr(-,root,root)
+%{_prefix}/i386-pc-dj64/lib64/*.a
+%{_datadir}/pkgconfig/dj64_s.pc
 %end
 
 %package djdev64

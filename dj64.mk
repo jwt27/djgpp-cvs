@@ -18,9 +18,14 @@ XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
 XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
 LD = gcc
-LDFLAGS = $(shell pkg-config --libs dj64) \
+ifeq ($(DJ64STATIC),1)
+DJLDFLAGS = $(shell pkg-config --libs dj64_s)
+DJ64_XLDFLAGS = -f 0x40
+else
+DJLDFLAGS = $(shell pkg-config --libs dj64) \
   -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
   -Wl,-rpath=/usr/i386-pc-dj64/lib64
+endif
 DJ64_XLIB = libtmp.so
 DJ64_XELF = tmp.elf
 DJ64_XOBJS = $(DJ64_XLIB) $(DJ64_XELF)
@@ -38,7 +43,7 @@ $(DJ64_XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XSTRIP) $@
 
 $(DJ64_XLIB): $(OBJECTS)
-	$(LD) $^ $(LDFLAGS) -o $@
+	$(LD) $^ $(DJLDFLAGS) -o $@
 
 %.o: %.c
 	dj64-gcc $(CFLAGS) -I. -o $@ -c $<

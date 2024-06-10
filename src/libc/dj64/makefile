@@ -7,6 +7,7 @@ P = parsers
 MP = $(P)/mkproto.sh
 GA = $(P)/gen_asms.sh
 LIBN = libdj64.so.0.2
+LIBS = libdj64_s.a
 SOURCES = thunks.c thunks_a.c thunks_c.c thunks_p.c dosobj.c smalloc.c
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -58,6 +59,11 @@ $(LIB)/$(LIBN) : $(TOP)/makefile.rf $(ALL_OBJS) \
   $(ALL_OBJS) $(OBJECTS)
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
+$(LIB)/$(LIBS) : $(TOP)/makefile.rf $(ALL_OBJS) \
+  thunk_calls.h thunk_asms.h $(OBJECTS)
+	ar q $@ $(ALL_OBJS) $(OBJECTS)
+	ar s $@
+
 $(LIB)/libc.a : libc_tmp.a plt.o | $(LIB)
 	cp -f $< libctmp.a
 	$(CROSS_ASAR) q libctmp.a plt.o
@@ -67,7 +73,7 @@ $(LIB)/libc.a : libc_tmp.a plt.o | $(LIB)
 $(LIB)/libdj64.so: $(LIB)/$(LIBN) | $(LIB)
 	ln -sf $(LIBN) $@
 
-final: $(LIB)/libc.a $(LIB)/libdj64.so | $(LIB)
+final: $(LIB)/libc.a $(LIB)/libdj64.so $(LIB)/$(LIBS) | $(LIB)
 
 clean::
 	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h
