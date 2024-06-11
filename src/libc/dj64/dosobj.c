@@ -104,7 +104,7 @@ void cp_dosobj(void *data, uint32_t fa, uint16_t len)
 
 void rm_dosobj(uint32_t fa)
 {
-    void *ptr = DATA_PTR(fa);
+    void *ptr = (char *)smget_base_addr(&pool) + (fa - base);
 
     smfree(&pool, ptr);
 }
