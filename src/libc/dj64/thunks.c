@@ -64,15 +64,22 @@ static int *u_handle_p;
 
 static void do_rm_dosobj(uint32_t fa);
 
+void djloudvprintf(const char *format, va_list vl)
+{
+    va_list cpy;
+
+    va_copy(cpy, vl);
+    dj64api->print(DJ64_PRINT_LOG, format, cpy);
+    va_end(cpy);
+    dj64api->print(DJ64_PRINT_TERMINAL, format, vl);
+}
+
 void djloudprintf(const char *format, ...)
 {
     va_list vl;
 
     va_start(vl, format);
-    dj64api->print(DJ64_PRINT_LOG, format, vl);
-    va_end(vl);
-    va_start(vl, format);
-    dj64api->print(DJ64_PRINT_TERMINAL, format, vl);
+    djloudvprintf(format, vl);
     va_end(vl);
 }
 

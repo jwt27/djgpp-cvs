@@ -37,7 +37,7 @@ static void err_printf(int prio, const char *fmt, ...)
     va_list vl;
 
     va_start(vl, fmt);
-    vprintf(fmt, vl);
+    djloudvprintf(fmt, vl);
     va_end(vl);
 }
 

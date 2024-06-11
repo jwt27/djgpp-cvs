@@ -20,10 +20,12 @@
 #define DJ64UTIL_H
 
 #include <stdint.h>
+#include <stdarg.h>
 
 #define PRINTF(n) __attribute__((format(printf, n, n + 1)))
 void djloudprintf(const char *format, ...) PRINTF(1);
 void djlogprintf(const char *format, ...) PRINTF(1);
+void djloudvprintf(const char *format, va_list vl);
 
 typedef uint32_t (dj64dispatch_t)(int fn, uint8_t *sp, int *r_len);
 void register_dispatch_fn(dj64dispatch_t *fn);
