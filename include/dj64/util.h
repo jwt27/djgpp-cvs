@@ -33,7 +33,6 @@ void register_pthunks(struct pthunks *pt, int *handle_p);
 struct athunk {
     const char *name;
     unsigned *ptr;
-    unsigned flags;
 };
 void register_athunks(struct athunk *at, int num);
 

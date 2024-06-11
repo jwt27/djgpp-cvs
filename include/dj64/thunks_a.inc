@@ -27,7 +27,7 @@
 #include <dj64/asm_inc.h>
 #endif
 
-#define _ASM(v) { _S(_##v), &__##v, 0 }
+#define _ASM(v) { _S(_##v), &__##v }
 #define __ASM(t, v) _ASM(v)
 #define __ASM_PTR(t, v) _ASM(v)
 #define __ASM_ARR(t, v, l) _ASM(v)

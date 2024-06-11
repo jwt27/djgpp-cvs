@@ -85,7 +85,7 @@ static int _handle;
 #include "thunk_asms.h"
 
 static struct athunk _U(asm_pthunks)[] = {
-#define ASMCSYM(s, n) [n] = { _S(_##s), NULL, 0 },
+#define ASMCSYM(s, n) [n] = { _S(_##s), NULL },
 #include "plt_asmc.h"
 };
 static const int _U(num_pthunks) = _countof(_U(asm_pthunks));
