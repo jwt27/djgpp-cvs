@@ -3,4 +3,4 @@
 #define IN_ASMOBJ 2
 #include <go32.h>
 
-ASM_N(__Go32_Info_Block, _go32_info_block);
+ASM_Ni(__Go32_Info_Block, _go32_info_block);

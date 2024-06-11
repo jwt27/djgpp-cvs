@@ -84,13 +84,17 @@ static int _handle;
 
 #include "thunk_asms.h"
 
-static struct athunk _asm_pthunks[] = {
-#define ASMCSYM(s, n) [n] = { _S(_##s), NULL },
+static const struct athunk _asm_pthunks[] = {
+#define ASMCSYM(s, n) [n] = { _S(_##s) },
 #include "plt_asmc.h"
 };
+#ifndef _IN_DJ64
 static uint32_t asm_tab[_countof(_asm_pthunks)];
+#else
+#define asm_tab NULL
+#endif
 
-STATIC struct pthunks pthunks = {
+STATIC struct athunks pthunks = {
     _asm_pthunks,
     _countof(_asm_pthunks),
     asm_tab,

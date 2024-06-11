@@ -24,29 +24,35 @@
 #define DEFINE(x, y) _f(_h)define x y
 #endif
 
+#define __S(x) #x
+#define _S(x) __S(x)
+
 #ifndef IN_ASMOBJ
 
-#define ASM(t, x) unsigned __##x;/*
-*/DEFINE(x, (*(t *)djaddr2ptr2(__##x, sizeof(t))))/*
+#define ASM(t, x) t *__##x(void);/*
+*/DEFINE(x, (*__##x()))/*
 */
 
-#define ASM_N(t, x) unsigned __##x;/*
-*/DEFINE(x, (*(t *)djaddr2ptr2(__##x, sizeof(t))))/*
+#define ASMh(t, x) \
+t *___##x(int handle) \
+{ \
+  return (t *)djaddr2ptr2(djthunk_get_h(handle, _S(_##x)), sizeof(t)); \
+}
+
+#define ASM_N(t, x) t *__##x(void);/*
+*/DEFINE(x, (*__##x()))/*
 */
 
-extern unsigned ____djgpp_base_address;
-#define _DP(l, s) djaddr2ptr2(*(unsigned *)djaddr2ptr(____djgpp_base_address) \
-  + (l), s)
-#define ASM_P(t, x) unsigned __##x;/*
-*/DEFINE(x, ((t *)_DP(*(unsigned *)djaddr2ptr(__##x), sizeof(t))))/*
+#define ASM_P(t, x) t *__##x(void);/*
+*/DEFINE(x, __##x())/*
 */
 
-#define ASM_ARR(t, x, l) unsigned __##x;/*
-*/DEFINE(x, (t *)djaddr2ptr2(__##x, sizeof(t) * (l)))/*
+#define ASM_ARR(t, x, l) t *__##x(void);/*
+*/DEFINE(x, __##x())/*
 */
 
-#define ASM_F(x) unsigned __##x;/*
-*/DEFINE(x, (__##x - *(unsigned *)djaddr2ptr(____djgpp_base_address)))/*
+#define ASM_F(x) unsigned __##x(void);/*
+*/DEFINE(x, __##x())/*
 */
 
 #define EXTERN extern
@@ -58,25 +64,50 @@ extern unsigned ____djgpp_base_address;
 #endif
 
 #if IN_ASMOBJ == 2
-#define ASM_N(t, x) unsigned __##x
+#define ASM_N(t, x) t *__##x(void)
+#define ASM_Ni(t, x) \
+t *__##x(void) \
+{ \
+  return (t *)djaddr2ptr2(djthunk_get(_S(_##x)), sizeof(t)); \
+}
 #endif
 
 #if IN_ASMOBJ == 3
 
 #undef ASM
-#define ASM(t, x) unsigned __##x
+#define ASM(t, x) \
+t *__##x(void) \
+{ \
+  return (t *)djaddr2ptr2(djthunk_get(_S(_##x)), sizeof(t)); \
+}
+
+unsigned *____djgpp_base_address(void);
 
 #undef ASM_F
-#define ASM_F(x) unsigned __##x
+#define ASM_F(x) \
+unsigned __##x(void) \
+{ \
+  return (djthunk_get(_S(_##x)) - *____djgpp_base_address()); \
+}
 
 #undef ASM_N
-#define ASM_N(t, x) extern unsigned __##x
+#define ASM_N(t, x) t *__##x(void)
 
+#define _DP(l, s) \
+  djaddr2ptr2((*____djgpp_base_address()) + (l), s)
 #undef ASM_P
-#define ASM_P(t, x) unsigned __##x
+#define ASM_P(t, x) \
+t *__##x(void) \
+{ \
+  return (t *)_DP(*(unsigned *)djaddr2ptr(djthunk_get(_S(_##x))), sizeof(t)); \
+}
 
 #undef ASM_ARR
-#define ASM_ARR(t, x, l) unsigned __##x
+#define ASM_ARR(t, x, l) \
+t *__##x(void) \
+{ \
+  return (t *)djaddr2ptr2(djthunk_get(_S(_##x)), sizeof(t) * (l)); \
+}
 
 #endif
 

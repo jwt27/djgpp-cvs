@@ -27,21 +27,17 @@ void djlogprintf(const char *format, ...) PRINTF(1);
 
 typedef uint32_t (dj64dispatch_t)(int fn, uint8_t *sp, int *r_len);
 void register_dispatch_fn(dj64dispatch_t *fn);
-struct pthunks;
-void register_pthunks(struct pthunks *pt, int *handle_p);
 
 struct athunk {
     const char *name;
-    unsigned *ptr;
 };
 struct athunks {
-    struct athunk *at;
+    const struct athunk *at;
     int num;
+    uint32_t *tab;
 };
 void register_athunks(struct athunks *at);
-
-#define __S(x) #x
-#define _S(x) __S(x)
+void register_pthunks(struct athunks *pt, int *handle_p);
 
 #define _countof(array) (sizeof(array) / sizeof(array[0]))
 

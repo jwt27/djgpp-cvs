@@ -27,7 +27,7 @@
 #include <dj64/asm_inc.h>
 #endif
 
-#define _ASM(v) { _S(_##v), &__##v }
+#define _ASM(v) { _S(_##v) }
 #define __ASM(t, v) _ASM(v)
 #define __ASM_PTR(t, v) _ASM(v)
 #define __ASM_ARR(t, v, l) _ASM(v)
@@ -41,13 +41,19 @@
 #define STATIC
 #endif
 
-static struct athunk _asm_thunks[] = {
+static const struct athunk _asm_thunks[] = {
     #include "glob_asm.h"
 };
+#ifndef _IN_DJ64
+static uint32_t asm_tab[_countof(_asm_thunks)];
+#else
+#define asm_tab NULL
+#endif
 
 STATIC struct athunks asm_thunks = {
     _asm_thunks,
     _countof(_asm_thunks),
+    asm_tab,
 };
 
 #ifndef _IN_DJ64

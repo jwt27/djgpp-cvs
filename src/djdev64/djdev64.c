@@ -33,6 +33,7 @@ struct dj64handle {
     void *dlobj;
     dj64cdispatch_t *cdisp;
     dj64cdispatch_t *ctrl;
+    dj64done_t *done;
     char *path;
 };
 static struct dj64handle dlhs[HNDL_MAX];
@@ -133,6 +134,7 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
 {
   int rc;
   dj64init_t *init;
+  dj64done_t *done;
   dj64init_once_t *init_once;
   dj64cdispatch_t **cdisp;
   void *main;
@@ -172,35 +174,37 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
     }
     return -1;
   }
+
   main = dlsym(dlh, "main");
   if (!main) {
     fprintf(stderr, "cannot find main\n");
-    dlclose(dlh);
-    return -1;
+    goto err_close;
   }
   init_once = dlsym(dlh, _S(DJ64_INIT_ONCE_FN));
   if (!init_once) {
     fprintf(stderr, "cannot find " _S(DJ64_INIT_ONCE_FN) "\n");
-    dlclose(dlh);
-    return -1;
+    goto err_close;
   }
   init = dlsym(dlh, _S(DJ64_INIT_FN));
   if (!init) {
     fprintf(stderr, "cannot find " _S(DJ64_INIT_FN) "\n");
-    dlclose(dlh);
-    return -1;
+    goto err_close;
   }
+  done = dlsym(dlh, _S(DJ64_DONE_FN));
+  if (!done) {
+    fprintf(stderr, "cannot find " _S(DJ64_DONE_FN) "\n");
+    goto err_close;
+  }
+
   rc = init_once(api, api_ver);
   if (rc == -1) {
     fprintf(stderr, _S(DJ64_INIT_ONCE_FN) " failed\n");
-    dlclose(dlh);
-    return -1;
+    goto err_close;
   }
   cdisp = init(handles, &eops, main);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
-    dlclose(dlh);
-    return -1;
+    goto err_close;
   }
 
   for (v = var_list; *v; v++) {
@@ -218,8 +222,19 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
   h->dlobj = dlh;
   h->cdisp = cdisp[0];
   h->ctrl = cdisp[1];
+  h->done = done;
   h->path = path2;
   return handles++;
+
+err_close:
+  dlclose(dlh);
+  if (path2) {
+    int err = unlink(path2);
+    if (err)
+      perror("unlink()");
+    free(path2);
+  }
+  return -1;
 }
 
 int djdev64_open(const char *path, const struct dj64_api *api, int api_ver,
@@ -260,6 +275,7 @@ void djdev64_close(int handle)
     if (handle >= handles)
         return;
     h = &dlhs[handle];
+    h->done(handle);
     dlclose(h->dlobj);
     h->dlobj = NULL;
     if (h->path) {

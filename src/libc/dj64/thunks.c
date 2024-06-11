@@ -26,6 +26,8 @@
 #include <dpmi.h>
 #include <sys/nearptr.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 #include <crt0.h>
 #include "thunks_a.h"
 #include "thunks_c.h"
@@ -44,7 +46,9 @@ struct udisp {
     dj64dispatch_t *disp;
     const struct elf_ops *eops;
     struct athunks *at;
-    struct pthunks *pt;
+    struct athunks *pt;
+    struct athunks core_at;
+    struct athunks core_pt;
     main_t *main;
 };
 #define MAX_HANDLES 10
@@ -55,7 +59,7 @@ static const struct dj64_api *dj64api;
 static uint32_t objs[MAX_RECUR][MAX_OBJS];
 static dj64dispatch_t *disp_fn;
 static struct athunks *u_athunks;
-static struct pthunks *u_pthunks;
+static struct athunks *u_pthunks;
 static int *u_handle_p;
 
 static void do_rm_dosobj(uint32_t fa);
@@ -160,10 +164,10 @@ static int process_athunks(struct athunks *at, uint32_t mem_base,
     int i, ret = 0;
 
     for (i = 0; i < at->num; i++) {
-        struct athunk *t = &at->at[i];
+        const struct athunk *t = &at->at[i];
         uint32_t off = eops->getsym(eh, t->name);
         if (off) {
-            *t->ptr = mem_base + off;
+            at->tab[i] = mem_base + off;
         } else {
             djloudprintf("symbol %s not resolved\n", t->name);
             ret = -1;
@@ -173,13 +177,13 @@ static int process_athunks(struct athunks *at, uint32_t mem_base,
     return ret;
 }
 
-static int process_pthunks(struct pthunks *pt,
+static int process_pthunks(struct athunks *pt,
 	const struct elf_ops *eops, void *eh)
 {
     int i, ret = 0;
 
     for (i = 0; i < pt->num; i++) {
-        struct athunk *t = &pt->pt[i];
+        const struct athunk *t = &pt->at[i];
         pt->tab[i] = eops->getsym(eh, t->name);
         if (!pt->tab[i]) {
             djloudprintf("symbol %s not resolved\n", t->name);
@@ -190,9 +194,11 @@ static int process_pthunks(struct pthunks *pt,
     return ret;
 }
 
-static void do_early_init(void)
+static ASMh(int, _crt0_startup_flags)
+
+static void do_early_init(int handle)
 {
-    _crt0_startup_flags = __crt0_startup_flags;
+    *____crt0_startup_flags(handle) = __crt0_startup_flags;
 }
 
 static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
@@ -216,13 +222,13 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         eh = u->eops->open(elf, size);
         if (!eh)
             return -1;
-        ret = process_athunks(&asm_thunks, mem_base, u->eops, eh);
+        ret = process_athunks(&u->core_at, mem_base, u->eops, eh);
         if (ret)
             goto err;
         ret = process_athunks(u->at, mem_base, u->eops, eh);
         if (ret)
             goto err;
-        ret = process_pthunks(&pthunks, u->eops, eh);
+        ret = process_pthunks(&u->core_pt, u->eops, eh);
         if (ret)
             goto err;
         if (u->pt) {
@@ -232,7 +238,7 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         }
         u->eops->close(eh);
 
-        do_early_init();
+        do_early_init(handle);
         return ret;
     err:
         u->eops->close(eh);
@@ -271,7 +277,22 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     u_pthunks = NULL;
     u_handle_p = NULL;
 
+    u->core_at = asm_thunks;
+    u->core_at.tab = malloc(sizeof(asm_thunks.tab[0]) * asm_thunks.num);
+    u->core_pt = pthunks;
+    u->core_pt.tab = malloc(sizeof(pthunks.tab[0]) * pthunks.num);
+
     return dops;
+}
+
+void DJ64_DONE_FN(int handle)
+{
+    struct udisp *u;
+
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
+    free(u->core_at.tab);
+    free(u->core_pt.tab);
 }
 
 int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
@@ -285,7 +306,7 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-static uint64_t do_asm_call(struct pthunks *pt, int num, uint8_t *sp,
+static uint64_t do_asm_call(struct athunks *pt, int num, uint8_t *sp,
         uint8_t len, int flags)
 {
     int rc;
@@ -294,15 +315,15 @@ static uint64_t do_asm_call(struct pthunks *pt, int num, uint8_t *sp,
     pma.selector = _cs;
     pma.offset32 = pt->tab[num];
     if (flags & _TFLG_NORET) {
-        djlogprintf("NORET call %s: 0x%x:0x%x\n", pt->pt[num].name,
+        djlogprintf("NORET call %s: 0x%x:0x%x\n", pt->at[num].name,
             pma.selector, pma.offset32);
         dj64api->asm_noret(&s_regs, pma, sp, len);
         longjmp(*noret_jmp, ASM_NORET);
     }
-    djlogprintf("asm call %s: 0x%x:0x%x\n", pt->pt[num].name,
+    djlogprintf("asm call %s: 0x%x:0x%x\n", pt->at[num].name,
             pma.selector, pma.offset32);
     rc = dj64api->asm_call(&s_regs, pma, sp, len);
-    djlogprintf("asm call %s returned %i:0x%x\n", pt->pt[num].name,
+    djlogprintf("asm call %s returned %i:0x%x\n", pt->at[num].name,
             rc, s_regs.eax);
     switch (rc) {
     case ASM_CALL_OK:
@@ -317,7 +338,9 @@ static uint64_t do_asm_call(struct pthunks *pt, int num, uint8_t *sp,
 
 uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
-    return do_asm_call(&pthunks, num, sp, len, flags);
+    int handle = dj64api->get_handle();
+    assert(handle < MAX_HANDLES);
+    return do_asm_call(&udisps[handle].core_pt, num, sp, len, flags);
 }
 
 uint64_t dj64_asm_call_u(int handle, int num, uint8_t *sp, uint8_t len,
@@ -391,7 +414,7 @@ void register_athunks(struct athunks *at)
     u_athunks = at;
 }
 
-void register_pthunks(struct pthunks *pt, int *handle_p)
+void register_pthunks(struct athunks *pt, int *handle_p)
 {
     assert(!u_pthunks);
     u_pthunks = pt;
@@ -402,4 +425,34 @@ void crt1_startup(int handle)
 {
     assert(handle < MAX_HANDLES);
     __crt1_startup(udisps[handle].main);
+}
+
+static uint32_t do_thunk_get(const struct athunks *at, const char *name)
+{
+    int i;
+
+    for (i = 0; i < at->num; i++) {
+        if (strcmp(at->at[i].name, name) == 0)
+            return at->tab[i];
+    }
+    return (uint32_t)-1;
+}
+
+uint32_t djthunk_get_h(int handle, const char *name)
+{
+    struct udisp *u;
+    uint32_t ret;
+
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
+    ret = do_thunk_get(u->at, name);
+    if (ret == (uint32_t)-1)
+        ret = do_thunk_get(&u->core_at, name);
+    assert(ret != (uint32_t)-1);
+    return ret;
+}
+
+uint32_t djthunk_get(const char *name)
+{
+    return djthunk_get_h(dj64api->get_handle(), name);
 }
