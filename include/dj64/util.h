@@ -40,12 +40,6 @@ struct athunks {
 };
 void register_athunks(struct athunks *at);
 
-#ifdef _IN_DJ64
-#define _U(x) x
-#else
-#define _U(x) x##_user
-#endif
-
 #define __S(x) #x
 #define _S(x) __S(x)
 
