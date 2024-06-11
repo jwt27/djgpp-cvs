@@ -123,6 +123,7 @@ static void *emu_dlmopen(int handle, const char *filename, int flags,
   return ret;
 
 err_free:
+  unlink(path);
   free(path);
   return NULL;
 }
