@@ -386,13 +386,28 @@ __djgpp_exception_processor(void)
 //  do_faulting_finish_message(0);
 }
 
-static __dpmi_paddr except_ori[EXCEPTION_COUNT];
-static __dpmi_paddr kbd_ori;
-static __dpmi_paddr npx_ori;
-static __dpmi_paddr timer_ori;
-static __dpmi_raddr cbrk_ori,cbrk_rmcb;
-static char cbrk_hooked = 0;
-static ULONG32 cbrk_regs;
+struct exc_info {
+  __dpmi_paddr except_ori[EXCEPTION_COUNT];
+  __dpmi_paddr kbd_ori;
+  __dpmi_paddr npx_ori;
+  __dpmi_paddr timer_ori;
+  __dpmi_raddr cbrk_ori;
+  __dpmi_raddr cbrk_rmcb;
+  char cbrk_hooked;
+  ULONG32 cbrk_regs;
+};
+
+struct exc_info xinfo;
+const int xinfo_size = sizeof(xinfo);
+
+#define except_ori xinfo.except_ori
+#define kbd_ori xinfo.kbd_ori
+#define npx_ori xinfo.npx_ori
+#define timer_ori xinfo.timer_ori
+#define cbrk_ori xinfo.cbrk_ori
+#define cbrk_rmcb xinfo.cbrk_rmcb
+#define cbrk_hooked xinfo.cbrk_hooked
+#define cbrk_regs xinfo.cbrk_regs
 
 /* Routine toggles ALL the exceptions.  Used around system calls, at exit. */
 

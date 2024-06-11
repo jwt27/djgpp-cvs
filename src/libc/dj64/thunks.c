@@ -40,7 +40,6 @@ static dpmi_regs s_regs;
 static int recur_cnt;
 static int objcnt;
 static jmp_buf *noret_jmp;
-static int exiting;
 
 struct udisp {
     dj64dispatch_t *disp;
@@ -52,6 +51,7 @@ struct udisp {
     unsigned cs;
     main_t *main;
     int use_dlm;
+    void *xinfo;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -259,6 +259,9 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
+extern struct exc_info xinfo;
+extern const int xinfo_size;
+
 dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
         void *main, int use_dlm)
 {
@@ -286,6 +289,13 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     u->core_pt = pthunks;
     u->core_pt.tab = malloc(sizeof(pthunks.tab[0]) * pthunks.num);
 
+    if (!use_dlm) {
+        u->xinfo = malloc(xinfo_size);
+        memcpy(u->xinfo, &xinfo, xinfo_size);
+    } else {
+        u->xinfo = NULL;
+    }
+
     return dops;
 }
 
@@ -297,10 +307,9 @@ void DJ64_DONE_FN(int handle)
     u = &udisps[handle];
     free(u->core_at.tab);
     free(u->core_pt.tab);
-    if (!u->use_dlm && !exiting) {
-        djloudprintf("dlmopen() unavailable, exiting\n");
-        exiting++;
-        dj64api->exit(1);
+    if (u->xinfo) {
+        memcpy(&xinfo, u->xinfo, xinfo_size);
+        free(u->xinfo);
     }
 }
 
