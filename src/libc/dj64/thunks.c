@@ -37,7 +37,6 @@
 int __crt0_startup_flags;
 
 static dpmi_regs s_regs;
-static unsigned _cs;
 static int recur_cnt;
 static int objcnt;
 static jmp_buf *noret_jmp;
@@ -49,6 +48,7 @@ struct udisp {
     struct athunks *pt;
     struct athunks core_at;
     struct athunks core_pt;
+    unsigned cs;
     main_t *main;
 };
 #define MAX_HANDLES 10
@@ -222,7 +222,7 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         void *eh;
         int ret;
 
-        _cs = esi;
+        u->cs = esi;
         djlogprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
         elf = (char *)djaddr2ptr(addr);
         djlogprintf("data %p(%s)\n", elf, elf);
@@ -313,13 +313,13 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-static uint64_t do_asm_call(struct athunks *pt, int num, uint8_t *sp,
-        uint8_t len, int flags)
+static uint64_t do_asm_call(struct athunks *pt, unsigned cs, int num,
+        uint8_t *sp, uint8_t len, int flags)
 {
     int rc;
     dpmi_paddr pma;
     assert(num < pt->num);
-    pma.selector = _cs;
+    pma.selector = cs;
     pma.offset32 = pt->tab[num];
     if (flags & _TFLG_NORET) {
         djlogprintf("NORET call %s: 0x%x:0x%x\n", pt->at[num].name,
@@ -345,16 +345,21 @@ static uint64_t do_asm_call(struct athunks *pt, int num, uint8_t *sp,
 
 uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
+    struct udisp *u;
     int handle = dj64api->get_handle();
     assert(handle < MAX_HANDLES);
-    return do_asm_call(&udisps[handle].core_pt, num, sp, len, flags);
+    u = &udisps[handle];
+    return do_asm_call(&u->core_pt, u->cs, num, sp, len, flags);
 }
 
 uint64_t dj64_asm_call_u(int handle, int num, uint8_t *sp, uint8_t len,
         int flags)
 {
+    struct udisp *u;
+
     assert(handle < MAX_HANDLES);
-    return do_asm_call(udisps[handle].pt, num, sp, len, flags);
+    u = &udisps[handle];
+    return do_asm_call(u->pt, u->cs, num, sp, len, flags);
 }
 
 uint8_t *dj64_clean_stk(size_t len)
