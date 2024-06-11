@@ -43,8 +43,7 @@ static jmp_buf *noret_jmp;
 struct udisp {
     dj64dispatch_t *disp;
     const struct elf_ops *eops;
-    struct athunk *athunks;
-    int num_athunks;
+    struct athunks *at;
     struct pthunks *pt;
     main_t *main;
 };
@@ -55,8 +54,7 @@ static const struct dj64_api *dj64api;
 #define MAX_RECUR 10
 static uint32_t objs[MAX_RECUR][MAX_OBJS];
 static dj64dispatch_t *disp_fn;
-static struct athunk *u_athunks;
-static int u_num_athunks;
+static struct athunks *u_athunks;
 static struct pthunks *u_pthunks;
 static int *u_handle_p;
 
@@ -156,13 +154,13 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     return ret;
 }
 
-static int process_athunks(struct athunk *at, int nat, uint32_t mem_base,
+static int process_athunks(struct athunks *at, uint32_t mem_base,
 	const struct elf_ops *eops, void *eh)
 {
     int i, ret = 0;
 
-    for (i = 0; i < nat; i++) {
-        struct athunk *t = &at[i];
+    for (i = 0; i < at->num; i++) {
+        struct athunk *t = &at->at[i];
         uint32_t off = eops->getsym(eh, t->name);
         if (off) {
             *t->ptr = mem_base + off;
@@ -218,10 +216,10 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         eh = u->eops->open(elf, size);
         if (!eh)
             return -1;
-        ret = process_athunks(asm_thunks, num_athunks, mem_base, u->eops, eh);
+        ret = process_athunks(&asm_thunks, mem_base, u->eops, eh);
         if (ret)
             goto err;
-        ret = process_athunks(u->athunks, u->num_athunks, mem_base, u->eops, eh);
+        ret = process_athunks(u->at, mem_base, u->eops, eh);
         if (ret)
             goto err;
         ret = process_pthunks(&pthunks, u->eops, eh);
@@ -264,8 +262,7 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     u->eops = ops;
     u->main = main;
 
-    u->athunks = u_athunks;
-    u->num_athunks = u_num_athunks;
+    u->at = u_athunks;
     u_athunks = NULL;
 
     u->pt = u_pthunks;
@@ -388,11 +385,10 @@ void register_dispatch_fn(dj64dispatch_t *fn)
     disp_fn = fn;
 }
 
-void register_athunks(struct athunk *at, int num)
+void register_athunks(struct athunks *at)
 {
     assert(!u_athunks);
     u_athunks = at;
-    u_num_athunks = num;
 }
 
 void register_pthunks(struct pthunks *pt, int *handle_p)

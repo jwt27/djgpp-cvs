@@ -1,2 +1,1 @@
-extern struct athunk asm_thunks[];
-extern const int num_athunks;
+extern struct athunks asm_thunks;

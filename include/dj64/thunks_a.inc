@@ -41,16 +41,19 @@
 #define STATIC
 #endif
 
-STATIC struct athunk _U(asm_thunks)[] = {
+static struct athunk _asm_thunks[] = {
     #include "glob_asm.h"
 };
 
-STATIC const int _U(num_athunks) = _countof(_U(asm_thunks));
+STATIC struct athunks asm_thunks = {
+    _asm_thunks,
+    _countof(_asm_thunks),
+};
 
 #ifndef _IN_DJ64
 __attribute__((constructor))
 static void init(void)
 {
-    register_athunks(_U(asm_thunks), _U(num_athunks));
+    register_athunks(&asm_thunks);
 }
 #endif

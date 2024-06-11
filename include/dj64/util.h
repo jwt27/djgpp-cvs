@@ -34,7 +34,11 @@ struct athunk {
     const char *name;
     unsigned *ptr;
 };
-void register_athunks(struct athunk *at, int num);
+struct athunks {
+    struct athunk *at;
+    int num;
+};
+void register_athunks(struct athunks *at);
 
 #ifdef _IN_DJ64
 #define _U(x) x
