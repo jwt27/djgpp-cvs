@@ -24,7 +24,7 @@
 
 typedef int (dj64cdispatch_t)(int handle, int libid, int fn, unsigned esi,
         uint8_t *sp);
-#define DJ64_API_VER 7
+#define DJ64_API_VER 8
 enum { DJ64_PRINT_LOG, DJ64_PRINT_TERMINAL, DJ64_PRINT_SCREEN };
 
 /* pushal */
@@ -58,6 +58,7 @@ struct dj64_api {
     uint8_t *(*inc_esp)(uint32_t len);
     int (*is_dos_ptr)(const uint8_t *ptr);
     int (*get_handle)(void);
+    void (*exit)(int rc);
 };
 #define DJ64_INIT_ONCE_FN dj64init_once
 typedef int (dj64init_once_t)(const struct dj64_api *api, int api_ver);
@@ -71,9 +72,9 @@ struct elf_ops {
 
 #define DJ64_INIT_FN dj64init
 typedef dj64cdispatch_t **(dj64init_t)(int handle, const struct elf_ops *ops,
-        void *main);
+        void *main, int use_dlm);
 dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
-        void *main);
+        void *main, int use_dlm);
 
 #define DJ64_DONE_FN dj64done
 typedef void (dj64done_t)(int handle);

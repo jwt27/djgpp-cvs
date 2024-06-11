@@ -216,7 +216,6 @@ __crt1_startup(main_t *main)
 {
   __bss_count ++;
   __crt0_argv = 0;
-  dj64_init();
   setup_os_version();
   setup_core_selector();
   setup_screens();

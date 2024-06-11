@@ -40,6 +40,7 @@ static dpmi_regs s_regs;
 static int recur_cnt;
 static int objcnt;
 static jmp_buf *noret_jmp;
+static int exiting;
 
 struct udisp {
     dj64dispatch_t *disp;
@@ -50,6 +51,7 @@ struct udisp {
     struct athunks core_pt;
     unsigned cs;
     main_t *main;
+    int use_dlm;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -255,16 +257,10 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     return -1;
 }
 
-void dj64_init(void)
-{
-    __djgpp_nearptr_enable();  // speeds up things considerably
-    dosobj_init(dosobj_page, 4096);
-}
-
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
 dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
-        void *main)
+        void *main, int use_dlm)
 {
     struct udisp *u;
 
@@ -274,6 +270,7 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     disp_fn = NULL;
     u->eops = ops;
     u->main = main;
+    u->use_dlm = use_dlm;
 
     u->at = u_athunks;
     u_athunks = NULL;
@@ -300,6 +297,11 @@ void DJ64_DONE_FN(int handle)
     u = &udisps[handle];
     free(u->core_at.tab);
     free(u->core_pt.tab);
+    if (!u->use_dlm && !exiting) {
+        djloudprintf("dlmopen() unavailable, exiting\n");
+        exiting++;
+        dj64api->exit(1);
+    }
 }
 
 int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
@@ -435,8 +437,15 @@ void register_pthunks(struct athunks *pt, int *handle_p)
 
 void crt1_startup(int handle)
 {
+    struct udisp *u;
+
     assert(handle < MAX_HANDLES);
-    __crt1_startup(udisps[handle].main);
+    __djgpp_nearptr_enable();  // speeds up things considerably
+    u = &udisps[handle];
+    if (!handle || u->use_dlm)
+        dosobj_init(dosobj_page, 4096);
+
+    __crt1_startup(u->main);
 }
 
 static uint32_t do_thunk_get(const struct athunks *at, const char *name)

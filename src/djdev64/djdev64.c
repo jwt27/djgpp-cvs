@@ -26,6 +26,9 @@
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
+#ifdef __GLIBC__
+#define HAVE_DLMOPEN 1
+#endif
 
 static int handles;
 #define HNDL_MAX 5
@@ -128,7 +131,7 @@ err_free:
   return NULL;
 }
 
-#define FLG_NODLM 1
+#define FLG_STATIC 1
 
 static int _djdev64_open(const char *path, const struct dj64_api *api,
     int api_ver, unsigned flags)
@@ -143,21 +146,26 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
   const char **v;
   char *path2 = NULL;
   struct dj64handle *h;
+  int use_dlm = 0;
 
   if (handles >= HNDL_MAX) {
     fprintf(stderr, "out of handles\n");
     return -1;
   }
   /* RTLD_DEEPBIND has similar effect to -Wl,-Bsymbolic */
-  if (flags & FLG_NODLM) {
+  if (flags & FLG_STATIC) {
+    /* for static linking we fully emulated dlmopen(), so set use_dlm */
+    use_dlm = 1;
     dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
         &path2);
   } else {
-#ifdef __GLIBC__
+#ifdef HAVE_DLMOPEN
+    use_dlm = 1;
     dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND);
 #else
     fprintf(stderr, "dlmopen() not supported, use static linking\n");
-    return -1;
+    dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
+        &path2);
 #endif
   }
   if (!dlh) {
@@ -202,7 +210,7 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
     fprintf(stderr, _S(DJ64_INIT_ONCE_FN) " failed\n");
     goto err_close;
   }
-  cdisp = init(handles, &eops, main);
+  cdisp = init(handles, &eops, main, use_dlm);
   if (!cdisp) {
     fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
     goto err_close;
