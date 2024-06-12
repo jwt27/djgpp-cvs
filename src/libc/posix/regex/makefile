@@ -12,6 +12,3 @@ SRC += regexec.c
 SRC += regfree.c
 
 include $(TOP)/../makefile.inc
-
-XGCC = $(XLGCC)
-

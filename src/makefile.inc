@@ -6,8 +6,6 @@
 
 include $(TOP)/../makefile.def
 
-MAKEFLAGS := --no-print-directory
-
 .SUFFIXES: .o .i .c .cc .s
 
 # Set $(GCC{L}_OPT) here so they are defined before first use
@@ -54,10 +52,6 @@ endif
 #CFLAGS += -I$(GCC_INC_DIR)
 
 # Pass defines as compiler/assembler switches
-CFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
-CFLAGS += -DGAS_MINOR=$(GAS_MINOR)
-CFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
-
 ASFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
 ASFLAGS += -DGAS_MINOR=$(GAS_MINOR)
 ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
@@ -66,35 +60,15 @@ CPPFLAGS += -DDJ64 -D_IN_DJ64
 
 # Moved setting of $(GCC{L}_OPT) to top of file
 #
-ifneq ($(CROSS_BUILD),1)
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
-XCPP = $(CROSS_GCC) -I . -I $(TOP)/../../include $(CPPFLAGS) -E
-XASGCC = $(CROSS_ASGCC) -I $(TOP)/../../include -m32
-XGPP = $(CROSS_GCC) @$(TOP)/../gpp.opt -I $(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) -s @$(TOP)/../gcc-l.opt -I $(TOP)/../../include $(CFLAGS)
-else
-XGCC = $(CROSS_GCC) $(GCC_OPT) -isystem $(TOP)/../../include $(CFLAGS)
-XGPP = $(CROSS_GCC) $(GPP_OPT) -isystem $(TOP)/../../include $(CFLAGS)
-XLGCC = $(CROSS_GCC) $(GCCL_OPT) -isystem $(TOP)/../../include $(CFLAGS)
-endif
-
-# Find the necessary gcc options for building the profiling
-# support code (src/libc/crt0/mcount.c). We strip out profiling options
-# from the standard gcc options file, to avoid a chicken-and-egg problem
-# in a profiling version of libc (the profiling support code calling
-# profiling support code).
-#
-XNOPGGCC = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gcc.opt) -isystem $(TOP)/../../include $(CFLAGS)
-XNOPGGPP = $(CROSS_GCC) $(shell sed -f $(TOP)/../noprof.sed $(TOP)/../gpp.opt) -isystem $(TOP)/../../include $(CFLAGS)
+XCPP = $(CROSS_CPP) -I . -I $(TOP)/../../include $(CPPFLAGS)
+XASGCC = $(CROSS_ASGCC) -I $(TOP)/../../include -m32 $(ASFLAGS)
 
 MISC = $(TOP)/../misc.exe
 
 %.o : %.c
 	$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
 	$(XCPP) -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
-%.o : %.cc
-	$(MISC) echo - $(CROSS_GPP) '...' $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
-	$(XGPP) $(EXTRA_CXXFLAGS) -c -fno-exceptions $<
 %.o : %.S
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	$(XASGCC) -o $@ -c $<
@@ -102,39 +76,11 @@ MISC = $(TOP)/../misc.exe
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	$(XASGCC) -x assembler-with-cpp -o $@ -c $<
 
-%.i : %.c
-	$(XGCC) -c $< -E > $@
-%.i : %.cc
-	$(XGPP) -c $< -E > $@
-%.i : %.S
-	$(XGCC) -c $< -E > $@
-
-%.ss : %.c
-	$(XGCC) -c $< -S > $@
-%.ss : %.cc
-	$(XGPP) -c $< -S > $@
-
-%.c : %.y
-	bison $*.y -o $*.c
-
 LIB=$(TOP)/../../lib
 BIN=$(TOP)/../../bin
 INC=$(TOP)/../../include
 C = $(LIB)/crt0.o
 L = $(LIB)/libc.a
-
-ifeq ($(LIBGCCA),)
-LIBGCCA := $(shell $(CROSS_GCC) $(GCC_OPT) -print-file-name=libgcc.a)
-LIBGCCA := $(subst \,/,$(LIBGCCA))
-export LIBGCCA
-endif
-
-ifeq ($(DJGPP_DJL),)
-DJGPP_DJL = $(LIB)/djgpp.djl
-#export DJGPP_DJL
-endif
-
-LINK = $(CROSS_LD) -s $(LDFLAGS) $(filter %.o,$^) $(filter-out %.o,$^) -o $@ $(LIBGCCA) -T $(DJGPP_DJL)
 
 OBJS := $(addsuffix .o, $(basename $(SRC)))
 AS_OBJS := $(addsuffix .o, $(basename $(AS_SRC)))
