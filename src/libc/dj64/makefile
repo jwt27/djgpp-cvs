@@ -35,7 +35,7 @@ thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
 	$(MP) $< $(TOP)/../../include thunk_asms.tmp \
 		thunk_calls.tmp plt.inc thunk_incs.h
 
-TGMK = $(shell pkg-config --variable=makeinc thunk_gen)
+TGMK = $(shell pkg-config --silence-errors --variable=makeinc thunk_gen)
 ifeq ($(TGMK),)
 ifeq ($(filter clean,$(MAKECMDGOALS)),)
 $(error thunk_gen not installed)
