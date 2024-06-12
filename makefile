@@ -19,7 +19,7 @@ ifeq ($(shell $(AS) --version 2>/dev/null),)
 CROSS_PREFIX := x86_64-linux-gnu-
 endif
 ifeq ($(shell $(AS) --version 2>/dev/null),)
-ifeq ($(shell uname -m),x86_64)
+ifneq ($(filter x86_64 amd64,$(shell uname -m)),)
 CROSS_PREFIX :=
 else
 $(error cross-binutils not installed)
