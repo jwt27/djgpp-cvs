@@ -1,10 +1,9 @@
 TOP = ../../..
-GCC = gcc
 SOURCES = coff.c elf.c util.c stub.c dpmiwrp.c dos.c
 OBJECTS = $(SOURCES:.c=.o)
 
 %.o: %.c
-	$(GCC) $(CFLAGS) -iquote ../include -fpic -ggdb3 -Wall -c -o $@ $<
+	$(CC) $(CFLAGS) -iquote ../include -fpic -ggdb3 -Wall -c -o $@ $<
 
 LIBDIR = $(TOP)/lib
 LIBN = libdjstub64.so.0.2
@@ -19,7 +18,7 @@ $(LIBDIR):
 	mkdir $@
 
 $(LIB): $(OBJECTS) | $(LIBDIR)
-	$(GCC) -shared -Wl,-Bsymbolic -Wl,-soname=$(LIBN) \
+	$(CC) -shared -Wl,-Bsymbolic -Wl,-soname=$(LIBN) \
 		-Wl,--version-script=libdjstub.version -o $@ $^
 
 $(LIBDIR)/libdjstub64.so: $(LIB)
