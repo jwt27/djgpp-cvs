@@ -16,34 +16,6 @@ GPP_OPT := $(shell cat $(TOP)/../gpp.opt)
 GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
 endif
 
-# Figure out GAS version for use in *.S and inline asm compile flags
-#
-GAS_VERSION_STR:= $(shell $(CROSS_AS) --version | sed 1q | sed -e 's:^.*[ 	]\([0-9]\.[0-9][\.0-9]*\).*$$:\1:')
-GAS_VERSION    := $(subst ., ,$(GAS_VERSION_STR))
-GAS_MAJOR      := $(word 1,$(GAS_VERSION))
-GAS_MINOR      := $(word 2,$(GAS_VERSION))
-GAS_MINORMINOR := $(word 3,$(GAS_VERSION))
-
-# Defaults for GAS version numbers
-ifeq ($(GAS_MAJOR),)
-GAS_MAJOR := 0
-endif
-ifeq ($(GAS_MINOR),)
-GAS_MINOR := 0
-endif
-ifeq ($(GAS_MINORMINOR),)
-GAS_MINORMINOR := 0
-endif
-
-# Find GCC own include directory and add it to CFLAGS
-#GCC_INC_DIR := $(shell $(CROSS_GCC) -print-file-name=include)
-#CFLAGS += -I$(GCC_INC_DIR)
-
-# Pass defines as compiler/assembler switches
-ASFLAGS += -DGAS_MAJOR=$(GAS_MAJOR)
-ASFLAGS += -DGAS_MINOR=$(GAS_MINOR)
-ASFLAGS += -DGAS_MINORMINOR=$(GAS_MINORMINOR)
-
 CPPFLAGS += -DDJ64 -D_IN_DJ64
 
 # Moved setting of $(GCC{L}_OPT) to top of file

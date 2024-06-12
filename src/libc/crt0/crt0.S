@@ -21,8 +21,9 @@
 
 #include "stubinfo.h"
 
-#if    (GAS_MAJOR == 2) \
-    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
+#if 0
+//   (GAS_MAJOR == 2) \
+//    && ((GAS_MINOR < 9) || ((GAS_MINOR == 9) && (GAS_MINORMINOR < 5)))
 #define LJMP(there) \
 	ljmp	there
 #define LCALL(there) \
