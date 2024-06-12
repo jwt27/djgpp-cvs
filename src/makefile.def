@@ -6,21 +6,13 @@ SHELL := /bin/bash -o pipefail
 CROSS_PREFIX ?= i686-linux-gnu-
 CROSS_GCC = $(CC)
 CROSS_CPP = $(CPP)
-CROSS_AR = ar
+# for AS objects
+CROSS_AS = $(CROSS_PREFIX)as
 CROSS_ASAR = $(CROSS_PREFIX)ar
-CROSS_AS = as
-CROSS_ASGCC = $(CROSS_PREFIX)gcc
-CROSS_LD = ld
-CROSS_STRIP = strip
+ifeq ($(CROSS_PREFIX_GCC),)
+CROSS_ASGCC = $(CC)
+else
+CROSS_ASGCC = $(CROSS_PREFIX_GCC)gcc
+endif
+CROSS_ASCPP = $(CPP) -x assembler-with-cpp $(1) | $(CROSS_AS) --32 -
 CROSS_ASSTRIP = $(CROSS_PREFIX)strip
-CROSS_BISON = bison
-
-# For building native programs (hostbin/*); assumes GNU versions
-GCC = gcc -g
-AR = ar
-AS = as
-LD = ld
-OBJCOPY = objcopy
-STRIP = strip
-BISON = bison
-LIBSTDCXX = -lstdcxx

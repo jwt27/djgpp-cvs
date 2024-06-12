@@ -16,21 +16,9 @@ GPP_OPT := $(shell cat $(TOP)/../gpp.opt)
 GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
 endif
 
-# Set $(AS) before first use
-#
-AS := $(shell $(CROSS_GCC) $(GCC_OPT) -print-prog-name=as)
-AS := $(subst \,/,$(AS))
-
-# These were suggested by Tim Van Holder <tim.van.holder@pandora.be>
-# but since $(CROSS_LD) is set in makefile.def and $(LD) is not used
-# anywhere, they seem not very useful at this time.
-#
-#LD := $(shell $(CROSS_GCC) $(GCC_OPT) -print-prog-name=ld)
-#LD := $(subst \,/,$(LD))
-
 # Figure out GAS version for use in *.S and inline asm compile flags
 #
-GAS_VERSION_STR:= $(shell $(AS) --version | sed 1q | sed -e 's:^.*[ 	]\([0-9]\.[0-9][\.0-9]*\).*$$:\1:')
+GAS_VERSION_STR:= $(shell $(CROSS_AS) --version | sed 1q | sed -e 's:^.*[ 	]\([0-9]\.[0-9][\.0-9]*\).*$$:\1:')
 GAS_VERSION    := $(subst ., ,$(GAS_VERSION_STR))
 GAS_MAJOR      := $(word 1,$(GAS_VERSION))
 GAS_MINOR      := $(word 2,$(GAS_VERSION))
@@ -63,6 +51,7 @@ CPPFLAGS += -DDJ64 -D_IN_DJ64
 XGCC = $(CROSS_GCC) @$(TOP)/../gcc.opt -I $(TOP)/../../include $(CFLAGS)
 XCPP = $(CROSS_CPP) -I . -I $(TOP)/../../include $(CPPFLAGS)
 XASGCC = $(CROSS_ASGCC) -I $(TOP)/../../include -m32 $(ASFLAGS)
+XASCPP = $(call CROSS_ASCPP, -I $(TOP)/../../include $(ASFLAGS) $(1))
 
 MISC = $(TOP)/../misc.exe
 
@@ -71,10 +60,10 @@ MISC = $(TOP)/../misc.exe
 	$(XCPP) -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 %.o : %.S
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	$(XASGCC) -o $@ -c $<
+	$(call XASCPP,$<) -o $@
 %.o : %.s
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
-	$(XASGCC) -x assembler-with-cpp -o $@ -c $<
+	$(call XASCPP,$<) -x assembler-with-cpp -o $@
 
 LIB=$(TOP)/../../lib
 BIN=$(TOP)/../../bin

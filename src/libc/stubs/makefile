@@ -12,7 +12,7 @@ makefil2 : mkstubs.exe  $(STUBH) makefile
 	./mkstubs.exe $(STUBH)
 
 mkstubs.exe : mkstubs.c
-	$(GCC) mkstubs.c -o mkstubs.exe
+	$(CC) mkstubs.c -o mkstubs.exe
 
 clean ::
 	@-$(MISC) rm *.S makefil2 mkstubs.exe
