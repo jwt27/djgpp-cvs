@@ -51,7 +51,6 @@ struct udisp {
     unsigned cs;
     main_t *main;
     int use_dlm;
-    void *xinfo;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -63,6 +62,15 @@ static dj64dispatch_t *disp_fn;
 static struct athunks *u_athunks;
 static struct athunks *u_pthunks;
 static int *u_handle_p;
+
+struct ctor_dtor {
+    void (*ctor)(void);
+    void (*dtor)(void);
+};
+
+#define MAX_CTORS 10
+static struct ctor_dtor ctors[MAX_CTORS];
+static int num_ctors;
 
 static void do_rm_dosobj(uint32_t fa);
 
@@ -259,12 +267,10 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
-extern struct exc_info xinfo;
-extern const int xinfo_size;
-
 dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
         void *main, int use_dlm)
 {
+    int i;
     struct udisp *u;
 
     assert(handle < MAX_HANDLES);
@@ -289,11 +295,9 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     u->core_pt = pthunks;
     u->core_pt.tab = malloc(sizeof(pthunks.tab[0]) * pthunks.num);
 
-    if (!use_dlm) {
-        u->xinfo = malloc(xinfo_size);
-        memcpy(u->xinfo, &xinfo, xinfo_size);
-    } else {
-        u->xinfo = NULL;
+    for (i = 0; i < num_ctors; i++) {
+        if (ctors[i].ctor)
+            ctors[i].ctor();
     }
 
     return dops;
@@ -301,16 +305,18 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
 
 void DJ64_DONE_FN(int handle)
 {
+    int i;
     struct udisp *u;
+
+    for (i = 0; i < num_ctors; i++) {
+        if (ctors[i].dtor)
+            ctors[i].dtor();
+    }
 
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     free(u->core_at.tab);
     free(u->core_pt.tab);
-    if (u->xinfo) {
-        memcpy(&xinfo, u->xinfo, xinfo_size);
-        free(u->xinfo);
-    }
 }
 
 int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
@@ -485,4 +491,14 @@ uint32_t djthunk_get_h(int handle, const char *name)
 uint32_t djthunk_get(const char *name)
 {
     return djthunk_get_h(dj64api->get_handle(), name);
+}
+
+void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void))
+{
+    struct ctor_dtor *c;
+
+    assert(num_ctors < MAX_CTORS);
+    c = &ctors[num_ctors++];
+    c->ctor = ctor;
+    c->dtor = dtor;
 }

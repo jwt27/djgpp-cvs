@@ -387,6 +387,7 @@ __djgpp_exception_processor(void)
 }
 
 struct exc_info {
+  struct exc_info *prev;
   __dpmi_paddr except_ori[EXCEPTION_COUNT];
   __dpmi_paddr kbd_ori;
   __dpmi_paddr npx_ori;
@@ -397,17 +398,37 @@ struct exc_info {
   ULONG32 cbrk_regs;
 };
 
-struct exc_info xinfo;
-const int xinfo_size = sizeof(xinfo);
+static struct exc_info *xinfo;
 
-#define except_ori xinfo.except_ori
-#define kbd_ori xinfo.kbd_ori
-#define npx_ori xinfo.npx_ori
-#define timer_ori xinfo.timer_ori
-#define cbrk_ori xinfo.cbrk_ori
-#define cbrk_rmcb xinfo.cbrk_rmcb
-#define cbrk_hooked xinfo.cbrk_hooked
-#define cbrk_regs xinfo.cbrk_regs
+static void xinfo_init(void)
+{
+  struct exc_info *x = malloc(sizeof(*x));
+  memset(x, 0, sizeof(*x));
+  x->prev = xinfo;
+  xinfo = x;
+}
+
+static void xinfo_deinit(void)
+{
+  struct exc_info *x = xinfo;
+  xinfo = x->prev;
+  free(x);
+}
+
+__attribute__((constructor))
+static void init(void)
+{
+  djregister_ctor_dtor(xinfo_init, xinfo_deinit);
+}
+
+#define except_ori xinfo->except_ori
+#define kbd_ori xinfo->kbd_ori
+#define npx_ori xinfo->npx_ori
+#define timer_ori xinfo->timer_ori
+#define cbrk_ori xinfo->cbrk_ori
+#define cbrk_rmcb xinfo->cbrk_rmcb
+#define cbrk_hooked xinfo->cbrk_hooked
+#define cbrk_regs xinfo->cbrk_regs
 
 /* Routine toggles ALL the exceptions.  Used around system calls, at exit. */
 
