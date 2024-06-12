@@ -25,6 +25,8 @@ else
 $(error cross-binutils not installed)
 endif
 endif
+export CROSS_PREFIX
+
 CROSS_PREFIX_GCC := $(CROSS_PREFIX)
 GCC = $(CROSS_PREFIX_GCC)gcc
 CROSS_PREFIX_GCC := i686-linux-gnu-
@@ -38,6 +40,7 @@ else
 $(error cross-gcc not installed)
 endif
 endif
+export CROSS_PREFIX_GCC
 
 .PHONY: subs dj64 djdev64 demos
 
@@ -47,7 +50,7 @@ all: dj64 djdev64
 	@echo "You can first run \"sudo make uninstall\" to purge the prev install."
 
 subs:
-	$(MAKE) -C src CROSS_PREFIX=$(CROSS_PREFIX)
+	$(MAKE) -C src
 
 djdev64: djdev64.pc djstub64.pc
 	$(MAKE) -C src/djdev64
