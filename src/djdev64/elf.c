@@ -52,7 +52,7 @@ static int do_getsym(struct elfstate *state, const char *name, GElf_Sym *r_sym)
     return -1;
 }
 
-void *elf_open(char *addr, uint32_t size)
+void *djelf_open(char *addr, uint32_t size)
 {
     Elf         *elf;
     Elf_Scn     *scn = NULL;
@@ -63,7 +63,7 @@ void *elf_open(char *addr, uint32_t size)
 
     elf = elf_memory(addr, size);
     if (!elf) {
-        fprintf(stderr, "elf_memory() failed\n");
+        fprintf(stderr, "djelf_memory() failed\n");
         return NULL;
     }
 
@@ -91,7 +91,7 @@ err:
     return NULL;
 }
 
-void elf_close(void *arg)
+void djelf_close(void *arg)
 {
     struct elfstate *state = (struct elfstate *)arg;
 
@@ -107,7 +107,7 @@ static uint32_t do_getsymoff(struct elfstate *state, const char *name)
     return (err ? 0 : sym.st_value);
 }
 
-uint32_t elf_getsymoff(void *arg, const char *name)
+uint32_t djelf_getsymoff(void *arg, const char *name)
 {
     struct elfstate *state = (struct elfstate *)arg;
     return do_getsymoff(state, name);

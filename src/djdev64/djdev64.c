@@ -44,9 +44,9 @@ static struct dj64handle dlhs[HNDL_MAX];
 static pthread_mutex_t init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 static const struct elf_ops eops = {
-    elf_open,
-    elf_close,
-    elf_getsymoff,
+    djelf_open,
+    djelf_close,
+    djelf_getsymoff,
 };
 
 #define __S(x) #x
