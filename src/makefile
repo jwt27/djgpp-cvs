@@ -1,15 +1,10 @@
-MAKEFLAGS := --no-print-directory
-
 all : misc.exe config makemake.exe subs
 
 misc.exe : misc.c
-	gcc -O2 -Wall misc.c -o misc.exe
+	$(CC) -O2 -Wall misc.c -o misc.exe
 
 makemake.exe : makemake.c
-	gcc -O2 -Wall makemake.c -o makemake.exe
-
-copyrite.exe : copyrite.cc
-	gcc -O2 -Wall copyrite.cc -o copyrite.exe
+	$(CC) -O2 -Wall makemake.c -o makemake.exe
 
 subs:
 	$(MAKE) -C libc
