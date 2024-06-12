@@ -50,7 +50,7 @@ struct udisp {
     struct athunks core_pt;
     unsigned cs;
     main_t *main;
-    int use_dlm;
+    int full_init;
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
@@ -268,7 +268,7 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 static dj64cdispatch_t *dops[] = { dj64_call, dj64_ctrl };
 
 dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
-        void *main, int use_dlm)
+        void *main, int full_init)
 {
     int i;
     struct udisp *u;
@@ -279,7 +279,7 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     disp_fn = NULL;
     u->eops = ops;
     u->main = main;
-    u->use_dlm = use_dlm;
+    u->full_init = full_init;
 
     u->at = u_athunks;
     u_athunks = NULL;
@@ -457,7 +457,7 @@ void crt1_startup(int handle)
     assert(handle < MAX_HANDLES);
     __djgpp_nearptr_enable();  // speeds up things considerably
     u = &udisps[handle];
-    if (!handle || u->use_dlm)
+    if (u->full_init)
         dosobj_init(dosobj_page, 4096);
 
     __crt1_startup(u->main);

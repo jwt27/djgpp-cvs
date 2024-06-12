@@ -147,6 +147,7 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
     char *path2 = NULL;
     struct dj64handle *h;
     int use_dlm = 0;
+    int full;
 
     if (handles >= HNDL_MAX) {
         fprintf(stderr, "out of handles\n");
@@ -154,8 +155,6 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
     }
     /* RTLD_DEEPBIND has similar effect to -Wl,-Bsymbolic */
     if (flags & FLG_STATIC) {
-        /* for static linking we fully emulated dlmopen(), so set use_dlm */
-        use_dlm = 1;
         dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
                 &path2);
     } else {
@@ -210,7 +209,8 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
         fprintf(stderr, _S(DJ64_INIT_ONCE_FN) " failed\n");
         goto err_close;
     }
-    cdisp = init(handles, &eops, main, use_dlm);
+    full = (use_dlm || (flags & FLG_STATIC) || !handles);
+    cdisp = init(handles, &eops, main, full);
     if (!cdisp) {
         fprintf(stderr, _S(DJ64_INIT_FN) " failed\n");
         goto err_close;
