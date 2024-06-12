@@ -17,7 +17,7 @@ XCPPFLAGS = -I. $(shell pkg-config --variable=cppflags dj64)
 XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
 XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
-LD = gcc
+LD = $(CC)
 ifeq ($(DJ64STATIC),1)
 DJLDFLAGS = $(shell pkg-config --libs dj64_s)
 DJ64_XLDFLAGS = -f 0x40

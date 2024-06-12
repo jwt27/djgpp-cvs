@@ -283,7 +283,7 @@ static void checkarena(size_t sz, void *bk)
    struct mallinfo mi;
    void  *badblk;
 
-   if (bk) sz = sz; /* anti warn */
+//   if (bk) sz = sz; /* anti warn */
    if (dbglevel > 1) {  /* else ignore, safety */
       if ((badblk = mallocscan(NULL, &mi)))
          showbad(dumpfile, badblk);
@@ -294,7 +294,7 @@ static void checkarena(size_t sz, void *bk)
 
 static void freenullalert(size_t sz, void *bk)
 {
-   if (bk) sz = sz; /* anti warn */
+//   if (bk) sz = sz; /* anti warn */
    fputs("\n***Freeing NULL\n", dumpfile);
 } /* freenullalert */
 

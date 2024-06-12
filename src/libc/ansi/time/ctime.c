@@ -1469,7 +1469,7 @@ timesub(const time_t *const timep, const int_fast32_t offset, const struct state
   }
   {
     int_fast32_t seconds;
-    time_t half_second = 0.5;
+    float half_second = 0.5;
 
     seconds = tdays * SECSPERDAY + half_second;
     tdays = seconds / SECSPERDAY;

@@ -28,7 +28,7 @@ static const char DEV_FULL_PATH[] = "/dev/full";
 
 typedef struct {
   int flags;
-  int dev_full:1; /* 1 => /dev/full, 0 => /dev/zero */
+  unsigned int dev_full:1; /* 1 => /dev/full, 0 => /dev/zero */
   int dup_count;  /* Support for dup() - reference count. */
 } DEV_DATA;
 

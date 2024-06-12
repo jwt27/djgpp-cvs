@@ -2,27 +2,29 @@
 
 set -o pipefail
 
+[ -n "$CC" ] || CC=cc
+
 ORIG_ARGS="$*"
 if [ $# -lt 2 ]; then
-  cc ${ORIG_ARGS}
+  $CC ${ORIG_ARGS}
   exit $?
 fi
 LAST_ARG=${!#}
 set -- "${@:1:$(($#-1))}"
 PLAST_ARG=${!#}
 if [ "$PLAST_ARG" != "-c" ]; then
-  cc ${ORIG_ARGS}
+  $CC ${ORIG_ARGS}
   exit $?
 fi
 case "${LAST_ARG}" in
   *.S)
-       echo "cc -m32 -x assembler-with-cpp $* ${LAST_ARG}"
-       cc -m32 -x assembler-with-cpp $* ${LAST_ARG}
+       echo "$CC -m32 -x assembler-with-cpp $* ${LAST_ARG}"
+       $CC -m32 -x assembler-with-cpp $* ${LAST_ARG}
        exit $?
        ;;
   *.s)
-       echo "cc -m32 -x assembler $* ${LAST_ARG}"
-       cc -m32 -x assembler $* ${LAST_ARG}
+       echo "$CC -m32 -x assembler $* ${LAST_ARG}"
+       $CC -m32 -x assembler $* ${LAST_ARG}
        exit $?
        ;;
 esac
@@ -35,8 +37,8 @@ do
     esac
 done
 if [ -n "$*" ]; then
-  cc -E -CC -g0 `pkg-config --variable=cppflags dj64` \
-    ${INCS} ${LAST_ARG} | cc -xc `pkg-config --cflags dj64` $* -
+  cpp -CC -g0 `pkg-config --variable=cppflags dj64` \
+    ${INCS} ${LAST_ARG} | $CC -xc `pkg-config --cflags dj64` $* -
 else
-  cc ${LAST_ARG}
+  $CC ${LAST_ARG}
 fi

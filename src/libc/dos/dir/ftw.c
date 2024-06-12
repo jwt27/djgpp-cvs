@@ -114,7 +114,7 @@ ftw(const char *dir, int (*func)(const char *, struct stat *, int),
   int len;
   int e = errno;
 
-  ignored = ignored;        /* pacify -Wall */
+//  ignored = ignored;        /* pacify -Wall */
 
   if (dir == 0 || func == 0)
     {

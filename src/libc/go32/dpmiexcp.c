@@ -289,9 +289,9 @@ signal(int sig, SignalHandler func)
   return temp;
 }
 
+#if 0
 static const char signames[] = "ABRTFPE ILL SEGVTERMALRMHUP INT KILLPIPEQUITUSR1USR2NOFPTRAP";
 
-#if 0
 static void print_signal_name(int sig)
 {
   err("Exiting due to signal ");
