@@ -221,18 +221,45 @@ example file. Those are: `CFLAGS`, `OBJECTS`, `AS_OBJECTS` and `PDHDR`.
 Make your `clean` target to depend on `clean_dj64`:
 ```
 clean: clean_dj64
-	$(RM) $(TGT)
+	$(RM) my_app.exe
 ```
 As soon as the dj64's makefile is hooked in, it takes care of compiling
 the object files and sets the following variables as the result:
-`DJ64_XOBJS`, `DJ64_XLIB` and `DJ64_XELF`.
+`DJ64_XOBJS`, `DJ64_XLIB`, `DJ64_XELF` and `DJ64_XLDFLAGS`.
 You only need to pass those to `djlink` as described below.
+
+Another important variable is `DJ64STATIC`. You can set it to `1`
+before hooking in `DJMK` to enable the static linking. You need
+to install `dj64-dev-static` package for static linking to work.
+This variable can also be automatically set to `1` by `DJMK` hook
+itself on the platforms where dj64 does not support dynamic linking
+(like on FreeBSD). Static linking produces a much larger executables,
+so you may want to strip them with `djstrip`. You can check if the
+executable is statically linked, by inspecting `bit 6` in `Stub flags`:
+```
+$ djstubify -i hello.exe
+dj64 file format
+Overlay 0 (i386/ELF DOS payload) at 23368, size 30220
+Overlay 1 (x86_64/ELF host payload) at 53588, size 186376
+Overlay 2 (x86_64/ELF host debug info) at 239964, size 347000
+Overlay name: hello.exe
+Stub version: 4
+Stub flags: 0x0040
+```
+`0x0040` means that `bit 6` is set, so this is a statically linked executable.
+It doesn't need `dj64` package to be installed on a host system, as
+the entire runtime is linked in.
 
 Next comes the linking stage where we need to link the dj64-compiled
 `DJ64_XOBJS` objects with `djlink`:
 ```
+LINK = djlink
+STRIP = @true
+# or use `STRIP = djstrip` for non-debug build
+...
 $(TGT): $(DJ64_XOBJS)
-	$(LINK) -d dosemu_$@.dbg $(DJ64_XLIB) -n $@ -o $@ $(DJ64_XELF)
+	$(LINK) -d dosemu_$@.dbg $(DJ64_XLIB) -n $@ -o $@ \
+	  $(DJ64_XLDFLAGS) $(DJ64_XELF)
 	$(STRIP) $@
 ```
 Lets consider this command line, which we get from the above recipe:
