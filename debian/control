@@ -8,8 +8,10 @@ Build-Depends:
     thunk-gen,
     sed,
     bash,
-    gcc-i686-linux-gnu,
     gcc,
+    binutils,
+    gcc-i686-linux-gnu,
+    binutils-i686-linux-gnu,
     universal-ctags,
     pkg-config,
     libelf-dev,
@@ -29,7 +31,13 @@ Package: dj64-dev
 Architecture: any
 Section: libdevel
 Priority: optional
-Depends: dj64 (= ${binary:Version}), ${misc:Depends}, gcc, binutils
+Depends: dj64 (= ${binary:Version}), ${misc:Depends},
+    gcc,
+    binutils,
+    binutils-i686-linux-gnu,
+    pkg-config,
+    bash,
+    sed
 Description: dj64 development tools and headers
  This package contains tools and headers for building dj64-enabled programs.
 

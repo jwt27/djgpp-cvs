@@ -63,6 +63,10 @@ Summary: dj64 development tools and headers
 Requires: dj64dev-dj64 = {{{ git_dir_version }}}
 Requires: gcc
 Requires: binutils
+Requires: binutils-x86_64-linux-gnu
+Requires: pkgconf-pkg-config
+Requires: bash
+Requires: sed
 
 %description dj64-devel
 This package contains tools and headers for building dj64-enabled programs.

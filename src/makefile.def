@@ -5,8 +5,7 @@ SHELL := bash -o pipefail
 
 CROSS_PREFIX ?= i686-linux-gnu-
 CROSS_GCC = $(CC)
-# dont trust $(CPP) for that, as clang -E doesn't work as expected
-CROSS_CPP = cpp
+CROSS_CPP = $(CPP)
 # for AS objects
 CROSS_AS := $(CROSS_PREFIX)as
 CROSS_ASAR = $(CROSS_PREFIX)ar

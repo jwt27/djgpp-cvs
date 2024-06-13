@@ -29,7 +29,9 @@ MISC = $(TOP)/../misc.exe
 
 %.o : %.c
 	$(MISC) echo - $(CROSS_GCC) '...' $(EXTRA_CFLAGS) -c $<
-	$(XCPP) -CC -g0 $< | $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
+	$(XCPP) -CC -g0 $< | \
+	  sed -E -e 's/^\*\/#/\*\/\n#/' -e 's/^\*\/ *;/\*\/\n;\n/' | \
+	  $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 %.o : %.S
 	$(MISC) echo - $(CROSS_GCC) '...' -c $<
 	$(call XASCPP,$<) -o $@

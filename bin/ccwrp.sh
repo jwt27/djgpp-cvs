@@ -3,6 +3,7 @@
 set -o pipefail
 
 [ -n "$CC" ] || CC=cc
+[ -n "$CPP" ] || CPP=cpp
 
 ORIG_ARGS="$*"
 if [ $# -lt 2 ]; then
@@ -37,8 +38,10 @@ do
     esac
 done
 if [ -n "$*" ]; then
-  cpp -CC -g0 `pkg-config --variable=cppflags dj64` \
-    ${INCS} ${LAST_ARG} | $CC -xc `pkg-config --cflags dj64` $* -
+  $CPP -CC -g0 `pkg-config --variable=cppflags dj64` \
+    ${INCS} ${LAST_ARG} | \
+    sed -E -e 's/^\*\/#/\*\/\n#/' -e 's/^\*\/ *;/\*\/\n;\n/' | \
+    $CC -xc `pkg-config --cflags dj64` $* -
 else
   $CC ${LAST_ARG}
 fi
