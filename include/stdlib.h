@@ -17,7 +17,7 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-#include <sys/djtypes.h>
+#include <sys/types.h>
 #include <stddef.h>
 
 /* Some programs think they know better... */
@@ -140,7 +140,7 @@ unsigned long   nrand48(unsigned short _state[3]);
 unsigned short *seed48(unsigned short _state_seed[3]);
 void            srand48(long _seedval);
 long double	_strtold(const char *_s, char **_endptr);
-void		swab(const void *_from, void *_to, int _nbytes);
+void		swab(const void *_from, void *_to, ssize_t _nbytes);
 void *		valloc (size_t _amt);
 
 #ifndef alloca

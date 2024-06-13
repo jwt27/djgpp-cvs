@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 void
-swab(const void *vfrom, void *vto, int n)
+swab(const void *vfrom, void *vto, ssize_t n)
 {
   unsigned long temp;
   const char *from=(const char *)vfrom;
