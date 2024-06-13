@@ -1,5 +1,6 @@
 # find the suitable cross-assembler
 GAS = $(CROSS_PREFIX)as
+XASFLAGS = --32 --defsym _DJ64=1
 CROSS_PREFIX := i686-linux-gnu-
 ifeq ($(shell $(GAS) --version 2>/dev/null),)
 CROSS_PREFIX := x86_64-linux-gnu-
@@ -7,11 +8,14 @@ endif
 ifeq ($(shell $(GAS) --version 2>/dev/null),)
 ifneq ($(filter x86_64 amd64,$(shell uname -m)),)
 CROSS_PREFIX :=
+ifeq ($(shell $(GAS) --version 2>/dev/null),)
+GAS = $(CC) -x assembler -c -
+XASFLAGS = -m32 -Wa,--defsym -Wa,_DJ64=1
+endif
 else
 $(error cross-binutils not installed)
 endif
 endif
-XASFLAGS = --32 --defsym _DJ64=1
 XAS = $(CPP) $(XCPPFLAGS) -x assembler-with-cpp $(1) | $(GAS) $(XASFLAGS)
 XCPPFLAGS = -I. $(shell pkg-config --variable=cppflags dj64)
 XSTRIP = $(CROSS_PREFIX)strip --strip-debug
