@@ -20,10 +20,4 @@ AS_SRC += crt0.S
 
 include $(TOP)/../makefile.inc
 
-exit16.ah : exit16.asm
-	$(HOSTBIN)/djasm.exe exit16.asm exit16.ah
-
-sbrk16.ah : sbrk16.asm
-	$(HOSTBIN)/djasm.exe sbrk16.asm sbrk16.ah
-
 crt0.o : crt0.S exit16.ah sbrk16.ah
