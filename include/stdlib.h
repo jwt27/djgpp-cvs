@@ -18,6 +18,7 @@ extern "C" {
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
 #include <sys/djtypes.h>
+#include <stddef.h>
 
 /* Some programs think they know better... */
 #undef NULL
@@ -45,16 +46,6 @@ typedef struct {
   long quot;
   long rem;
 } ldiv_t;
-
-#ifndef _SIZE_T
-__DJ_size_t
-#define _SIZE_T
-#endif
-
-#ifndef _WCHAR_T
-__DJ_wchar_t
-#define _WCHAR_T
-#endif
 
 #ifndef NORETURN
 #define NORETURN
