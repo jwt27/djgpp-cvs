@@ -10,7 +10,9 @@ ifneq ($(filter x86_64 amd64,$(shell uname -m)),)
 CROSS_PREFIX :=
 ifeq ($(shell $(GAS) --version 2>/dev/null),)
 GAS = $(CC) -x assembler -c -
-XASFLAGS = -m32 -Wa,--defsym -Wa,_DJ64=1
+# clang doesn't support -Wa,--defsym
+#XASFLAGS = -m32 -Wa,--defsym -Wa,_DJ64=1
+XASFLAGS = -m32
 endif
 else
 $(error cross-binutils not installed)
