@@ -269,8 +269,9 @@ djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe tmp.elf
 `-d` option sets the debuglink name. It always has the form of
 `dosemu_<exe_file>.dbg` if you want to debug your program under dosemu2.<br/>
 `libtmp.so` arg is an expansion of `DJ64_XLIB` variable set by dj64 for us.<br/>
-`-n` specifies the exe file name. It should match the `<exe_file>`
-part passed to `-d` if you want to be able to use debugger.<br/>
+`-n` specifies the exe file name as seen by the debugger. It should match
+the `<exe_file>` part passed to `-d` for debugger to work, but it doesn't
+have to match the actual file name (although it usually does).<br/>
 `-o` specifies the output file.<br/>
 `tmp.elf` arg is an expansion of `DJ64_XELF` variable set by dj64.<br/>
 
