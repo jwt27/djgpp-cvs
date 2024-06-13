@@ -24,6 +24,11 @@ XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
 XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
 LD = $(CC)
+# freebsd's dlopen() ignores link order and binds to libc the symbols
+# defined in libdj64.so. Use static linking as a work-around.
+ifeq ($(shell uname -s),FreeBSD)
+DJ64STATIC = 1
+endif
 ifeq ($(DJ64STATIC),1)
 DJLDFLAGS = $(shell pkg-config --libs dj64_s)
 DJ64_XLDFLAGS = -f 0x40
