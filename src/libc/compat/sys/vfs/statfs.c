@@ -205,7 +205,7 @@ statfs(const char *path, struct statfs *buf)
 	if( ! cdrom_calls_used )
 	{
 	  /* If the earlier call to useAX0x1510() failed we must use INT21
-	     AH=63. */
+	     AH=36h. */
 	  if( use_AH0x36( drive_number, &blocks, &free, &bsize ) == -1 )
 	  {
 	    /* use_AH0x36() sets errno on failure. */
