@@ -281,9 +281,11 @@ For example if you don't need to use debugger, then you can just do:
 ```
 $(TGT): $(DJ64_XOBJS)
 	strip $(DJ64_XLIB)
-	$(LINK) $(DJ64_XLIB) -o $@ $(DJ64_XELF)
+	djlink $(DJ64_XLIB) -o $@ $(DJ64_XELF)
 ```
-to get an executable without debug info. But the recommended way is
+to get an executable without debug info. Note the use of `strip` instead
+of `djstrip` in this example. This is because we strip an intermediate
+object here, instead of the final executable. But the recommended way is
 to use `djstrip <exe_file>` to remove the debug info after linking.
 For `djstrip` to work, you need to link with `-d`.
 Note that even though some `djlink` args were omitted in the last
