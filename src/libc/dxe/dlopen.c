@@ -163,7 +163,7 @@ void *dlopen(const char *filename, int mode)
             continue;
           memcpy(tempfn, scan, nextscan - scan);
           name = tempfn + (nextscan - scan);
-          if (name [-1] != '/' && name [-1] != '\\')
+          if (name > tempfn && name [-1] != '/' && name [-1] != '\\')
             *name++ = '/';
           memcpy(name, filename, fnl);
           if (ACCESS(tempfn))
