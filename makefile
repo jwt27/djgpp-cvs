@@ -79,6 +79,8 @@ install_dj64:
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64_s.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man1
+	$(INSTALL) -m 0644 man/*.1 $(DESTDIR)$(PREFIX)/share/man/man1
 
 install_djdev64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share

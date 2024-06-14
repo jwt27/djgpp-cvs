@@ -82,6 +82,7 @@ This package contains tools and headers for building dj64-enabled programs.
 %{_bindir}/*
 %{_datadir}/pkgconfig/dj64.pc
 %{_datadir}/pkgconfig/dj64static.pc
+%doc %{_mandir}/man1/*
 %end
 
 %package dj64-devel-static
