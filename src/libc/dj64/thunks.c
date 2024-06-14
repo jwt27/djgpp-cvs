@@ -242,9 +242,11 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         ret = process_athunks(&u->core_at, mem_base, u->eops, eh);
         if (ret)
             goto err;
-        ret = process_athunks(u->at, mem_base, u->eops, eh);
-        if (ret)
-            goto err;
+        if (u->at) {
+            ret = process_athunks(u->at, mem_base, u->eops, eh);
+            if (ret)
+                goto err;
+        }
         ret = process_pthunks(&u->core_pt, u->eops, eh);
         if (ret)
             goto err;
