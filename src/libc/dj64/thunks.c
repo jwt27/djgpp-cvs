@@ -479,11 +479,12 @@ static uint32_t do_thunk_get(const struct athunks *at, const char *name)
 uint32_t djthunk_get_h(int handle, const char *name)
 {
     struct udisp *u;
-    uint32_t ret;
+    uint32_t ret = (uint32_t)-1;
 
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    ret = do_thunk_get(u->at, name);
+    if (u->at)
+        ret = do_thunk_get(u->at, name);
     if (ret == (uint32_t)-1)
         ret = do_thunk_get(&u->core_at, name);
     assert(ret != (uint32_t)-1);
