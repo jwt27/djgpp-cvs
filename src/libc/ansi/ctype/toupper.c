@@ -7,4 +7,4 @@ int toupper(int c)
   return __toupper(c);
 }
 
-int __attribute__((alias("toupper"))) _toupper(int c);
+//int __attribute__((alias("toupper"))) _toupper(int c);

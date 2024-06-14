@@ -7,4 +7,4 @@ int tolower(int c)
   return __tolower(c);
 }
 
-int __attribute__((alias("tolower"))) _tolower(int c);
+//int __attribute__((alias("tolower"))) _tolower(int c);
