@@ -13,6 +13,7 @@ DJDEV64DEVL = $(TOP)/lib/libdjdev64.so
 DJSTUB64LIB = $(TOP)/lib/libdjstub64.so.*.*
 DJSTUB64DEVL = $(TOP)/lib/libdjstub64.so
 
+ifeq ($(filter demos demos_clean clean,$(MAKECMDGOALS)),)
 AS = $(CROSS_PREFIX)as
 CROSS_PREFIX := i686-linux-gnu-
 ifeq ($(shell $(AS) --version 2>/dev/null),)
@@ -41,6 +42,7 @@ $(error cross-gcc not installed)
 endif
 endif
 export CROSS_PREFIX_GCC
+endif
 
 .PHONY: subs dj64 djdev64 demos
 
