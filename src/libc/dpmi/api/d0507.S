@@ -15,10 +15,30 @@
 	movl	8(%eax), %ebx
 	movl	ARG2, %edx
 
-	DPMI(0x0507)
+	movw	$0x0507, %ax
+	int	$0x31
 
+	jnc	L_noerror
 	movl	ARG1, %edx
+
+	/*
+	 * Check if output ecx (number of modified pages) is valid.
+	 * It has to be less than input ecx (total number of pages)
+	 * as modification of some pages at this point failed. If
+	 * output ecx is invalid then set it to zero as in this case
+	 * probably no page was modified by DPMI host (otherwise it
+	 * would have set the valid number of modified pages).
+	 */
+	cmpl	%ecx, 4(%edx)
+	ja	L_ecxvalid
+	xorl	%ecx, %ecx
+L_ecxvalid:
+
 	movl	%ecx, 4(%edx)
+	movw	%ax, ___dpmi_error
+	movl	$-1, %eax
+	jmp	L_leave
+L_noerror:
 
 	xorl	%eax,%eax
 

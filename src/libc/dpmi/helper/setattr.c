@@ -29,7 +29,7 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
       || ((_attributes & 0x3) == 2))
     {
       errno = EINVAL;
-      return -1;
+      goto fail;
     }
 
   /* Set up an array of page attribute information. */
@@ -51,7 +51,17 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
       /* Find the memory handle corresponding to the first byte. */
       d = __djgpp_memory_handle (p);
       if (d == NULL)
-	goto fail;
+        {
+          errno = EINVAL;
+          goto fail;
+        }
+
+      /* Base address of the memory handle must be page aligned too. */
+      if (d->address & 0xfff)
+        {
+          errno = EINVAL;
+          goto fail;
+        }
 
       /* Find the last byte in the range that's also in the same
        * memory handle as our current starting byte.  We start with
@@ -69,7 +79,10 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
 	  /* Find the memory handle corresponding to this test byte. */
 	  d2 = __djgpp_memory_handle (handle_end_addr);
 	  if (d2 == NULL)
-	    goto fail;
+            {
+              errno = EINVAL;
+              goto fail;
+            }
 
 	  /* Is this test byte in the same handle as the first byte? */
 	  if (d2->handle == d->handle)
@@ -82,9 +95,31 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
       meminfo.handle  = d->handle;
       meminfo.size    = num_pages2;
       meminfo.address = p - d->address;
-      if (__dpmi_set_page_attributes (&meminfo, attr)
-	  || meminfo.size != num_pages2)
-	goto fail;
+      if (__dpmi_set_page_attributes (&meminfo, attr))
+        {
+          switch (__dpmi_error)
+            {
+              case 0x0507: /* Unsupported function (returned by DPMI 0.9 host, error number is same as DPMI function number) */
+              case 0x8001: /* Unsupported function (returned by DPMI 1.0 host) */
+                errno = ENOSYS;
+                break;
+              case 0x8010: /* Resource unavailable (DPMI host cannot allocate internal resources to complete an operation) */
+              case 0x8013: /* Physical memory unavailable */
+              case 0x8014: /* Backing store unavailable */
+                errno = ENOMEM;
+                break;
+              case 0x8002: /* Invalid state (page in wrong state for request) */
+              case 0x8021: /* Invalid value (illegal request in bits 0-2 of one or more page attribute words) */
+              case 0x8023: /* Invalid handle (in ESI) */
+              case 0x8025: /* Invalid linear address (specified range is not within specified block) */
+                errno = EINVAL;
+                break;
+              default: /* Other unspecified error */
+                errno = EACCES;
+                break;
+            }
+          goto fail;
+        }
 
       /* Move on to the next memory handle. */
       p = handle_end_addr;
@@ -94,6 +129,5 @@ __djgpp_set_page_attributes (void *_our_addr, ULONG32 _num_bytes,
   return 0;
 
  fail:
-  errno = EACCES;
   return -1;
 }

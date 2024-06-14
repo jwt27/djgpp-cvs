@@ -25,6 +25,13 @@ words which specify the new attributes.
 @xref{__dpmi_get_page_attributes}, for the definition of the page
 attribute word.
 
+On error this function changes @code{@var{info}->size} to the number
+of modified pages as reported by DPMI function AX = 0x0507.  If DPMI
+function reports that all the input pages were modified, or more pages
+than the input number of pages were modified, then that is treated as
+invalid value reported by DPMI function, and so this functions changes
+@code{@var{info}->size} to 0, as probably no page was modified.
+
 The DJGPP startup code calls this function to uncommit the so-called
 @dfn{null page}, the first 4KB of the program's address space.  This
 causes @code{NULL} pointer dereferences, a frequent programmatic error,
