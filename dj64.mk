@@ -1,23 +1,25 @@
 # find the suitable cross-assembler
-GAS = $(CROSS_PREFIX)as
-XASFLAGS = --32 --defsym _DJ64=1
+DJ64AS = $(CROSS_PREFIX)as
+DJ64ASFLAGS = --32 --defsym _DJ64=1
 CROSS_PREFIX := i686-linux-gnu-
-ifeq ($(shell $(GAS) --version 2>/dev/null),)
+ifeq ($(shell $(DJ64AS) --version 2>/dev/null),)
 CROSS_PREFIX := x86_64-linux-gnu-
 endif
-ifeq ($(shell $(GAS) --version 2>/dev/null),)
+ifeq ($(shell $(DJ64AS) --version 2>/dev/null),)
 ifneq ($(filter x86_64 amd64,$(shell uname -m)),)
 CROSS_PREFIX :=
-ifeq ($(shell $(GAS) --version 2>/dev/null),)
-GAS = $(CC) -x assembler -c -
-XASFLAGS = -m32 -Wa,-defsym,_DJ64=1
+ifeq ($(shell $(DJ64AS) --version 2>/dev/null),)
+# found nothing, allow dj64-gcc to use defaults
+DJ64AS =
+DJ64ASFLAGS =
 endif
 else
 $(error cross-binutils not installed)
 endif
 endif
-XAS = $(CPP) $(XCPPFLAGS) -x assembler-with-cpp $(1) | $(GAS) $(XASFLAGS)
-XCPPFLAGS = -I. $(shell pkg-config --variable=cppflags dj64)
+export DJ64AS
+export DJ64ASFLAGS
+
 XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
 XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
@@ -57,9 +59,9 @@ $(DJ64_XLIB): $(OBJECTS)
 %.o: %.c
 	dj64-gcc $(CFLAGS) -I. -o $@ -c $<
 %.o: %.S
-	$(call XAS,$<) -o $@
+	dj64-gcc -o $@ -c $<
 plt.o: plt.inc glob_asm.h
-	echo "#include <dj64/plt.S.inc>" | $(call XAS,-) -o $@
+	echo "#include <dj64/plt.S.inc>" | dj64-gcc -I. -o $@ -c -
 thunks_c.o: thunk_calls.h
 thunks_p.o: thunk_asms.h plt_asmc.h
 

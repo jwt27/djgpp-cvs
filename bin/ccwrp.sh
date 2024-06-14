@@ -4,6 +4,9 @@ set -o pipefail
 
 [ -n "$CC" ] || CC=cc
 [ -n "$CPP" ] || CPP=cpp
+XCPPFLAGS=`pkg-config --variable=cppflags dj64`
+[ -n "$DJ64AS" ] || DJ64AS="$CC -x assembler"
+[ -n "$DJ64ASFLAGS" ] || DJ64ASFLAGS="-m32 -Wa,-defsym,_DJ64=1 -c"
 
 ORIG_ARGS="$*"
 if [ $# -lt 2 ]; then
@@ -17,18 +20,6 @@ if [ "$PLAST_ARG" != "-c" ]; then
   $CC ${ORIG_ARGS}
   exit $?
 fi
-case "${LAST_ARG}" in
-  *.S)
-       echo "$CC -m32 -x assembler-with-cpp $* ${LAST_ARG}"
-       $CC -m32 -x assembler-with-cpp $* ${LAST_ARG}
-       exit $?
-       ;;
-  *.s)
-       echo "$CC -m32 -x assembler $* ${LAST_ARG}"
-       $CC -m32 -x assembler $* ${LAST_ARG}
-       exit $?
-       ;;
-esac
 for arg in "$@"
 do
     case "$arg" in
@@ -37,11 +28,26 @@ do
          ;;
     esac
 done
+case "${LAST_ARG}" in
+  *.S|-)
+        set -- "${@:1:$(($#-1))}"
+        echo "$CPP -x assembler-with-cpp $XCPPFLAGS ${INCS} ${LAST_ARG} | " \
+             "$DJ64AS $DJ64ASFLAGS - $*"
+        $CPP -x assembler-with-cpp $XCPPFLAGS ${INCS} ${LAST_ARG} | \
+            $DJ64AS $DJ64ASFLAGS - $*
+        exit $?
+        ;;
+  *.s)
+        set -- "${@:1:$(($#-1))}"
+        echo "$DJ64AS $DJ64ASFLAGS $* ${LAST_ARG}"
+        $DJ64AS $DJ64ASFLAGS $* ${LAST_ARG}
+        exit $?
+        ;;
+esac
 if [ -n "$*" ]; then
-  $CPP -CC -g0 `pkg-config --variable=cppflags dj64` \
-    ${INCS} ${LAST_ARG} | \
+  $CPP -CC -g0 $XCPPFLAGS $CPPFLAGS ${INCS} ${LAST_ARG} | \
     sed -E -e 's/^\*\/#/\*\/\n#/' -e 's/^\*\/ *;/\*\/\n;\n/' | \
-    $CC -xc `pkg-config --cflags dj64` $* -
+    $CC -xc `pkg-config --cflags dj64` $CFLAGS $* -
 else
   $CC ${LAST_ARG}
 fi
