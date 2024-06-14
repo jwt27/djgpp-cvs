@@ -13,7 +13,7 @@ if ! which uctags >/dev/null 2>&1; then
 	echo "universal-ctags not installed"
 	exit 1
     fi
-    if ! echo | ctags -L -; then
+    if ! echo | ctags -L - -f /dev/null; then
 	echo "bsd ctags do not suit, install universal-ctags"
 	exit 1
     fi
