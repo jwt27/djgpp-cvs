@@ -1,5 +1,5 @@
 #ifdef DJ64
-#define RET_I retfl
+#define RET_I lretl
 #else
 #define RET_I ret
 #endif
