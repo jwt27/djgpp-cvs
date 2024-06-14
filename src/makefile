@@ -12,7 +12,7 @@ subs:
 .PHONY : clean
 clean : misc.exe makemake.exe
 	$(MAKE) -C libc clean
-	./misc.exe rm gcc.opt gcc-l.opt makefile.sub
+	./misc.exe rm gcc.opt makefile.sub
 	./misc.exe rm makemake.exe copyrite.exe misc.exe
 
 config: misc.exe

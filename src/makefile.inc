@@ -8,14 +8,6 @@ include $(TOP)/../makefile.def
 
 .SUFFIXES: .o .i .c .cc .s
 
-# Set $(GCC{L}_OPT) here so they are defined before first use
-#
-ifeq ($(CROSS_BUILD),1)
-GCC_OPT := $(shell cat $(TOP)/../gcc.opt)
-GPP_OPT := $(shell cat $(TOP)/../gpp.opt)
-GCCL_OPT := $(shell cat $(TOP)/../gcc-l.opt)
-endif
-
 CPPFLAGS += -DDJ64 -D_IN_DJ64
 
 # Moved setting of $(GCC{L}_OPT) to top of file
