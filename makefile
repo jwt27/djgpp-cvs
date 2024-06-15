@@ -97,7 +97,7 @@ install_djdev64:
 	@echo
 	@echo "Done installing. You may need to run \"sudo ldconfig\" now."
 
-install: install_dj64 install_djdev64
+install: install_dj64 install_djdev64 install_demos
 
 uninstall:
 	$(RM) -r $(DESTDIR)$(PREFIX)/bin/dj64-gcc
@@ -112,6 +112,7 @@ uninstall:
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64DEVL))
 	$(RM) $(DESTDIR)$(LIBDIR)/$(notdir $(DJSTUB64LIB))
 	ldconfig
+	$(MAKE) -C demos src_uninstall
 
 clean: demos_clean
 	$(MAKE) -C src clean
@@ -142,3 +143,6 @@ demos_djgpp:
 
 demos_clean:
 	$(MAKE) -C demos clean
+
+install_demos:
+	$(MAKE) -C demos src_install
