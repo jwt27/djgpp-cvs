@@ -174,13 +174,13 @@ static __dpmi_regs *mouse_regs;
 - The file named `glob_asm.h`, like
   [this](https://github.com/dosemu2/comcom64/blob/master/src/glob_asm.h)
   or
-  [this](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/glob_asm.h)
+  [this](https://github.com/stsp/dj64dev/blob/master/demos/helloasm/glob_asm.h)
   or
   [this](https://github.com/stsp/dj64dev/blob/master/demos/rmcb/glob_asm.h)
   should be created, which lists all the global asm symbols.
 - C functions that are called from asm, as well as the asm functions that
   are called from C, should be put to the separate header file, for example
-  [this](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/asm.h)
+  [this](https://github.com/stsp/dj64dev/blob/master/demos/helloasm/asm.h)
   or
   [this](https://github.com/stsp/dj64dev/blob/master/demos/rmcb/asm.h)
   or
@@ -192,11 +192,11 @@ static __dpmi_regs *mouse_regs;
   called from C. In your `Makefile` you need to write `PDHDR = asm.h`.
 
 Now you need to add a certain thunk files to your project, like
-[thunks_a.c](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/thunks_a.c)
+[thunks_a.c](https://github.com/stsp/dj64dev/blob/master/demos/helloasm/thunks_a.c)
 ,
-[thunks_c.c](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/thunks_c.c)
+[thunks_c.c](https://github.com/stsp/dj64dev/blob/master/demos/helloasm/thunks_c.c)
 and
-[thunks_p.c](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/thunks_p.c)
+[thunks_p.c](https://github.com/stsp/dj64dev/blob/master/demos/helloasm/thunks_p.c)
 . As you can see, you don't need to put too many things there, as these
 files include the auto-generated stuff. `thunks_a.c` is needed if you
 refrence global asm symbols from C. `thunks_c.c` is needed if you call C
@@ -215,7 +215,7 @@ include $(DJMK)
 endif
 ```
 to involve dj64 into a build process. Please see
-[this makefile](https://github.com/stsp/dj64dev/blob/master/demos/hello_asm/makefile)
+[this makefile](https://github.com/stsp/dj64dev/blob/master/demos/helloasm/makefile)
 for an example. Some variables must be exacly of the same name as in an
 example file. Those are: `CFLAGS`, `OBJECTS`, `AS_OBJECTS` and `PDHDR`.
 Make your `clean` target to depend on `clean_dj64`:

@@ -4,7 +4,7 @@ STRIP = @true
 
 SOURCES = hello.c thunks_a.c thunks_c.c thunks_p.c
 AS_SOURCES = h.S
-TGT = hello.exe
+TGT = helloasm.exe
 
 # the below 4 vars must be named exactly like here
 CFLAGS = -Wall -ggdb3
