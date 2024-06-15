@@ -14,5 +14,5 @@ void copy_msg(void)
 {
     printf("Called %s from ASM\n", __FUNCTION__);
     /* asm messages a $-terminated */
-    strcpy(msg, "Hello from ASM$\n");
+    strcpy(msg, "Hello from ASM\n$");
 }
