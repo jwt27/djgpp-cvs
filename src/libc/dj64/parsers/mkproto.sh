@@ -13,9 +13,14 @@ if ! which uctags >/dev/null 2>&1; then
 	echo "universal-ctags not installed"
 	exit 1
     fi
-    if ! echo | ctags -L - -f /dev/null; then
-	echo "bsd ctags do not suit, install universal-ctags"
-	exit 1
+    if ! ctags -L /dev/null -f /dev/null; then
+	if [ "`uname -s`" = "FreeBSD" ]; then
+	    echo "bsd ctags do not suit, install universal-ctags"
+	    exit 1
+	else
+	    # https://bugs.launchpad.net/ubuntu/+source/coreutils/+bug/2069483
+	    echo "ctags reported failure, running on ubuntu Focal?"
+	fi
     fi
     RTAGS=readtags
     CTAGS=ctags
