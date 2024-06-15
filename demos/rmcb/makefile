@@ -4,7 +4,7 @@ STRIP = @true
 
 SOURCES = main.c mouse.c thunks_a.c thunks_c.c
 AS_SOURCES = ms.S asm.S
-TGT = mouse.exe
+TGT = rmcb.exe
 
 # the below 4 vars must be named exactly like here
 CFLAGS = -Wall -ggdb3

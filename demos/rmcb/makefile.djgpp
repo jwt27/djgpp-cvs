@@ -8,7 +8,7 @@ SOURCES = main.c mouse.c
 OBJECTS = $(SOURCES:.c=.o)
 AS_SOURCES = asm.S ms.S
 AS_OBJECTS = $(AS_SOURCES:.S=.o)
-TGT = mouse.exe
+TGT = rmcb.exe
 
 all: $(TGT)
 
