@@ -12,4 +12,4 @@ executable.
 
 ## running
 
-`dosemu -T ./hello.exe`
+`make run`
