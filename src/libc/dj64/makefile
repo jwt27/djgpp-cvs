@@ -30,10 +30,10 @@ asm_incsn.h:
 asym_incs.h:
 	$(GA) 2 $(TOP)/../../include >$@
 
-thunk_calls.tmp thunk_asms.tmp thunk_incs.h plt.inc &: \
+thunk_calls.tmp thunk_asms.tmp thunk_incs.h &: \
     libc_tmp.a
 	$(MP) $< $(TOP)/../../include thunk_asms.tmp \
-		thunk_calls.tmp plt.inc thunk_incs.h
+		thunk_calls.tmp thunk_incs.h
 
 TGMK = $(shell pkg-config --silence-errors --variable=makeinc thunk_gen)
 ifeq ($(TGMK),)

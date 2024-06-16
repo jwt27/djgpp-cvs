@@ -64,9 +64,9 @@ err_str: .asciz "dj64: load failure\r\n$"
     lcalll *__plt_call
 .endm
 
-.macro asmcfunc nm,num
-    .global \nm
-    \nm:
+.macro asmcfunc_n nm,num
+    .global _\nm
+    _\nm:
     pushl %ebp
     movl %esp, %ebp
     pushal

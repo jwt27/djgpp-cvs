@@ -2,9 +2,9 @@
 
 set -o pipefail
 
-if [ $# -lt 6 ]; then
+if [ $# -lt 5 ]; then
     echo "generate thunk prototypes compatible with fdpp's thunk_gen & plt"
-    echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out> <plti_out> <incs_out>"
+    echo "$0 <lib_path> <hdr_path> <athunks_out> <cthunks_out> <incs_out>"
     exit 1
 fi
 
@@ -71,13 +71,10 @@ export -f extr_proto
 export RTAGS
 list_syms $TL T | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMFUNC" | nl -n ln -v 0 >$1
 list_syms $TL U | xargs -I '{}' bash -c "extr_proto $TF '{}' ASMCFUNC" | nl -n ln -v 0 >$2
-list_syms $TL U | xargs $RTAGS -t $TF | expand | \
-	cut -d " " -f 1 | nl -n ln -v 0 | expand | tr -s '[:blank:]' | \
-	sed -E 's/([^ ]+) +(.*)/asmcfunc _\2,\1/' >$3
-echo "#define THUNK_INCS 1" >$4
+echo "#define THUNK_INCS 1" >$3
 list_syms2 $TL U T | xargs $RTAGS -t $TF | expand | tr -s '[:blank:]' | \
 	cut -d " " -f 2 | sort | uniq | \
-	sed -E 's/.*(include)\/(.*)/#\1 "\2"/' >>$4
+	sed -E 's/.*(include)\/(.*)/#\1 "\2"/' >>$3
 shift 3
 
 rm $TF
