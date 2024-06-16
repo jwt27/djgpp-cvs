@@ -15,7 +15,7 @@ int main()
     ok = mouse_init();
     if (!ok)
         return 1;
-    puts("press eny key to exit");
+    puts("press any key to exit");
     getch();
     mouse_done();
     return 0;
