@@ -19,7 +19,7 @@ info: $(TGT)
 	djstubify -i $<
 
 run: $(TGT)
-	dosemu -t $<
+	dosemu -dumb $<
 
 # hook in dj64 - make sure to not do that before defining `all:` target
 DJMK = $(shell pkg-config --silence-errors --variable=makeinc dj64)
