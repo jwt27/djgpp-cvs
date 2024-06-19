@@ -17,6 +17,7 @@
  */
 
 #include <string.h>
+#include <libc/asmobj.h>
 #include <dj64/thunks_p.h>
 
 #define PACKED __attribute__((packed))
