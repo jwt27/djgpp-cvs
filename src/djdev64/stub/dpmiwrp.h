@@ -36,5 +36,6 @@ void __##n(void);
 #undef vDDv
 
 void register_dpmiops(struct dpmi_ops *dops);
+void unregister_dpmiops(void);
 
 #endif

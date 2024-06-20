@@ -76,7 +76,8 @@ This package contains tools and headers for building dj64-enabled programs.
 %files dj64-devel
 %defattr(-,root,root)
 %{_prefix}/i386-pc-dj64/include
-%{_prefix}/i386-pc-dj64/lib/*.a
+%{_prefix}/i386-pc-dj64/lib/libc.a
+%{_prefix}/i386-pc-dj64/lib/crt0.elf
 %{_prefix}/i386-pc-dj64/lib64/*.so
 %{_prefix}/i386-pc-dj64/bin/*
 %{_prefix}/i386-pc-dj64/share/*

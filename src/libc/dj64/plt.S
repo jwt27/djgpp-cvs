@@ -186,7 +186,7 @@ plt_init:
 
     movl %fs:STUBINFO_SELF_SIZE, %ecx
     orl %ecx, %ecx
-    jz 2f
+    jz 3f
     addl $(4096-1), %ecx
     andl $~(4096-1), %ecx
     movl %ecx, %ebx
@@ -241,20 +241,14 @@ plt_init:
     movl maddr, %ebx
     movl %fs:STUBINFO_SELF_SIZE, %ecx
     movl %fs:STUBINFO_MEM_BASE, %edx
-    pushal
-    movl %esp, %edx
-    movl __plt_handle, %eax
-    movl $AUX_CORE, %ebx
-    movl $DL_SET_SYMTAB, %ecx
-    movl %cs, %esi
-    lcalll *__plt_ctrl
-    popal
+    call ctrl
     /* free mem */
     movl $0x502, %eax
     movw handle, %di
     movw handle + 2, %si
     int $0x31
     jc 2f
+11:
     popl %es
 
 1:
@@ -268,6 +262,24 @@ plt_init:
     int $0x21
     jmp 1b
 
+3:
+    /* call manager */
+    movl $0, %ebx
+    movl $0, %ecx
+    movl %fs:STUBINFO_MEM_BASE, %edx
+    call ctrl
+    jmp 11b
+
+ctrl:
+    pushal
+    movl %esp, %edx
+    movl __plt_handle, %eax
+    movl $AUX_CORE, %ebx
+    movl $DL_SET_SYMTAB, %ecx
+    movl %cs, %esi
+    lcalll *__plt_ctrl
+    popal
+    ret
 
 .global plt_done
 plt_done:

@@ -11,5 +11,6 @@ int _dos_close(int handle);
 int _dos_link_umb(int on);
 
 void register_dosops(struct dos_ops *dops);
+void unregister_dosops(void);
 
 #endif

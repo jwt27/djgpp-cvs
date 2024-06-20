@@ -50,30 +50,35 @@ thunks_a.o: asm_incs.h plt_asmc.h asym_incs.h
 thunks_c.o: thunk_incs.h thunk_calls.h
 thunks_p.o: thunk_incs.h thunk_asms.h
 
-plt.o : plt.S plt.inc
+plt.o: plt.S plt.inc
 
 ALL_OBJS = $(addprefix ../,$(file < $(TOP)/makefile.rf))
-$(LIB)/$(LIBN) : $(TOP)/makefile.rf $(ALL_OBJS) \
+$(LIB)/$(LIBN): $(TOP)/makefile.rf $(ALL_OBJS) \
   thunk_calls.h thunk_asms.h $(OBJECTS)
 	$(CROSS_GCC) -shared -Wl,-soname=$(LIBN) -Wl,-Bsymbolic -o $@ \
   $(ALL_OBJS) $(OBJECTS)
 	@echo "Have `nm -u $@ | grep "U " | wc -l` undefined symbols"
 
-$(LIB)/$(LIBS) : $(TOP)/makefile.rf $(ALL_OBJS) \
+$(LIB)/$(LIBS): $(TOP)/makefile.rf $(ALL_OBJS) \
   thunk_calls.h thunk_asms.h $(OBJECTS)
 	ar q $@ $(ALL_OBJS) $(OBJECTS)
 	ar s $@
 
-$(LIB)/libc.a : libc_tmp.a plt.o | $(LIB)
+$(LIB)/libc.a: libc_tmp.a plt.o | $(LIB)
 	cp -f $< libctmp.a
 	$(CROSS_ASAR) q libctmp.a plt.o
 	$(CROSS_ASAR) s libctmp.a
 	mv -f libctmp.a $@
 
+$(LIB)/crt0.elf: $(LIB)/libc.a
+	$(CROSS_ASLD) --whole-archive $< -melf_i386 -static -o $@
+	$(CROSS_ASSTRIP) --strip-debug $@
+	chmod -x $@
+
 $(LIB)/libdj64.so: $(LIB)/$(LIBN) | $(LIB)
 	ln -sf $(LIBN) $@
 
-final: $(LIB)/libc.a $(LIB)/libdj64.so $(LIB)/$(LIBS) | $(LIB)
+final: $(LIB)/libc.a $(LIB)/libdj64.so $(LIB)/$(LIBS) $(LIB)/crt0.elf | $(LIB)
 
 clean::
 	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h

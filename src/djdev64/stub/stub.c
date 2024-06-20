@@ -84,6 +84,42 @@ static char *_fname(char *name)
 }
 #endif
 
+static unsigned _host_open(const char *pathname, unsigned mode, int *handle)
+{
+    int fd = open(pathname, mode | O_CLOEXEC);
+    if (fd == -1)
+        return 1;
+    *handle = fd;
+    return 0;
+}
+
+static unsigned _host_read(int handle, void *buffer, unsigned count,
+        unsigned *numread)
+{
+    int rd = read(handle, buffer, count);
+    if (rd == -1)
+        return 1;
+    *numread = rd;
+    return 0;
+}
+
+static unsigned long _host_seek(int handle, unsigned long offset, int origin)
+{
+    return lseek(handle, offset, origin);
+}
+
+static int _host_close(int handle)
+{
+    return close(handle);
+}
+
+static struct dos_ops hops = {
+    ._dos_open = _host_open,
+    ._dos_read = _host_read,
+    ._dos_seek = _host_seek,
+    ._dos_close = _host_close,
+};
+
 #define exit(x) return -(x)
 #define error(...) fprintf(stderr, __VA_ARGS__)
 #define dbug_printf(...)
@@ -91,7 +127,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     struct stub_ret_regs *regs, char *(*SEL_ADR)(uint16_t sel),
     struct dos_ops *dosops, struct dpmi_ops *dpmiops)
 {
-    int ifile;
+    int ifile, pfile;
     off_t coffset = 0;
     uint32_t coffsize = 0;
     uint32_t noffset = 0;
@@ -103,6 +139,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 #define BUF_SIZE 0x40
     char buf[BUF_SIZE];
     int done = 0;
+    int dyn = 0;
     uint32_t va;
     uint32_t va_size;
     uint32_t mem_lin;
@@ -117,10 +154,9 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     struct ldops *ops = NULL;
     char *argv0 = strdup(argv[0]);
 
-    register_dosops(dosops);
     register_dpmiops(dpmiops);
 
-    rc = _dos_open(argv[0], O_RDONLY, &ifile);
+    rc = dosops->_dos_open(argv[0], O_RDONLY, &ifile);
     if (rc) {
         fprintf(stderr, "cannot open %s\n", argv[0]);
         exit(EXIT_FAILURE);
@@ -132,7 +168,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 #endif
 
         stub_debug("Expecting header at 0x%lx\n", coffset);
-        rc = _dos_read(ifile, buf, BUF_SIZE, &rd);
+        rc = dosops->_dos_read(ifile, buf, BUF_SIZE, &rd);
         if (rc) {
             error("stub: read() failure\n");
             exit(EXIT_FAILURE);
@@ -144,19 +180,30 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
         if (buf[0] == 'M' && buf[1] == 'Z' && buf[8] == 4 && buf[9] == 0) {
             /* lfanew */
             uint32_t offs;
+            int moff = 0;
 #if STUB_DEBUG
             cnt++;
 #endif
             stub_debug("Found exe header %i at 0x%lx\n", cnt, coffset);
             memcpy(&offs, &buf[0x3c], sizeof(offs));
-            coffset = offs;
-            memcpy(&coffsize, &buf[0x1c], sizeof(coffsize));
-            if (coffsize)
-                noffset = coffset + coffsize;
-            memcpy(&nsize, &buf[0x20], sizeof(nsize));
+            if (buf[0x2c] & 0x80) {
+                dyn++;
+                noffset = offs;
+                moff = 4;
+                pfile = open(CRT0, O_RDONLY | O_CLOEXEC);
+                ops = &elf_ops;
+                done = 1;
+            } else {
+                coffset = offs;
+                memcpy(&coffsize, &buf[0x1c], sizeof(coffsize));
+                if (coffsize)
+                    noffset = coffset + coffsize;
+                pfile = ifile;
+            }
+            memcpy(&nsize, &buf[0x20 - moff], sizeof(nsize));
             if (nsize)
                 noffset2 = noffset + nsize;
-            memcpy(&nsize2, &buf[0x24], sizeof(nsize2));
+            memcpy(&nsize2, &buf[0x24 - moff], sizeof(nsize2));
             memcpy(&stubinfo.flags, &buf[0x2c], 2);
             if (buf[0x3b] == STUB_VER) {
                 strncpy(ovl_name, &buf[0x2e], 12);
@@ -175,11 +222,13 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
             fprintf(stderr, "not an exe %s at %lx\n", argv[0], coffset);
             exit(EXIT_FAILURE);
         }
-        _dos_seek(ifile, coffset, SEEK_SET);
+        dosops->_dos_seek(ifile, coffset, SEEK_SET);
     }
 
+    register_dosops(dyn ? &hops : dosops);
+
     assert(ops);
-    handle = ops->read_headers(ifile);
+    handle = ops->read_headers(pfile);
     if (!handle)
         exit(EXIT_FAILURE);
     va = ops->get_va(handle);
@@ -214,9 +263,9 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     stubinfo.psp_selector = psp_sel;
     /* DJGPP relies on ds_selector, cs_selector and ds_segment all mapping
      * the same real-mode memory block. */
-    _dos_link_umb(1);
+    dosops->_dos_link_umb(1);
     db.rm = __dpmi_allocate_dos_memory(stubinfo.minkeep >> 4, &db.pm);
-    _dos_link_umb(0);
+    dosops->_dos_link_umb(0);
     stub_debug("rm seg 0x%x\n", db.rm);
     stubinfo.ds_selector = db.pm;
     stubinfo.ds_segment = db.rm;
@@ -256,7 +305,9 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     __dpmi_set_segment_limit(stubinfo_fs, sizeof(_GO32_StubInfo) - 1);
     stubinfo_p = (_GO32_StubInfo *)SEL_ADR(stubinfo_fs);
 
-    ops->read_sections(handle, client_memory, ifile, coffset);
+    ops->read_sections(handle, client_memory, pfile, coffset);
+    if (dyn)
+        close(pfile);
 
     stubinfo.self_fd = ifile;
     stubinfo.self_offs = coffset;
@@ -270,10 +321,13 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
                  "%s.dbg", ovl_name);
         dbug_printf("loading %s\n", ovl_name);
     }
-    _dos_seek(ifile, noffset, SEEK_SET);
+    dosops->_dos_seek(ifile, noffset, SEEK_SET);
     if (nsize > 0)
         stub_debug("Found payload of size %i at 0x%x\n", nsize, noffset);
     stubinfo.stubinfo_ver = 3;
+
+    unregister_dosops();
+    unregister_dpmiops();
 
     memcpy(stubinfo_p, &stubinfo, sizeof(stubinfo));
     stub_debug("Jump to entry...\n");

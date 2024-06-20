@@ -228,15 +228,18 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         uint32_t addr = regs->ebx;
         uint32_t size = regs->ecx;
         uint32_t mem_base = regs->edx;
-        char *elf;
         void *eh;
         int ret;
 
         u->cs = esi;
         djlogprintf("addr 0x%x mem_base 0x%x\n", addr, mem_base);
-        elf = (char *)djaddr2ptr(addr);
-        djlogprintf("data %p(%s)\n", elf, elf);
-        eh = u->eops->open(elf, size);
+        if (addr) {
+            char *elf = (char *)djaddr2ptr(addr);
+            djlogprintf("data %p(%s)\n", elf, elf);
+            eh = u->eops->open(elf, size);
+        } else {
+            eh = u->eops->open_dyn();
+        }
         if (!eh)
             return -1;
         ret = process_athunks(&u->core_at, mem_base, u->eops, eh);

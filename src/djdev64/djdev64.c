@@ -45,6 +45,7 @@ static pthread_mutex_t init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 static const struct elf_ops eops = {
     djelf_open,
+    djelf_open_dyn,
     djelf_close,
     djelf_getsymoff,
 };

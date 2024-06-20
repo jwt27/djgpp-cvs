@@ -9,6 +9,7 @@ CROSS_CPP = $(CPP)
 # for AS objects
 CROSS_AS := $(CROSS_PREFIX)as
 CROSS_ASAR = $(CROSS_PREFIX)ar
+CROSS_ASLD = $(CROSS_PREFIX)ld
 ifeq ($(CROSS_PREFIX_GCC),)
 CROSS_ASGCC = $(CC)
 else

@@ -5,6 +5,7 @@ INSTALL ?= install
 
 VERSION = 0.1
 DJLIBC = $(TOP)/lib/libc.a
+DJCRT0 = $(TOP)/lib/crt0.elf
 DJ64LIB = $(TOP)/lib/libdj64.so.*.*
 DJ64DEVL = $(TOP)/lib/libdj64.so
 DJ64LIBS = $(TOP)/lib/libdj64_s.a
@@ -44,6 +45,8 @@ endif
 export CROSS_PREFIX_GCC
 endif
 
+export PREFIX
+
 .PHONY: subs dj64 djdev64 demos
 
 all: dj64 djdev64
@@ -62,6 +65,7 @@ dj64: dj64.pc dj64_s.pc dj64static.pc subs
 install_dj64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
 	$(INSTALL) -m 0644 $(DJLIBC) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
+	$(INSTALL) -m 0644 $(DJCRT0) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	$(INSTALL) $(DJ64LIB) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	cp -fP $(DJ64DEVL) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64

@@ -19,6 +19,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
 #include <libelf.h>
 #include <gelf.h>
 #include <assert.h>
@@ -29,6 +33,7 @@ struct elfstate {
     Elf *elf;
     Elf_Scn *symtab_scn;
     GElf_Shdr symtab_shdr;
+    char *addr;
 };
 
 static int do_getsym(struct elfstate *state, const char *name, GElf_Sym *r_sym)
@@ -52,19 +57,18 @@ static int do_getsym(struct elfstate *state, const char *name, GElf_Sym *r_sym)
     return -1;
 }
 
-void *djelf_open(char *addr, uint32_t size)
+static int do_elf_open(char *addr, uint32_t size, struct elfstate *ret)
 {
     Elf         *elf;
     Elf_Scn     *scn = NULL;
     GElf_Shdr   shdr;
-    struct elfstate *ret;
 
     elf_version(EV_CURRENT);
 
     elf = elf_memory(addr, size);
     if (!elf) {
-        fprintf(stderr, "djelf_memory() failed\n");
-        return NULL;
+        fprintf(stderr, "elf_memory() failed\n");
+        return -1;
     }
 
     while ((scn = elf_nextscn(elf, scn)) != NULL) {
@@ -79,16 +83,56 @@ void *djelf_open(char *addr, uint32_t size)
         goto err;
     }
 
-    ret = (struct elfstate *)malloc(sizeof(*ret));
     ret->mapsize = size;
     ret->elf = elf;
     ret->symtab_scn = scn;
     ret->symtab_shdr = shdr;
-    return ret;
+    return 0;
 
 err:
     elf_end(elf);
-    return NULL;
+    return -1;
+}
+
+void *djelf_open(char *addr, uint32_t size)
+{
+    struct elfstate es = {}, *ret;
+    int err = do_elf_open(addr, size, &es);
+    if (err)
+        return NULL;
+    ret = (struct elfstate *)malloc(sizeof(*ret));
+    *ret = es;
+    return ret;
+}
+
+void *djelf_open_dyn(void)
+{
+    struct elfstate es = {}, *ret;
+    int err;
+    int fd;
+    char *addr;
+    struct stat st;
+
+    fd = open(CRT0, O_RDONLY | O_CLOEXEC);
+    if (fd == -1) {
+        perror("open()");
+        return NULL;
+    }
+    fstat(fd, &st);
+    addr = (char *)mmap(NULL, st.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE,
+        fd, 0);
+    close(fd);
+    if (addr == MAP_FAILED) {
+        perror("mmap()");
+        return NULL;
+    }
+    err = do_elf_open(addr, st.st_size, &es);
+    if (err)
+        return NULL;
+    ret = (struct elfstate *)malloc(sizeof(*ret));
+    *ret = es;
+    ret->addr = addr;
+    return ret;
 }
 
 void djelf_close(void *arg)
@@ -96,6 +140,8 @@ void djelf_close(void *arg)
     struct elfstate *state = (struct elfstate *)arg;
 
     elf_end(state->elf);
+    if (state->addr)
+        munmap(state->addr, state->mapsize);
     free(state);
 }
 

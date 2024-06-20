@@ -1,9 +1,12 @@
 TOP = ../../..
+PREFIX ?= /usr/local
 SOURCES = coff.c elf.c util.c stub.c dpmiwrp.c dos.c
 OBJECTS = $(SOURCES:.c=.o)
+CFLAGS += -iquote ../include -fpic -ggdb3 -Wall -Og \
+  -DCRT0=\"$(PREFIX)/i386-pc-dj64/lib/crt0.elf\"
 
 %.o: %.c
-	$(CC) $(CFLAGS) -iquote ../include -fpic -ggdb3 -Wall -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 LIBDIR = $(TOP)/lib
 LIBN = libdjstub64.so.0.2

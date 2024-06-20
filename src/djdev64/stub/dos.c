@@ -13,6 +13,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include <stddef.h>
 #include "dos.h"
 
 static struct dos_ops *dosops;
@@ -50,4 +51,9 @@ int _dos_link_umb(int on)
 void register_dosops(struct dos_ops *dops)
 {
     dosops = dops;
+}
+
+void unregister_dosops(void)
+{
+    dosops = NULL;
 }

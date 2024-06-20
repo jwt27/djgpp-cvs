@@ -41,7 +41,9 @@ DJLDFLAGS = $(shell pkg-config --libs dj64) \
   -Wl,-rpath=/usr/i386-pc-dj64/lib64
 endif
 DJ64_XLIB = libtmp.so
+ifneq ($(AS_OBJECTS),)
 XELF = tmp.elf
+endif
 DJ64_XOBJS = $(DJ64_XLIB) $(XELF)
 
 .INTERMEDIATE: $(DJ64_XOBJS)
@@ -52,10 +54,18 @@ PLT_O = plt.o
 endif
 endif
 
+ifneq ($(AS_OBJECTS),)
 $(XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@
 	$(XSTRIP) $@
 DJ64_XLDFLAGS += -l $(XELF)
+else
+ifeq ($(DJ64STATIC),1)
+DJ64_XLDFLAGS += -l $(shell pkg-config --variable=crt0 dj64_s)
+else
+DJ64_XLDFLAGS += -f 0x80
+endif
+endif
 
 $(DJ64_XLIB): $(OBJECTS)
 	$(LD) $^ $(DJLDFLAGS) -o $@
