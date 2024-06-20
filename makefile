@@ -142,6 +142,9 @@ rpm:
 demos:
 	$(MAKE) -C demos
 
+demos_static:
+	$(MAKE) -C demos static
+
 demos_djgpp:
 	$(MAKE) -C demos djgpp
 

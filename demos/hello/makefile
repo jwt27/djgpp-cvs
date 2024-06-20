@@ -11,6 +11,9 @@ OBJECTS = $(SOURCES:.c=.o)
 
 all: $(TGT)
 
+static:
+	$(MAKE) DJ64STATIC=1
+
 clean: clean_dj64
 	$(RM) $(TGT)
 

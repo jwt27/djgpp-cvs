@@ -9,6 +9,13 @@ all:
 	$(MAKE) -C helloasm
 	$(MAKE) -C rmcb
 
+static:
+	$(MAKE) -C asmsimp static
+	$(MAKE) -C file static
+	$(MAKE) -C hello static
+	$(MAKE) -C helloasm static
+	$(MAKE) -C rmcb static
+
 djgpp:
 	$(MAKE) -C asmsimp -f makefile.djgpp
 	$(MAKE) -C file -f makefile.djgpp
