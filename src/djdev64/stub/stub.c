@@ -84,7 +84,7 @@ static char *_fname(char *name)
 }
 #endif
 
-#define exit(x) return x
+#define exit(x) return -(x)
 #define error(...) fprintf(stderr, __VA_ARGS__)
 #define dbug_printf(...)
 int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
