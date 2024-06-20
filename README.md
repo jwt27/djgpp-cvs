@@ -225,7 +225,7 @@ clean: clean_dj64
 ```
 As soon as the dj64's makefile is hooked in, it takes care of compiling
 the object files and sets the following variables as the result:
-`DJ64_XOBJS`, `DJ64_XLIB`, `DJ64_XELF` and `DJ64_XLDFLAGS`.
+`DJ64_XOBJS`, `DJ64_XLIB` and `DJ64_XLDFLAGS`.
 You only need to pass those to `djlink` as described below.
 
 Another important variable is `DJ64STATIC`. You can set it to `1`
@@ -258,13 +258,12 @@ STRIP = @true
 # or use `STRIP = djstrip` for non-debug build
 ...
 $(TGT): $(DJ64_XOBJS)
-	$(LINK) -d dosemu_$@.dbg $(DJ64_XLIB) -n $@ -o $@ \
-	  $(DJ64_XLDFLAGS) $(DJ64_XELF)
+	$(LINK) -d dosemu_$@.dbg $(DJ64_XLIB) -n $@ -o $@ $(DJ64_XLDFLAGS)
 	$(STRIP) $@
 ```
 Lets consider this command line, which we get from the above recipe:
 ```
-djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe tmp.elf
+djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe -l tmp.elf
 ```
 `-d` option sets the debuglink name. It always has the form of
 `dosemu_<exe_file>.dbg` if you want to debug your program under dosemu2.<br/>
@@ -273,7 +272,7 @@ djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe tmp.elf
 the `<exe_file>` part passed to `-d` for debugger to work, but it doesn't
 have to match the actual file name (although it usually does).<br/>
 `-o` specifies the output file.<br/>
-`tmp.elf` arg is an expansion of `DJ64_XELF` variable set by dj64.<br/>
+`-l tmp.elf` arg is an expansion of `DJ64_XLDFLAGS` variable set by dj64.<br/>
 
 Please note that you can't freely rearrange the `djlink` arguments.
 They should be provided in exactly that order, or omitted.
@@ -281,7 +280,7 @@ For example if you don't need to use debugger, then you can just do:
 ```
 $(TGT): $(DJ64_XOBJS)
 	strip $(DJ64_XLIB)
-	djlink $(DJ64_XLIB) -o $@ $(DJ64_XELF)
+	djlink $(DJ64_XLIB) -o $@ $(DJ64_XLDFLAGS)
 ```
 to get an executable without debug info. Note the use of `strip` instead
 of `djstrip` in this example. This is because we strip an intermediate

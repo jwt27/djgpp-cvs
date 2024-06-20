@@ -29,6 +29,9 @@ LD = $(CC)
 ifeq ($(shell uname -s),FreeBSD)
 DJ64STATIC = 1
 endif
+ifeq ($(DJ64STATIC),0)
+$(error DJ64STATIC must be empty, not 0)
+endif
 ifeq ($(DJ64STATIC),1)
 DJLDFLAGS = $(shell pkg-config --libs dj64_s)
 DJ64_XLDFLAGS = -f 0x40
@@ -38,8 +41,8 @@ DJLDFLAGS = $(shell pkg-config --libs dj64) \
   -Wl,-rpath=/usr/i386-pc-dj64/lib64
 endif
 DJ64_XLIB = libtmp.so
-DJ64_XELF = tmp.elf
-DJ64_XOBJS = $(DJ64_XLIB) $(DJ64_XELF)
+XELF = tmp.elf
+DJ64_XOBJS = $(DJ64_XLIB) $(XELF)
 
 .INTERMEDIATE: $(DJ64_XOBJS)
 
@@ -49,9 +52,10 @@ PLT_O = plt.o
 endif
 endif
 
-$(DJ64_XELF): $(AS_OBJECTS) $(PLT_O)
+$(XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@
 	$(XSTRIP) $@
+DJ64_XLDFLAGS += -l $(XELF)
 
 $(DJ64_XLIB): $(OBJECTS)
 	$(LD) $^ $(DJLDFLAGS) -o $@
