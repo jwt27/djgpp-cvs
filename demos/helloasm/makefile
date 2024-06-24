@@ -38,7 +38,7 @@ else
 include $(DJMK)
 endif
 
-# dj64 sets `DJ64_XOBJS`, `DJ64_XLIB`, `DJ64_XELF`, `DJ64_XLDFLAGS`
+# dj64 sets `DJ64_XOBJS`, `DJ64_XLIB`, `DJ64_XLDFLAGS`
 ifeq ($(filter info run,$(MAKECMDGOALS)),)
 $(TGT): $(DJ64_XOBJS)
 	$(LINK) -d dosemu_$@.dbg $(DJ64_XLIB) -n $@ -o $@ $(DJ64_XLDFLAGS)
