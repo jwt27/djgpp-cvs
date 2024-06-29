@@ -49,11 +49,9 @@ $(LIB) :
 ifneq ($(MAKEFILE_LIB),1)
 all :: makefile.oh makefile.oho
 makefile.oh: makefile
-	@echo - building new response file
-	@echo $(addprefix \&/,$(OBJS)) >$@
+	echo $(addprefix \&/,$(OBJS)) >$@
 makefile.oho: makefile
-	@echo - building new response file for as objs
-	@echo $(addprefix \&/,$(AS_OBJS)) >$@
+	echo $(addprefix \&/,$(AS_OBJS)) >$@
 endif
 
 clean ::
