@@ -1,6 +1,5 @@
-#ifdef DJ64
-#define RET_I lretl
-#else
+#include <libc/asmdefs.h>
+#ifndef DJ64
 #define RET_I ret
 #endif
 
@@ -14,7 +13,3 @@ _hello_asm:
 
 .data
 msg: .asciz "Hello from ASM\n$"
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

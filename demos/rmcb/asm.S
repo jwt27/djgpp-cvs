@@ -1,3 +1,4 @@
+#include <libc/asmdefs.h>
 #include "asm.h"
 
 .bss
@@ -9,7 +10,3 @@ __ds: .long 0
 .global _cstack
 _cstack: .fill SIGSTK_LEN
 .endif
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

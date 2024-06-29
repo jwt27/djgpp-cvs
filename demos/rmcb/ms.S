@@ -1,3 +1,4 @@
+#include <libc/asmdefs.h>
 #include "asm.h"
 .include "asm.inc"
 
@@ -10,7 +11,3 @@ _my_mouse_handler:
     restore_stack
     popa
     iretl
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
