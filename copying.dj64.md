@@ -11,6 +11,12 @@ See
 [this](https://www.delorie.com/archives/browse.cgi?p=djgpp/2024/06/29/04:14:46)
 discussion for details.
 
+All files in `src/libc/*` and `src/include/*` are using the
+LGPL-compatible licenses.
+Files ported from fdpp or comcom32 projects and originally distributed
+under GPLv3+, were donated to dj64dev project by their author (@stsp)
+and re-licensed to LGPLv3+ by himself.
+
 Sources in `src/djdev64/*` are distributed under the terms of the
 GNU General Public License, either version 3, or (at your option)
 any later version (GPLv3+).
@@ -25,6 +31,11 @@ tool-chain.
 All sources used to build `libdjdev64*` and `libdjstub64*` libraries
 are distributed under the GNU General Public License, either version 3,
 or (at your option) any later version (GPLv3+).
+
+Files that have no explicit licensing information within
+(small scripts, pkg-config files, makefile rules etc) are distributed
+under the terms of the GNU Lesser General Public License,
+either version 3, or (at your option) any later version (LGPLv3+).
 
 A copy of the files "LICENSE" and "COPYING.LESSER" are included with this
 document. If you did not receive a copy of these files, you may
