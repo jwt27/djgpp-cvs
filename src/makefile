@@ -1,7 +1,4 @@
-all : misc.exe config makemake.exe subs
-
-misc.exe : misc.c
-	$(CC) -O2 -Wall misc.c -o misc.exe
+all : config makemake.exe subs
 
 makemake.exe : makemake.c
 	$(CC) -O2 -Wall makemake.c -o makemake.exe
@@ -10,10 +7,10 @@ subs:
 	$(MAKE) -C libc
 
 .PHONY : clean
-clean : misc.exe makemake.exe
+clean : makemake.exe
 	$(MAKE) -C libc clean
-	./misc.exe rm gcc.opt makefile.sub
-	./misc.exe rm makemake.exe copyrite.exe misc.exe
+	$(RM) gcc.opt makefile.sub
+	$(RM) makemake.exe
 
-config: misc.exe
+config:
 	$(MAKE) -f makefile.cfg

@@ -15,4 +15,4 @@ mkstubs.exe : mkstubs.c
 	$(CC) mkstubs.c -o mkstubs.exe
 
 clean ::
-	@-$(MISC) rm *.S makefil2 mkstubs.exe
+	@-$(RM) *.S makefil2 mkstubs.exe

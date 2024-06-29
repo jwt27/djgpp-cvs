@@ -27,7 +27,7 @@ ps : libc.tex libc2.tex
 	texi2ps -v libc.tex
 
 clean ::
-	@$(MISC) rm libc2.tex
+	@$(RM) libc2.tex
 	@$(MAKE) -C stubs $@
 	@$(MAKE) -C crt0 $@
-	@$(MISC) rm makefile.sub
+	@$(RM) makefile.sub

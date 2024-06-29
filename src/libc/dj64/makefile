@@ -17,7 +17,7 @@ thunk_syms.o: thunk_syms.c asm_incsn.h
 
 ALL_AS_OBJS = $(addprefix ../,$(file < $(TOP)/makefile.rfo))
 libc_tmp.a : $(TOP)/makefile.rfo thunk_syms.o $(ALL_AS_OBJS)
-	@-$(MISC) rm $@
+	@-$(RM) $@
 	$(CROSS_ASAR) q $@ $(ALL_AS_OBJS) thunk_syms.o
 	$(CROSS_ASAR) s $@
 

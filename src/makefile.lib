@@ -21,4 +21,4 @@ endif
 clean ::
 	$(TOP)/../makemake.exe
 	$(MAKE) -f makefile.sub SUBARGS=clean
-	@-$(MISC) rm makefile.oi makefile.rf makefile.rfo
+	@-$(RM) makefile.oi makefile.rf makefile.rfo
