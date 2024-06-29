@@ -6,7 +6,6 @@
 # Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details
 TOP=..
 
-SRC += _main.c
 SRC += brk.c
 SRC += c1args.c
 SRC += c1loadef.c
