@@ -45,6 +45,4 @@ L_not_busy:
 
 	LEAVEP(decb dpmi_busy; popl %es)
 
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
+#include <libc/asmdefs.h>

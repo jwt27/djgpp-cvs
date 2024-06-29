@@ -3,6 +3,4 @@
 _unlink:
 	jmp	_remove
 
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
+#include <libc/asmdefs.h>

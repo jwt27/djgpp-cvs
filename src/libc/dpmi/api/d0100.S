@@ -25,6 +25,4 @@ L_no_ptr:
 	
 	LEAVE
 
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
+#include <libc/asmdefs.h>

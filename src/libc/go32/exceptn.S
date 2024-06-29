@@ -487,6 +487,4 @@ already_forced:
 ___djgpp_hw_lock_end:
 	ret					/* LD does weird things */
 
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
+#include <libc/asmdefs.h>

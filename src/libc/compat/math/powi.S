@@ -34,6 +34,4 @@ Test:
 	fstp	%st(0)
 	ret				/* return result; */
 
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
+#include <libc/asmdefs.h>

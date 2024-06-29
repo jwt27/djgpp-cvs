@@ -44,6 +44,4 @@ L_do_call:
 #define RESTORE_ESP	addl ARG2, %esp ; addl ARG2, %esp  /* comma confuses LEAVEP macro. */
 	LEAVEP(RESTORE_ESP ; popl %es)
 
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
+#include <libc/asmdefs.h>
