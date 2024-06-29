@@ -263,7 +263,7 @@ $(TGT): $(DJ64_XOBJS)
 ```
 Lets consider this command line, which we get from the above recipe:
 ```
-djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe -l tmp.elf
+djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe -f 0x80
 ```
 `-d` option sets the debuglink name. It always has the form of
 `dosemu_<exe_file>.dbg` if you want to debug your program under dosemu2.<br/>
@@ -272,7 +272,8 @@ djlink -d dosemu_hello.exe.dbg libtmp.so -n hello.exe -o hello.exe -l tmp.elf
 the `<exe_file>` part passed to `-d` for debugger to work, but it doesn't
 have to match the actual file name (although it usually does).<br/>
 `-o` specifies the output file.<br/>
-`-l tmp.elf` arg is an expansion of `DJ64_XLDFLAGS` variable set by dj64.<br/>
+`-f 0x80` arg is an expansion of `DJ64_XLDFLAGS` variable set by dj64.
+It sets `bit 7` in `Stub flags`.<br/>
 
 Please note that you can't freely rearrange the `djlink` arguments.
 They should be provided in exactly that order, or omitted.
