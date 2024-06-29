@@ -41,6 +41,7 @@ main(int argc, char **argv)
 
     sprintf(fn, "stub%04d.S", i);
     as = fopen(fn, "w");
+    fprintf(as, "#include <libc/asmdefs.h>\n");
     /* Blank line at start of output file is added to work around
      * gcc-3.0 preprocessor bug. See:
      *
