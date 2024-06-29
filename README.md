@@ -312,14 +312,13 @@ aarch64-built executable will work on aarch64-built dosemu2.
 ## why would I need that?
 Well, maybe you don't. :) If you don't have any djgpp-built project of
 yours or you don't want to move it to 64-bits, then you don't need to care
-about dj64 project. It was written for dosemu2, and while I'd be happy
+about dj64dev project. It was written for dosemu2, and while I'd be happy
 if someone uses it on its own, this wasn't an initial intention.<br/>
 Also if your djgpp-buildable project is well-written and uses some
 portable libraries like allegro, then most likely you already have the
 native 64-bit ports for modern platforms, rather than for DOS. In that
-case you also don't need dj64. But maybe you are interested in a host-gdb
-debugging and aarch64 support?<br/>
-Summing it up, dj64 is a niche project that may not be useful outside
+case you also don't need dj64dev.<br/>
+Summing it up, dj64dev is a niche project that may not be useful outside
 of dosemu2. But I'd like to be wrong on that. :)
 
 ## license
