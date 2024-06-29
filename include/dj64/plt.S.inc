@@ -16,6 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <libc/asmdefs.h>
+
 .text
 
 .macro asmcfunc_n nm,num
@@ -49,7 +51,3 @@
 __asm_symtab_start:
 #include "glob_asm.h"
 __asm_symtab_end:
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
