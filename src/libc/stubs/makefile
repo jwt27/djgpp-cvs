@@ -11,8 +11,8 @@ all :: makefil2
 makefil2 : mkstubs.exe  $(STUBH) makefile
 	./mkstubs.exe $(STUBH)
 
-mkstubs.exe : mkstubs.c
-	$(CC) mkstubs.c -o mkstubs.exe
+mkstubs.exe : $(TOP)/../mkstubs.c
+	$(CC) $< -o mkstubs.exe
 
 clean ::
 	@-$(RM) *.S makefil2 mkstubs.exe
