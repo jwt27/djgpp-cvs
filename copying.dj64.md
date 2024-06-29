@@ -12,6 +12,11 @@ See
 discussion for details. See [copying.dj](copying.dj/copying.dj) for
 the detailed licensing information.
 
+`src/makemake.c` is distributed under the terms of the
+GNU General Public License, either version 2, or (at your option)
+any later version (GPLv2+). See [copying.dj](copying.dj/copying.dj) for
+more information.
+
 All files in `src/libc/*` and `src/include/*` are using the
 LGPL-compatible licenses.
 Files ported from fdpp or comcom32 projects and originally distributed
