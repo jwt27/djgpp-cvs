@@ -1,10 +1,8 @@
 /* Copyright (C) 2011 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 1999 DJ Delorie, see COPYING.DJ for details */
+#include <libc/asmdefs.h>
+
 	.file	"exp2.s"
 	.global	_exp2
 _exp2:
 	jmp	___pow2
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
