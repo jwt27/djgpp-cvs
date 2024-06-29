@@ -85,7 +85,3 @@
 	farnspeek b,al
 	farnspeek w,ax
 	farnspeek l,eax
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

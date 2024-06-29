@@ -52,7 +52,3 @@ badarg:
 	flds	NaN
 	fstl	(%eax)			/* Store int(x) */
 	ret
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

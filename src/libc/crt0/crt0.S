@@ -672,7 +672,3 @@ __crt0_init_mcount:
 #else
 	RET_I
 #endif
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

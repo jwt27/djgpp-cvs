@@ -5,7 +5,3 @@
 	movw	%ds,%ax
 	movzwl	%ax,%eax
 	RET_I
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

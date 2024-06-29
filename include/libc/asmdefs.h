@@ -60,4 +60,9 @@
 
 #define _errno ___dj_errno
 
+#ifdef __ELF__
+.section .note.GNU-stack,"",%progbits
+.previous
+#endif
+
 #endif /* __dj_include_libc_asmdefs_h__ */

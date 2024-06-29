@@ -5,7 +5,3 @@
 	FUNC(__rdtsc)
 	rdtsc
 	RET_I
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

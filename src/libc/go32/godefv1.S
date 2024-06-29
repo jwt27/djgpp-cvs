@@ -31,7 +31,3 @@ FUNC(__go32_my_ss)
 FUNC(__go32_conventional_mem_selector)
 	movzwl __go32_info_block+26,%eax
 	RET_I
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

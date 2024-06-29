@@ -6,7 +6,3 @@
 	movl	4(%esp), %eax
 	xchgb	%ah, %al
 	RET_I
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

@@ -63,7 +63,3 @@ VerySmall:				/* exp = max negative */
 	testl	%eax, %eax
 	jnz	RangeError
 	jmp	CleanUp
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

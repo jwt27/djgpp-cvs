@@ -27,7 +27,3 @@ bigarg:
 finite:
 	fldz				/* All precision lost; set sin = 0. */
 	ret
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif

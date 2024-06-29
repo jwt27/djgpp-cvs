@@ -9,8 +9,3 @@
 	movzwl	%ax, %eax
 	fclex
 	RET_I
-
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
