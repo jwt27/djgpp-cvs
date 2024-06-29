@@ -25,7 +25,8 @@ and re-licensed to LGPLv3+ by himself.
 
 Sources in `src/djdev64/*` are distributed under the terms of the
 GNU General Public License, either version 3, or (at your option)
-any later version (GPLv3+).
+any later version (GPLv3+). That includes the sources without an
+explicit licensing information within.
 
 All sources used to build `crt0.elf`, `libc.a` and `libdj64*`
 are distributed under the terms of the GNU LGPL, with the particular
@@ -38,9 +39,9 @@ All sources used to build `libdjdev64*` and `libdjstub64*` libraries
 are distributed under the GNU General Public License, either version 3,
 or (at your option) any later version (GPLv3+).
 
-Files that have no explicit licensing information within
-(small scripts, pkg-config files, makefile rules etc) are distributed
-under the terms of the GNU Lesser General Public License,
+Files in the top dir and in `src/libc/*` that have no explicit licensing
+information within (small scripts, pkg-config files, makefile rules etc)
+are distributed under the terms of the GNU Lesser General Public License,
 either version 3, or (at your option) any later version (LGPLv3+).
 
 A copy of the files "LICENSE" and "COPYING.LESSER" are included with this
