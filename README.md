@@ -323,8 +323,8 @@ Summing it up, dj64 is a niche project that may not be useful outside
 of dosemu2. But I'd like to be wrong on that. :)
 
 ## license
-dj64 code is derived from djgpp libc sources, so most files are covered
-by GPLv2+, see
-[copying.dj](https://github.com/stsp/dj64dev/blob/master/copying.dj)
-for details. dj64-specific files are covered by GPLv3+, see
-[LICENSE](https://github.com/stsp/dj64dev/blob/master/LICENSE).
+dj64dev project is covered by GPLv3+, see [LICENSE](LICENSE).
+
+Individual files and built binaries are distributed under various
+GPLv3-compatible licenses, see [copying.dj64.md](copying.dj64.md)
+for details.
