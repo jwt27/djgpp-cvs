@@ -9,7 +9,8 @@ are distributed under the terms of the GNU Library General Public License,
 either version 2.1, or (at your option) any later version.
 See
 [this](https://www.delorie.com/archives/browse.cgi?p=djgpp/2024/06/29/04:14:46)
-discussion for details.
+discussion for details. See [copying.dj](copying.dj/copying.dj) for
+the detailed licensing information.
 
 All files in `src/libc/*` and `src/include/*` are using the
 LGPL-compatible licenses.
