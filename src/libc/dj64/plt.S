@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <libc/asmdefs.h>
 #include "stubinfo.h"
 #include "plt.h"
 
@@ -305,7 +306,3 @@ plt_done:
 
 .global _dosobj_page
 _dosobj_page: .space 4096
-
-#ifdef __ELF__
-.section .note.GNU-stack,"",%progbits
-#endif
