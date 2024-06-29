@@ -15,6 +15,7 @@ int main()
     ok = mouse_init();
     if (!ok)
         return 1;
+    puts("\nclick mouse buttons and scroll the wheel\n");
     puts("press any key to exit");
     getch();
     mouse_done();
