@@ -49,7 +49,8 @@ DJ64_XOBJS = $(DJ64_XLIB) $(XELF)
 .INTERMEDIATE: $(DJ64_XOBJS)
 
 ifneq ($(PDHDR),)
-ifneq ($(shell grep "ASMCFUNC" $(PDHDR) | grep -cv "\#define"),0)
+HASH := \#
+ifneq ($(shell grep "ASMCFUNC" $(PDHDR) | grep -cv "$(HASH)define"),0)
 PLT_O = plt.o
 endif
 endif
