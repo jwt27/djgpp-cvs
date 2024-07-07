@@ -591,17 +591,17 @@ __djgpp_exception_setup(void)
     except.offset32 += 4;	/* This is the size of push n, jmp */
   }
   kbd_ori.selector = npx_ori.selector = except.selector;
-  npx_ori.offset32 = (uintptr_t) &__djgpp_npx_hdlr;
+  npx_ori.offset32 = __djgpp_npx_hdlr;
   if(ScreenPrimary != 0xa0000)
-    kbd_ori.offset32 = (uintptr_t) __djgpp_kbd_hdlr;
+    kbd_ori.offset32 = __djgpp_kbd_hdlr;
   else
   {
-    kbd_ori.offset32 = (uintptr_t) __djgpp_kbd_hdlr_pc98;
+    kbd_ori.offset32 = __djgpp_kbd_hdlr_pc98;
     cbrk_vect = 0x06;
-    except.offset32 = (uintptr_t) &__djgpp_iret;		/* TDPMI98 bug */
+    except.offset32 = __djgpp_iret;		/* TDPMI98 bug */
     __dpmi_set_protected_mode_interrupt_vector(0x23, &except);
   }
-  except.offset32 = (uintptr_t) &__djgpp_i24;
+  except.offset32 = __djgpp_i24;
   __dpmi_set_protected_mode_interrupt_vector(0x24, &except);
 
   __dpmi_get_protected_mode_interrupt_vector(9, &__djgpp_old_kbd);
