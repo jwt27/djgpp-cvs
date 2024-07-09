@@ -36,9 +36,13 @@ ifeq ($(DJ64STATIC),1)
 DJLDFLAGS = $(shell pkg-config --libs dj64_s)
 DJ64_XLDFLAGS = -f 0x40
 else
-DJLDFLAGS = $(shell pkg-config --libs dj64) \
-  -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
+RP := -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
   -Wl,-rpath=/usr/i386-pc-dj64/lib64
+ifneq ($(PREFIX),)
+RP += -Wl,-rpath=$(PREFIX)/i386-pc-dj64/lib64
+endif
+# sort removes duplicates
+DJLDFLAGS = $(shell pkg-config --libs dj64) $(sort $(RP))
 endif
 DJ64_XLIB = libtmp.so
 ifneq ($(AS_OBJECTS),)
