@@ -47,7 +47,7 @@ esac
 if [ -n "$*" ]; then
   $CPP -CC -g0 $XCPPFLAGS $CPPFLAGS ${INCS} ${LAST_ARG} | \
     sed -E -e 's/^\*\/#/\*\/\n#/' -e 's/^\*\/ *;/\*\/\n;\n/' | \
-    $CC -xc `pkg-config --cflags dj64` $CFLAGS $* -
+    eval $CC -xc `pkg-config --cflags dj64` $CFLAGS ${*//\"/\\\"} -
 else
   $CC ${LAST_ARG}
 fi
