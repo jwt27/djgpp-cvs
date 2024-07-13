@@ -16,7 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define WANT_DLMOPEN 0
+
+#if WANT_DLMOPEN
 #define _GNU_SOURCE
+#endif
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,8 +30,11 @@
 #include "djdev64/dj64init.h"
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
+
+#if WANT_DLMOPEN
 #ifdef __GLIBC__
 #define HAVE_DLMOPEN 1
+#endif
 #endif
 
 static int handles;
@@ -163,7 +170,9 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
         use_dlm = 1;
         dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND);
 #else
+#if WANT_DLMOPEN
         fprintf(stderr, "dlmopen() not supported, use static linking\n");
+#endif
         dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
                 &path2);
 #endif
