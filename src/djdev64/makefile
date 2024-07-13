@@ -7,7 +7,7 @@ LIBELF := $(shell $(PKG_CONFIG) --silence-errors --libs libelf)
 ifeq ($(LIBELF),)
 $(error libelf not installed)
 endif
-CFLAGS += -iquote include -fpic -ggdb3 -Wall -Og \
+CFLAGS += -iquote include -fpic -ggdb3 -Wall -Og -MD \
   -DCRT0=\"$(PREFIX)/i386-pc-dj64/lib/crt0.elf\"
 
 %.o: %.c
@@ -36,3 +36,5 @@ $(LIB): $(OBJECTS) | $(LIBDIR)
 
 $(LIBDIR)/libdjdev64.so: $(LIB)
 	ln -sf $(LIBN) $@
+
+-include $(wildcard *.d)
