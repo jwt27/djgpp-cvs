@@ -18,7 +18,7 @@ XASGCC = $(CROSS_ASGCC) -I $(TOP)/../../include -m32 $(ASFLAGS)
 XASCPP = $(call CROSS_ASCPP, -I $(TOP)/../../include $(ASFLAGS) $(1))
 
 %.o : %.c
-	$(XCPP) -CC -g0 $< | \
+	$(XCPP) -CC -g0 -MD $< | \
 	  sed -E -e 's/^\*\/#/\*\/\n#/' -e 's/^\*\/ *;/\*\/\n;\n/' | \
 	  $(XGCC) -xc - -c $(EXTRA_CFLAGS) -o $@
 %.o : %.S
