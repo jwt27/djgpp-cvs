@@ -14,10 +14,6 @@ struct tmr_state {
 
 static struct tmr_state *sts;
 
-static void tmr_init(void)
-{
-  __libc_read_termios_hook = NULL;
-}
 static void tmr_pre(void)
 {
 #define _SV(x) sts->x = x
@@ -28,5 +24,5 @@ static void tmr_post(void)
 #define _RS(x) x = sts->x
   _RS(__libc_read_termios_hook);
 }
-DJ64_DEFINE_SWAPPABLE_CONTEXT2(tmr_state, sts,
-    tmr_init(), tmr_pre(), tmr_post());
+DJ64_DEFINE_SWAPPABLE_CONTEXT2(tmr_state, sts, ((struct tmr_state){}),
+    tmr_pre(), tmr_post());

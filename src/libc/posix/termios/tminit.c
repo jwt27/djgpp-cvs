@@ -32,12 +32,13 @@ struct tm_state {
 
 static struct tm_state *tms;
 
-static void tms_init(void)
+static struct tm_state tms_init =
 {
-  __libc_tty_internal = (struct tty)TTYDEFAULT;
-  __libc_tty_p = &__libc_tty_internal;
-  __libc_termios_hook_common_count = -1;
-}
+  .__libc_tty_internal = (struct tty)TTYDEFAULT,
+  .__libc_tty_p = &__libc_tty_internal,
+  .__libc_termios_hook_common_count = -1,
+};
+
 static void tms_pre(void)
 {
 #define _SV(x) tms->x = x
@@ -52,8 +53,8 @@ static void tms_post(void)
   _RS(__libc_tty_p);
   _RS(__libc_termios_hook_common_count);
 }
-DJ64_DEFINE_SWAPPABLE_CONTEXT2(tm_state, tms,
-    tms_init(), tms_pre(), tms_post());
+DJ64_DEFINE_SWAPPABLE_CONTEXT2(tm_state, tms, tms_init,
+    tms_pre(), tms_post());
 
 /* static functions */
 static void __libc_termios_fflushall(void);

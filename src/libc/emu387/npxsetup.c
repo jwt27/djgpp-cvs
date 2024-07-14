@@ -41,11 +41,6 @@ struct e387_state {
 
 static struct e387_state *sts;
 
-static void e387_init(void)
-{
-  _8087 = 0;
-  __emu387_load_hook = 0;
-}
 static void e387_pre(void)
 {
 #define _SV(x) sts->x = x
@@ -58,8 +53,8 @@ static void e387_post(void)
   _RS(_8087);
   _RS(__emu387_load_hook);
 }
-DJ64_DEFINE_SWAPPABLE_CONTEXT2(e387_state, sts,
-    e387_init(), e387_pre(), e387_post());
+DJ64_DEFINE_SWAPPABLE_CONTEXT2(e387_state, sts, ((struct e387_state){}),
+    e387_pre(), e387_post());
 
 /* The environment variable 387 can be used to disable a 387 which is present
    (for testing) by setting it to "n".  The presence can be reported to

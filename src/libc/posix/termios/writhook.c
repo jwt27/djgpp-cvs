@@ -14,10 +14,6 @@ struct tmw_state {
 
 static struct tmw_state *sts;
 
-static void tmw_init(void)
-{
-  __libc_write_termios_hook = NULL;
-}
 static void tmw_pre(void)
 {
 #define _SV(x) sts->x = x
@@ -28,5 +24,5 @@ static void tmw_post(void)
 #define _RS(x) x = sts->x
   _RS(__libc_write_termios_hook);
 }
-DJ64_DEFINE_SWAPPABLE_CONTEXT2(tmw_state, sts,
-    tmw_init(), tmw_pre(), tmw_post());
+DJ64_DEFINE_SWAPPABLE_CONTEXT2(tmw_state, sts, ((struct tmw_state){}),
+    tmw_pre(), tmw_post());

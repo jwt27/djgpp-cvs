@@ -28,12 +28,12 @@ void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void));
 static void t##_init(void) \
 { \
   struct t *x = malloc(sizeof(*x)); \
-  memset(x, 0, sizeof(*x)); \
+  *x = init; \
   x->prev = c; \
   if (c) \
     pre; \
   c = x; \
-  init; \
+  post; \
 } \
 static void t##_deinit(void) \
 { \
@@ -50,6 +50,7 @@ static void static_##t##_init(void) \
 }
 
 #define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \
-  DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c,,,)
+  static const struct t ctx_##t##_init = {}; \
+  DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c, ctx_##t##_init,,)
 
 #endif
