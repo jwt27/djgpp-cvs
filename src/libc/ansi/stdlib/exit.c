@@ -25,6 +25,37 @@ void (*__FSEXT_exit_hook)(void) = NULL;
 /* A hook to close those file descriptors with properties. */
 void (*__fd_properties_cleanup_hook)(void) = NULL;
 
+struct exist_state {
+  struct exist_state *prev;
+  struct __atexit *__atexit_ptr;
+  void (*__FSEXT_exit_hook)(void);
+  void (*__fd_properties_cleanup_hook)(void);
+};
+
+static struct exist_state *est;
+static void est_init(void)
+{
+  __atexit_ptr = NULL;
+  __FSEXT_exit_hook = NULL;
+  __fd_properties_cleanup_hook = NULL;
+}
+static void est_pre(void)
+{
+#define _SV(x) est->x = x
+  _SV(__atexit_ptr);
+  _SV(__FSEXT_exit_hook);
+  _SV(__fd_properties_cleanup_hook);
+}
+static void est_post(void)
+{
+#define _RS(x) x = est->x
+  _RS(__atexit_ptr);
+  _RS(__FSEXT_exit_hook);
+  _RS(__fd_properties_cleanup_hook);
+}
+DJ64_DEFINE_SWAPPABLE_CONTEXT2(exist_state, est,
+    est_init(), est_pre(), est_post());
+
 void
 exit(int status)
 {

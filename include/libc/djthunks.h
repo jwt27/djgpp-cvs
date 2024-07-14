@@ -32,24 +32,32 @@ uint32_t djthunk_get(const char *name);
 uint32_t djthunk_get_h(int handle, const char *name);
 void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void));
 
-#define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c, init, pre, post) \
 static void t##_init(void) \
 { \
   struct t *x = malloc(sizeof(*x)); \
   memset(x, 0, sizeof(*x)); \
   x->prev = c; \
+  if (c) \
+    pre; \
   c = x; \
+  init; \
 } \
 static void t##_deinit(void) \
 { \
   struct t *x = c; \
   c = x->prev; \
   free(x); \
+  if (c) \
+    post; \
 } \
 __attribute__((constructor)) \
 static void static_##t##_init(void) \
 { \
   djregister_ctor_dtor(t##_init, t##_deinit); \
 }
+
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \
+  DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c,,,)
 
 #endif
