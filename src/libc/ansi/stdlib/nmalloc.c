@@ -39,27 +39,39 @@
 
 /* ============== Globals ============= */
 
+struct nm_state {
+  struct nm_state *prev;
+
 /* Headers of lists holding free blocks of 2**2 thru 2**31 size */
 /* freehdr[n] holds items sized 2**n thru 2**(n+1) - 1          */
-
-static memblockp freehdrs[NFLISTS]; /* yes, low indices are waste */
+  memblockp freehdrs[NFLISTS]; /* yes, low indices are waste */
 #define lastsbrk freehdrs[0]
 
 /* keep track of the bases of each new sbrk block */
 #define MAXSBRKS 100     /* I have never seen more than 5 needed */
-static int   lastsbrkbgn;       /* zeroed on load */
-static void *sbrkbgn[MAXSBRKS]; /* NULLS on load */
+  int   lastsbrkbgn;       /* zeroed on load */
+  void *sbrkbgn[MAXSBRKS]; /* NULLS on load */
 
 /* This holds pointers to hooks, initialized to NULLs */
 /* see enum m_hook_kind for actual identifiers in sysquery.h */
-static M_HOOKFN hookptr[HKCOUNT];
+  M_HOOKFN hookptr[HKCOUNT];
 
+};
+
+static struct nm_state *nms;
+DJ64_DEFINE_SWAPPABLE_CONTEXT(nm_state, nms)
+#define freehdrs nms->freehdrs
+#define lastsbrkbgn nms->lastsbrkbgn
+#define sbrkbgn nms->sbrkbgn
+#define hookptr nms->hookptr
+
+#if 0
 /* Forward declaration to allow sysquery init below */
 static M_HOOKFN sethook(enum m_hook_kind which,
                         M_HOOKFN         newhook);
 
 /* This allows a clean connection to debugging software */
-static struct _sysquery sysquery = {
+static const struct _sysquery sysquery = {
         DATAOFFSET,
 #if SAVEMEMORY
         0xff,
@@ -85,6 +97,7 @@ struct _sysquery _sysmalloc(void)
 {
    return sysquery;
 } /* _sysmalloc */
+#endif
 
 /* 1------------------1 */
 
@@ -145,6 +158,7 @@ static void dumpfree(void)
 
 /* 1------------------1 */
 
+#if 0
 /* This is accessible only through the pointer    */
 /* returned in the sysquery record by _sysmalloc. */
 /* Only of use in the malldbg package.            */
@@ -160,6 +174,7 @@ static M_HOOKFN sethook(enum m_hook_kind which,
    }
    return tmp;
 } /* sethook */
+#endif
 
 /* 1------------------1 */
 
