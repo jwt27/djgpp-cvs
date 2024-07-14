@@ -82,7 +82,7 @@ struct ctor_dtor {
     void (*dtor)(void);
 };
 
-#define MAX_CTORS 10
+#define MAX_CTORS 100
 static struct ctor_dtor ctors[MAX_CTORS];
 static int num_ctors;
 
