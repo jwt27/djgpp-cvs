@@ -14,8 +14,6 @@
 #include <libc/ttyprvt.h>
 #include <libc/getdinfo.h>
 
-void (*__setmode_stdio_hook)(int fd, int mode); /* BSS to zero */
-
 int
 setmode(int handle, int mode)
 {
