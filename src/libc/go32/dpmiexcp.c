@@ -399,28 +399,7 @@ struct exc_info {
 };
 
 static struct exc_info *xinfo;
-
-static void xinfo_init(void)
-{
-  struct exc_info *x = malloc(sizeof(*x));
-  memset(x, 0, sizeof(*x));
-  x->prev = xinfo;
-  xinfo = x;
-}
-
-static void xinfo_deinit(void)
-{
-  struct exc_info *x = xinfo;
-  xinfo = x->prev;
-  free(x);
-}
-
-__attribute__((constructor))
-static void init(void)
-{
-  djregister_ctor_dtor(xinfo_init, xinfo_deinit);
-}
-
+DJ64_DEFINE_SWAPPABLE_CONTEXT(exc_info, xinfo)
 #define except_ori xinfo->except_ori
 #define kbd_ori xinfo->kbd_ori
 #define npx_ori xinfo->npx_ori
