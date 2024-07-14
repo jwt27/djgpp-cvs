@@ -388,7 +388,6 @@ __djgpp_exception_processor(void)
 }
 
 struct exc_info {
-  struct exc_info *prev;
   __dpmi_paddr except_ori[EXCEPTION_COUNT];
   __dpmi_paddr kbd_ori;
   __dpmi_paddr npx_ori;

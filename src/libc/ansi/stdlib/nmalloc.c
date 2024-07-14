@@ -41,8 +41,6 @@
 /* ============== Globals ============= */
 
 struct nm_state {
-  struct nm_state *prev;
-
 /* Headers of lists holding free blocks of 2**2 thru 2**31 size */
 /* freehdr[n] holds items sized 2**n thru 2**(n+1) - 1          */
   memblockp freehdrs[NFLISTS]; /* yes, low indices are waste */

@@ -21,7 +21,6 @@ typedef struct __FSEXT_entry {
 } __FSEXT_entry;
 
 struct fsext_state {
-  struct fsext_state *prev;
   int num_fds;
   __FSEXT_entry *fsext_list;
 };

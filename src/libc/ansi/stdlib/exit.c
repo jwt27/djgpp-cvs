@@ -27,7 +27,6 @@ void (*__FSEXT_exit_hook)(void) = NULL;
 void (*__fd_properties_cleanup_hook)(void) = NULL;
 
 struct exit_state {
-  struct exit_state *prev;
   struct __atexit *__atexit_ptr;
   void (*__FSEXT_exit_hook)(void);
   void (*__fd_properties_cleanup_hook)(void);

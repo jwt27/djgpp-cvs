@@ -19,34 +19,41 @@
 #ifndef DJCTX_H
 #define DJCTX_H
 
-#include <stdlib.h>
-#include <string.h>
+#include <assert.h>
 
-void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void));
+void djregister_ctx_hooks(void (*)(int), void (*)(void), void (*)(void),
+    void (*)(int));
+
+#define SW_CTX_MAX 100
 
 #define DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c, init, pre, post) \
-static void t##_init(void) \
+static struct t t##_contexts[SW_CTX_MAX]; \
+static void t##_init(int idx) \
 { \
-  struct t *x = malloc(sizeof(*x)); \
+  struct t *x = &t##_contexts[idx]; \
+  assert(c != x); \
   *x = init; \
-  x->prev = c; \
-  if (c) \
-    pre; \
-  c = x; \
-  post; \
 } \
 static void t##_deinit(void) \
 { \
-  struct t *x = c; \
-  c = x->prev; \
-  free(x); \
-  if (c) \
-    post; \
+  c = NULL; \
+} \
+static void t##_save(void) \
+{ \
+  pre; \
+} \
+static void t##_restore(int idx) \
+{ \
+  struct t *x = &t##_contexts[idx]; \
+  if (c == x) \
+    return; \
+  c = x; \
+  post; \
 } \
 __attribute__((constructor)) \
 static void static_##t##_init(void) \
 { \
-  djregister_ctor_dtor(t##_init, t##_deinit); \
+  djregister_ctx_hooks(t##_init, t##_deinit, t##_save, t##_restore); \
 }
 
 #define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \

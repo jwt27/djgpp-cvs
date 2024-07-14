@@ -7,7 +7,6 @@ ssize_t (*__libc_write_termios_hook)(int handle, const void *buffer,
 				     size_t count, ssize_t *rv) = NULL;
 
 struct tmw_state {
-  struct tmw_state *prev;
   ssize_t (*__libc_write_termios_hook)(int handle, const void *buffer,
 				       size_t count, ssize_t *rv);
 };

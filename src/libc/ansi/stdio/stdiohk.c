@@ -20,7 +20,6 @@ void __stdio_cleanup_proc(void)
 void (*__stdio_cleanup_hook)(void) = __stdio_cleanup_proc;
 
 struct std_state {
-  struct std_state *prev;
   void (*__stdio_cleanup_hook)(void);
 };
 

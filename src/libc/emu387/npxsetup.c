@@ -34,7 +34,6 @@ int _8087;
 int __emu387_load_hook;
 
 struct e387_state {
-  struct e387_state *prev;
   int _8087;
   int __emu387_load_hook;
 };

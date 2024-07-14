@@ -24,7 +24,6 @@ struct tty *__libc_tty_p = &__libc_tty_internal;
 int __libc_termios_hook_common_count = -1;
 
 struct tm_state {
-  struct tm_state *prev;
   struct tty __libc_tty_internal;
   struct tty *__libc_tty_p;
   int __libc_termios_hook_common_count;

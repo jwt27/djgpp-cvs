@@ -78,14 +78,16 @@ static struct athunks *u_athunks;
 static struct athunks *u_pthunks;
 static int *u_handle_p;
 
-struct ctor_dtor {
-    void (*ctor)(void);
-    void (*dtor)(void);
+struct ctx_hooks {
+    void (*init)(int);
+    void (*deinit)(void);
+    void (*save)(void);
+    void (*restore)(int);
 };
 
-#define MAX_CTORS 100
-static struct ctor_dtor ctors[MAX_CTORS];
-static int num_ctors;
+#define MAX_CTX_HOOKS 100
+static struct ctx_hooks chooks[MAX_CTX_HOOKS];
+static int num_chooks;
 
 static void do_rm_dosobj(uint32_t fa);
 
@@ -170,6 +172,7 @@ static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
 
 static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
+    int i;
     int ret;
     int last_objcnt;
     struct udisp *u;
@@ -181,11 +184,17 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     u = &udisps[handle];
     assert(recur_cnt < MAX_RECUR);
     recur_cnt++;
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].restore(handle);
     saved_noret = noret_jmp;
     last_objcnt = objcnt;
     ret = _dj64_call(libid, fn, regs, sp, esi, u->disp);
     assert(objcnt == last_objcnt);  // make sure no leaks, esp on NORETURN
     noret_jmp = saved_noret;
+    if (ret == DJ64_RET_OK) {
+        for (i = 0; i < num_chooks; i++)
+            chooks[i].save();
+    }
     recur_cnt--;
     return ret;
 }
@@ -315,10 +324,8 @@ dj64cdispatch_t **DJ64_INIT_FN(int handle, const struct elf_ops *ops,
     u->core_pt = pthunks;
     u->core_pt.tab = malloc(sizeof(pthunks.tab[0]) * pthunks.num);
 
-    for (i = 0; i < num_ctors; i++) {
-        if (ctors[i].ctor)
-            ctors[i].ctor();
-    }
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].init(handle);
 
     return dops;
 }
@@ -328,11 +335,8 @@ void DJ64_DONE_FN(int handle)
     int i;
     struct udisp *u;
 
-    for (i = 0; i < num_ctors; i++) {
-        if (ctors[i].dtor)
-            ctors[i].dtor();
-    }
-
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].deinit();
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
     free(u->core_at.tab);
@@ -382,21 +386,33 @@ static uint64_t do_asm_call(struct athunks *pt, unsigned cs, int num,
 
 uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
 {
+    int i;
+    int ret;
     struct udisp *u;
     int handle = dj64api->get_handle();
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    return do_asm_call(&u->core_pt, u->cs, num, sp, len, flags);
+    ret = do_asm_call(&u->core_pt, u->cs, num, sp, len, flags);
+    /* asm call can recursively invoke dj64, so restore context here */
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].restore(handle);
+    return ret;
 }
 
 uint64_t dj64_asm_call_u(int handle, int num, uint8_t *sp, uint8_t len,
         int flags)
 {
+    int i;
+    int ret;
     struct udisp *u;
 
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    return do_asm_call(u->pt, u->cs, num, sp, len, flags);
+    ret = do_asm_call(u->pt, u->cs, num, sp, len, flags);
+    /* asm call can recursively invoke dj64, so restore context here */
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].restore(handle);
+    return ret;
 }
 
 uint8_t *dj64_clean_stk(size_t len)
@@ -514,12 +530,15 @@ uint32_t djthunk_get(const char *name)
     return djthunk_get_h(dj64api->get_handle(), name);
 }
 
-void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void))
+void djregister_ctx_hooks(void (*init)(int), void (*deinit)(void),
+        void (*save)(void), void (*restore)(int))
 {
-    struct ctor_dtor *c;
+    struct ctx_hooks *c;
 
-    assert(num_ctors < MAX_CTORS);
-    c = &ctors[num_ctors++];
-    c->ctor = ctor;
-    c->dtor = dtor;
+    assert(num_chooks < MAX_CTX_HOOKS);
+    c = &chooks[num_chooks++];
+    c->init = init;
+    c->deinit = deinit;
+    c->save = save;
+    c->restore = restore;
 }
