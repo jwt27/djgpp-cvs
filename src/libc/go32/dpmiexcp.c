@@ -22,6 +22,7 @@
 #include <sys/exceptn.h>
 #include <sys/nearptr.h>		/* For DS base/limit info */
 #include <libc/internal.h>
+#include <libc/djctx.h>
 #include <stubinfo.h>
 
 #define err(x) _write(STDERR_FILENO, x, sizeof(x)-1)

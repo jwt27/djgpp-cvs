@@ -35,6 +35,7 @@
 
 #include <stdint.h>
 #include <dpmi.h>
+#include <libc/djctx.h>
 #include "nmalcdef.h"
 
 /* ============== Globals ============= */

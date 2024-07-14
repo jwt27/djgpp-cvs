@@ -16,17 +16,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DJTHUNKS_H
-#define DJTHUNKS_H
+#ifndef DJCTX_H
+#define DJCTX_H
 
-#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
-void crt1_startup(int handle);
+void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void));
 
-uint8_t *djaddr2ptr(uint32_t addr);
-uint8_t *djaddr2ptr2(uint32_t addr, uint32_t len);
-uint32_t djptr2addr(const uint8_t *ptr);
-uint32_t djthunk_get(const char *name);
-uint32_t djthunk_get_h(int handle, const char *name);
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c, init, pre, post) \
+static void t##_init(void) \
+{ \
+  struct t *x = malloc(sizeof(*x)); \
+  memset(x, 0, sizeof(*x)); \
+  x->prev = c; \
+  if (c) \
+    pre; \
+  c = x; \
+  init; \
+} \
+static void t##_deinit(void) \
+{ \
+  struct t *x = c; \
+  c = x->prev; \
+  free(x); \
+  if (c) \
+    post; \
+} \
+__attribute__((constructor)) \
+static void static_##t##_init(void) \
+{ \
+  djregister_ctor_dtor(t##_init, t##_deinit); \
+}
+
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \
+  DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c,,,)
 
 #endif

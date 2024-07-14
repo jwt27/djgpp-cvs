@@ -36,6 +36,7 @@
 #include <dj64/thunks_p.h>
 #include <dj64/util.h>
 #include <libc/djthunks.h>
+#include <libc/djctx.h>
 #include <libc/internal.h>
 #include <dpmi.h>
 #include <sys/nearptr.h>

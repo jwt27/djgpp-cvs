@@ -15,6 +15,7 @@
 #include <setjmp.h>
 #include <dpmi.h>
 #include <libc/internal.h>
+#include <libc/djctx.h>
 #include <sys/exceptn.h>
 #include <float.h>
 #include <dos.h> /* for _8087 */

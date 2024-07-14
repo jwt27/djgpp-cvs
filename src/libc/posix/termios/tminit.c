@@ -14,6 +14,7 @@
 #include <libc/bss.h>
 #include <libc/file.h>
 #include <libc/ttyprvt.h>
+#include <libc/djctx.h>
 
 /* tty buffers */
 struct tty __libc_tty_internal = TTYDEFAULT;

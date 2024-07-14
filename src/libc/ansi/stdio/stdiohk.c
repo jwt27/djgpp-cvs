@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <libc/file.h>
 #include <libc/local.h>
+#include <libc/djctx.h>
 
 static void fcloseall_helper(FILE *f)
 {

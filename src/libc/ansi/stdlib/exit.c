@@ -13,6 +13,7 @@
 #include <io.h>
 #include <libc/atexit.h>
 #include <libc/stdiohk.h>
+#include <libc/djctx.h>
 
 struct __atexit *__atexit_ptr = 0;
 

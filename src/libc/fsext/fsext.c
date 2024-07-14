@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <io.h>
+#include <libc/djctx.h>
 
 typedef struct __FSEXT_entry {
   __FSEXT_Function *function;
