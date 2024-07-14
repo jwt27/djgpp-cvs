@@ -20,6 +20,8 @@
 #define DJTHUNKS_H
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 void crt1_startup(int handle);
 
@@ -29,5 +31,25 @@ uint32_t djptr2addr(const uint8_t *ptr);
 uint32_t djthunk_get(const char *name);
 uint32_t djthunk_get_h(int handle, const char *name);
 void djregister_ctor_dtor(void (*ctor)(void), void (*dtor)(void));
+
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \
+static void t##_init(void) \
+{ \
+  struct t *x = malloc(sizeof(*x)); \
+  memset(x, 0, sizeof(*x)); \
+  x->prev = c; \
+  c = x; \
+} \
+static void t##_deinit(void) \
+{ \
+  struct t *x = c; \
+  c = x->prev; \
+  free(x); \
+} \
+__attribute__((constructor)) \
+static void static_##t##_init(void) \
+{ \
+  djregister_ctor_dtor(t##_init, t##_deinit); \
+}
 
 #endif
