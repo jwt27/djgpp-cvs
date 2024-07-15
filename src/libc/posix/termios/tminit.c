@@ -31,7 +31,7 @@ struct tm_state {
 
 static struct tm_state *tms;
 
-static struct tm_state tms_init =
+static const struct tm_state tms_init =
 {
   .__libc_tty_internal = (struct tty)TTYDEFAULT,
   .__libc_tty_p = &__libc_tty_internal,
