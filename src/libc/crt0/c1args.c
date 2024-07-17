@@ -316,7 +316,8 @@ expand_wildcards(ArgList *al)
   {
     if (al->argv[i]->arg_file)
       expand_wildcards(al->argv[i]->arg_file);
-    else if (!(al->argv[i]->was_quoted))
+    else if (!(al->argv[i]->was_quoted) &&
+        (strchr(al->argv[i]->arg, '*') || strchr(al->argv[i]->arg, '?')))
     {
       al->argv[i]->arg_globbed = __crt0_glob_function(al->argv[i]->arg);
     }
