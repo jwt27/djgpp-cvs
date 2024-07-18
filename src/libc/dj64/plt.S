@@ -54,6 +54,7 @@ OPEN_FLG_SHIFT = 6
 
 .data
 
+dos_nm: .asciz "MS-DOS"
 ext_nm: .asciz "DJ64"
 err_str: .asciz "dj64: load failure\r\n$"
 
@@ -91,7 +92,12 @@ dj64_plt_call:
 .global plt_init
 plt_init:
     pushl %es
-
+    /* check for extender, used for file I/O */
+    movl $0x168a, %eax
+    movl $dos_nm, %esi
+    int $0x2f
+    jc 2f
+    /* check for DJ64 */
     movl $0xa00, %eax
     movl $ext_nm, %esi
     int $0x31
