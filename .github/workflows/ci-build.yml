@@ -1,0 +1,34 @@
+name: Build and test
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - synchronize
+  push:
+
+jobs:
+  Build_and_test:
+    name: Build and test
+
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Package install
+      run: ./ci_prereq.sh
+
+    - name: Build
+      run: |
+        make
+        sudo make install
+
+    - name: Set up test environment
+      run: |
+        ./ci_test_prereq.sh
+        make demos
