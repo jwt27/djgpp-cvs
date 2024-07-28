@@ -373,10 +373,11 @@ __crt0_setup_arguments(void)
     }
     argv0 = (char *)calloc(1, ls-__dos_argv0+strlen(fc)+1);
     if (ls == __dos_argv0)
-      strncpy(argv0, fc, 16);
+      strlcpy(argv0, fc, 16+1);
     else
     {
       strncpy(argv0, __dos_argv0, ls-__dos_argv0);
+      argv0[ls-__dos_argv0] = '\0';
       strncat(argv0, fc, 16);
     }
     for (i=0; (fc == _stubinfo->argv0)?(i<ls-__dos_argv0):(argv0[i]); i++)
