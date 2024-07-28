@@ -371,7 +371,7 @@ __crt0_setup_arguments(void)
     {
       fc = _stubinfo->argv0;
     }
-    argv0 = (char *)calloc(1, ls-__dos_argv0+strlen(fc)+1);
+    argv0 = (char *)malloc(ls-__dos_argv0+strlen(fc)+1);
     if (ls == __dos_argv0)
       strlcpy(argv0, fc, 16+1);
     else
