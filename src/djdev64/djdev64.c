@@ -16,11 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define WANT_DLMOPEN 0
-
-#if WANT_DLMOPEN
 #define _GNU_SOURCE
-#endif
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,10 +27,8 @@
 #include "djdev64/djdev64.h"
 #include "elf_priv.h"
 
-#if WANT_DLMOPEN
 #ifdef __GLIBC__
 #define HAVE_DLMOPEN 1
-#endif
 #endif
 
 static int handles;
@@ -161,18 +155,32 @@ static int _djdev64_open(const char *path, const struct dj64_api *api,
         fprintf(stderr, "out of handles\n");
         return -1;
     }
-    /* RTLD_DEEPBIND has similar effect to -Wl,-Bsymbolic */
-    if (flags & FLG_STATIC) {
+    /* RTLD_DEEPBIND has similar effect to -Wl,-Bsymbolic, but we don't
+     * use it with dlmopen() as asan doesn't work with that flag.
+     * So if we don't have dlmopen() then no asan support is possible. */
+    if (flags & DJ64F_DLMOPEN) {
+#ifdef HAVE_DLMOPEN
+        use_dlm = 1;
+        dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
+#else
+        fprintf(stderr, "dlmopen() not supported, asan won't work\n");
+        return -1;
+#endif
+    } else if (flags & FLG_STATIC) {
         dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
                 &path2);
     } else {
+#define WANT_DLMOPEN 0
+#if WANT_DLMOPEN
 #ifdef HAVE_DLMOPEN
         use_dlm = 1;
-        dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND);
+        dlh = dlmopen(LM_ID_NEWLM, path, RTLD_LOCAL | RTLD_NOW);
 #else
-#if WANT_DLMOPEN
         fprintf(stderr, "dlmopen() not supported, use static linking\n");
+        dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
+                &path2);
 #endif
+#else
         dlh = emu_dlmopen(handles, path, RTLD_LOCAL | RTLD_NOW | RTLD_DEEPBIND,
                 &path2);
 #endif
