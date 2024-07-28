@@ -165,7 +165,6 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     _GO32_StubInfo stubinfo = {};
     _GO32_StubInfo *stubinfo_p;
     struct ldops *ops = NULL;
-    char *argv0 = strdup(argv[0]);
 
     register_dpmiops(dpmiops);
 
@@ -259,14 +258,14 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
         envp++;
     }
     if (i) {
-        i += strlen(argv0) + 1;
+        i += strlen(argv[0]) + 1;
         i += 2;
     }
     stub_debug("env size %i\n", i);
     stubinfo.env_size = i;
     stubinfo.minstack = 0x80000;
     stubinfo.minkeep = 0x4000;
-    strncpy(stubinfo.argv0, _basename(argv0), sizeof(stubinfo.argv0));
+    strncpy(stubinfo.argv0, _basename(argv[0]), sizeof(stubinfo.argv0));
     stubinfo.argv0[sizeof(stubinfo.argv0) - 1] = '\0';
     /* basename seems unused and produces warning about missing 0-terminator */
 //    strncpy(stubinfo.basename, _fname(argv0), sizeof(stubinfo.basename));
