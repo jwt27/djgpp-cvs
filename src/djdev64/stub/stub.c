@@ -259,7 +259,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     }
     if (i) {
         i += strlen(argv[0]) + 1;
-        i += 2;
+        i += 3;
     }
     stub_debug("env size %i\n", i);
     stubinfo.env_size = i;
