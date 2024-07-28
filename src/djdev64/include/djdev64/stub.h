@@ -19,6 +19,7 @@
 #ifndef STUB_H
 #define STUB_H
 
+#include <stdarg.h>
 #include "djdpmi.h"
 
 struct dos_ops {
@@ -57,6 +58,7 @@ struct stub_ret_regs {
 
 int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     struct stub_ret_regs *regs, char *(*SEL_ADR)(uint16_t sel),
-    struct dos_ops *dosops, struct dpmi_ops *dpmiops);
+    struct dos_ops *dosops, struct dpmi_ops *dpmiops,
+    void (*do_printf)(int prio, const char *fmt, va_list ap));
 
 #endif

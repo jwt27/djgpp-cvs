@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <stdint.h>
 #include <fcntl.h>
@@ -31,11 +32,12 @@
 #include "elfp.h"
 #include "util.h"
 #include "stub_priv.h"
+#include "djdev64/dj64init.h"
 #include "djdev64/stub.h"
 
-#define STUB_DEBUG 0
+#define STUB_DEBUG 1
 #if STUB_DEBUG
-#define stub_debug(...) J_printf(__VA_ARGS__)
+#define stub_debug(...) J_printf(do_printf, __VA_ARGS__)
 #else
 #define stub_debug(...)
 #endif
@@ -120,12 +122,23 @@ static struct dos_ops hops = {
     ._dos_close = _host_close,
 };
 
+static void J_printf(void (*do_printf)(int prio, const char *fmt, va_list ap),
+    const char *fmt, ...)
+{
+    va_list val;
+
+    va_start(val, fmt);
+    do_printf(DJ64_PRINT_LOG, fmt, val);
+    va_end(val);
+}
+
 #define exit(x) return -(x)
 #define error(...) fprintf(stderr, __VA_ARGS__)
 #define dbug_printf(...)
 int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     struct stub_ret_regs *regs, char *(*SEL_ADR)(uint16_t sel),
-    struct dos_ops *dosops, struct dpmi_ops *dpmiops)
+    struct dos_ops *dosops, struct dpmi_ops *dpmiops,
+    void (*do_printf)(int prio, const char *fmt, va_list ap))
 {
     int ifile, pfile;
     off_t coffset = 0;
@@ -156,6 +169,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 
     register_dpmiops(dpmiops);
 
+    stub_debug("Opening self at %s\n", argv[0]);
     rc = dosops->_dos_open(argv[0], O_RDONLY, &ifile);
     if (rc) {
         fprintf(stderr, "cannot open %s\n", argv[0]);
