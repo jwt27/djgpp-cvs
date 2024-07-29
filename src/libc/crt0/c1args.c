@@ -376,7 +376,7 @@ __crt0_setup_arguments(void)
       strlcpy(argv0, fc, 16+1);
     else
     {
-      strncpy(argv0, __dos_argv0, ls-__dos_argv0);
+      memcpy(argv0, __dos_argv0, ls-__dos_argv0);
       argv0[ls-__dos_argv0] = '\0';
       strncat(argv0, fc, 16);
     }
