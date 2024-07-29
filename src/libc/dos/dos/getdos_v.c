@@ -62,7 +62,7 @@ _get_dos_version(int true_version)
 {
   unsigned char     oem_number;
   struct _oem_info *p = dos_flavors;
-  __dpmi_regs       regs;
+  __dpmi_regs       regs = {};
 
   /* Invalidate previous info, if we were restarted (emacs).  */
   if (getdosv_count != __bss_count)

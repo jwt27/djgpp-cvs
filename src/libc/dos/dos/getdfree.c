@@ -6,7 +6,7 @@
 void
 getdfree(unsigned char drive, struct dfree *dtable)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
 
   regs.h.ah = 0x36;
   regs.h.dl = drive;

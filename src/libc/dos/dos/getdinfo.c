@@ -19,7 +19,7 @@ short _get_dev_info(int);
 short
 _get_dev_info(int fhandle)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
 
   regs.x.ax = 0x4400;
   regs.x.bx = fhandle & 0x0000ffff;

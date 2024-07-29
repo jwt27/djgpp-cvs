@@ -4,7 +4,7 @@
 
 void getdate( struct date *dateblk)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
 
   regs.h.ah = 0x2a;
   __dpmi_int(0x21, &regs);

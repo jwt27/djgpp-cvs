@@ -443,7 +443,7 @@ setlocale(int category, const char *locale)
   if (locale != NULL)
   {
     int segment = -1, selector = -1;
-    __dpmi_regs regs;
+    __dpmi_regs regs = {};
     char buf[LC_MAXNAMESIZE];
     char *p1, *p2;
 

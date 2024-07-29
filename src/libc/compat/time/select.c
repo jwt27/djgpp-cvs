@@ -70,7 +70,7 @@ fp_input_ready (FILE *fp)
 inline static int
 fd_output_ready(int fd)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
 
   /* If it's a directory, always return 0. We can't write to directories. */
   if (__get_fd_flags(fd) & FILE_DESC_DIRECTORY)
@@ -91,7 +91,7 @@ fd_output_ready(int fd)
 inline static int
 fd_input_ready(int fd)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
   short dev_info;
 
   /* If it's a directory, always return 1. That way the caller

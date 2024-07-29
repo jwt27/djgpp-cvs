@@ -4,7 +4,7 @@
 
 void setdate( struct date *dateblk)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
 
   regs.h.ah = 0x2b;
   regs.x.cx = dateblk-> da_year;

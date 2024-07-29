@@ -417,7 +417,7 @@ static void direct_scroll_right(int y, int x1, int x2, int xdst)
 static void
 direct_refresh_virtual_screen(int col, int row, int count)
 {
-  __dpmi_regs regs;
+  __dpmi_regs regs = {};
 
   regs.x.es = direct_info.video_buffer_segment;
   regs.x.di = direct_info.video_buffer_offset;
