@@ -49,7 +49,7 @@ biosdisk(int cmd, int drive, int head, int track,
 {
   int seg=0, ofs=0, before=0;
   size_t xfer=0;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   switch (cmd)
   {
   case 2:
@@ -125,7 +125,7 @@ _bios_disk(unsigned _cmd, struct diskinfo_t *_di)
 {
   int seg=0, ofs=0, before=0;
   size_t xfer=0;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   switch( _cmd )
   {

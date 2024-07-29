@@ -15,7 +15,7 @@
 int
 _close(int handle)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   __FSEXT_Function *func = __FSEXT_get_function(handle);
   if (func)

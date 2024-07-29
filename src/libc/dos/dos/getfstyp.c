@@ -23,7 +23,7 @@ _get_fs_type( const int drive /* drive number (1=A:). */
 	     )
 {
   int n;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   /* Check DOZE version and return -1 if too low. */
   if( _osmajor < 4 )

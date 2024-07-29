@@ -4,7 +4,7 @@
 
 int bioscom(int cmd, char data, int port)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   r.h.ah = cmd;
   r.h.al = data;
   r.x.dx = port;

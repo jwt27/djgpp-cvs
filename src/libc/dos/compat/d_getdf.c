@@ -15,7 +15,7 @@
 
 unsigned int _dos_getdiskfree(unsigned int drive, struct _diskfree_t *diskspace)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.ah = 0x36;
   r.h.dl = drive;

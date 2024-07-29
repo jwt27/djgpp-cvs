@@ -15,7 +15,7 @@
 int
 bioskey(int cmd)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   r.h.ah = cmd;
   __dpmi_int(0x16, &r);
   switch ( cmd )

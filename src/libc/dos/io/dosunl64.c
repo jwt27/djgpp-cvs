@@ -5,7 +5,7 @@
 int
 _dos_unlk64(int _fd, long long _offset, long long _length)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   r.x.ax = 0x5c01;
   r.x.bx = _fd;
   r.x.cx = _offset >> 16;

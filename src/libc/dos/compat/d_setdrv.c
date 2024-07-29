@@ -14,7 +14,7 @@
 
 void _dos_setdrive(unsigned int drive, unsigned int *p_drives)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.ah = 0x0E;
   r.h.dl = drive - 1;

@@ -82,7 +82,7 @@ static void restore_video_state(void);
 /* Initialize the screen portion of termios.  */
 void __libc_termios_init_write(void)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   char *tty_screen;
 
   /* set special hooks */
@@ -657,7 +657,7 @@ get_cursor(int *col, int *row)
 static void
 set_cursor(int col, int row)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   unsigned short rowcol;
   int cur_col, cur_row;
 
@@ -695,7 +695,7 @@ move_cursor(int x_delta, int y_delta)
 {
   int row, col;
   unsigned short rowcol;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   /* Get cursor's current position.  */
   rowcol = _farpeekw(_dos_ds, 0x450 + __tty_screen.active_page);
@@ -729,7 +729,7 @@ move_cursor(int x_delta, int y_delta)
 static void
 set_cursor_shape(int shape)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   unsigned short max_line, bot_line, top_line;
   unsigned short new_cursor;
 
@@ -775,7 +775,7 @@ set_cursor_shape(int shape)
 static void
 set_blink_attrib(int enable_blink)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.bh = 0;
   r.h.bl = (enable_blink) ? 1 : 0;
@@ -787,7 +787,7 @@ set_blink_attrib(int enable_blink)
 static void
 restore_video_state(void)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   if (__tty_screen.cur_blink != __tty_screen.norm_blink)
     set_blink_attrib(__tty_screen.norm_blink);

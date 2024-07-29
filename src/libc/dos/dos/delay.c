@@ -7,7 +7,7 @@
 
 void delay(unsigned msec)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   while (msec)
   {

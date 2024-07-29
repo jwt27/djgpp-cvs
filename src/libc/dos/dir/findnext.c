@@ -15,7 +15,7 @@
 int
 findnext(struct ffblk *ffblk)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   if (ffblk == 0)
   {

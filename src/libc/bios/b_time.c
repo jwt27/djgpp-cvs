@@ -6,7 +6,7 @@
 unsigned
 _bios_timeofday(unsigned _cmd, unsigned long *_timeval)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.ah = _cmd;
   if ( _cmd == _TIME_SETCLOCK )

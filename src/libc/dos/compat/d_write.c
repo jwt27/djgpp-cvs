@@ -22,7 +22,7 @@
 
 unsigned int _dos_write(int handle, const void *buffer, unsigned int count, unsigned int *result)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   int dos_segment;
   int dos_selector;
   unsigned int dos_buffer_size, write_size;

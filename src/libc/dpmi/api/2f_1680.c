@@ -5,7 +5,7 @@
 void
 __dpmi_yield(void)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.x.ax = 0x1680;
   r.x.ss = r.x.sp = r.x.flags = 0;

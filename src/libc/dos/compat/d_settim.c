@@ -15,7 +15,7 @@
 
 unsigned int _dos_settime(struct _dostime_t *time)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   if (time == 0)
   {

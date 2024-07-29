@@ -16,7 +16,7 @@
 int
 rmdir(const char *mydirname)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   char real_dir[FILENAME_MAX];
 
   if (!__solve_dir_symlinks(mydirname, real_dir))

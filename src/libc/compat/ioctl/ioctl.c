@@ -159,7 +159,7 @@ static int _dos_ioctl(int fd, int cmd, int argcx,int argdx,int argsi,int argdi,
 /*
 ** Do an int0x21,0x44xx and such
 */
-    __dpmi_regs r;
+    __dpmi_regs r = {};
     int dos_selector = 0;
     int dos_segment = 0;
 

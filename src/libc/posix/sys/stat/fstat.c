@@ -847,7 +847,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
                such handles aren't supported by 71A6h call we use here.  */
             if (_USE_LFN)
             {
-              __dpmi_regs r;
+              __dpmi_regs r = {};
 
               r.x.flags = 1;	/* Always set CF before calling a 0x71NN function. */
               r.x.ax = 0x71a6;	/* file info by handle */

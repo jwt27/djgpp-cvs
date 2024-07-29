@@ -119,7 +119,7 @@ _write_int(int fd, const char *buffer, unsigned long long write_count)
   unsigned long chunk_count;
   int total_written;
   unsigned short bytes_written;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   buf_size = (write_count <= __tb_size) ? write_count : __tb_size;
 

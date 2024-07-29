@@ -15,7 +15,7 @@ gethostname (char *buf, int size)
 {
   char *h, dosbuf[16];
   int len;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   /* Try asking [a lan extension of] dos for a name.  */
   r.x.ax = 0x5e00;

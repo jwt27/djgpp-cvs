@@ -17,7 +17,7 @@
 static int
 getkey_nowait (void)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   /* If the head and tail of the keyboard buffer are the same, the
      buffer is empty.  */

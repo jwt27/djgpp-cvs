@@ -19,7 +19,7 @@ _read(int handle, void* buffer, size_t count)
 {
   size_t j, k;
   int ngot;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   __FSEXT_Function *func = __FSEXT_get_function(handle);
   if (func)

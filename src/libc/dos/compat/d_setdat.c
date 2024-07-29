@@ -15,7 +15,7 @@
 
 unsigned int _dos_setdate(struct _dosdate_t *date)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   if (date == 0)
   {

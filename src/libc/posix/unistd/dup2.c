@@ -15,7 +15,7 @@
 int
 dup2(int fd, int newfd)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   if (newfd < 0 || newfd >= getdtablesize() || _get_dev_info(fd) == -1)
   {

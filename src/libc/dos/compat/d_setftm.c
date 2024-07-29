@@ -15,7 +15,7 @@
 
 unsigned int _dos_setftime(int handle, unsigned int date, unsigned int time)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.x.ax = 0x5701;
   r.x.bx = handle;

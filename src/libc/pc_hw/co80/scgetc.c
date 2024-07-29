@@ -4,7 +4,7 @@
 void	
 ScreenGetCursor(int *_row, int *_col)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   r.h.ah = 3;
   r.h.bh = 0;
   __dpmi_int(0x10, &r);

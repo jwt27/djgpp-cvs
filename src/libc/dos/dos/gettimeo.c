@@ -5,7 +5,7 @@
 
 int gettimeofday(struct timeval *tv, struct timezone *tz)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   struct tm tmblk;
   struct timeval tv_tmp;
 

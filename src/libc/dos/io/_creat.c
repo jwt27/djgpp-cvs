@@ -19,7 +19,7 @@
 int
 _creat(const char* filename, int attrib)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   int rv;
   unsigned use_lfn = _USE_LFN;
 

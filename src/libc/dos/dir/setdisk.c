@@ -5,7 +5,7 @@
 int
 setdisk(int _drive)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   r.h.ah = 0x0e;
   r.h.dl = _drive;
   __dpmi_int(0x21, &r);

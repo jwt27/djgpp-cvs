@@ -16,7 +16,7 @@
 
 unsigned int _dos_close(int handle)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.ah = 0x3E;
   r.x.bx = handle;

@@ -16,7 +16,7 @@
 int
 findfirst(const char *pathname, struct ffblk *ffblk, int attrib)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   int pathlen;
   int use_lfn = _USE_LFN;
 

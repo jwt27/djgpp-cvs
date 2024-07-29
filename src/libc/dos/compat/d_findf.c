@@ -20,7 +20,7 @@
 
 unsigned int _dos_findfirst(const char *name, unsigned int attr, struct _find_t *result)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   _put_path(name);
   r.x.dx = (__tb & 15) + strlen(name) + 1;

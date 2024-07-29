@@ -17,7 +17,7 @@
 
 unsigned int _dos_open(const char *filename, unsigned int mode, int *handle)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   _put_path(filename);
   r.h.ah = 0x3D;

@@ -9,7 +9,7 @@ unsigned
 _lfn_get_ftime (int fhandle, int which)
 {
   unsigned xtime;
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   if (which != _LFN_CTIME && which != _LFN_ATIME)
     {

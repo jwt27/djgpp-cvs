@@ -20,7 +20,7 @@
 
 int _rename(const char *old, const char *_new)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   int i;
   int olen    = strlen(old) + 1;
   int use_lfn = _USE_LFN;

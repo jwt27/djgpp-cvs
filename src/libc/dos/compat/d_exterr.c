@@ -14,7 +14,7 @@
 
 int _dosexterr(struct _DOSERROR *p_error)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.ah = 0x59;
   r.x.bx = 0;

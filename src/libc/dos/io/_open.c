@@ -22,7 +22,7 @@
 int
 _open(const char* filename, int oflag)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   int rv;
   int use_lfn = _USE_LFN;
   bool retry_with_lfn = false;

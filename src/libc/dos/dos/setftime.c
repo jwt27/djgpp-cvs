@@ -6,7 +6,7 @@
 
 int setftime(int handle, struct ftime *ft)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   r.h.ah = 0x57;
   r.h.al = 1;
   r.x.bx = handle;

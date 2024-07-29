@@ -412,7 +412,7 @@ static int _ioctl_get_first_cluster(const char *);
 static int
 _ioctl_get_first_cluster(const char *pathname)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   /* See if the IOCTL GetFirstCluster call is supported.  */
   r.x.ax = 0x4411;	       /* query generic IOCTL capability by drive */

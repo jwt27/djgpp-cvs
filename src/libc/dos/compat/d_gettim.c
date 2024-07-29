@@ -14,7 +14,7 @@
 
 void _dos_gettime(struct _dostime_t *time)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.h.ah = 0x2C;
   __dpmi_int(0x21, &r);

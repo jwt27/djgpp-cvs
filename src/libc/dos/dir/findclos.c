@@ -25,7 +25,7 @@
 int
 findclose(int handle)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
   int use_lfn = _USE_LFN;
 
   if (use_lfn)

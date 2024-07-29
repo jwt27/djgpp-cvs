@@ -6,7 +6,7 @@
 int
 _media_type(int drive_num)
 {
-  __dpmi_regs r;
+  __dpmi_regs r = {};
 
   r.x.ax = 0x4408;
   r.h.bl = drive_num;
