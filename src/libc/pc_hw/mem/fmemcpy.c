@@ -49,8 +49,10 @@ void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
     unsigned base;
     void *ptr;
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
+    int err;
 
-    get_segment_base_address(dst.selector, &base);
+    err = get_segment_base_address(dst.selector, &base);
+    assert(!err);
     if (en_dis)
       __djgpp_nearptr_enable();
     ptr = DATA_PTR(base + dst.offset32 + __djgpp_conventional_base);
@@ -64,8 +66,10 @@ void fmemcpy2(void *dst, __dpmi_paddr src, unsigned len)
     unsigned base;
     const void *ptr;
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
+    int err;
 
-    get_segment_base_address(src.selector, &base);
+    err = get_segment_base_address(src.selector, &base);
+    assert(!err);
     if (en_dis)
       __djgpp_nearptr_enable();
     ptr = DATA_PTR(base + src.offset32 + __djgpp_conventional_base);
@@ -81,9 +85,12 @@ void fmemcpy12(__dpmi_paddr dst, __dpmi_paddr src, unsigned len)
     const void *sptr;
     void *dptr;
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
+    int err;
 
-    get_segment_base_address(src.selector, &sbase);
-    get_segment_base_address(dst.selector, &dbase);
+    err = get_segment_base_address(src.selector, &sbase);
+    assert(!err);
+    err = get_segment_base_address(dst.selector, &dbase);
+    assert(!err);
     if (en_dis)
       __djgpp_nearptr_enable();
     sptr = DATA_PTR(sbase + src.offset32 + __djgpp_conventional_base);
