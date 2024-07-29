@@ -22,7 +22,7 @@
 long long
 lfilelength(int fhandle)
 {
-  __dpmi_regs    regs;
+  __dpmi_regs    regs = {};
   unsigned short fpos_high, fpos_low;
   long long      retval;
 

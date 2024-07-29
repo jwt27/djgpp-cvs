@@ -185,7 +185,7 @@ static unsigned long  psp_addr;
 static int
 fstat_init(void)
 {
-  __dpmi_regs    regs;
+  __dpmi_regs    regs = {};
   int            sft_ptr_addr;
   unsigned short true_dos_version;
 
@@ -253,7 +253,7 @@ get_sft_entry(int fhandle)
   unsigned long  htbl_addr;
   short          sft_idx, retval;
 
-  __dpmi_regs	 regs;
+  __dpmi_regs	 regs = {};
   _djstat_fail_bits = fstat_init_bits;
 
   /* Force initialization if we were restarted (emacs).  */

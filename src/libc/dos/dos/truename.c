@@ -52,7 +52,7 @@
 static char *
 _truename_internal(const char *file, char *buf, const int try_lfn)
 {
-  __dpmi_regs     regs;
+  __dpmi_regs     regs = {};
   unsigned short  dos_mem_selector = _dos_ds;
   int             e                = errno;
   unsigned	  use_lfn	   = _USE_LFN;

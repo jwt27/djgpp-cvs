@@ -41,7 +41,7 @@ int                   _is_executable(const char *, int, const char *);
 unsigned short
 _get_magic(const char *s, int fh)
 {
-  __dpmi_regs          regs;
+  __dpmi_regs          regs = {};
   unsigned short       retval;
   unsigned short       fpos_high = 0, fpos_low = 0;
   int                  read_fail = 0;

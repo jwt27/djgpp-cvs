@@ -199,7 +199,7 @@ init_dirent_table (void)
   unsigned short dirent_offset;
   unsigned short true_dos_version;
   unsigned short dos_major, dos_minor;
-  __dpmi_regs    regs;
+  __dpmi_regs    regs = {};
 
   if (dirent_count == -1)     /* we already tried and found we can't */
     return 0;
