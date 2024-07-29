@@ -46,7 +46,7 @@ static inline int get_segment_base_address(int selector, unsigned *addr)
 
 void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
 {
-    unsigned base;
+    unsigned base = 0;
     void *ptr;
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
     int err;
@@ -63,7 +63,7 @@ void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
 
 void fmemcpy2(void *dst, __dpmi_paddr src, unsigned len)
 {
-    unsigned base;
+    unsigned base = 0;
     const void *ptr;
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
     int err;
@@ -81,7 +81,7 @@ void fmemcpy2(void *dst, __dpmi_paddr src, unsigned len)
 /* similar to sys/movedata.h's movedata(), but the src/dst swapped! */
 void fmemcpy12(__dpmi_paddr dst, __dpmi_paddr src, unsigned len)
 {
-    unsigned sbase, dbase;
+    unsigned sbase = 0, dbase = 0;
     const void *sptr;
     void *dptr;
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
