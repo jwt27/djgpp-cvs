@@ -260,11 +260,11 @@ static void
 setcursor(unsigned int cursor_shape)
 /* Sets the shape of the cursor */
 {
-  __dpmi_regs reg;
+  __dpmi_regs regs = {};
 
-  reg.h.ah = 1;
-  reg.x.cx = cursor_shape;
-  __dpmi_int(0x10, &reg);
+  regs.h.ah = 1;
+  regs.x.cx = cursor_shape;
+  __dpmi_int(0x10, &regs);
 } /* setcursor */
 
 static void
