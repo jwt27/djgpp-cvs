@@ -172,15 +172,15 @@ int	__dpmi_allocate_dos_memory(int _paragraphs, int *_ret_selector_or_max);			/*
 int	__dpmi_free_dos_memory(int _selector);							/* DPMI 0.9 AX=0101 */
 int	__dpmi_resize_dos_memory(int _selector, int _newpara, int *_ret_max);			/* DPMI 0.9 AX=0102 */
 
-int	__dpmi_get_real_mode_interrupt_vector(int _vector, __dpmi_raddr *_address);		/* DPMI 0.9 AX=0200 */
+int	__dpmi_get_real_mode_interrupt_vector(int _vector, __out __dpmi_raddr *_address);		/* DPMI 0.9 AX=0200 */
 int	__dpmi_set_real_mode_interrupt_vector(int _vector, __dpmi_raddr *_address);		/* DPMI 0.9 AX=0201 */
-int	__dpmi_get_processor_exception_handler_vector(int _vector, __dpmi_paddr *_address);	/* DPMI 0.9 AX=0202 */
+int	__dpmi_get_processor_exception_handler_vector(int _vector, __out __dpmi_paddr *_address);	/* DPMI 0.9 AX=0202 */
 int	__dpmi_set_processor_exception_handler_vector(int _vector, __dpmi_paddr *_address);	/* DPMI 0.9 AX=0203 */
-int	__dpmi_get_protected_mode_interrupt_vector(int _vector, __dpmi_paddr *_address);	/* DPMI 0.9 AX=0204 */
+int	__dpmi_get_protected_mode_interrupt_vector(int _vector, __out __dpmi_paddr *_address);	/* DPMI 0.9 AX=0204 */
 int	__dpmi_set_protected_mode_interrupt_vector(int _vector, __dpmi_paddr *_address);	/* DPMI 0.9 AX=0205 */
 
-int	__dpmi_get_extended_exception_handler_vector_pm(int _vector, __dpmi_paddr *_address);	/* DPMI 1.0 AX=0210 */
-int	__dpmi_get_extended_exception_handler_vector_rm(int _vector, __dpmi_paddr *_address);	/* DPMI 1.0 AX=0211 */
+int	__dpmi_get_extended_exception_handler_vector_pm(int _vector, __out __dpmi_paddr *_address);	/* DPMI 1.0 AX=0210 */
+int	__dpmi_get_extended_exception_handler_vector_rm(int _vector, __out __dpmi_paddr *_address);	/* DPMI 1.0 AX=0211 */
 int	__dpmi_set_extended_exception_handler_vector_pm(int _vector, __dpmi_paddr *_address);	/* DPMI 1.0 AX=0212 */
 int	__dpmi_set_extended_exception_handler_vector_rm(int _vector, __dpmi_paddr *_address);	/* DPMI 1.0 AX=0213 */
 
@@ -192,32 +192,32 @@ int	__dpmi_simulate_real_mode_procedure_retf_stack(__dpmi_regs *_regs, int stack
 int	__dpmi_simulate_real_mode_procedure_iret(__dpmi_regs *_regs);				/* DPMI 0.9 AX=0302 */
 int	__dpmi_allocate_real_mode_callback(ULONG32 _handler, ULONG32 _regs, __dpmi_raddr *_ret); /* DPMI 0.9 AX=0303 */
 int	__dpmi_free_real_mode_callback(__dpmi_raddr *_addr);					/* DPMI 0.9 AX=0304 */
-int	__dpmi_get_state_save_restore_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);		/* DPMI 0.9 AX=0305 */
-int	__dpmi_get_raw_mode_switch_addr(__dpmi_raddr *_rm, __dpmi_paddr *_pm);			/* DPMI 0.9 AX=0306 */
+int	__dpmi_get_state_save_restore_addr(__out __dpmi_raddr *_rm, __out __dpmi_paddr *_pm);		/* DPMI 0.9 AX=0305 */
+int	__dpmi_get_raw_mode_switch_addr(__out __dpmi_raddr *_rm, __out __dpmi_paddr *_pm);			/* DPMI 0.9 AX=0306 */
 
-int	__dpmi_get_version(__dpmi_version_ret *_ret);						/* DPMI 0.9 AX=0400 */
+int	__dpmi_get_version(__out __dpmi_version_ret *_ret);						/* DPMI 0.9 AX=0400 */
 
-int	__dpmi_get_capabilities(int *_flags, char vendor_info[128]);				/* DPMI 1.0 AX=0401 */
+int	__dpmi_get_capabilities(__out int *_flags, char vendor_info[128]);				/* DPMI 1.0 AX=0401 */
 
-int	__dpmi_get_free_memory_information(__dpmi_free_mem_info *_info);			/* DPMI 0.9 AX=0500 */
+int	__dpmi_get_free_memory_information(__out __dpmi_free_mem_info *_info);			/* DPMI 0.9 AX=0500 */
 int	__dpmi_allocate_memory(__dpmi_meminfo *_info);						/* DPMI 0.9 AX=0501 */
 int	__dpmi_free_memory(ULONG32 _handle);						/* DPMI 0.9 AX=0502 */
 int	__dpmi_resize_memory(__dpmi_meminfo *_info);						/* DPMI 0.9 AX=0503 */
 
 int	__dpmi_allocate_linear_memory(__dpmi_meminfo *_info, int _commit);			/* DPMI 1.0 AX=0504 */
 int	__dpmi_resize_linear_memory(__dpmi_meminfo *_info, int _commit);			/* DPMI 1.0 AX=0505 */
-int	__dpmi_get_page_attributes(__dpmi_meminfo *_info, short *_buffer);			/* DPMI 1.0 AX=0506 */
+int	__dpmi_get_page_attributes(__dpmi_meminfo *_info, __out short *_buffer);			/* DPMI 1.0 AX=0506 */
 int	__dpmi_set_page_attributes(__dpmi_meminfo *_info, short *_buffer);			/* DPMI 1.0 AX=0507 */
 int	__dpmi_map_device_in_memory_block(__dpmi_meminfo *_info, ULONG32 _physaddr);	/* DPMI 1.0 AX=0508 */
 int	__dpmi_map_conventional_memory_in_memory_block(__dpmi_meminfo *_info, ULONG32 _linaddr); /* DPMI 1.0 AX=0509 */
 int	__dpmi_get_memory_block_size_and_base(__dpmi_meminfo *_info);				/* DPMI 1.0 AX=050a */
-int	__dpmi_get_memory_information(__dpmi_memory_info *_buffer);				/* DPMI 1.0 AX=050b */
+int	__dpmi_get_memory_information(__out __dpmi_memory_info *_buffer);				/* DPMI 1.0 AX=050b */
 
 int	__dpmi_lock_linear_region(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0600 */
 int	__dpmi_unlock_linear_region(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0601 */
 int	__dpmi_mark_real_mode_region_as_pageable(__dpmi_meminfo *_info);			/* DPMI 0.9 AX=0602 */
 int	__dpmi_relock_real_mode_region(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0603 */
-int	__dpmi_get_page_size(ULONG32 *_size);						/* DPMI 0.9 AX=0604 */
+int	__dpmi_get_page_size(__out ULONG32 *_size);						/* DPMI 0.9 AX=0604 */
 
 int	__dpmi_mark_page_as_demand_paging_candidate(__dpmi_meminfo *_info);			/* DPMI 0.9 AX=0702 */
 int	__dpmi_discard_page_contents(__dpmi_meminfo *_info);					/* DPMI 0.9 AX=0703 */
@@ -231,11 +231,11 @@ int	__dpmi_get_and_enable_virtual_interrupt_state(void);					/* DPMI 0.9 AX=0901
 int	__dpmi_get_and_set_virtual_interrupt_state(int _old_state);				/* DPMI 0.9 AH=09   */
 int	__dpmi_get_virtual_interrupt_state(void);						/* DPMI 0.9 AX=0902 */
 
-int	__dpmi_get_vendor_specific_api_entry_point(const char *_id, __dpmi_paddr *_api);		/* DPMI 0.9 AX=0a00 */
+int	__dpmi_get_vendor_specific_api_entry_point(const char *_id, __out __dpmi_paddr *_api);		/* DPMI 0.9 AX=0a00 */
 
 int	__dpmi_set_debug_watchpoint(__dpmi_meminfo *_info, int _type);				/* DPMI 0.9 AX=0b00 */
 int	__dpmi_clear_debug_watchpoint(ULONG32 _handle);					/* DPMI 0.9 AX=0b01 */
-int	__dpmi_get_state_of_debug_watchpoint(ULONG32 _handle, int *_status);		/* DPMI 0.9 AX=0b02 */
+int	__dpmi_get_state_of_debug_watchpoint(ULONG32 _handle, __out int *_status);		/* DPMI 0.9 AX=0b02 */
 int	__dpmi_reset_debug_watchpoint(ULONG32 _handle);					/* DPMI 0.9 AX=0b03 */
 
 int	__dpmi_install_resident_service_provider_callback(__dpmi_callback_info *_info);		/* DPMI 1.0 AX=0c00 */
