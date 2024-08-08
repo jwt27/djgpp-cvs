@@ -153,7 +153,7 @@ int	__dpmi_allocate_ldt_descriptors(int _count);						/* DPMI 0.9 AX=0000 */
 int	__dpmi_free_ldt_descriptor(int _descriptor);						/* DPMI 0.9 AX=0001 */
 int	__dpmi_segment_to_descriptor(int _segment);						/* DPMI 0.9 AX=0002 */
 int	__dpmi_get_selector_increment_value(void);						/* DPMI 0.9 AX=0003 */
-int	__dpmi_get_segment_base_address(int _selector, ULONG32 *_addr);			/* DPMI 0.9 AX=0006 */
+int	__dpmi_get_segment_base_address(int _selector, __out ULONG32 *_addr);			/* DPMI 0.9 AX=0006 */
 int	__dpmi_set_segment_base_address(int _selector, ULONG32 _address);			/* DPMI 0.9 AX=0007 */
 ULONG32 __dpmi_get_segment_limit(int _selector);						/* LSL instruction  */
 int	__dpmi_set_segment_limit(int _selector, ULONG32 _limit);				/* DPMI 0.9 AX=0008 */

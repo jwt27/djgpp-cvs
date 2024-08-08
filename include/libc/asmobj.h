@@ -115,3 +115,5 @@ t *__##x(void) \
 #define EXTERN
 
 #endif
+
+#define __out

@@ -431,16 +431,27 @@ static uint32_t *find_oh(uint32_t addr)
     return NULL;  // should not happen
 }
 
-uint32_t dj64_obj_init(const void *data, uint16_t len)
+static uint32_t do_obj_init(const void *data, uint16_t len, int is_out)
 {
     uint32_t ret;
     if (dj64api->is_dos_ptr(data))
         return PTR_DATA(data);
     ret = mk_dosobj(len);
-    pr_dosobj(ret, data, len);
+    if (!is_out)
+        pr_dosobj(ret, data, len);
     objcnt++;
     *find_oh(0) = ret;
     return ret;
+}
+
+uint32_t dj64_obj_init(const void *data, uint16_t len)
+{
+    return do_obj_init(data, len, 0);
+}
+
+uint32_t dj64_obj_oinit(const void *data, uint16_t len)
+{
+    return do_obj_init(data, len, 1);
 }
 
 void dj64_obj_done(void *data, uint32_t fa, uint16_t len)

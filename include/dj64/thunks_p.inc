@@ -49,6 +49,7 @@
 #define __CSTK(l) dj64_clean_stk(l)
 
 #define __CNV_PTR(t, d, f, l, t0) t d  = dj64_obj_init(f, l)
+#define __CNV_OPTR(t, d, f, l, t0) t d  = dj64_obj_oinit(f, l)
 #define __CNV_CPTR(t, d, f, l, t0) t d  = dj64_obj_init(f, l)
 #define __CNV_PTR_CCHAR(t, d, f, l, t0) t d = dj64_obj_init(f, strlen(f) + 1)
 #define __CNV_CHAR_ARR(t, d, f, l, t0) t d = dj64_obj_init(f, l)
@@ -64,6 +65,7 @@
 #define _L_SZ(n) sizeof(*a##n)
 
 #define U__CNV_PTR(f, d, l) dj64_obj_done(f, d, l)
+#define U__CNV_OPTR(f, d, l) dj64_obj_done(f, d, l)
 #define U__CNV_CPTR(f, d, l) dj64_rm_dosobj(f, d)
 #define U__CNV_PTR_CCHAR(f, d, l) dj64_rm_dosobj(f, d)
 #define U__CNV_PTR_CHAR(f, d, l) dj64_obj_done(f, d, strlen(DATA_PTR(d)) + 1)
