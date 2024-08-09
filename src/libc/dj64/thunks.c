@@ -51,11 +51,6 @@
 
 int __crt0_startup_flags;
 
-static dpmi_regs s_regs;
-static int recur_cnt;
-static int objcnt;
-static jmp_buf *noret_jmp;
-
 struct udisp {
     dj64dispatch_t *disp;
     const struct elf_ops *eops;
@@ -66,13 +61,17 @@ struct udisp {
     unsigned cs;
     main_t *main;
     int full_init;
+    dpmi_regs s_regs;
+    int recur_cnt;
+    int objcnt;
+    jmp_buf *noret_jmp;
+#define MAX_OBJS 50
+#define MAX_RECUR 10
+    uint32_t objs[MAX_RECUR][MAX_OBJS];
 };
 #define MAX_HANDLES 10
 static struct udisp udisps[MAX_HANDLES];
 static const struct dj64_api *dj64api;
-#define MAX_OBJS 50
-#define MAX_RECUR 10
-static uint32_t objs[MAX_RECUR][MAX_OBJS];
 static dj64dispatch_t *disp_fn;
 static struct athunks *u_athunks;
 static struct athunks *u_pthunks;
@@ -89,7 +88,7 @@ struct ctx_hooks {
 static struct ctx_hooks chooks[MAX_CTX_HOOKS];
 static int num_chooks;
 
-static void do_rm_dosobj(uint32_t fa);
+static void do_rm_dosobj(struct udisp *u, uint32_t fa);
 
 void djloudvprintf(const char *format, va_list vl)
 {
@@ -134,27 +133,27 @@ uint32_t djptr2addr(const uint8_t *ptr)
     return dj64api->ptr2addr(ptr);
 }
 
-static int _dj64_call(int libid, int fn, dpmi_regs *regs, uint8_t *sp,
-    unsigned esi, dj64dispatch_t *disp)
+static int _dj64_call(struct udisp *u, int libid, int fn, dpmi_regs *regs,
+    uint8_t *sp, unsigned esi, dj64dispatch_t *disp)
 {
     int len;
     UDWORD res;
     int rc;
     jmp_buf noret;
 
-    s_regs = *regs;
+    u->s_regs = *regs;
     if ((rc = setjmp(noret))) {
         int i;
         /* gc lost objects, esp in ABORT case */
         for (i = 0; i < MAX_OBJS; i++) {
-            if (objs[recur_cnt - 1][i])
-                do_rm_dosobj(objs[recur_cnt - 1][i]);
+            if (u->objs[u->recur_cnt - 1][i])
+                do_rm_dosobj(u, u->objs[u->recur_cnt - 1][i]);
         }
         return (rc == ASM_NORET ? DJ64_RET_NORET : DJ64_RET_ABORT);
     }
-    noret_jmp = &noret;
+    u->noret_jmp = &noret;
     res = (libid ? disp : dj64_thunk_call)(fn, sp, &len);
-    *regs = s_regs;
+    *regs = u->s_regs;
     switch (len) {
     case 0:
         break;
@@ -182,20 +181,20 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     sp += sizeof(*regs) + 8;  // skip regs, ebp, eip to get stack args
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    assert(recur_cnt < MAX_RECUR);
-    recur_cnt++;
+    assert(u->recur_cnt < MAX_RECUR);
+    u->recur_cnt++;
     for (i = 0; i < num_chooks; i++)
         chooks[i].restore(handle);
-    saved_noret = noret_jmp;
-    last_objcnt = objcnt;
-    ret = _dj64_call(libid, fn, regs, sp, esi, u->disp);
-    assert(objcnt == last_objcnt);  // make sure no leaks, esp on NORETURN
-    noret_jmp = saved_noret;
+    saved_noret = u->noret_jmp;
+    last_objcnt = u->objcnt;
+    ret = _dj64_call(u, libid, fn, regs, sp, esi, u->disp);
+    assert(u->objcnt == last_objcnt);  // make sure no leaks, esp on NORETURN
+    u->noret_jmp = saved_noret;
     if (ret == DJ64_RET_OK) {
         for (i = 0; i < num_chooks; i++)
             chooks[i].save();
     }
-    recur_cnt--;
+    u->recur_cnt--;
     return ret;
 }
 
@@ -354,8 +353,8 @@ int DJ64_INIT_ONCE_FN(const struct dj64_api *api, int api_ver)
     return ret;
 }
 
-static uint64_t do_asm_call(struct athunks *pt, unsigned cs, int num,
-        uint8_t *sp, uint8_t len, int flags)
+static uint64_t do_asm_call(struct udisp *u, struct athunks *pt,
+        unsigned cs, int num, uint8_t *sp, uint8_t len, int flags)
 {
     int rc;
     dpmi_paddr pma;
@@ -365,23 +364,23 @@ static uint64_t do_asm_call(struct athunks *pt, unsigned cs, int num,
     if (flags & _TFLG_NORET) {
         djlogprintf("NORET call %s: 0x%x:0x%x\n", pt->at[num].name,
             pma.selector, pma.offset32);
-        dj64api->asm_noret(&s_regs, pma, sp, len);
-        longjmp(*noret_jmp, ASM_NORET);
+        dj64api->asm_noret(&u->s_regs, pma, sp, len);
+        longjmp(*u->noret_jmp, ASM_NORET);
     }
     djlogprintf("asm call %s: 0x%x:0x%x\n", pt->at[num].name,
             pma.selector, pma.offset32);
-    rc = dj64api->asm_call(&s_regs, pma, sp, len);
+    rc = dj64api->asm_call(&u->s_regs, pma, sp, len);
     djlogprintf("asm call %s returned %i:0x%x\n", pt->at[num].name,
-            rc, s_regs.eax);
+            rc, u->s_regs.eax);
     switch (rc) {
     case ASM_CALL_OK:
         break;
     case ASM_CALL_ABORT:
-        djlogprintf("reboot jump, %i\n", recur_cnt);
-        longjmp(*noret_jmp, ASM_ABORT);
+        djlogprintf("reboot jump, %i\n", u->recur_cnt);
+        longjmp(*u->noret_jmp, ASM_ABORT);
         break;
     }
-    return s_regs.eax | ((uint64_t)s_regs.edx << 32);
+    return u->s_regs.eax | ((uint64_t)u->s_regs.edx << 32);
 }
 
 uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
@@ -392,7 +391,7 @@ uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
     int handle = dj64api->get_handle();
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    ret = do_asm_call(&u->core_pt, u->cs, num, sp, len, flags);
+    ret = do_asm_call(u, &u->core_pt, u->cs, num, sp, len, flags);
     /* asm call can recursively invoke dj64, so restore context here */
     for (i = 0; i < num_chooks; i++)
         chooks[i].restore(handle);
@@ -408,7 +407,7 @@ uint64_t dj64_asm_call_u(int handle, int num, uint8_t *sp, uint8_t len,
 
     assert(handle < MAX_HANDLES);
     u = &udisps[handle];
-    ret = do_asm_call(u->pt, u->cs, num, sp, len, flags);
+    ret = do_asm_call(u, u->pt, u->cs, num, sp, len, flags);
     /* asm call can recursively invoke dj64, so restore context here */
     for (i = 0; i < num_chooks; i++)
         chooks[i].restore(handle);
@@ -420,7 +419,8 @@ uint8_t *dj64_clean_stk(size_t len)
     return dj64api->inc_esp(len);
 }
 
-static uint32_t *find_oh(uint32_t addr)
+static uint32_t *find_oh(uint32_t addr, uint32_t objs[MAX_RECUR][MAX_OBJS],
+        int recur_cnt)
 {
     int i;
 
@@ -434,13 +434,19 @@ static uint32_t *find_oh(uint32_t addr)
 static uint32_t do_obj_init(const void *data, uint16_t len, int is_out)
 {
     uint32_t ret;
+    int handle;
+    struct udisp *u;
+
     if (dj64api->is_dos_ptr(data))
         return PTR_DATA(data);
+    handle = dj64api->get_handle();
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
     ret = mk_dosobj(len);
     if (!is_out)
         pr_dosobj(ret, data, len);
-    objcnt++;
-    *find_oh(0) = ret;
+    u->objcnt++;
+    *find_oh(0, u->objs, u->recur_cnt) = ret;
     return ret;
 }
 
@@ -456,26 +462,38 @@ uint32_t dj64_obj_oinit(const void *data, uint16_t len)
 
 void dj64_obj_done(void *data, uint32_t fa, uint16_t len)
 {
+    int handle;
+    struct udisp *u;
+
     if (dj64api->is_dos_ptr(data))
         return;
+    handle = dj64api->get_handle();
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
     cp_dosobj(data, fa, len);
     rm_dosobj(fa);
-    *find_oh(fa) = 0;
-    objcnt--;
+    *find_oh(fa, u->objs, u->recur_cnt) = 0;
+    u->objcnt--;
 }
 
-static void do_rm_dosobj(uint32_t fa)
+static void do_rm_dosobj(struct udisp *u, uint32_t fa)
 {
     rm_dosobj(fa);
-    *find_oh(fa) = 0;
-    objcnt--;
+    *find_oh(fa, u->objs, u->recur_cnt) = 0;
+    u->objcnt--;
 }
 
 void dj64_rm_dosobj(const void *data, uint32_t fa)
 {
+    int handle;
+    struct udisp *u;
+
     if (dj64api->is_dos_ptr(data))
         return;
-    do_rm_dosobj(fa);
+    handle = dj64api->get_handle();
+    assert(handle < MAX_HANDLES);
+    u = &udisps[handle];
+    do_rm_dosobj(u, fa);
 }
 
 void register_dispatch_fn(dj64dispatch_t *fn)
