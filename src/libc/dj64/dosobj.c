@@ -38,12 +38,21 @@
 #include <dpmi.h>
 #include <dj64/util.h>
 #include <libc/djthunks.h>
+#include <libc/djctx.h>
 #include "smalloc.h"
 #include "dosobj.h"
 
-static smpool pool;
-static uint32_t base;
-static int initialized;
+struct dost {
+  smpool pool;
+  uint32_t base;
+  int initialized;
+};
+
+static struct dost *dst;
+DJ64_DEFINE_SWAPPABLE_CONTEXT(dost, dst)
+#define pool dst->pool
+#define base dst->base
+#define initialized dst->initialized
 
 static void err_printf(int prio, const char *fmt, ...) PRINTF(2);
 static void err_printf(int prio, const char *fmt, ...)
@@ -57,8 +66,7 @@ static void err_printf(int prio, const char *fmt, ...)
 
 void dosobj_init(void *ptr, int size)
 {
-    if (initialized)
-        smdestroy(&pool);
+    assert(!initialized);
     sminit(&pool, ptr, size);
     smregister_error_notifier(&pool, err_printf);
     base = PTR_DATA(ptr);

@@ -521,10 +521,9 @@ void crt1_startup(int handle)
 
     assert(handle < MAX_HANDLES);
     __djgpp_nearptr_enable();  // speeds up things considerably
-    u = &udisps[handle];
-    if (u->full_init)
-        dosobj_init(dosobj_page, 4096);
+    dosobj_init(dosobj_page, 4096);
 
+    u = &udisps[handle];
     __crt1_startup(u->main);
 }
 
