@@ -134,7 +134,7 @@ uint32_t djptr2addr(const uint8_t *ptr)
 }
 
 static int _dj64_call(struct udisp *u, int libid, int fn, dpmi_regs *regs,
-    uint8_t *sp, unsigned esi, dj64dispatch_t *disp)
+    uint8_t *sp, unsigned esi, dj64dispatch_t *disp, int handle)
 {
     int len;
     UDWORD res;
@@ -144,6 +144,9 @@ static int _dj64_call(struct udisp *u, int libid, int fn, dpmi_regs *regs,
     u->s_regs = *regs;
     if ((rc = setjmp(noret))) {
         int i;
+
+        for (i = 0; i < num_chooks; i++)
+            chooks[i].restore(handle);
         /* gc lost objects, esp in ABORT case */
         for (i = 0; i < MAX_OBJS; i++) {
             if (u->objs[u->recur_cnt - 1][i])
@@ -187,7 +190,7 @@ static int dj64_call(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
         chooks[i].restore(handle);
     saved_noret = u->noret_jmp;
     last_objcnt = u->objcnt;
-    ret = _dj64_call(u, libid, fn, regs, sp, esi, u->disp);
+    ret = _dj64_call(u, libid, fn, regs, sp, esi, u->disp, handle);
     assert(u->objcnt == last_objcnt);  // make sure no leaks, esp on NORETURN
     u->noret_jmp = saved_noret;
     if (ret == DJ64_RET_OK) {
