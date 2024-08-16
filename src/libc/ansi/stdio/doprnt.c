@@ -141,7 +141,7 @@ _doprnt(const char *fmt0, va_list argp, FILE *fp)
   struct lconv *locale_info;         /* current locale information */
   bool using_numeric_conv_spec;      /* TRUE if using numeric specifier, FALSE else */
   va_list arg_list;                  /* argument list */
-  va_list to_be_printed;             /* argument to be printed if numeric specifier are used */
+  va_list to_be_printed = {};        /* argument to be printed if numeric specifier are used */
   const char *pos;                   /* position in format string when checking for numeric conv spec */
 
 
