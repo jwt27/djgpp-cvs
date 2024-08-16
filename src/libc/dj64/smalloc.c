@@ -144,13 +144,13 @@ static void sm_uncommit(struct mempool *mp, void *addr, size_t size)
     mp->uncommit(aligned_addr, aligned_size);
 }
 
-static int __sm_commit(struct mempool *mp, void *addr, size_t size,
+static int __sm_commit(struct mempool *mp, void *addr, unsigned size,
 	void *e_addr, size_t e_size)
 {
   if (!mp->commit)
     return 1;
   if (!mp->commit(addr, size)) {
-    smerror(mp, "SMALLOC: failed to commit %p %zi\n", addr, size);
+    smerror(mp, "SMALLOC: failed to commit %p %i\n", addr, size);
     if (e_size)
       sm_uncommit(mp, e_addr, e_size);
     return 0;
@@ -272,7 +272,7 @@ static struct memnode *smfind_free_area_topdown(struct mempool *mp,
 }
 
 static struct memnode *sm_alloc_fixed(struct mempool *mp, void *ptr,
-    size_t size)
+    unsigned size)
 {
   struct memnode *mn;
   ptrdiff_t delta;
@@ -290,11 +290,11 @@ static struct memnode *sm_alloc_fixed(struct mempool *mp, void *ptr,
   }
   delta = (uint8_t *)ptr - mn->mem_area;
   assert(delta >= 0);
-  if (size + delta > mn->size) {
+  if ((unsigned)(size + delta) > mn->size) {
     int pr = get_oom_pr(mp, size);
     if (pr < 0)
       pr = 0;
-    do_smerror(pr, mp, "SMALLOC: no space %zi at address %p\n", size, ptr);
+    do_smerror(pr, mp, "SMALLOC: no space %i at address %p\n", size, ptr);
     return NULL;
   }
   if (delta) {
@@ -312,7 +312,7 @@ static struct memnode *sm_alloc_fixed(struct mempool *mp, void *ptr,
 }
 
 static struct memnode *sm_alloc_aligned(struct mempool *mp, size_t align,
-    size_t size)
+    unsigned size)
 {
   struct memnode *mn;
   int delta;
@@ -326,7 +326,7 @@ static struct memnode *sm_alloc_aligned(struct mempool *mp, size_t align,
   align--;
   if (!(mn = smfind_free_area(mp, size + align))) {
     do_smerror(get_oom_pr(mp, size), mp,
-	    "SMALLOC: Out Of Memory on alloc, requested=%zu\n", size);
+	    "SMALLOC: Out Of Memory on alloc, requested=%u\n", size);
     return NULL;
   }
   /* insert small node to align the start */
@@ -352,7 +352,7 @@ static struct memnode *sm_alloc_mn(struct mempool *mp, size_t size)
 }
 
 static struct memnode *sm_alloc_aligned_topdown(struct mempool *mp,
-    unsigned char *top, size_t align, size_t size)
+    unsigned char *top, size_t align, unsigned size)
 {
   struct memnode *mn;
   int delta;
@@ -368,7 +368,7 @@ static struct memnode *sm_alloc_aligned_topdown(struct mempool *mp,
   align--;
   if (!(mn = smfind_free_area_topdown(mp, top, size + align))) {
     do_smerror(get_oom_pr(mp, size), mp,
-	    "SMALLOC: Out Of Memory on alloc, requested=%zu\n", size);
+	    "SMALLOC: Out Of Memory on alloc, requested=%u\n", size);
     return NULL;
   }
   /* use top part of the found area */
@@ -479,7 +479,7 @@ int smfree(struct mempool *mp, void *ptr)
  * extra memnode needs to be allocated for realloc */
 static struct memnode *sm_realloc_alloc_mn(struct mempool *mp,
 	struct memnode *pmn, struct memnode *mn,
-	struct memnode *nmn, size_t size)
+	struct memnode *nmn, unsigned size)
 {
   struct memnode *new_mn;
   if (pmn && !pmn->used && pmn->size + mn->size +
@@ -510,7 +510,7 @@ static struct memnode *sm_realloc_alloc_mn(struct mempool *mp,
     new_mn = sm_alloc_mn(mp, size);
     if (!new_mn) {
       do_smerror(get_oom_pr(mp, size), mp,
-	    "SMALLOC: Out Of Memory on realloc, requested=%zu\n", size);
+	    "SMALLOC: Out Of Memory on realloc, requested=%u\n", size);
       return NULL;
     }
     memcpy(new_mn->mem_area, mn->mem_area, mn->size);
