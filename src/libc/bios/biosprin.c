@@ -5,7 +5,7 @@
 int
 biosprint(int cmd, int byte, int port)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = cmd;
   r.h.al = byte;
   r.x.dx = port;

@@ -15,7 +15,7 @@
 int
 _chmod(const char *filename, int func, ...)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (_USE_LFN)
   {

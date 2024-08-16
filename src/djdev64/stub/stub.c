@@ -147,7 +147,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     uint32_t nsize = 0;
     uint32_t noffset2 = 0;
     uint32_t nsize2 = 0;
-    char ovl_name[16] = {};
+    char ovl_name[16] = {0};
     int rc, i;
 #define BUF_SIZE 0x40
     char buf[BUF_SIZE];
@@ -162,7 +162,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     __dpmi_meminfo info;
     dpmi_dos_block db;
     void *handle;
-    _GO32_StubInfo stubinfo = {};
+    _GO32_StubInfo stubinfo = {0};
     _GO32_StubInfo *stubinfo_p;
     struct ldops *ops = NULL;
 

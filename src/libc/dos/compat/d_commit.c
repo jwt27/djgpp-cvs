@@ -16,7 +16,7 @@
 
 unsigned int _dos_commit(int handle)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = 0x68;
   r.x.bx = handle;

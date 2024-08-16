@@ -4,7 +4,7 @@
 
 void gettime( struct time *tp)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.h.ah = 0x2c;
   __dpmi_int(0x21, &regs);

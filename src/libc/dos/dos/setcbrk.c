@@ -4,7 +4,7 @@
 
 int setcbrk(int v)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = 0x33;
   r.h.al = 1;

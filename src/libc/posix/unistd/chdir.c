@@ -20,7 +20,7 @@
 int
 __chdir (const char *mydirname)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int drv_no = -1;
   char real_name[FILENAME_MAX];
   char path[FILENAME_MAX];

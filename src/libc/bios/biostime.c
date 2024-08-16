@@ -5,7 +5,7 @@
 long
 biostime(int cmd, long newtime)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = cmd;
   r.x.cx = newtime >> 16;
   r.x.dx = newtime & 0xffff;

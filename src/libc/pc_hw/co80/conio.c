@@ -59,7 +59,7 @@ static int conio_count = -1;
 static void
 refreshvirtualscreen(int c, int r, int count)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.x.es = ScreenVirtualSegment;
   regs.x.di = VOFFSET(r, c);
@@ -138,7 +138,7 @@ wherey(void)
 void
 textmode(int mode)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   int mode_to_set = mode;
   if (mode == LASTMODE)
     mode = mode_to_set = last_mode;
@@ -260,7 +260,7 @@ static void
 setcursor(unsigned int cursor_shape)
 /* Sets the shape of the cursor */
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.h.ah = 1;
   regs.x.cx = cursor_shape;
@@ -402,7 +402,7 @@ getche(void)
 int
 getch(void)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   int c;
 
   /* Flush any buffered output, otherwise they might get confusing
@@ -801,7 +801,7 @@ getvideomode(void)
 static void
 bell(void)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   regs.h.ah = 0x0e;		/* write */
   regs.h.al = 0x07;		/* bell */
   __dpmi_int(0x10, &regs);
@@ -810,7 +810,7 @@ bell(void)
 static int
 get_screenattrib(void)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   regs.h.ah = 0x08;		/* read character and attribute */
   regs.h.bh = 0;		/* video page 0 */
   __dpmi_int(0x10, &regs);
@@ -824,7 +824,7 @@ isEGA(void)
 {
   if (adapter_type == -1)
     {
-      __dpmi_regs regs = {};
+      __dpmi_regs regs = {0};
 
       /* Get display combination code.  */
       regs.x.ax = 0x1a00;
@@ -867,7 +867,7 @@ isEGA(void)
 static void
 set_scan_lines_and_font(int scan_lines, int font)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   /* Set 200/350/400 scan lines.  */
   regs.h.ah = 0x12;
@@ -898,7 +898,7 @@ maybe_create_8x10_font(void)
 
   if (font_seg == -1)
     {
-      __dpmi_regs regs = {};
+      __dpmi_regs regs = {0};
       int buf_pm_sel;
 
       /* Allocate buffer in conventional memory. */
@@ -938,7 +938,7 @@ maybe_create_8x10_font(void)
 static void
 load_8x10_font(void)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   maybe_create_8x10_font();         /* create if needed */
   if (font_seg == -1)
@@ -958,7 +958,7 @@ load_8x10_font(void)
 static void
 set_scan_lines_and_8x10_font(int scan_lines)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.h.bl = 0x30;
   regs.h.ah = 0x12;
@@ -977,7 +977,7 @@ set_scan_lines_and_8x10_font(int scan_lines)
 void
 _set_screen_lines(int nlines)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   switch (nlines)
     {
       case 25:
@@ -1030,7 +1030,7 @@ blinkvideo(void)
 {
 
   /* Set intensity/blinking bit to BLINKING.  */
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   regs.h.bl = 1;
   regs.x.ax = 0x1003;
   __dpmi_int(0x10, &regs);
@@ -1042,7 +1042,7 @@ intensevideo(void)
 {
 
   /* Set intensity/blinking bit to INTENSE (bright background).  */
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   regs.h.bl = 0;
   regs.x.ax = 0x1003;
   __dpmi_int(0x10, &regs);
@@ -1052,7 +1052,7 @@ intensevideo(void)
 void
 gppconio_init(void)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   /* Force initialization in restarted programs (emacs).  */
   if (conio_count != __bss_count)

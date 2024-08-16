@@ -25,7 +25,7 @@
 offset_t
 llseek( int handle, offset_t offset, int whence )
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int has_props;
 
   __FSEXT_Function *func = __FSEXT_get_function(handle);

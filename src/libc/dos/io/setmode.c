@@ -17,7 +17,7 @@
 int
 setmode(int handle, int mode)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   int oldmode, newmode;
 
   oldmode = newmode = _get_dev_info(handle);

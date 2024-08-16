@@ -185,7 +185,7 @@ static unsigned long  psp_addr;
 static int
 fstat_init(void)
 {
-  __dpmi_regs    regs = {};
+  __dpmi_regs    regs = {0};
   int            sft_ptr_addr;
   unsigned short true_dos_version;
 
@@ -253,7 +253,7 @@ get_sft_entry(int fhandle)
   unsigned long  htbl_addr;
   short          sft_idx, retval;
 
-  __dpmi_regs	 regs = {};
+  __dpmi_regs	 regs = {0};
   _djstat_fail_bits = fstat_init_bits;
 
   /* Force initialization if we were restarted (emacs).  */
@@ -847,7 +847,7 @@ fstat_assist(int fhandle, struct stat *stat_buf)
                such handles aren't supported by 71A6h call we use here.  */
             if (_USE_LFN)
             {
-              __dpmi_regs r = {};
+              __dpmi_regs r = {0};
 
               r.x.flags = 1;	/* Always set CF before calling a 0x71NN function. */
               r.x.ax = 0x71a6;	/* file info by handle */

@@ -21,7 +21,7 @@
 int
 remove(const char *fn)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int attr;
   int directory_p;
   int use_lfn = _USE_LFN;

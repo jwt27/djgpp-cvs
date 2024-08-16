@@ -21,7 +21,7 @@ char *
 __getcwd(char *buf, size_t size)
 {
   char *bp;
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   size_t needed_length, buf_off;
   int c;
   unsigned use_lfn = _USE_LFN;

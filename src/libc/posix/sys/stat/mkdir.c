@@ -22,7 +22,7 @@
 int
 mkdir(const char *mydirname, mode_t mode)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int use_lfn = _USE_LFN;
   unsigned attr;
   char dir_name[FILENAME_MAX];

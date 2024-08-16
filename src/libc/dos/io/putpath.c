@@ -162,7 +162,7 @@ _put_path2(const char *path, int offset)
     }
     else	/* Don't recognize item after /dev, remove if no directory */
     {
-      __dpmi_regs r = {};
+      __dpmi_regs r = {0};
       const long *q;
 
       q = (const long *)path;

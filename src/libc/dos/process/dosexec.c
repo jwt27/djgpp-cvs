@@ -175,7 +175,7 @@ direct_exec_tail_1(const char *program, const char *args,
                    char * const envp[], const char *proxy, int lfn,
                    const char *cmdline_var)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned long program_la;
   unsigned long arg_la;
   unsigned long parm_la;

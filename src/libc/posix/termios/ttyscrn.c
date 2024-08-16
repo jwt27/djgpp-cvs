@@ -73,7 +73,7 @@ get_video_offset(int col, int row)
 static void
 direct_init(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   /* Determine the video offset.  */
   direct_info.video_buffer = _go32_info_block.linear_address_of_primary_screen;
@@ -95,7 +95,7 @@ direct_init(void)
 static inline void
 __bios_output(unsigned char ch)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (ch == 0xff)
     return;
@@ -417,7 +417,7 @@ static void direct_scroll_right(int y, int x1, int x2, int xdst)
 static void
 direct_refresh_virtual_screen(int col, int row, int count)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.x.es = direct_info.video_buffer_segment;
   regs.x.di = direct_info.video_buffer_offset;
@@ -437,7 +437,7 @@ static void vbios_write_ch(unsigned char ch, int *col, int *row)
 {
   static unsigned char attrib_changed;
 
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   /* If a non-default attribute is ever used, then prefer the
      int 0x10 ah=0x0e service because then the attribute under
@@ -483,7 +483,7 @@ static void vbios_put_ch(unsigned char ch)
 /* Write out the character, but don't move the cursor.  */
 static void vbios_put_ch_at(unsigned char ch)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.al = ch;
   r.h.bh = __tty_screen.active_page;
@@ -510,7 +510,7 @@ static void vbios_puts(const unsigned char *s)
 /* Clear from (x1, y1) to (x2, y2).  */
 static void vbios_clear(int x1, int y1, int x2, int y2)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   /* Clear the first line if just a portion of it is being cleared,
      or if the first line happens to be the last line.  */
@@ -570,7 +570,7 @@ static void vbios_clear(int x1, int y1, int x2, int y2)
 static void
 vbios_scroll_up(int y1, int y2, int ydst)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = 6;
   r.h.al = y1;
   r.h.bh = __tty_screen.attrib;
@@ -585,7 +585,7 @@ vbios_scroll_up(int y1, int y2, int ydst)
 static void
 vbios_scroll_down(int y1, int y2, int ydst)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = 7;
   r.h.al = ydst;
   r.h.bh = __tty_screen.attrib;

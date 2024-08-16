@@ -18,7 +18,7 @@
 static int
 get_current_mode (const int fd)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int         mode = 0; /* Fail by default */
 
   if (_USE_LFN)

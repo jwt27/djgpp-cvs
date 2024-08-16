@@ -5,7 +5,7 @@
 int
 _dos_unlock(int _fd, long _offset, long _length)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.x.ax = 0x5c01;
   r.x.bx = _fd;
   r.x.cx = _offset >> 16;

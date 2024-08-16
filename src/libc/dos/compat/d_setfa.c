@@ -17,7 +17,7 @@
 
 unsigned int _dos_setfileattr(const char *filename, unsigned int attr)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   _put_path(filename);
   r.x.ax = 0x4301;

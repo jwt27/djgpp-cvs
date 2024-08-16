@@ -6,7 +6,7 @@
 int
 _is_cdrom_drive(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.x.ax = 0x150b;      /* CD-ROM Drive Check function */
   r.x.cx = drive_num - 1; /* 0 = A: */

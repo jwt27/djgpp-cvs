@@ -10,7 +10,7 @@
 void
 _flush_disk_cache(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int drv = getdisk();
 
   if (_USE_LFN)

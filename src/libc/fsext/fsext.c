@@ -53,7 +53,7 @@ __FSEXT_alloc_fd(__FSEXT_Function *_function)
 {
   static int null_dev_fd = -1;
   int fd;
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (init() || null_dev_fd == -1)
   {

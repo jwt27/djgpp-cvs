@@ -17,7 +17,7 @@
 
 unsigned int _dos_creat(const char *filename, unsigned int attr, int *handle)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   _put_path(filename);
   r.h.ah = 0x3C;

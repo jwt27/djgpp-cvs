@@ -69,7 +69,7 @@ setup_core_selector(void)
     static const char no_dos_ds_msg[] =
       "Cannot allocate selector for conventional memory; exiting\r\n";
     const char *p = no_dos_ds_msg;
-    __dpmi_regs r = {};
+    __dpmi_regs r = {0};
 
     while (*p)
     {

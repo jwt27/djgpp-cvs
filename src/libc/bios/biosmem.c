@@ -5,7 +5,7 @@
 int
 biosmemory(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   __dpmi_int(0x12, &r);
   return r.x.ax;
 }

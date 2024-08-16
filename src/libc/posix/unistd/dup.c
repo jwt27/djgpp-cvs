@@ -12,7 +12,7 @@
 int
 dup(int fd)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = 0x45;
   r.x.bx = fd;
   __dpmi_int(0x21, &r);

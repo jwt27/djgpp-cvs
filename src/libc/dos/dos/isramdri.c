@@ -28,7 +28,7 @@ Return Value:
 int
 _is_ram_drive(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = 0x32;        /* Get Device Parameter Block function */
   r.h.dl = drive_num;

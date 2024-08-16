@@ -30,7 +30,7 @@ static char *__get_current_directory(char *out, int drive_number);
 static char *
 __get_current_directory(char *out, int drive_number)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   char tmpbuf[FILENAME_MAX];
 
   memset(&r, 0, sizeof(r));
@@ -201,7 +201,7 @@ __canonicalize_path(const char *in, char *out, size_t path_max)
   }
   else
   {
-    __dpmi_regs r = {};
+    __dpmi_regs r = {0};
     r.h.ah = 0x19;
     __dpmi_int(0x21, &r);
     drive_number = r.h.al;
@@ -356,7 +356,7 @@ _fixpath(const char *in, char *out)
 int main (int argc, char *argv[])
 {
   char fixed[FILENAME_MAX];
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (argc > 2)
   {

@@ -5,7 +5,7 @@
 int
 settimeofday(struct timeval *_tp, ...)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   struct tm tm;
 
   tm = *localtime(&(_tp->tv_sec));

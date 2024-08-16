@@ -26,7 +26,7 @@ char *__file_handle_modes = init_file_handle_modes;
 void
 __file_handle_set(int fd, int mode)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (dosio_bss_count != __bss_count)
   {

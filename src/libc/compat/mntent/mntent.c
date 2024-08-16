@@ -138,7 +138,7 @@ get_cds_entry(int drive_num, char *currdir)
 static int
 assigned_to(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   /* Issue Int 21h/AX=440Eh to get logical drive last used to
      reference the physical drive DRIVE_NUM.  */
@@ -156,7 +156,7 @@ assigned_to(int drive_num)
 static int
 assign_floppy_to(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.x.ax = 0x440f;
   r.h.bl = drive_num;
@@ -175,7 +175,7 @@ assign_floppy_to(int drive_num)
 static int
 get_doublespace_info(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.x.ax = 0x4a11;      /* DBLSPACE Int 2Fh API */
   r.x.bx = 1;
@@ -205,7 +205,7 @@ get_doublespace_info(int drive_num)
 static int
 get_stacker_info(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned long stac_driver_ptr;
   unsigned char seq, host;
 
@@ -271,7 +271,7 @@ get_stacker_info(int drive_num)
 static int
 get_jam_info(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned jam_version, offset;
 
   r.x.ax = 0x5200;              /* Jam Get Version */
@@ -320,7 +320,7 @@ get_jam_info(int drive_num)
 static int
 get_netredir_entry(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned long tb = __tb;
 
   union
@@ -384,7 +384,7 @@ get_netredir_entry(int drive_num)
 static int
 cdrom_drive_ready(int drive_num)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   /* We need to avoid reading any information off the CD-ROM,
      because then the driver will dupe MSCDEX into thinking the
@@ -452,7 +452,7 @@ cdrom_drive_ready(int drive_num)
 FILE *
 setmntent(const char *filename, const char *type)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int cds_address_offset;
   /* Need TRUE DOS version. */
   unsigned short true_dos_version = _os_trueversion;
@@ -794,7 +794,7 @@ getmntent(FILE *filep)
 		 and if that fails, treat that drive as non-existing.  */
 	      if (mnt_type == NAME_fd)
 		{
-		  __dpmi_regs r = {};
+		  __dpmi_regs r = {0};
 
 		  r.h.ah = 0x36;
 		  r.h.dl = drive_number;

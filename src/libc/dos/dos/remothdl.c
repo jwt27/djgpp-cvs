@@ -17,7 +17,7 @@ int _is_remote_handle(int);
 int
 _is_remote_handle(int fhandle)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.x.ax = 0x440a;
   regs.x.bx = fhandle & 0x0000ffff;

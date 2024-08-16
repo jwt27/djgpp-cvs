@@ -21,7 +21,7 @@
 int
 utime(const char *path, const struct utimbuf *times)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   struct tm *tm;
   time_t modtime;
   int fildes;

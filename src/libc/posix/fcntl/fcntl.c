@@ -27,7 +27,7 @@
 
 static unsigned long _get_sft_entry_ptr(int fd)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   unsigned char ind;
   unsigned long es, di;
 
@@ -79,7 +79,7 @@ static unsigned long _get_sft_entry_ptr(int fd)
 static int
 inherit_bit_test (int fd, short dev_info)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   short new_dev_info;
 
 
@@ -99,7 +99,7 @@ inherit_bit_test (int fd, short dev_info)
 static int
 _get_SHARE_status (void)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.x.ax = 0x1000;
   __dpmi_int(0x2f, &regs);
@@ -358,7 +358,7 @@ fcntl(int fd, int cmd, ...)
     {
       unsigned int flag;
       unsigned long entry_ptr = 0; /* shut up -Wall */
-      __dpmi_regs regs = {};
+      __dpmi_regs regs = {0};
 
 
       va_start (ap, cmd);

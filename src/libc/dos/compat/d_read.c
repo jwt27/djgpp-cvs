@@ -22,7 +22,7 @@
 
 unsigned int _dos_read(int handle, void *buffer, unsigned int count, unsigned int *result)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int dos_segment;
   int dos_selector;
   unsigned int dos_buffer_size, read_size;

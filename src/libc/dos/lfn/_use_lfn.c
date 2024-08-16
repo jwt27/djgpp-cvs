@@ -32,7 +32,7 @@ static int	last_drive; /* drive *letter*, not *number*! */
 unsigned
 _get_volume_info (const char *path, int *maxfile, int *maxpath, char *fsystype)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned long tbuf_la  = __tb;
   unsigned long tbuf_seg = tbuf_la >> 4;
   unsigned	retval;

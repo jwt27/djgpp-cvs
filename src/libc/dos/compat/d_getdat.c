@@ -15,7 +15,7 @@
 
 void _dos_getdate(struct _dosdate_t *date)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = 0x2A;
   __dpmi_int(0x21, &r);

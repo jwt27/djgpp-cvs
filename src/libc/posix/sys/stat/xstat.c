@@ -65,7 +65,7 @@ _file_time_stamp(unsigned int dos_ftime)
 int
 _getftime(int fhandle, unsigned int *dos_ftime)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   regs.x.ax = 0x5700;
   regs.x.bx = fhandle;

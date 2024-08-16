@@ -15,7 +15,7 @@
 
 unsigned int _dos_getftime(int handle, unsigned int *p_date, unsigned int *p_time)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (p_date == 0 || p_time == 0)
   {

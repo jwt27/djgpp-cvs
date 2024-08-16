@@ -86,7 +86,7 @@ __libc_termios_init_read(void)
 static inline int
 __direct_keysense(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   char is_ext_key;
 
   if (_farpeekw(_dos_ds, 0x41a) == _farpeekw(_dos_ds, 0x41c))
@@ -104,7 +104,7 @@ __direct_keysense(void)
 static inline unsigned char
 __direct_keyinput (void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = ah_key_get;
   __dpmi_int (0x16, &r);
@@ -117,7 +117,7 @@ static inline
 const unsigned char *
 get_ext_key_string(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = ah_key_get;
   __dpmi_int(0x16, &r);
@@ -137,7 +137,7 @@ get_ext_key_string(void)
 static inline int
 __direct_ctrlsense (void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.h.ah = 0x02;
   __dpmi_int (0x16, &r);

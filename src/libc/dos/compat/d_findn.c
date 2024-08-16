@@ -18,7 +18,7 @@
 
 unsigned int _dos_findnext(struct _find_t *result)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.x.dx = __tb & 15;
   r.x.ds = __tb / 16;

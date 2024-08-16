@@ -6,7 +6,7 @@
 int
 getdisk(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = 0x19;
   __dpmi_int(0x21, &r);
   return r.h.al;

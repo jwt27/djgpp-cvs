@@ -19,7 +19,7 @@ msdos_toupper_fname(int c)
 char *
 _lfn_gen_short_fname(const char *long_fname, char *short_fname)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned long tbuf = __tb;
 
   r.x.flags = 1;	/* Always set CF before calling a 0x71NN function. */

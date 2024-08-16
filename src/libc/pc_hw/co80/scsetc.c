@@ -4,7 +4,7 @@
 void	
 ScreenSetCursor(int _row, int _col)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = 2;
   r.h.bh = 0;
   r.h.dh = _row;

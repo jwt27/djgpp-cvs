@@ -199,7 +199,7 @@ init_dirent_table (void)
   unsigned short dirent_offset;
   unsigned short true_dos_version;
   unsigned short dos_major, dos_minor;
-  __dpmi_regs    regs = {};
+  __dpmi_regs    regs = {0};
 
   if (dirent_count == -1)     /* we already tried and found we can't */
     return 0;
@@ -412,7 +412,7 @@ static int _ioctl_get_first_cluster(const char *);
 static int
 _ioctl_get_first_cluster(const char *pathname)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   /* See if the IOCTL GetFirstCluster call is supported.  */
   r.x.ax = 0x4411;	       /* query generic IOCTL capability by drive */

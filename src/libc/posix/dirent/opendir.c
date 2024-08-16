@@ -41,7 +41,7 @@
 void
 _lfn_find_close(int handle)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   r.x.flags = 1;  /* Always set CF before calling a 0x71NN function. */
   r.x.bx = handle;

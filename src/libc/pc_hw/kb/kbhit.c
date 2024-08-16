@@ -8,7 +8,7 @@
 int
 kbhit(void)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (_farpeekw(_dos_ds, 0x41a) == _farpeekw(_dos_ds, 0x41c))
     return 0;

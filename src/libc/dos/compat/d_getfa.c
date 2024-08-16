@@ -19,7 +19,7 @@
 
 unsigned int _dos_getfileattr(const char *filename, unsigned int *p_attr)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
 
   if (filename == 0 || p_attr == 0)
   {

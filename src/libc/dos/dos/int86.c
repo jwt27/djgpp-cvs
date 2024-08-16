@@ -9,7 +9,7 @@
 
 int int86(int ivec, union REGS *in, union REGS *out)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   memcpy(&regs, in, 34);
   memcpy(out, in, 34);
   regs.x.ds = regs.x.es = __tb / 16;

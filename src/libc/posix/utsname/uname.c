@@ -15,7 +15,7 @@
 
 int uname(struct utsname *u)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   unsigned short dos_version;
 //  unsigned is_486_or_better;
 //  unsigned cpuid_support;

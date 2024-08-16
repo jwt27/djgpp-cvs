@@ -4,7 +4,7 @@
 
 void settime( struct time *tp)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   regs.h.ah = 0x2d;
   regs.h.ch = tp->ti_hour;
   regs.h.cl = tp->ti_min;

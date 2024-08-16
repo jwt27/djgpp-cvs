@@ -10,7 +10,7 @@
 int
 fsync(int _fd)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   int oerrno = errno;
 
   /* Directory? If so, fail. */

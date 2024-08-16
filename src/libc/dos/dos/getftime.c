@@ -6,7 +6,7 @@
 
 int getftime(int handle, struct ftime *ft)
 {
-  __dpmi_regs r = {};
+  __dpmi_regs r = {0};
   r.h.ah = 0x57;
   r.h.al = 0;
   r.x.bx = handle;

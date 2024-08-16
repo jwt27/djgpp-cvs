@@ -25,7 +25,7 @@ int _is_remote_drive(int);
 int
 _is_remote_drive(int drv_no)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   if (_get_dos_version(1) < 0x030a)
   {

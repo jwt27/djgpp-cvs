@@ -24,7 +24,7 @@
 static int
 use_AX0x1510( int drive_number, long *blocks, long *free, long *bsize )
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   /* For a CD-ROM drive, Int 21h/AX=3600h gives incorrect info.
      Use CD-ROM-specific calls if they are available.
@@ -110,7 +110,7 @@ use_AX0x1510( int drive_number, long *blocks, long *free, long *bsize )
 static int
 use_AH0x36( int drive_number, long *blocks, long *free, long *bsize )
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
 
   /* Get free space info from DOS.  */
   regs.h.ah = 0x36;  /* DOS Get Free Disk Space call */
@@ -134,7 +134,7 @@ use_AH0x36( int drive_number, long *blocks, long *free, long *bsize )
 int
 statfs(const char *path, struct statfs *buf)
 {
-  __dpmi_regs regs = {};
+  __dpmi_regs regs = {0};
   int cdrom_calls_used = 0;
   int drive_number;
   long blocks = 0;
