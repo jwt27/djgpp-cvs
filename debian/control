@@ -16,7 +16,6 @@ Description: 64-bit djgpp-compatible dev suite
 
 Package: dj64
 Architecture: any
-Section: devel
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: dj64 runtime libraries
  This package contains runtime libraries for dj64-built programs.
@@ -24,7 +23,6 @@ Description: dj64 runtime libraries
 Package: dj64-dev
 Architecture: any
 Section: libdevel
-Priority: optional
 Depends: dj64 (= ${binary:Version}), ${misc:Depends},
     thunk-gen,
     gcc,
@@ -39,7 +37,6 @@ Description: dj64 development tools and headers
 Package: dj64-dev-static
 Architecture: any
 Section: libdevel
-Priority: optional
 Depends: dj64-dev (= ${binary:Version})
 Description: dj64 static libraries
  This package contains static libraries for dj64.
@@ -47,7 +44,6 @@ Description: dj64 static libraries
 
 Package: djdev64
 Architecture: any
-Section: devel
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: djdev64 runtime libraries
  This package contains runtime libraries for djdev64-enabled DPMI host.
@@ -55,7 +51,6 @@ Description: djdev64 runtime libraries
 Package: djdev64-dev
 Architecture: any
 Section: libdevel
-Priority: optional
 Depends: djdev64 (= ${binary:Version}), ${misc:Depends}
 Description: djdev64 development libraries and headers
  This package contains development libraries and headers for
