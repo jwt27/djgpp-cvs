@@ -26,11 +26,8 @@ Section: libdevel
 Depends: dj64 (= ${binary:Version}), ${misc:Depends},
     thunk-gen,
     gcc,
-    binutils,
     binutils-i686-linux-gnu,
-    pkg-config,
-    bash,
-    sed
+    pkg-config
 Description: dj64 development tools and headers
  This package contains tools and headers for building dj64-enabled programs.
 
