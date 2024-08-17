@@ -4,14 +4,8 @@ Priority: optional
 Maintainer: Stas Sergeev <stsp@users.sourceforge.net>
 Standards-Version: 3.9.7
 Build-Depends:
-    make,
     thunk-gen,
-    sed,
-    bash,
-    gcc,
-    binutils,
     gcc-i686-linux-gnu,
-    binutils-i686-linux-gnu,
     universal-ctags,
     pkg-config,
     libelf-dev,
