@@ -7,7 +7,7 @@ Build-Depends:
     thunk-gen,
     gcc-i686-linux-gnu,
     universal-ctags,
-    pkg-config,
+    pkgconf,
     libelf-dev,
     debhelper (>= 9~)
 Homepage: https://github.com/stsp/djgpp-cvs
@@ -27,7 +27,7 @@ Depends: dj64 (= ${binary:Version}), ${misc:Depends},
     thunk-gen,
     gcc,
     binutils-i686-linux-gnu,
-    pkg-config
+    pkgconf
 Description: dj64 development tools and headers
  This package contains tools and headers for building dj64-enabled programs.
 
