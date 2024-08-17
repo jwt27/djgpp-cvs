@@ -35,15 +35,6 @@
 #include <crt0.h>
 #include <sys/fmemcpy.h>
 
-static inline int get_segment_base_address(int selector, unsigned *addr)
-{
-#ifdef __LP64__
-    return __dpmi_get_segment_base_address(selector, addr);
-#else
-    return __dpmi_get_segment_base_address(selector, (unsigned long *)addr);
-#endif
-}
-
 void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
 {
     unsigned base;
@@ -51,7 +42,7 @@ void fmemcpy1(__dpmi_paddr dst, const void *src, unsigned len)
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
     int err;
 
-    err = get_segment_base_address(dst.selector, &base);
+    err = __dpmi_get_segment_base_address(dst.selector, &base);
     assert(!err);
     if (en_dis)
       __djgpp_nearptr_enable();
@@ -68,7 +59,7 @@ void fmemcpy2(void *dst, __dpmi_paddr src, unsigned len)
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
     int err;
 
-    err = get_segment_base_address(src.selector, &base);
+    err = __dpmi_get_segment_base_address(src.selector, &base);
     assert(!err);
     if (en_dis)
       __djgpp_nearptr_enable();
@@ -87,9 +78,9 @@ void fmemcpy12(__dpmi_paddr dst, __dpmi_paddr src, unsigned len)
     int en_dis = !(_crt0_startup_flags & _CRT0_FLAG_NEARPTR);
     int err;
 
-    err = get_segment_base_address(src.selector, &sbase);
+    err = __dpmi_get_segment_base_address(src.selector, &sbase);
     assert(!err);
-    err = get_segment_base_address(dst.selector, &dbase);
+    err = __dpmi_get_segment_base_address(dst.selector, &dbase);
     assert(!err);
     if (en_dis)
       __djgpp_nearptr_enable();
