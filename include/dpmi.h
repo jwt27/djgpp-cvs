@@ -359,7 +359,7 @@ int __djgpp_map_physical_memory(void *our_addr, ULONG32 num_bytes,
 }
 #endif
 
-#ifdef __LP64__
+#ifdef DJ64
 #define DATA_PTR(l) ((char *)djaddr2ptr(__djgpp_base_address + (l)))
 #define PTR_DATA(p) (djptr2addr(p) - __djgpp_base_address)
 #else
