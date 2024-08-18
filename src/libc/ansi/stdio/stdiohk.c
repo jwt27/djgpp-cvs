@@ -11,8 +11,7 @@ static void fcloseall_helper(FILE *f)
     fclose(f);
 }
 
-void __stdio_cleanup_proc(void);
-void __stdio_cleanup_proc(void)
+static void __stdio_cleanup_proc(void)
 {
   _fwalk(fcloseall_helper);
 }

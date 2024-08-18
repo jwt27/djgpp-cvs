@@ -23,10 +23,6 @@ extern "C" {
    code for the stdio flush/fclose stuff. That .o causes the
    hook function to get initialized also. */
 
-#ifndef __x86_64__
-__asm__(".long ___stdio_cleanup_proc");
-#endif
-
 #endif /* !_POSIX_SOURCE */
 #endif /* !__STRICT_ANSI__ */
 #endif /* !__dj_ENFORCE_ANSI_FREESTANDING */
