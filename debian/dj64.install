@@ -1,1 +1,2 @@
 usr/i386-pc-dj64/lib64/*.so.*
+usr/i386-pc-dj64/lib/crt0.elf

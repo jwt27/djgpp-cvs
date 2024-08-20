@@ -1,6 +1,5 @@
 usr/i386-pc-dj64/include
 usr/i386-pc-dj64/lib/libc.a
-usr/i386-pc-dj64/lib/crt0.elf
 usr/i386-pc-dj64/lib64/*.so
 usr/i386-pc-dj64/bin/*
 usr/i386-pc-dj64/share/*
