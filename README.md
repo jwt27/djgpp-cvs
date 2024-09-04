@@ -57,11 +57,6 @@ and
 [for fedora](https://copr.fedorainfracloud.org/coprs/stsp/dosemu2/).<br/>
 Then run `make`.<br/>
 For installing run `sudo make install`.<br/>
-Like gcc should be accompanied with binutils in order to produce executables,
-dj64 need to be accompanied with
-[djstub](https://github.com/stsp/djstub/)
-package for the same purpose. That package installs `djstubify`, `djstrip`
-and `djlink` binaries that are needed for the final building steps.
 
 ## installing from pre-built packages
 For the ubuntu package please visit
@@ -69,7 +64,7 @@ For the ubuntu package please visit
 Fedora packages are
 [here](https://copr.fedorainfracloud.org/coprs/stsp/dosemu2).
 
-## running
+## running pre-built program
 The simplest way to get dj64-built programs running is to use
 [dosemu2](https://github.com/dosemu2/dosemu2).<br/>
 Get the pre-built dosemu2 packages from
@@ -86,7 +81,9 @@ are already observing the first dj64-built program in the run. :)
 ## inspecting
 You may want to analyze the structure of the dj64-built files to get
 the more detailed view of its architecture. You can use `djstubify -i`
-for that task:
+for that task (make sure the
+[djstub](https://github.com/stsp/djstub/)
+package is installed):
 ```
 $ djstubify -i comcom64.exe
 dj64 file format
@@ -126,7 +123,14 @@ COFF and ELF formats, so dj64/COFF combination is also functional,
 albeit never produced by the dj64 tool-chain itself.
 
 ## building your own program
-First of all, you should take a look into the provided
+Like gcc should be accompanied with binutils in order to produce executables,
+dj64 need to be accompanied with
+[djstub](https://github.com/stsp/djstub/)
+package for the same purpose. That package installs `djstubify`, `djstrip`
+and `djlink` binaries that are needed for the final building steps.
+So you need to install `djstub` package as a pre-requisite.
+
+Next you should take a look into the provided
 [demos](https://github.com/stsp/dj64dev/blob/master/demos)
 and probably just choose one as a base for your project.
 This is a simplest start.
