@@ -41,9 +41,11 @@ ifeq ($(filter clean,$(MAKECMDGOALS)),)
 $(error thunk_gen not installed)
 endif
 else
+ifeq ($(filter clean,$(MAKECMDGOALS)),)
 $(shell pkg-config --atleast-version=1.1 thunk_gen)
 ifneq ($(.SHELLSTATUS),0)
 $(error thunk_gen is too old, 1.1 is needed)
+endif
 endif
 TFLAGS = -a 4 -p 4
 include $(TGMK)
