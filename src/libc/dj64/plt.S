@@ -249,6 +249,7 @@ plt_init:
     movl %fs:STUBINFO_SELF_SIZE, %ecx
     movl %fs:STUBINFO_MEM_BASE, %edx
     call ctrl
+    jc 2f
     /* free mem */
     movl $0x502, %eax
     movw handle, %di
@@ -275,17 +276,27 @@ plt_init:
     movl $0, %ecx
     movl %fs:STUBINFO_MEM_BASE, %edx
     call ctrl
+    jc 2b
     jmp 11b
 
 ctrl:
     pushal
     movl %esp, %edx
     movl __plt_handle, %eax
-    movl $AUX_CORE, %ebx
+    movl $0, %ebx
+    movb $AUX_CORE, %bl
+    movb $DL_API_VER, %bh
     movl $DL_SET_SYMTAB, %ecx
     movl %cs, %esi
     lcalll *__plt_ctrl
+    testl %eax, %eax
+    jnz 1f
     popal
+    clc
+    ret
+1:
+    popal
+    stc
     ret
 
 .global plt_done

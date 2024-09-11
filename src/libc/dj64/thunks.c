@@ -247,7 +247,15 @@ static void do_early_init(int handle)
 static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
 {
     dpmi_regs *regs = (dpmi_regs *)sp;
+    int ver = libid >> 8;
     assert(handle < MAX_HANDLES);
+    if (ver != DL_API_VER) {
+        djloudprintf("dj64: API version mismatch, got %i want %i\n",
+                     ver, DL_API_VER);
+        if (ver == 0)  // this doesn't even handle errors, so terminate
+            dj64api->exit(1);
+        return -1;
+    }
     switch (fn) {
     case DL_SET_SYMTAB: {
         struct udisp *u = &udisps[handle];
