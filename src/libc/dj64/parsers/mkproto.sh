@@ -43,12 +43,12 @@ extr_proto() {
 }
 
 list_syms() {
-    nm -A "$1" | grep " $2 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
+    LC_ALL=C nm -A "$1" | grep " $2 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
 	sed 's/^_//'
 }
 
 list_syms2() {
-    nm -A "$1" | grep -E " $2 "\|" $3 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
+    LC_ALL=C nm -A "$1" | grep -E " $2 "\|" $3 " | tr -s '[:blank:]' | cut -d " " -f 3 | \
 	sed 's/^_//'
 }
 
