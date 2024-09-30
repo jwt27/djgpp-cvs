@@ -56,7 +56,6 @@ typedef struct
     int pm;
 } dpmi_dos_block;
 
-static char *client_memory;
 static DPMI_FP clnt_entry;
 
 static const char *_basename(const char *name)
@@ -136,7 +135,7 @@ static void J_printf(void (*do_printf)(int prio, const char *fmt, va_list ap),
 #define error(...) fprintf(stderr, __VA_ARGS__)
 #define dbug_printf(...)
 int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
-    struct stub_ret_regs *regs, char *(*SEL_ADR)(uint16_t sel),
+    struct stub_ret_regs *regs, char *(*lin2ptr)(unsigned lin),
     struct dos_ops *dosops, struct dpmi_ops *dpmiops,
     void (*do_printf)(int prio, const char *fmt, va_list ap))
 {
@@ -310,15 +309,14 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     /* set limit */
     __dpmi_set_segment_limit(clnt_ds, 0xffffffff);
 
-    client_memory = SEL_ADR(clnt_ds);
     stubinfo_fs = __dpmi_allocate_ldt_descriptors(1);
     info.size = PAGE_ALIGN(sizeof(_GO32_StubInfo));
     __dpmi_allocate_memory(&info);
     __dpmi_set_segment_base_address(stubinfo_fs, info.address);
     __dpmi_set_segment_limit(stubinfo_fs, sizeof(_GO32_StubInfo) - 1);
-    stubinfo_p = (_GO32_StubInfo *)SEL_ADR(stubinfo_fs);
+    stubinfo_p = (_GO32_StubInfo *)lin2ptr(info.address);
 
-    ops->read_sections(handle, client_memory, pfile, coffset);
+    ops->read_sections(handle, lin2ptr(mem_base), pfile, coffset);
     if (dyn)
         close(pfile);
 
