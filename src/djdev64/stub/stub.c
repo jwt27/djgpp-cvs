@@ -42,7 +42,17 @@
 #define stub_debug(...)
 #endif
 
-#define STUB_VER 4
+#define STFLAGS_OFF    0x2c
+#define FLG1_OFF STFLAGS_OFF
+#define FLG2_OFF (STFLAGS_OFF + 1)
+
+#define STFLG1_STATIC  0x40  // static linking
+/* 2 flags below are chosen for compatibility between v4 and v5 stubs.
+ * They can't be set together, and as such, when we have a core payload,
+ * there is no indication of whether or not the user payload is also
+ * present. */
+#define STFLG1_NO32PL  0x80  // no 32bit payload
+#define STFLG2_C32PL   0x40  // have core 32bit payload
 
 typedef struct
 {
@@ -193,12 +203,18 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
             /* lfanew */
             uint32_t offs;
             int moff = 0;
+            uint8_t stub_ver = buf[0x3b];
 #if STUB_DEBUG
             cnt++;
 #endif
             stub_debug("Found exe header %i at 0x%lx\n", cnt, coffset);
             memcpy(&offs, &buf[0x3c], sizeof(offs));
-            if (buf[0x2c] & 0x80) {
+            /* fixup for old stubs: if they have any 32bit payload, that
+             * always includes the core payload. */
+            if (stub_ver < 5 && !(buf[FLG1_OFF] & STFLG1_NO32PL))
+                buf[FLG2_OFF] |= STFLG2_C32PL;
+
+            if (!(buf[FLG2_OFF] & STFLG2_C32PL)) {
                 dyn++;
                 noffset = offs;
                 moff = 4;
@@ -216,12 +232,12 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
             if (nsize)
                 noffset2 = noffset + nsize;
             memcpy(&nsize2, &buf[0x24 - moff], sizeof(nsize2));
-            memcpy(&stubinfo.flags, &buf[0x2c], 2);
-            if (buf[0x3b] == STUB_VER) {
+            memcpy(&stubinfo.flags, &buf[STFLAGS_OFF], 2);
+            if (stub_ver >= 4) {
                 strncpy(ovl_name, &buf[0x2e], 12);
                 ovl_name[12] = '\0';
             } else {
-                dbug_printf("unknown stub version %i\n", buf[0x3b]);
+                dbug_printf("unsupported stub version %i\n", stub_ver);
             }
         } else if (buf[0] == 0x4c && buf[1] == 0x01) { /* it's a COFF */
             done = 1;

@@ -22,8 +22,9 @@ export DJ64ASFLAGS
 
 XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
-XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
 LD = $(CC)
+# stub version 5
+DJ64_XLDFLAGS = -V 5
 # freebsd's dlopen() ignores link order and binds to libc the symbols
 # defined in libdj64.so. Use static linking as a work-around.
 ifeq ($(shell uname -s),FreeBSD)
@@ -34,7 +35,7 @@ $(error DJ64STATIC must be empty, not 0)
 endif
 ifeq ($(DJ64STATIC),1)
 DJLDFLAGS = $(shell pkg-config --libs dj64_s)
-DJ64_XLDFLAGS = -f 0x40
+DJ64_XLDFLAGS += -f 0x40
 else
 RP := -Wl,-rpath=/usr/local/i386-pc-dj64/lib64 \
   -Wl,-rpath=/usr/i386-pc-dj64/lib64
@@ -60,13 +61,14 @@ endif
 endif
 
 ifneq ($(AS_OBJECTS),)
+XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
 $(XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@
 	$(XSTRIP) $@
-DJ64_XLDFLAGS += -l $(XELF)
+DJ64_XLDFLAGS += -l $(XELF) -f 0x4000
 else
 ifeq ($(DJ64STATIC),1)
-DJ64_XLDFLAGS += -l $(shell pkg-config --variable=crt0 dj64_s)
+DJ64_XLDFLAGS += -l $(shell pkg-config --variable=crt0 dj64_s) -f 0x4000
 else
 DJ64_XLDFLAGS += -f 0x80
 endif
