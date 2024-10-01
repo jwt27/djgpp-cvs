@@ -54,6 +54,9 @@
 #define STFLG1_NO32PL  0x80  // no 32bit payload
 #define STFLG2_C32PL   0x40  // have core 32bit payload
 
+#define MB (1024 * 1024)
+#define VA_SZ (2*MB)
+
 typedef struct
 {
     uint32_t offset32;
@@ -162,6 +165,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     char buf[BUF_SIZE];
     int done = 0;
     int dyn = 0;
+    int pl32 = 0;
     uint32_t va;
     uint32_t va_size;
     uint32_t mem_lin;
@@ -217,17 +221,21 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 
             if (!(buf[FLG2_OFF] & STFLG2_C32PL)) {
                 dyn++;
-                noffset = offs;
-                moff = 4;
                 pfile = open(CRT0, O_RDONLY | O_CLOEXEC);
                 ops = &elf_ops;
+            } else {
+                pfile = ifile;
+            }
+            if (buf[FLG1_OFF] & STFLG1_NO32PL) {
+                noffset = offs;
+                moff = 4;
                 done = 1;
             } else {
+                pl32++;
                 coffset = offs;
                 memcpy(&coffsize, &buf[0x1c], sizeof(coffsize));
                 if (coffsize)
                     noffset = coffset + coffsize;
-                pfile = ifile;
             }
             memcpy(&nsize, &buf[0x20 - moff], sizeof(nsize));
             if (nsize)
@@ -303,7 +311,13 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     clnt_entry.offset32 = ops->get_entry(handle);
     stub_debug("va 0x%x va_size 0x%x entry 0x%x\n",
             va, va_size, clnt_entry.offset32);
-    stubinfo.initial_size = max(va_size, 0x10000);
+    if (va_size > MB)
+        exit(EXIT_FAILURE);
+    /* if we load 2 payloads, use larger estimate */
+    if (dyn && pl32)
+        stubinfo.initial_size = VA_SZ;
+    else
+        stubinfo.initial_size = max(va_size, 0x10000);
     info.size = PAGE_ALIGN(stubinfo.initial_size);
     /* allocate mem */
     __dpmi_allocate_memory(&info);
@@ -312,11 +326,31 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     mem_base = mem_lin - va;
     stubinfo.mem_base = mem_base;
     stub_debug("mem_lin 0x%x mem_base 0x%x\n", mem_lin, mem_base);
-    ops->read_sections(handle, lin2ptr(mem_base), pfile, coffset);
+    ops->read_sections(handle, lin2ptr(mem_base), pfile, dyn ? 0 : coffset);
     ops->close(handle);
     if (dyn)
         close(pfile);
     unregister_dosops();
+    if (dyn && pl32) {
+        uint32_t va2;
+        uint32_t va_size2;
+
+        /* dyn loaded, now pl32 */
+        register_dosops(dosops);
+        handle = ops->read_headers(ifile);
+        if (!handle)
+            exit(EXIT_FAILURE);
+        va2 = ops->get_va(handle);
+        va_size2 = ops->get_length(handle);
+        stub_debug("va 0x%x va_size 0x%x\n", va2, va_size2);
+        if (va_size2 > MB)
+            exit(EXIT_FAILURE);
+        if (va2 < va + va_size || va2 + va_size2 - va > VA_SZ)
+            exit(EXIT_FAILURE);
+        ops->read_sections(handle, lin2ptr(mem_base), ifile, coffset);
+        ops->close(handle);
+        unregister_dosops();
+    }
 
     /* set base */
     __dpmi_set_segment_base_address(clnt_entry.selector, mem_base);

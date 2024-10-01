@@ -61,11 +61,17 @@ endif
 endif
 
 ifneq ($(AS_OBJECTS),)
-XLDFLAGS = $(shell pkg-config --static --libs dj64static) -melf_i386 -static
+XLDFLAGS = -melf_i386
+ifeq ($(DJ64STATIC),1)
+XLDFLAGS += $(shell pkg-config --static --libs dj64static) -static
+DJ64_XLDFLAGS += -f 0x4000
+else
+XLDFLAGS += -shared -z notext
+endif
 $(XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@
 	$(XSTRIP) $@
-DJ64_XLDFLAGS += -l $(XELF) -f 0x4000
+DJ64_XLDFLAGS += -l $(XELF)
 else
 ifeq ($(DJ64STATIC),1)
 DJ64_XLDFLAGS += -l $(shell pkg-config --variable=crt0 dj64_s) -f 0x4000
