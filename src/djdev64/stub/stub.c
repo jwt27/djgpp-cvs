@@ -340,6 +340,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
         handle = ops->read_headers(ifile);
         if (!handle)
             exit(EXIT_FAILURE);
+        stubinfo.uentry = ops->get_entry(handle);
         va2 = ops->get_va(handle);
         va_size2 = ops->get_length(handle);
         stub_debug("va 0x%x va_size 0x%x\n", va2, va_size2);
@@ -387,7 +388,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     dosops->_dos_seek(ifile, noffset, SEEK_SET);
     if (nsize > 0)
         stub_debug("Found payload of size %i at 0x%x\n", nsize, noffset);
-    stubinfo.stubinfo_ver |= 3;
+    stubinfo.stubinfo_ver |= 4;
 
     unregister_dpmiops();
 

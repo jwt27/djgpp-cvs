@@ -61,12 +61,13 @@ endif
 endif
 
 ifneq ($(AS_OBJECTS),)
-XLDFLAGS = -melf_i386
+XLDFLAGS = -melf_i386 -static
 ifeq ($(DJ64STATIC),1)
-XLDFLAGS += $(shell pkg-config --static --libs dj64static) -static
+XLDFLAGS += $(shell pkg-config --static --libs dj64static)
 DJ64_XLDFLAGS += -f 0x4000
 else
-XLDFLAGS += -shared -z notext
+XLDFLAGS += $(shell pkg-config --variable=crt0 dj64) \
+  --section-start=.note.gnu.property=0x08148000 -section-start=.text=0x08149000
 endif
 $(XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@

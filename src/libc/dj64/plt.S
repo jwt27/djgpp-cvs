@@ -19,6 +19,7 @@
 #include <libc/asmdefs.h>
 #include "stubinfo.h"
 #include "plt.h"
+.include "plt_defs.inc"
 
 .bss
 
@@ -29,8 +30,6 @@ __plt_call: .quad 0
 __plt_ctrl: .quad 0
 .global __plt_handle
 __plt_handle: .long 0
-AUX_CORE = 0
-AUX_USER = 1
 
 sel: .word 0
 SHM_REQ_LEN = 0
@@ -60,12 +59,6 @@ err_str: .asciz "dj64: load failure\r\n$"
 
 .text
 
-.macro call_plt
-    movl __plt_handle, %eax
-    movl $0, %esi  // reserved
-    lcalll *__plt_call
-.endm
-
 .macro asmcfunc_n nm,num
     .global _\nm
     _\nm:
@@ -81,12 +74,14 @@ err_str: .asciz "dj64: load failure\r\n$"
     ret
 .endm
 
-#include "plt.inc"
+.include "plt.inc"
 
-.global dj64_plt_call
-dj64_plt_call:
-    movl $AUX_USER, %ebx
-    call_plt
+uplt_init:
+    pushl __plt_handle
+    pushl __plt_call + 4
+    pushl __plt_call
+    call *%fs:STUBINFO_UENTRY
+    addl $12, %esp
     ret
 
 .global plt_init
@@ -190,7 +185,11 @@ plt_init:
     movl %edi, __plt_call
     movl %eax, __plt_ctrl + 4
     movl %esi, __plt_ctrl
-
+    movl %fs:STUBINFO_FLAGS, %ecx
+    testw $0x4080, %cx
+    jnz 111f
+    call uplt_init
+111:
     movl %fs:STUBINFO_SELF_SIZE, %ecx
     orl %ecx, %ecx
     jz 3f

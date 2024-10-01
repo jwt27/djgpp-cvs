@@ -56,7 +56,8 @@ thunks_a.o: asm_incs.h plt_asmc.h asym_incs.h
 thunks_c.o: thunk_incs.h thunk_calls.h
 thunks_p.o: thunk_incs.h thunk_asms.h
 
-plt.o: plt.S plt.inc
+plt.o: plt.S plt.inc plt_defs.inc
+uplt.o: uplt.S plt_defs.inc
 
 ALL_OBJS = $(addprefix ../,$(file < $(TOP)/makefile.rf))
 $(LIB)/$(LIBN): $(TOP)/makefile.rf $(ALL_OBJS) \
@@ -82,10 +83,14 @@ $(LIB)/crt0.elf: $(LIB)/libc.a
 	$(CROSS_ASSTRIP) --strip-debug $@
 	chmod -x $@
 
+$(LIB)/uplt.o: uplt.o
+	cp $< $@
+
 $(LIB)/libdj64.so: $(LIB)/$(LIBN) | $(LIB)
 	ln -sf $(LIBN) $@
 
-final: $(LIB)/libc.a $(LIB)/libdj64.so $(LIB)/$(LIBS) $(LIB)/crt0.elf | $(LIB)
+final: $(LIB)/libc.a $(LIB)/libdj64.so $(LIB)/$(LIBS) $(LIB)/crt0.elf \
+  $(LIB)/uplt.o | $(LIB)
 
 clean::
 	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h
