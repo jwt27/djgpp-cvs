@@ -145,9 +145,12 @@ static void read_elf_sections(void *handle, char *ptr, int ifile,
         }
     }
 fr:
-    free(h);
 }
 
+static void elf_close(void *handle)
+{
+    free(handle);
+}
 
 struct ldops elf_ops = {
     read_elf_headers,
@@ -155,4 +158,5 @@ struct ldops elf_ops = {
     get_elf_length,
     get_elf_entry,
     read_elf_sections,
+    elf_close,
 };

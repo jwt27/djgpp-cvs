@@ -334,6 +334,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     stubinfo_p = (_GO32_StubInfo *)lin2ptr(info.address);
 
     ops->read_sections(handle, lin2ptr(mem_base), pfile, coffset);
+    ops->close(handle);
     if (dyn)
         close(pfile);
 

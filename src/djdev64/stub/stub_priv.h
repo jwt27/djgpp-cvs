@@ -8,6 +8,7 @@ struct ldops {
     uint32_t (*get_entry)(void *handle);
     void (*read_sections)(void *handle, char *ptr, int ifile,
             uint32_t offset);
+    void (*close)(void *handle);
 };
 
 #endif

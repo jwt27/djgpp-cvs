@@ -162,6 +162,9 @@ static void read_coff_sections(void *handle, char *ptr, int ifile,
     free(h);
 }
 
+static void coff_close(void *handle)
+{
+}
 
 struct ldops coff_ops = {
     read_coff_headers,
@@ -169,4 +172,5 @@ struct ldops coff_ops = {
     get_coff_length,
     get_coff_entry,
     read_coff_sections,
+    coff_close,
 };
