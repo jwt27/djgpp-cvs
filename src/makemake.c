@@ -22,17 +22,6 @@ process_makefile(char *path_end, const char *mk, FILE *rf)
   int last_was_nl = 1;
   int ch;
 
-  if (!do_oh_files)
-  {
-    *path_end = 0;
-    if (path[1])
-    {
-      /*      fprintf(mf, "\t@echo =---------- make $(SUBARGS) in %s\n", path+2); */
-      fprintf(mf, "\t$(MAKE) -C %s $(SUBARGS)\n", path+2);
-    }
-    return;
-  }
-
   strcpy(path_end, mk);
   oh = fopen(path, "r");
   if (oh == 0)
@@ -123,8 +112,20 @@ find(void)
     /* See if the current directory has a makefile */
     if (strcmp(de->d_name, "makefile") == 0)
     {
-      process_makefile(path_end, "/makefile.oh", rf);
-      process_makefile(path_end, "/makefile.oho", rfo);
+      if (!do_oh_files)
+      {
+        *path_end = 0;
+        if (path[1])
+        {
+          /*      fprintf(mf, "\t@echo =---------- make $(SUBARGS) in %s\n", path+2); */
+          fprintf(mf, "\t$(MAKE) -C %s $(SUBARGS)\n", path+2);
+        }
+      }
+      else
+      {
+        process_makefile(path_end, "/makefile.oh", rf);
+        process_makefile(path_end, "/makefile.oho", rfo);
+      }
       *path_end = '/';
     }
   }
