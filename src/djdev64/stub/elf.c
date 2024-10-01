@@ -144,7 +144,7 @@ static void read_elf_sections(void *handle, char *ptr, int ifile,
             memset(ptr + phdr->p_vaddr + phdr->p_filesz, 0, len);
         }
     }
-fr:
+fr:;
 }
 
 static void elf_close(void *handle)
