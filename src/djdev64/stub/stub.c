@@ -253,18 +253,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
         }
         dosops->_dos_seek(ifile, coffset, SEEK_SET);
     }
-
-    register_dosops(dyn ? &hops : dosops);
-
     assert(ops);
-    handle = ops->read_headers(pfile);
-    if (!handle)
-        exit(EXIT_FAILURE);
-    va = ops->get_va(handle);
-    va_size = ops->get_length(handle);
-    clnt_entry.offset32 = ops->get_entry(handle);
-    stub_debug("va 0x%x va_size 0x%x entry 0x%x\n",
-            va, va_size, clnt_entry.offset32);
 
     strncpy(stubinfo.magic, "dj64 (C) stsp", sizeof(stubinfo.magic));
     stubinfo.size = sizeof(stubinfo);
@@ -288,7 +277,6 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 //    stubinfo.basename[sizeof(stubinfo.basename) - 1] = '\0';
     strncpy(stubinfo.dpmi_server, "CWSDPMI.EXE", sizeof(stubinfo.dpmi_server));
 #define max(a, b) ((a) > (b) ? (a) : (b))
-    stubinfo.initial_size = max(va_size, 0x10000);
     stubinfo.psp_selector = psp_sel;
     /* DJGPP relies on ds_selector, cs_selector and ds_segment all mapping
      * the same real-mode memory block. */
@@ -305,6 +293,17 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 
     clnt_entry.selector = __dpmi_allocate_ldt_descriptors(1);
     clnt_ds = __dpmi_allocate_ldt_descriptors(1);
+
+    register_dosops(dyn ? &hops : dosops);
+    handle = ops->read_headers(pfile);
+    if (!handle)
+        exit(EXIT_FAILURE);
+    va = ops->get_va(handle);
+    va_size = ops->get_length(handle);
+    clnt_entry.offset32 = ops->get_entry(handle);
+    stub_debug("va 0x%x va_size 0x%x entry 0x%x\n",
+            va, va_size, clnt_entry.offset32);
+    stubinfo.initial_size = max(va_size, 0x10000);
     info.size = PAGE_ALIGN(stubinfo.initial_size);
     /* allocate mem */
     __dpmi_allocate_memory(&info);
@@ -313,6 +312,12 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     mem_base = mem_lin - va;
     stubinfo.mem_base = mem_base;
     stub_debug("mem_lin 0x%x mem_base 0x%x\n", mem_lin, mem_base);
+    ops->read_sections(handle, lin2ptr(mem_base), pfile, coffset);
+    ops->close(handle);
+    if (dyn)
+        close(pfile);
+    unregister_dosops();
+
     /* set base */
     __dpmi_set_segment_base_address(clnt_entry.selector, mem_base);
     /* set descriptor access rights */
@@ -333,11 +338,6 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     __dpmi_set_segment_limit(stubinfo_fs, sizeof(_GO32_StubInfo) - 1);
     stubinfo_p = (_GO32_StubInfo *)lin2ptr(info.address);
 
-    ops->read_sections(handle, lin2ptr(mem_base), pfile, coffset);
-    ops->close(handle);
-    if (dyn)
-        close(pfile);
-
     stubinfo.self_fd = ifile;
     stubinfo.self_offs = coffset;
     stubinfo.self_size = coffsize;
@@ -355,7 +355,6 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
         stub_debug("Found payload of size %i at 0x%x\n", nsize, noffset);
     stubinfo.stubinfo_ver |= 3;
 
-    unregister_dosops();
     unregister_dpmiops();
 
     memcpy(stubinfo_p, &stubinfo, sizeof(stubinfo));
