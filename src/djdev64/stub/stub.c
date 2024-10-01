@@ -207,6 +207,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
 #if STUB_DEBUG
             cnt++;
 #endif
+            stubinfo.stubinfo_ver |= stub_ver << 16;
             stub_debug("Found exe header %i at 0x%lx\n", cnt, coffset);
             memcpy(&offs, &buf[0x3c], sizeof(offs));
             /* fixup for old stubs: if they have any 32bit payload, that
@@ -351,7 +352,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     dosops->_dos_seek(ifile, noffset, SEEK_SET);
     if (nsize > 0)
         stub_debug("Found payload of size %i at 0x%x\n", nsize, noffset);
-    stubinfo.stubinfo_ver = 3;
+    stubinfo.stubinfo_ver |= 3;
 
     unregister_dosops();
     unregister_dpmiops();
