@@ -259,6 +259,8 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
     switch (fn) {
     case DL_SET_SYMTAB: {
         struct udisp *u = &udisps[handle];
+        uint32_t flags = regs->eax;
+        int have_core = (flags & 0x4000);
         uint32_t addr = regs->ebx;
         uint32_t size = regs->ecx;
         uint32_t mem_base = regs->edx;
@@ -271,34 +273,46 @@ static int dj64_ctrl(int handle, int libid, int fn, unsigned esi, uint8_t *sp)
             char *elf = (char *)djaddr2ptr(addr);
             djlogprintf("data %p(%s)\n", elf, elf);
             eh = u->eops->open(elf, size);
-        } else {
+            if (!eh)
+                return -1;
+            if (have_core) {
+                ret = process_athunks(&u->core_at, mem_base, u->eops, eh);
+                if (ret)
+                    goto err;
+                ret = process_pthunks(&u->core_pt, u->eops, eh);
+                if (ret)
+                    goto err;
+            }
+            if (u->at) {
+                ret = process_athunks(u->at, mem_base, u->eops, eh);
+                if (ret)
+                    goto err;
+            }
+            if (u->pt) {
+                ret = process_pthunks(u->pt, u->eops, eh);
+               if (ret)
+                    goto err;
+            }
+            u->eops->close(eh);
+        }
+        if (!have_core) {
             eh = u->eops->open_dyn();
-        }
-        if (!eh)
-            return -1;
-        ret = process_athunks(&u->core_at, mem_base, u->eops, eh);
-        if (ret)
-            goto err;
-        if (u->at) {
-            ret = process_athunks(u->at, mem_base, u->eops, eh);
+            if (!eh)
+                return -1;
+            ret = process_athunks(&u->core_at, mem_base, u->eops, eh);
             if (ret)
                 goto err;
-        }
-        ret = process_pthunks(&u->core_pt, u->eops, eh);
-        if (ret)
-            goto err;
-        if (u->pt) {
-            ret = process_pthunks(u->pt, u->eops, eh);
+            ret = process_pthunks(&u->core_pt, u->eops, eh);
             if (ret)
                 goto err;
+            u->eops->close(eh);
         }
-        u->eops->close(eh);
 
         do_early_init(handle);
-        return ret;
+        return 0;
     err:
         u->eops->close(eh);
-        return ret;
+        break;
     }
     }
     return -1;
