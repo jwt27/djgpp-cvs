@@ -27,7 +27,8 @@
 #define STUBINFO_PAYLOAD2_NAME 0x74
 #define STUBINFO_MEM_BASE 0x88
 #define STUBINFO_FLAGS 0x8C
-#define STUBINFO_END 0x90
+#define STUBINFO_UENTRY 0x90
+#define STUBINFO_END 0x94
 #ifndef __ASSEMBLER__
 #include <stdint.h>
 typedef struct {
@@ -57,6 +58,7 @@ typedef struct {
   char payload2_name[20];
   uint32_t mem_base;
   uint32_t flags;
+  uint32_t uentry;
 } _GO32_StubInfo;
 
 _Static_assert(sizeof(_GO32_StubInfo) == STUBINFO_END, "size mismatch");
