@@ -1,10 +1,9 @@
 usr/i386-pc-dj64/include
-usr/i386-pc-dj64/lib/libc.a
+usr/i386-pc-dj64/lib/*.o
 usr/i386-pc-dj64/lib64/*.so
 usr/i386-pc-dj64/bin/*
 usr/i386-pc-dj64/share/*
 usr/bin/*
 usr/share/pkgconfig/dj64.pc
-usr/share/pkgconfig/dj64static.pc
 usr/share/man/man1/*
 usr/share/doc/dj64/*
