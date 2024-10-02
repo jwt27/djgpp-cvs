@@ -93,5 +93,5 @@ final: $(LIB)/libc.a $(LIB)/libdj64.so $(LIB)/$(LIBS) $(LIB)/crt0.elf \
   $(LIB)/uplt.o | $(LIB)
 
 clean::
-	$(RM) rm *.a *.tmp *.inc asm_*.h thunk_*.h plt_*.h asym_incs.h
+	$(RM) rm *.a *.tmp plt.inc asm_*.h thunk_*.h plt_*.h asym_incs.h
 	$(RM) $(LIB)/libc.a $(LIB)/libdj64.so*
