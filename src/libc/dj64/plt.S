@@ -271,7 +271,12 @@ plt_init:
     jmp 1b
 
 3:
+    /* close file */
+    movl %fs:STUBINFO_SELF_FD, %ebx
+    movl $0x3e00, %eax
+    int $0x21
     /* call manager */
+    movl %fs:STUBINFO_FLAGS, %eax
     movl $0, %ebx
     movl $0, %ecx
     movl %fs:STUBINFO_MEM_BASE, %edx
