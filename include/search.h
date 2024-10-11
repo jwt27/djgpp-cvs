@@ -46,6 +46,12 @@ void *	lfind(const void *_key, void *_base, size_t *_nelp, size_t _width,
 void *	lsearch(const void *_key, void *_base, size_t *_nelp, size_t _width,
 		int(*_compar)(const void *, const void *));
 
+typedef enum { preorder, postorder, endorder, leaf } VISIT;
+void *tdelete(const void *, void **, int(*)(const void *, const void *));
+void *tfind(const void *, void *const *, int(*)(const void *, const void *));
+void *tsearch(const void *, void **, int (*)(const void *, const void *));
+void twalk(const void *, void (*)(const void *, VISIT, int));
+
 #ifndef _POSIX_SOURCE
 
 /* qelem type for insque and remque. */

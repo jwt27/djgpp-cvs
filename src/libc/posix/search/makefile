@@ -5,5 +5,6 @@ TOP=../..
 SRC += _hash2v.c
 SRC += hcreate.c
 SRC += lfind.c
+SRC += tsearch_avl.c
 
 include $(TOP)/../makefile.inc
