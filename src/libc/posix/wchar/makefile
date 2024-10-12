@@ -11,5 +11,6 @@ SRC += wcsrtombs.c
 SRC += wcsnrtombs.c
 SRC += wctob.c
 SRC += btowc.c
+SRC += mbsrtowcs.c
 
 include $(TOP)/../makefile.inc
