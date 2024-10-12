@@ -9,16 +9,18 @@ ifeq ($(shell $(DJ64AS) --version 2>/dev/null),)
 ifneq ($(filter x86_64 amd64,$(shell uname -m)),)
 CROSS_PREFIX :=
 ifeq ($(shell $(DJ64AS) --version 2>/dev/null),)
-# found nothing, allow dj64-gcc to use defaults
-DJ64AS =
-DJ64ASFLAGS =
+# found nothing, try built-in assembler
+DJ64AS = $(CC) -x assembler
+DJ64ASFLAGS = -m32 -Wa,-defsym,_DJ64=1 -c
 endif
 else
 $(error cross-binutils not installed)
 endif
 endif
-export DJ64AS
-export DJ64ASFLAGS
+
+DJ64CFLAGS = $(shell pkg-config --cflags dj64)
+XCPPFLAGS = $(shell pkg-config --variable=xcppflags dj64)
+ASCPPFLAGS = $(shell pkg-config --variable=cppflags dj64)
 
 XSTRIP = $(CROSS_PREFIX)strip --strip-debug
 XLD = $(CROSS_PREFIX)ld
@@ -86,11 +88,14 @@ $(DJ64_XLIB): $(OBJECTS)
 	$(LD) $^ $(DJLDFLAGS) -o $@
 
 %.o: %.c
-	dj64-gcc $(CFLAGS) -I. -o $@ -c $<
+	$(CC) $(DJ64CFLAGS) $(XCPPFLAGS) $(CFLAGS) -I. -o $@ -c $<
 %.o: %.S
-	dj64-gcc -o $@ -c $<
+	$(CPP) -x assembler-with-cpp $(ASCPPFLAGS) $< | \
+	    $(DJ64AS) $(DJ64ASFLAGS) -o $@ -
 plt.o: plt.inc $(GLOB_ASM)
-	echo "#include <dj64/plt.S.inc>" | dj64-gcc -I. -o $@ -c -
+	echo "#include <dj64/plt.S.inc>" | \
+	    $(CPP) -x assembler-with-cpp $(ASCPPFLAGS) -I. - | \
+	    $(DJ64AS) $(DJ64ASFLAGS) -o $@ -
 thunks_c.o: thunk_calls.h
 thunks_p.o: thunk_asms.h plt_asmc.h
 

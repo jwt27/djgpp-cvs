@@ -74,19 +74,13 @@ install_dj64:
 	$(INSTALL) -m 0644 $(DJ64LIBS) $(DESTDIR)$(PREFIX)/i386-pc-dj64/lib64
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/include
 	cp -r $(TOP)/include $(DESTDIR)$(PREFIX)/i386-pc-dj64
-	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
-	$(INSTALL) -m 0755 bin/ccwrp.sh $(DESTDIR)$(PREFIX)/i386-pc-dj64/bin
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/i386-pc-dj64/share
 	$(INSTALL) -m 0644 dj64.mk $(DESTDIR)$(PREFIX)/i386-pc-dj64/share
-	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
-	ln -sf ../i386-pc-dj64/bin/ccwrp.sh $(DESTDIR)$(PREFIX)/bin/dj64-gcc
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64_s.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
 	$(INSTALL) -m 0644 dj64static.pc $(DESTDIR)$(PREFIX)/share/pkgconfig
-	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man1
-	$(INSTALL) -m 0644 man/*.1 $(DESTDIR)$(PREFIX)/share/man/man1
 
 install_djdev64:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share
