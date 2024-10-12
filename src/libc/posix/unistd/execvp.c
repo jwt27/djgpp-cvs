@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <process.h>
 
-extern char *const *_environ;
+//extern char *const *_environ;
 
 int execvp(const char *path, char * const argv[])
 {

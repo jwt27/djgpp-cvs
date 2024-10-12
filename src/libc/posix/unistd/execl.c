@@ -7,7 +7,7 @@
 #include <process.h>
 #include <libc/unconst.h>
 
-extern char *const *_environ;
+//extern char *const *_environ;
 
 int execl(const char *path, const char *argv0, ...)
 {

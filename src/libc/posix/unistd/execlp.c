@@ -8,7 +8,7 @@
 #include <libc/dosexec.h>
 #include <libc/unconst.h>
 
-extern char * const *_environ;
+//extern char * const *_environ;
 
 int execlp(const char *path, const char *argv0, ...)
 {
