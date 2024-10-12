@@ -4,7 +4,8 @@ set -o pipefail
 
 [ -n "$CC" ] || CC=cc
 [ -n "$CPP" ] || CPP=cpp
-XCPPFLAGS=`pkg-config --variable=cppflags dj64`
+ASCPPFLAGS=`pkg-config --variable=cppflags dj64`
+XCPPFLAGS=`pkg-config --variable=xcppflags dj64`
 [ -n "$DJ64AS" ] || DJ64AS="$CC -x assembler"
 [ -n "$DJ64ASFLAGS" ] || DJ64ASFLAGS="-m32 -Wa,-defsym,_DJ64=1 -c"
 
@@ -31,9 +32,9 @@ done
 case "${LAST_ARG}" in
   *.S|-)
         set -- "${@:1:$(($#-1))}"
-        echo "$CPP -x assembler-with-cpp $XCPPFLAGS ${INCS} ${LAST_ARG} | " \
+        echo "$CPP -x assembler-with-cpp $ASCPPFLAGS ${INCS} ${LAST_ARG} | " \
              "$DJ64AS $DJ64ASFLAGS - $*"
-        $CPP -x assembler-with-cpp $XCPPFLAGS ${INCS} ${LAST_ARG} | \
+        $CPP -x assembler-with-cpp $ASCPPFLAGS ${INCS} ${LAST_ARG} | \
             $DJ64AS $DJ64ASFLAGS - $*
         exit $?
         ;;

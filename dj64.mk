@@ -59,6 +59,7 @@ ifneq ($(shell grep "ASMCFUNC" $(PDHDR) | grep -cv "$(HASH)define"),0)
 PLT_O = plt.o
 endif
 endif
+GLOB_ASM = $(wildcard glob_asm.h)
 
 ifneq ($(AS_OBJECTS),)
 XLDFLAGS = -melf_i386 -static
@@ -88,12 +89,15 @@ $(DJ64_XLIB): $(OBJECTS)
 	dj64-gcc $(CFLAGS) -I. -o $@ -c $<
 %.o: %.S
 	dj64-gcc -o $@ -c $<
-plt.o: plt.inc glob_asm.h
+plt.o: plt.inc $(GLOB_ASM)
 	echo "#include <dj64/plt.S.inc>" | dj64-gcc -I. -o $@ -c -
 thunks_c.o: thunk_calls.h
 thunks_p.o: thunk_asms.h plt_asmc.h
 
 ifneq ($(PDHDR),)
+ifneq ($(GLOB_ASM),)
+$(OBJECTS): glob_asmdefs.h
+endif
 # hook in thunk-gen - make sure to not do that before defining `all:` target
 TGMK = $(shell pkg-config --variable=makeinc thunk_gen)
 ifeq ($(TGMK),)
@@ -101,6 +105,12 @@ ifeq ($(filter clean,$(MAKECMDGOALS)),)
 $(error thunk_gen not installed)
 endif
 else
+ifeq ($(filter clean,$(MAKECMDGOALS)),)
+$(shell pkg-config --atleast-version=1.2 thunk_gen)
+ifneq ($(.SHELLSTATUS),0)
+$(error thunk_gen is too old, 1.2 is needed)
+endif
+endif
 TFLAGS = -a 4 -p 4
 include $(TGMK)
 endif
@@ -108,4 +118,5 @@ endif
 
 clean_dj64:
 	$(RM) $(OBJECTS) $(AS_OBJECTS) plt.o plt.inc *.tmp
-	$(RM) thunk_calls.h thunk_asms.h plt_asmc.h $(DJ64_XOBJS)
+	$(RM) thunk_calls.h thunk_asms.h plt_asmc.h glob_asmdefs.h
+	$(RM) $(DJ64_XOBJS)

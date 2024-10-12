@@ -22,9 +22,9 @@
 #endif
 
 #ifndef IN_ASMOBJ
-#include <dj64/asm_inc.h>
+#include <dj64/a_inc.h>
 #define IN_ASMOBJ 3
-#include <dj64/asm_inc.h>
+#include <dj64/a_inc.h>
 #endif
 
 #define _ASM(v) { _S(_##v) }

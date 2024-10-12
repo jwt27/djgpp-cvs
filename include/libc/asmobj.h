@@ -24,14 +24,21 @@
 #define DEFINE(x, y) _f(_h)define x y
 #endif
 
+#define __ASYM(x) __##x()
+#define __ASYM_L(x) (*__##x())
+
 #define __S(x) #x
 #define _S(x) __S(x)
 
 #ifndef IN_ASMOBJ
 
+#ifdef _IN_DJ64
 #define ASM(t, x) t *__##x(void);/*
 */DEFINE(x, (*__##x()))/*
 */
+#else
+#define ASM(t, x) t *__##x(void)
+#endif
 
 #define ASMh(t, x) \
 t *___##x(int handle) \
@@ -39,21 +46,37 @@ t *___##x(int handle) \
   return (t *)djaddr2ptr2(djthunk_get_h(handle, _S(_##x)), sizeof(t)); \
 }
 
+#ifdef _IN_DJ64
 #define ASM_N(t, x) t *__##x(void);/*
 */DEFINE(x, (*__##x()))/*
 */
+#else
+#define ASM_N(t, x) t *__##x(void)
+#endif
 
+#ifdef _IN_DJ64
 #define ASM_P(t, x) t *__##x(void);/*
 */DEFINE(x, __##x())/*
 */
+#else
+#define ASM_P(t, x) t *__##x(void)
+#endif
 
+#ifdef _IN_DJ64
 #define ASM_ARR(t, x, l) t *__##x(void);/*
 */DEFINE(x, __##x())/*
 */
+#else
+#define ASM_ARR(t, x, l) t *__##x(void)
+#endif
 
+#ifdef _IN_DJ64
 #define ASM_F(x) unsigned __##x(void);/*
 */DEFINE(x, __##x())/*
 */
+#else
+#define ASM_F(x) unsigned __##x(void)
+#endif
 
 #define EXTERN extern
 
