@@ -18,7 +18,6 @@ extern "C" {
 
 #ifndef __dj_ENFORCE_ANSI_FREESTANDING
 
-#include <sys/version.h>
 #include <sys/djtypes.h>
 
 #define _IOFBF    	00001  /*  File is full buffered.  */

@@ -1,3 +1,4 @@
+#include <sys/version.h>
 /* export some internal symbols manually */
 #define _stubinfo __ASYM(_stubinfo)
 #define _go32_info_block __ASYM_L(_go32_info_block)
