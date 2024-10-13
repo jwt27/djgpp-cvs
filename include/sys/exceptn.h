@@ -25,6 +25,18 @@ extern "C" {
 #include <setjmp.h>
 #include <dpmi.h>
 
+struct __jmp_buf {
+  ULONG32 __eax, __ebx, __ecx, __edx, __esi;
+  ULONG32 __edi, __ebp, __esp, __eip, __eflags;
+  unsigned short __cs, __ds, __es, __fs, __gs, __ss;
+  ULONG32 __sigmask; /* for POSIX signals only */
+  ULONG32 __signum; /* for expansion */
+  ULONG32 __exception_ptr; /* pointer to previous exception */
+  unsigned char __fpu_state[108]; /* for future use */
+};
+EXTERN ASM_P(struct __jmp_buf, __djgpp_exception_state_ptr);	/* Must include setjmp.h first */
+#define __djgpp_exception_state (__djgpp_exception_state_ptr)
+
 EXTERN ASM(unsigned short, __djgpp_our_DS);
 EXTERN ASM(unsigned short, __djgpp_app_DS);	/* Data selector invalidated by HW ints */
 EXTERN ASM(unsigned short, __djgpp_ds_alias);	/* Data selector always valid */

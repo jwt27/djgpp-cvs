@@ -27,11 +27,10 @@
 
 #define err(x) _write(STDERR_FILENO, x, sizeof(x)-1)
 
-extern unsigned end __asm__ ("end");
+//extern unsigned end __asm__ ("end");
 static unsigned char old_video_mode = 3;
 static int cbrk_vect = 0x1b;		/* May be 0x06 for PC98 */
 
-#if 0
 static void
 itox(int v, int len)
 {
@@ -86,6 +85,7 @@ except_to_sig(int excep)
   }
 }
 
+#if 0
 static void
 show_call_frame(void)
 {
@@ -150,7 +150,6 @@ static const char *exception_names[] = {
 
 #define EXCEPTION_COUNT (sizeof(exception_names)/sizeof(exception_names[0]))
 
-#if 0
 static char has_error[] = {0,0,0,0,0,0,0,0 ,1,0,1,1,1,1,1,0 ,0,1 };
 
 static void
@@ -213,6 +212,7 @@ do_faulting_finish_message(int fake_exception)
     _write(STDERR_FILENO, en, strlen(en));
 
   err(" at eip=");
+#if 0
   /* For fake exceptions like SIGABRT report where `raise' was called.  */
   if (fake_exception
       && __djgpp_exception_state->__cs == _my_cs()
@@ -223,6 +223,7 @@ do_faulting_finish_message(int fake_exception)
 		< (unsigned)__djgpp_selector_limit)
     itox(*((unsigned *)__djgpp_exception_state->__ebp + 1), 8);
   else
+#endif
     itox(__djgpp_exception_state->__eip, 8);
 
   if (signum == 0x79)
@@ -270,7 +271,6 @@ do_faulting_finish_message(int fake_exception)
 //    show_call_frame();
   _exit(-1);
 }
-#endif
 
 typedef void (*SignalHandler) (int);
 
@@ -290,11 +290,11 @@ signal(int sig, SignalHandler func)
   return temp;
 }
 
-#if 0
 static const char signames[] = "ABRTFPE ILL SEGVTERMALRMHUP INT KILLPIPEQUITUSR1USR2NOFPTRAP";
 
 static void print_signal_name(int sig)
 {
+  err("\r\n");
   err("Exiting due to signal ");
   if (sig >= SIGABRT && sig <= SIGTRAP)
   {
@@ -308,7 +308,6 @@ static void print_signal_name(int sig)
   }
   err("\r\n");
 }
-#endif
 
 void __djgpp_traceback_exit(int);
 
@@ -327,7 +326,7 @@ void __djgpp_traceback_exit(int sig)
       if (setjmp(__djgpp_exception_state))
       {
 	err("Bad longjmp to __djgpp_exception_state--aborting\r\n");
-//	do_faulting_finish_message(0); /* does not return */
+	do_faulting_finish_message(0); /* does not return */
       }
       else
 	/* Fake the exception number.  7Ah is the last one hardwired
@@ -335,8 +334,8 @@ void __djgpp_traceback_exit(int sig)
 	__djgpp_exception_state->__signum = 0x7a + 1 + sig - SIGABRT;
     }
   }
-  print_signal_name(sig);
 #endif
+  print_signal_name(sig);
 //  if(__djgpp_exception_state_ptr)
     /* This exits, does not return.  */
 //    do_faulting_finish_message(__djgpp_exception_state_ptr == &fake_exception);
@@ -373,18 +372,18 @@ raise(int sig)
 void
 __djgpp_exception_processor(void)
 {
-#if 0
   int sig;
 
   sig = except_to_sig(__djgpp_exception_state->__signum);
   raise(sig);
+#if 0
   if(__djgpp_exception_state->__signum >= EXCEPTION_COUNT) /* Not exception so continue OK */
     longjmp(__djgpp_exception_state, __djgpp_exception_state->__eax);
   /* User handler did not exit or longjmp, we must exit */
 #endif
   err("Cannot continue from exception, ");
-//  print_signal_name(sig);
-//  do_faulting_finish_message(0);
+  print_signal_name(sig);
+  do_faulting_finish_message(0);
 }
 
 struct exc_info {
