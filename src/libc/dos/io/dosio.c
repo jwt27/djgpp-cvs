@@ -10,13 +10,15 @@
 #include <libc/dosio.h>
 #include <libc/bss.h>
 
-static char init_file_handle_modes[20] = {
+static const char init_fh[] = {
   O_TEXT,
   O_TEXT,
   O_TEXT,
   O_BINARY,
   O_BINARY
 };
+
+static char init_file_handle_modes[20];
 
 static int dosio_bss_count = -1;
 static size_t count=20;	/* DOS default limit */
@@ -32,6 +34,7 @@ __file_handle_set(int fd, int mode)
   {
     dosio_bss_count = __bss_count;
     count = 20;
+    memcpy(init_file_handle_modes, init_fh, sizeof(init_fh));
     __file_handle_modes = init_file_handle_modes;
   }
 
