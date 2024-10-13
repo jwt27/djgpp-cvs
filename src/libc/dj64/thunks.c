@@ -415,6 +415,8 @@ uint64_t dj64_asm_call(int num, uint8_t *sp, uint8_t len, int flags)
     struct udisp *u;
     int handle = dj64api->get_handle();
     assert(handle < MAX_HANDLES);
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].save();
     u = &udisps[handle];
     ret = do_asm_call(u, &u->core_pt, u->cs, num, sp, len, flags);
     /* asm call can recursively invoke dj64, so restore context here */
@@ -431,6 +433,8 @@ uint64_t dj64_asm_call_u(int handle, int num, uint8_t *sp, uint8_t len,
     struct udisp *u;
 
     assert(handle < MAX_HANDLES);
+    for (i = 0; i < num_chooks; i++)
+        chooks[i].save();
     u = &udisps[handle];
     ret = do_asm_call(u, u->pt, u->cs, num, sp, len, flags);
     /* asm call can recursively invoke dj64, so restore context here */
