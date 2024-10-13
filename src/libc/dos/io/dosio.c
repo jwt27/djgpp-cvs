@@ -9,6 +9,7 @@
 
 #include <libc/dosio.h>
 #include <libc/bss.h>
+#include <libc/djctx.h>
 
 static const char init_fh[] = {
   O_TEXT,
@@ -18,12 +19,39 @@ static const char init_fh[] = {
   O_BINARY
 };
 
-static char init_file_handle_modes[20];
+struct fh_state {
+  char init_file_handle_modes[20];
+  int dosio_bss_count;
+  size_t count;	/* DOS default limit */
+  char *__file_handle_modes;
+};
 
-static int dosio_bss_count = -1;
-static size_t count=20;	/* DOS default limit */
+static struct fh_state *fhs;
 
-char *__file_handle_modes = init_file_handle_modes;
+char *__file_handle_modes;
+
+static const struct fh_state fhinit =
+{
+  .dosio_bss_count = -1,
+  .count = 20,
+};
+
+static void fhs_pre(void)
+{
+#define _SV(x) fhs->x = x
+  _SV(__file_handle_modes);
+}
+static void fhs_post(void)
+{
+#define _RS(x) x = fhs->x
+  _RS(__file_handle_modes);
+}
+DJ64_DEFINE_SWAPPABLE_CONTEXT2(fh_state, fhs, fhinit,
+    fhs_pre(), fhs_post());
+
+#define init_file_handle_modes fhs->init_file_handle_modes
+#define dosio_bss_count fhs->dosio_bss_count
+#define count fhs->count
 
 void
 __file_handle_set(int fd, int mode)
