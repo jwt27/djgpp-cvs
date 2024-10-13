@@ -22,6 +22,7 @@ LGPL-compatible licenses.
 Files ported from fdpp or comcom32 projects and originally distributed
 under GPLv3+, were donated to dj64dev project by their author (@stsp)
 and re-licensed to LGPLv3+ by himself.
+Files ported from musl are under MIT license.
 
 Sources in `src/djdev64/*` are distributed under the terms of the
 GNU General Public License, either version 3, or (at your option)
