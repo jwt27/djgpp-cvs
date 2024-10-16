@@ -11,13 +11,13 @@
 #include <libc/bss.h>
 #include <libc/djctx.h>
 
-static const char init_fh[] = {
-  O_TEXT,
-  O_TEXT,
-  O_TEXT,
-  O_BINARY,
-  O_BINARY
-};
+#define init_fh { \
+  O_TEXT, \
+  O_TEXT, \
+  O_TEXT, \
+  O_BINARY, \
+  O_BINARY, \
+}
 
 struct fh_state {
   char init_file_handle_modes[20];
@@ -32,6 +32,7 @@ char *__file_handle_modes;
 
 static const struct fh_state fhinit =
 {
+  .init_file_handle_modes = init_fh,
   .dosio_bss_count = -1,
   .count = 20,
 };
@@ -46,8 +47,12 @@ static void fhs_post(void)
 #define _RS(x) x = fhs->x
   _RS(__file_handle_modes);
 }
-DJ64_DEFINE_SWAPPABLE_CONTEXT2(fh_state, fhs, fhinit,
-    fhs_pre(), fhs_post());
+static void fhs_init(struct fh_state *st)
+{
+  st->__file_handle_modes = st->init_file_handle_modes;
+}
+DJ64_DEFINE_SWAPPABLE_CONTEXT3(fh_state, fhs, fhinit,
+    fhs_pre(), fhs_post(), fhs_init);
 
 #define init_file_handle_modes fhs->init_file_handle_modes
 #define dosio_bss_count fhs->dosio_bss_count
@@ -62,8 +67,6 @@ __file_handle_set(int fd, int mode)
   {
     dosio_bss_count = __bss_count;
     count = 20;
-    memcpy(init_file_handle_modes, init_fh, sizeof(init_fh));
-    __file_handle_modes = init_file_handle_modes;
   }
 
   /* Check for bogus values */

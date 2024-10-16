@@ -26,13 +26,14 @@ void djregister_ctx_hooks(void (*)(int), void (*)(void), void (*)(void),
 
 #define SW_CTX_MAX 100
 
-#define DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c, init, pre, post) \
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT3(t, c, init, pre, post, cinit) \
 static struct t t##_contexts[SW_CTX_MAX]; \
 static void t##_init(int idx) \
 { \
   struct t *x = &t##_contexts[idx]; \
   assert(c != x); \
   *x = init; \
+  cinit(x); \
 } \
 static void t##_deinit(void) \
 { \
@@ -55,6 +56,10 @@ static void static_##t##_init(void) \
 { \
   djregister_ctx_hooks(t##_init, t##_deinit, t##_save, t##_restore); \
 }
+
+#define DJ64_DEFINE_SWAPPABLE_CONTEXT2(t, c, init, pre, post) \
+  static void _dummy_cinit(struct t *dummy) {} \
+  DJ64_DEFINE_SWAPPABLE_CONTEXT3(t, c, init, pre, post, _dummy_cinit)
 
 #define DJ64_DEFINE_SWAPPABLE_CONTEXT(t, c) \
   static const struct t ctx_##t##_init = {}; \
