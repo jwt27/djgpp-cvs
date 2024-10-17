@@ -69,10 +69,7 @@ ifeq ($(DJ64STATIC),1)
 XLDFLAGS += $(shell pkg-config --static --libs dj64static)
 DJ64_XLDFLAGS += -f 0x4000
 else
-XLDFLAGS += $(shell pkg-config --variable=crt0 dj64) \
-  --section-start=.note.gnu.property=0x08148000 \
-  --section-start=.note.package=0x08149000 \
-  --section-start=.text=0x0814a000
+XLDFLAGS += $(shell pkg-config --variable=crt0 dj64) -Ttext-segment=0x08148000
 endif
 $(XELF): $(AS_OBJECTS) $(PLT_O)
 	$(XLD) $^ $(XLDFLAGS) -o $@
