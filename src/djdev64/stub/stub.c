@@ -35,9 +35,11 @@
 #include "djdev64/dj64init.h"
 #include "djdev64/stub.h"
 
+#define DJSTUB_VERSION 5
+
 #define STUB_DEBUG 1
 #if STUB_DEBUG
-#define stub_debug(...) J_printf(do_printf, __VA_ARGS__)
+#define stub_debug(...) J_printf(do_printf, DJ64_PRINT_LOG, __VA_ARGS__)
 #else
 #define stub_debug(...)
 #endif
@@ -134,25 +136,26 @@ static struct dos_ops hops = {
     ._dos_close = _host_close,
 };
 
+__attribute__((format(printf, 3, 4)))
 static void J_printf(void (*do_printf)(int prio, const char *fmt, va_list ap),
-    const char *fmt, ...)
+    int prio, const char *fmt, ...)
 {
     va_list val;
 
     va_start(val, fmt);
-    do_printf(DJ64_PRINT_LOG, fmt, val);
+    do_printf(prio, fmt, val);
     va_end(val);
 }
 
 #define exit(x) return -(x)
-#define error(...) fprintf(stderr, __VA_ARGS__)
-#define dbug_printf(...)
-int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
+#define error(...) J_printf(do_printf, DJ64_PRINT_TERMINAL, __VA_ARGS__)
+int djstub_main(int argc, char *argv[], char *envp[],
+    unsigned psp_sel, int ifile, int ver,
     struct stub_ret_regs *regs, char *(*lin2ptr)(unsigned lin),
     struct dos_ops *dosops, struct dpmi_ops *dpmiops,
     void (*do_printf)(int prio, const char *fmt, va_list ap))
 {
-    int ifile, pfile;
+    int pfile;
     off_t coffset = 0;
     uint32_t coffsize = 0;
     uint32_t noffset = 0;
@@ -179,14 +182,23 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     _GO32_StubInfo *stubinfo_p;
     struct ldops *ops = NULL;
 
+    if (ver == 0) {
+        /* backward-compat code */
+        stub_debug("Opening self at %s\n", argv[0]);
+        rc = dosops->_dos_open(argv[0], O_RDONLY, &ifile);
+        if (rc) {
+            fprintf(stderr, "cannot open %s\n", argv[0]);
+            exit(EXIT_FAILURE);
+        }
+        ver = DJSTUB_VERSION;
+    }
+    if (ver != DJSTUB_VERSION) {
+        error("Version mismatch: want %i got %i\n", DJSTUB_VERSION, ver);
+        exit(1);
+    }
+
     register_dpmiops(dpmiops);
 
-    stub_debug("Opening self at %s\n", argv[0]);
-    rc = dosops->_dos_open(argv[0], O_RDONLY, &ifile);
-    if (rc) {
-        fprintf(stderr, "cannot open %s\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
     while (!done) {
         unsigned rd;
 #if STUB_DEBUG
@@ -246,7 +258,7 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
                 strncpy(ovl_name, &buf[0x2e], 12);
                 ovl_name[12] = '\0';
             } else {
-                dbug_printf("unsupported stub version %i\n", stub_ver);
+                error("unsupported stub version %i\n", stub_ver);
             }
         } else if (buf[0] == 0x4c && buf[1] == 0x01) { /* it's a COFF */
             done = 1;
@@ -383,12 +395,12 @@ int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
     if (ovl_name[0]) {
         snprintf(stubinfo.payload2_name, sizeof(stubinfo.payload2_name),
                  "%s.dbg", ovl_name);
-        dbug_printf("loading %s\n", ovl_name);
+        stub_debug("loading %s\n", ovl_name);
     }
     dosops->_dos_seek(ifile, noffset, SEEK_SET);
     if (nsize > 0)
         stub_debug("Found payload of size %i at 0x%x\n", nsize, noffset);
-    stubinfo.stubinfo_ver |= 4;
+    stubinfo.stubinfo_ver |= DJSTUB_VERSION;
 
     unregister_dpmiops();
 

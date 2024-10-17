@@ -56,7 +56,8 @@ struct stub_ret_regs {
   uint32_t eip;
 };
 
-int djstub_main(int argc, char *argv[], char *envp[], unsigned psp_sel,
+int djstub_main(int argc, char *argv[], char *envp[],
+    unsigned psp_sel, int ifile, int ver,
     struct stub_ret_regs *regs, char *(*lin2ptr)(unsigned lin),
     struct dos_ops *dosops, struct dpmi_ops *dpmiops,
     void (*do_printf)(int prio, const char *fmt, va_list ap));
