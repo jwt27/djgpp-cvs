@@ -35,8 +35,6 @@
 #include "djdev64/dj64init.h"
 #include "djdev64/stub.h"
 
-#define DJSTUB_VERSION 5
-
 #define STUB_DEBUG 1
 #if STUB_DEBUG
 #define stub_debug(...) J_printf(do_printf, DJ64_PRINT_LOG, __VA_ARGS__)
