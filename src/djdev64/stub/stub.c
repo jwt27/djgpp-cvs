@@ -16,7 +16,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -185,7 +184,7 @@ int djstub_main(int argc, char *argv[], char *envp[],
         stub_debug("Opening self at %s\n", argv[0]);
         rc = dosops->_dos_open(argv[0], O_RDONLY, &ifile);
         if (rc) {
-            fprintf(stderr, "cannot open %s\n", argv[0]);
+            error("cannot open %s\n", argv[0]);
             exit(EXIT_FAILURE);
         }
         ver = DJSTUB_VERSION;
@@ -266,7 +265,7 @@ int djstub_main(int argc, char *argv[], char *envp[],
             done = 1;
             ops = &elf_ops;
         } else {
-            fprintf(stderr, "not an exe %s at %lx\n", argv[0], coffset);
+            error("not an exe %s at %lx\n", argv[0], coffset);
             exit(EXIT_FAILURE);
         }
         dosops->_dos_seek(ifile, coffset, SEEK_SET);
@@ -391,8 +390,9 @@ int djstub_main(int argc, char *argv[], char *envp[],
     stubinfo.payload2_offs = noffset2;
     stubinfo.payload2_size = nsize2;
     if (ovl_name[0]) {
-        snprintf(stubinfo.payload2_name, sizeof(stubinfo.payload2_name),
-                 "%s.dbg", ovl_name);
+        assert(ovl_name[12] == '\0');  // no need to len-check copy below
+        strcpy(stubinfo.payload2_name, ovl_name);
+        strcat(stubinfo.payload2_name, ".dbg");
         stub_debug("loading %s\n", ovl_name);
     }
     dosops->_dos_seek(ifile, noffset, SEEK_SET);
