@@ -1,8 +1,6 @@
 #ifndef STUB_PRIV_H
 #define STUB_PRIV_H
 
-#define DJSTUB_VERSION 5
-
 struct ldops {
     void *(*read_headers)(int ifile);
     uint32_t (*get_va)(void *handle);

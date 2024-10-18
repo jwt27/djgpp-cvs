@@ -34,6 +34,9 @@
 #include "djdev64/dj64init.h"
 #include "djdev64/stub.h"
 
+#define DJSTUB_VERSION 6
+#define DJSTUB_API_VERSION 5
+
 #define STUB_DEBUG 1
 #if STUB_DEBUG
 #define stub_debug(...) J_printf(do_printf, DJ64_PRINT_LOG, __VA_ARGS__)
@@ -187,10 +190,10 @@ int djstub_main(int argc, char *argv[], char *envp[],
             error("cannot open %s\n", argv[0]);
             exit(EXIT_FAILURE);
         }
-        ver = DJSTUB_VERSION;
+        ver = DJSTUB_API_VERSION;
     }
-    if (ver != DJSTUB_VERSION) {
-        error("Version mismatch: want %i got %i\n", DJSTUB_VERSION, ver);
+    if (ver != DJSTUB_API_VERSION) {
+        error("Version mismatch: want %i got %i\n", DJSTUB_API_VERSION, ver);
         exit(1);
     }
 
