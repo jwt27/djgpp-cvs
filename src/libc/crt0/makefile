@@ -12,7 +12,8 @@ SRC += c1args.c
 SRC += c1loadef.c
 SRC += c1pglob.c
 SRC += crt1.c
-SRC += mcount.c
+SRC += mcount_i.c
+SRC += mcount.S
 SRC += memhandl.c
 SRC += rfinfo.c
 SRC += dfinfo.c
@@ -40,5 +41,5 @@ $(LIB)/gcrt0.o : gcrt0.S crt0.S exit16.ah sbrk16.ah
 	$(MISC) rm gcrt0.o
 	sed 's@gcrt0.o@$(LIB)/gcrt0.o@' gcrt0.d > gcrt02.d
 
-mcount.o : mcount.c
+mcount_i.o : mcount_i.c
 	$(XNOPGGCC) -c $<
