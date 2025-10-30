@@ -38,7 +38,7 @@ typedef struct MTAB {
 
 static header h;
 static short *histogram;
-static int mcount_skip = 1;
+static volatile unsigned char mcount_skip = 1;
 static int histlen;
 static MTAB *mtab=0;
 
@@ -48,35 +48,26 @@ extern int etext __asm__("etext");
 
 static int profiling_p;
 
-/* called by functions.  Use the pointer it provides to cache
+/* called by mcount.  Use the pointer it provides to cache
 ** the last used MTABE, so that repeated calls to/from the same
 ** pair works quickly - no lookup.
 */
-void mcount(int _to);
-void mcount(int _to)
+__attribute__((regparm (3))) /* EAX, EDX, ECX */
+void __mcount_internal(unsigned long to, MTABE **cache, unsigned long from);
+__attribute__((regparm (3)))
+void __mcount_internal(unsigned long to, MTABE **cache, unsigned long from)
 {
   MTAB *m;
   int i;
-  unsigned int to;
-  int ebp;
-  unsigned int from;
   int mtabi;
-  MTABE **cache;
-
-  /* obtain the cached pointer */
-  __asm__ __volatile__ ("movl %%edx,%0" : "=g" (cache));
 
   mcount_skip = 1;
   /* Do nothing if profiling is disabled.  */
   if (!profiling_p)
     return;
 
-  if (&_to < &etext)
-    *(int *)(-1) = 0; /* fault! */
+  to -= 12;
 
-  to = *((&_to)-1) - 12;
-  ebp = *((&_to)-2); /* glean the caller's return address from the stack */
-  from = ((int *)ebp)[1];
   /* Do nothing if the FROM address is outside the sampling range.  */
   if (from < h.low || from >= h.high)
     return;
